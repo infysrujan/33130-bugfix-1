@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address Card Block - Hours/Tel/Fax Test</title>
+    <!-- Fonts -->
+    <link rel="stylesheet" href="../../styles/fonts.css">
+    <!-- Address Card Styles -->
+    <link rel="stylesheet" href="address-card.css">
+    <!-- Test Page Scaffolding (not part of the block) -->
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--bbl-color-blue-150);
+            margin-bottom: 40px;
+        }
+
+        .info-box {
+            background-color: #e0e6f8;
+            border-left: 4px solid var(--bbl-color-blue-150);
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            color: #171717;
+        }
+
+        .info-box ul {
+            margin: 10px 0 5px 20px;
+        }
+
+        [class*='col-'] {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .col-xs-12 {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Address Card Block - International Branches (Hours/Tel/Fax)</h1>
+
+        <div class="address-card block" data-block-name="address-card">
+            <div>
+                <div>data</div>
+                <div id="location-data"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import decorate from './address-card.js';
+
+        const locationData = [
+            {
+                "BranchName": "Bangkok Bank (China), Head Office",
+                "BranchNo": "",
+                "Address1": "Bangkok Bank Building No.7, Zhongshan East -1 Road",
+                "Address2": "",
+                "Address3": "",
+                "MicroBranchHours": "9:00a.m.-4:30p.m.",
+                "Province": "Shanghai",
+                "Postcode": "200002",
+                "ATM": " ",
+                "Branch": " ",
+                "InternationalBranch": "x",
+                "Lat": "31.235167",
+                "Lng": "121.490476",
+                "Tel": "(86-21) 2329-0100",
+                "Fax": "(86-21) 2329-0168",
+                "Country": "China"
+            },
+            {
+                "BranchName": "Beijing Branch",
+                "BranchNo": "",
+                "Address1": "1st Floor, New China Insurance Tower (NCI Tower) No.12A, Jianguomenwai Avenue, Chaoyang",
+                "Address2": "",
+                "Address3": "",
+                "MicroBranchHours": "9:00a.m.-4:30p.m.",
+                "Province": "Beijing",
+                "Postcode": "100022",
+                "ATM": " ",
+                "Branch": " ",
+                "InternationalBranch": "x",
+                "Lat": "39.907859",
+                "Lng": "116.447371",
+                "Tel": "(86-10) 6569-0088",
+                "Fax": "(86-10) 6569-0000",
+                "Country": "China"
+            },
+            {
+                "BranchName": "Chongqing Branch",
+                "BranchNo": "",
+                "Address1": "1st Floor (L104 & L105) and 38th Floor (Unit A), HNA Poly International Plaza, No.235 Minsheng Road, Yuzhong",
+                "Address2": "",
+                "Address3": "",
+                "MicroBranchHours": "9:00a.m.-4:30p.m.",
+                "Province": "Chongqing",
+                "Postcode": "400010",
+                "ATM": " ",
+                "Branch": " ",
+                "InternationalBranch": "x",
+                "Lat": "29.557194",
+                "Lng": "106.570847",
+                "Tel": "(86-23) 6037-2300",
+                "Fax": "(86-23) 6037-2343",
+                "Country": "China"
+            },
+            {
+                "BranchName": "Shanghai Branch",
+                "BranchNo": "",
+                "Address1": "Bangkok Bank Building No.7, Zhongshan East -1 Road",
+                "Address2": "200002",
+                "Address3": "",
+                "MicroBranchHours": "9:00a.m.-4:30p.m.",
+                "Province": "Shanghai",
+                "Postcode": "200002",
+                "ATM": " ",
+                "Branch": " ",
+                "InternationalBranch": "x",
+                "Lat": "31.235157",
+                "Lng": "121.490486",
+                "Tel": "(86-21) 2329-0100",
+                "Fax": "(86-21) 2329-0101",
+                "Country": "China"
+            },
+            {
+                "BranchName": "Shenzhen Branch",
+                "BranchNo": "",
+                "Address1": "1st Floor, Unit 12, Hua Rong Building, No.178 Mintian Road, Futian, Shenzhen",
+                "Address2": "",
+                "Address3": "",
+                "MicroBranchHours": "9:00a.m.-4:30p.m.",
+                "Province": "Guangdong",
+                "Postcode": "518048",
+                "ATM": " ",
+                "Branch": " ",
+                "InternationalBranch": "x",
+                "Lat": "22.537737",
+                "Lng": "114.053153",
+                "Tel": "(86-755) 3396-5800",
+                "Fax": "(86-755) 3396-5840",
+                "Country": "China"
+            },
+            {
+                "BranchName": "Xiamen Branch",
+                "BranchNo": "",
+                "Address1": "1st - 2nd Floor, Xiamen Top Plaza, No.2 Zhenhai Road, Siming, Xiamen",
+                "Address2": "",
+                "Address3": "",
+                "MicroBranchHours": "9:00a.m.-4:30p.m.",
+                "Province": "Fujian",
+                "Postcode": "361001",
+                "ATM": " ",
+                "Branch": " ",
+                "InternationalBranch": "x",
+                "Lat": "24.449498",
+                "Lng": "118.080632",
+                "Tel": "(86-592) 297-9889",
+                "Fax": "(86-592) 297-9890",
+                "Country": "China"
+            }
+        ];
+
+        // Inject mock placeholders so fetchPlaceholders() resolves instantly
+        window.placeholders = {
+            'en': {
+                addressCardNoResultsFound: 'No Results Found',
+                nearestLocationTag: 'Nearest',
+            }
+        };
+
+        document.getElementById('location-data').textContent = JSON.stringify(locationData);
+        const block = document.querySelector('.address-card.block');
+        decorate(block);
+    </script>
+</body>
+
+</html>
