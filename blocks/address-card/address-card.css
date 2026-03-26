@@ -39,7 +39,7 @@
   color: var(--bbl-color-gray-121);
   font-size: 1.4375rem;
   font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 1.625rem;
   margin: 0;
 }
@@ -89,7 +89,7 @@
   content: '\E901';
   margin-top: 0.0625rem;
   font-size: 0.6875rem;
-  font-weight: normal;
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 .address-card-container .header-desktop {
@@ -176,7 +176,7 @@
   align-items: center;
   font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 500;
+  font-weight: var(--bbl-font-weight-medium);
   font-size: 0.875rem;
   line-height: 1.3125rem;
   color: var(--bbl-color-blue-150);
@@ -375,7 +375,7 @@
 
 .address-card .no-results #msg-error {
   font-size: 1.25rem;
-  font-weight: bold;
+  font-weight: var(--bbl-font-weight-medium);
   color: var(--bbl-color-gray-121);
 }
 
@@ -450,7 +450,7 @@
   color: var(--bbl-color-black);
   background: transparent;
   border: none;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 .address-card .simple-pagination li.disabled span,
