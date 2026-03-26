@@ -43,6 +43,9 @@
   --bbl-color-gray-142: #606060;
   --bbl-color-gray-143: #6b6b6b;
   --bbl-color-gray-144: #F9F9F9;
+  --bbl-color-grey-145: #6a6a6a;
+  --bbl-color-grey-146: #d6d6d6;
+  --bbl-color-grey-147: #666666;
 
   /* =========================================================================
      BLUE SCALE
@@ -63,6 +66,7 @@
   --bbl-color-blue-130: #002087;
   --bbl-color-blue-140: #4890ff;
   --bbl-color-blue-150: #003399;
+  --bbl-color-blue-160: #e0e6f8;
 
   /* =========================================================================
      RED SCALE
@@ -97,6 +101,7 @@
   --bbl-color-green-100: #083D37;
   --bbl-color-green-110: #062C29;
   --bbl-color-green-120: #032120;
+  --bbl-color-green-130: #3d9b35;
 
   /* =========================================================================
      PURPLE SCALE
