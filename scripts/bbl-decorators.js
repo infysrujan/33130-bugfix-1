@@ -11,7 +11,7 @@ function decorateButtonsV1(element) {
           && twoup.childNodes.length === 1
           && twoup.tagName === 'P'
         ) {
-          a.className = 'button primary';
+          a.className = 'button-m primary';
           twoup.classList.add('button-container');
         }
         if (
@@ -20,7 +20,7 @@ function decorateButtonsV1(element) {
           && twoup.childNodes.length === 1
           && twoup.tagName === 'P'
         ) {
-          a.className = 'button secondary';
+          a.className = 'button-m secondary';
           twoup.classList.add('button-container');
         }
         if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {

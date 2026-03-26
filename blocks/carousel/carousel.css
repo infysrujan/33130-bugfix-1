@@ -242,20 +242,6 @@
         font-size: 12.6px;
         line-height: 19.25px;
     }
-
-    .carousel-cta {
-        display: inline-block;
-        position: absolute;
-        bottom: var(--bbl-space-600);
-        width: 94px;
-        max-width: 135px;
-        height: 44px;
-        line-height: 44px;
-        padding: 0 var(--bbl-space-250);
-        font-size: 11.2px;
-        border: 1px solid var(--bbl-color-active-blue);
-        border-radius: 7px;
-    }
 }
 
 @media (width >= 1025px) {
@@ -456,14 +442,6 @@
         display: inline-block;
         position: absolute;
         bottom: var(--bbl-space-200);
-        width: 120px;
-        height: var(--bbl-space-600);
-        line-height: var(--bbl-space-600);
-        padding: 0 var(--bbl-space-250);
-        font-size: 16px;
-        border: 1px solid #4890ff;
-        border-radius: 7px;
-        color: #4890ff;
     }
 
     .carousel-item:not(.active) {
@@ -483,5 +461,6 @@
 
     .carousel-item:not(.active) .carousel-content .carousel-cta {
         top: 55%;
+        height: 1.375rem;
     }
 }

@@ -136,6 +136,7 @@
 .megamenu-carousel-arrow-prev::before {
   transform: scaleX(-1);
   color: var(--bbl-color-grey-160);
+  font-size: 0.875rem;
 }
 
 .megamenu-carousel-arrow-next::before {
@@ -194,7 +195,7 @@ a.megamenu-link {
 }
 
 .megamenu-link:hover {
-  text-decoration: underline;
+  color: var(--bbl-color-blue-90);
 }
 
 .quick-nav-items {
@@ -228,10 +229,6 @@ a.megamenu-link {
 .quick-nav-item a {
   text-decoration: none;
   color: var(--bbl-color-grey-150);
-}
-
-.quick-nav-item a:hover {
-  text-decoration: underline;
 }
 
 .quick-nav-item span,
@@ -271,7 +268,8 @@ a.megamenu-link {
     line-height: 1.375;
   }
 
-  .main-nav-trigger-text:hover {
+  .main-nav-trigger:hover .main-nav-trigger-text,
+  .main-nav-trigger:hover::before {
     color: var(--bbl-text-link);
   }
 
@@ -330,6 +328,7 @@ a.megamenu-link {
   .megamenu-columns {
     display: flex;
     gap: 1.25rem;
+    padding-bottom: 1.25rem;
   }
 
   .megamenu-link-item {
@@ -379,6 +378,8 @@ a.megamenu-link {
   .quick-nav-item {
     width: 25%;
     justify-content: center;
+    border: 0.0625rem solid var(--bbl-color-active-blue);
+    box-shadow: 0.1875rem 0.1875rem 0 var(--bbl-color-black-alpha-17);
   }
 
   .quick-nav-item span,

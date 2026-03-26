@@ -23,3 +23,7 @@
 .bg-truthful-blue {
   background-color: var(--bbl-color-truthful-blue);
 }
+
+.bg-truthful-dark-blue {
+  background-color: var(--bbl-color-truthful-dark-blue);
+}

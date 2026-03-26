@@ -4,6 +4,13 @@
  * @param {Element} block The search block element
  */
 export default function decorate(block) {
+  const pathname = window.location.pathname.toLowerCase();
+  if (pathname.endsWith('/search') || pathname === '/search') {
+    block.textContent = '';
+    block.style.display = 'none';
+    return;
+  }
+
   const rows = [...block.children];
   if (rows.length === 0) return;
 

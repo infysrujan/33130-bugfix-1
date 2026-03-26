@@ -56,7 +56,7 @@ button.login-button.primary {
   width: 85%;
   max-width: 20rem;
   z-index: 100;
-  background: var(--bbl-color-white);
+  background: var(--bbl-color-gray-144);
   box-shadow: -0.25rem 0 0.75rem rgb(0 0 0 / 15%);
   border-radius: 0;
   visibility: hidden;
@@ -166,12 +166,20 @@ a.login-link:hover {
     text-align: right;
   }
 
+  .login-panel-title {
+    display: none;
+  }
+
   .login-button {
     min-width: 7.5rem;
   }
 
   button.login-button.primary {
     background-color: var(--bbl-color-active-blue);
+  }
+
+  button.login-button.primary:hover {
+    background: var(--bbl-color-blue-90);
   }
 
   .login .icon-login::before,

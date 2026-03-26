@@ -77,6 +77,10 @@
                   "value": "bg-truthful-blue"
                 },
                 {
+                  "name": "Truthful Dark Blue",
+                  "value": "bg-truthful-dark-blue"
+                },
+                {
                   "name": "Ice Blue",
                   "value": "bg-ice-blue"
                 },
@@ -126,6 +130,10 @@
                 {
                   "name": "Center Title",
                   "value": "center-title"
+                },
+                {
+                  "name": "Center Content",
+                  "value": "center-content"
                 }
               ]
             }
@@ -163,8 +171,10 @@
         "download-file",
         "teaser-with-bg-image",
         "sub-nav",
+        "search-page",
         "currency-converter",
         "popup-modal-card-offer",
+        "currency-converter-expanded",
         "locate-us"
       ]
     }

@@ -46,31 +46,28 @@ function parseCurrencyList(currencyListDiv) {
  * Create currency dropdown
  * @param {Array} currencies - Array of currency objects
  * @param {string} searchPlaceholder - Placeholder text for search input
+ * @param {string} type - Unique identifier for dropdown (e.g., 'from' or 'to')
+ * @param {number} activeIndex - Index of the currency to set as active
  * @returns {Element} - Dropdown element
  */
-function createCurrencyDropdown(currencies, searchPlaceholder) {
+function createCurrencyDropdown(currencies, searchPlaceholder, type, activeIndex = 0) {
   const dropdown = document.createElement('div');
   dropdown.className = 'currency-dropdown';
 
   const searchInput = document.createElement('input');
   searchInput.type = 'text';
   searchInput.className = 'search-currency';
-  searchInput.id = 'search-currency';
-  searchInput.name = 'search-currency';
+  searchInput.id = `search-currency-${type}`;
+  searchInput.name = `search-currency-${type}`;
   searchInput.placeholder = searchPlaceholder;
 
   const list = document.createElement('ul');
   list.className = 'currency-dropdown-list';
 
-  currencies.forEach((currency, index) => {
+  currencies.forEach((currency) => {
     const item = document.createElement('li');
     item.dataset.currencyCode = currency.code;
     item.dataset.description = currency.name;
-
-    // Add active class to first item by default
-    if (index === 0) {
-      item.classList.add('active');
-    }
 
     const icon = document.createElement('span');
     icon.className = 'currency-flag';
@@ -90,6 +87,12 @@ function createCurrencyDropdown(currencies, searchPlaceholder) {
 
   dropdown.appendChild(searchInput);
   dropdown.appendChild(list);
+
+  // Set active item based on activeIndex parameter
+  const allItems = list.querySelectorAll('li');
+  if (allItems[activeIndex]) {
+    allItems[activeIndex].classList.add('active');
+  }
 
   // Search functionality
   searchInput.addEventListener('input', (e) => {
@@ -117,9 +120,10 @@ function createCurrencyDropdown(currencies, searchPlaceholder) {
  * @param {Array} currencies - Array of currency objects
  * @param {string} type - 'from' or 'to'
  * @param {string} searchPlaceholder - Placeholder text for search input
+ * @param {number} defaultCurrencyIndex - Index of the default currency to display
  * @returns {Element} - Convert group element
  */
-function createConvertGroup(label, currencies, type, searchPlaceholder) {
+function createConvertGroup(label, currencies, type, searchPlaceholder, defaultCurrencyIndex = 0) {
   const group = document.createElement('div');
   group.className = 'convert-group';
   group.id = `currency-${type}`;
@@ -131,8 +135,8 @@ function createConvertGroup(label, currencies, type, searchPlaceholder) {
   const countrySelect = document.createElement('div');
   countrySelect.className = 'country-select';
 
-  // Default to first currency (THB)
-  const defaultCurrency = currencies[0] || { code: 'THB', icon: '', name: 'THB' };
+  // Use specified currency index
+  const defaultCurrency = currencies[defaultCurrencyIndex] || currencies[0] || { code: 'THB', icon: '', name: 'THB' };
 
   const flag = document.createElement('img');
   flag.src = defaultCurrency.icon;
@@ -185,7 +189,12 @@ function createConvertGroup(label, currencies, type, searchPlaceholder) {
     input.addEventListener('cut', (e) => e.preventDefault());
   }
 
-  const dropdown = createCurrencyDropdown(currencies, searchPlaceholder);
+  const dropdown = createCurrencyDropdown(
+    currencies,
+    searchPlaceholder,
+    type,
+    defaultCurrencyIndex,
+  );
 
   const dropdownIcon = document.createElement('span');
   dropdownIcon.className = 'icon-dropdown';
@@ -311,8 +320,8 @@ export default async function decorate(block) {
   const converter = document.createElement('div');
   converter.className = 'converter';
 
-  // Create From group
-  const fromGroup = createConvertGroup(fromLabel, currencies, 'from', searchPlaceholder);
+  // Create From group (first currency - index 0)
+  const fromGroup = createConvertGroup(fromLabel, currencies, 'from', searchPlaceholder, 0);
 
   // Create Convert button with icon
   const convertBtn = document.createElement('button');
@@ -330,8 +339,8 @@ export default async function decorate(block) {
   btnText.textContent = 'Convert';
   convertBtn.appendChild(btnText);
 
-  // Create To group
-  const toGroup = createConvertGroup(toLabel, currencies, 'to', searchPlaceholder);
+  // Create To group (second currency - index 1)
+  const toGroup = createConvertGroup(toLabel, currencies, 'to', searchPlaceholder, 1);
 
   // Add convert functionality
   convertBtn.addEventListener('click', async () => {

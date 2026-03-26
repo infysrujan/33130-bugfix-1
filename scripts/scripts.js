@@ -16,6 +16,7 @@ import {
 import {
   decorateSvgWithAltText,
   decorateTerritoryButtons,
+  decorateButtonsV1,
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
@@ -180,6 +181,10 @@ async function loadEager(doc) {
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
+
+  // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
+  decorateButtonsV1(main);
+  decorateSvgWithAltText(main);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;

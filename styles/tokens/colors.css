@@ -12,6 +12,7 @@
   /* Brand Core Colors */
   --bbl-color-truthful-blue: #002850;      /* Primary dark blue */
   --bbl-color-active-blue: #0064FF;        /* Primary bright blue */
+   --bbl-color-truthful-dark-blue: #233a58; /* Primary dark blue variant */
   --bbl-color-white: #FFFFFF;
   --bbl-color-black: #000000;
 
@@ -41,6 +42,7 @@
   --bbl-color-gray-122: #e8e8e8;
   --bbl-color-gray-142: #606060;
   --bbl-color-gray-143: #6b6b6b;
+  --bbl-color-gray-144: #F9F9F9;
 
   /* =========================================================================
      BLUE SCALE
@@ -174,6 +176,7 @@
   --bbl-color-black-alpha-30: rgba(0, 0, 0, 0.30);
   --bbl-color-black-alpha-40: rgba(0, 0, 0, 0.40);
   --bbl-color-black-alpha-60: rgba(0, 0, 0, 0.60);
+  --bbl-color-black-alpha-17: rgba(0, 100, 255, 0.17);
 
   /* White Transparencies */
   --bbl-color-white-alpha-5: rgba(255, 255, 255, 0.05);
@@ -183,6 +186,7 @@
   --bbl-color-white-alpha-40: rgba(255, 255, 255, 0.40);
   --bbl-color-white-alpha-60: rgba(255, 255, 255, 0.60);
   --bbl-color-white-alpha-50: rgba(255, 255, 255, 0.5);
+  --bbl-color-white-alpha-80: rgba(255, 255, 255, 0.80);
 
   /* =========================================================================
      SEMANTIC ALIASES (For Easier Use)

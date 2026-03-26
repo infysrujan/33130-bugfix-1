@@ -232,6 +232,10 @@
                 "value": "bg-truthful-blue"
               },
               {
+                "name": "Truthful Dark Blue",
+                "value": "bg-truthful-dark-blue"
+              },
+              {
                 "name": "Ice Blue",
                 "value": "bg-ice-blue"
               },
@@ -281,6 +285,10 @@
               {
                 "name": "Center Title",
                 "value": "center-title"
+              },
+              {
+                "name": "Center Content",
+                "value": "center-content"
               }
             ]
           }
@@ -1699,6 +1707,34 @@
             "value": false
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "currency-converter-expanded",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "countryList",
+        "label": "Country List",
+        "valueType": "string",
+        "value": "",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "buttonTitle",
+        "label": "Button Title",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string",
+        "value": "",
+        "required": true
       }
     ]
   },
@@ -7416,6 +7452,51 @@
         "description": "If enabled, closing the popup will not suppress it on later visits to this page.",
         "valueType": "boolean",
         "value": true
+      }
+    ]
+  },
+  {
+    "id": "search-page",
+    "fields": [
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "noResultsText",
+        "label": "No Results Text",
+        "value": "No Results Found"
+      },
+      {
+        "component": "text",
+        "name": "recentTitle",
+        "label": "Recent Searches Title",
+        "value": "Recent Searches"
+      },
+      {
+        "component": "text",
+        "name": "learnMoreLinkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Alt",
+        "value": ""
       }
     ]
   },

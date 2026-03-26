@@ -43,7 +43,7 @@ function buildContent(
   doc,
 ) {
   const content = doc.createElement('div');
-  content.className = 'content';
+  content.className = 'story-card-content';
 
   // Eyebrow
   if (eyebrowText) {

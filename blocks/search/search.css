@@ -34,4 +34,16 @@
 	.search-placeholder {
 		display: none;
 	}
+
+	.search-link {
+		display: flex;
+		width: 2.875rem;
+		height: 2.875rem;
+		justify-content: center;
+	}
+
+	.search-link:hover {
+		background: var(--bbl-color-blue-90);
+		border-radius: 50%;
+	}
 }

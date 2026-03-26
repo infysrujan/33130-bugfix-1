@@ -342,6 +342,10 @@ body.wealth main :is(.button-container .button, .button) {
    SECTION-LEVEL  - Global Styles
    ========================================================================= */
 
+.section > .default-content-wrapper {
+    display: flow-root;
+}
+
 .section.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
     text-align: center;
 }
@@ -375,4 +379,13 @@ body.wealth main :is(.button-container .button, .button) {
 
 body.bangkok-bankm-card main {
   background-color: maroon;
+}
+
+.section.bg-truthful-blue  *,
+.section.bg-truthful-dark-blue  *{
+    color: var(--bbl-color-white);
+}
+
+.section.center-content .default-content-wrapper * {
+    text-align: center;
 }

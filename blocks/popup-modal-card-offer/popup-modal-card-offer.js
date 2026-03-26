@@ -118,9 +118,19 @@ export default function decorate(block) {
     });
   };
 
-  if (delay > 0) {
-    setTimeout(show, delay * 1000);
-  } else {
-    show();
-  }
+  const trigger = () => {
+    if (delay > 0) {
+      setTimeout(show, delay * 1000);
+    } else {
+      show();
+    }
+  };
+
+  trigger();
+
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      trigger();
+    }
+  });
 }

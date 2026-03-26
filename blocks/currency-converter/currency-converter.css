@@ -172,9 +172,9 @@
 }
 
 .currency-converter .search-currency::placeholder {
-  color: var(--bbl-color-grey-50);
+  color: var(--bbl-color-grey-70);
   font-size: 1rem;
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-primary);
 }
 
 /* Dropdown List */
@@ -182,7 +182,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 12.5rem;
+  max-height: 12rem;
   overflow-y: auto;
 }
 
@@ -194,6 +194,7 @@
   align-items: center;
   gap: 0.625rem;
   transition: background-color 0.2s ease;
+  margin: 2px 0;
 }
 
 .currency-converter .currency-dropdown-list li.active {
@@ -344,4 +345,13 @@
     100% {
         margin-top: 0
     }
+}
+
+@media (width > 64rem) {
+  .currency-converter .currency-title-from, 
+  .currency-converter .currency-title-to,
+  .currency-converter .country-select .code,
+  .currency-converter .currency-dropdown-list li > span {
+    font-size: 1rem;
+  }
 }

@@ -68,9 +68,18 @@ button,
 
 /* --- Medium (Desktop) - 44px height --- */
 .button-m {
-  height: 44px;
-  padding: 0 var(--bbl-space-300);
-  font-size: var(--bbl-body-b1-size);
+  max-height: 2.75rem;
+  min-width: 7.5rem;
+  padding: 1rem 0.5rem;
+  font-size: 1rem;
+  text-align: center;
+  line-height: 1.375rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  display: block;
+  font-family: var(--bbl-font-family-medium);
+  max-width: fit-content;
+  font-style: normal;
 }
 
 /* --- Large (Hero Banner) - 52px height --- */
@@ -98,7 +107,8 @@ button,
 .button.primary,
 .button-primary,
 button[type="submit"],
-button.primary {
+button.primary,
+.button-m.primary {
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
   border: none;
@@ -113,7 +123,8 @@ button:focus-visible,
 /* Hover */
 .button:hover,
 .button-primary:hover,
-button[type="submit"]:hover {
+button[type="submit"]:hover,
+.button-m.primary:hover {
   background: var(--bbl-color-blue-90);
   text-decoration: none;
 }
@@ -121,7 +132,8 @@ button[type="submit"]:hover {
 /* Active/Pressed */
 .button:active,
 .button-primary:active,
-button[type="submit"]:active {
+button[type="submit"]:active,
+.button-m.primary:active {
   background: var(--bbl-color-blue-90);
   transform: translateY(0);
   box-shadow: none;
@@ -130,8 +142,10 @@ button[type="submit"]:active {
 /* Disabled */
 .button:disabled,
 .button-primary:disabled,
-button[type="submit"]:disabled {
-  background: var(--bbl-color-grey-40);
+button[type="submit"]:disabled,
+.button-m.primary:disabled,
+.button-m.primary.disabled {
+  background: var(--bbl-color-grey-20);
   color: var(--bbl-color-grey-60);
   cursor: not-allowed;
   box-shadow: none;
@@ -160,31 +174,37 @@ button[type="submit"]:disabled {
 
 .button.secondary,
 .button-secondary,
-button.secondary {
+button.secondary,
+.button-m.secondary {
   background: transparent;
   color: var(--bbl-color-active-blue);
   border: 2px solid var(--bbl-color-active-blue);
 }
 
 /* Hover */
-.button-secondary:hover {
-  background: var(--bbl-color-blue-10);
+.button-secondary:hover,
+.button-m.secondary:hover {
+  background: var(--bbl-color-active-blue);
   border-color: var(--bbl-color-blue-70);
-  color: var(--bbl-color-blue-70);
+  color: var(--bbl-color-white);
+  text-decoration: none;
 }
 
 /* Active/Pressed */
-.button-secondary:active {
+.button-secondary:active,
+.button-m.secondary:active {
   background: var(--bbl-color-blue-20);
   border-color: var(--bbl-color-blue-90);
   color: var(--bbl-color-blue-90);
 }
 
 /* Disabled */
-.button-secondary:disabled {
-  background: transparent;
+.button-secondary:disabled,
+.button-m.secondary:disabled,
+.button-m.secondary.disabled {
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-grey-60);
   border-color: var(--bbl-color-grey-40);
-  color: var(--bbl-color-grey-50);
   cursor: not-allowed;
 }
 

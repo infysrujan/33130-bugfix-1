@@ -11,10 +11,6 @@
   transition: opacity 0.2s ease;
 }
 
-.location-link:hover {
-  opacity: 0.8;
-}
-
 .location-icon {
   display: block;
   width: 1.5rem;
