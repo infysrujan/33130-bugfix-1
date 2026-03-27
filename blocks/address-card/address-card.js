@@ -20,7 +20,7 @@ function createAddressCard(location, index, placeholders = {}) {
   const mobileHeader = document.createElement('div');
   mobileHeader.id = `BoxItemID_${index + 1}`;
   mobileHeader.className = 'header-mobile';
-  mobileHeader.innerHTML = `<h3 class="title-3 collapse-head-text">${location.BranchName || ''}</h3>`;
+  mobileHeader.innerHTML = `<h3 class="card-title">${location.BranchName || ''}</h3>`;
 
   // Desktop header
   const desktopHeader = document.createElement('div');
@@ -28,7 +28,7 @@ function createAddressCard(location, index, placeholders = {}) {
   desktopHeader.className = hasInfo ? 'header-desktop header-desktop--compact' : 'header-desktop';
 
   const title = document.createElement('h3');
-  title.className = 'sameHeightHead title-3 collapse-head-text rowIndex1';
+  title.className = 'card-title';
   title.textContent = location.BranchName || '';
 
   // Check if location has valid coordinates
@@ -64,7 +64,7 @@ function createAddressCard(location, index, placeholders = {}) {
   caption.className = 'caption';
 
   const addressText = document.createElement('p');
-  addressText.className = 'text-default content-magin-top fixed-fonts-18';
+  addressText.className = 'address-text';
 
   // Build address
   const addressParts = [
@@ -86,25 +86,25 @@ function createAddressCard(location, index, placeholders = {}) {
     if (hasStatus) {
       const statusClass = location.BranchStatus.toLowerCase() === 'open' ? 'status-open' : '';
       // Hours in a separate <p> so it doesn't inherit the status color
-      const hoursHtml = hasHours ? `<p class="text-default fixed-fonts-16">${location.MicroBranchHours}</p>` : '';
+      const hoursHtml = hasHours ? `<p class="info-hours">${location.MicroBranchHours}</p>` : '';
       const row = document.createElement('tr');
-      row.innerHTML = `<td class="info-label"><p class="text-default fixed-fonts-16">Status:</p></td><td><p class="text-default fixed-fonts-16 ${statusClass}">${location.BranchStatus}</p>${hoursHtml}</td>`;
+      row.innerHTML = `<td class="info-label"><p class="info-label-text">Status:</p></td><td><p class="info-value ${statusClass}">${location.BranchStatus}</p>${hoursHtml}</td>`;
       tbody.appendChild(row);
     } else if (hasHours) {
       const row = document.createElement('tr');
-      row.innerHTML = `<td class="info-label"><p class="text-default fixed-fonts-18">Hours:</p></td><td><p class="text-default fixed-fonts-18">${location.MicroBranchHours}</p></td>`;
+      row.innerHTML = `<td class="info-label"><p class="info-label-text">Hours:</p></td><td><p class="info-value">${location.MicroBranchHours}</p></td>`;
       tbody.appendChild(row);
     }
 
     if (hasTel) {
       const row = document.createElement('tr');
-      row.innerHTML = `<td class="info-label"><p class="text-default fixed-fonts-16">Tel:</p></td><td><p class="text-default fixed-fonts-16">${location.Tel}</p></td>`;
+      row.innerHTML = `<td class="info-label"><p class="info-label-text">Tel:</p></td><td><p class="info-value">${location.Tel}</p></td>`;
       tbody.appendChild(row);
     }
 
     if (hasFax) {
       const row = document.createElement('tr');
-      row.innerHTML = `<td class="info-label"><p class="text-default fixed-fonts-16">Fax:</p></td><td><p class="text-default fixed-fonts-16">${location.Fax}</p></td>`;
+      row.innerHTML = `<td class="info-label"><p class="info-label-text">Fax:</p></td><td><p class="info-value">${location.Fax}</p></td>`;
       tbody.appendChild(row);
     }
 
@@ -123,10 +123,10 @@ function createAddressCard(location, index, placeholders = {}) {
   // Branch appointment link (if applicable)
   if (location.Branch === 'x' || location.BranchAppointment) {
     const appointmentP = document.createElement('p');
-    appointmentP.className = 'content-magin-toppc';
+    appointmentP.className = 'link-item';
 
     const appointmentLink = document.createElement('a');
-    appointmentLink.className = 'a-content hide-item-p';
+    appointmentLink.className = 'card-link appointment-link';
     appointmentLink.href = '';
     appointmentLink.target = '_blank';
     appointmentLink.innerHTML = '<img src="/icons/icon_appointment.svg" class="link-icon"> Branch Booking';
@@ -137,10 +137,10 @@ function createAddressCard(location, index, placeholders = {}) {
 
   // Get direction link
   const directionP = document.createElement('p');
-  directionP.className = 'content-magin-toppc';
+  directionP.className = 'link-item';
 
   const directionLink = document.createElement('a');
-  directionLink.className = 'a-content open-map-icon';
+  directionLink.className = 'card-link direction-link';
   directionLink.setAttribute('data-lat', location.Lat || '');
   directionLink.setAttribute('data-lng', location.Lng || '');
   directionLink.setAttribute('data-branchname', location.BranchName || '');
@@ -304,7 +304,7 @@ export default async function decorate(block) {
 
   // Create container for cards
   const container = document.createElement('section');
-  container.className = 'address-card-container row row-center border-work-sheet';
+  container.className = 'address-card-container row row-center';
   container.id = 'address-cards-section';
 
   // Create pagination container

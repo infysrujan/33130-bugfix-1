@@ -3,12 +3,6 @@
   display: block;
 }
 
-.address-card-container.border-work-sheet {
-  width: 100%;
-  position: relative;
-  margin-bottom: 1.875rem;
-}
-
 /* Stack cards full-width on mobile */
 .address-card-container .same-height {
   margin-bottom: 0;
@@ -24,7 +18,7 @@
   width: 100%;
   position: relative;
   overflow-wrap: break-word;
-  border-bottom: 1px solid rgb(0 0 0 / 10%);
+  border-bottom: 0.0625rem solid rgb(0 0 0 / 10%);
   margin-bottom: unset;
 }
 
@@ -33,7 +27,7 @@
   border-bottom: none;
 }
 
-.address-card-container .collapse-head-text {
+.address-card-container .card-title {
   vertical-align: middle;
   text-align: left;
   color: var(--bbl-color-gray-121);
@@ -122,19 +116,24 @@
   position: relative;
 }
 
-.address-card-container .fixed-fonts-18 {
+.address-card-container .address-text {
   font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   font-size: 1.125rem;
   line-height: 1.375rem;
   color: var(--bbl-color-grey-85);
   width: 100%;
+  margin-top: 0.625rem;
 }
 
-.address-card-container .fixed-fonts-16 {
+.address-card-container .info-label-text,
+.address-card-container .info-value,
+.address-card-container .info-hours {
   font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   font-size: 1rem;
   line-height: 1.375rem;
   color: var(--bbl-color-grey-85);
+  margin: 0;
+  padding: 0;
 }
 
 /* Info table */
@@ -143,13 +142,7 @@
   border-collapse: collapse;
 }
 
-.address-card-container .info-table p {
-  margin: 0;
-  padding: 0;
-}
-
 .address-card-container .info-label {
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   width: 3.75rem;
   vertical-align: top;
 }
@@ -162,16 +155,12 @@
   color: var(--bbl-color-green-130);
 }
 
-.address-card-container .content-magin-top {
-  margin-top: 0.625rem;
-}
-
-.address-card-container .content-magin-toppc {
+.address-card-container .link-item {
   margin-top: 1.125rem;
 }
 
 /* Links */
-.address-card-container .a-content {
+.address-card-container .card-link {
   display: inline-flex;
   align-items: center;
   font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
@@ -184,11 +173,11 @@
   text-decoration: none;
 }
 
-.address-card-container .a-content:hover {
+.address-card-container .card-link:hover {
   text-decoration: underline;
 }
 
-.address-card-container .open-map-icon {
+.address-card-container .direction-link {
   width: 100%;
   opacity: 1;
 }
@@ -204,9 +193,6 @@
   all: unset;
 }
 
-.address-card-container .link-box .content-magin-top {
-  margin-top: 1.25rem;
-}
 
 .address-card-container .div-img-map {
   cursor: pointer;
@@ -216,13 +202,9 @@
   width: 100%;
 }
 
-/* Hide items on mobile */
-.address-card-container .hide-item-p {
+/* Hide appointment link on mobile */
+.address-card-container .appointment-link {
   display: none;
-}
-
-.address-card-container .line-fixed {
-  margin-top: unset;
 }
 
 /* First Item Badge — hidden on mobile */
@@ -244,10 +226,6 @@
    Tablet (width >= 47.5rem / ~760px)
    ============================================= */
 @media (width >= 47.5rem) {
-  .col-sm-6 {
-    width: 50%;
-  }
-
   /* Switch to flex grid */
   .address-card-container {
     display: flex;
@@ -288,8 +266,6 @@
     overflow-x: unset;
   }
 
-
-
   /* Hide mobile header */
   .address-card-container .header-mobile {
     display: none;
@@ -300,8 +276,8 @@
     display: block;
   }
 
-  /* Use visibility so layout space is preserved */
-  .address-card-container .hide-item-p {
+  /* Show appointment link on tablet/desktop with visibility hidden to preserve layout */
+  .address-card-container .appointment-link {
     display: block;
     visibility: hidden;
   }
@@ -325,9 +301,6 @@
     bottom: 1.3125rem;
   }
 
-  .address-card-container .link-box .content-magin-top {
-    margin-top: 0.625rem;
-  }
 
   .address-card-container .div-img-map {
     position: absolute;
@@ -354,10 +327,6 @@
    Desktop (width >= 64rem / ~1024px)
    ============================================= */
 @media (width >= 64rem) {
-  .col-md-3 {
-    width: 25%;
-  }
-
   .address-card-container .same-height {
     width: 25%;
   }
@@ -474,7 +443,7 @@
 .address-card .jq-pagination .next {
   position: absolute;
   z-index: 2;
-  border: 1px solid rgb(158 158 158 / 70%);
+  border: 0.0625rem solid rgb(158 158 158 / 70%);
   border-radius: 50%;
   background: var(--bbl-color-white);
   width: 2.5rem;
@@ -495,8 +464,9 @@
 }
 
 .address-card .jq-pagination .prev::before {
-  content: '‹';
-  font-size: 1.25rem;
+  content: '\e901';
+  font-family: icomoon, sans-serif;
+  font-size: 1rem;
   line-height: 1;
 }
 
@@ -506,7 +476,10 @@
 }
 
 .address-card .jq-pagination .next::before {
-  content: '›';
-  font-size: 1.25rem;
+  content: '\e901';
+  font-family: icomoon, sans-serif;
+  font-size: 1rem;
   line-height: 1;
+  transform: rotate(180deg);
+  display: inline-block;
 }
