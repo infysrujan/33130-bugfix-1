@@ -138,7 +138,8 @@
         "content-insert-cards",
         "menu-card-actions",
         "download-file",
-        "sub-nav"
+        "sub-nav",
+        "fullscreen-modal-overlay"
       ]
     }
   ]
