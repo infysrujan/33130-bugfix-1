@@ -1,0 +1,29 @@
+.table.block .table-block-grid {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--color-grey-30, #c9ced6);
+}
+
+.table.block .table-block-grid td,
+.table.block .table-block-grid th {
+  border: 1px solid var(--color-grey-30, #c9ced6);
+  padding: 12px;
+  vertical-align: top;
+}
+
+.table.block .table-block-grid td.table-cell-bold {
+  font-weight: 700;
+}
+
+.table.block .table-block-grid td.table-cell-center {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table.block .table-embedded {
+  margin-top: 12px;
+}
+
+.table.block .table-embedded .table-block-grid {
+  border-color: var(--color-grey-40, #b7bdc6);
+}
