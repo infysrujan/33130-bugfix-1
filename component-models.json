@@ -7833,6 +7833,32 @@
     ]
   },
   {
+    "id": "table",
+    "fields": [
+      {
+        "component": "select",
+        "name": "variant",
+        "label": "Table Variant",
+        "valueType": "string",
+        "value": "default",
+        "options": [
+          {
+            "name": "Default",
+            "value": "default"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "name": "tableEndpoint",
+        "label": "Table JSON Endpoint",
+        "description": "Path or URL to the table data JSON endpoint",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "tab-section",
     "filter": "tab-section",
     "contentTreeField": "tab-name",
