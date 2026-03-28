@@ -1,0 +1,48 @@
+{
+	"definitions": [
+		{
+			"title": "Table",
+			"id": "table",
+			"plugins": {
+				"xwalk": {
+					"page": {
+						"resourceType": "core/franklin/components/block/v1/block",
+						"template": {
+							"name": "Table",
+							"model": "table"
+						}
+					}
+				}
+			}
+		}
+	],
+	"models": [
+		{
+			"id": "table",
+			"fields": [
+				{
+					"component": "select",
+					"name": "variant",
+					"label": "Table Variant",
+					"valueType": "string",
+					"value": "default",
+					"options": [
+						{
+							"name": "Default",
+							"value": "default"
+						}
+					]
+				},
+				{
+					"component": "aem-content",
+					"name": "tableEndpoint",
+					"label": "Table JSON Endpoint",
+					"description": "Path or URL to the table data JSON endpoint",
+					"valueType": "string",
+					"required": true
+				}
+			]
+		}
+	],
+	"filters": []
+}
