@@ -1,3 +1,16 @@
-#table{
+.poc-table-container {
     line-height: 1;
+}
+
+.poc-table .poc-table-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.poc-table .poc-table-table-nested {
+    margin-top: 0.5rem;
+}
+
+.poc-table .poc-table-cell-empty {
+    background-color: var(--poc-table-empty-bg, #e8e8e8);
 }
