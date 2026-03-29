@@ -197,10 +197,6 @@ function buildHeadingRows(headingUl) {
   return rows;
 }
 
-function containsNestedTableMarkup(li) {
-  return [...li.querySelectorAll(':scope > p')].some((p) => isHeadingMarker(p));
-}
-
 /**
  * When #heading shares a <p> with preceding copy (e.g. "...<br>#heading"), split for parsing.
  * @returns {{ lead: HTMLParagraphElement|null, headingP: HTMLParagraphElement }}
@@ -217,53 +213,41 @@ function splitPWithHeading(p) {
   return { lead, headingP };
 }
 
-/**
- * From an <li>, extract markup for a nested table: <p>#heading</p>, its <ul>,
- * and all following <p>#row</p> + <ul> pairs.
- * @returns {{ before: Node[], tableRoot: HTMLElement|null, after: Node[] }}
- */
-function sliceLiAroundNestedTable(li) {
-  const ch = [...li.childNodes];
-  const start = ch.findIndex((n) => n.nodeType === Node.ELEMENT_NODE && n.tagName === 'P' && isHeadingMarker(n));
-  if (start < 0) {
-    return { before: ch, tableRoot: null, after: [] };
-  }
-
-  const before = [...ch.slice(0, start)];
-  const tableRoot = document.createElement('div');
-  const rawP = ch[start];
-  const { lead, headingP } = splitPWithHeading(rawP);
-  if (lead && lead.textContent.trim()) before.push(lead);
-  tableRoot.appendChild(headingP);
-
-  let i = start + 1;
-  if (ch[i]?.tagName === 'UL') {
-    tableRoot.appendChild(ch[i].cloneNode(true));
-    i += 1;
-  }
-  while (ch[i]?.nodeType === Node.ELEMENT_NODE && ch[i].tagName === 'P' && isRowMarker(ch[i])) {
-    tableRoot.appendChild(ch[i].cloneNode(true));
-    i += 1;
-    if (ch[i]?.tagName === 'UL') {
-      tableRoot.appendChild(ch[i].cloneNode(true));
-      i += 1;
-    } else {
-      break;
-    }
-  }
-
-  return {
-    before,
-    tableRoot,
-    after: ch.slice(i),
-  };
+/** True when <p> has #heading plus other content (virtual split for table boundaries). */
+function paragraphNeedsHeadingSplit(p) {
+  if (!isHeadingMarker(p)) return false;
+  const html = p.innerHTML;
+  const parts = html.split(/#heading/i);
+  const beforeHtml = (parts[0] ?? '').replace(/<br\s*\/?>\s*$/i, '').trim();
+  return beforeHtml.length > 0;
 }
 
 /**
- * Fill a <td> from an <li>, including nested tables when #heading appears inside.
+ * Expands mixed <p>…#heading</p> into [lead <p>, <p>#heading</p>] for linear table parsing.
+ * @param {HTMLElement[]} elements
+ * @returns {HTMLElement[]}
+ */
+function flattenHeadingParagraphs(elements) {
+  const out = [];
+  elements.forEach((el) => {
+    if (el.tagName === 'P' && paragraphNeedsHeadingSplit(el)) {
+      const { lead, headingP } = splitPWithHeading(el);
+      if (lead && lead.textContent.trim()) out.push(lead);
+      out.push(headingP);
+    } else {
+      out.push(el);
+    }
+  });
+  return out;
+}
+
+/**
+ * Fill a <td> from an <li>: each #heading among direct children starts a nested table; following
+ * <p>#row</p> + <ul> pairs are that table's rows. Multiple #headings yield multiple tables.
  */
 function fillTdFromLi(td, li) {
-  if (!containsNestedTableMarkup(li)) {
+  const flattened = flattenHeadingParagraphs([...li.children]);
+  if (!flattened.some((e) => isHeadingMarker(e))) {
     const frag = unwrapLiBody(li);
     removeMergeMarkerFromFragment(frag);
     td.append(frag);
@@ -272,24 +256,25 @@ function fillTdFromLi(td, li) {
     return;
   }
 
-  const { before, tableRoot, after } = sliceLiAroundNestedTable(li);
-
-  if (before.length) {
-    const lead = document.createElement('div');
-    lead.className = 'poc-table-cell-lead';
-    before.forEach((n) => lead.append(n.cloneNode(true)));
-    td.append(lead);
-  }
-
-  /* eslint-disable-next-line no-use-before-define -- mutual recursion */
-  const nested = buildTableElementFromRoot(tableRoot, true);
-  if (nested) td.append(nested);
-
-  if (after.length) {
-    const tail = document.createElement('div');
-    tail.className = 'poc-table-cell-tail';
-    after.forEach((n) => tail.append(n.cloneNode(true)));
-    td.append(tail);
+  let i = 0;
+  while (i < flattened.length) {
+    if (isHeadingMarker(flattened[i])) {
+      /* eslint-disable-next-line no-use-before-define -- consumeTableFromElements below */
+      const { table, nextI } = consumeTableFromElements(flattened, i);
+      if (table) {
+        table.classList.add('poc-table-table-nested');
+        td.append(table);
+      }
+      i = nextI;
+    } else {
+      const wrap = document.createElement('div');
+      wrap.className = 'poc-table-cell-lead';
+      while (i < flattened.length && !isHeadingMarker(flattened[i])) {
+        wrap.append(flattened[i].cloneNode(true));
+        i += 1;
+      }
+      if (wrap.childNodes.length) td.append(wrap);
+    }
   }
 
   stripThSuffixInElement(td);
@@ -323,41 +308,67 @@ function buildBodyRow(ul, columnGroups) {
   return tr;
 }
 
-function buildTableElementFromRoot(root, nested = false) {
-  const thead = document.createElement('thead');
-  const tbody = document.createElement('tbody');
-  const els = [...root.children];
-  let columnGroups = null;
-
-  for (let i = 0; i < els.length; i += 1) {
-    const el = els[i];
-    if (el && el.nodeType === Node.ELEMENT_NODE) {
-      if (isHeadingMarker(el)) {
-        const ul = els[i + 1];
-        if (ul?.tagName === 'UL') {
-          columnGroups = getColumnGroups(ul);
-          buildHeadingRows(ul).forEach((r) => thead.appendChild(r));
-          i += 1;
-        }
-      } else if (isRowMarker(el)) {
-        const ul = els[i + 1];
-        if (ul?.tagName === 'UL') {
-          const groups = columnGroups || getColumnGroups(ul);
-          tbody.appendChild(buildBodyRow(ul, groups));
-          i += 1;
-        }
-      }
-    }
+/**
+ * One table: <p>#heading</p> + heading <ul>, then each following <p>#row</p> + <ul> until
+ * the sequence stops (e.g. next #heading or non-row content).
+ * @param {HTMLElement[]} els
+ * @param {number} startIdx
+ * @returns {{ table: HTMLTableElement|null, nextI: number }}
+ */
+function consumeTableFromElements(els, startIdx) {
+  const el = els[startIdx];
+  if (!el || el.tagName !== 'P' || !isHeadingMarker(el)) {
+    return { table: null, nextI: startIdx + 1 };
+  }
+  const headingUl = els[startIdx + 1];
+  if (!headingUl || headingUl.tagName !== 'UL') {
+    return { table: null, nextI: startIdx + 1 };
   }
 
-  if (!thead.childElementCount && !tbody.childElementCount) return null;
+  const thead = document.createElement('thead');
+  const tbody = document.createElement('tbody');
+  const columnGroups = getColumnGroups(headingUl);
+  buildHeadingRows(headingUl).forEach((r) => thead.appendChild(r));
+
+  let i = startIdx + 2;
+  while (i < els.length) {
+    const rowP = els[i];
+    if (!rowP || rowP.tagName !== 'P' || !isRowMarker(rowP)) break;
+    const rowUl = els[i + 1];
+    if (!rowUl || rowUl.tagName !== 'UL') break;
+    tbody.appendChild(buildBodyRow(rowUl, columnGroups));
+    i += 2;
+  }
 
   const table = document.createElement('table');
   table.classList.add('poc-table-table');
-  if (nested) table.classList.add('poc-table-table-nested');
   if (thead.childElementCount) table.appendChild(thead);
   table.appendChild(tbody);
-  return table;
+  return { table, nextI: i };
+}
+
+/**
+ * Walk sibling elements: each #heading starts a new table; #row blocks belong only to that table.
+ * @param {HTMLElement[]} flattenedEls
+ * @param {(table: HTMLTableElement) => void} [onTable]
+ * @returns {HTMLTableElement[]}
+ */
+function buildTablesFromElementList(flattenedEls, onTable) {
+  const tables = [];
+  let idx = 0;
+  while (idx < flattenedEls.length) {
+    if (isHeadingMarker(flattenedEls[idx])) {
+      const { table, nextI } = consumeTableFromElements(flattenedEls, idx);
+      if (table) {
+        if (onTable) onTable(table);
+        tables.push(table);
+      }
+      idx = nextI;
+    } else {
+      idx += 1;
+    }
+  }
+  return tables;
 }
 
 function resolveSourceRoot(block) {
@@ -373,13 +384,24 @@ export default function decorate(block) {
   const root = resolveSourceRoot(block);
   if (!root) return;
 
-  const table = buildTableElementFromRoot(root, false);
-  if (!table) return;
+  const flattened = flattenHeadingParagraphs([...root.children]);
+  const applyBlockStyles = (table) => {
+    TABLE_STYLE_CLASSES.forEach((c) => {
+      if (block.classList.contains(c)) table.classList.add(c);
+    });
+  };
+  const tables = buildTablesFromElementList(flattened, applyBlockStyles);
+  if (!tables.length) return;
 
-  TABLE_STYLE_CLASSES.forEach((c) => {
-    if (block.classList.contains(c)) table.classList.add(c);
-  });
+  if (tables.length === 1) {
+    moveInstrumentation(root, tables[0]);
+    block.replaceChildren(tables[0]);
+    return;
+  }
 
-  moveInstrumentation(root, table);
-  block.replaceChildren(table);
+  const wrap = document.createElement('div');
+  wrap.className = 'poc-table-tables';
+  tables.forEach((t) => wrap.append(t));
+  moveInstrumentation(root, wrap);
+  block.replaceChildren(wrap);
 }
