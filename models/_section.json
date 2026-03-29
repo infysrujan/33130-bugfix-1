@@ -139,7 +139,8 @@
         "menu-card-actions",
         "download-file",
         "sub-nav",
-        "fullscreen-modal-overlay"
+        "fullscreen-modal-overlay",
+        "poc-table"
       ]
     }
   ]
