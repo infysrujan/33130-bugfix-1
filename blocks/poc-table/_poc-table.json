@@ -8,7 +8,7 @@
                     "page": {
                         "resourceType": "core/franklin/components/block/v1/block",
                         "template": {
-                            "name": "PocTable",
+                            "name": "Poc Table",
                             "model": "poc-table"
                         }
                     }
@@ -44,7 +44,7 @@
                             "value": "header-first-row"
                           },
                           {
-                            "name": "First Row",
+                            "name": "First Column",
                             "value": "header-first-column"
                           }
                         ]
@@ -54,15 +54,15 @@
                         "children": [
                           {
                             "name": "All Borders",
-                            "value": "freeze-header-column"
+                            "value": "table-all-borders"
                           },
                           {
                             "name": "Bottom Borders",
-                            "value": "freeze-header-row"
+                            "value": "table-bottom-borders"
                           },
                           {
                             "name": "No Borders",
-                            "value": "freeze-header-column"
+                            "value": "table-no-borders"
                           }
                         ]
                       }
