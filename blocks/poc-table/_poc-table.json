@@ -1,7 +1,7 @@
 {
     "definitions": [
         {
-            "title": "PocTable",
+            "title": "Poc Table",
             "id": "poc-table",
             "plugins": {
                 "xwalk": {
