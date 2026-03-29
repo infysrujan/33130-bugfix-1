@@ -14,3 +14,7 @@
 .poc-table .poc-table-cell-empty {
     background-color: var(--poc-table-empty-bg, #e8e8e8);
 }
+
+.table-all-borders th, .table-all-borders td {
+    border: 1px solid grey;
+}
