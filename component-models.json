@@ -613,7 +613,7 @@
       },
       {
         "component": "text",
-        "name": "overlayModalLink",
+        "name": "overlayModalDataModal",
         "label": "Data Modal",
         "description": "Fragment path for the overlay modal data-modal attribute",
         "condition": {
