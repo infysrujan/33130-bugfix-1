@@ -613,8 +613,9 @@
       },
       {
         "component": "text",
-        "name": "overlayModalDataModal",
+        "name": "dataModal",
         "label": "Data Modal",
+        "valueType": "string",
         "description": "Fragment path for the overlay modal data-modal attribute",
         "condition": {
           "!!": [
