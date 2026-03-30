@@ -1,13 +1,9 @@
-.card-list {
-    display: flex;
-}
-
 .cards-list-item {
     display: flex;
     flex-direction: column;
 }
 
-.cards-list-item-link {
+.cards-list-item-link a {
     color: inherit;
     display: flex;
     flex: 1;
@@ -22,6 +18,13 @@
 
 .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
     position: relative;
+    color: #000;
+    min-height: 71px;
+    font-size: 18.2px;
+    line-height: 19.992px;
+    font-weight: 400;
+    padding-bottom: 15px;
+    margin-block: 0 15px;
 }
 
 .cards-list-title.has-title-underline :is(h1, h2, h3, h4, h5, h6)::before {
@@ -32,4 +35,41 @@
     bottom: 0;
     height: 0.0625rem;
     background: var(--bbl-color-grey-60);
+}
+
+.cards-list-remark p {
+    line-height: 17.99px;
+    color: #78787d;
+    margin: 0;
+}
+
+.cards-list-button .button-tertiary::after {
+    display: none;
+}
+
+.cards-list-button .button-tertiary {
+    position: relative;
+    padding-right: 0.9375rem;
+    color: #0064ff;
+    margin-top: var(--bbl-space-250);
+    font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-medium);
+}
+
+.cards-list-button .button-tertiary:hover {
+    color: var(--bbl-color-blue-90);
+    text-decoration: none;
+}
+
+.cards-list-button .button-tertiary::before {
+    content: "\e901";
+    position: absolute;
+    right: 0.1875rem;
+    top: 52%;
+    transform: translateY(-50%);
+    font: 300 var(--bbl-font-size-b4) / 1 icomoon, sans-serif;
+    transition: all 0.3s ease-in-out;
+}
+
+.cards-list-button .button-tertiary:hover::before {
+    transform: translateY(-50%) translateX(0.25rem); 
 }

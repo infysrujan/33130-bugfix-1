@@ -279,28 +279,6 @@
           }
         },
         {
-          "component": "container",
-          "name": "cardTargetSettings",
-          "label": "Target settings",
-          "fields": [
-            {
-              "component": "boolean",
-              "name": "targetLink",
-              "label": "Open link in new tab",
-              "description": "Enable to open the clickable card link in a new browser tab",
-              "valueType": "boolean",
-              "value": false
-            }
-          ],
-          "condition": {
-            "!!": [
-              {
-                "var": "isCardClickable"
-              }
-            ]
-          }
-        },
-        {
           "component": "text",
           "name": "cardLinkTitle",
           "label": "Link Title",

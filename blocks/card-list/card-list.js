@@ -4,17 +4,11 @@ function isTruthy(value) {
   return value?.toString().trim().toLowerCase() === 'true';
 }
 
-function getLinkConfig(linkDiv, targetDiv, linkTitleDiv) {
+function getLinkConfig(linkDiv) {
   const anchor = linkDiv?.querySelector('a');
-  const href = anchor?.href || linkDiv?.textContent?.trim() || '';
-  const targetSetting = targetDiv?.querySelector('div')?.textContent?.trim()
-    || targetDiv?.textContent?.trim()
-    || '';
-  const target = targetSetting.toLowerCase() === 'true'
-    ? '_blank'
-    : anchor?.target || '';
-  const title = linkTitleDiv?.textContent?.trim() || anchor?.title || '';
-
+  const href = anchor?.href || '';
+  const target = anchor?.target || '';
+  const title = anchor?.title || '';
   return href ? { href, target, title } : null;
 }
 
@@ -30,8 +24,6 @@ function createCardListItem(cardElement, doc) {
     enableTitleUnderlineDiv,
     isCardClickableDiv,
     cardLinkDiv,
-    cardTargetDiv,
-    cardLinkTitleDiv,
     enableOverlayModalDiv,
     overlayLinkDiv,
   ] = cells;
@@ -46,7 +38,7 @@ function createCardListItem(cardElement, doc) {
   const isCardClickable = isTruthy(isCardClickableDiv?.textContent);
   const enableOverlayModal = isTruthy(enableOverlayModalDiv?.textContent);
   const overlayHref = overlayLinkDiv?.textContent?.trim() || '';
-  const cardLinkConfig = getLinkConfig(cardLinkDiv, cardTargetDiv, cardLinkTitleDiv);
+  const cardLinkConfig = getLinkConfig(cardLinkDiv);
 
   const card = createElementFromHTML('<div class="cards-list-item"></div>', doc);
   const inner = createElementFromHTML('<div class="cards-list-inner"></div>', doc);
