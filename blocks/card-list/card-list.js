@@ -102,8 +102,7 @@ function createCardListItem(cardElement, doc) {
   if (description) {
     inner.appendChild(
       createElementFromHTML(
-        `<div class=cards-list-description">${description}</div>`,
-        doc,
+        `<div class="cards-list-description">${description}</div>`,
       ),
     );
     inner.querySelector('.cards-list-title')?.classList.add('has-description');
@@ -112,7 +111,7 @@ function createCardListItem(cardElement, doc) {
   if (remark) {
     inner.appendChild(
       createElementFromHTML(
-        `<div class=cards-list-remark">${remark}</div>`,
+        `<div class="cards-list-remark">${remark}</div>`,
         doc,
       ),
     );
@@ -145,6 +144,9 @@ function createCardListItem(cardElement, doc) {
 }
 
 export default function decorate(block) {
+  if (block.dataset.decorated === 'true') return;
+  block.dataset.decorated = 'true';
+
   const doc = block.ownerDocument;
   const [LayoutRow, Alignment, cardsPerRowEl, ...cardRows] = [...block.children];
   const cardListLayout = LayoutRow?.textContent?.trim();
