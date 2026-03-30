@@ -201,12 +201,6 @@
     ]
   },
   {
-    "id": "table",
-    "components": [
-      "table-cell"
-    ]
-  },
-  {
     "id": "tab-section",
     "components": [
       "text",
