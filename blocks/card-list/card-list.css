@@ -1,0 +1,35 @@
+.card-list {
+    display: flex;
+}
+
+.cards-list-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.cards-list-item-link {
+    color: inherit;
+    display: flex;
+    flex: 1;
+    text-decoration: none;
+}
+
+.cards-list-inner {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.cards-list-title :is(h1, h2, h3, h4, h5, h6) {
+    position: relative;
+}
+
+.cards-list-title.has-title-underline :is(h1, h2, h3, h4, h5, h6)::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 1.3125rem;
+    bottom: 0;
+    height: 0.0625rem;
+    background: var(--bbl-color-grey-60);
+}

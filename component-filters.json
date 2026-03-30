@@ -40,7 +40,14 @@
       "popup-modal-card-offer",
       "locate-us",
       "rate-card",
-      "currency-converter-expanded"
+      "currency-converter-expanded",
+      "card-list"
+    ]
+  },
+  {
+    "id": "card-list",
+    "components": [
+      "card-list-item"
     ]
   },
   {
