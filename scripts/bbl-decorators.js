@@ -1,5 +1,9 @@
 function decorateButtonsV1(element) {
   element.querySelectorAll('a').forEach((a) => {
+    if (a.classList.contains('download-files') || a.closest('.download-button-wrapper')) {
+      return;
+    }
+
     a.title = a.title || a.textContent;
     if (a.href !== a.textContent) {
       const up = a.parentElement;
@@ -63,6 +67,10 @@ function decorateTerritoryButtons(main) {
   // Find anchors that are "button" only (no variants like primary/secondary)
   // and convert them to "button territory".
   main.querySelectorAll('a.button:not([class*=" "])').forEach((a) => {
+    if (a.classList.contains('download-files') || a.closest('.download-button-wrapper')) {
+      return;
+    }
+
     a.className = 'button-tertiary';
   });
 }

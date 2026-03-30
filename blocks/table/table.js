@@ -100,16 +100,25 @@ function splitByBulletMarker(content) {
   };
 }
 
-async function createDownloadPlaceholder(downloadLink) {
-  if (!downloadLink) return createTextNode('');
+async function createDownloadPlaceholder(downloadLink, downloadText, downloadTitle) {
+  if (!downloadLink) return null;
 
   const anchor = document.createElement('a');
   anchor.href = downloadLink;
-  anchor.textContent = 'Download';
+  anchor.textContent = downloadText || 'Download';
+  if (downloadTitle) {
+    anchor.title = downloadTitle;
+  }
 
-  const downloadBlock = buildBlock('download-file', [[anchor]]);
+  const wrapper = document.createElement('div');
+  const downloadBlock = buildBlock('download-file', [
+    [anchor],
+    ['true'],
+  ]);
+  wrapper.append(downloadBlock);
   decorateBlock(downloadBlock);
   await loadBlock(downloadBlock);
+  wrapper.removeChild(downloadBlock);
   return downloadBlock;
 }
 
@@ -139,8 +148,14 @@ async function appendInlineContent(container, text, context) {
       }
     } else if (token === '{{download}}') {
       // eslint-disable-next-line no-await-in-loop
-      const downloadNode = await createDownloadPlaceholder(context.downloadLink);
-      container.append(downloadNode);
+      const downloadNode = await createDownloadPlaceholder(
+        context.downloadLink,
+        context.downloadText,
+        context.downloadTitle,
+      );
+      if (downloadNode) {
+        container.append(downloadNode);
+      }
     } else {
       const iconName = token.slice(1, -1).trim();
       if (iconName) {
@@ -256,6 +271,8 @@ async function buildTableElement(sheetData, depth = 0, visitedEndpoints = new Se
     const contentNode = await renderContent(rowData.content, {
       tableLink: rowData.tableLink,
       downloadLink: rowData.downloadLink,
+      downloadText: rowData.downloadText,
+      downloadTitle: rowData.downloadTitle,
       depth,
       visitedEndpoints,
     });
