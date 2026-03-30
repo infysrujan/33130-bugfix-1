@@ -5,7 +5,15 @@ export default function decorate(block) {
   const titleName = titleEl?.textContent?.trim() || '';
   const description = descriptionEl?.querySelector('p')?.innerHTML?.trim() || '';
   const anchor = buttonEl?.querySelector('a');
-  if (anchor) anchor.classList.add('button-m');
+
+  const modalPath = '/en/fragments/modals/profile-modal';
+
+  if (anchor) {
+    anchor.classList.add('button-m');
+    anchor.setAttribute('data-modal', modalPath);
+    anchor.removeAttribute('href');
+  }
+
   const buttonHTML = buttonEl?.innerHTML?.trim() || '';
 
   block.innerHTML = `

@@ -226,3 +226,90 @@ async function loadPage() {
 }
 
 loadPage();
+
+// Modal logic (global)
+const MODAL_SECTION_CLASSES = new Set(['section', 'full-bleed-bg', 'full-bleed-special', 'central-aligned']);
+
+function createModal() {
+  let modal = document.querySelector('.custom-modal');
+  if (modal) return modal;
+
+  modal = document.createElement('div');
+  modal.className = 'custom-modal';
+  modal.innerHTML = `
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="content">
+        <span class="modal-close">x</span>
+        <div class="modal-body"></div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  modal.querySelector('.modal-close').onclick = () => modal.classList.remove('active');
+  modal.querySelector('.modal-overlay').onclick = () => modal.classList.remove('active');
+
+  return modal;
+}
+
+/**
+ * Decorates fetched fragment content and syncs section-level classes
+ * from the fragment up to the modal wrapper elements.
+ * @param {Element} modal - The modal root element
+ * @param {Element} container - The modal body containing the raw fragment HTML
+ */
+async function decorateModalContent(modal, container) {
+  // Run the full decoration pipeline on the raw fragment
+  decorateButtons(container);
+  decorateIcons(container);
+  buildAutoBlocks(container);
+  decorateSections(container);
+  decorateBlocks(container);
+  decorateTerritoryButtons(container);
+  decorateSvgWithAltText(container);
+  setExternalLinksTarget(container);
+  await loadSections(container);
+  decorateButtonsV1(container);
+  decorateSvgWithAltText(container);
+
+  // Sync section-level classes from fragment up to modal wrapper
+  const modalContent = modal.querySelector('.modal-content');
+  const primarySection = container.querySelector('.section');
+  if (!primarySection) return;
+
+  const sectionClasses = [...primarySection.classList];
+
+  // Reset stale classes before applying fresh ones
+  modal.classList.remove(...[...modal.classList].filter((c) => MODAL_SECTION_CLASSES.has(c)));
+  modalContent.classList.remove(...[...modalContent.classList].filter((c) => c.endsWith('-container')));
+
+  // Lift classes up to the correct modal elements
+  modal.classList.add(...sectionClasses.filter((c) => MODAL_SECTION_CLASSES.has(c)));
+  modalContent.classList.add(...sectionClasses.filter((c) => c.endsWith('-container')));
+}
+
+async function openModal(fragmentPath) {
+  const modal = createModal();
+  const modalBody = modal.querySelector('.modal-body');
+
+  try {
+    const resp = await fetch(`${fragmentPath}.plain.html`);
+    const html = await resp.text();
+    modalBody.innerHTML = html;
+    await decorateModalContent(modal, modalBody);
+    modal.classList.add('active');
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to load modal content', e);
+  }
+}
+
+document.addEventListener('click', (e) => {
+  const trigger = e.target.closest('[data-modal]');
+  if (!trigger) return;
+
+  e.preventDefault();
+  const fragmentPath = trigger.getAttribute('data-modal');
+  if (fragmentPath) openModal(fragmentPath);
+});
