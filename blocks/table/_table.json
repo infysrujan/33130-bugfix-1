@@ -1,0 +1,398 @@
+{
+	"definitions": [
+		{
+			"title": "Table",
+			"id": "table",
+			"plugins": {
+				"xwalk": {
+					"page": {
+						"resourceType": "core/franklin/components/block/v1/block",
+						"template": {
+							"name": "Table",
+							"model": "table",
+							"filter": "table"
+						}
+					}
+				}
+			}
+		},
+		{
+			"title": "Table Cell",
+			"id": "table-cell",
+			"plugins": {
+				"xwalk": {
+					"page": {
+						"resourceType": "core/franklin/components/block/v1/block/item",
+						"template": {
+							"name": "Table Cell",
+							"model": "table-cell"
+						}
+					}
+				}
+			}
+		}
+	],
+	"models": [
+		{
+			"id": "table",
+			"fields": [
+				{
+					"component": "text",
+					"name": "caption",
+					"label": "Table Caption",
+					"description": "Accessible caption for the table"
+				},
+				{
+					"component": "multiselect",
+					"name": "style",
+					"label": "Table Styles",
+					"valueType": "string",
+					"required": false,
+					"options": [
+						{
+							"name": "Variants",
+							"children": [
+								{
+									"name": "Bordered",
+									"value": "is-bordered"
+								},
+								{
+									"name": "Striped Rows",
+									"value": "is-striped"
+								},
+								{
+									"name": "Compact",
+									"value": "is-compact"
+								},
+								{
+									"name": "Sticky Header",
+									"value": "has-sticky-header"
+								}
+							]
+						},
+						{
+							"name": "Responsive",
+							"children": [
+								{
+									"name": "Horizontal Scroll",
+									"value": "mobile-scroll"
+								},
+								{
+									"name": "Stack Rows",
+									"value": "mobile-stack"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "table-cell",
+			"fields": [
+				{
+					"component": "number",
+					"name": "rowIndex",
+					"label": "Row Index",
+					"description": "1-based row position",
+					"valueType": "number",
+					"value": 1,
+					"min": 1
+				},
+				{
+					"component": "number",
+					"name": "colIndex",
+					"label": "Column Index",
+					"description": "1-based column position",
+					"valueType": "number",
+					"value": 1,
+					"min": 1
+				},
+				{
+					"component": "select",
+					"name": "cellType",
+					"valueType": "string",
+					"value": "text",
+					"label": "Cell Type",
+					"options": [
+						{
+							"name": "Text / Rich Text",
+							"value": "text"
+						},
+						{
+							"name": "Nested Table",
+							"value": "nested-table"
+						},
+						{
+							"name": "Download File",
+							"value": "download-file"
+						},
+						{
+							"name": "Icon",
+							"value": "icon"
+						}
+					]
+				},
+				{
+					"component": "boolean",
+					"name": "isHeaderCell",
+					"label": "Header Cell",
+					"valueType": "boolean",
+					"value": false
+				},
+				{
+					"component": "number",
+					"name": "rowSpan",
+					"label": "Row Span",
+					"valueType": "number",
+					"value": 1,
+					"min": 1
+				},
+				{
+					"component": "number",
+					"name": "colSpan",
+					"label": "Column Span",
+					"valueType": "number",
+					"value": 1,
+					"min": 1
+				},
+				{
+					"component": "multiselect",
+					"name": "rowStyle",
+					"label": "Row Styles",
+					"valueType": "string",
+					"required": false,
+					"options": [
+						{
+							"name": "Row",
+							"children": [
+								{
+									"name": "Emphasis",
+									"value": "row-emphasis"
+								},
+								{
+									"name": "Muted",
+									"value": "row-muted"
+								}
+							]
+						}
+					]
+				},
+				{
+					"component": "multiselect",
+					"name": "cellStyle",
+					"label": "Cell Styles",
+					"valueType": "string",
+					"required": false,
+					"options": [
+						{
+							"name": "Alignment",
+							"children": [
+								{
+									"name": "Left",
+									"value": "align-left"
+								},
+								{
+									"name": "Center",
+									"value": "align-center"
+								},
+								{
+									"name": "Right",
+									"value": "align-right"
+								}
+							]
+						},
+						{
+							"name": "Cell",
+							"children": [
+								{
+									"name": "Highlight",
+									"value": "cell-highlight"
+								},
+								{
+									"name": "Icon Left",
+									"value": "cell-icon-left"
+								}
+							]
+						}
+					]
+				},
+				{
+					"component": "richtext",
+					"name": "text",
+					"label": "Cell Content",
+					"valueType": "string",
+					"value": "",
+					"condition": {
+						"===": [
+							{
+								"var": "cellType"
+							},
+							"text"
+						]
+					},
+					"rte": {
+						"toolbar": {
+							"format": [
+								"bold",
+								"italic",
+								"underline"
+							],
+							"list": [
+								"bullet_list",
+								"ordered_list"
+							],
+							"insert": [
+								"link",
+								"unlink",
+								"table"
+							],
+							"editor": [
+								"removeformat"
+							],
+							"sections": [
+								"format",
+								"list",
+								"insert",
+								"editor"
+							]
+						},
+						"actions": {
+							"table": {
+								"label": "Insert Table",
+								"shortcut": "Mod-Alt-T",
+								"wrapInParagraphs": true
+							},
+							"link": {
+								"hideTarget": false
+							}
+						}
+					}
+				},
+				{
+					"component": "richtext",
+					"name": "nestedTable",
+					"label": "Nested Table Content",
+					"valueType": "string",
+					"value": "",
+					"condition": {
+						"===": [
+							{
+								"var": "cellType"
+							},
+							"nested-table"
+						]
+					},
+					"rte": {
+						"toolbar": {
+							"insert": [
+								"table"
+							],
+							"sections": [
+								"insert"
+							]
+						},
+						"actions": {
+							"table": {
+								"label": "Insert Nested Table",
+								"wrapInParagraphs": true
+							}
+						}
+					}
+				},
+				{
+					"component": "aem-content",
+					"name": "downloadLink",
+					"label": "Download Link",
+					"description": "Link target for a file action",
+					"condition": {
+						"===": [
+							{
+								"var": "cellType"
+							},
+							"download-file"
+						]
+					}
+				},
+				{
+					"component": "text",
+					"name": "downloadLinkText",
+					"label": "Download Text",
+					"description": "Download label shown in the table cell",
+					"condition": {
+						"===": [
+							{
+								"var": "cellType"
+							},
+							"download-file"
+						]
+					}
+				},
+				{
+					"component": "text",
+					"name": "downloadLinkTitle",
+					"label": "Download Title",
+					"description": "Accessibility title for the download link",
+					"condition": {
+						"===": [
+							{
+								"var": "cellType"
+							},
+							"download-file"
+						]
+					}
+				},
+				{
+					"component": "boolean",
+					"name": "targetLink",
+					"label": "Open Download in New Tab",
+					"valueType": "boolean",
+					"value": false,
+					"condition": {
+						"===": [
+							{
+								"var": "cellType"
+							},
+							"download-file"
+						]
+					}
+				},
+				{
+					"component": "text",
+					"name": "iconName",
+					"label": "Icon Name",
+					"description": "Icon filename without extension from /icons",
+					"condition": {
+						"===": [
+							{
+								"var": "cellType"
+							},
+							"icon"
+						]
+					}
+				},
+				{
+					"component": "text",
+					"name": "iconAlt",
+					"label": "Icon Alt Text",
+					"condition": {
+						"===": [
+							{
+								"var": "cellType"
+							},
+							"icon"
+						]
+					}
+				}
+			]
+		}
+	],
+	"filters": [
+		{
+			"id": "table",
+			"components": [
+				"table-cell"
+			]
+		}
+	]
+}
