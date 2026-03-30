@@ -515,22 +515,6 @@
         ]
       },
       {
-        "component": "boolean",
-        "name": "enableTitleUnderline",
-        "label": "Underline Title",
-        "description": "If enabled, the title will be underlined.",
-        "valueType": "boolean",
-        "value": true
-      },
-      {
-        "component": "boolean",
-        "name": "isCardClickable",
-        "label": "Full Card Clickable",
-        "description": "If enabled, the entire card will be clickable.",
-        "valueType": "boolean",
-        "value": false
-      },
-      {
         "component": "select",
         "name": "imageLayout",
         "label": "Image Layout",
@@ -554,6 +538,22 @@
             "value": "x-small"
           }
         ]
+      },
+      {
+        "component": "boolean",
+        "name": "enableTitleUnderline",
+        "label": "Underline Title",
+        "description": "If enabled, the title will be underlined.",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "boolean",
+        "name": "isCardClickable",
+        "label": "Full Card Clickable",
+        "description": "If enabled, the entire card will be clickable.",
+        "valueType": "boolean",
+        "value": false
       },
       {
         "component": "aem-content",

@@ -36,10 +36,10 @@ function createCardListItem(cardElement, doc) {
   const description = descDiv?.innerHTML;
   const remark = remarkDiv?.innerHTML;
   const buttonEl = buttonDiv?.querySelector('a');
-  const enableTitleUnderline = isTruthy(enableTitleUnderlineDiv?.textContent);
-  const isCardClickable = isTruthy(isCardClickableDiv?.textContent);
   const imageLayoutDiv = cardLinkCells[0];
   const imageLayout = imageLayoutDiv?.textContent?.trim() || 'default';
+  const enableTitleUnderline = isTruthy(enableTitleUnderlineDiv?.textContent);
+  const isCardClickable = isTruthy(isCardClickableDiv?.textContent);
   const interactiveCells = cardLinkCells.slice(1);
   const cardLinkDiv = interactiveCells.find(
     (cell) => cell?.querySelector('a') || cell?.textContent?.trim(),
