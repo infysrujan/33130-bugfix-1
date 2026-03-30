@@ -612,10 +612,10 @@
         "value": true
       },
       {
-        "component": "aem-content",
+        "component": "text",
         "name": "overlayModalLink",
-        "label": "Link",
-        "description": "Fragment path for the overlay modal",
+        "label": "Data Modal",
+        "description": "Fragment path for the overlay modal data-modal attribute",
         "condition": {
           "!!": [
             {

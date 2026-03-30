@@ -45,8 +45,7 @@ function createCardListItem(cardElement, doc) {
   const enableTitleUnderline = isTruthy(enableTitleUnderlineDiv?.textContent);
   const isCardClickable = isTruthy(isCardClickableDiv?.textContent);
   const enableOverlayModal = isTruthy(enableOverlayModalDiv?.textContent);
-  const overlayAnchor = overlayLinkDiv?.querySelector('a');
-  const overlayHref = overlayAnchor?.href || overlayLinkDiv?.textContent?.trim() || '';
+  const overlayHref = overlayLinkDiv?.textContent?.trim() || '';
   const cardLinkConfig = getLinkConfig(cardLinkDiv, cardTargetDiv, cardLinkTitleDiv);
 
   const card = createElementFromHTML('<div class="cards-list-item"></div>', doc);
