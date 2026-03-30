@@ -1,4 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { loadBlock } from '../../scripts/aem.js';
 
 /** Classes from poc-table multiselect (applied to the generated <table>) */
 const TABLE_STYLE_CLASSES = [
@@ -371,6 +372,85 @@ function buildTablesFromElementList(flattenedEls, onTable) {
   return tables;
 }
 
+const RE_DOWNLOAD_TOKEN = /#download\[([^\]]+)\]/i;
+
+function parseDownloadParams(paramsStr) {
+  const parts = paramsStr.split(',').map((s) => s.trim());
+  const [href = '', name = 'Download', title = ''] = parts;
+  return { href, name, title };
+}
+
+function createDownloadBlock(href, name, title) {
+  const anchor = document.createElement('a');
+  anchor.href = href;
+  anchor.textContent = name;
+  anchor.className = 'button-tertiary';
+  anchor.target = '_blank';
+  if (title) anchor.title = title;
+
+  const p = document.createElement('p');
+  p.className = 'button-container';
+  p.appendChild(anchor);
+
+  const innerDiv = document.createElement('div');
+  innerDiv.appendChild(p);
+
+  const outerDiv = document.createElement('div');
+  outerDiv.appendChild(innerDiv);
+
+  const block = document.createElement('div');
+  block.className = 'download-file block';
+  block.dataset.blockName = 'download-file';
+  block.appendChild(outerDiv);
+  return block;
+}
+
+async function processDownloadTokens(container) {
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => (RE_DOWNLOAD_TOKEN.test(node.textContent)
+      ? NodeFilter.FILTER_ACCEPT
+      : NodeFilter.FILTER_REJECT),
+  });
+
+  const textNodes = [];
+  let node = walker.nextNode();
+  while (node) {
+    textNodes.push(node);
+    node = walker.nextNode();
+  }
+
+  const loadPromises = [];
+  textNodes.forEach((textNode) => {
+    const match = RE_DOWNLOAD_TOKEN.exec(textNode.textContent);
+    if (!match) return;
+    const { href, name, title } = parseDownloadParams(match[1]);
+    const block = createDownloadBlock(href, name, title);
+    const parent = textNode.parentNode;
+    const before = textNode.textContent.slice(0, match.index).trimEnd();
+    const after = textNode.textContent.slice(match.index + match[0].length).trimStart();
+    const frag = document.createDocumentFragment();
+    if (before) frag.appendChild(document.createTextNode(before));
+    frag.appendChild(block);
+    if (after) frag.appendChild(document.createTextNode(after));
+    parent.replaceChild(frag, textNode);
+
+    // If the block's closest <li> now contains only the block, replace the <li> with the block
+    const li = block.closest('li');
+    if (li) {
+      const meaningful = [...li.childNodes].filter(
+        (n) => !(n.nodeType === Node.TEXT_NODE && !n.textContent.trim()),
+      );
+      if (meaningful.length === 1 && meaningful[0] === block) {
+        li.replaceWith(block);
+      }
+    }
+
+    loadPromises.push(loadBlock(block));
+  });
+
+  await Promise.all(loadPromises);
+}
+
 function resolveSourceRoot(block) {
   const marker = [...block.querySelectorAll(':scope p')].find((p) => hasKeyword(p.textContent, '#heading'));
   if (marker?.parentElement) return marker.parentElement;
@@ -380,7 +460,7 @@ function resolveSourceRoot(block) {
 /**
  * @param {HTMLElement} block
  */
-export default function decorate(block) {
+export default async function decorate(block) {
   const root = resolveSourceRoot(block);
   if (!root) return;
 
@@ -396,12 +476,13 @@ export default function decorate(block) {
   if (tables.length === 1) {
     moveInstrumentation(root, tables[0]);
     block.replaceChildren(tables[0]);
-    return;
+  } else {
+    const wrap = document.createElement('div');
+    wrap.className = 'poc-table-tables';
+    tables.forEach((t) => wrap.append(t));
+    moveInstrumentation(root, wrap);
+    block.replaceChildren(wrap);
   }
 
-  const wrap = document.createElement('div');
-  wrap.className = 'poc-table-tables';
-  tables.forEach((t) => wrap.append(t));
-  moveInstrumentation(root, wrap);
-  block.replaceChildren(wrap);
+  await processDownloadTokens(block);
 }
