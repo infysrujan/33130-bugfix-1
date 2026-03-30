@@ -241,6 +241,31 @@
           "value": false
         },
         {
+          "component": "select",
+          "name": "imageLayout",
+          "label": "Image Layout",
+          "valueType": "string",
+          "value": "default",
+          "options": [
+            {
+              "name": "Full",
+              "value": "full"
+            },
+            {
+              "name": "Default",
+              "value": "default"
+            },
+            {
+              "name": "Card",
+              "value": "card"
+            },
+            {
+              "name": "X-Small",
+              "value": "x-small"
+            }
+          ]
+        },
+        {
           "component": "aem-content",
           "name": "cardLink",
           "label": "Link",
@@ -254,19 +279,17 @@
           }
         },
         {
-          "component": "select",
-          "name": "cardTarget",
-          "label": "Target",
-          "valueType": "string",
-          "value": "_self",
-          "options": [
+          "component": "container",
+          "name": "cardTargetSettings",
+          "label": "Target settings",
+          "fields": [
             {
-              "name": "Same Tab",
-              "value": "_self"
-            },
-            {
-              "name": "New Tab",
-              "value": "_blank"
+              "component": "boolean",
+              "name": "targetLink",
+              "label": "Open link in new tab",
+              "description": "Enable to open the clickable card link in a new browser tab",
+              "valueType": "boolean",
+              "value": false
             }
           ],
           "condition": {

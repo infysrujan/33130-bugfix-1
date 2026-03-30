@@ -7,10 +7,12 @@ function isTruthy(value) {
 function getLinkConfig(linkDiv, targetDiv, linkTitleDiv) {
   const anchor = linkDiv?.querySelector('a');
   const href = anchor?.href || linkDiv?.textContent?.trim() || '';
-  const rawTarget = targetDiv?.textContent?.trim() || anchor?.target || '';
-  let target = rawTarget;
-  if (rawTarget.toLowerCase() === 'new tab') target = '_blank';
-  if (rawTarget.toLowerCase() === 'same tab') target = '_self';
+  const targetSetting = targetDiv?.querySelector('div')?.textContent?.trim()
+    || targetDiv?.textContent?.trim()
+    || '';
+  const target = targetSetting.toLowerCase() === 'true'
+    ? '_blank'
+    : anchor?.target || '';
   const title = linkTitleDiv?.textContent?.trim() || anchor?.title || '';
 
   return href ? { href, target, title } : null;
@@ -36,13 +38,30 @@ function createCardListItem(cardElement, doc) {
   const buttonEl = buttonDiv?.querySelector('a');
   const enableTitleUnderline = isTruthy(enableTitleUnderlineDiv?.textContent);
   const isCardClickable = isTruthy(isCardClickableDiv?.textContent);
-  const cardLinkDiv = cardLinkCells.find(
+  const imageLayoutDiv = cardLinkCells[0];
+  const imageLayout = imageLayoutDiv?.textContent?.trim() || 'default';
+  const interactiveCells = cardLinkCells.slice(1);
+  const cardLinkDiv = interactiveCells.find(
     (cell) => cell?.querySelector('a') || cell?.textContent?.trim(),
   );
+  const cardLinkIndex = interactiveCells.indexOf(cardLinkDiv);
+  const linkConfigCells = cardLinkIndex >= 0
+    ? interactiveCells.slice(cardLinkIndex + 1)
+    : [];
+  const cardTargetSettingsDiv = linkConfigCells.find((cell) => {
+    const text = cell?.querySelector('div')?.textContent?.trim()
+      || cell?.textContent?.trim()
+      || '';
+    return ['true', 'false'].includes(text.toLowerCase());
+  });
+  const cardLinkTitleDiv = linkConfigCells.find((cell) => {
+    const text = cell?.textContent?.trim() || '';
+    return text && !['true', 'false'].includes(text.toLowerCase());
+  });
   const cardLinkConfig = getLinkConfig(
     cardLinkDiv,
-    null,
-    null,
+    cardTargetSettingsDiv,
+    cardLinkTitleDiv,
   );
 
   const card = createElementFromHTML(
@@ -58,7 +77,12 @@ function createCardListItem(cardElement, doc) {
   /* ---------------- IMAGE ---------------- */
   if (img) {
     const newImg = img.cloneNode(true);
-    inner.appendChild(newImg);
+    const imageWrapper = createElementFromHTML(
+      `<div class="cards-list-image cards-list-image-${imageLayout}"></div>`,
+      doc,
+    );
+    imageWrapper.appendChild(newImg);
+    inner.appendChild(imageWrapper);
   }
 
   /* ---------------- TITLE ---------------- */
