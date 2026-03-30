@@ -255,7 +255,7 @@
           "label": "Underline Title",
           "description": "If enabled, the title will be underlined.",
           "valueType": "boolean",
-          "value": true
+          "value": false
         },
         {
           "component": "boolean",
@@ -319,7 +319,7 @@
           "label": "Enable Overlay Modal",
           "description": "If enabled, an overlay modal will be displayed.",
           "valueType": "boolean",
-          "value": true
+          "value": false
         },
         {
           "component": "text",

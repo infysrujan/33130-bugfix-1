@@ -25,7 +25,7 @@ function createCardListItem(cardElement, doc) {
     titleDiv,
     descDiv,
     remarkDiv,
-    buttonDiv,,
+    buttonDiv,
     imageLayoutDiv,
     enableTitleUnderlineDiv,
     isCardClickableDiv,
