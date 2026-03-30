@@ -372,20 +372,14 @@ function buildTablesFromElementList(flattenedEls, onTable) {
   return tables;
 }
 
-const RE_DOWNLOAD_TOKEN = /#download\[([^\]]+)\]/i;
+const RE_DOWNLOAD_TOKEN = /#download\b/i;
 
-function parseDownloadParams(paramsStr) {
-  const parts = paramsStr.split(',').map((s) => s.trim());
-  const [href = '', name = 'Download', title = ''] = parts;
-  return { href, name, title };
-}
-
-function createDownloadBlock(href, name, title) {
+function createDownloadBlock(href, name, title, target) {
   const anchor = document.createElement('a');
   anchor.href = href;
   anchor.textContent = name;
   anchor.className = 'button-tertiary';
-  anchor.target = '_blank';
+  anchor.target = target || '_blank';
   if (title) anchor.title = title;
 
   const p = document.createElement('p');
@@ -403,6 +397,41 @@ function createDownloadBlock(href, name, title) {
   block.dataset.blockName = 'download-file';
   block.appendChild(outerDiv);
   return block;
+}
+
+function findDownloadAnchor(textNode) {
+  const parent = textNode.parentElement;
+  if (!parent) return null;
+
+  let cursor = textNode.nextSibling;
+  while (cursor) {
+    if (cursor.nodeType === Node.ELEMENT_NODE) {
+      if (cursor.tagName === 'A') return cursor;
+      const nested = cursor.querySelector?.('a');
+      if (nested) return nested;
+    }
+    cursor = cursor.nextSibling;
+  }
+
+  return parent.querySelector('a');
+}
+
+function cleanupDownloadInsertion(block) {
+  if (block.nextSibling?.nodeType === Node.ELEMENT_NODE && block.nextSibling.tagName === 'BR') {
+    block.nextSibling.remove();
+  }
+  if (block.previousSibling?.nodeType === Node.ELEMENT_NODE && block.previousSibling.tagName === 'BR') {
+    block.previousSibling.remove();
+  }
+
+  const li = block.closest('li');
+  if (!li) return;
+  const meaningful = [...li.childNodes].filter(
+    (n) => !(n.nodeType === Node.TEXT_NODE && !n.textContent.trim()),
+  );
+  if (meaningful.length === 1 && meaningful[0] === block) {
+    li.replaceWith(block);
+  }
 }
 
 async function processDownloadTokens(container) {
@@ -423,8 +452,15 @@ async function processDownloadTokens(container) {
   textNodes.forEach((textNode) => {
     const match = RE_DOWNLOAD_TOKEN.exec(textNode.textContent);
     if (!match) return;
-    const { href, name, title } = parseDownloadParams(match[1]);
-    const block = createDownloadBlock(href, name, title);
+
+    const sourceAnchor = findDownloadAnchor(textNode);
+    if (!sourceAnchor?.href) return;
+
+    const { href } = sourceAnchor;
+    const name = sourceAnchor.textContent?.trim() || 'Download';
+    const title = sourceAnchor.title || '';
+    const target = sourceAnchor.target || '_blank';
+    const block = createDownloadBlock(href, name, title, target);
     const parent = textNode.parentNode;
     const before = textNode.textContent.slice(0, match.index).trimEnd();
     const after = textNode.textContent.slice(match.index + match[0].length).trimStart();
@@ -432,18 +468,11 @@ async function processDownloadTokens(container) {
     if (before) frag.appendChild(document.createTextNode(before));
     frag.appendChild(block);
     if (after) frag.appendChild(document.createTextNode(after));
+
+    sourceAnchor.remove();
     parent.replaceChild(frag, textNode);
 
-    // If the block's closest <li> now contains only the block, replace the <li> with the block
-    const li = block.closest('li');
-    if (li) {
-      const meaningful = [...li.childNodes].filter(
-        (n) => !(n.nodeType === Node.TEXT_NODE && !n.textContent.trim()),
-      );
-      if (meaningful.length === 1 && meaningful[0] === block) {
-        li.replaceWith(block);
-      }
-    }
+    cleanupDownloadInsertion(block);
 
     loadPromises.push(loadBlock(block));
   });
