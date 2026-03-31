@@ -222,10 +222,7 @@
   display: none;
 }
 
-/* =============================================
-   Tablet (width >= 47.5rem / ~760px)
-   ============================================= */
-@media (width >= 47.5rem) {
+@media (width > 47.5rem) {
   /* Switch to flex grid */
   .address-card-container {
     display: flex;
@@ -323,10 +320,7 @@
   }
 }
 
-/* =============================================
-   Desktop (width >= 64rem / ~1024px)
-   ============================================= */
-@media (width >= 64rem) {
+@media (width > 64rem) {
   .address-card-container .same-height {
     width: 25%;
   }
