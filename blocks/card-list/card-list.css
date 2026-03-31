@@ -353,8 +353,8 @@
     }
 
     .cards-list-image.cards-list-image-card {
-        max-height: calc(8.75rem + 1.5625rem * ((100vw - 20rem) / 100));
-        height: calc(15.625rem + 3.75rem * ((100vw - 20rem) / 100));
+        max-height: calc(8.75rem + 25 * ((100vw - 20rem) / 1600));
+        height:  calc(15.625rem + 60 * ((100vw - 20rem) / 1600));
     }
 
     .cards-list-image.cards-list-image-full {
