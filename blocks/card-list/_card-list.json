@@ -45,15 +45,11 @@
           "options": [
             {
               "name": "Stacked", 
-              "value": "stacked (default)" 
+              "value": "stacked" 
             },
             { 
               "name": "Scrollable", 
               "value": "scrollable" 
-            },
-            {
-              "name": "ScrollingX", 
-              "value": "scrolling-x" 
             },
             {
               "name": "Carousel", 

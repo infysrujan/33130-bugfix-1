@@ -42,6 +42,7 @@ function createCardListItem(cardElement, doc) {
 
   const card = createElementFromHTML('<div class="cards-list-item"></div>', doc);
   const inner = createElementFromHTML('<div class="cards-list-inner"></div>', doc);
+  const content = createElementFromHTML('<div class="cards-list-content"></div>', doc);
 
   if (img) {
     const newImg = img.cloneNode(true);
@@ -56,22 +57,26 @@ function createCardListItem(cardElement, doc) {
   if (title) {
     const titleClasses = ['cards-list-title'];
     if (enableTitleUnderline) titleClasses.push('has-title-underline');
-    inner.appendChild(
+    content.appendChild(
       createElementFromHTML(`<div class="${titleClasses.join(' ')}">${title}</div>`, doc),
     );
   }
 
   if (description) {
-    inner.appendChild(
+    content.appendChild(
       createElementFromHTML(`<div class="cards-list-description">${description}</div>`, doc),
     );
-    inner.querySelector('.cards-list-title')?.classList.add('has-description');
+    content.querySelector('.cards-list-title')?.classList.add('has-description');
   }
 
   if (remark) {
-    inner.appendChild(
+    content.appendChild(
       createElementFromHTML(`<div class="cards-list-remark">${remark}</div>`, doc),
     );
+  }
+
+  if (content.children.length) {
+    inner.appendChild(content);
   }
 
   if (buttonEl) {
