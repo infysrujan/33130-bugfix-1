@@ -183,7 +183,7 @@
 .cards-list-button .button-tertiary {
     position: relative;
     padding-right: 0.9375rem;
-    color: var(--bbl-color-blue-80);
+    color: var(--bbl-color-active-blue);
     font: var(--bbl-font-weight-regular) 0.7rem/0.98rem
         var(--bbl-font-family-medium);
 }
