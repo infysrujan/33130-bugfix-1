@@ -125,15 +125,15 @@
     display: block;
 }
 
-.cards-list-image-card {
+.cards-list-image.cards-list-image-card {
     max-height: 10.3125rem;
 }
 
-.cards-list-image-full {
+.cards-list-image.cards-list-image-full {
     max-height: 25.625rem;
 }
 
-.cards-list-image-default {
+.cards-list-image.cards-list-image-default {
     max-height: 100%;
     height: calc(100vw);
 }
@@ -266,12 +266,12 @@
         height: calc(100vw / 5);
     }
 
-    .cards-list-image-full {
+    .cards-list-image.cards-list-image-full {
         height: calc(100vw / 5);
         max-height: calc(100vw * 0.2);
     }
 
-    .cards-list-image-default {
+    .cards-list-image.cards-list-image-default {
         max-height: calc(100vw * 0.4);
         height: 100vw;
     }
@@ -357,12 +357,11 @@
         height: calc(15.625rem + 3.75rem * ((100vw - 20rem) / 100));
     }
 
-    .cards-list-image-full {
-        height: calc(5.625rem + 4.6875rem * ((100vw - 20rem) / 100));
-        max-height: calc(6.25rem + 3.125rem * ((100vw - 20rem) / 100));
+    .cards-list-image.cards-list-image-full {
+        height: calc(5.625rem + 75 * ((100vw - 20rem) / 1600));
     }
 
-    .cards-list-image-default {
+    .cards-list-image.cards-list-image-default {
         height: calc(100vw * 0.25);
     }
 
