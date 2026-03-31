@@ -70,10 +70,6 @@
 	border-radius: 2rem;
 }
 
-.rate-card .tab-header a:focus {
-	margin-right: 0.4375rem;
-}
-
 .rate-card .tab-header a.active,
 .rate-card .tab-header a.active:any-link {
   background: var(--bbl-color-white);

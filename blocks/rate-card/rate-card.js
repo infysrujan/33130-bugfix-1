@@ -1,4 +1,5 @@
 import { fetchConfigs } from '../../scripts/config.js';
+import { createElementFromHTML, moveInstrumentation } from '../../scripts/scripts.js';
 
 /**
  * Format date string from API format to display format
@@ -63,94 +64,123 @@ async function fetchAPIData(url) {
 }
 
 /**
- * Create table HTML with data
- * @param {Array} columnNames - Column names from RTE
- * @param {Array} data - Data array from API
- * @param {string} dataType - Type of data: 'exchange', 'deposit', 'loan', 'fund'
- * @returns {string} - HTML string for table
+ * Create a tab id from the card name
+ * @param {string} cardName - Tab name
+ * @returns {string} - Safe id value
  */
-function createTableHTML(columnNames, data, dataType) {
-  if (!data || data.length === 0) {
-    return '<p class="no-data">No data available</p>';
-  }
-
-  const thead = `
-    <thead>
-      <tr>
-        ${columnNames.map((name) => `<th>${name}</th>`).join('')}
-      </tr>
-    </thead>
-  `;
-
-  let tbody = '<tbody>';
-
-  if (dataType === 'exchange') {
-    tbody += data.map((item) => `
-      <tr>
-        <td>
-          <div class="country-select">
-            <img src="/icons/${item.Family}.svg" alt="${item.Family}" loading="lazy">
-            <span>${item.Family}</span>
-          </div>
-        </td>
-        <td>${item.BuyingRates?.trim() || '-'}</td>
-        <td>${item.SellingRates?.trim() || '-'}</td>
-      </tr>
-    `).join('');
-  } else if (dataType === 'deposit') {
-    tbody += data.map((item) => `
-      <tr>
-        <td>${item.DepositNameEn || '-'}</td>
-        <td class="text-right"><span class="percent">${item.DepositRates || '0.00'}</span></td>
-      </tr>
-    `).join('');
-  } else if (dataType === 'loan') {
-    tbody += data.map((item) => `
-      <tr>
-        <td>${item.LoanNameEn || '-'}</td>
-        <td class="text-right"><span class="percent">${item.LoanRates || '0.00'}</span></td>
-      </tr>
-    `).join('');
-  } else if (dataType === 'fund') {
-    tbody += data.map((item) => `
-      <tr>
-        <td>${item.mf_sEng || item.FundName || '-'}</td>
-        <td>${item.mfr_fNav || item.NAV || '-'}</td>
-      </tr>
-    `).join('');
-  }
-
-  tbody += '</tbody>';
-
-  return `<table>${thead}${tbody}</table>`;
+function createTabId(cardName) {
+  return cardName.toLowerCase().replace(/\s+/g, '-');
 }
 
 /**
- * Create button HTML
- * @param {Object} buttonData - Button data from block
- * @returns {string} - HTML string for button
+ * Create table element with data
+ * @param {Array} columnNames - Column names from RTE
+ * @param {Array} data - Data array from API
+ * @param {string} dataType - Type of data: 'exchange', 'deposit', 'loan', 'fund'
+ * @param {Element} sourceElement - Original authored element for instrumentation
+ * @returns {Element} - Table or empty state element
  */
-function createButtonHTML(buttonData) {
+function createTableElement(columnNames, data, dataType, sourceElement) {
+  let element;
+
+  if (!data || data.length === 0) {
+    element = createElementFromHTML('<p class="no-data">No data available</p>', document);
+  } else {
+    const thead = `
+      <thead>
+        <tr>
+          ${columnNames.map((name) => `<th>${name}</th>`).join('')}
+        </tr>
+      </thead>
+    `;
+
+    let tbody = '<tbody>';
+
+    if (dataType === 'exchange') {
+      tbody += data.map((item) => `
+        <tr>
+          <td>
+            <div class="country-select">
+              <img src="/icons/${item.Family}.svg" alt="${item.Family}" loading="lazy">
+              <span>${item.Family}</span>
+            </div>
+          </td>
+          <td>${item.BuyingRates?.trim() || '-'}</td>
+          <td>${item.SellingRates?.trim() || '-'}</td>
+        </tr>
+      `).join('');
+    } else if (dataType === 'deposit') {
+      tbody += data.map((item) => `
+        <tr>
+          <td>${item.DepositNameEn || '-'}</td>
+          <td class="text-right"><span class="percent">${item.DepositRates || '0.00'}</span></td>
+        </tr>
+      `).join('');
+    } else if (dataType === 'loan') {
+      tbody += data.map((item) => `
+        <tr>
+          <td>${item.LoanNameEn || '-'}</td>
+          <td class="text-right"><span class="percent">${item.LoanRates || '0.00'}</span></td>
+        </tr>
+      `).join('');
+    } else if (dataType === 'fund') {
+      tbody += data.map((item) => `
+        <tr>
+          <td>${item.mf_sEng || item.FundName || '-'}</td>
+          <td>${item.mfr_fNav || item.NAV || '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    tbody += '</tbody>';
+    element = createElementFromHTML(`<table>${thead}${tbody}</table>`, document);
+  }
+
+  if (sourceElement) {
+    moveInstrumentation(sourceElement, element);
+  }
+
+  return element;
+}
+
+/**
+ * Create button element
+ * @param {Object} buttonData - Button data from block
+ * @returns {Element|null} - Button element
+ */
+function createButtonElement(buttonData) {
   const {
     link,
     linkText,
     linkTitle,
     targetLink,
+    sourceElement,
   } = buttonData;
 
   if (!link || !linkText) {
-    return '';
+    return null;
   }
 
-  const target = targetLink ? 'target="_blank"' : 'target="_self"';
-  const title = linkTitle ? `title="${linkTitle}"` : `title="${linkText}"`;
+  const button = document.createElement('a');
+  button.className = 'link-primary white pull-right';
+  button.href = link;
+  button.title = linkTitle || linkText;
+  button.target = targetLink ? '_blank' : '_self';
+  button.textContent = linkText;
 
-  return `
-    <a class="link-primary white pull-right" href="${link}" ${title} ${target}>
-      ${linkText}
-      <span class="icon-arrow-left"></span>
-    </a>
-  `;
+  const icon = document.createElement('span');
+  icon.className = 'icon-arrow-left';
+  button.appendChild(icon);
+
+  if (targetLink) {
+    button.rel = 'noopener noreferrer';
+  }
+
+  if (sourceElement) {
+    moveInstrumentation(sourceElement, button);
+  }
+
+  return button;
 }
 
 /**
@@ -169,10 +199,45 @@ function parseColumnNames(rteElement) {
 }
 
 /**
+ * Append footer metadata below a table
+ * @param {Element} container - Table container element
+ * @param {string} dateString - Date string
+ * @param {string} timeString - Time string
+ * @param {Object} buttonData - Button data
+ */
+function appendTableMeta(container, dateString, timeString, buttonData) {
+  const buttonElement = createButtonElement(buttonData);
+
+  if (!dateString && !buttonElement) {
+    return;
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'default-wrap';
+
+  if (dateString) {
+    const dateWrap = document.createElement('span');
+    dateWrap.className = 'text-x-small';
+
+    const dateUpdate = document.createElement('span');
+    dateUpdate.className = 'date-update';
+    dateUpdate.textContent = formatDate(dateString, timeString);
+    dateWrap.appendChild(dateUpdate);
+    wrapper.appendChild(dateWrap);
+  }
+
+  if (buttonElement) {
+    wrapper.appendChild(buttonElement);
+  }
+
+  container.appendChild(wrapper);
+}
+
+/**
  * Create tab content with tables
  * @param {Object} tabData - Tab data object
  * @param {Object} apiData - API data for all endpoints
- * @returns {string} - HTML string for tab content
+ * @returns {Element} - Tab content element
  */
 function createTabContent(tabData, apiData) {
   const {
@@ -217,61 +282,38 @@ function createTabContent(tabData, apiData) {
     dateString2 = apiData.bcapFundDate || '';
   }
 
-  let content = '<div class="inner">';
+  const content = document.createElement('div');
+  content.className = 'inner';
 
   // Table 1
   if (table1Data) {
-    content += '<div class="currency-list">';
-    content += createTableHTML(table1Data.columnNames, apiData1, dataType1);
-
-    const table1DateHTML = dateString1
-      ? `
-          <span class="text-x-small">
-            <span class="date-update">${formatDate(dateString1, timeString1)}</span>
-          </span>
-        `
-      : '';
-    const table1ButtonHTML = createButtonHTML(table1Data.button);
-
-    if (table1DateHTML || table1ButtonHTML) {
-      content += `
-        <div class="default-wrap">
-          ${table1DateHTML}
-          ${table1ButtonHTML}
-        </div>
-      `;
-    }
-
-    content += '</div>';
+    const list = document.createElement('div');
+    list.className = 'currency-list';
+    const tableElement = createTableElement(
+      table1Data.columnNames,
+      apiData1,
+      dataType1,
+      table1Data.sourceElement,
+    );
+    list.appendChild(tableElement);
+    appendTableMeta(list, dateString1, timeString1, table1Data.button);
+    content.appendChild(list);
   }
 
   // Table 2 (if tableCount is 2)
   if (tableCount === '2' && table2Data) {
-    content += '<div class="currency-list full">';
-    content += createTableHTML(table2Data.columnNames, apiData2, dataType2);
-
-    const table2DateHTML = dateString2
-      ? `
-          <span class="text-x-small">
-            <span class="date-update">${formatDate(dateString2, timeString2)}</span>
-          </span>
-        `
-      : '';
-    const table2ButtonHTML = createButtonHTML(table2Data.button);
-
-    if (table2DateHTML || table2ButtonHTML) {
-      content += `
-        <div class="default-wrap">
-          ${table2DateHTML}
-          ${table2ButtonHTML}
-        </div>
-      `;
-    }
-
-    content += '</div>';
+    const list = document.createElement('div');
+    list.className = 'currency-list full';
+    const tableElement = createTableElement(
+      table2Data.columnNames,
+      apiData2,
+      dataType2,
+      table2Data.sourceElement,
+    );
+    list.appendChild(tableElement);
+    appendTableMeta(list, dateString2, timeString2, table2Data.button);
+    content.appendChild(list);
   }
-
-  content += '</div>';
 
   return content;
 }
@@ -339,13 +381,17 @@ export default async function decorate(block) {
       linkTitle: table1Link?.title || '',
       linkType: table1Link?.className.replace('button-', '') || 'tertiary',
       targetLink: table1Link?.target === '_blank',
+      sourceElement: table1ButtonDiv,
     };
 
     const tabData = {
       cardName,
+      sourceElement: item,
+      titleSourceElement: divs[0],
       tableCount,
       table1Data: {
         columnNames: table1ColumnNames,
+        sourceElement: table1ColumnNamesDiv,
         button: table1Button,
       },
     };
@@ -363,10 +409,12 @@ export default async function decorate(block) {
         linkTitle: table2Link?.title || '',
         linkType: table2Link?.className.replace('button-', '') || 'tertiary',
         targetLink: table2Link?.target === '_blank',
+        sourceElement: table2ButtonDiv,
       };
 
       tabData.table2Data = {
         columnNames: table2ColumnNames,
+        sourceElement: table2ColumnNamesDiv,
         button: table2Button,
       };
     }
@@ -428,36 +476,50 @@ export default async function decorate(block) {
     console.error('Error fetching API data:', error);
   }
 
-  // Build rate card HTML
-  const rateCardHTML = `
-    <article class="currency-info" data-tab="">
-      <ul class="tab-header" data-tab-header="">
-        ${tabsData.map((tab, index) => `
-          <li>
-            <a href="#${tab.cardName.toLowerCase().replace(/\s+/g, '-')}" 
-               title="${tab.cardName}" 
-               class="${index === 0 ? 'active' : ''}">
-              ${tab.cardName}
-            </a>
-          </li>
-        `).join('')}
-      </ul>
-      <section data-tab-content="">
-        ${tabsData.map((tab, index) => `
-          <div id="${tab.cardName.toLowerCase().replace(/\s+/g, '-')}" 
-               class="inner${index === 0 ? ' active' : ''}">
-            ${createTabContent(tab, apiData)}
-          </div>
-        `).join('')}
-      </section>
-    </article>
-  `;
+  const article = document.createElement('article');
+  article.className = 'currency-info';
+  article.setAttribute('data-tab', '');
 
-  // Clear block and add new content
-  block.innerHTML = rateCardHTML;
+  const tabHeader = document.createElement('ul');
+  tabHeader.className = 'tab-header';
+  tabHeader.setAttribute('data-tab-header', '');
 
-  // Add tab click handlers
-  const tabLinks = block.querySelectorAll('.tab-header a');
+  const tabContent = document.createElement('section');
+  tabContent.setAttribute('data-tab-content', '');
+
+  const tabLinks = tabsData.map((tab, index) => {
+    const tabId = createTabId(tab.cardName);
+    const listItem = document.createElement('li');
+    const link = document.createElement('a');
+
+    link.href = `#${tabId}`;
+    link.title = tab.cardName;
+    link.textContent = tab.cardName;
+
+    if (index === 0) {
+      link.classList.add('active');
+    }
+
+    if (tab.titleSourceElement) {
+      moveInstrumentation(tab.titleSourceElement, link);
+    }
+
+    listItem.appendChild(link);
+    tabHeader.appendChild(listItem);
+
+    const panel = document.createElement('div');
+    panel.id = tabId;
+    panel.className = `inner${index === 0 ? ' active' : ''}`;
+    moveInstrumentation(tab.sourceElement, panel);
+    panel.appendChild(createTabContent(tab, apiData));
+    tabContent.appendChild(panel);
+
+    return link;
+  });
+
+  article.append(tabHeader, tabContent);
+  block.replaceChildren(article);
+
   tabLinks.forEach((link, index) => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
@@ -469,7 +531,7 @@ export default async function decorate(block) {
   const { hash } = window.location;
   if (hash) {
     const tabIndex = tabsData.findIndex(
-      (tab) => `#${tab.cardName.toLowerCase().replace(/\s+/g, '-')}` === hash,
+      (tab) => `#${createTabId(tab.cardName)}` === hash,
     );
     if (tabIndex >= 0) {
       activateTab(block, tabIndex);
