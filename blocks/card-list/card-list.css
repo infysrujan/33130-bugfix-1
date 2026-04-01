@@ -166,6 +166,12 @@
     overflow-wrap: anywhere;
 }
 
+.cards-list-title:not(.has-title-underline) :is(h1, h2, h3, h4, h5, h6) {
+    min-height: auto;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
 .cards-list-title.has-title-underline :is(h1, h2, h3, h4, h5, h6)::before {
     content: "";
     position: absolute;

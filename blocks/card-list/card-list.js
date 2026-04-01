@@ -1,9 +1,5 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 
-function isTruthy(value) {
-  return value?.toString().trim().toLowerCase() === 'true';
-}
-
 function getLinkConfig(linkDiv) {
   const anchor = linkDiv?.querySelector('a');
   const href = anchor?.href || '';
@@ -20,6 +16,8 @@ function createCardListItem(cardElement, doc) {
     descDiv,
     remarkDiv,
     buttonDiv,
+    // eslint-disable-next-line no-unused-vars
+    targetAudienceDiv,
     imageLayoutDiv,
     enableTitleUnderlineDiv,
     isCardClickableDiv,
@@ -34,10 +32,13 @@ function createCardListItem(cardElement, doc) {
   const remark = remarkDiv?.innerHTML;
   const buttonEl = buttonDiv?.querySelector('a');
   const imageLayout = imageLayoutDiv?.textContent?.trim() || 'default';
-  const enableTitleUnderline = isTruthy(enableTitleUnderlineDiv?.textContent);
-  const isCardClickable = isTruthy(isCardClickableDiv?.textContent);
-  const enableOverlayModal = isTruthy(enableOverlayModalDiv?.textContent);
-  const overlayHref = overlayLinkDiv?.textContent?.trim() || '';
+  const enableTitleUnderline = enableTitleUnderlineDiv?.textContent?.trim();
+  const isCardClickable = isCardClickableDiv?.textContent?.trim();
+  const enableOverlayModal = enableOverlayModalDiv?.textContent?.trim();
+  const overlayHref = overlayLinkDiv?.querySelector('a')?.getAttribute('href')?.trim()
+    || overlayLinkDiv?.textContent?.trim()
+    || '';
+
   const cardLinkConfig = getLinkConfig(cardLinkDiv);
 
   const card = createElementFromHTML('<div class="cards-list-item"></div>', doc);
@@ -56,7 +57,7 @@ function createCardListItem(cardElement, doc) {
 
   if (title) {
     const titleClasses = ['cards-list-title'];
-    if (enableTitleUnderline) titleClasses.push('has-title-underline');
+    if (enableTitleUnderline === 'true') titleClasses.push('has-title-underline');
     content.appendChild(
       createElementFromHTML(`<div class="${titleClasses.join(' ')}">${title}</div>`, doc),
     );
@@ -81,7 +82,7 @@ function createCardListItem(cardElement, doc) {
 
   if (buttonEl) {
     let buttonHTML;
-    if (enableOverlayModal && overlayHref) {
+    if (enableOverlayModal === 'true' && overlayHref) {
       const titleAttr = buttonEl.title ? ` title="${buttonEl.title}"` : '';
       buttonHTML = `<a data-modal="${overlayHref}"${titleAttr}>${buttonEl.innerHTML}</a>`;
     } else {
@@ -92,13 +93,13 @@ function createCardListItem(cardElement, doc) {
     );
   }
 
-  if (isCardClickable && cardLinkConfig) {
+  if (isCardClickable === 'true' && cardLinkConfig) {
     const titleAttr = cardLinkConfig.title ? ` title="${cardLinkConfig.title}"` : '';
     const targetAttr = cardLinkConfig.target ? ` target="${cardLinkConfig.target}"` : '';
     const relAttr = cardLinkConfig.target === '_blank' ? ' rel="noopener noreferrer"' : '';
 
     let hrefAttr;
-    if (enableOverlayModal && overlayHref) {
+    if (enableOverlayModal === 'true' && overlayHref) {
       hrefAttr = `data-modal="${overlayHref}"`;
     } else {
       hrefAttr = `href="${cardLinkConfig.href}"`;
