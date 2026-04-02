@@ -358,6 +358,10 @@
             {
               "name": "Text Animation Variant",
               "value": "textAnimationVariant"
+            },
+            {
+              "name": "Only Image",
+              "value": "onlyImage"
             }
           ]
         },
@@ -730,6 +734,35 @@
                   "textAnimationVariant"
                 ]
               }
+            ]
+          }
+        },
+        {
+          "component": "reference",
+          "name": "onlyImage",
+          "label": "Image",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "onlyImage"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "onlyImageAlt",
+          "label": "Alt",
+          "value": "",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "onlyImage"
             ]
           }
         }
