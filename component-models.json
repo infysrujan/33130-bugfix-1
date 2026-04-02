@@ -766,10 +766,6 @@
           {
             "name": "Text Animation Variant",
             "value": "textAnimationVariant"
-          },
-          {
-            "name": "Only Image",
-            "value": "onlyImage"
           }
         ]
       },
@@ -1144,35 +1140,6 @@
             }
           ]
         }
-      },
-      {
-        "component": "reference",
-        "name": "onlyImage",
-        "label": "Image",
-        "valueType": "string",
-        "condition": {
-          "===": [
-            {
-              "var": "slideType"
-            },
-            "onlyImage"
-          ]
-        }
-      },
-      {
-        "component": "text",
-        "name": "onlyImageAlt",
-        "label": "Alt",
-        "value": "",
-        "valueType": "string",
-        "condition": {
-          "===": [
-            {
-              "var": "slideType"
-            },
-            "onlyImage"
-          ]
-        }
       }
     ]
   },
@@ -1200,6 +1167,10 @@
           {
             "name": "With Circular Image",
             "value": "withCircularImage"
+          },
+          {
+            "name": "Only Image",
+            "value": "onlyImage"
           }
         ]
       },
@@ -1371,6 +1342,35 @@
               "var": "slideType"
             },
             "withCircularImage"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "onlyImage",
+        "label": "Image",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "onlyImage"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "onlyImageAlt",
+        "label": "Alt",
+        "value": "",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "onlyImage"
           ]
         }
       }

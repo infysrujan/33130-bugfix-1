@@ -161,18 +161,13 @@ function buildSlideHeroVariant(row, index, cells, variant) {
  * Build a slide - determines which variation to use and delegates.
  * Cell layout: cells[0] = variant (hidden), cells[1] = slideType (select)
  * slideType values:
- *  'withImage' | 'withoutImage' | 'heroBannerImageCarousel' | 'textAnimationVariant' | 'onlyImage'
+ *  'withImage' | 'withoutImage' | 'heroBannerImageCarousel' | 'textAnimationVariant'
  */
 function buildSlide(row, index) {
   const cells = [...row.children];
 
   // cells[1] is now a select with the slide type value
   const slideType = cells[1]?.textContent.trim();
-
-  // Intentionally skip rendering for the onlyImage variation.
-  if (slideType === 'onlyImage') {
-    return null;
-  }
 
   if (slideType === 'heroBannerImageCarousel') {
     return buildSlideHeroVariant(row, index, cells, 'hero-banner-image-carousel');
@@ -210,6 +205,11 @@ function buildSlideArrowsandDots(row, index) {
 
   // cells[1] is now a select with the slide type value
   const slideType = cells[1]?.textContent.trim();
+
+  // Intentionally skip rendering for the onlyImage variation.
+  if (slideType === 'onlyImage') {
+    return null;
+  }
 
   if (slideType === 'withCircularImage') {
     slide.className = 'carousel-dotted-item with-circular-image item';
