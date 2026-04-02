@@ -206,9 +206,19 @@ function buildSlideArrowsandDots(row, index) {
   // cells[1] is now a select with the slide type value
   const slideType = cells[1]?.textContent.trim();
 
-  // Intentionally skip rendering for the onlyImage variation.
+  // Build a slide for the onlyImage variation.
   if (slideType === 'onlyImage') {
-    return null;
+    slide.className = 'carousel-dotted-item only-image item';
+
+    // onlyImage (cell 10), onlyImageAlt (cell 11)
+    const onlyImageCell = cells[10];
+
+    const picture = onlyImageCell?.querySelector('picture');
+    if (picture) {
+      slide.append(picture);
+    }
+
+    return slide;
   }
 
   if (slideType === 'withCircularImage') {
