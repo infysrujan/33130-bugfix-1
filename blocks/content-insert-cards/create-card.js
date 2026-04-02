@@ -8,7 +8,7 @@ export function createCard(cardItem) {
     return null;
   }
 
-  // Destructure rows - [0] = categoryRow, [1] = imageRow,
+  // rows - [0] = categoryRow, [1] = imageRow,
   // [2] = titleRow, [3] = descRow, [4] = buttonRow
   const [categoryRow, imageRow, titleRow, descRow, buttonRow] = rows;
 
