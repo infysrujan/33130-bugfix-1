@@ -41,7 +41,7 @@
       "locate-us",
       "rate-card",
       "currency-converter-expanded",
-      "cookie-banner"
+      "cookie-modal"
     ]
   },
   {
@@ -96,9 +96,9 @@
     ]
   },
   {
-    "id": "cookie-banner",
+    "id": "cookie-modal",
     "components": [
-      "cookie-modal"
+      "cookie-modal-field"
     ]
   },
   {

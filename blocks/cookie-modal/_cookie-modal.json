@@ -1,0 +1,281 @@
+{
+  "definitions": [
+    {
+      "title": "Cookie Modal",
+      "id": "cookie-modal",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Cookie Modal",
+              "filter": "cookie-modal"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Cookie Modal Field",
+      "id": "cookie-modal-field",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Cookie Modal Field",
+              "model": "cookie-modal-field"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "cookie-modal",
+      "fields": [
+        {
+          "component": "richtext",
+          "name": "text",
+          "value": "",
+          "label": "Modal Text",
+          "valueType": "string"
+        },
+        {
+          "component": "container",
+          "name": "cookiePolicyButton",
+          "label": "Cookie Policy Button",
+          "fields": [
+            {
+              "component": "aem-content",
+              "name": "cookiePolicyLink",
+              "label": "Link",
+              "description": "Destination URL for the cookie policy button"
+            },
+            {
+              "component": "text",
+              "name": "cookiePolicyLinkText",
+              "label": "Text",
+              "description": "Cookie policy button label text",
+              "value": "Cookies Policy",
+              "required": true
+            },
+            {
+              "component": "text",
+              "name": "cookiePolicyLinkTitle",
+              "label": "Title",
+              "description": "Accessibility title attribute (optional)"
+            },
+            {
+              "component": "select",
+              "name": "cookiePolicyLinkType",
+              "label": "Type",
+              "description": "Button style variant",
+              "valueType": "string",
+              "value": "tertiary",
+              "options": [
+                {
+                  "name": "Primary",
+                  "value": "primary"
+                },
+                {
+                  "name": "Secondary",
+                  "value": "secondary"
+                },
+                {
+                  "name": "Tertiary",
+                  "value": "tertiary"
+                }
+              ]
+            },
+            {
+              "component": "container",
+              "name": "cookiePolicyTargetSettings",
+              "label": "Target settings",
+              "fields": [
+                {
+                  "component": "boolean",
+                  "name": "cookiePolicyTargetLink",
+                  "label": "Open link in new tab",
+                  "description": "Enable to open the cookie policy button link in a new browser tab",
+                  "valueType": "boolean",
+                  "value": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "container",
+          "name": "cookieSettingsButton",
+          "label": "Cookie Settings Button",
+          "fields": [
+            {
+              "component": "aem-content",
+              "name": "cookieSettingsLink",
+              "label": "Link",
+              "description": "Destination URL for the cookie settings button"
+            },
+            {
+              "component": "text",
+              "name": "cookieSettingsLinkText",
+              "label": "Text",
+              "description": "Cookie settings button label text",
+              "value": "Cookie Settings",
+              "required": true
+            },
+            {
+              "component": "text",
+              "name": "cookieSettingsLinkTitle",
+              "label": "Title",
+              "description": "Accessibility title attribute (optional)"
+            },
+            {
+              "component": "select",
+              "name": "cookieSettingsLinkType",
+              "label": "Type",
+              "description": "Button style variant",
+              "valueType": "string",
+              "value": "secondary",
+              "options": [
+                {
+                  "name": "Primary",
+                  "value": "primary"
+                },
+                {
+                  "name": "Secondary",
+                  "value": "secondary"
+                },
+                {
+                  "name": "Tertiary",
+                  "value": "tertiary"
+                }
+              ]
+            },
+            {
+              "component": "container",
+              "name": "cookieSettingsTargetSettings",
+              "label": "Target settings",
+              "fields": [
+                {
+                  "component": "boolean",
+                  "name": "cookieSettingsTargetLink",
+                  "label": "Open link in new tab",
+                  "description": "Enable to open the cookie settings button link in a new browser tab",
+                  "valueType": "boolean",
+                  "value": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "container",
+          "name": "acceptAllButton",
+          "label": "Accept All Cookies Button",
+          "fields": [
+            {
+              "component": "aem-content",
+              "name": "acceptAllLink",
+              "label": "Link",
+              "description": "Destination URL for the accept all button"
+            },
+            {
+              "component": "text",
+              "name": "acceptAllLinkText",
+              "label": "Text",
+              "description": "Accept all button label text",
+              "value": "Accept All Cookies",
+              "required": true
+            },
+            {
+              "component": "text",
+              "name": "acceptAllLinkTitle",
+              "label": "Title",
+              "description": "Accessibility title attribute (optional)"
+            },
+            {
+              "component": "select",
+              "name": "acceptAllLinkType",
+              "label": "Type",
+              "description": "Button style variant",
+              "valueType": "string",
+              "value": "primary",
+              "options": [
+                {
+                  "name": "Primary",
+                  "value": "primary"
+                },
+                {
+                  "name": "Secondary",
+                  "value": "secondary"
+                },
+                {
+                  "name": "Tertiary",
+                  "value": "tertiary"
+                }
+              ]
+            },
+            {
+              "component": "container",
+              "name": "acceptAllTargetSettings",
+              "label": "Target settings",
+              "fields": [
+                {
+                  "component": "boolean",
+                  "name": "acceptAllTargetLink",
+                  "label": "Open link in new tab",
+                  "description": "Enable to open the accept all button link in a new browser tab",
+                  "valueType": "boolean",
+                  "value": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cookie-modal-field",
+      "fields": [
+        {
+          "component": "text",
+          "name": "cookieTitle",
+          "value": "",
+          "label": "Cookie Title",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "description",
+          "value": "",
+          "label": "Description",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "linkUrl",
+          "value": "",
+          "label": "Cookie Accordion Fragment Link",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "linkText",
+          "value": "",
+          "label": "Link Text",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "cookie-modal",
+      "components": [
+        "cookie-modal-field"
+      ]
+    }
+  ]
+}
