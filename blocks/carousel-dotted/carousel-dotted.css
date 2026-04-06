@@ -1134,13 +1134,13 @@
   }
 }
 
-.carousel-dotted-wrapper .only-image{
+.carousel-dotted-wrapper .simple-carousel{
   margin: auto;
   margin-top: 3.125rem;
   margin-bottom: 1.25rem;
 }
 
-.slick-dots.only-image-dots{
+.slick-dots.simple-carousel-dots{
   margin-bottom: 3.125rem;
 }
 @media (width > 64rem) {

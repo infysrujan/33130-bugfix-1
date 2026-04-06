@@ -762,7 +762,7 @@
             },
             {
               "name": "Simple Carousel",
-              "value": "simpleCarousel"
+              "value": "onlyImage"
             }
           ]
         },
@@ -947,7 +947,7 @@
               {
                 "var": "slideType"
               },
-              "simpleCarousel"
+              "onlyImage"
             ]
           }
         },
@@ -962,7 +962,7 @@
               {
                 "var": "slideType"
               },
-              "simpleCarousel"
+              "onlyImage"
             ]
           }
         }

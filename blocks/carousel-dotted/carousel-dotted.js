@@ -206,9 +206,9 @@ function buildSlideArrowsandDots(row, index) {
   // cells[1] is now a select with the slide type value
   const slideType = cells[1]?.textContent.trim();
 
-  // Build a slide for the simpleCarousel variation.
-  if (slideType === 'simpleCarousel') {
-    slide.className = 'carousel-dotted-item only-image item';
+  // Build a slide for the simpleCarousel / onlyImage variation.
+  if (slideType === 'simpleCarousel' || slideType === 'onlyImage') {
+    slide.className = 'carousel-dotted-item simple-carousel item';
 
     // onlyImage (cell 10), onlyImageAlt (cell 11)
     const onlyImageCell = cells[10];
@@ -557,7 +557,7 @@ export default function decorate(block) {
   const slidesTextAnimation = slideEls.filter((s) => s.classList.contains('text-animation-variant')).length;
   const slidesCircularImage = slideEls.filter((s) => s.classList.contains('with-circular-image')).length;
   const slidesDefaultImage = slideEls.filter((s) => s.classList.contains('with-default-image')).length;
-  const slidesOnlyImage = slideEls.filter((s) => s.classList.contains('only-image')).length;
+  const slidesSimpleCarousel = slideEls.filter((s) => s.classList.contains('simple-carousel')).length;
   const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
     && slidesWithImage === 0
     && slidesWithoutImage === 0;
@@ -596,7 +596,7 @@ export default function decorate(block) {
   }
   const dots = document.createElement('ul');
   dots.className = 'slick-dots';
-  if (slidesOnlyImage > 0) dots.classList.add('only-image-dots');
+  if (slidesSimpleCarousel > 0) dots.classList.add('simple-carousel-dots');
   dots.setAttribute('role', 'tablist');
 
   // Create arrows
