@@ -45,40 +45,89 @@
               "component": "richtext",
               "name": "alertDescription",
               "label": "Description",
-              "description": "Short description shown in the alert banner",
+              "description": "Intro text shown in the cookie banner",
               "valueType": "string",
               "value": ""
             },
             {
-              "component": "aem-content",
-              "name": "privacyPolicyLink",
-              "label": "Privacy Policy Link",
-              "description": "Link destination for the privacy policy"
-            },
-            {
-              "component": "text",
-              "name": "privacyPolicyLinkText",
-              "label": "Privacy Policy Link Text",
-              "description": "Display label for the privacy policy link",
-              "valueType": "string",
-              "value": "Privacy Policy"
-            },
-            {
-              "component": "text",
-              "name": "alertAcceptLabel",
-              "label": "Accept CTA Label",
-              "description": "Label for the accept/accept-all button in the alert banner",
-              "valueType": "string",
-              "value": "Accept All",
-              "required": true
+              "component": "container",
+              "name": "cookiesPolicyLink",
+              "label": "Cookies Policy Link",
+              "fields": [
+                {
+                  "component": "aem-content",
+                  "name": "link",
+                  "label": "Link",
+                  "description": "Destination URL for the button"
+                },
+                {
+                  "component": "text",
+                  "name": "linkText",
+                  "label": "Text",
+                  "description": "Button label text",
+                  "required": true
+                },
+                {
+                  "component": "text",
+                  "name": "linkTitle",
+                  "label": "Title",
+                  "description": "Accessibility title attribute (optional)"
+                },
+                {
+                  "component": "select",
+                  "name": "linkType",
+                  "label": "Type",
+                  "description": "Button style variant",
+                  "valueType": "string",
+                  "value": "",
+                  "options": [
+                    {
+                      "name": "Primary",
+                      "value": "primary"
+                    },
+                    {
+                      "name": "Secondary",
+                      "value": "secondary"
+                    },
+                    {
+                      "name": "Tertiary",
+                      "value": "tertiary"
+                    }
+                  ]
+                },
+                {
+                  "component": "container",
+                  "name": "targetSettings",
+                  "label": "Target settings",
+                  "fields": [
+                    {
+                      "component": "boolean",
+                      "name": "targetLink",
+                      "label": "Open link in new tab",
+                      "description": "Enable to open the button link in a new browser tab",
+                      "valueType": "boolean",
+                      "value": false
+                    }
+                  ]
+                }
+              ]
             },
             {
               "component": "text",
               "name": "alertManageLabel",
-              "label": "Manage Cookies CTA Label",
-              "description": "Label for the manage cookies button in the alert banner",
+              "label": "Cookies Setting CTA Label",
+              "description": "Label for the cookies setting button in the alert banner",
               "valueType": "string",
-              "value": "Manage Cookies",
+              "value": "Cookies setting",
+              "required": true
+            },
+            {
+              "component": "text",
+              "name": "alertAcceptLabel",
+              "label": "Accept All Cookies CTA Label",
+              "description": "Label for the accept all cookies button in the alert banner",
+              "valueType": "string",
+              "value": "Accept all cookies",
               "required": true
             }
           ]
