@@ -11,8 +11,7 @@ trigger:
       - stage
       - main
       - feature/*
-      - stage
-      - qa
+      
 
 pr:
   branches:
