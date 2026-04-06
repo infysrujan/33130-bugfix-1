@@ -98,7 +98,13 @@
   {
     "id": "cookie-banner",
     "components": [
-      "cookie-accordion-item"
+      "cookie-modal"
+    ]
+  },
+  {
+    "id": "cookie-modal",
+    "components": [
+      "cookie-accordion"
     ]
   },
   {

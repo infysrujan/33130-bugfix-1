@@ -1789,68 +1789,120 @@
         ]
       },
       {
+        "component": "multifield",
+        "name": "cookieModals",
+        "label": "Cookie Modals",
+        "description": "Collection of cookie preference modals (typically one per language or configuration)",
+        "valueType": "string",
+        "multi": true,
+        "fields": [
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "modal",
+            "label": "Cookie Modal",
+            "multi": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cookie-modal",
+    "fields": [
+      {
+        "component": "text",
+        "name": "modalTitle",
+        "label": "Modal Title",
+        "description": "Title displayed at the top of the cookie settings modal",
+        "valueType": "string",
+        "value": "Cookie Setting",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "modalDescription",
+        "label": "Modal Description",
+        "description": "Introductory description text inside the cookie modal",
+        "valueType": "string",
+        "value": "The Bank uses Strictly Necessary Cookies in order that you can access information and use the Bank's website safely, and uses Functional Cookies to facilitate you when you revisit the website. In addition, the Bank uses other type of Cookies, namely Analytic Cookies and Advertising Cookies, where disabling these Cookies may cause you inconvenience when using website as follows.",
+        "required": true
+      },
+      {
+        "component": "multifield",
+        "name": "cookieAccordions",
+        "label": "Cookie Accordions",
+        "description": "List of cookie category accordions with detailed explanations",
+        "valueType": "string",
+        "multi": true,
+        "fields": [
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "accordion",
+            "label": "Cookie Accordion",
+            "multi": false
+          }
+        ]
+      },
+      {
         "component": "container",
-        "name": "cookieModal",
-        "label": "Cookie Modal",
-        "description": "Detailed cookie preferences modal with individual cookie categories",
+        "name": "modalActions",
+        "label": "Modal Actions",
+        "description": "Action buttons for the cookie modal",
         "fields": [
           {
             "component": "text",
-            "name": "modalTitle",
-            "label": "Modal Title",
-            "description": "Title displayed at the top of the cookie settings modal",
+            "name": "saveAndCloseLabel",
+            "label": "Save and Close Button Label",
+            "description": "Label for the save and close button inside the cookie modal",
             "valueType": "string",
-            "value": "Cookie Setting",
+            "value": "Save and Close",
             "required": true
           },
           {
-            "component": "richtext",
-            "name": "modalDescription",
-            "label": "Modal Description",
-            "description": "Introductory description text inside the cookie modal",
+            "component": "select",
+            "name": "saveAndCloseStyle",
+            "label": "Save and Close Button Style",
+            "description": "Visual style for the save and close button",
             "valueType": "string",
-            "value": "The Bank uses Strictly Necessary Cookies in order that you can access information and use the Bank's website safely, and uses Functional Cookies to facilitate you when you revisit the website. In addition, the Bank uses other type of Cookies, namely Analytic Cookies and Advertising Cookies, where disabling these Cookies may cause you inconvenience when using website as follows.",
-            "required": true
-          },
-          {
-            "component": "multifield",
-            "name": "cookieAccordions",
-            "label": "Cookie Categories",
-            "description": "List of cookie categories with detailed explanations",
-            "valueType": "string",
-            "multi": true,
-            "fields": [
+            "value": "primary",
+            "options": [
               {
-                "component": "reference",
-                "valueType": "string",
-                "name": "item",
-                "label": "Cookie Category",
-                "multi": false
+                "name": "Primary",
+                "value": "primary"
+              },
+              {
+                "name": "Secondary",
+                "value": "secondary"
+              },
+              {
+                "name": "Tertiary",
+                "value": "tertiary"
               }
             ]
           },
           {
             "component": "container",
-            "name": "modalActions",
-            "label": "Modal Actions",
-            "description": "Action buttons for the cookie modal",
+            "name": "additionalActions",
+            "label": "Additional Modal Actions",
+            "description": "Optional additional action buttons",
             "fields": [
               {
                 "component": "text",
-                "name": "saveAndCloseLabel",
-                "label": "Save and Close Button Label",
-                "description": "Label for the save and close button inside the cookie modal",
+                "name": "rejectAllLabel",
+                "label": "Reject All Button Label",
+                "description": "Optional label for reject all non-essential cookies button",
                 "valueType": "string",
-                "value": "Save and Close",
-                "required": true
+                "value": ""
               },
               {
                 "component": "select",
-                "name": "saveAndCloseStyle",
-                "label": "Save and Close Button Style",
-                "description": "Visual style for the save and close button",
+                "name": "rejectAllStyle",
+                "label": "Reject All Button Style",
+                "description": "Visual style for the reject all button",
                 "valueType": "string",
-                "value": "primary",
+                "value": "secondary",
                 "options": [
                   {
                     "name": "Primary",
@@ -1873,7 +1925,7 @@
     ]
   },
   {
-    "id": "cookie-accordion-item",
+    "id": "cookie-accordion",
     "fields": [
       {
         "component": "text",
@@ -1893,20 +1945,74 @@
         "required": true
       },
       {
-        "component": "boolean",
-        "name": "isRequired",
-        "label": "Required Cookies",
-        "description": "Mark this category as required (cannot be disabled)",
-        "valueType": "boolean",
-        "value": false
+        "component": "container",
+        "name": "cookieSettings",
+        "label": "Cookie Category Settings",
+        "description": "Configuration settings for this cookie category",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "isRequired",
+            "label": "Required Cookies",
+            "description": "Mark this category as required (cannot be disabled by users)",
+            "valueType": "boolean",
+            "value": false
+          },
+          {
+            "component": "boolean",
+            "name": "defaultEnabled",
+            "label": "Enabled by Default",
+            "description": "Whether this cookie category is enabled by default for new users",
+            "valueType": "boolean",
+            "value": true
+          },
+          {
+            "component": "boolean",
+            "name": "showToggle",
+            "label": "Show Toggle Switch",
+            "description": "Display a toggle switch to allow users to enable/disable this category",
+            "valueType": "boolean",
+            "value": true
+          }
+        ]
       },
       {
-        "component": "boolean",
-        "name": "defaultEnabled",
-        "label": "Enabled by Default",
-        "description": "Whether this cookie category is enabled by default",
-        "valueType": "boolean",
-        "value": true
+        "component": "container",
+        "name": "accordionAppearance",
+        "label": "Accordion Appearance",
+        "description": "Visual configuration for the accordion item",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "expandedByDefault",
+            "label": "Expanded by Default",
+            "description": "Whether this accordion item should be expanded when the modal opens",
+            "valueType": "boolean",
+            "value": false
+          },
+          {
+            "component": "select",
+            "name": "iconStyle",
+            "label": "Accordion Icon Style",
+            "description": "Visual style for the expand/collapse icon",
+            "valueType": "string",
+            "value": "chevron",
+            "options": [
+              {
+                "name": "Chevron",
+                "value": "chevron"
+              },
+              {
+                "name": "Plus/Minus",
+                "value": "plus-minus"
+              },
+              {
+                "name": "Arrow",
+                "value": "arrow"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
