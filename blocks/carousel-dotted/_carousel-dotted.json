@@ -761,8 +761,8 @@
               "value": "withCircularImage"
             },
             {
-              "name": "Only Image",
-              "value": "onlyImage"
+              "name": "Simple Carousel",
+              "value": "simpleCarousel"
             }
           ]
         },
@@ -947,7 +947,7 @@
               {
                 "var": "slideType"
               },
-              "onlyImage"
+              "simpleCarousel"
             ]
           }
         },
@@ -962,7 +962,7 @@
               {
                 "var": "slideType"
               },
-              "onlyImage"
+              "simpleCarousel"
             ]
           }
         }

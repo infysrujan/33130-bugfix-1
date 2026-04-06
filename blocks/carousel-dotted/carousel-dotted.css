@@ -75,11 +75,16 @@
   position: relative;
   display: none;
   opacity: 1;
+  transition: opacity 600ms ease;
 }
 
 .carousel-dotted .carousel-dotted-item.is-active {
   display: block;
   z-index: 1;
+}
+
+.carousel-dotted .carousel-dotted-item:not(.is-active) .carousel-bg {
+  opacity: 0;
 }
 
 .carousel-dotted .carousel-bg {
@@ -88,6 +93,7 @@
   width: 100%;
   background-position: center;
   background-size: cover;
+  transition: opacity 600ms ease;
 }
 
 .carousel-dotted .carousel-bg::after {
@@ -301,7 +307,7 @@
   flex: 0 0 100%;
   width: 100%;
   min-height: 12.6875rem;
-  transition: none;
+  transition: opacity 600ms ease;
 }
 
 /* Dot positioning – mobile */
@@ -1127,4 +1133,21 @@
     height: 2.5rem;
   }
 }
+
+.carousel-dotted-wrapper .only-image{
+  margin: auto;
+  margin-top: 3.125rem;
+  margin-bottom: 1.25rem;
+}
+
+.slick-dots.only-image-dots{
+  margin-bottom: 3.125rem;
+}
+@media (width > 64rem) {
+  .carousel-dotted.show-arrows-dots{
+    margin-inline: auto;
+    width: 80%;
+  }
+}
+
 
