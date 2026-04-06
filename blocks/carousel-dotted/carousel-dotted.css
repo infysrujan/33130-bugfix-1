@@ -1134,15 +1134,20 @@
   }
 }
 
-.carousel-dotted-wrapper .only-image{
+.carousel-dotted-wrapper .simple-carousel{
   margin: auto;
   margin-top: 3.125rem;
   margin-bottom: 1.25rem;
 }
 
-.slick-dots.only-image-dots{
-  margin-bottom: 3.125rem;
+.slick-dots.simple-carousel-dots{
+  margin-bottom: 5rem;
 }
+
+.slick-dots.only-image-dots{
+  margin-bottom: 5rem;
+}
+
 @media (width > 64rem) {
   .carousel-dotted.show-arrows-dots{
     margin-inline: auto;
@@ -1151,3 +1156,6 @@
 }
 
 
+.section.central-aligned.center-title.carousel-dotted-container{
+  padding:80px 20px 30px 20px;
+}
