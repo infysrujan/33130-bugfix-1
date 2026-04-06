@@ -5,6 +5,7 @@ import {
   readPosition,
 } from '../../scripts/utils/carousel-helpers.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
+import buildCardListFragmentSlide from './_card-list.js';
 
 /**
  * Build a slide WITH IMAGE variation
@@ -485,7 +486,7 @@ function initializeAutoScroll(
   }
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const rows = [...block.children];
   const hasAuthoringAttrs = rows.some((row) => [...row.attributes]
     .some(({ name }) => name.startsWith('data-aue-')));
@@ -530,9 +531,18 @@ export default function decorate(block) {
   block.setAttribute('role', 'region');
   block.setAttribute('aria-roledescription', 'carousel');
 
-  const slideEls = slides.map((row, index) => (showArrows
-    ? buildSlideArrowsandDots(row, index)
-    : buildSlide(row, index)));
+  const slideEls = await Promise.all(slides.map((row, index) => {
+    if (showArrows) {
+      return buildSlideArrowsandDots(row, index);
+    }
+
+    const slideType = row.children[1]?.textContent.trim();
+    if (slideType === 'carousel') {
+      return buildCardListFragmentSlide(row, index);
+    }
+
+    return buildSlide(row, index);
+  }));
 
   const slidesWithImage = slideEls.filter((s) => s.classList.contains('with-image')).length;
   const slidesWithoutImage = slideEls.filter((s) => s.classList.contains('without-image')).length;
