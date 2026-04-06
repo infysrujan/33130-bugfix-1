@@ -1635,67 +1635,53 @@
             "value": ""
           },
           {
-            "component": "container",
-            "name": "cookiesPolicyLink",
+            "component": "aem-content",
+            "name": "link",
             "label": "Cookies Policy Link",
-            "fields": [
+            "description": "Destination URL for the button"
+          },
+          {
+            "component": "text",
+            "name": "linkText",
+            "label": "Cookies Policy Link Text",
+            "description": "Button label text",
+            "required": true
+          },
+          {
+            "component": "text",
+            "name": "linkTitle",
+            "label": "Cookies Policy Link Title",
+            "description": "Accessibility title attribute (optional)"
+          },
+          {
+            "component": "select",
+            "name": "linkType",
+            "label": "Cookies Policy Link Type",
+            "description": "Button style variant",
+            "valueType": "string",
+            "value": "",
+            "options": [
               {
-                "component": "aem-content",
-                "name": "link",
-                "label": "Link",
-                "description": "Destination URL for the button"
+                "name": "Primary",
+                "value": "primary"
               },
               {
-                "component": "text",
-                "name": "linkText",
-                "label": "Text",
-                "description": "Button label text",
-                "required": true
+                "name": "Secondary",
+                "value": "secondary"
               },
               {
-                "component": "text",
-                "name": "linkTitle",
-                "label": "Title",
-                "description": "Accessibility title attribute (optional)"
-              },
-              {
-                "component": "select",
-                "name": "linkType",
-                "label": "Type",
-                "description": "Button style variant",
-                "valueType": "string",
-                "value": "",
-                "options": [
-                  {
-                    "name": "Primary",
-                    "value": "primary"
-                  },
-                  {
-                    "name": "Secondary",
-                    "value": "secondary"
-                  },
-                  {
-                    "name": "Tertiary",
-                    "value": "tertiary"
-                  }
-                ]
-              },
-              {
-                "component": "container",
-                "name": "targetSettings",
-                "label": "Target settings",
-                "fields": [
-                  {
-                    "component": "boolean",
-                    "name": "targetLink",
-                    "label": "Open link in new tab",
-                    "description": "Enable to open the button link in a new browser tab",
-                    "valueType": "boolean",
-                    "value": false
-                  }
-                ]
+                "name": "Tertiary",
+                "value": "tertiary"
               }
             ]
+          },
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open Cookies Policy Link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
           },
           {
             "component": "container",
