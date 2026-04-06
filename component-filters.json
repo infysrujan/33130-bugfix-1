@@ -96,18 +96,6 @@
     ]
   },
   {
-    "id": "cookie-banner",
-    "components": [
-      "cookie-modal"
-    ]
-  },
-  {
-    "id": "cookie-modal",
-    "components": [
-      "cookie-accordion"
-    ]
-  },
-  {
     "id": "form",
     "components": [
       "captcha",

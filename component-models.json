@@ -1623,52 +1623,54 @@
     "fields": [
       {
         "component": "container",
-        "name": "alertBanner",
-        "label": "Alert Banner",
-        "description": "Initial cookie consent banner that appears on the website",
+        "name": "cookieIntro",
+        "label": "Cookie Introduction Banner",
+        "description": "Initial cookie consent banner displayed to users",
         "fields": [
           {
             "component": "richtext",
-            "name": "alertDescription",
-            "label": "Description Text",
-            "description": "Intro text shown in the cookie banner explaining cookie usage",
+            "name": "introText",
+            "label": "Cookie Introduction Text",
+            "description": "Main text explaining cookie usage on the website",
             "valueType": "string",
             "value": "This website uses cookies to enhance user experience and to analyze performance and traffic on our website.",
             "required": true
           },
           {
             "component": "container",
-            "name": "privacyPolicyLink",
-            "label": "Privacy Policy Link",
-            "description": "Link to the full privacy policy and cookie policy",
+            "name": "cookiesPolicyCTA",
+            "label": "Cookies Policy CTA",
+            "description": "Button linking to the detailed cookies policy page",
             "fields": [
               {
                 "component": "aem-content",
-                "name": "link",
-                "label": "Privacy Policy URL",
-                "description": "Destination URL for the privacy policy page",
+                "name": "policyUrl",
+                "label": "Cookies Policy URL",
+                "description": "Link to the cookies policy page",
                 "required": true
               },
               {
                 "component": "text",
-                "name": "linkText",
-                "label": "Privacy Policy Link Text",
-                "description": "Display text for the privacy policy link",
+                "name": "policyButtonText",
+                "label": "Policy Button Text",
+                "description": "Text displayed on the cookies policy button",
                 "valueType": "string",
-                "value": "Privacy Policy",
+                "value": "Cookies Policy",
                 "required": true
               },
               {
                 "component": "text",
-                "name": "linkTitle",
-                "label": "Privacy Policy Link Title",
-                "description": "Accessibility title attribute for the privacy policy link"
+                "name": "policyButtonTitle",
+                "label": "Policy Button Title",
+                "description": "Accessibility title for the cookies policy button",
+                "valueType": "string",
+                "value": "View our cookies policy"
               },
               {
                 "component": "select",
-                "name": "linkType",
-                "label": "Privacy Policy Link Style",
-                "description": "Visual style for the privacy policy link",
+                "name": "policyButtonStyle",
+                "label": "Policy Button Style",
+                "description": "Visual style for the cookies policy button",
                 "valueType": "string",
                 "value": "tertiary",
                 "options": [
@@ -1688,9 +1690,9 @@
               },
               {
                 "component": "boolean",
-                "name": "targetLink",
-                "label": "Open Privacy Policy in New Tab",
-                "description": "Open the privacy policy link in a new browser tab",
+                "name": "openInNewTab",
+                "label": "Open in New Tab",
+                "description": "Open the cookies policy link in a new browser tab",
                 "valueType": "boolean",
                 "value": true
               }
@@ -1699,28 +1701,30 @@
           {
             "component": "container",
             "name": "cookieSettingsButton",
-            "label": "Cookie Settings CTA",
+            "label": "Cookie Settings Button",
             "description": "Button to open the cookie preferences modal",
             "fields": [
               {
                 "component": "text",
-                "name": "linkText",
-                "label": "Cookie Settings Button Text",
-                "description": "Label for the cookie settings button",
+                "name": "settingsButtonText",
+                "label": "Settings Button Text",
+                "description": "Text displayed on the cookie settings button",
                 "valueType": "string",
                 "value": "Cookie Settings",
                 "required": true
               },
               {
                 "component": "text",
-                "name": "linkTitle",
-                "label": "Cookie Settings Button Title",
-                "description": "Accessibility title attribute"
+                "name": "settingsButtonTitle",
+                "label": "Settings Button Title",
+                "description": "Accessibility title for the cookie settings button",
+                "valueType": "string",
+                "value": "Manage your cookie preferences"
               },
               {
                 "component": "select",
-                "name": "linkType",
-                "label": "Cookie Settings Button Style",
+                "name": "settingsButtonStyle",
+                "label": "Settings Button Style",
                 "description": "Visual style for the cookie settings button",
                 "valueType": "string",
                 "value": "secondary",
@@ -1744,29 +1748,31 @@
           {
             "component": "container",
             "name": "acceptAllButton",
-            "label": "Accept All Cookies CTA",
-            "description": "Button to accept all cookies and dismiss banner",
+            "label": "Accept All Cookies Button",
+            "description": "Button to accept all cookies and close the banner",
             "fields": [
               {
                 "component": "text",
-                "name": "linkText",
-                "label": "Accept All Button Text",
-                "description": "Label for the accept all cookies button",
+                "name": "acceptButtonText",
+                "label": "Accept Button Text",
+                "description": "Text displayed on the accept all cookies button",
                 "valueType": "string",
-                "value": "Accept All",
+                "value": "Accept All Cookies",
                 "required": true
               },
               {
                 "component": "text",
-                "name": "linkTitle",
-                "label": "Accept All Button Title",
-                "description": "Accessibility title attribute"
+                "name": "acceptButtonTitle",
+                "label": "Accept Button Title",
+                "description": "Accessibility title for the accept all cookies button",
+                "valueType": "string",
+                "value": "Accept all cookies and close banner"
               },
               {
                 "component": "select",
-                "name": "linkType",
-                "label": "Accept All Button Style",
-                "description": "Visual style for the accept all button",
+                "name": "acceptButtonStyle",
+                "label": "Accept Button Style",
+                "description": "Visual style for the accept all cookies button",
                 "valueType": "string",
                 "value": "primary",
                 "options": [
@@ -1789,228 +1795,35 @@
         ]
       },
       {
-        "component": "multifield",
-        "name": "cookieModals",
-        "label": "Cookie Modals",
-        "description": "Collection of cookie preference modals (typically one per language or configuration)",
-        "valueType": "string",
-        "multi": true,
-        "fields": [
-          {
-            "component": "reference",
-            "valueType": "string",
-            "name": "modal",
-            "label": "Cookie Modal",
-            "multi": false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "cookie-modal",
-    "fields": [
-      {
-        "component": "text",
-        "name": "modalTitle",
-        "label": "Modal Title",
-        "description": "Title displayed at the top of the cookie settings modal",
-        "valueType": "string",
-        "value": "Cookie Setting",
-        "required": true
-      },
-      {
-        "component": "richtext",
-        "name": "modalDescription",
-        "label": "Modal Description",
-        "description": "Introductory description text inside the cookie modal",
-        "valueType": "string",
-        "value": "The Bank uses Strictly Necessary Cookies in order that you can access information and use the Bank's website safely, and uses Functional Cookies to facilitate you when you revisit the website. In addition, the Bank uses other type of Cookies, namely Analytic Cookies and Advertising Cookies, where disabling these Cookies may cause you inconvenience when using website as follows.",
-        "required": true
-      },
-      {
-        "component": "multifield",
-        "name": "cookieAccordions",
-        "label": "Cookie Accordions",
-        "description": "List of cookie category accordions with detailed explanations",
-        "valueType": "string",
-        "multi": true,
-        "fields": [
-          {
-            "component": "reference",
-            "valueType": "string",
-            "name": "accordion",
-            "label": "Cookie Accordion",
-            "multi": false
-          }
-        ]
-      },
-      {
         "component": "container",
-        "name": "modalActions",
-        "label": "Modal Actions",
-        "description": "Action buttons for the cookie modal",
+        "name": "cookieModal",
+        "label": "Cookie Modal",
+        "description": "Detailed cookie preferences modal window",
         "fields": [
           {
             "component": "text",
-            "name": "saveAndCloseLabel",
-            "label": "Save and Close Button Label",
-            "description": "Label for the save and close button inside the cookie modal",
+            "name": "modalTitleText",
+            "label": "Modal Title Text",
+            "description": "Title displayed at the top of the cookie modal",
             "valueType": "string",
-            "value": "Save and Close",
+            "value": "Cookie Preferences",
             "required": true
           },
           {
-            "component": "select",
-            "name": "saveAndCloseStyle",
-            "label": "Save and Close Button Style",
-            "description": "Visual style for the save and close button",
+            "component": "richtext",
+            "name": "modalDescriptionText",
+            "label": "Modal Description Text",
+            "description": "Detailed description text explaining cookie usage in the modal",
             "valueType": "string",
-            "value": "primary",
-            "options": [
-              {
-                "name": "Primary",
-                "value": "primary"
-              },
-              {
-                "name": "Secondary",
-                "value": "secondary"
-              },
-              {
-                "name": "Tertiary",
-                "value": "tertiary"
-              }
-            ]
+            "value": "We use cookies to enhance your browsing experience and provide personalized content. You can manage your cookie preferences below.",
+            "required": true
           },
           {
-            "component": "container",
-            "name": "additionalActions",
-            "label": "Additional Modal Actions",
-            "description": "Optional additional action buttons",
-            "fields": [
-              {
-                "component": "text",
-                "name": "rejectAllLabel",
-                "label": "Reject All Button Label",
-                "description": "Optional label for reject all non-essential cookies button",
-                "valueType": "string",
-                "value": ""
-              },
-              {
-                "component": "select",
-                "name": "rejectAllStyle",
-                "label": "Reject All Button Style",
-                "description": "Visual style for the reject all button",
-                "valueType": "string",
-                "value": "secondary",
-                "options": [
-                  {
-                    "name": "Primary",
-                    "value": "primary"
-                  },
-                  {
-                    "name": "Secondary",
-                    "value": "secondary"
-                  },
-                  {
-                    "name": "Tertiary",
-                    "value": "tertiary"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "cookie-accordion",
-    "fields": [
-      {
-        "component": "text",
-        "name": "accordionTitle",
-        "label": "Cookie Category Title",
-        "description": "Title of the cookie category (e.g., 'Analytic Cookies', 'Advertising Cookies')",
-        "valueType": "string",
-        "required": true
-      },
-      {
-        "component": "richtext",
-        "name": "accordionDetails",
-        "label": "Cookie Category Details",
-        "description": "Detailed description of this cookie category and the impact of disabling it",
-        "valueType": "string",
-        "value": "",
-        "required": true
-      },
-      {
-        "component": "container",
-        "name": "cookieSettings",
-        "label": "Cookie Category Settings",
-        "description": "Configuration settings for this cookie category",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "isRequired",
-            "label": "Required Cookies",
-            "description": "Mark this category as required (cannot be disabled by users)",
-            "valueType": "boolean",
-            "value": false
-          },
-          {
-            "component": "boolean",
-            "name": "defaultEnabled",
-            "label": "Enabled by Default",
-            "description": "Whether this cookie category is enabled by default for new users",
-            "valueType": "boolean",
-            "value": true
-          },
-          {
-            "component": "boolean",
-            "name": "showToggle",
-            "label": "Show Toggle Switch",
-            "description": "Display a toggle switch to allow users to enable/disable this category",
-            "valueType": "boolean",
-            "value": true
-          }
-        ]
-      },
-      {
-        "component": "container",
-        "name": "accordionAppearance",
-        "label": "Accordion Appearance",
-        "description": "Visual configuration for the accordion item",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "expandedByDefault",
-            "label": "Expanded by Default",
-            "description": "Whether this accordion item should be expanded when the modal opens",
-            "valueType": "boolean",
-            "value": false
-          },
-          {
-            "component": "select",
-            "name": "iconStyle",
-            "label": "Accordion Icon Style",
-            "description": "Visual style for the expand/collapse icon",
-            "valueType": "string",
-            "value": "chevron",
-            "options": [
-              {
-                "name": "Chevron",
-                "value": "chevron"
-              },
-              {
-                "name": "Plus/Minus",
-                "value": "plus-minus"
-              },
-              {
-                "name": "Arrow",
-                "value": "arrow"
-              }
-            ]
+            "component": "aem-content",
+            "name": "cookieAccordionFragmentLink",
+            "label": "Cookie Accordion Fragment Link",
+            "description": "Link to the fragment containing detailed cookie categories and settings",
+            "required": true
           }
         ]
       }

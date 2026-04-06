@@ -298,37 +298,6 @@
           }
         },
         {
-          "title": "Cookie Modal",
-          "id": "cookie-modal",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Cookie Modal",
-                  "model": "cookie-modal",
-                  "filter": "cookie-modal"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Cookie Accordion",
-          "id": "cookie-accordion",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Cookie Accordion",
-                  "model": "cookie-accordion"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "Cross Banner",
           "id": "cross-banner",
           "plugins": {
