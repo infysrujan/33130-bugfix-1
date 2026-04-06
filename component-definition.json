@@ -298,6 +298,21 @@
           }
         },
         {
+          "title": "Cookie Modal",
+          "id": "cookie-modal",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Cookie Modal",
+                  "model": "cookie-modal"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Cross Banner",
           "id": "cross-banner",
           "plugins": {

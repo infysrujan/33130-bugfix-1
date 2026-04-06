@@ -15,6 +15,21 @@
           }
         }
       }
+    },
+    {
+      "title": "Cookie Modal",
+      "id": "cookie-modal",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Cookie Modal",
+              "model": "cookie-modal"
+            }
+          }
+        }
+      }
     }
   ],
   "models": [
@@ -195,40 +210,61 @@
           ]
         },
         {
-          "component": "container",
-          "name": "cookieModal",
-          "label": "Cookie Modal",
-          "description": "Detailed cookie preferences modal window",
+          "component": "multifield",
+          "name": "cookieModals",
+          "label": "Cookie Modals",
+          "description": "Collection of cookie preference modals",
+          "valueType": "string",
+          "multi": true,
           "fields": [
             {
-              "component": "text",
-              "name": "modalTitleText",
-              "label": "Modal Title Text",
-              "description": "Title displayed at the top of the cookie modal",
+              "component": "reference",
               "valueType": "string",
-              "value": "Cookie Preferences",
-              "required": true
-            },
-            {
-              "component": "richtext",
-              "name": "modalDescriptionText",
-              "label": "Modal Description Text",
-              "description": "Detailed description text explaining cookie usage in the modal",
-              "valueType": "string",
-              "value": "We use cookies to enhance your browsing experience and provide personalized content. You can manage your cookie preferences below.",
-              "required": true
-            },
-            {
-              "component": "aem-content",
-              "name": "cookieAccordionFragmentLink",
-              "label": "Cookie Accordion Fragment Link",
-              "description": "Link to the fragment containing detailed cookie categories and settings",
-              "required": true
+              "name": "modal",
+              "label": "Cookie Modal",
+              "multi": false
             }
           ]
         }
       ]
+    },
+    {
+      "id": "cookie-modal",
+      "fields": [
+        {
+          "component": "text",
+          "name": "modalTitleText",
+          "label": "Modal Title Text",
+          "description": "Title displayed at the top of the cookie modal",
+          "valueType": "string",
+          "value": "Cookie Preferences",
+          "required": true
+        },
+        {
+          "component": "richtext",
+          "name": "modalDescriptionText",
+          "label": "Modal Description Text",
+          "description": "Detailed description text explaining cookie usage in the modal",
+          "valueType": "string",
+          "value": "We use cookies to enhance your browsing experience and provide personalized content. You can manage your cookie preferences below.",
+          "required": true
+        },
+        {
+          "component": "aem-content",
+          "name": "cookieAccordionFragmentLink",
+          "label": "Cookie Accordion Fragment Link",
+          "description": "Link to the fragment containing detailed cookie categories and settings",
+          "required": true
+        }
+      ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "cookie-banner",
+      "components": [
+        "cookie-modal"
+      ]
+    }
+  ]
 }
