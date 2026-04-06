@@ -44,7 +44,7 @@
             {
               "component": "richtext",
               "name": "alertDescription",
-              "label": "Description",
+              "label": "Description text",
               "description": "Intro text shown in the cookie banner",
               "valueType": "string",
               "value": ""
