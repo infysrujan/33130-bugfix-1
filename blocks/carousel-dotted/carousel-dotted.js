@@ -505,7 +505,7 @@ export default async function decorate(block) {
   const firstSlide = rows[nextIndex];
   const variant = firstSlide?.children[0]?.textContent.trim() || '';
 
-  const showDots = variant === 'showDots';
+  const showDots = variant === 'showDots' || variant === 'showArrowsDots';
   const showArrows = variant === 'showArrowsDots';
 
   const slides = rows.slice(nextIndex);
@@ -533,7 +533,7 @@ export default async function decorate(block) {
 
   const slideEls = (await Promise.all(slides.map((row, index) => {
     const slideType = row.children[1]?.textContent.trim();
-    if (slideType === 'carousel') {
+    if (slideType === 'cardListCarousel') {
       return buildCardListFragmentSlides(row, index);
     }
 
@@ -793,12 +793,14 @@ export default async function decorate(block) {
 
   if (showDots) {
     block.append(dots);
-  } else if (showArrows) {
+  }
+
+  if (showArrows) {
     if (circularOrDefaultImage) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       block.replaceChildren(prevArrow, trackWrapper, nextArrow, dots);
     } else {
-      block.append(dots, prevArrow, nextArrow);
+      block.append(prevArrow, nextArrow);
     }
   }
 

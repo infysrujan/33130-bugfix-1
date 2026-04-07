@@ -1052,8 +1052,8 @@
             "value": "textAnimationVariant"
           },
           {
-            "name": "Carousel",
-            "value": "carousel"
+            "name": "Card List Carousel",
+            "value": "cardListCarousel"
           }
         ]
       },
@@ -1318,7 +1318,7 @@
             {
               "var": "slideType"
             },
-            "carousel"
+            "cardListCarousel"
           ]
         }
       },
@@ -1472,7 +1472,7 @@
           },
           {
             "name": "Card List Carousel",
-            "value": "card-list-carousel"
+            "value": "cardListCarousel"
           }
         ]
       },
@@ -1657,7 +1657,7 @@
             {
               "var": "slideType"
             },
-            "carousel"
+            "cardListCarousel"
           ]
         }
       }
