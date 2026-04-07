@@ -777,6 +777,10 @@
             {
               "name": "With Circular Image",
               "value": "withCircularImage"
+            },
+            {
+              "name": "Card List Carousel",
+              "value": "card-list-carousel"
             }
           ]
         },
@@ -948,6 +952,20 @@
                 "var": "slideType"
               },
               "withCircularImage"
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "fragmentPath",
+          "label": "Fragment Path",
+          "description": "Fragment path for the card-list carousel content",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "carousel"
             ]
           }
         }

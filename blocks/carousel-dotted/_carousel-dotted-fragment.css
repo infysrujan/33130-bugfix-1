@@ -1,0 +1,28 @@
+.carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.carousel-dotted.all-carousel-fragment .carousel-dotted-item.carousel-fragment {
+  position: relative;
+  display: block !important;
+  opacity: 1;
+  flex: 0 0 100%;
+  width: 100%;
+  transition: none;
+}
+
+@media (width > 47.5rem) {
+  .carousel-dotted.all-carousel-fragment .carousel-dotted-item.carousel-fragment {
+    position: relative;
+    inset: unset;
+    display: block !important;
+    opacity: 1;
+    flex: 0 0 100%;
+    width: 100%;
+    transition: none;
+  }
+}

@@ -1,3 +1,5 @@
+@import url("./_carousel-dotted-fragment.css");
+
 .carousel-dotted {
   position: relative;
   overflow: hidden;
@@ -1127,4 +1129,3 @@
     height: 2.5rem;
   }
 }
-

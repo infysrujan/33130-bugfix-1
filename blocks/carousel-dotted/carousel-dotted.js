@@ -5,7 +5,7 @@ import {
   readPosition,
 } from '../../scripts/utils/carousel-helpers.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
-import buildCardListFragmentSlide from './_card-list.js';
+import buildCardListFragmentSlides from './_card-list.js';
 
 /**
  * Build a slide WITH IMAGE variation
@@ -531,18 +531,21 @@ export default async function decorate(block) {
   block.setAttribute('role', 'region');
   block.setAttribute('aria-roledescription', 'carousel');
 
-  const slideEls = await Promise.all(slides.map((row, index) => {
+  const slideEls = (await Promise.all(slides.map((row, index) => {
+    const slideType = row.children[1]?.textContent.trim();
+    if (slideType === 'carousel') {
+      return buildCardListFragmentSlides(row, index);
+    }
+
     if (showArrows) {
       return buildSlideArrowsandDots(row, index);
     }
 
-    const slideType = row.children[1]?.textContent.trim();
-    if (slideType === 'carousel') {
-      return buildCardListFragmentSlide(row, index);
-    }
-
     return buildSlide(row, index);
-  }));
+  }))).flat();
+  slideEls.forEach((slide, slideIndex) => {
+    slide.dataset.index = slideIndex;
+  });
 
   const slidesWithImage = slideEls.filter((s) => s.classList.contains('with-image')).length;
   const slidesWithoutImage = slideEls.filter((s) => s.classList.contains('without-image')).length;
@@ -550,6 +553,7 @@ export default async function decorate(block) {
   const slidesTextAnimation = slideEls.filter((s) => s.classList.contains('text-animation-variant')).length;
   const slidesCircularImage = slideEls.filter((s) => s.classList.contains('with-circular-image')).length;
   const slidesDefaultImage = slideEls.filter((s) => s.classList.contains('with-default-image')).length;
+  const slidesFragment = slideEls.filter((s) => s.classList.contains('carousel-fragment')).length;
   const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
     && slidesWithImage === 0
     && slidesWithoutImage === 0;
@@ -576,6 +580,14 @@ export default async function decorate(block) {
     && slidesTextAnimation === 0
   ) {
     block.classList.add('all-hero-banner-image-carousel');
+  } else if (
+    slidesFragment > 0
+    && slidesWithImage === 0
+    && slidesWithoutImage === 0
+    && slidesHeroBanner === 0
+    && slidesTextAnimation === 0
+  ) {
+    block.classList.add('all-carousel-fragment');
   } else if (
     slidesTextAnimation > 0
     && slidesWithImage === 0
@@ -642,6 +654,11 @@ export default async function decorate(block) {
       && slidesWithImage === 0
       && slidesHeroBanner === 0
       && slidesTextAnimation === 0;
+    const allFragmentTrack = slidesFragment > 0
+      && slidesWithImage === 0
+      && slidesWithoutImage === 0
+      && slidesHeroBanner === 0
+      && slidesTextAnimation === 0;
 
     const isLoopingForward = index === 0 && prevIndex === slideEls.length - 1;
 
@@ -677,7 +694,7 @@ export default async function decorate(block) {
       nextArrow.disabled = index === slideEls.length - 1;
     }
 
-    if (allHeroBanner || allWithoutImageTrack) {
+    if (allHeroBanner || allWithoutImageTrack || allFragmentTrack) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       if (trackWrapper) {
         const slideWidth = block.offsetWidth;
@@ -756,6 +773,11 @@ export default async function decorate(block) {
     block.replaceChildren(trackWrapper);
   } else if (allWithoutImage) {
     // Without-image variant uses track wrapper for sliding, but NO clone (looping is disabled)
+    const trackWrapper = document.createElement('div');
+    trackWrapper.className = 'carousel-track-wrapper';
+    trackWrapper.replaceChildren(...slideEls);
+    block.replaceChildren(trackWrapper);
+  } else if (slidesFragment) {
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
     trackWrapper.replaceChildren(...slideEls);

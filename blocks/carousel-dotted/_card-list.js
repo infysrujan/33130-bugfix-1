@@ -8,36 +8,80 @@ function getFragmentPath(cells) {
 
   if (linkPath) return linkPath;
 
-  const textPath = cells
-    .map((cell) => cell.textContent.trim())
-    .find((text) => text.startsWith('/'));
-
-  return textPath || '';
+  return cells.map((cell) => cell.textContent.trim()).find((text) => text.startsWith('/')) || '';
 }
 
-export default async function buildCardListFragmentSlide(row, index) {
-  const cells = [...row.children];
-  const fragmentPath = getFragmentPath(cells);
+function getChunkSize(cardList) {
+  if (window.matchMedia('(width <= 47.5rem)').matches) return 1;
 
-  const slide = document.createElement('div');
+  if (cardList.classList.contains('cards-3') || cardList.classList.contains('cards-4')) return 3;
+  return 1;
+}
+
+function chunkItems(items, size) {
+  const chunks = [];
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+  return chunks;
+}
+
+function createErrorSlide(row, index, message, doc) {
+  const slide = doc.createElement('div');
   slide.className = 'carousel-dotted-item carousel-fragment';
   slide.dataset.index = index;
   moveInstrumentation(row, slide);
+  slide.textContent = message;
+  return slide;
+}
 
-  if (!fragmentPath) return slide;
+function createFragmentSlide(row, slideIndex, section, itemsChunk, doc) {
+  const slide = doc.createElement('div');
+  slide.className = 'carousel-dotted-item carousel-fragment';
+  slide.dataset.index = slideIndex;
+  moveInstrumentation(row, slide);
 
-  try {
-    const fragment = await loadFragment(fragmentPath);
-    const section = fragment?.querySelector(':scope .section');
+  const sectionContent = [...section.childNodes].map((node) => node.cloneNode(true));
+  const clonedCardList = sectionContent.find(
+    (node) => node.nodeType === Node.ELEMENT_NODE && node.matches('.card-list-wrapper'),
+  );
 
-    if (section) {
-      slide.classList.add(...section.classList);
-      slide.append(...section.childNodes);
+  if (clonedCardList) {
+    const list = clonedCardList.querySelector('.cards-list');
+    if (list) {
+      list.classList.add('fragment-carousel-group');
+      list.replaceChildren(...itemsChunk.map((item) => item.cloneNode(true)));
     }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to load carousel fragment', error);
   }
 
+  slide.append(...sectionContent);
   return slide;
+}
+
+export default async function buildCardListFragmentSlides(row, index) {
+  const doc = row.ownerDocument;
+  const cells = [...row.children];
+  const fragmentPath = getFragmentPath(cells);
+
+  if (!fragmentPath) {
+    return [createErrorSlide(row, index, 'Missing fragment path', doc)];
+  }
+
+  const fragment = await loadFragment(fragmentPath);
+  const section = fragment?.querySelector(':scope .section');
+  const cardList = section?.querySelector('.cards-list');
+  const items = cardList ? [...cardList.querySelectorAll(':scope > .cards-list-item')] : [];
+
+  if (!section || !cardList || !items.length) {
+    return [createErrorSlide(row, index, 'Fragment loaded without card-list content', doc)];
+  }
+
+  const chunkSize = getChunkSize(cardList);
+  return chunkItems(items, chunkSize).map((itemsChunk, chunkIndex) => createFragmentSlide(
+    row,
+    index + chunkIndex,
+    section,
+    itemsChunk,
+    doc,
+  ));
 }
