@@ -596,7 +596,11 @@ export default function decorate(block) {
   }
   const dots = document.createElement('ul');
   dots.className = 'slick-dots';
+  const allSimpleCarousel = slidesSimpleCarousel === slideEls.length && slidesSimpleCarousel > 0;
   if (slidesSimpleCarousel > 0) dots.classList.add('simple-carousel-dots');
+  if (allSimpleCarousel) {
+    block.classList.add('simple-carousel');
+  }
   dots.setAttribute('role', 'tablist');
 
   // Create arrows
