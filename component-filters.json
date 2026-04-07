@@ -97,9 +97,7 @@
   },
   {
     "id": "cookie-modal",
-    "components": [
-      "cookie-modal-field"
-    ]
+    "components": []
   },
   {
     "id": "form",
