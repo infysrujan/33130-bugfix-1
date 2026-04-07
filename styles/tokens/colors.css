@@ -46,6 +46,20 @@
   --bbl-color-gray-145: #DDDDDD;
   --bbl-color-gray-600: #6a6a6a;
   --bbl-color-gray-300: #d6d6d6;
+  --bbl-color-grey-off-white: #EBEBE4;   /* Form input disabled bg */
+  --bbl-color-grey-22: #E5E5E7;          /* Table/row separator */
+  --bbl-color-grey-25: #E0E0E0;          /* Form card border */
+  --bbl-color-grey-35: #D6D6D6;          /* Carousel dot active */
+  --bbl-color-grey-42: #C5C5C5;          /* Range track unfilled */
+  --bbl-color-grey-75: #757575;          /* Form wizard border */
+  --bbl-color-grey-76: #666666;          /* Form label / secondary text */
+  --bbl-color-grey-77: #818A91;          /* Form input border */
+  --bbl-color-grey-82: #565E6A;          /* Currency converter result bg */
+  --bbl-color-grey-83: #5A5C60;          /* Form input hover border rgb(90 92 96) */
+  --bbl-color-grey-88: #4B4B4B;          /* Form editor text */
+  --bbl-color-grey-89: #494F50;          /* Range label text */
+  --bbl-color-grey-155: #969696;         /* TNC text color */
+  --bbl-color-grey-dark-teal: #17252E;   /* Range bubble text */
 
   /* =========================================================================
      BLUE SCALE
@@ -65,6 +79,18 @@
   --bbl-color-blue-120: #031D37;
   --bbl-color-blue-130: #002087;
   --bbl-color-blue-140: #4890ff;
+  --bbl-color-blue-03: #F5F9FF;           /* Form card selected background */
+  --bbl-color-blue-04: #F3F6FD;           /* Accordion legend background */
+  --bbl-color-blue-05: #ECEDF3;           /* Accordion border */
+  --bbl-color-blue-07: #E5EDF4;           /* Dropdown hover / active background */
+  --bbl-color-ice-blue: #E6EEF4;          /* Ice blue background utility */
+  --bbl-color-blue-65: #5F8DDA;           /* Form button primary */
+  --bbl-color-blue-78: #2680EB;           /* Form editor link */
+  --bbl-color-blue-80: #035FE6;           /* Form button primary hover */
+  --bbl-color-blue-82: #1C3FCA;           /* Accordion collapse icon */
+  --bbl-color-blue-108: #003399;          /* Tabs dropdown icon */
+  --bbl-color-blue-112: #111582;          /* Currency converter icon */
+  --bbl-color-royal-blue-alpha-17: rgb(0 51 153 / 17%); /* Card hover box-shadow */
 
   /* =========================================================================
      RED SCALE
@@ -82,6 +108,11 @@
   --bbl-color-red-100: #7A0334;
   --bbl-color-red-110: #440D23;
   --bbl-color-red-120: #300919;
+  --bbl-color-maroon: #800000;             /* CSS named maroon */
+  --bbl-color-red-form-error: #FF5F3F;    /* Form validation error */
+  --bbl-color-red-danger-text: #842029;   /* Danger/error message text */
+  --bbl-color-red-danger-bg: #F8D7DA;     /* Danger/error message background */
+  --bbl-color-red-danger-border: #F5C2C7; /* Danger/error message border */
 
   /* =========================================================================
      GREEN SCALE
@@ -99,6 +130,10 @@
   --bbl-color-green-100: #083D37;
   --bbl-color-green-110: #062C29;
   --bbl-color-green-120: #032120;
+  --bbl-color-green-status: #008000;          /* CSS named green — live/active indicator */
+  --bbl-color-green-success-text: #0F5132;    /* Success message text */
+  --bbl-color-green-success-bg: #D1E7DD;      /* Success message background */
+  --bbl-color-green-success-border: #BADBCC;  /* Success message border */
 
   /* =========================================================================
      PURPLE SCALE
@@ -133,6 +168,8 @@
   --bbl-color-yellow-100: #574A06;
   --bbl-color-yellow-110: #2F2701;
   --bbl-color-yellow-120: #1E1902;
+  --bbl-color-yellow-star: #F8D053;  /* Star rating default yellow */
+  --bbl-color-yellow-gold: #ECBA24;  /* Star rating hover gold */
 
   /* =========================================================================
      ORANGE SCALE (Supporting)
@@ -179,6 +216,12 @@
   --bbl-color-black-alpha-40: rgba(0, 0, 0, 0.40);
   --bbl-color-black-alpha-60: rgba(0, 0, 0, 0.60);
   --bbl-color-black-alpha-17: rgba(0, 100, 255, 0.17);
+  --bbl-color-black-alpha-2: rgba(0, 0, 0, 0.02);
+  --bbl-color-black-alpha-3: rgba(0, 0, 0, 0.03);
+  --bbl-color-black-alpha-6: rgba(0, 0, 0, 0.06);
+  --bbl-color-black-alpha-8: rgba(0, 0, 0, 0.08);
+  --bbl-color-black-alpha-15: rgba(0, 0, 0, 0.15);
+  --bbl-color-black-alpha-50: rgba(0, 0, 0, 0.50);
 
   /* White Transparencies */
   --bbl-color-white-alpha-5: rgba(255, 255, 255, 0.05);
@@ -189,6 +232,10 @@
   --bbl-color-white-alpha-60: rgba(255, 255, 255, 0.60);
   --bbl-color-white-alpha-50: rgba(255, 255, 255, 0.5);
   --bbl-color-white-alpha-80: rgba(255, 255, 255, 0.80);
+  --bbl-color-white-alpha-0: rgba(255, 255, 255, 0);
+  --bbl-color-white-alpha-70: rgba(255, 255, 255, 0.70);
+  --bbl-color-white-alpha-90: rgba(255, 255, 255, 0.90);
+  --bbl-color-grey-150-alpha-70: rgba(158, 158, 158, 0.70);
 
   /* =========================================================================
      SEMANTIC ALIASES (For Easier Use)

@@ -138,7 +138,7 @@
 
 .menu-banner .thumb-square:hover {
   border-color: var(--bbl-color-active-blue);
-  box-shadow: 0.3125rem 0.3125rem 0 rgb(0 51 153 / 17%);
+  box-shadow: 0.3125rem 0.3125rem 0 var(--bbl-color-royal-blue-alpha-17);
 }
 
 /* Card image */

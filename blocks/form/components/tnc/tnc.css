@@ -1,6 +1,6 @@
 .tnc-text-decoration {
-    color: #969696;
-    border: 1px solid #ccc;
+    color: var(--bbl-color-grey-155);
+    border: 1px solid var(--bbl-color-grey-125);
     border-radius: .25rem;
     max-height: 160px;
     margin-bottom: .25rem;

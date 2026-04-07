@@ -6,7 +6,7 @@ main .form .range-widget-wrapper.decorated input[type="range"] {
     height: 5px;
     border-radius: 5px;
     border: none;
-    background-image: linear-gradient(to right, var(--button-primary-color) calc(100% * var(--current-steps)/var(--total-steps)), #C5C5C5 calc(100% * var(--current-steps)/var(--total-steps)));
+    background-image: linear-gradient(to right, var(--button-primary-color) calc(100% * var(--current-steps)/var(--total-steps)), var(--bbl-color-grey-42) calc(100% * var(--current-steps)/var(--total-steps)));
 }
  
 main .form .range-widget-wrapper.decorated input[type="range"]:focus {
@@ -18,10 +18,10 @@ main .form .range-widget-wrapper.decorated input[type="range"]:focus {
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    background: #fff;
+    background: var(--bbl-color-white);
     border: 3px solid var(--button-primary-color);
     cursor: pointer;
-    outline: 3px solid #fff;
+    outline: 3px solid var(--bbl-color-white);
 }
  
 .range-widget-wrapper.decorated input[type="range"]:focus::-webkit-slider-thumb {
@@ -29,7 +29,7 @@ main .form .range-widget-wrapper.decorated input[type="range"]:focus {
 }
  
 .range-widget-wrapper.decorated .range-bubble {
-    color: #17252e;
+    color: var(--bbl-color-grey-dark-teal);
     font-size: 20px;
     line-height: 28px;
     position: relative;
@@ -41,7 +41,7 @@ main .form .range-widget-wrapper.decorated input[type="range"]:focus {
 .range-widget-wrapper.decorated .range-max {
     font-size: 14px;
     line-height: 22px;
-    color: #494f50;
+    color: var(--bbl-color-grey-89);
     margin-top: 16px;
     display: inline-block;
 }

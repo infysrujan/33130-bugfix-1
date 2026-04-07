@@ -89,7 +89,7 @@
   overflow-y: auto;
   padding-top: 0;
   transition: left 0.3s ease;
-  box-shadow: 0.125rem 0 0.5rem rgb(0 0 0 / 15%);
+  box-shadow: 0.125rem 0 0.5rem var(--bbl-color-black-alpha-15);
 }
 
 .header .mobile-nav-menu.is-open {

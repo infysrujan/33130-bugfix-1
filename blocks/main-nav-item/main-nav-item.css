@@ -106,7 +106,7 @@
   width: 2.375rem;
   height: 2.375rem;
   padding: 0;
-  border: 0.0625rem solid rgb(158 158 158 / 70%);
+  border: 0.0625rem solid var(--bbl-color-grey-150-alpha-70);
   border-radius: 50%;
   background: var(--bbl-bg-primary);
   box-shadow: 0 0 0.25rem 0 transparent;
@@ -311,7 +311,7 @@ a.megamenu-link {
   }
 
   .megamenu-panel {
-    box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 15%);
+    box-shadow: 0 0.25rem 0.75rem var(--bbl-color-black-alpha-15);
     opacity: 0;
     visibility: hidden;
     padding: 0 1.25rem;

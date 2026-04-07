@@ -57,7 +57,7 @@ button.login-button.primary {
   max-width: 20rem;
   z-index: 100;
   background: var(--bbl-color-gray-144);
-  box-shadow: -0.25rem 0 0.75rem rgb(0 0 0 / 15%);
+  box-shadow: -0.25rem 0 0.75rem var(--bbl-color-black-alpha-15);
   border-radius: 0;
   visibility: hidden;
   transform: translateX(100%);

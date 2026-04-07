@@ -58,7 +58,7 @@
 
 .menu-cards .tips-insight-quick-access-item:hover {
     border: 1px solid var(--bbl-color-active-blue);
-    box-shadow: 0.3125rem 0.3125rem 0 rgb(0 51 153 / 17%);
+    box-shadow: 0.3125rem 0.3125rem 0 var(--bbl-color-royal-blue-alpha-17);
 }
 
 

@@ -71,14 +71,14 @@ main .form form.edit-mode .fragment-wrapper.edit-mode:has(> :not(legend))::befor
     transform: translateX(-50%);
     padding: 8px 16px;
     font-size: 13px;
-    color: #2680eb;
+    color: var(--bbl-color-blue-78);
     z-index: 2;
     white-space: nowrap;
     font-weight: 800;
     text-decoration: none;
     letter-spacing: 0.5px;
     background: white;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 12px var(--bbl-color-black-alpha-15);
     border-radius: 4px;
 }
 
@@ -90,9 +90,9 @@ main .form form.edit-mode .fragment-wrapper.edit-mode:has(> :not(legend))::after
     right: 0;
     height: 150px;
     background: linear-gradient(to bottom,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.7) 40%,
-    rgba(255, 255, 255, 0.9) 100%
+    var(--bbl-color-white-alpha-0) 0%,
+    var(--bbl-color-white-alpha-70) 40%,
+    var(--bbl-color-white-alpha-90) 100%
     );
     pointer-events: none;
 }
@@ -111,7 +111,7 @@ main .form form.edit-mode .fragment-wrapper.edit-mode.fragment-expanded {
 
 main .form form.edit-mode .fragment-wrapper.edit-mode .fragment-title {
     text-align: left;
-    color: #4b4b4b;
+    color: var(--bbl-color-grey-88);
     padding-left: 25px;
 }
 
@@ -146,8 +146,8 @@ main .form form.edit-mode .captcha-wrapper {
     font-weight: normal;
     font-size: 15px;
     text-align: left;
-    color: #4b4b4b;
-    border-color: rgba(0 0 0 / 15%);
+    color: var(--bbl-color-grey-88);
+    border-color: var(--bbl-color-black-alpha-15);
     border-radius: 4px;
     background: linear-gradient(180deg,rgba(0 0 0 / 5%),rgba(255 255 255 / 5%),rgba(0 0 0 / 5%)),
     linear-gradient(90deg,rgba(0 0 0 / 5%),rgba(255 255 255 / 5%),rgba(0 0 0 / 5%));

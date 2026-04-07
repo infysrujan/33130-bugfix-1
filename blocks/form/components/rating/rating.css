@@ -14,13 +14,13 @@ main .form .rating.disabled .star {
 }
 
 main .form .rating .star.selected {
-    color: #f8d053;
+    color: var(--bbl-color-yellow-star);
 }
 
 main .form .rating:hover .star.hover {
-    color: #ecba24;
+    color: var(--bbl-color-yellow-gold);
 }
 
 main .form .rating.disabled .star:not(.selected) {
-    color: #ccc;
+    color: var(--bbl-color-grey-125);
 }

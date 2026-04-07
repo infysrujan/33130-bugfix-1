@@ -1,7 +1,6 @@
 /* Background utility classes */
 :root {
-  --bbl-color-grey-05: #f9f9f9;
-  --bbl-color-ice-blue: #e6eef4;
+  --bbl-color-grey-05: var(--bbl-color-gray-144);
 }
 
 .bg-ice-blue {

@@ -21,7 +21,7 @@
   display: block;
   border-radius: var(--bbl-rounded-150);
   overflow: hidden;
-  border: 1px solid rgb(0 0 0 / 8%);
+  border: 1px solid var(--bbl-color-black-alpha-8);
   background-color: var(--bbl-color-white);
 }
 
@@ -31,7 +31,7 @@
   padding: var(--bbl-space-200);
   border: 1px dashed var(--bbl-color-black-alpha-20);
   border-radius: var(--bbl-rounded-150);
-  background-color: rgb(0 0 0 / 2%);
+  background-color: var(--bbl-color-black-alpha-2);
 }
 
 /* --- Image Wrapper --- */
@@ -222,7 +222,7 @@
   background-color: var(--bbl-color-white);
   border-radius: var(--bbl-rounded-100);
   padding: var(--bbl-space-250);
-  box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 15%);
+  box-shadow: 0 0.25rem 0.75rem var(--bbl-color-black-alpha-15);
   border: none;
   min-height: auto;
 }

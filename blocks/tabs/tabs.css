@@ -86,7 +86,7 @@
   right: 1.25rem;
   top: 55%;
   transform: translateY(-50%);
-  color: #039;
+  color: var(--bbl-color-blue-108);
   font: 0.5rem icomoon, sans-serif;
 }
 
@@ -208,7 +208,7 @@
 
 .tabs.tiled-tab .tabs-nav button:hover {
   border: 1px solid var(--bbl-color-active-blue);
-  box-shadow: 0.3125rem 0.3125rem 0 0 rgb(0 51 153 / 17%);
+  box-shadow: 0.3125rem 0.3125rem 0 0 var(--bbl-color-royal-blue-alpha-17);
   color: var(--bbl-color-blue-90);
 }
 
@@ -225,7 +225,7 @@
 
 .tabs.tiled-tab .tabs-nav button.active {
   border: 1px solid var(--bbl-color-active-blue);
-  box-shadow: 0.3125rem 0.3125rem 0 0 rgb(0 51 153 / 17%);
+  box-shadow: 0.3125rem 0.3125rem 0 0 var(--bbl-color-royal-blue-alpha-17);
   color: var(--bbl-color-active-blue);
 }
 

@@ -80,7 +80,7 @@
 }
 
 .sub-nav .sub-nav-select .global-dropdown-panel li a {
-	color: var(--bbl-color-black, #000);
+	color: var(--bbl-color-black);
 
 	/* Allow long option text to wrap instead of overflowing viewport */
 	max-width: 100%;

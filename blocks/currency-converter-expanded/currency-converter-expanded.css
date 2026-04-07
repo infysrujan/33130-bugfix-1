@@ -167,7 +167,7 @@
   opacity: 0;
   border-radius: 0.5rem;
   background: var(--bbl-color-white);
-  box-shadow: 0 0 0.25rem 0 rgb(0 0 0 / 5%), 0 0.125rem 0.5rem 0 rgb(0 0 0 / 50%);
+  box-shadow: 0 0 0.25rem 0 var(--bbl-color-black-alpha-5), 0 0.125rem 0.5rem 0 var(--bbl-color-black-alpha-50);
   border: solid 0.0625rem var(--bbl-color-gray-122);
   position: absolute;
   z-index: 10;
@@ -227,11 +227,11 @@
 }
 
 .currency-converter-expanded .currency-dropdown-list li.active {
-  background-color: #e5edf4;
+  background-color: var(--bbl-color-blue-07);
 }
 
 .currency-converter-expanded .currency-dropdown-list li:hover {
-  background-color: #e5edf4;
+  background-color: var(--bbl-color-blue-07);
 }
 
 /* Currency Flag Icon in dropdown */
@@ -329,7 +329,7 @@
 
 .currency-converter-expanded .converter-expanded-btn::after {
   content: "\e900";
-  color: #111582;
+  color: var(--bbl-color-blue-112);
   display: inline-block;
   font-family: icomoon, sans-serif;
   vertical-align: middle;
@@ -355,7 +355,7 @@
 
 /* Result section */
 .currency-converter-expanded .converter-expanded-result {
-  background: #565e6a;
+  background: var(--bbl-color-grey-82);
   padding: 0 1rem;
   max-height: 0;
   overflow: hidden;
