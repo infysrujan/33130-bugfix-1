@@ -10,8 +10,7 @@
   position: relative;
   display: block !important;
   opacity: 1;
-  flex: 0 0 100%;
-  width: 100%;
+  flex: 0 0 40%;
   transition: none;
 }
 

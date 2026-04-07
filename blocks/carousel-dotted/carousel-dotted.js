@@ -793,14 +793,12 @@ export default async function decorate(block) {
 
   if (showDots) {
     block.append(dots);
-  }
-
-  if (showArrows) {
+  } else if (showArrows) {
     if (circularOrDefaultImage) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       block.replaceChildren(prevArrow, trackWrapper, nextArrow, dots);
     } else {
-      block.append(prevArrow, nextArrow);
+      block.append(dots, prevArrow, nextArrow);
     }
   }
 

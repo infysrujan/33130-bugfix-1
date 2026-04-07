@@ -358,10 +358,6 @@
             {
               "name": "Text Animation Variant",
               "value": "textAnimationVariant"
-            },
-            {
-              "name": "Card List Carousel",
-              "value": "cardListCarousel"
             }
           ]
         },
@@ -613,20 +609,6 @@
                   "textAnimationVariant"
                 ]
               }
-            ]
-          }
-        },
-        {
-          "component": "aem-content",
-          "name": "fragmentPath",
-          "label": "Fragment Path",
-          "description": "Fragment path for the card-list carousel content",
-          "condition": {
-            "===": [
-              {
-                "var": "slideType"
-              },
-              "cardListCarousel"
             ]
           }
         },
