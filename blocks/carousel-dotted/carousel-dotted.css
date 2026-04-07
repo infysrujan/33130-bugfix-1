@@ -83,10 +83,6 @@
   z-index: 1;
 }
 
-.carousel-dotted .carousel-dotted-item:not(.is-active) .carousel-bg {
-  opacity: 0;
-}
-
 .carousel-dotted .carousel-bg {
   position: relative;
   display: block;
@@ -94,6 +90,10 @@
   background-position: center;
   background-size: cover;
   transition: opacity 600ms ease;
+}
+
+.carousel-dotted .carousel-dotted-item:not(.is-active) .carousel-bg {
+  opacity: 0;
 }
 
 .carousel-dotted .carousel-bg::after {
@@ -422,6 +422,7 @@
   overflow: hidden;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-bg {
   overflow: hidden;
@@ -1134,33 +1135,34 @@
   }
 }
 
-.carousel-dotted-wrapper .simple-carousel{
+.carousel-dotted-wrapper .simple-carousel {
   margin: auto;
   margin-top: 3.125rem;
   margin-bottom: 1.25rem;
 }
 
-.slick-dots.simple-carousel-dots{
+.slick-dots.simple-carousel-dots {
   margin-bottom: 5rem;
 }
 
-.slick-dots.only-image-dots{
+.slick-dots.only-image-dots {
   margin-bottom: 5rem;
 }
 
 @media (width > 64rem) {
-  .carousel-dotted.show-arrows-dots{
+  .carousel-dotted.show-arrows-dots {
     margin-inline: auto;
     width: 80%;
   }
 }
 
 
-.section.central-aligned.center-title.carousel-dotted-container{
-  padding:80px 20px 30px 20px;
+.section.central-aligned.center-title.carousel-dotted-container {
+  padding: 80px 20px 30px;
 }
-.card-list-modal-title{
+
+.card-list-modal-title {
   margin-top: 1.875rem;
   margin-bottom: 1.875rem;
-  padding-bottom: 1,25rem; 
+  padding-bottom: 1.25rem; 
 }
