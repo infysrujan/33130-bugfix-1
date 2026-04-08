@@ -1,3 +1,8 @@
+# =========================================
+# Author: Gourav Singhal
+# Organization: Adobe
+# =========================================
+
 trigger:
   branches:
     include:
@@ -84,7 +89,16 @@ stages:
 
         if [ "$BRANCH_NAME" = "main" ]; then
           TEST_URL="https://main--site-prod--bangkok-bank.aem.live/en"
-      
+
+        elif [ "$BRANCH_NAME" = "dev" ]; then
+          TEST_URL="https://dev--site-dev--bangkok-bank.aem.live/en"
+
+        elif [ "$BRANCH_NAME" = "qa" ]; then
+          TEST_URL="https://qa--site-qa--bangkok-bank.aem.live/en"
+
+        elif [ "$BRANCH_NAME" = "stage" ]; then
+          TEST_URL="https://stage--site-stage--bangkok-bank.aem.live/en"
+
         else
           TEST_URL="https://${BRANCH_NAME}--site-dev--bangkok-bank.aem.page/en"
         fi

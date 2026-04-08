@@ -64,7 +64,7 @@
   width: 1.3125rem;
   bottom: 0;
   height: 0.0625rem;
-  background: #9e9e9e;
+  background: var(--bbl-color-grey-150);
 }
 
 /* Title */
@@ -234,7 +234,9 @@
   }
 
   .menu-banner .thumb-full {
-    max-height: 28.125rem;
+    height: auto;
+    min-height: 0;
+    max-height: none;
   }
 
   .menu-banner .sub-title-medium {

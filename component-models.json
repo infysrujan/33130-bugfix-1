@@ -50,6 +50,19 @@
         "label": "Enable Sub Navigation",
         "name": "isSubNav",
         "valueType": "boolean"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "short-title",
+        "label": "Short Page Title"
+      },
+      {
+        "component": "boolean",
+        "name": "breadcrumb",
+        "value": "",
+        "label": "Breadcrumb",
+        "valueType": "boolean"
       }
     ]
   },
@@ -289,6 +302,19 @@
               {
                 "name": "Center Content",
                 "value": "center-content"
+              }
+            ]
+          },
+          {
+            "name": "Theme",
+            "children": [
+              {
+                "name": "Background Wealth",
+                "value": "background-wealth"
+              },
+              {
+                "name": "Background Private Banking",
+                "value": "background-privatebanking"
               }
             ]
           }
@@ -1050,6 +1076,10 @@
           {
             "name": "Text Animation Variant",
             "value": "textAnimationVariant"
+          },
+          {
+            "name": "Content Insert Carousel Cards",
+            "value": "contentInsertCarouselCards"
           }
         ]
       },
@@ -1422,6 +1452,158 @@
                 "textAnimationVariant"
               ]
             }
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "promoTag",
+        "label": "Promo Tag",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "contentInsertCarouselCards"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "cardImage",
+        "label": "Background Image",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "contentInsertCarouselCards"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "cardTitle",
+        "label": "Title",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "contentInsertCarouselCards"
+          ]
+        }
+      },
+      {
+        "component": "richtext",
+        "name": "cardDescription",
+        "label": "Description",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "contentInsertCarouselCards"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "cardLink",
+        "label": "Link",
+        "description": "Destination URL for the button",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "contentInsertCarouselCards"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "cardLinkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "contentInsertCarouselCards"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "cardLinkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "contentInsertCarouselCards"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "cardLinkType",
+        "label": "Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "contentInsertCarouselCards"
+          ]
+        }
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "contentInsertCarouselCards"
           ]
         }
       }
@@ -2133,6 +2315,150 @@
         "validation": {
           "rootPath": "/content/forms/af"
         }
+      }
+    ]
+  },
+  {
+    "id": "external-redirect-popup",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "popupImage",
+        "label": "Card Image",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "popupImageAlt",
+        "label": "Card Image Alt",
+        "valueType": "string",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "select",
+        "name": "titleType",
+        "label": "Title Type",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Description Text",
+        "valueType": "string",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "name": "primaryButtonLink",
+        "label": "Primary Button Link",
+        "description": "Destination URL for the primary button"
+      },
+      {
+        "component": "text",
+        "name": "primaryButtonText",
+        "label": "Primary Button Text",
+        "description": "Primary button label text",
+        "required": false
+      },
+      {
+        "component": "text",
+        "name": "primaryButtonTitle",
+        "label": "Primary Button Title",
+        "description": "Accessibility title attribute for primary button (optional)"
+      },
+      {
+        "component": "select",
+        "name": "primaryButtonType",
+        "label": "Primary Button Type",
+        "description": "Primary button style variant",
+        "valueType": "string",
+        "value": "primary",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "name": "secondButtonLink",
+        "label": "Second Button Link",
+        "description": "Destination URL for the second button"
+      },
+      {
+        "component": "text",
+        "name": "secondButtonText",
+        "label": "Second Button Text",
+        "description": "Secondary button label text",
+        "required": false
+      },
+      {
+        "component": "text",
+        "name": "secondButtonTitle",
+        "label": "Second Button Title",
+        "description": "Accessibility title attribute for second button (optional)"
+      },
+      {
+        "component": "select",
+        "name": "secondButtonType",
+        "label": "Second Button Type",
+        "description": "Secondary button style variant",
+        "valueType": "string",
+        "value": "secondary",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
       }
     ]
   },
@@ -7758,6 +8084,96 @@
     ]
   },
   {
+    "id": "privacy-modal",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "title",
+        "label": "Modal Title",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "privacyText",
+        "label": "Privacy Notice Text",
+        "value": "",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "checkboxLabel",
+        "label": "Acknowledgement Checkbox Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "checkbox",
+        "name": "enableModal",
+        "label": "Enable Privacy Modal",
+        "description": "When enabled, the privacy notice pop-up will intercept external link clicks on this page.",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)"
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "rate-card-item",
     "fields": [
       {
@@ -8024,6 +8440,46 @@
     ]
   },
   {
+    "id": "social-icon",
+    "fields": [
+      {
+        "component": "select",
+        "name": "platform",
+        "label": "Platform",
+        "valueType": "string",
+        "required": true,
+        "options": [
+          {
+            "name": "Facebook",
+            "value": "facebook"
+          },
+          {
+            "name": "X",
+            "value": "x"
+          },
+          {
+            "name": "Line",
+            "value": "line"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "name": "icon",
+        "label": "Icon",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "url",
+        "label": "URL",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "story-card",
     "fields": [
       {
@@ -8130,6 +8586,300 @@
             },
             "subnav-tab"
           ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "table",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Variation",
+        "valueType": "string",
+        "required": false,
+        "options": [
+          {
+            "name": "Border Type",
+            "children": [
+              {
+                "name": "No Border",
+                "value": "no-border"
+              },
+              {
+                "name": "Outline Border",
+                "value": "outline-border"
+              },
+              {
+                "name": "Border Bottom",
+                "value": "border-bottom"
+              }
+            ]
+          },
+          {
+            "name": "Border Color",
+            "children": [
+              {
+                "name": "Border Black",
+                "value": "border-black"
+              },
+              {
+                "name": "Border Light Gray",
+                "value": "border-light-gray"
+              },
+              {
+                "name": "Border Gray",
+                "value": "border-gray"
+              }
+            ]
+          },
+          {
+            "name": "Header",
+            "children": [
+              {
+                "name": "Center Aligned",
+                "value": "header-center-aligned"
+              },
+              {
+                "name": "Header Blue",
+                "value": "header-blue"
+              },
+              {
+                "name": "Header Light Blue",
+                "value": "header-light-blue"
+              },
+              {
+                "name": "Header Mixed Blue",
+                "value": "header-mixed-blue"
+              }
+            ]
+          },
+          {
+            "name": "Cells",
+            "children": [
+              {
+                "name": "Cells Center Aligned",
+                "value": "cells-center-aligned"
+              },
+              {
+                "name": "Cells Center Aligned Except First",
+                "value": "cells-center-aligned-except-first"
+              },
+              {
+                "name": "Dash Cell Highlight",
+                "value": "dash-cell-highlight"
+              }
+            ]
+          },
+          {
+            "name": "Functional",
+            "children": [
+              {
+                "name": "Merge Tables",
+                "value": "merge-tables"
+              },
+              {
+                "name": "Scroll",
+                "value": "scroll"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "tableContent",
+        "label": "Table Content",
+        "valueType": "string",
+        "value": "",
+        "rte": {
+          "toolbar": {
+            "format": [
+              "bold",
+              "italic",
+              "underline"
+            ],
+            "list": [
+              "bullet_list",
+              "ordered_list"
+            ],
+            "insert": [
+              "link",
+              "unlink",
+              "table"
+            ],
+            "editor": [
+              "removeformat"
+            ],
+            "sections": [
+              "format",
+              "list",
+              "insert",
+              "editor"
+            ]
+          },
+          "actions": {
+            "table": {
+              "label": "Insert Table",
+              "shortcut": "Mod-Alt-T",
+              "wrapInParagraphs": true
+            },
+            "link": {
+              "hideTarget": false
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "nested-table",
+    "fields": [
+      {
+        "component": "text",
+        "name": "id",
+        "label": "Id",
+        "valueType": "string",
+        "value": "",
+        "required": true
+      },
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Variation",
+        "valueType": "string",
+        "required": false,
+        "options": [
+          {
+            "name": "Border Type",
+            "children": [
+              {
+                "name": "No Border",
+                "value": "no-border"
+              },
+              {
+                "name": "Outline Border",
+                "value": "outline-border"
+              },
+              {
+                "name": "Border Bottom",
+                "value": "border-bottom"
+              }
+            ]
+          },
+          {
+            "name": "Border Color",
+            "children": [
+              {
+                "name": "Border Black",
+                "value": "border-black"
+              },
+              {
+                "name": "Border Light Gray",
+                "value": "border-light-gray"
+              },
+              {
+                "name": "Border Gray",
+                "value": "border-gray"
+              }
+            ]
+          },
+          {
+            "name": "Header",
+            "children": [
+              {
+                "name": "Center Aligned",
+                "value": "header-center-aligned"
+              },
+              {
+                "name": "Header Blue",
+                "value": "header-blue"
+              },
+              {
+                "name": "Header Light Blue",
+                "value": "header-light-blue"
+              },
+              {
+                "name": "Header Mixed Blue",
+                "value": "header-mixed-blue"
+              }
+            ]
+          },
+          {
+            "name": "Cells",
+            "children": [
+              {
+                "name": "Cells Center Aligned",
+                "value": "cells-center-aligned"
+              },
+              {
+                "name": "Cells Center Aligned Except First",
+                "value": "cells-center-aligned-except-first"
+              },
+              {
+                "name": "Dash Cell Highlight",
+                "value": "dash-cell-highlight"
+              }
+            ]
+          },
+          {
+            "name": "Functional",
+            "children": [
+              {
+                "name": "Merge Tables",
+                "value": "merge-tables"
+              },
+              {
+                "name": "Scroll",
+                "value": "scroll"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "tableContent",
+        "label": "Table Content",
+        "valueType": "string",
+        "value": "",
+        "rte": {
+          "toolbar": {
+            "format": [
+              "bold",
+              "italic",
+              "underline"
+            ],
+            "list": [
+              "bullet_list",
+              "ordered_list"
+            ],
+            "insert": [
+              "link",
+              "unlink",
+              "table"
+            ],
+            "editor": [
+              "removeformat"
+            ],
+            "sections": [
+              "format",
+              "list",
+              "insert",
+              "editor"
+            ]
+          },
+          "actions": {
+            "table": {
+              "label": "Insert Table",
+              "shortcut": "Mod-Alt-T",
+              "wrapInParagraphs": true
+            },
+            "link": {
+              "hideTarget": false
+            }
+          }
         }
       }
     ]

@@ -75,7 +75,7 @@
   bottom: 0;
   width: 1.3125rem;
   height: 0.0625rem;
-  background: #9e9e9e;
+  background: var(--bbl-color-grey-150);
 }
 
 .story-card .title-1 {

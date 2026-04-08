@@ -388,6 +388,21 @@
           }
         },
         {
+          "title": "External Redirect Popup",
+          "id": "external-redirect-popup",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "External Redirect Popup",
+                  "model": "external-redirect-popup"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Adaptive Form",
           "id": "form",
           "plugins": {
@@ -1203,6 +1218,21 @@
           }
         },
         {
+          "title": "Privacy Modal",
+          "id": "privacy-modal",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Privacy Modal",
+                  "model": "privacy-modal"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Rate Card",
           "id": "rate-card",
           "plugins": {
@@ -1263,6 +1293,36 @@
           }
         },
         {
+          "title": "Social Icons",
+          "id": "social-icons",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Social Icons",
+                  "filter": "social-icons"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Social Icon",
+          "id": "social-icon",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Social Icon",
+                  "model": "social-icon"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Story Card",
           "id": "story-card",
           "plugins": {
@@ -1288,6 +1348,37 @@
                 "template": {
                   "name": "Sub Nav",
                   "model": "sub-nav"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Table",
+          "id": "table",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Table",
+                  "model": "table",
+                  "filter": "table"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Nested Table",
+          "id": "nested-table",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Nested Table",
+                  "model": "nested-table"
                 }
               }
             }
