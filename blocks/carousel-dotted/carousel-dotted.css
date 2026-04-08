@@ -1179,5 +1179,23 @@
   width: 100%;
 }
 
+.carousel-dotted-item.simple-carousel.item {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 1 1 100% !important;
+  align-self: stretch !important;
+}
 
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-dotted-item.simple-carousel.item picture,
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-dotted-item.simple-carousel.item img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: fill !important;
+  display: block !important;
+}
 
+.carousel-dotted-container .default-content-wrapper {
+  padding: 0 3.5rem;
+}
