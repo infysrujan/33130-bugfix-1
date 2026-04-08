@@ -6,7 +6,7 @@ import {
 import buildCardListFragmentSlides, {
   handleCardListLoopTransition,
   setCardListTrackPosition,
-} from './_card-list.js';
+} from './card-list-carousel.js';
 import buildContentCardsSlide from './build-content-cards-slide.js';
 import buildImageSlide from './build-image-slide.js';
 import buildTextSlide from './build-text-slide.js';
