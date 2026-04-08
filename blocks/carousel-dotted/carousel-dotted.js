@@ -5,7 +5,10 @@ import {
   readPosition,
 } from '../../scripts/utils/carousel-helpers.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
-import buildCardListFragmentSlides from './_card-list.js';
+import buildCardListFragmentSlides, {
+  handleCardListLoopTransition,
+  setCardListTrackPosition,
+} from './_card-list.js';
 
 /**
  * Build a slide WITH IMAGE variation
@@ -511,10 +514,10 @@ export default async function decorate(block) {
   const slides = rows.slice(nextIndex);
   block.className = 'carousel-dotted content';
 
-  if (showDots) {
-    block.classList.add(`dots-${dotsAlignment}-${dotsPosition}`);
-  } else if (showArrows) {
+  if (showArrows) {
     block.classList.add('dots-center-outside-container');
+  } else if (showDots) {
+    block.classList.add(`dots-${dotsAlignment}-${dotsPosition}`);
   } else {
     block.classList.add('no-dots');
   }
@@ -617,8 +620,15 @@ export default async function decorate(block) {
 
   const zoomTimers = new Map();
 
-  // Determine if we have circular or default image slides (needed for circular navigation)
+  // Variants that use the wrapped arrow-track layout.
   const circularOrDefaultImage = slidesCircularImage > 0 || slidesDefaultImage > 0;
+  const allFragmentTrack = slidesFragment > 0
+    && slidesWithImage === 0
+    && slidesWithoutImage === 0
+    && slidesHeroBanner === 0
+    && slidesTextAnimation === 0;
+  const arrowTrackVariant = circularOrDefaultImage || allFragmentTrack;
+  const shouldCloneFragmentSlide = allFragmentTrack && slideEls.length > 1;
 
   function triggerBgZoom(slideEl) {
     const bg = slideEl.querySelector('.carousel-bg');
@@ -654,13 +664,8 @@ export default async function decorate(block) {
       && slidesWithImage === 0
       && slidesHeroBanner === 0
       && slidesTextAnimation === 0;
-    const allFragmentTrack = slidesFragment > 0
-      && slidesWithImage === 0
-      && slidesWithoutImage === 0
-      && slidesHeroBanner === 0
-      && slidesTextAnimation === 0;
-
     const isLoopingForward = index === 0 && prevIndex === slideEls.length - 1;
+    const isLoopingBackward = index === slideEls.length - 1 && prevIndex === 0;
 
     slideEls.forEach((slide, i) => {
       const active = i === index;
@@ -684,9 +689,8 @@ export default async function decorate(block) {
       button.tabIndex = active ? 0 : -1;
     });
 
-    // Disable arrow buttons only when not in circular navigation mode
-    if (showArrows && circularOrDefaultImage) {
-      // Keep arrows enabled for circular navigation
+    // Keep arrows enabled for wrapped arrow-track variants so they can loop.
+    if (showArrows && arrowTrackVariant) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
     } else {
@@ -697,9 +701,20 @@ export default async function decorate(block) {
     if (allHeroBanner || allWithoutImageTrack || allFragmentTrack) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       if (trackWrapper) {
-        const slideWidth = block.offsetWidth;
-
-        if (isLoopingForward && canUseCloneLoop) {
+        if (allFragmentTrack) {
+          const handledLoop = handleCardListLoopTransition(
+            block,
+            trackWrapper,
+            slideEls,
+            isLoopingForward,
+            isLoopingBackward,
+            shouldCloneFragmentSlide,
+          );
+          if (!handledLoop) {
+            setCardListTrackPosition(block, trackWrapper, slideEls, index);
+          }
+        } else if (isLoopingForward && canUseCloneLoop) {
+          const slideWidth = trackWrapper.offsetWidth;
           if (isHeroVariant && !isFirstLoad) {
             const cloneSlide = trackWrapper.lastElementChild;
             triggerBgZoom(cloneSlide);
@@ -715,6 +730,7 @@ export default async function decorate(block) {
             trackWrapper.style.transition = '';
           }, 700);
         } else {
+          const slideWidth = trackWrapper.offsetWidth;
           trackWrapper.style.transform = `translate3d(${-index * slideWidth}px, 0px, 0px)`;
         }
       }
@@ -723,7 +739,7 @@ export default async function decorate(block) {
 
   prevArrow.addEventListener('click', () => {
     const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
-    if (showArrows && circularOrDefaultImage) {
+    if (showArrows && arrowTrackVariant) {
       // Enable circular navigation for showArrowsDots variant
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
       setActive(prevIndex);
@@ -734,7 +750,7 @@ export default async function decorate(block) {
 
   nextArrow.addEventListener('click', () => {
     const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
-    if (showArrows && circularOrDefaultImage) {
+    if (showArrows && arrowTrackVariant) {
       // Enable circular navigation for showArrowsDots variant
       const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
       setActive(nextSlideIndex);
@@ -777,29 +793,47 @@ export default async function decorate(block) {
     trackWrapper.className = 'carousel-track-wrapper';
     trackWrapper.replaceChildren(...slideEls);
     block.replaceChildren(trackWrapper);
-  } else if (slidesFragment) {
+  } else if (arrowTrackVariant) {
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
-    trackWrapper.replaceChildren(...slideEls);
-    block.replaceChildren(trackWrapper);
-  } else if (circularOrDefaultImage) {
-    const trackWrapper = document.createElement('div');
-    trackWrapper.className = 'carousel-track-wrapper';
-    trackWrapper.replaceChildren(...slideEls);
-    block.replaceChildren(trackWrapper);
+    if (shouldCloneFragmentSlide) {
+      const cloneLast = slideEls[slideEls.length - 1].cloneNode(true);
+      cloneLast.setAttribute('aria-hidden', 'true');
+      const cloneFirst = slideEls[0].cloneNode(true);
+      cloneFirst.setAttribute('aria-hidden', 'true');
+      trackWrapper.replaceChildren(cloneLast, ...slideEls, cloneFirst);
+      if (allFragmentTrack) {
+        trackWrapper.style.transform = 'translate3d(-100%, 0px, 0px)';
+      }
+    } else {
+      trackWrapper.replaceChildren(...slideEls);
+    }
+    if (allFragmentTrack) {
+      const trackViewport = document.createElement('div');
+      trackViewport.className = 'carousel-track-viewport';
+      if (shouldCloneFragmentSlide) {
+        trackViewport.style.visibility = 'hidden';
+      }
+      trackViewport.append(trackWrapper);
+      block.replaceChildren(trackViewport);
+    } else {
+      block.replaceChildren(trackWrapper);
+    }
   } else {
     block.replaceChildren(...slideEls);
   }
 
-  if (showDots) {
-    block.append(dots);
-  } else if (showArrows) {
-    if (circularOrDefaultImage) {
-      const trackWrapper = block.querySelector('.carousel-track-wrapper');
-      block.replaceChildren(prevArrow, trackWrapper, nextArrow, dots);
+  if (showArrows) {
+    if (arrowTrackVariant) {
+      const trackContainer = allFragmentTrack
+        ? block.querySelector('.carousel-track-viewport')
+        : block.querySelector('.carousel-track-wrapper');
+      block.replaceChildren(prevArrow, trackContainer, nextArrow, dots);
     } else {
       block.append(dots, prevArrow, nextArrow);
     }
+  } else if (showDots) {
+    block.append(dots);
   }
 
   if (seeMoreLink) {
@@ -812,6 +846,21 @@ export default async function decorate(block) {
 
   if (slideEls.length) {
     setActive(0);
+    if (allFragmentTrack && shouldCloneFragmentSlide) {
+      requestAnimationFrame(() => {
+        const trackWrapper = block.querySelector('.carousel-track-wrapper');
+        const trackViewport = block.querySelector('.carousel-track-viewport');
+        if (trackWrapper) {
+          trackWrapper.style.transition = 'none';
+          setCardListTrackPosition(block, trackWrapper, slideEls, 0);
+          trackWrapper.getBoundingClientRect();
+          trackWrapper.style.transition = '';
+        }
+        if (trackViewport) {
+          trackViewport.style.visibility = '';
+        }
+      });
+    }
   }
 
   requestAnimationFrame(() => {
@@ -830,6 +879,7 @@ export default async function decorate(block) {
     || slidesHeroBanner > 0
     || slidesTextAnimation > 0
     || slidesCircularImage > 0
-    || slidesDefaultImage > 0;
+    || slidesDefaultImage > 0
+    || slidesFragment > 0;
   initializeDragSwipe(block, slideEls, setActive, 50, enableLooping);
 }

@@ -39,8 +39,15 @@
     gap: var(--bbl-space-250) 0;
 }
 
-.all-carousel-fragment{
-    margin-bottom: 80px;
+.all-carousel-fragment {
+    margin-bottom: var(--bbl-space-1000);
+}
+
+.carousel-dotted-item .cards-list.carousel {
+    overflow: visible;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
 }
 
 .cards-list:is(.scrollable, .carousel) {
@@ -51,12 +58,6 @@
     padding: 0.625rem 0;
     scroll-snap-type: x mandatory;
     scrollbar-width: thin;
-}
-
-.cards-list.carousel {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    scroll-behavior: smooth;
 }
 
 .cards-list.carousel::-webkit-scrollbar {
@@ -78,7 +79,7 @@
 }
 
 .carousel .cards-list-item {
-    margin-block: 9px 0;
+    margin-block: 0.5625rem 0;
 }
 
 .cards-list-item:has(.cards-list-item-link) {
@@ -87,6 +88,11 @@
 
 .cards-list:is(.scrollable, .carousel) .cards-list-item {
     flex: 0 0 16.875rem;
+    scroll-snap-align: start;
+}
+
+.cards-list:is(.carousel) .cards-list-item {
+    flex: 0 0 17.5rem;
     scroll-snap-align: start;
 }
 
@@ -384,9 +390,13 @@
         gap: 0 var(--bbl-space-250);
     }
 
-    .cards-list:is(.scrollable, .carousel).cards-3 .cards-list-item,
-    .cards-list:is(.scrollable, .carousel).cards-4 .cards-list-item,
-    .cards-list:is(.scrollable, .carousel).cards-1 .cards-list-item {
+    .cards-list:is(.carousel) .cards-list-item {
+        flex: 0 0 13.875rem;
+    }
+
+    .cards-list:is(.scrollablel).cards-3 .cards-list-item,
+    .cards-list:is(.scrollable).cards-4 .cards-list-item,
+    .cards-list:is(.scrollable).cards-1 .cards-list-item {
         flex: 0 0 16.875rem;
     }
 
@@ -458,6 +468,10 @@
         padding: 0;
         scroll-snap-type: none;
         scrollbar-width: none;
+    }
+
+    .cards-list:is(.carousel) .cards-list-item {
+        flex: 0 0 16.25rem;
     }
 
     .cards-list:is(.scrollable, .carousel).center {

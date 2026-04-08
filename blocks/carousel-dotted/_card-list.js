@@ -1,71 +1,118 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { loadFragment } from '../fragment/fragment.js';
 
-function getFragmentPath(cells) {
-  const linkPath = cells
-    .map((cell) => cell.querySelector('a')?.getAttribute('href')?.trim())
-    .find((href) => href);
+const getFragmentPath = (cells) => cells.map((cell) => cell.querySelector('a')?.getAttribute('href')?.trim()).find(Boolean)
+  ?? cells.map((cell) => cell.textContent.trim()).find((text) => text.startsWith('/'))
+  ?? '';
 
-  if (linkPath) return linkPath;
+const getChunkSize = (cardList) => {
+  const isNarrow = window.matchMedia('(max-width: 47.5rem)').matches;
+  const isMultiColumn = cardList.classList.contains('cards-3') || cardList.classList.contains('cards-4');
+  return !isNarrow && isMultiColumn ? 3 : 1;
+};
 
-  return cells.map((cell) => cell.textContent.trim()).find((text) => text.startsWith('/')) || '';
-}
+const chunkItems = (items, size) => Array.from(
+  { length: Math.ceil(items.length / size) },
+  (_, i) => items.slice(
+    i * size,
+    i * size + size,
+  ),
+);
 
-function getChunkSize(cardList) {
-  if (window.matchMedia('(width <= 47.5rem)').matches) return 1;
-
-  if (cardList.classList.contains('cards-3') || cardList.classList.contains('cards-4')) return 3;
-  return 1;
-}
-
-function chunkItems(items, size) {
-  const chunks = [];
-  for (let index = 0; index < items.length; index += size) {
-    chunks.push(items.slice(index, index + size));
-  }
-  return chunks;
-}
-
-function createErrorSlide(row, index, message, doc) {
+const createSlide = (row, index, doc) => {
   const slide = doc.createElement('div');
   slide.className = 'carousel-dotted-item carousel-fragment';
   slide.dataset.index = index;
   moveInstrumentation(row, slide);
+  return slide;
+};
+
+const createErrorSlide = (row, index, message, doc) => {
+  const slide = createSlide(row, index, doc);
   slide.textContent = message;
   return slide;
-}
+};
 
-function createFragmentSlide(row, slideIndex, section, itemsChunk, doc) {
-  const slide = doc.createElement('div');
-  slide.className = 'carousel-dotted-item carousel-fragment';
-  slide.dataset.index = slideIndex;
-  moveInstrumentation(row, slide);
+const createFragmentSlide = (row, slideIndex, section, itemsChunk, doc) => {
+  const slide = createSlide(row, slideIndex, doc);
+  slide.append(...[...section.childNodes].map((node) => node.cloneNode(true)));
 
-  const sectionContent = [...section.childNodes].map((node) => node.cloneNode(true));
-  const clonedCardList = sectionContent.find(
-    (node) => node.nodeType === Node.ELEMENT_NODE && node.matches('.card-list-wrapper'),
-  );
+  const lists = slide.querySelectorAll('.cards-list');
+  const list = lists[lists.length - 1];
+  list?.replaceChildren(...itemsChunk.map((item) => item.cloneNode(true)));
 
-  if (clonedCardList) {
-    const list = clonedCardList.querySelector('.cards-list');
-    if (list) {
-      list.classList.add('fragment-carousel-group');
-      list.replaceChildren(...itemsChunk.map((item) => item.cloneNode(true)));
-    }
+  return slide;
+};
+
+export const getCardListCarouselOffsetForSlide = (block, trackWrapper, slideEl) => {
+  const wrapperWidth = block.querySelector('.carousel-track-wrapper')?.parentElement?.offsetWidth
+    || trackWrapper.offsetWidth;
+  const isMobile = window.matchMedia('(max-width: 47.4375rem)').matches;
+
+  if (!slideEl) return 0;
+
+  if (!isMobile) {
+    return Math.max(0, slideEl.offsetLeft);
   }
 
-  slide.append(...sectionContent);
-  return slide;
-}
+  const targetOffset = slideEl.offsetLeft + (slideEl.offsetWidth / 2)
+    - (wrapperWidth / 2);
+
+  return Math.max(0, targetOffset);
+};
+
+export const getCardListCarouselOffset = (
+  block,
+  trackWrapper,
+  slideEls,
+  index,
+) => getCardListCarouselOffsetForSlide(
+  block,
+  trackWrapper,
+  slideEls[index],
+);
+
+export const setCardListTrackPosition = (block, trackWrapper, slideEls, index) => {
+  const targetOffset = getCardListCarouselOffset(block, trackWrapper, slideEls, index);
+  trackWrapper.style.transform = `translate3d(${-targetOffset}px, 0px, 0px)`;
+};
+
+export const handleCardListLoopTransition = (
+  block,
+  trackWrapper,
+  slideEls,
+  isLoopingForward,
+  isLoopingBackward,
+  shouldCloneFragmentSlide,
+) => {
+  if (!(isLoopingForward || isLoopingBackward) || !shouldCloneFragmentSlide) {
+    return false;
+  }
+
+  const cloneSlide = isLoopingForward
+    ? trackWrapper.lastElementChild
+    : trackWrapper.firstElementChild;
+  const cloneOffset = getCardListCarouselOffsetForSlide(block, trackWrapper, cloneSlide);
+  const resetOffset = isLoopingForward
+    ? getCardListCarouselOffset(block, trackWrapper, slideEls, 0)
+    : getCardListCarouselOffset(block, trackWrapper, slideEls, slideEls.length - 1);
+
+  trackWrapper.style.transform = `translate3d(${-cloneOffset}px, 0px, 0px)`;
+  setTimeout(() => {
+    trackWrapper.style.transition = 'none';
+    trackWrapper.style.transform = `translate3d(${-resetOffset}px, 0px, 0px)`;
+    trackWrapper.getBoundingClientRect();
+    trackWrapper.style.transition = '';
+  }, 700);
+
+  return true;
+};
 
 export default async function buildCardListFragmentSlides(row, index) {
   const doc = row.ownerDocument;
-  const cells = [...row.children];
-  const fragmentPath = getFragmentPath(cells);
+  const fragmentPath = getFragmentPath([...row.children]);
 
-  if (!fragmentPath) {
-    return [createErrorSlide(row, index, 'Missing fragment path', doc)];
-  }
+  if (!fragmentPath) return [createErrorSlide(row, index, 'Missing fragment path', doc)];
 
   const fragment = await loadFragment(fragmentPath);
   const section = fragment?.querySelector(':scope .section');
@@ -76,12 +123,7 @@ export default async function buildCardListFragmentSlides(row, index) {
     return [createErrorSlide(row, index, 'Fragment loaded without card-list content', doc)];
   }
 
-  const chunkSize = getChunkSize(cardList);
-  return chunkItems(items, chunkSize).map((itemsChunk, chunkIndex) => createFragmentSlide(
-    row,
-    index + chunkIndex,
-    section,
-    itemsChunk,
-    doc,
-  ));
+  return chunkItems(items, getChunkSize(cardList)).map(
+    (chunk, i) => createFragmentSlide(row, index + i, section, chunk, doc),
+  );
 }
