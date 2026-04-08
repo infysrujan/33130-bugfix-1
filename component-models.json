@@ -7353,24 +7353,66 @@
     "id": "locate-us",
     "fields": [
       {
+        "component": "select",
+        "name": "locationType",
+        "label": "Location Type",
+        "description": "Choose whether the content is for Thailand or Overseas",
+        "valueType": "string",
+        "value": "thailand",
+        "options": [
+          {
+            "name": "Thailand",
+            "value": "thailand"
+          },
+          {
+            "name": "Overseas",
+            "value": "overseas"
+          }
+        ]
+      },
+      {
         "component": "richtext",
         "name": "serviceOptions",
         "label": "Service Options",
         "description": "RTE content for service options",
-        "valueType": "string"
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
       },
       {
         "component": "text",
         "name": "optionName",
         "label": "Option Name",
         "description": "Name of the service option",
-        "valueType": "string"
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
       },
       {
         "component": "aem-content",
         "name": "fragmentPath",
         "label": "Fragment Path",
-        "description": "Fragment path for the selected option"
+        "description": "Fragment path for the selected option",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
       }
     ]
   },
