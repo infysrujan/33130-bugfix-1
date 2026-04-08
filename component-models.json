@@ -7350,6 +7350,31 @@
     ]
   },
   {
+    "id": "locate-us",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "serviceOptions",
+        "label": "Service Options",
+        "description": "RTE content for service options",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "optionName",
+        "label": "Option Name",
+        "description": "Name of the service option",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "fragmentPath",
+        "label": "Fragment Path",
+        "description": "Fragment path for the selected option"
+      }
+    ]
+  },
+  {
     "id": "location",
     "fields": [
       {
