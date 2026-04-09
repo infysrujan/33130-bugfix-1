@@ -46,8 +46,7 @@
       "social-icons",
       "card-list",
       "privacy-modal",
-      "external-redirect-popup",
-      "video"
+      "external-redirect-popup"
     ]
   },
   {
@@ -326,12 +325,6 @@
     "id": "top-nav",
     "components": [
       "top-nav-link"
-    ]
-  },
-  {
-    "id": "video",
-    "components": [
-      "video-item"
     ]
   }
 ]
