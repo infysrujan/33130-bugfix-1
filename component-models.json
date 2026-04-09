@@ -9309,6 +9309,139 @@
     ]
   },
   {
+    "id": "video",
+    "fields": []
+  },
+  {
+    "id": "video-item",
+    "fields": [
+      {
+        "component": "select",
+        "name": "videoSource",
+        "label": "Video Source",
+        "valueType": "string",
+        "value": "youtube",
+        "options": [
+          {
+            "name": "YouTube",
+            "value": "youtube"
+          },
+          {
+            "name": "DAM (Media Library)",
+            "value": "dam"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "youtubeUrl",
+        "label": "YouTube URL",
+        "valueType": "string",
+        "description": "Full YouTube video URL e.g. https://www.youtube.com/watch?v=XXXX",
+        "condition": {
+          "===": [
+            {
+              "var": "videoSource"
+            },
+            "youtube"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "orientation",
+        "label": "Orientation",
+        "valueType": "string",
+        "value": "landscape",
+        "options": [
+          {
+            "name": "Landscape (16:9)",
+            "value": "landscape"
+          },
+          {
+            "name": "Portrait (9:16)",
+            "value": "portrait"
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "videoSource"
+            },
+            "youtube"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "damVideo",
+        "label": "DAM Video File",
+        "valueType": "string",
+        "multi": false,
+        "description": "Select video file from DAM (mp4/webm)",
+        "condition": {
+          "===": [
+            {
+              "var": "videoSource"
+            },
+            "dam"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "posterImage",
+        "label": "Poster / Thumbnail Image",
+        "valueType": "string",
+        "multi": false,
+        "description": "Image shown before the video plays. For YouTube, auto-fetched if not set."
+      },
+      {
+        "component": "text",
+        "name": "posterAlt",
+        "label": "Poster Image Alt Text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "videoTitle",
+        "label": "Video Title",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "videoDescription",
+        "label": "Video Description",
+        "valueType": "string",
+        "value": ""
+      },
+      {
+        "component": "boolean",
+        "name": "autoplay",
+        "label": "Autoplay",
+        "description": "Automatically play on load. Forces mute due to browser policy.",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "boolean",
+        "name": "muted",
+        "label": "Muted",
+        "description": "Start video with sound off.",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "boolean",
+        "name": "loop",
+        "label": "Loop",
+        "description": "Continuously loop the video.",
+        "valueType": "boolean",
+        "value": false
+      }
+    ]
+  },
+  {
     "id": "warning-card",
     "fields": [
       {
