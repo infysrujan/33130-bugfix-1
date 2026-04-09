@@ -64,7 +64,12 @@
           "valueType": "string",
           "description": "Full YouTube video URL e.g. https://www.youtube.com/watch?v=XXXX",
           "condition": {
-            "===": [{ "var": "videoSource" }, "youtube"]
+            "===": [
+              {
+                "var": "videoSource"
+              },
+              "youtube"
+            ]
           }
         },
         {
@@ -84,7 +89,12 @@
             }
           ],
           "condition": {
-            "===": [{ "var": "videoSource" }, "youtube"]
+            "===": [
+              {
+                "var": "videoSource"
+              },
+              "youtube"
+            ]
           }
         },
         {
@@ -95,7 +105,12 @@
           "multi": false,
           "description": "Select video file from DAM (mp4/webm)",
           "condition": {
-            "===": [{ "var": "videoSource" }, "dam"]
+            "===": [
+              {
+                "var": "videoSource"
+              },
+              "dam"
+            ]
           }
         },
         {
