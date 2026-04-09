@@ -1479,6 +1479,56 @@
           }
         },
         {
+          "title": "Video",
+          "id": "video",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Video",
+                  "model": "video-block",
+                  ":items": {
+                    "video-item": {
+                      "name": "Video Item",
+                      "model": "video-item",
+                      "videoSource": "youtube",
+                      "videoTitle": "",
+                      "videoDescription": "",
+                      "youtubeUrl": "",
+                      "youtubeId": "",
+                      "orientation": "landscape",
+                      "damVideoPath": "",
+                      "posterImage": "",
+                      "posterAltText": "",
+                      "overrideAutoplay": false,
+                      "overrideMuted": false,
+                      "overrideLoop": false,
+                      "hideFromPlaylist": false,
+                      "trackingLabel": ""
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Video Item",
+          "id": "video-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Video Item",
+                  "model": "video-item"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Warning Card",
           "id": "warning-card",
           "plugins": {
