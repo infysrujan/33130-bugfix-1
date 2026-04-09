@@ -3,6 +3,7 @@
     font-weight: var(--bbl-font-family-regular);
     line-height: 1.375rem;
     letter-spacing: -0.0125rem;
+    
 }
 
 .cards-list-remark p,
@@ -120,6 +121,8 @@
     margin-inline: auto;
     transition: all 0.2s;
 }
+
+
 
 .cards-list-image:is(.cards-list-image-card, .cards-list-image-full) {
     width: 100%;
