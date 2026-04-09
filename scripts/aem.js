@@ -310,7 +310,11 @@ function getMetadata(name, doc = document) {
 }
 
 /**
- * Returns a picture element with webp and fallbacks
+ * Returns a picture element with webp and fallbacks.
+ * - For standard EDS / .aem.page media URLs: uses width/format/optimize=medium.
+ * - For Dynamic Media URLs (Scene7 or DM OpenAPI): preserves the full URL (incl. Smart Crop)
+ *   and does not try to convert it to .aem.page media URLs.
+ *
  * @param {string} src The image URL
  * @param {string} [alt] The image alternative text
  * @param {boolean} [eager] Set loading attribute to eager
@@ -321,35 +325,66 @@ function createOptimizedPicture(
   src,
   alt = '',
   eager = false,
-  breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }],
+  breakpoints = [
+    { media: '(min-width: 600px)', width: '2000' },
+    { width: '750' },
+  ],
 ) {
   const url = new URL(src, window.location.href);
   const picture = document.createElement('picture');
-  const { pathname } = url;
-  const ext = pathname.substring(pathname.lastIndexOf('.') + 1);
 
-  // webp
+  const isScene7 =
+    /scene7\.com$/i.test(url.hostname) && url.pathname.includes('/is/image/');
+  const isDmOpenApi =
+    url.hostname.includes('adobeaemcloud.com') && url.pathname.includes('/adobe/assets/');
+
+  // 1) Dynamic Media (Scene7 or DM OpenAPI): keep the URL exactly as provided
+  //    so Smart Crop and other DM modifiers are preserved.
+  if (isScene7 || isDmOpenApi) {
+    // You can extend this branch later to add multiple <source> elements if desired.
+    const img = document.createElement('img');
+    img.setAttribute('loading', eager ? 'eager' : 'lazy');
+    img.setAttribute('alt', alt);
+    img.src = src;
+    picture.appendChild(img);
+    return picture;
+  }
+
+  // 2) Default EDS / .aem.page media handling (what you had before)
+  const { pathname } = url;
+  const ext = pathname.substring(pathname.lastIndexOf('.') + 1) || 'jpg';
+
+  // webp sources
   breakpoints.forEach((br) => {
     const source = document.createElement('source');
     if (br.media) source.setAttribute('media', br.media);
     source.setAttribute('type', 'image/webp');
-    source.setAttribute('srcset', `${pathname}?width=${br.width}&format=webply&optimize=medium`);
+    source.setAttribute(
+      'srcset',
+      `${pathname}?width=${br.width}&format=webp&optimize=medium`,
+    );
     picture.appendChild(source);
   });
 
-  // fallback
+  // fallback sources + img
   breakpoints.forEach((br, i) => {
     if (i < breakpoints.length - 1) {
       const source = document.createElement('source');
       if (br.media) source.setAttribute('media', br.media);
-      source.setAttribute('srcset', `${pathname}?width=${br.width}&format=${ext}&optimize=medium`);
+      source.setAttribute(
+        'srcset',
+        `${pathname}?width=${br.width}&format=${ext}&optimize=medium`,
+      );
       picture.appendChild(source);
     } else {
       const img = document.createElement('img');
       img.setAttribute('loading', eager ? 'eager' : 'lazy');
       img.setAttribute('alt', alt);
+      img.setAttribute(
+        'src',
+        `${pathname}?width=${br.width}&format=${ext}&optimize=medium`,
+      );
       picture.appendChild(img);
-      img.setAttribute('src', `${pathname}?width=${br.width}&format=${ext}&optimize=medium`);
     }
   });
 
