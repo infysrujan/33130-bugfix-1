@@ -61,8 +61,30 @@ export default function decorate(block) {
     link.className = 'video-cta-link';
     link.textContent = ctaButtonName;
     if (ctaButtonTitle) link.title = ctaButtonTitle;
-    link.setAttribute('target', '_blank');
-    link.setAttribute('rel', 'noopener noreferrer');
+
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      // Open a new window with an HTML5 video player instead of triggering a download
+      const newWin = window.open('', '_blank');
+      if (newWin) {
+        newWin.document.open();
+        newWin.document.write([
+          '<!DOCTYPE html><html><head><meta charset="UTF-8">',
+          `<title>${ctaButtonName}</title>`,
+          '<style>',
+          '* { margin: 0; padding: 0; box-sizing: border-box; }',
+          'body { background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }',
+          'video { width: 100%; max-height: 100vh; outline: none; }',
+          '</style></head><body>',
+          `<video src="${damPath}" controls autoplay playsinline></video>`,
+          '</body></html>',
+        ].join(''));
+        newWin.document.close();
+      } else {
+        // Fallback if popup was blocked
+        window.open(damPath, '_blank');
+      }
+    });
 
     ctaContainer.appendChild(link);
     wrapper.appendChild(ctaContainer);
