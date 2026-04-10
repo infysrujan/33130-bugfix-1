@@ -7,19 +7,16 @@ function getYouTubeId(url) {
 export default function decorate(block) {
   const rows = [...block.children];
 
-  // Row 0: videoType (select field value rendered as text)
-  const videoTypeCell = rows[0]?.querySelector('div');
-  const videoType = videoTypeCell?.textContent?.trim();
+  // Row 0: videoType (select value)
+  const videoType = rows[0]?.querySelector('div')?.textContent?.trim();
 
-  // Row 1: either YouTube URL (text) or DAM asset path (anchor link)
-  const contentRow = rows[1];
-  const contentLink = contentRow?.querySelector('a');
-  const contentText = contentRow?.querySelector('div')?.textContent?.trim();
-  const contentValue = contentLink?.href || contentText || '';
-
-  // Rows 2 & 3: CTA button name and title (only present when videoType === 'cta')
-  const ctaButtonName = rows[2]?.querySelector('div')?.textContent?.trim() || 'Watch Video';
-  const ctaButtonTitle = rows[3]?.querySelector('div')?.textContent?.trim() || '';
+  // AEM renders ALL model fields as rows in order, even conditionally hidden ones.
+  // Field order: videoType, youtubeUrl, damAssetPath, ctaButtonName, ctaButtonTitle
+  // rows[0] = videoType
+  // rows[1] = youtubeUrl  (empty when videoType=cta)
+  // rows[2] = damAssetPath (empty when videoType=videourl)
+  // rows[3] = ctaButtonName (empty when videoType=videourl)
+  // rows[4] = ctaButtonTitle (empty when videoType=videourl)
 
   block.textContent = '';
 
@@ -27,7 +24,12 @@ export default function decorate(block) {
   wrapper.className = 'video-wrapper';
 
   if (videoType === 'videourl') {
-    const ytId = getYouTubeId(contentValue);
+    const youtubeRow = rows[1];
+    const youtubeLink = youtubeRow?.querySelector('a');
+    const youtubeText = youtubeRow?.querySelector('div')?.textContent?.trim();
+    const youtubeUrl = youtubeLink?.getAttribute('href') || youtubeText || '';
+
+    const ytId = getYouTubeId(youtubeUrl);
     if (ytId) {
       const embedContainer = document.createElement('div');
       embedContainer.className = 'video-embed';
@@ -43,11 +45,19 @@ export default function decorate(block) {
       wrapper.appendChild(embedContainer);
     }
   } else if (videoType === 'cta') {
+    const damRow = rows[2];
+    const damLink = damRow?.querySelector('a');
+    const damText = damRow?.querySelector('div')?.textContent?.trim();
+    const damPath = damLink?.getAttribute('href') || damText || '';
+
+    const ctaButtonName = rows[3]?.querySelector('div')?.textContent?.trim() || 'Watch Video';
+    const ctaButtonTitle = rows[4]?.querySelector('div')?.textContent?.trim() || '';
+
     const ctaContainer = document.createElement('div');
     ctaContainer.className = 'video-cta';
 
     const link = document.createElement('a');
-    link.href = contentValue || '#';
+    link.href = damPath || '#';
     link.className = 'video-cta-link';
     link.textContent = ctaButtonName;
     if (ctaButtonTitle) link.title = ctaButtonTitle;
