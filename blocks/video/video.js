@@ -43,19 +43,19 @@ export default function decorate(block) {
       wrapper.appendChild(embedContainer);
     }
   } else if (videoType === 'cta') {
-    if (contentValue) {
-      const ctaContainer = document.createElement('div');
-      ctaContainer.className = 'video-cta';
+    const ctaContainer = document.createElement('div');
+    ctaContainer.className = 'video-cta';
 
-      const link = document.createElement('a');
-      link.href = contentValue;
-      link.className = 'video-cta-link';
-      link.textContent = ctaButtonName;
-      if (ctaButtonTitle) link.title = ctaButtonTitle;
+    const link = document.createElement('a');
+    link.href = contentValue || '#';
+    link.className = 'video-cta-link';
+    link.textContent = ctaButtonName;
+    if (ctaButtonTitle) link.title = ctaButtonTitle;
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener noreferrer');
 
-      ctaContainer.appendChild(link);
-      wrapper.appendChild(ctaContainer);
-    }
+    ctaContainer.appendChild(link);
+    wrapper.appendChild(ctaContainer);
   }
 
   block.appendChild(wrapper);
