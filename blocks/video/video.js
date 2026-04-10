@@ -17,6 +17,10 @@ export default function decorate(block) {
   const contentText = contentRow?.querySelector('div')?.textContent?.trim();
   const contentValue = contentLink?.href || contentText || '';
 
+  // Rows 2 & 3: CTA button name and title (only present when videoType === 'cta')
+  const ctaButtonName = rows[2]?.querySelector('div')?.textContent?.trim() || 'Watch Video';
+  const ctaButtonTitle = rows[3]?.querySelector('div')?.textContent?.trim() || '';
+
   block.textContent = '';
 
   const wrapper = document.createElement('div');
@@ -46,7 +50,8 @@ export default function decorate(block) {
       const link = document.createElement('a');
       link.href = contentValue;
       link.className = 'video-cta-link';
-      link.textContent = 'Watch Video';
+      link.textContent = ctaButtonName;
+      if (ctaButtonTitle) link.title = ctaButtonTitle;
 
       ctaContainer.appendChild(link);
       wrapper.appendChild(ctaContainer);

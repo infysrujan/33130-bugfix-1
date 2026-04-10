@@ -65,6 +65,36 @@
               "cta"
             ]
           }
+        },
+        {
+          "component": "text",
+          "name": "ctaButtonName",
+          "label": "Button Name",
+          "valueType": "string",
+          "description": "The visible label displayed on the CTA button",
+          "condition": {
+            "===": [
+              {
+                "var": "videoType"
+              },
+              "cta"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "ctaButtonTitle",
+          "label": "Button Title",
+          "valueType": "string",
+          "description": "Accessibility title attribute for the CTA button (tooltip on hover)",
+          "condition": {
+            "===": [
+              {
+                "var": "videoType"
+              },
+              "cta"
+            ]
+          }
         }
       ]
     }
