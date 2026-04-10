@@ -9,23 +9,7 @@
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
               "name": "Video",
-              "model": "video",
-              "filter": "video"
-            }
-          }
-        }
-      }
-    },
-    {
-      "title": "Video Item",
-      "id": "video-item",
-      "plugins": {
-        "xwalk": {
-          "page": {
-            "resourceType": "core/franklin/components/block/v1/block/item",
-            "template": {
-              "name": "Video Item",
-              "model": "video-item"
+              "model": "video"
             }
           }
         }
@@ -35,25 +19,21 @@
   "models": [
     {
       "id": "video",
-      "fields": []
-    },
-    {
-      "id": "video-item",
       "fields": [
         {
           "component": "select",
-          "name": "videoSource",
-          "label": "Video Source",
+          "name": "videoType",
+          "label": "Video Type",
           "valueType": "string",
-          "value": "youtube",
+          "description": "Select whether to embed a YouTube video URL or link to a DAM asset via CTA",
           "options": [
             {
-              "name": "YouTube",
-              "value": "youtube"
+              "name": "Video URL",
+              "value": "videourl"
             },
             {
-              "name": "DAM (Media Library)",
-              "value": "dam"
+              "name": "CTA",
+              "value": "cta"
             }
           ]
         },
@@ -62,117 +42,32 @@
           "name": "youtubeUrl",
           "label": "YouTube URL",
           "valueType": "string",
-          "description": "Full YouTube video URL e.g. https://www.youtube.com/watch?v=XXXX",
+          "description": "Enter the full YouTube video URL (e.g. https://www.youtube.com/watch?v=xxxxx)",
           "condition": {
             "===": [
               {
-                "var": "videoSource"
+                "var": "videoType"
               },
-              "youtube"
+              "videourl"
             ]
           }
         },
         {
-          "component": "select",
-          "name": "orientation",
-          "label": "Orientation",
-          "valueType": "string",
-          "value": "landscape",
-          "options": [
-            {
-              "name": "Landscape (16:9)",
-              "value": "landscape"
-            },
-            {
-              "name": "Portrait (9:16)",
-              "value": "portrait"
-            }
-          ],
+          "component": "aem-content",
+          "name": "damAssetPath",
+          "label": "DAM Asset Path",
+          "description": "Select the video or media asset from the DAM",
           "condition": {
             "===": [
               {
-                "var": "videoSource"
+                "var": "videoType"
               },
-              "youtube"
+              "cta"
             ]
           }
-        },
-        {
-          "component": "reference",
-          "name": "damVideo",
-          "label": "DAM Video File",
-          "valueType": "string",
-          "multi": false,
-          "description": "Select video file from DAM (mp4/webm)",
-          "condition": {
-            "===": [
-              {
-                "var": "videoSource"
-              },
-              "dam"
-            ]
-          }
-        },
-        {
-          "component": "reference",
-          "name": "posterImage",
-          "label": "Poster / Thumbnail Image",
-          "valueType": "string",
-          "multi": false,
-          "description": "Image shown before the video plays. For YouTube, auto-fetched if not set."
-        },
-        {
-          "component": "text",
-          "name": "posterAlt",
-          "label": "Poster Image Alt Text",
-          "valueType": "string"
-        },
-        {
-          "component": "text",
-          "name": "videoTitle",
-          "label": "Video Title",
-          "valueType": "string"
-        },
-        {
-          "component": "richtext",
-          "name": "videoDescription",
-          "label": "Video Description",
-          "valueType": "string",
-          "value": ""
-        },
-        {
-          "component": "boolean",
-          "name": "autoplay",
-          "label": "Autoplay",
-          "description": "Automatically play on load. Forces mute due to browser policy.",
-          "valueType": "boolean",
-          "value": false
-        },
-        {
-          "component": "boolean",
-          "name": "muted",
-          "label": "Muted",
-          "description": "Start video with sound off.",
-          "valueType": "boolean",
-          "value": false
-        },
-        {
-          "component": "boolean",
-          "name": "loop",
-          "label": "Loop",
-          "description": "Continuously loop the video.",
-          "valueType": "boolean",
-          "value": false
         }
       ]
     }
   ],
-  "filters": [
-    {
-      "id": "video",
-      "components": [
-        "video-item"
-      ]
-    }
-  ]
+  "filters": []
 }
