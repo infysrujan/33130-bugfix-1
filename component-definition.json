@@ -144,6 +144,53 @@
           }
         },
         {
+          "title": "Card Suggestor",
+          "id": "card-suggestor",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Card Suggestor",
+                  "model": "card-suggestor",
+                  "filter": "card-suggestor"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Card Suggestor Filter Group",
+          "id": "card-suggestor-filter-group",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Card Suggestor Filter Group",
+                  "model": "card-suggestor-filter-group",
+                  "filter": "card-suggestor-filter-group"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Card Suggestor Filter Field",
+          "id": "card-suggestor-filter-field",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Card Suggestor Filter Field",
+                  "model": "card-suggestor-filter-field"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Cards Product",
           "id": "cards-product",
           "plugins": {

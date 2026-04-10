@@ -49,7 +49,6 @@ class TermsAndConditions {
   handleScroll() {
     const textWrapper = this.fieldDiv.querySelector('.plain-text-wrapper');
     const checkbox = this.fieldDiv.querySelector('input[type="checkbox"]');
-    
     if (!textWrapper || !checkbox) {
       // eslint-disable-next-line no-console
       console.debug('TnC: Missing textWrapper or checkbox element');

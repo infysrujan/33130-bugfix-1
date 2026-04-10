@@ -665,6 +665,187 @@
     ]
   },
   {
+    "id": "card-suggestor",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "cta1Link",
+        "label": "CTA 1 Link",
+        "description": "Destination URL for the primary CTA button"
+      },
+      {
+        "component": "text",
+        "name": "cta1Label",
+        "label": "CTA 1 Label",
+        "description": "Label for the primary CTA button (e.g. Apply)",
+        "valueType": "string",
+        "value": "Apply"
+      },
+      {
+        "component": "select",
+        "name": "cta1Type",
+        "label": "CTA 1 Type",
+        "description": "Button style variant for CTA 1",
+        "valueType": "string",
+        "value": "primary",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "name": "cta2Link",
+        "label": "CTA 2 Link",
+        "description": "Destination URL for the secondary CTA button"
+      },
+      {
+        "component": "text",
+        "name": "cta2Label",
+        "label": "CTA 2 Label",
+        "description": "Label for the secondary CTA button (e.g. Start Over)",
+        "valueType": "string",
+        "value": "Start Over"
+      },
+      {
+        "component": "select",
+        "name": "cta2Type",
+        "label": "CTA 2 Type",
+        "description": "Button style variant for CTA 2",
+        "valueType": "string",
+        "value": "secondary",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "name": "showDisclaimer",
+        "label": "Show Disclaimer",
+        "description": "Toggle to show or hide the disclaimer text below the CTA buttons",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "description": "Disclaimer text shown below the CTA buttons",
+        "valueType": "string",
+        "condition": {
+          "!!": [
+            {
+              "var": "showDisclaimer"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "card-suggestor-filter-group",
+    "fields": [
+      {
+        "component": "text",
+        "name": "filterGroupLabel",
+        "label": "Filter Group Label",
+        "description": "Label for this filter group (e.g. Monthly Income Selection)",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "select",
+        "name": "filterGroupType",
+        "label": "Filter Group Type",
+        "description": "Selection type for this filter group",
+        "valueType": "string",
+        "value": "single",
+        "options": [
+          {
+            "name": "Single Select",
+            "value": "single"
+          },
+          {
+            "name": "Multi Select",
+            "value": "multi"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "maxSelections",
+        "label": "Max Selections",
+        "description": "Maximum number of options the user can select (applies to Multi Select only)",
+        "valueType": "number",
+        "condition": {
+          "===": [
+            {
+              "var": "filterGroupType"
+            },
+            "multi"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "card-suggestor-filter-field",
+    "fields": [
+      {
+        "component": "text",
+        "name": "filterFieldLabel",
+        "label": "Filter Field Label",
+        "description": "Display label for this filter option (e.g. 15,000 – 49,999 Baht)",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "filterFieldValue",
+        "label": "Filter Field Value",
+        "description": "Programmatic value used for filtering logic (e.g. 15000-49999)",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "reference",
+        "name": "filterFieldIcon",
+        "label": "Filter Field Icon",
+        "description": "DAM path to the icon image for this filter option (optional)",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "filterFieldIconAlt",
+        "label": "Filter Field Icon Alt Text",
+        "description": "Alt text for the filter option icon",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "product-card",
     "fields": [
       {
@@ -2486,11 +2667,11 @@
         "collapsible": false,
         "fields": [
           {
-              "component": "text",
-              "name": "title",
-              "label": "Form Title",
-              "valueType": "string"
-            },
+            "component": "text",
+            "name": "title",
+            "label": "Form Title",
+            "valueType": "string"
+          },
           {
             "component": "text",
             "name": "style",
