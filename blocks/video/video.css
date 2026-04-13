@@ -11,7 +11,8 @@
   background-color: #000;
 }
 
-.video .video-embed iframe {
+.video .video-embed iframe,
+.video .video-embed video {
   position: absolute;
   inset: 0;
   width: 100%;
