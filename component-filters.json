@@ -58,7 +58,9 @@
   },
   {
     "id": "card-suggestor",
-    "components": []
+    "components": [
+      "filter-group"
+    ]
   },
   {
     "id": "cards-product",

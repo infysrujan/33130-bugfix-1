@@ -1,14 +1,30 @@
 {
   "definitions": [
     {
-      "title": "Card Suggester",
+      "title": "Card Suggestor",
       "id": "card-suggestor",
       "plugins": {
         "xwalk": {
           "page": {
-            "resourceType": "core/franklin/components/card-suggestor/v1/card-suggestor",
+            "resourceType": "core/franklin/components/block/v1/block",
             "template": {
-              "model": "card-suggestor"
+              "name": "Card Suggestor",
+              "filter": "card-suggestor"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Filter Group",
+      "id": "filter-group",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Filter Group",
+              "model": "filter-group"
             }
           }
         }
@@ -17,332 +33,61 @@
   ],
   "models": [
     {
-      "id": "card-suggestor",
+      "id": "filter-group",
       "fields": [
         {
           "component": "text",
-          "name": "section-title",
-          "label": "Section Title",
-          "description": "Main heading for the card suggester section",
+          "name": "group-type",
+          "label": "Group Type",
+          "description": "Type of filter group (income, benefits, lifestyles, cta, disclaimer)",
           "required": true,
           "valueType": "string"
         },
         {
-          "component": "container",
-          "name": "income-filter-group",
-          "label": "Monthly Income Selection",
-          "description": "Filter group for monthly income selection",
-          "fields": [
-            {
-              "component": "text",
-              "name": "income-group-label",
-              "label": "Income Group Label",
-              "description": "Label for the monthly income filter group",
-              "required": true,
-              "valueType": "string"
-            },
-            {
-              "component": "multifield",
-              "name": "income-options",
-              "label": "Income Options",
-              "description": "List of monthly income range options",
-              "fields": [
-                {
-                  "component": "text",
-                  "name": "income-label",
-                  "label": "Income Range Label",
-                  "description": "Label for the income range option",
-                  "required": true,
-                  "valueType": "string"
-                },
-                {
-                  "component": "text",
-                  "name": "income-value",
-                  "label": "Income Value",
-                  "description": "Value identifier for the income range",
-                  "required": true,
-                  "valueType": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "component": "container",
-          "name": "benefits-filter-group",
-          "label": "Benefits Selection Filter",
-          "description": "Filter group for benefits selection",
-          "fields": [
-            {
-              "component": "text",
-              "name": "benefits-group-label",
-              "label": "Benefits Group Label",
-              "description": "Label for the benefits filter group",
-              "required": true,
-              "valueType": "string"
-            },
-            {
-              "component": "multifield",
-              "name": "benefits-options",
-              "label": "Benefits Options",
-              "description": "List of benefit options with icons",
-              "fields": [
-                {
-                  "component": "text",
-                  "name": "benefit-label",
-                  "label": "Benefit Label",
-                  "description": "Label for the benefit option",
-                  "required": true,
-                  "valueType": "string"
-                },
-                {
-                  "component": "text",
-                  "name": "benefit-value",
-                  "label": "Benefit Value",
-                  "description": "Value identifier for the benefit",
-                  "required": true,
-                  "valueType": "string"
-                },
-                {
-                  "component": "reference",
-                  "name": "benefit-icon",
-                  "label": "Benefit Icon",
-                  "description": "DAM path for the benefit icon",
-                  "required": true,
-                  "valueType": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "component": "container",
-          "name": "lifestyles-filter-group",
-          "label": "Lifestyles Selection",
-          "description": "Filter group for lifestyle selection (up to 3 options)",
-          "fields": [
-            {
-              "component": "text",
-              "name": "lifestyles-group-label",
-              "label": "Lifestyles Group Label",
-              "description": "Label for the lifestyles filter group",
-              "required": true,
-              "valueType": "string"
-            },
-            {
-              "component": "text",
-              "name": "lifestyles-instruction",
-              "label": "Selection Instruction",
-              "description": "Instruction text for lifestyle selection (e.g., Select up to 3 options)",
-              "required": false,
-              "valueType": "string"
-            },
-            {
-              "component": "number",
-              "name": "max-selections",
-              "label": "Maximum Selections",
-              "description": "Maximum number of lifestyle options that can be selected",
-              "required": true,
-              "valueType": "number",
-              "min": 1,
-              "max": 10
-            },
-            {
-              "component": "multifield",
-              "name": "lifestyle-options",
-              "label": "Lifestyle Options",
-              "description": "List of lifestyle options with icons",
-              "fields": [
-                {
-                  "component": "text",
-                  "name": "lifestyle-label",
-                  "label": "Lifestyle Label",
-                  "description": "Label for the lifestyle option",
-                  "required": true,
-                  "valueType": "string"
-                },
-                {
-                  "component": "text",
-                  "name": "lifestyle-value",
-                  "label": "Lifestyle Value",
-                  "description": "Value identifier for the lifestyle",
-                  "required": true,
-                  "valueType": "string"
-                },
-                {
-                  "component": "reference",
-                  "name": "lifestyle-icon",
-                  "label": "Lifestyle Icon",
-                  "description": "DAM path for the lifestyle icon",
-                  "required": true,
-                  "valueType": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "component": "container",
-          "name": "cta-section",
-          "label": "Call-to-Action Section",
-          "description": "Primary and secondary action buttons",
-          "fields": [
-            {
-              "component": "text",
-              "name": "primary-cta-label",
-              "label": "Primary CTA Label",
-              "description": "Label for the primary call-to-action button",
-              "required": true,
-              "valueType": "string"
-            },
-            {
-              "component": "text",
-              "name": "primary-cta-action",
-              "label": "Primary CTA Action",
-              "description": "Action identifier for the primary CTA",
-              "required": false,
-              "valueType": "string"
-            },
-            {
-              "component": "text",
-              "name": "secondary-cta-label",
-              "label": "Secondary CTA Label",
-              "description": "Label for the secondary call-to-action button",
-              "required": true,
-              "valueType": "string"
-            },
-            {
-              "component": "text",
-              "name": "secondary-cta-action",
-              "label": "Secondary CTA Action",
-              "description": "Action identifier for the secondary CTA",
-              "required": false,
-              "valueType": "string"
-            }
-          ]
-        },
-        {
-          "component": "container",
-          "name": "disclaimer-section",
-          "label": "Disclaimer Section",
-          "description": "Disclaimer checkbox and text content",
-          "fields": [
-            {
-              "component": "boolean",
-              "name": "show-disclaimer-checkbox",
-              "label": "Show Disclaimer Checkbox",
-              "description": "Enable/disable the disclaimer checkbox option",
-              "required": false,
-              "valueType": "boolean"
-            },
-            {
-              "component": "text",
-              "name": "disclaimer-checkbox-label",
-              "label": "Disclaimer Checkbox Label",
-              "description": "Label for the disclaimer visibility checkbox",
-              "required": false,
-              "valueType": "string",
-              "condition": {
-                "===": [
-                  {
-                    "var": "show-disclaimer-checkbox"
-                  },
-                  true
-                ]
-              }
-            },
-            {
-              "component": "richtext",
-              "name": "disclaimer-text",
-              "label": "Disclaimer Text",
-              "description": "Disclaimer content text",
-              "required": true,
-              "valueType": "string"
-            },
-            {
-              "component": "boolean",
-              "name": "disclaimer-visible-default",
-              "label": "Disclaimer Visible by Default",
-              "description": "Whether the disclaimer should be visible by default",
-              "required": false,
-              "valueType": "boolean"
-            }
-          ]
-        },
-        {
-          "component": "multiselect",
-          "name": "style",
-          "label": "Style Options",
-          "description": "Visual styling options for the card suggester",
-          "valueType": "string",
-          "required": false,
-          "options": [
-            {
-              "name": "Layout",
-              "children": [
-                {
-                  "name": "Compact Layout",
-                  "value": "compact"
-                },
-                {
-                  "name": "Extended Layout",
-                  "value": "extended"
-                },
-                {
-                  "name": "Card Layout",
-                  "value": "card-layout"
-                }
-              ]
-            },
-            {
-              "name": "Filter Display",
-              "children": [
-                {
-                  "name": "Radio Buttons",
-                  "value": "radio-filters"
-                },
-                {
-                  "name": "Checkboxes",
-                  "value": "checkbox-filters"
-                },
-                {
-                  "name": "Button Groups",
-                  "value": "button-filters"
-                }
-              ]
-            },
-            {
-              "name": "Theme",
-              "children": [
-                {
-                  "name": "Primary Theme",
-                  "value": "theme-primary"
-                },
-                {
-                  "name": "Secondary Theme",
-                  "value": "theme-secondary"
-                },
-                {
-                  "name": "Accent Theme",
-                  "value": "theme-accent"
-                }
-              ]
-            }
-          ]
-        },
-        {
           "component": "text",
-          "name": "form-id",
-          "label": "Form Identifier",
-          "description": "Unique identifier for the card suggester form",
+          "name": "group-label",
+          "label": "Group Label",
+          "description": "Label for the filter group",
           "required": false,
           "valueType": "string"
         },
         {
           "component": "text",
-          "name": "analytics-category",
-          "label": "Analytics Category",
-          "description": "Analytics category for tracking user interactions",
+          "name": "option-label",
+          "label": "Option Label",
+          "description": "Label for individual option",
+          "required": false,
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "option-value",
+          "label": "Option Value",
+          "description": "Value for individual option",
+          "required": false,
+          "valueType": "string"
+        },
+        {
+          "component": "reference",
+          "name": "option-icon",
+          "label": "Option Icon",
+          "description": "DAM path for option icon",
+          "required": false,
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "action-type",
+          "label": "Action Type",
+          "description": "Action identifier for CTAs",
+          "required": false,
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "content",
+          "label": "Content",
+          "description": "Rich text content (for disclaimer)",
           "required": false,
           "valueType": "string"
         }
@@ -352,7 +97,9 @@
   "filters": [
     {
       "id": "card-suggestor",
-      "components": []
+      "components": [
+        "filter-group"
+      ]
     }
   ]
 }
