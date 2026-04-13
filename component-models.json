@@ -9309,6 +9309,61 @@
     ]
   },
   {
+    "id": "video",
+    "fields": [
+      {
+        "component": "select",
+        "name": "mediaType",
+        "label": "Media Type",
+        "description": "Choose how to provide the video.",
+        "valueType": "string",
+        "required": true,
+        "value": "youtube-url",
+        "options": [
+          {
+            "name": "Video URL",
+            "value": "youtube-url"
+          },
+          {
+            "name": "Image",
+            "value": "image-upload"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "youtubeUrl",
+        "label": "YouTube URL",
+        "description": "Enter the YouTube video URL.",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "youtube-url"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "videoAsset",
+        "label": "Video Asset",
+        "description": "Choose or upload a video file.",
+        "valueType": "string",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "image-upload"
+          ]
+        }
+      }
+    ]
+  },
+  {
     "id": "warning-card",
     "fields": [
       {

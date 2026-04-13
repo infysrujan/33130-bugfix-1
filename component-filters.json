@@ -326,5 +326,11 @@
     "components": [
       "top-nav-link"
     ]
+  },
+  {
+    "id": "video",
+    "components": [
+      "video"
+    ]
   }
 ]
