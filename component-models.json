@@ -9392,10 +9392,11 @@
         }
       },
       {
-        "component": "aem-content",
+        "component": "text",
+        "valueType": "string",
         "name": "imageVideoDamPath",
         "label": "Video DAM Asset Path",
-        "description": "Select the video asset from the DAM to open when the image is clicked",
+        "description": "Paste the DAM path of the video (e.g. /content/dam/bbl_images/video.mp4)",
         "condition": {
           "===": [
             {

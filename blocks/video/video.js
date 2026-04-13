@@ -94,9 +94,7 @@ export default function decorate(block) {
     ctaContainer.appendChild(link);
     wrapper.appendChild(ctaContainer);
   } else if (videoType === 'image') {
-    const videoLink = rows[5]?.querySelector('a');
-    const videoText = rows[5]?.querySelector('div')?.textContent?.trim();
-    const videoDamPath = videoLink?.getAttribute('href') || videoText || '';
+    const videoDamPath = rows[5]?.querySelector('div')?.textContent?.trim() || '';
 
     const imagePicture = rows[6]?.querySelector('picture');
 
