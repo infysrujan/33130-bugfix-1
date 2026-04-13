@@ -5,6 +5,7 @@
     "/content/bangkokbank/metadata:/metadata.json"
   ],
   "includes": [
-    "/content/bangkokbank/"
+    "/content/bangkokbank/",
+    "/content/dam/bbl_images/"
   ]
 }
