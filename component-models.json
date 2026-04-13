@@ -7350,6 +7350,32 @@
     ]
   },
   {
+    "id": "image-link",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "description": "Select the image from the DAM"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "alt",
+        "label": "Alt Text",
+        "description": "Descriptive text for the image"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "href",
+        "label": "Link URL",
+        "description": "URL to open when the image is clicked"
+      }
+    ]
+  },
+  {
     "id": "location",
     "fields": [
       {
