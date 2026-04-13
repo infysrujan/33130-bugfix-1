@@ -1488,7 +1488,8 @@
                 "template": {
                   "name": "Video",
                   "filter": "video",
-                  "model": "video"
+                  "model": "video",
+                  "label": "Add a video block"
                 }
               }
             }
