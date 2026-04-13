@@ -102,15 +102,35 @@ export default function decorate(block) {
       const imageContainer = document.createElement('div');
       imageContainer.className = 'video-image';
 
+      imageContainer.appendChild(imagePicture);
+
       if (videoDamPath) {
-        const anchor = document.createElement('a');
-        anchor.href = videoDamPath;
-        anchor.target = '_blank';
-        anchor.rel = 'noopener noreferrer';
-        anchor.appendChild(imagePicture);
-        imageContainer.appendChild(anchor);
-      } else {
-        imageContainer.appendChild(imagePicture);
+        imageContainer.style.cursor = 'pointer';
+        imageContainer.addEventListener('click', () => {
+          const tempAnchor = document.createElement('a');
+          tempAnchor.href = videoDamPath;
+          const absoluteSrc = tempAnchor.href;
+
+          const newWin = window.open('', '_blank');
+          if (newWin) {
+            newWin.document.open();
+            newWin.document.write([
+              '<!DOCTYPE html><html><head><meta charset="UTF-8">',
+              '<title>Video</title>',
+              '<style>',
+              '* { margin: 0; padding: 0; box-sizing: border-box; }',
+              'body { background: #000; display: flex; justify-content: center;',
+              ' align-items: center; min-height: 100vh; }',
+              'video { width: 100%; max-height: 100vh; outline: none; }',
+              '</style></head><body>',
+              `<video src="${absoluteSrc}" controls autoplay playsinline></video>`,
+              '</body></html>',
+            ].join(''));
+            newWin.document.close();
+          } else {
+            window.open(absoluteSrc, '_blank');
+          }
+        });
       }
 
       wrapper.appendChild(imageContainer);
