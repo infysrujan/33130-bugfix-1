@@ -41,9 +41,13 @@ export default function decorate(block) {
     }
   } else if (mediaType === 'image-upload') {
     const assetRow = rows[2];
+    const assetImg = assetRow?.querySelector('img');
     const assetLink = assetRow?.querySelector('a');
     const assetText = assetRow?.querySelector('div')?.textContent?.trim();
-    const assetPath = assetLink?.getAttribute('href') || assetText || '';
+    const assetPath = assetImg?.getAttribute('src')
+      || assetLink?.getAttribute('href')
+      || assetText
+      || '';
 
     if (assetPath) {
       const embedContainer = document.createElement('div');
