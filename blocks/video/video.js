@@ -102,35 +102,15 @@ export default function decorate(block) {
       const imageContainer = document.createElement('div');
       imageContainer.className = 'video-image';
 
-      imageContainer.appendChild(imagePicture);
-
       if (videoDamPath) {
-        imageContainer.style.cursor = 'pointer';
-        imageContainer.addEventListener('click', () => {
-          // Resolve absolute URL using a temporary anchor
-          const anchor = document.createElement('a');
-          anchor.href = videoDamPath;
-          const absoluteVideoSrc = anchor.href;
-
-          const newWin = window.open('', '_blank');
-          if (newWin) {
-            newWin.document.open();
-            newWin.document.write([
-              '<!DOCTYPE html><html><head><meta charset="UTF-8">',
-              '<title>Video</title>',
-              '<style>',
-              '* { margin: 0; padding: 0; box-sizing: border-box; }',
-              'body { background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }',
-              'video { width: 100%; max-height: 100vh; outline: none; }',
-              '</style></head><body>',
-              `<video src="${absoluteVideoSrc}" controls autoplay playsinline></video>`,
-              '</body></html>',
-            ].join(''));
-            newWin.document.close();
-          } else {
-            window.open(absoluteVideoSrc, '_blank');
-          }
-        });
+        const anchor = document.createElement('a');
+        anchor.href = videoDamPath;
+        anchor.target = '_blank';
+        anchor.rel = 'noopener noreferrer';
+        anchor.appendChild(imagePicture);
+        imageContainer.appendChild(anchor);
+      } else {
+        imageContainer.appendChild(imagePicture);
       }
 
       wrapper.appendChild(imageContainer);
