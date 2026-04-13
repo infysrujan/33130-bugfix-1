@@ -50,7 +50,7 @@ export default function decorate(block) {
       || '';
 
     // Hide header, footer, full-bleed-special section and breadcrumb when image-upload type
-    document.querySelectorAll('header, footer, .section.full-bleed-special, .breadcrumb-container').forEach((el) => {
+    document.querySelectorAll('header, footer, .section.full-bleed-special, .breadcrumb-container, .breadcrumb').forEach((el) => {
       el.style.display = 'none';
     });
 
