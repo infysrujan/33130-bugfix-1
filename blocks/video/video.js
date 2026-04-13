@@ -49,8 +49,8 @@ export default function decorate(block) {
       || assetText
       || '';
 
-    // Hide header, footer and breadcrumb when video block uses image-upload type
-    document.querySelectorAll('header, footer, .breadcrumb-container').forEach((el) => {
+    // Hide header, footer, full-bleed-special section and breadcrumb when image-upload type
+    document.querySelectorAll('header, footer, .section.full-bleed-special, .breadcrumb-container').forEach((el) => {
       el.style.display = 'none';
     });
 
