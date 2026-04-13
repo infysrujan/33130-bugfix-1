@@ -102,47 +102,15 @@ export default function decorate(block) {
       const imageContainer = document.createElement('div');
       imageContainer.className = 'video-image';
 
-      imageContainer.appendChild(imagePicture);
-
       if (videoDamPath) {
-        imageContainer.style.cursor = 'pointer';
-        imageContainer.addEventListener('click', () => {
-          const tempAnchor = document.createElement('a');
-          tempAnchor.href = videoDamPath;
-          const absoluteSrc = tempAnchor.href;
-
-          const overlay = document.createElement('div');
-          overlay.className = 'video-modal-overlay';
-
-          const modal = document.createElement('div');
-          modal.className = 'video-modal';
-
-          const videoEl = document.createElement('video');
-
-          const closeBtn = document.createElement('button');
-          closeBtn.className = 'video-modal-close';
-          closeBtn.textContent = '×';
-          closeBtn.addEventListener('click', () => {
-            videoEl.pause();
-            overlay.remove();
-          });
-          videoEl.src = absoluteSrc;
-          videoEl.controls = true;
-          videoEl.autoplay = true;
-          videoEl.playsinline = true;
-
-          overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-              videoEl.pause();
-              overlay.remove();
-            }
-          });
-
-          modal.appendChild(closeBtn);
-          modal.appendChild(videoEl);
-          overlay.appendChild(modal);
-          document.body.appendChild(overlay);
-        });
+        const anchor = document.createElement('a');
+        anchor.href = videoDamPath;
+        anchor.target = '_blank';
+        anchor.rel = 'noopener noreferrer';
+        anchor.appendChild(imagePicture);
+        imageContainer.appendChild(anchor);
+      } else {
+        imageContainer.appendChild(imagePicture);
       }
 
       wrapper.appendChild(imageContainer);
