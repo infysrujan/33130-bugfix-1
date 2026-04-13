@@ -9406,9 +9406,10 @@
         }
       },
       {
-        "component": "aem-content",
+        "component": "reference",
+        "valueType": "string",
         "name": "imageDamPath",
-        "label": "Image DAM Asset Path",
+        "label": "Image",
         "description": "Select the image from the DAM to display as the clickable thumbnail",
         "condition": {
           "===": [

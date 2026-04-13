@@ -98,20 +98,13 @@ export default function decorate(block) {
     const videoText = rows[5]?.querySelector('div')?.textContent?.trim();
     const videoDamPath = videoLink?.getAttribute('href') || videoText || '';
 
-    const imageLink = rows[6]?.querySelector('a');
-    const imageText = rows[6]?.querySelector('div')?.textContent?.trim();
-    const imageDamPath = imageLink?.getAttribute('href') || imageText || '';
+    const imagePicture = rows[6]?.querySelector('picture');
 
-    if (imageDamPath) {
+    if (imagePicture) {
       const imageContainer = document.createElement('div');
       imageContainer.className = 'video-image';
 
-      const img = document.createElement('img');
-      img.src = imageDamPath;
-      img.alt = '';
-      img.loading = 'lazy';
-
-      imageContainer.appendChild(img);
+      imageContainer.appendChild(imagePicture);
 
       if (videoDamPath) {
         imageContainer.style.cursor = 'pointer';
