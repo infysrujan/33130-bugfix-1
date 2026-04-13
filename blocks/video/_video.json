@@ -34,6 +34,10 @@
             {
               "name": "CTA",
               "value": "cta"
+            },
+            {
+              "name": "Image",
+              "value": "image"
             }
           ]
         },
@@ -93,6 +97,34 @@
                 "var": "videoType"
               },
               "cta"
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "imageVideoDamPath",
+          "label": "Video DAM Asset Path",
+          "description": "Select the video asset from the DAM to open when the image is clicked",
+          "condition": {
+            "===": [
+              {
+                "var": "videoType"
+              },
+              "image"
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "imageDamPath",
+          "label": "Image DAM Asset Path",
+          "description": "Select the image from the DAM to display as the clickable thumbnail",
+          "condition": {
+            "===": [
+              {
+                "var": "videoType"
+              },
+              "image"
             ]
           }
         }

@@ -11,12 +11,15 @@ export default function decorate(block) {
   const videoType = rows[0]?.querySelector('div')?.textContent?.trim();
 
   // AEM renders ALL model fields as rows in order, even conditionally hidden ones.
-  // Field order: videoType, youtubeUrl, damAssetPath, ctaButtonName, ctaButtonTitle
+  // Field order: videoType, youtubeUrl, damAssetPath, ctaButtonName, ctaButtonTitle,
+  //              imageVideoDamPath, imageDamPath
   // rows[0] = videoType
-  // rows[1] = youtubeUrl  (empty when videoType=cta)
-  // rows[2] = damAssetPath (empty when videoType=videourl)
-  // rows[3] = ctaButtonName (empty when videoType=videourl)
-  // rows[4] = ctaButtonTitle (empty when videoType=videourl)
+  // rows[1] = youtubeUrl         (empty when videoType=cta|image)
+  // rows[2] = damAssetPath       (empty when videoType=videourl|image)
+  // rows[3] = ctaButtonName      (empty when videoType=videourl|image)
+  // rows[4] = ctaButtonTitle     (empty when videoType=videourl|image)
+  // rows[5] = imageVideoDamPath  (empty when videoType=videourl|cta)
+  // rows[6] = imageDamPath       (empty when videoType=videourl|cta)
 
   block.textContent = '';
 
@@ -64,6 +67,8 @@ export default function decorate(block) {
 
     link.addEventListener('click', (e) => {
       e.preventDefault();
+      // Use the resolved absolute URL so the about:blank popup can load it
+      const absoluteSrc = link.href;
       // Open a new window with an HTML5 video player instead of triggering a download
       const newWin = window.open('', '_blank');
       if (newWin) {
@@ -76,18 +81,69 @@ export default function decorate(block) {
           'body { background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }',
           'video { width: 100%; max-height: 100vh; outline: none; }',
           '</style></head><body>',
-          `<video src="${damPath}" controls autoplay playsinline></video>`,
+          `<video src="${absoluteSrc}" controls autoplay playsinline></video>`,
           '</body></html>',
         ].join(''));
         newWin.document.close();
       } else {
         // Fallback if popup was blocked
-        window.open(damPath, '_blank');
+        window.open(absoluteSrc, '_blank');
       }
     });
 
     ctaContainer.appendChild(link);
     wrapper.appendChild(ctaContainer);
+  } else if (videoType === 'image') {
+    const videoLink = rows[5]?.querySelector('a');
+    const videoText = rows[5]?.querySelector('div')?.textContent?.trim();
+    const videoDamPath = videoLink?.getAttribute('href') || videoText || '';
+
+    const imageLink = rows[6]?.querySelector('a');
+    const imageText = rows[6]?.querySelector('div')?.textContent?.trim();
+    const imageDamPath = imageLink?.getAttribute('href') || imageText || '';
+
+    if (imageDamPath) {
+      const imageContainer = document.createElement('div');
+      imageContainer.className = 'video-image';
+
+      const img = document.createElement('img');
+      img.src = imageDamPath;
+      img.alt = '';
+      img.loading = 'lazy';
+
+      imageContainer.appendChild(img);
+
+      if (videoDamPath) {
+        imageContainer.style.cursor = 'pointer';
+        imageContainer.addEventListener('click', () => {
+          // Resolve absolute URL using a temporary anchor
+          const anchor = document.createElement('a');
+          anchor.href = videoDamPath;
+          const absoluteVideoSrc = anchor.href;
+
+          const newWin = window.open('', '_blank');
+          if (newWin) {
+            newWin.document.open();
+            newWin.document.write([
+              '<!DOCTYPE html><html><head><meta charset="UTF-8">',
+              '<title>Video</title>',
+              '<style>',
+              '* { margin: 0; padding: 0; box-sizing: border-box; }',
+              'body { background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }',
+              'video { width: 100%; max-height: 100vh; outline: none; }',
+              '</style></head><body>',
+              `<video src="${absoluteVideoSrc}" controls autoplay playsinline></video>`,
+              '</body></html>',
+            ].join(''));
+            newWin.document.close();
+          } else {
+            window.open(absoluteVideoSrc, '_blank');
+          }
+        });
+      }
+
+      wrapper.appendChild(imageContainer);
+    }
   }
 
   block.appendChild(wrapper);

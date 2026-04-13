@@ -47,3 +47,21 @@
 .video .video-cta a::after {
   display: none;
 }
+
+/* Image CTA */
+.video .video-image {
+  width: 100%;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.video .video-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: opacity 0.2s ease;
+}
+
+.video .video-image:hover img {
+  opacity: 0.85;
+}
