@@ -111,25 +111,37 @@ export default function decorate(block) {
           tempAnchor.href = videoDamPath;
           const absoluteSrc = tempAnchor.href;
 
-          const newWin = window.open('', '_blank');
-          if (newWin) {
-            newWin.document.open();
-            newWin.document.write([
-              '<!DOCTYPE html><html><head><meta charset="UTF-8">',
-              '<title>Video</title>',
-              '<style>',
-              '* { margin: 0; padding: 0; box-sizing: border-box; }',
-              'body { background: #000; display: flex; justify-content: center;',
-              ' align-items: center; min-height: 100vh; }',
-              'video { width: 100%; max-height: 100vh; outline: none; }',
-              '</style></head><body>',
-              `<video src="${absoluteSrc}" controls autoplay playsinline></video>`,
-              '</body></html>',
-            ].join(''));
-            newWin.document.close();
-          } else {
-            window.open(absoluteSrc, '_blank');
-          }
+          const overlay = document.createElement('div');
+          overlay.className = 'video-modal-overlay';
+
+          const modal = document.createElement('div');
+          modal.className = 'video-modal';
+
+          const videoEl = document.createElement('video');
+
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'video-modal-close';
+          closeBtn.textContent = '×';
+          closeBtn.addEventListener('click', () => {
+            videoEl.pause();
+            overlay.remove();
+          });
+          videoEl.src = absoluteSrc;
+          videoEl.controls = true;
+          videoEl.autoplay = true;
+          videoEl.playsinline = true;
+
+          overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+              videoEl.pause();
+              overlay.remove();
+            }
+          });
+
+          modal.appendChild(closeBtn);
+          modal.appendChild(videoEl);
+          overlay.appendChild(modal);
+          document.body.appendChild(overlay);
         });
       }
 

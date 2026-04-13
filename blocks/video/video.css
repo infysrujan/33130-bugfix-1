@@ -73,3 +73,39 @@
 .video .video-image:hover img {
   opacity: 0.85;
 }
+
+/* Video modal */
+.video-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 85%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.video-modal {
+  position: relative;
+  width: 90%;
+  max-width: 56.25rem;
+}
+
+.video-modal video {
+  width: 100%;
+  height: auto;
+  display: block;
+  outline: none;
+}
+
+.video-modal-close {
+  position: absolute;
+  top: -2.5rem;
+  right: 0;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
