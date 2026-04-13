@@ -57,12 +57,6 @@
     ]
   },
   {
-    "id": "card-suggestor",
-    "components": [
-      "filter-group"
-    ]
-  },
-  {
     "id": "cards-product",
     "components": [
       "product-card"
@@ -111,6 +105,12 @@
     "id": "content-insert-cards",
     "components": [
       "content-insert-card"
+    ]
+  },
+  {
+    "id": "credit-card-selector",
+    "components": [
+      "credit-card-section"
     ]
   },
   {

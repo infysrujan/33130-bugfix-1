@@ -1,0 +1,201 @@
+{
+  "definitions": [
+    {
+      "title": "Credit Card Selector",
+      "id": "credit-card-selector",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Credit Card Selector",
+              "filter": "credit-card-selector"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Credit Card Section",
+      "id": "credit-card-section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Credit Card Section",
+              "model": "credit-card-section"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "credit-card-selector",
+      "fields": [
+        {
+          "component": "text",
+          "name": "sectionName",
+          "label": "Section Name",
+          "description": "Main title for the credit card selector (e.g., Choose the credit card that's suitable for you)",
+          "required": true
+        },
+        {
+          "component": "container",
+          "name": "primaryButton",
+          "label": "Primary Button",
+          "fields": [
+            {
+              "component": "aem-content",
+              "name": "link",
+              "label": "Link",
+              "description": "Destination URL for the primary button"
+            },
+            {
+              "component": "text",
+              "name": "linkText",
+              "label": "Text",
+              "description": "Primary button label text (e.g., Apply)",
+              "required": true
+            },
+            {
+              "component": "text",
+              "name": "linkTitle",
+              "label": "Title",
+              "description": "Accessibility title attribute (optional)"
+            },
+            {
+              "component": "select",
+              "name": "linkType",
+              "label": "Type",
+              "description": "Button style variant",
+              "valueType": "string",
+              "value": "primary",
+              "options": [
+                {
+                  "name": "Primary",
+                  "value": "primary"
+                },
+                {
+                  "name": "Secondary",
+                  "value": "secondary"
+                },
+                {
+                  "name": "Tertiary",
+                  "value": "tertiary"
+                }
+              ]
+            },
+            {
+              "component": "container",
+              "name": "targetSettings",
+              "label": "Target settings",
+              "fields": [
+                {
+                  "component": "boolean",
+                  "name": "targetLink",
+                  "label": "Open link in new tab",
+                  "description": "Enable to open the button link in a new browser tab",
+                  "valueType": "boolean",
+                  "value": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "container",
+          "name": "secondaryButton",
+          "label": "Secondary Button",
+          "fields": [
+            {
+              "component": "aem-content",
+              "name": "link",
+              "label": "Link",
+              "description": "Destination URL for the secondary button"
+            },
+            {
+              "component": "text",
+              "name": "linkText",
+              "label": "Text",
+              "description": "Secondary button label text (e.g., Start Over)",
+              "required": true
+            },
+            {
+              "component": "text",
+              "name": "linkTitle",
+              "label": "Title",
+              "description": "Accessibility title attribute (optional)"
+            },
+            {
+              "component": "select",
+              "name": "linkType",
+              "label": "Type",
+              "description": "Button style variant",
+              "valueType": "string",
+              "value": "secondary",
+              "options": [
+                {
+                  "name": "Primary",
+                  "value": "primary"
+                },
+                {
+                  "name": "Secondary",
+                  "value": "secondary"
+                },
+                {
+                  "name": "Tertiary",
+                  "value": "tertiary"
+                }
+              ]
+            },
+            {
+              "component": "container",
+              "name": "targetSettings",
+              "label": "Target settings",
+              "fields": [
+                {
+                  "component": "boolean",
+                  "name": "targetLink",
+                  "label": "Open link in new tab",
+                  "description": "Enable to open the button link in a new browser tab",
+                  "valueType": "boolean",
+                  "value": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "credit-card-section",
+      "fields": [
+        {
+          "component": "text",
+          "name": "subSectionTitle",
+          "label": "Sub-section Title",
+          "description": "Title for the sub-section (e.g., Monthly Income, Lifestyles, Benefits)",
+          "required": true
+        },
+        {
+          "component": "richtext",
+          "name": "content",
+          "label": "Content",
+          "description": "Rich text content for the sub-section",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "credit-card-selector",
+      "components": [
+        "credit-card-section"
+      ]
+    }
+  ]
+}
