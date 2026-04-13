@@ -195,7 +195,9 @@
         "social-icons",
         "card-list",
         "privacy-modal",
-        "external-redirect-popup"
+        "external-redirect-popup",
+        "video",
+        "image-link"
       ]
     }
   ]
