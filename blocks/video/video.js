@@ -94,19 +94,26 @@ export default function decorate(block) {
 
       if (videoDamPath) {
         imageContainer.style.cursor = 'pointer';
-        imageContainer.addEventListener('click', () => {
+        imageContainer.addEventListener('click', async () => {
           const tempAnchor = document.createElement('a');
           tempAnchor.href = videoDamPath;
           const absoluteSrc = tempAnchor.href;
-          const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Video</title>
-            <style>*{margin:0;padding:0;box-sizing:border-box;}
-            body{background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;}
-            video{width:100%;max-height:100vh;}</style></head><body>
-            <video src="${absoluteSrc}" controls autoplay playsinline></video>
-            </body></html>`;
-          const blob = new Blob([html], { type: 'text/html' });
-          const blobUrl = URL.createObjectURL(blob);
-          window.open(blobUrl, '_blank');
+          try {
+            const response = await fetch(absoluteSrc, { credentials: 'include' });
+            const videoBlob = await response.blob();
+            const videoBlobUrl = URL.createObjectURL(videoBlob);
+            const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Video</title>
+              <style>*{margin:0;padding:0;box-sizing:border-box;}
+              body{background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;}
+              video{width:100%;max-height:100vh;}</style></head><body>
+              <video src="${videoBlobUrl}" controls autoplay playsinline></video>
+              </body></html>`;
+            const pageBlob = new Blob([html], { type: 'text/html' });
+            const pageBlobUrl = URL.createObjectURL(pageBlob);
+            window.open(pageBlobUrl, '_blank');
+          } catch {
+            window.open(absoluteSrc, '_blank');
+          }
         });
       }
 
