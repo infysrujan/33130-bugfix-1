@@ -58,15 +58,7 @@
   },
   {
     "id": "card-suggestor",
-    "components": [
-      "card-suggestor-filter-group"
-    ]
-  },
-  {
-    "id": "card-suggestor-filter-group",
-    "components": [
-      "card-suggestor-filter-field"
-    ]
+    "components": []
   },
   {
     "id": "cards-product",
