@@ -49,6 +49,11 @@ export default function decorate(block) {
       || assetText
       || '';
 
+    // Hide header, footer and breadcrumb when video block uses image-upload type
+    document.querySelectorAll('header, footer, .breadcrumb-container').forEach((el) => {
+      el.style.display = 'none';
+    });
+
     if (assetPath) {
       const embedContainer = document.createElement('div');
       embedContainer.className = 'video-embed';
