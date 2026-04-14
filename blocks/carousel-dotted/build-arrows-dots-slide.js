@@ -72,6 +72,24 @@ export default function buildSlideArrowsandDots(row, index) {
     return slide;
   }
 
+  if (slideType === 'simpleCarousel') {
+    slide.className = 'carousel-dotted-item with-simple-carousel item';
+
+    // simpleCarouselImage (cell 10), simpleCarouselImageAlt (cell 11)
+    const imageCell = cells[10];
+    const altCell = cells[11];
+
+    const picture = imageCell?.querySelector('picture');
+    if (picture) {
+      const alt = altCell?.textContent.trim() || '';
+      const img = picture.querySelector('img');
+      if (img) img.alt = alt;
+      slide.append(picture);
+    }
+
+    return slide;
+  }
+
   if (slideType === 'withDefaultImage') {
     slide.className = 'carousel-dotted-item with-default-image item has-caption bgd-white';
 

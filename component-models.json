@@ -1664,6 +1664,10 @@
           {
             "name": "With Circular Image",
             "value": "withCircularImage"
+          },
+          {
+            "name": "Simple Carousel",
+            "value": "simpleCarousel"
           }
         ]
       },
@@ -1835,6 +1839,35 @@
               "var": "slideType"
             },
             "withCircularImage"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "simpleCarouselImage",
+        "label": "Image",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "simpleCarousel"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "simpleCarouselImageAlt",
+        "label": "Alt",
+        "valueType": "string",
+        "value": "",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "simpleCarousel"
           ]
         }
       }
@@ -2486,11 +2519,11 @@
         "collapsible": false,
         "fields": [
           {
-              "component": "text",
-              "name": "title",
-              "label": "Form Title",
-              "valueType": "string"
-            },
+            "component": "text",
+            "name": "title",
+            "label": "Form Title",
+            "valueType": "string"
+          },
           {
             "component": "text",
             "name": "style",

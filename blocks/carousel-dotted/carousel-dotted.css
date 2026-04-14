@@ -126,6 +126,12 @@
   display: block;
 }
 
+.carousel-dotted .carousel-dotted-item.with-simple-carousel picture img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb img {
   max-width: 100%;
   height: auto;
@@ -647,6 +653,17 @@
   text-decoration: underline;
 }
 
+/* Simple Carousel specific */
+.carousel-dotted .carousel-dotted-item.with-simple-carousel {
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-dotted .carousel-dotted-item.with-simple-carousel picture {
+  display: block;
+  width: 100%;
+}
+
 /* Default Image specific */
 .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb {
   background: var(--bbl-color-grey-10);
@@ -932,7 +949,8 @@
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image,
-  .carousel-dotted .carousel-dotted-item.with-default-image {
+  .carousel-dotted .carousel-dotted-item.with-default-image,
+  .carousel-dotted .carousel-dotted-item.with-simple-carousel {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -1019,7 +1037,8 @@
   }
 
   .carousel-dotted.show-arrows-dots .carousel-dotted-item.with-circular-image.is-active,
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item.with-default-image.is-active {
+  .carousel-dotted.show-arrows-dots .carousel-dotted-item.with-default-image.is-active,
+  .carousel-dotted.show-arrows-dots .carousel-dotted-item.with-simple-carousel.is-active {
     display: flex;
   }
 }
