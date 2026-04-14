@@ -9349,10 +9349,6 @@
           {
             "name": "Video URL",
             "value": "youtube-url"
-          },
-          {
-            "name": "Image",
-            "value": "image-upload"
           }
         ]
       },
@@ -9383,7 +9379,7 @@
             {
               "var": "mediaType"
             },
-            "image-upload"
+            "youtube-url"
           ]
         }
       }

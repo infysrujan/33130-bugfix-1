@@ -9,8 +9,8 @@ export default function decorate(block) {
 
   // Field order: mediaType, youtubeUrl, videoAsset
   // rows[0] = mediaType
-  // rows[1] = youtubeUrl  (empty when mediaType=image-upload)
-  // rows[2] = videoAsset  (empty when mediaType=youtube-url)
+  // rows[1] = youtubeUrl  (shown when mediaType=youtube-url)
+  // rows[2] = videoAsset  (shown when mediaType=youtube-url)
 
   const mediaType = rows[0]?.querySelector('div')?.textContent?.trim();
 
@@ -39,7 +39,7 @@ export default function decorate(block) {
       embedContainer.appendChild(iframe);
       wrapper.appendChild(embedContainer);
     }
-  } else if (mediaType === 'image-upload') {
+
     const assetRow = rows[2];
     const assetImg = assetRow?.querySelector('img');
     const assetLink = assetRow?.querySelector('a');
@@ -48,11 +48,6 @@ export default function decorate(block) {
       || assetLink?.getAttribute('href')
       || assetText
       || '';
-
-    // Hide header, footer, full-bleed-special section and breadcrumb when image-upload type
-    document.querySelectorAll('header, footer, .section.full-bleed-special, .breadcrumb-container, .breadcrumb').forEach((el) => {
-      el.style.display = 'none';
-    });
 
     if (assetPath) {
       const embedContainer = document.createElement('div');
