@@ -5,9 +5,9 @@ import {
 } from '../../scripts/utils/carousel-helpers.js';
 import buildContentCardsSlide from './build-content-cards-slide.js';
 import buildImageSlide from './build-image-slide.js';
-import buildTextSlide from './build-text-slide.js';
+import buildSlideWithoutImage from './build-text-slide.js';
 import buildHeroSlide from './build-hero-slide.js';
-import buildArrowsDotsSlide from './build-arrows-dots-slide.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
 
 /**
  * Build a slide - determines which variation to use and delegates.
@@ -162,6 +162,14 @@ function buildSlideArrowsandDots(row, index) {
     }
 
     slide.append(content);
+    return slide;
+  }
+
+  if (slideType === 'onlyImage') {
+    slide.className = 'carousel-dotted-item simple-carousel';
+    const imageCell = cells[10];
+    const picture = imageCell?.querySelector('picture');
+    if (picture) slide.append(picture);
     return slide;
   }
 
@@ -396,6 +404,8 @@ export default function decorate(block) {
   const slidesTextAnimation = slideEls.filter((s) => s.classList.contains('text-animation-variant')).length;
   const slidesCircularImage = slideEls.filter((s) => s.classList.contains('with-circular-image')).length;
   const slidesDefaultImage = slideEls.filter((s) => s.classList.contains('with-default-image')).length;
+  const slidesContentCards = slideEls.filter((s) => s.classList.contains('content-cards')).length;
+  const slidesSimpleCarousel = slideEls.filter((s) => s.classList.contains('simple-carousel')).length;
   const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
     && slidesWithImage === 0
     && slidesWithoutImage === 0;
@@ -584,7 +594,7 @@ export default function decorate(block) {
       setActive(currentIndex + 1);
     }
   });
-  dotButtons = slideEls.map((slide, index) => {
+  dotButtons = slideEls.map((_, index) => {
     const li = document.createElement('li');
     li.setAttribute('role', 'presentation');
     const button = document.createElement('button');

@@ -124,6 +124,14 @@ export default function buildSlideArrowsandDots(row, index) {
     return slide;
   }
 
+  if (slideType === 'onlyImage') {
+    slide.className = 'carousel-dotted-item simple-carousel';
+    const imageCell = cells[10];
+    const picture = imageCell?.querySelector('picture');
+    if (picture) slide.append(picture);
+    return slide;
+  }
+
   slide.className = 'carousel-dotted-item';
   return slide;
 }
