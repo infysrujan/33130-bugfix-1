@@ -50,6 +50,12 @@
           "fields": [
             {
               "component": "text",
+              "name": "title",
+              "label": "Form Title",
+              "valueType": "string"
+            },
+            {
+              "component": "text",
               "name": "style",
               "label": "Form Specific styles path",
               "valueType": "string"

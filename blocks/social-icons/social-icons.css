@@ -1,0 +1,152 @@
+.social-icons {
+  display: flex;
+  align-items: center;
+  width: 2.625rem;
+  height: 2.625rem;
+  border: 0.063rem solid var(--bbl-color-active-blue);
+  border-radius: var(--bbl-radius-full);
+  background: var(--bbl-bg-primary);
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    width 0.3s ease,
+    border-radius 0.3s ease;
+}
+
+.social-icons.active {
+  width: fit-content;
+  padding: 0 var(--bbl-space-050);
+  border-radius: var(--bbl-radius-md);
+}
+
+.social-icons .btn-share {
+  width: 2.625rem;
+  height: 2.625rem;
+  background: url('../../icons/btn-share.svg') no-repeat center;
+  background-size: var(--bbl-space-500);
+  flex-shrink: 0;
+  transition:
+    width 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.social-icons .btn-share:hover {
+  opacity: 0.9;
+}
+
+.social-icons.active .btn-share {
+  width: 0;
+  opacity: 0;
+}
+
+.social-icons .icon-close {
+  width: 0;
+  height: var(--bbl-space-500);
+  opacity: 0;
+  overflow: hidden;
+  background: url('../../icons/close.svg') no-repeat center;
+  background-size: var(--bbl-space-300);
+  transition: all 0.3s ease;
+}
+
+.social-icons .icon-close:hover {
+  opacity: 0.9;
+}
+
+.social-icons.active .icon-close {
+  width: 2.1875rem;
+  opacity: 1;
+}
+
+.social-icons .icons-container {
+  display: flex;
+  align-items: center;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.social-icons.active .icons-container {
+  max-width: 11.25rem;
+  opacity: 1;
+  margin: 0 var(--bbl-space-050);
+}
+
+.social-icons .icons-container ul {
+  display: flex;
+  align-items: center;
+  gap: var(--bbl-space-050);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.social-icons .icons-container li {
+  display: flex;
+}
+
+.social-icons .icons-container li a {
+  width: 2.1875rem;
+  height: 2.1875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--bbl-radius-sm);
+}
+
+.social-icons .icons-container a:hover {
+  opacity: 0.9;
+}
+
+.social-icons .icons-container img,
+.social-icons .icons-container picture img {
+  width: var(--bbl-space-300);
+  height: var(--bbl-space-300);
+  object-fit: contain;
+  display: block;
+}
+
+.social-icons.mobile {
+  flex-direction: row;
+}
+
+.social-icons.mobile .icon-close {
+  order: 1;
+}
+
+.social-icons.mobile .icons-container {
+  order: 2;
+}
+
+.social-icons.mobile .btn-share {
+  order: 3;
+}
+
+
+@media (width > 47.5rem) {
+  .social-icons.desktop {
+    flex-direction: row;
+    margin-left: auto;
+  }
+
+  .social-icons.desktop .btn-share {
+    order: 1;
+  }
+
+  .social-icons.desktop .icons-container {
+    order: 2;
+  }
+
+  .social-icons.desktop .icon-close {
+    order: 3;
+    margin-right: 0.625rem;
+  }
+}
+
+/* Hide social-icons when it appears as a standalone section in main.
+   The breadcrumb-loaded version lives inside .breadcrumb-wrapper (one level deeper),
+   so this selector does not affect it. */
+main > div > .social-icons-wrapper {
+  display: none;
+}

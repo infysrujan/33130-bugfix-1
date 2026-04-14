@@ -51,6 +51,19 @@
           "label": "Enable Sub Navigation",
           "name": "isSubNav",
           "valueType": "boolean"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "short-title",
+          "label": "Short Page Title"
+        },
+        {
+          "component": "boolean",
+          "name": "breadcrumb",
+          "value": "",
+          "label": "Breadcrumb",
+          "valueType": "boolean"
         }
       ]
     }

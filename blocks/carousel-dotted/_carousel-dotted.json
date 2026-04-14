@@ -358,6 +358,10 @@
             {
               "name": "Text Animation Variant",
               "value": "textAnimationVariant"
+            },
+            {
+              "name": "Content Insert Carousel Cards",
+              "value": "contentInsertCarouselCards"
             }
           ]
         },
@@ -730,6 +734,158 @@
                   "textAnimationVariant"
                 ]
               }
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "promoTag",
+          "label": "Promo Tag",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "cardImage",
+          "label": "Background Image",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "cardTitle",
+          "label": "Title",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "cardDescription",
+          "label": "Description",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "cardLink",
+          "label": "Link",
+          "description": "Destination URL for the button",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "cardLinkText",
+          "label": "Text",
+          "description": "Button label text",
+          "required": true,
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "cardLinkTitle",
+          "label": "Title",
+          "description": "Accessibility title attribute (optional)",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
+        },
+        {
+          "component": "select",
+          "name": "cardLinkType",
+          "label": "Type",
+          "description": "Button style variant",
+          "valueType": "string",
+          "value": "",
+          "options": [
+            {
+              "name": "Primary",
+              "value": "primary"
+            },
+            {
+              "name": "Secondary",
+              "value": "secondary"
+            },
+            {
+              "name": "Tertiary",
+              "value": "tertiary"
+            }
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
+        },
+        {
+          "component": "container",
+          "name": "targetSettings",
+          "label": "Target settings",
+          "fields": [
+            {
+              "component": "boolean",
+              "name": "targetLink",
+              "label": "Open link in new tab",
+              "description": "Enable to open the button link in a new browser tab",
+              "valueType": "boolean",
+              "value": false
+            }
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
             ]
           }
         }
