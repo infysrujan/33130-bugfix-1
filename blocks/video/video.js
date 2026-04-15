@@ -11,6 +11,28 @@ function getAssetPath(row) {
   return link?.getAttribute('href') || img?.getAttribute('src') || text || '';
 }
 
+function openVideoInNewTab(videoPath) {
+  const absoluteVideoPath = new URL(videoPath, window.location.origin).href;
+  const html = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+      video { max-width: 100%; max-height: 100vh; }
+    </style>
+  </head>
+  <body>
+    <video src="${absoluteVideoPath}" controls autoplay playsinline></video>
+  </body>
+</html>`;
+  const blob = new Blob([html], { type: 'text/html' });
+  window.open(URL.createObjectURL(blob), '_blank');
+}
+
 export default function decorate(block) {
   const rows = [...block.children];
 
@@ -73,12 +95,15 @@ export default function decorate(block) {
 
     if (videoPath) {
       const ctaLink = document.createElement('a');
-      ctaLink.href = videoPath;
-      ctaLink.target = '_blank';
-      ctaLink.rel = 'noopener noreferrer';
+      ctaLink.href = '#';
       ctaLink.textContent = buttonName;
       ctaLink.title = buttonTitle;
       ctaLink.className = 'video-cta-button';
+
+      ctaLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        openVideoInNewTab(videoPath);
+      });
 
       wrapper.appendChild(ctaLink);
     }
@@ -97,26 +122,7 @@ export default function decorate(block) {
 
       anchor.addEventListener('click', (e) => {
         e.preventDefault();
-        const absoluteVideoPath = new URL(videoPath, window.location.origin).href;
-        const html = `<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-      video { max-width: 100%; max-height: 100vh; }
-    </style>
-  </head>
-  <body>
-    <video src="${absoluteVideoPath}" controls autoplay playsinline></video>
-  </body>
-</html>`;
-        const blob = new Blob([html], { type: 'text/html' });
-        const blobUrl = URL.createObjectURL(blob);
-        window.open(blobUrl, '_blank');
+        openVideoInNewTab(videoPath);
       });
 
       const image = document.createElement('img');
