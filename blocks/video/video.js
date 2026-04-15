@@ -4,13 +4,25 @@ function getYouTubeId(url) {
   return match ? match[1] : null;
 }
 
+function getAssetPath(row) {
+  const link = row?.querySelector('a');
+  const img = row?.querySelector('img');
+  const text = row?.querySelector('div')?.textContent?.trim();
+  return link?.getAttribute('href') || img?.getAttribute('src') || text || '';
+}
+
 export default function decorate(block) {
   const rows = [...block.children];
 
-  // Field order: mediaType, youtubeUrl, videoAsset
+  // Field order matches _video.json model definition:
   // rows[0] = mediaType
-  // rows[1] = youtubeUrl  (shown when mediaType=youtube-url)
-  // rows[2] = videoAsset  (shown when mediaType=youtube-url)
+  // rows[1] = youtubeUrl      (youtube-url)
+  // rows[2] = damVideoAsset   (dam-video)
+  // rows[3] = ctaVideoAsset   (cta-video)
+  // rows[4] = ctaButtonName   (cta-video)
+  // rows[5] = ctaButtonTitle  (cta-video)
+  // rows[6] = imageVideoAsset (image-video)
+  // rows[7] = imageAsset      (image-video)
 
   const mediaType = rows[0]?.querySelector('div')?.textContent?.trim();
 
@@ -39,15 +51,8 @@ export default function decorate(block) {
       embedContainer.appendChild(iframe);
       wrapper.appendChild(embedContainer);
     }
-
-    const assetRow = rows[2];
-    const assetImg = assetRow?.querySelector('img');
-    const assetLink = assetRow?.querySelector('a');
-    const assetText = assetRow?.querySelector('div')?.textContent?.trim();
-    const assetPath = assetImg?.getAttribute('src')
-      || assetLink?.getAttribute('href')
-      || assetText
-      || '';
+  } else if (mediaType === 'dam-video') {
+    const assetPath = getAssetPath(rows[2]);
 
     if (assetPath) {
       const embedContainer = document.createElement('div');
@@ -56,10 +61,47 @@ export default function decorate(block) {
       const videoEl = document.createElement('video');
       videoEl.src = assetPath;
       videoEl.controls = true;
-      videoEl.playsinline = true;
+      videoEl.setAttribute('playsinline', '');
 
       embedContainer.appendChild(videoEl);
       wrapper.appendChild(embedContainer);
+    }
+  } else if (mediaType === 'cta-video') {
+    const videoPath = getAssetPath(rows[3]);
+    const buttonName = rows[4]?.querySelector('div')?.textContent?.trim() || 'Watch Video';
+    const buttonTitle = rows[5]?.querySelector('div')?.textContent?.trim() || buttonName;
+
+    if (videoPath) {
+      const ctaLink = document.createElement('a');
+      ctaLink.href = videoPath;
+      ctaLink.target = '_blank';
+      ctaLink.rel = 'noopener noreferrer';
+      ctaLink.textContent = buttonName;
+      ctaLink.title = buttonTitle;
+      ctaLink.className = 'video-cta-button';
+
+      wrapper.appendChild(ctaLink);
+    }
+  } else if (mediaType === 'image-video') {
+    const videoPath = getAssetPath(rows[6]);
+    const imgRow = rows[7];
+    const imgEl = imgRow?.querySelector('img');
+    const imgSrc = imgEl?.getAttribute('src') || getAssetPath(imgRow);
+    const imgAlt = imgEl?.getAttribute('alt') || 'Watch video';
+
+    if (imgSrc && videoPath) {
+      const anchor = document.createElement('a');
+      anchor.href = videoPath;
+      anchor.target = '_blank';
+      anchor.rel = 'noopener noreferrer';
+      anchor.className = 'video-image-link';
+
+      const image = document.createElement('img');
+      image.src = imgSrc;
+      image.alt = imgAlt;
+
+      anchor.appendChild(image);
+      wrapper.appendChild(anchor);
     }
   }
 
