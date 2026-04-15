@@ -91,10 +91,33 @@ export default function decorate(block) {
 
     if (imgSrc && videoPath) {
       const anchor = document.createElement('a');
-      anchor.href = videoPath;
-      anchor.target = '_blank';
-      anchor.rel = 'noopener noreferrer';
+      anchor.href = '#';
       anchor.className = 'video-image-link';
+      anchor.setAttribute('aria-label', 'Watch video');
+
+      anchor.addEventListener('click', (e) => {
+        e.preventDefault();
+        const absoluteVideoPath = new URL(videoPath, window.location.origin).href;
+        const html = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+      video { max-width: 100%; max-height: 100vh; }
+    </style>
+  </head>
+  <body>
+    <video src="${absoluteVideoPath}" controls autoplay playsinline></video>
+  </body>
+</html>`;
+        const blob = new Blob([html], { type: 'text/html' });
+        const blobUrl = URL.createObjectURL(blob);
+        window.open(blobUrl, '_blank');
+      });
 
       const image = document.createElement('img');
       image.src = imgSrc;
