@@ -9347,7 +9347,7 @@
         "value": "youtube-url",
         "options": [
           {
-            "name": "Video URL",
+            "name": "Video from YouTube",
             "value": "youtube-url"
           }
         ]
@@ -9358,22 +9358,6 @@
         "label": "YouTube URL",
         "description": "Enter the YouTube video URL.",
         "valueType": "string",
-        "condition": {
-          "===": [
-            {
-              "var": "mediaType"
-            },
-            "youtube-url"
-          ]
-        }
-      },
-      {
-        "component": "reference",
-        "name": "videoAsset",
-        "label": "Video Asset",
-        "description": "Choose or upload a video file.",
-        "valueType": "string",
-        "multi": false,
         "condition": {
           "===": [
             {
