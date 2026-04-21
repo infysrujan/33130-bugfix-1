@@ -3,6 +3,7 @@ const CHECKMARK_SVG = `<svg width="18" height="13" viewBox="0 0 25 13" fill="non
 </svg>`;
 
 export default function decorate(block) {
+  if (block.closest('[data-aue-resource]')) return;
   const rows = [...block.children];
   block.innerHTML = '';
 
