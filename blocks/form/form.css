@@ -802,3 +802,426 @@ main div.form-wrapper {
 main .form form select[multiple] {
     height: calc(42px + 50px);
 }
+
+/* Customized styling for forms */
+main div.form-wrapper,
+main div.default-content-wrapper {
+  box-shadow: none;
+}
+
+main div.form-wrapper {
+  padding: 0;
+}
+
+main h3 {
+  margin: 40px 0 30px;
+  padding: 0 0 35px;
+  color: #3f3f3f;
+  font: 700 2.2rem / 44px 'Lato-Bold';
+  letter-spacing: -0.2px;
+  text-align: center;
+  font-size: 2.2rem;
+  line-height: normal;
+  font-family: 'Muli-Bold';
+  position: relative;
+}
+
+main h3::before {
+  content: '';
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  left: 50%;
+  margin-left: -40px;
+  width: 80px;
+  height: 1px;
+  background: #9e9e9e;
+}
+
+.drop-down-wrapper {
+  text-align: center;
+}
+
+main .form form input,
+main .form form select,
+main .form form textarea {
+  font-size: 0.95rem;
+  font-weight: 400;
+  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
+  color: #000;
+  border: 1px solid #919dab;
+  border-radius: 7px;
+  height: 44px;
+  line-height: 44px;
+  width: 100%;
+  padding: 0 20px;
+  margin: 0 0 14px 0;
+  background-color: #fff;
+  box-sizing: border-box;
+  display: block;
+}
+
+main .form form textarea {
+  height: auto;
+  line-height: 1.5;
+  padding: 10px 20px;
+}
+
+main .form form select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("../../icons/Chevron-down.svg");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 14px) 50%;
+  background-size: 20px 20px;
+  padding-right: 40px;
+  cursor: pointer;
+  color: #000;
+  font-size: 0.95rem;
+  font-weight: 400;
+  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
+  border: 1px solid #919dab;
+}
+
+main .form form select option {
+  color: #000;
+  font-size: 0.95rem;
+  font-weight: 400;
+  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
+  background-color: #fff;
+}
+
+main .form form select option[value=""] {
+  color: #000;
+  font-weight: 400;
+}
+
+main .form form input:hover,
+main .form form input:focus,
+main .form form select:hover,
+main .form form select:focus,
+main .form form textarea:hover,
+main .form form textarea:focus {
+  border: 1px solid #0048b7;
+  outline: none;
+  color: #000;
+}
+
+main .form form input:invalid,
+main .form form select:invalid {
+  box-shadow: none;
+}
+
+main .form form .field-invalid input,
+main .form form .field-invalid select,
+main .form form .field-invalid textarea {
+  border: 1px solid #d9534f;
+}
+
+main .form form .field-invalid .field-description {
+  color: #d9534f;
+  font-weight: 400;
+  font-size: 0.875rem;
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  display: block;
+  padding: 6px 0 12px 1.25rem;
+  top: -10px;
+  position: relative;
+  clear: both;
+}
+
+main .form form {
+  column-gap: 0;
+  gap: 0;
+}
+
+main .form form p,
+main .form form .repeat-wrapper,
+main .form form .field-wrapper {
+  margin: 3px;
+}
+
+main .form form select {
+  margin-bottom: 20px;
+}
+
+main .form form p {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+main .form form .field-wrapper.col-12 {
+  margin-bottom: 5px;
+}
+
+main .form .field-submitcta .button,
+main .form .field-submitcta .button:disabled {
+  color: #0064ff;
+  border: 1px solid #0064ff;
+  background: #fff;
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  line-height: normal;
+  height: 44px;
+  min-width: 155px;
+  padding: 0 20px;
+  border-radius: 7px;
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  appearance: none;
+  margin: 30px auto;
+  width: fit-content;
+  pointer-events: all;
+  box-shadow: none;
+  transform: none;
+}
+
+main .form .field-submitcta .button:hover,
+main .form .field-submitcta .button:disabled:hover {
+  color: #fff;
+  background: #0064ff;
+  border-color: #0064ff;
+  transform: none;
+  box-shadow: none;
+}
+
+main .form form .field-privacyconsent {
+  gap: 0;
+  margin: 0;
+}
+
+main .form form .field-privacyconsent .field-wrapper {
+  margin: 0;
+  gap: 0;
+}
+
+main .form .panel-wrapper.field-privacyconsent .field-tnctext {
+  order: 1;
+  margin-bottom: 0;
+}
+
+main form fieldset.panel-wrapper.field-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  position: relative;
+  padding-bottom: 30px;
+  grid-column: span 12;
+}
+
+main form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper {
+  flex-shrink: 0;
+  order: 1;
+  padding-top: 2px;
+  margin-right: 10px;
+}
+
+main form fieldset.panel-wrapper.field-wrapper .plain-text-wrapper {
+  flex: 1;
+  min-width: 0;
+  order: 2;
+}
+
+main form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper .field-description {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  color: #d9534f;
+  font-size: 14px;
+  top: 150px;
+  padding: 22px 20px 12px 50px;
+}
+
+form .text-wrapper {
+  position: relative;
+  margin-bottom: 6px;
+  clear: both;
+}
+
+.text-wrapper.field-additionalinfo input {
+  padding: 0 20px;
+  margin-bottom: 0;
+}
+
+.text-wrapper.field-name {
+  position: relative;
+}
+
+.text-wrapper.field-name::before {
+  content: "\e906";
+  font-family: icomoon;
+  color: #9e9e9e;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 15px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.text-wrapper.field-name input {
+  padding: 0 20px 0 40px;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.text-wrapper.field-mobilenumberoremail input {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.text-wrapper.field-additionalinfo .field-label,
+.text-wrapper.field-name .field-label,
+.text-wrapper.field-mobilenumberoremail .field-label {
+  display: block;
+  margin-bottom: 4px;
+  padding: 0;
+  line-height: 1.2;
+}
+
+.text-wrapper.field-invalid input {
+  border: 1px solid #d9534f;
+}
+
+main .form form .field-wrapper.field-invalid .field-validation-error,
+main .form form .field-wrapper.field-invalid .field-description {
+  color: #d9534f;
+  font-size: 15px;
+  font-weight: 400;
+  top: -10px;
+  position: relative;
+  display: block;
+  padding: 17px 20px 12px 1.25rem;
+}
+
+main .form .plain-text-wrapper.field-tnctext {
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  padding: 12px;
+  height: 200px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+main .form form .field-wrapper label,
+main .form form .field-wrapper .field-label,
+main .form form fieldset legend.field-label {
+  font-size: 17px;
+  font-weight: 700;
+  color: #4e4e4e;
+  cursor: default;
+}
+
+main .form form .field-wrapper label font,
+main .form form .field-wrapper .field-label font,
+main .form form fieldset legend.field-label font {
+  color: #4e4e4e;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+main .form form fieldset.checkbox-group-wrapper > legend,
+main .form form fieldset.radio-group-wrapper > legend {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding: 0 10px;
+  cursor: default;
+}
+
+main .form fieldset.radio-group-wrapper.field-convenienttime.horizontal {
+  display: block;
+  padding: 0;
+  margin: 4px 0 20px 0;
+  border: none;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+main .form fieldset.radio-group-wrapper.field-convenienttime legend.field-label {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper {
+  float: left;
+  width: 25%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  border: 1px solid #ccc;
+  border-left: none;
+  box-sizing: border-box;
+  justify-content: center;
+  height: 56px;
+  align-items: center;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper:first-of-type {
+  border-left: 1px solid #ccc;
+  border-radius: 8px 0 0 8px;
+}
+
+main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper:last-of-type {
+  border-radius: 0 8px 8px 0;
+}
+
+main .form fieldset.radio-group-wrapper.field-convenienttime::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper input[type="radio"] {
+  display: none;
+}
+
+main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper label.field-label {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 56px;
+  width: 100%;
+  cursor: pointer;
+  text-align: center;
+  margin: 0;
+  padding: 0 10px;
+  color: #4e4e4e;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper input[type="radio"]:checked + label.field-label {
+  background-color: #e5edf4;
+  color: #4e4e4e;
+}
+
+main .form fieldset.radio-group-wrapper.field-convenienttime.field-invalid .radio-wrapper {
+  border-top-color: #d9534f;
+  border-bottom-color: #d9534f;
+  border-right-color: #d9534f;
+}
+
+main .form fieldset.radio-group-wrapper.field-convenienttime.field-invalid .radio-wrapper:first-of-type {
+  border-left-color: #d9534f;
+}
