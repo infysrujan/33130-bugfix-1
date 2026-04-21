@@ -144,31 +144,30 @@
           }
         },
         {
-          "title": "Card List Wealth",
-          "id": "card-list-wealth",
+          "title": "Card List",
+          "id": "card-list",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
-                  "name": "Card List Wealth",
-                  "model": "card-list-wealth",
-                  "filter": "card-list-wealth"
+                  "name": "Card List",
+                  "filter": "card-list"
                 }
               }
             }
           }
         },
         {
-          "title": "Card List Wealth Item",
-          "id": "card-list-wealth-item",
+          "title": "Card List Item",
+          "id": "card-list-item",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
-                  "name": "Card List Wealth Item",
-                  "model": "card-list-wealth-item"
+                  "name": "Card List Item",
+                  "model": "card-list-item"
                 }
               }
             }
