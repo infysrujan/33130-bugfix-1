@@ -57,9 +57,9 @@
     ]
   },
   {
-    "id": "card-list",
+    "id": "card-list-wealth",
     "components": [
-      "card-list-item"
+      "card-list-wealth-item"
     ]
   },
   {
