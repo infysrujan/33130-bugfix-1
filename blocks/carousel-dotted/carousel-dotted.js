@@ -579,8 +579,12 @@ export default async function decorate(block) {
   if (seeMoreLink) {
     const moreWrap = document.createElement('div');
     moreWrap.className = 'carousel-dotted-more';
-    seeMoreLink.classList.add('icon-arrow-left');
-    moreWrap.append(seeMoreLink);
+    seeMoreLink.classList.add('button-tertiary', 'icon-arrow-left');
+    // Wrap in <span> so decorateButtonsV1 (which only matches P/DIV parents)
+    // does not replace the className and strip icon-arrow-left
+    const linkWrap = document.createElement('span');
+    linkWrap.append(seeMoreLink);
+    moreWrap.append(linkWrap);
     block.append(moreWrap);
   }
 
