@@ -34,7 +34,7 @@
   animation: carouselFadeIn 600ms ease-out;
 }
 
-.carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) > .carousel-dotted {
+.carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel)>.carousel-dotted {
   width: 100%;
   height: 100%;
 }
@@ -64,9 +64,7 @@
   position: relative;
 }
 
-.carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel)
-> .carousel-dotted
-> .carousel-track-wrapper {
+.carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel)>.carousel-dotted>.carousel-track-wrapper {
   width: 100%;
   height: 100%;
 }
@@ -251,7 +249,7 @@
 }
 
 .carousel-dotted .slick-dots button:focus-visible {
-  outline: var(--bbl-space-025) solid  var(--bbl-color-active-blue);
+  outline: var(--bbl-space-025) solid var(--bbl-color-active-blue);
   outline-offset: var(--bbl-space-025);
 }
 
@@ -408,8 +406,7 @@
   left: 5rem;
 }
 
-.carousel-item.slick-active:not(.is-active)
-.carousel-bg::before {
+.carousel-item.slick-active:not(.is-active) .carousel-bg::before {
   opacity: 1;
 }
 
@@ -425,8 +422,7 @@
 }
 
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-item:is(.hero-banner-image-carousel, .text-animation-variant) {
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-item:is(.hero-banner-image-carousel, .text-animation-variant) {
   position: relative;
   display: block;
   flex: 0 0 100%;
@@ -436,31 +432,30 @@
   overflow: hidden;
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-bg {
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-bg {
   overflow: hidden;
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-item:is(.hero-banner-image-carousel, .text-animation-variant)
-.carousel-bg img {
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-item:is(.hero-banner-image-carousel, .text-animation-variant) .carousel-bg img {
   will-change: transform;
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-bg.bg-zoom-enter :is(picture, img) {
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-bg.bg-zoom-enter :is(picture, img) {
   animation: bg-zoom-in-out 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-track-wrapper > *:last-child
-.carousel-bg.bg-zoom-enter :is(picture, img) {
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-track-wrapper>*:last-child .carousel-bg.bg-zoom-enter :is(picture, img) {
   animation: bg-zoom-in-out 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 @keyframes bg-zoom-in-out {
-  0%   { transform: scale(1.12); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1.12);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .carousel-dotted.all-hero-banner-image-carousel .carousel-item.hero-banner-image-carousel .carousel-bg::before {
@@ -482,13 +477,14 @@
   opacity: 1;
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.slick-dots li.is-active button {
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .slick-dots li.is-active button {
   animation: dot-pulse 2s ease-in-out infinite;
 }
 
 @keyframes dot-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
 
@@ -514,8 +510,7 @@
   min-height: unset;
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) 
-.carousel-title :is(h1, h2, h3, h4, h5, h6) {
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1, h2, h3, h4, h5, h6) {
   font-family: Muli-Bold, sans-serif;
   font-size: 1.4rem;
   line-height: 1.3746rem;
@@ -528,8 +523,20 @@
   transition: all 0.6s 0.4s;
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) 
-.carousel-subtitle p{
+:lang(th) {
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
+    line-height: 2.4375rem;
+  }
+}
+
+:lang(th) {
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
+    line-height: 2.0625rem;
+  }
+}
+
+
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-subtitle p {
   font-size: 1.1375rem;
   line-height: 1.57;
   font-weight: var(--bbl-font-weight-regular);
@@ -544,17 +551,14 @@
   margin-block: var(--bbl-space-300) var(--bbl-space-200);
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-content.content .button-m.animated-text {
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-content.content .button-m.animated-text {
   transform: translateY(18.75rem);
   opacity: 0;
   transition: all 0.6s 0.6s;
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-item.is-active .carousel-title.animated-text :is(h1, h2, h3, h4, h5, h6),
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-item.is-active .button-m.animated-text {
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-item.is-active .carousel-title.animated-text :is(h1, h2, h3, h4, h5, h6),
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-item.is-active .button-m.animated-text {
   transform: translateY(0);
   opacity: 1;
 }
@@ -689,10 +693,7 @@
   margin: unset;
 }
 
-.carousel-dotted 
-.carousel-dotted-item.with-default-image 
-.caption.editor 
-.text-large.text-light p {
+.carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-large.text-light p {
   font-size: 3rem;
   line-height: 2.875rem;
   font-weight: 300;
@@ -915,15 +916,13 @@
     width: 100%;
   }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) 
-.carousel-title :is(h1, h2, h3, h4, h5, h6) {
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1, h2, h3, h4, h5, h6) {
     color: var(--bbl-color-white);
     padding: 0 0 0.625rem;
     margin: 0;
   }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) 
-.carousel-subtitle p{
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-subtitle p {
     color: var(--bbl-color-white);
   }
 
@@ -1003,6 +1002,7 @@
 }
 
 @media (width > 47.5rem) and (width < 64rem) {
+
   /* Fix tablet spacing and align arrows automatically to content size */
   .carousel-dotted.show-arrows-dots {
     display: grid;
@@ -1131,6 +1131,31 @@
     line-height: 2.875rem;
   }
 
+  :lang(th) {
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
+      line-height: 5.5rem;
+    }
+  }
+
+  :lang(th) {
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
+      line-height: 4.875rem;
+    }
+  }
+
+  :lang(th) {
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h3) {
+      line-height: 3.75rem;
+    }
+  }
+
+  :lang(th) {
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h4) {
+      line-height: 2.5rem;
+    }
+  }
+
+
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-subtitle p {
     font-size: 1.5rem;
     line-height: 1.625rem;
@@ -1180,4 +1205,3 @@
     height: 2.5rem;
   }
 }
-
