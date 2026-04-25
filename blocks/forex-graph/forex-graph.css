@@ -1,0 +1,669 @@
+/* ============================================================
+   forex-graph block — mobile first, all values in rem
+   Breakpoints: 47.5rem / tablet (760px), 64rem / desktop (1024px)
+   1rem = 16px
+   ============================================================ */
+
+/* ── Controls ─────────────────────────────────────────────── */
+
+.forex-graph .forex-graph-control-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ── Custom currency dropdown ─────────────────────────────── */
+
+.forex-graph .forex-graph-currency-wrap {
+  width: 100%;
+}
+
+.forex-graph .forex-graph-dropdown {
+  position: relative;
+  width: 50%;
+}
+
+.forex-graph .forex-graph-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2.75rem;
+  padding: 0 1rem;
+  font-size: 0.8313rem;
+  font-weight: 700;
+  color: var(--bbl-color-grey-85);
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: left;
+  width: max-content;
+}
+
+.forex-graph .forex-graph-dropdown.is-open .forex-graph-dropdown-trigger {
+  border-color: var(--bbl-color-active-blue);
+}
+
+.forex-graph .forex-graph-dropdown-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.forex-graph .forex-graph-dropdown-chevron {
+  font-size: 0.375rem;
+  color: var(--bbl-color-black);
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.forex-graph .forex-graph-dropdown-list {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  width: 100%;
+  max-height: 15rem;
+  overflow-y: auto;
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-22);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1.5rem var(--bbl-color-black-alpha-12);
+  z-index: 400;
+  margin: 0;
+  padding: 0.5rem 0;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+.forex-graph .forex-graph-dropdown.is-open .forex-graph-dropdown-list {
+  display: block;
+  width: max-content;
+}
+
+.forex-graph .forex-graph-dropdown-item {
+  padding: 0.625rem 1.875rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bbl-color-black);
+  cursor: pointer;
+}
+
+.forex-graph .forex-graph-dropdown-item:hover {
+  color: var(--bbl-color-active-blue);
+}
+
+.forex-graph .forex-graph-dropdown-item.is-active {
+  color: var(--bbl-color-active-blue);
+}
+
+/* Suppress active-blue on active item while hovering a different item */
+.forex-graph .forex-graph-dropdown-list:hover .forex-graph-dropdown-item.is-active:not(:hover) {
+  color: var(--bbl-color-black);
+}
+
+/* ── Date fields (From + To) ──────────────────────────────── */
+
+.forex-graph .forex-graph-date-fields {
+  display: flex;
+  gap: 1rem;
+}
+
+.forex-graph .forex-graph-date-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.forex-graph .forex-graph-date-label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-85);
+  margin-bottom: 0.625rem;
+}
+
+/* ── Date group (input + calendar trigger + datepicker) ────── */
+
+.forex-graph .forex-graph-date-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.forex-graph .forex-graph-date-display {
+  display: none;
+}
+
+.forex-graph .forex-graph-date-input {
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 2.5rem 0 1.25rem;
+  color: var(--bbl-color-gray-121);
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
+  border-radius: 0.375rem;
+  outline: none;
+  box-sizing: border-box;
+  appearance: none;
+  font-size: var(--bbl-font-size-b2);
+}
+
+.forex-graph .forex-graph-date-input:focus {
+  border-color: var(--bbl-color-active-blue);
+}
+
+.forex-graph .forex-graph-date-trigger {
+  position: absolute;
+  right: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bbl-color-gray-142);
+  font-size: 1.125rem;
+}
+
+/* ── GO button ─────────────────────────────────────────────── */
+
+.forex-graph .forex-graph-go-btn {
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bbl-color-white);
+  background: var(--bbl-color-active-blue);
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  letter-spacing: 0.0313rem;
+  box-sizing: border-box;
+}
+
+.forex-graph .forex-graph-go-btn:hover {
+  background: var(--bbl-color-blue-90);
+}
+
+.forex-graph .forex-graph-go-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ── Actions (Print + Download) ───────────────────────────── */
+
+.forex-graph .forex-graph-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* row-reverse so ::before icon renders after text visually */
+.forex-graph .forex-graph-print-btn,
+.forex-graph .forex-graph-download-btn {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bbl-color-grey-70);
+  cursor: pointer;
+  padding: 0;
+  letter-spacing: 0.0313rem;
+  text-transform: uppercase;
+  height: max-content;
+}
+
+.forex-graph .forex-graph-print-btn::before {
+  font-size: 1.125rem;
+  color: var(--bbl-color-grey-70);
+}
+
+.forex-graph .forex-graph-download-btn::before {
+  font-size: 1.875rem;
+  color: var(--bbl-color-grey-70);
+}
+
+.forex-graph .forex-graph-print-btn:hover,
+.forex-graph .forex-graph-download-btn:hover {
+  color: var(--bbl-color-gray-121);
+}
+
+.forex-graph .forex-graph-print-btn:hover::before,
+.forex-graph .forex-graph-download-btn:hover::before {
+  color: var(--bbl-color-gray-121);
+}
+
+/* ── Error message ─────────────────────────────────────────── */
+
+.forex-graph .forex-graph-error {
+  margin-top: 0.75rem;
+}
+
+.forex-graph .forex-graph-error-text {
+  font-size: 0.7rem;
+  color: var(--bbl-color-grey-85);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* ── Chart section ─────────────────────────────────────────── */
+
+.forex-graph .forex-graph-chart-section {
+  margin-top: 1.875rem;
+  border: 0.0625rem solid var(--bbl-color-grey-22);
+  border-radius: 0.375rem;
+  padding: 1.875rem 1rem 1rem;
+  box-sizing: border-box;
+}
+
+.forex-graph .forex-graph-chart-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.75rem;
+  gap: 0.375rem;
+}
+
+.forex-graph .forex-graph-chart-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--bbl-color-black);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.forex-graph .forex-graph-legend {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.125rem;
+}
+
+.forex-graph .forex-graph-legend-buying {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--bbl-color-blue-130);
+}
+
+.forex-graph .forex-graph-legend-selling {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--bbl-color-orange-75);
+}
+
+.forex-graph .forex-graph-canvas-wrap {
+  position: relative;
+  height: 18.75rem;
+  width: 100%;
+}
+
+.forex-graph .forex-graph-canvas {
+  width: 100%;
+  height: 100%;
+  margin-top: 3.125rem;
+}
+
+/* ── Disclaimer ────────────────────────────────────────────── */
+
+.forex-graph .forex-graph-disclaimer {
+  margin-top: 1.875rem;
+  font-size: 0.6875rem;
+  color: var(--bbl-color-grey-150);
+  line-height: 1.6;
+}
+
+.forex-graph .forex-graph-disclaimer p {
+  margin: 0;
+}
+
+.forex-graph .forex-graph-disclaimer p:first-child {
+  padding-bottom: 0.9375rem;
+}
+
+.forex-graph .forex-graph-disclaimer p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Datepicker (same as forex-rates, rebased) ─────────────── */
+
+.forex-graph .forex-graph-datepicker {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  width: calc(100vw - 2rem);
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-22);
+  border-radius: var(--bbl-rounded-100);
+  box-shadow: 0 0.5rem 2rem var(--bbl-color-black-alpha-14);
+  z-index: 300;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.forex-graph .forex-graph-datepicker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto 0.75rem;
+  width: 92%;
+}
+
+.forex-graph .forex-graph-datepicker-title {
+  display: flex;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bbl-color-blue-105);
+}
+
+.forex-graph .forex-graph-datepicker-nav {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0.0625rem solid var(--bbl-color-grey-22);
+  border-radius: var(--bbl-rounded-full);
+  color: var(--bbl-color-gray-142);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.forex-graph .forex-graph-datepicker-nav .icon-arrow-left::before {
+  font-size: 0.75rem;
+}
+
+.forex-graph .forex-graph-datepicker-prev .icon-arrow-left::before {
+  transform: rotate(180deg);
+  display: inline-block;
+}
+
+.forex-graph .forex-graph-datepicker-nav.is-disabled,
+.forex-graph .forex-graph-datepicker-nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.forex-graph .forex-graph-datepicker-nav:not(:disabled, .is-disabled):hover {
+  background: var(--bbl-color-blue-80);
+  border-color: var(--bbl-color-blue-80);
+  color: var(--bbl-color-white);
+}
+
+.forex-graph .forex-graph-datepicker-calendar {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.forex-graph .forex-graph-datepicker-calendar thead th {
+  padding: 0.25rem 0 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--bbl-color-black);
+  text-align: center;
+}
+
+.forex-graph .forex-graph-datepicker-calendar tbody td {
+  padding: 0.1875rem;
+  text-align: center;
+}
+
+.forex-graph .forex-graph-datepicker-calendar tbody td.is-other-month {
+  visibility: hidden;
+}
+
+.forex-graph .forex-graph-datepicker-day-btn,
+.forex-graph .forex-graph-datepicker-day-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--bbl-rounded-full);
+  font-size: 0.8125rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--bbl-color-gray-121);
+  transition: all 0.3s;
+}
+
+.forex-graph .forex-graph-datepicker-day-btn:hover {
+  background: var(--bbl-color-blue-80);
+  color: var(--bbl-color-white);
+}
+
+.forex-graph .forex-graph-datepicker-day-text {
+  color: var(--bbl-color-grey-45);
+  cursor: default;
+}
+
+.forex-graph .forex-graph-datepicker-calendar td.is-weekend .forex-graph-datepicker-day-text {
+  color: var(--bbl-color-grey-125);
+}
+
+.forex-graph .forex-graph-datepicker-calendar td.is-current .forex-graph-datepicker-day-btn {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  font-weight: 700;
+}
+
+.forex-graph .forex-graph-datepicker-calendar td.is-current .forex-graph-datepicker-day-btn:hover {
+  background: var(--bbl-color-blue-90);
+}
+
+/* stylelint-disable selector-max-compound-selectors */
+.forex-graph .forex-graph-datepicker-calendar td.is-today:not(.is-current) .forex-graph-datepicker-day-btn {
+  outline: 0.125rem solid var(--bbl-color-active-blue);
+  outline-offset: -0.125rem;
+  color: var(--bbl-color-active-blue);
+  font-weight: 700;
+}
+
+/* stylelint-enable selector-max-compound-selectors */
+
+/* ── Tablet: 47.5rem+ (760px) ──────────────────────────────── */
+
+@media (width > 47.5rem) {
+  .forex-graph .forex-graph-control-row {
+    flex-flow: row wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+  }
+
+  .forex-graph .forex-graph-currency-wrap {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  .forex-graph .forex-graph-dropdown {
+    width: auto;
+  }
+
+  .forex-graph .forex-graph-date-label {
+    margin: 0;
+  }
+
+  .forex-graph .forex-graph-date-fields {
+    flex: 0 0 auto;
+    gap: 0.75rem;
+  }
+
+  .forex-graph .forex-graph-date-field {
+    max-width: 11.25rem;
+    display: flex;
+    gap: 0.625rem;
+    align-items: center;
+  }
+
+  .forex-graph .forex-graph-go-btn {
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 6.25rem;
+  }
+
+  .forex-graph .forex-graph-actions {
+    margin-left: auto;
+    align-self: flex-end;
+  }
+
+  .forex-graph .forex-graph-chart-header {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .forex-graph .forex-graph-chart-title {
+    flex: 1;
+  }
+
+  .forex-graph .forex-graph-legend {
+    flex-shrink: 0;
+    align-items: flex-end;
+    flex-direction: row;
+    gap: var(--bbl-space-500);
+  }
+
+  .forex-graph .forex-graph-datepicker {
+    max-width: 28.75rem;
+    width: 28.75rem;
+  }
+
+  .forex-graph .forex-graph-datepicker-header {
+    width: 70%;
+    margin: 0 auto 0.75rem;
+  }
+
+  .forex-graph .forex-graph-datepicker-title {
+    font-size: 1.2775rem;
+  }
+
+  .forex-graph .forex-graph-datepicker-day-btn,
+  .forex-graph .forex-graph-datepicker-day-text {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* ── Desktop: 64rem+ (1024px) ──────────────────────────────── */
+
+@media (width > 64rem) {
+  .forex-graph .forex-graph-control-row {
+    flex-wrap: nowrap;
+    gap: 0.625rem;
+  }
+
+  .forex-graph .forex-graph-dropdown-trigger {
+    font-size: 0.95rem;
+    max-width: fit-content;
+  }
+
+  .forex-graph .forex-graph-dropdown.is-open .forex-graph-dropdown-list {
+    min-width: 14.0625rem;
+  }
+
+  .forex-graph .forex-graph-dropdown-item {
+    font-size: 1rem;
+  }
+
+  /* Inline label layout: [From] [input] [To] [input] */
+  .forex-graph .forex-graph-date-fields {
+    gap: 0.625rem;
+    align-items: center;
+  }
+
+  .forex-graph .forex-graph-date-field {
+    flex: 0 0 auto;
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    max-width: 13.125rem;
+  }
+
+  .forex-graph .forex-graph-date-label {
+    display: block;
+    margin-bottom: 0;
+    white-space: nowrap;
+    font-size: 1rem;
+  }
+
+  .forex-graph .forex-graph-date-group {
+    width: 10rem;
+  }
+
+  .forex-graph .forex-graph-date-input {
+    font-size: 1rem;
+    max-width: fit-content;
+  }
+
+  .forex-graph .forex-graph-go-btn {
+    font-size: 1rem;
+    min-width: 6.25rem;
+  }
+
+  .forex-graph .forex-graph-print-btn,
+  .forex-graph .forex-graph-download-btn {
+    font-size: 1rem;
+  }
+
+  .forex-graph .forex-graph-chart-section {
+    padding: 2.5rem 2.5rem 1.25rem;
+  }
+
+  .forex-graph .forex-graph-chart-title {
+    font-size: 0.8rem;
+  }
+
+  .forex-graph .forex-graph-error-text {
+    font-size: 0.8rem;
+  }
+
+  .forex-graph .forex-graph-legend-buying,
+  .forex-graph .forex-graph-legend-selling {
+    font-size: 0.8rem;
+  }
+
+  .forex-graph .forex-graph-canvas-wrap {
+    height: 21.875rem;
+  }
+
+  .forex-graph .forex-graph-datepicker {
+    max-width: 33.75rem;
+    width: 33.75rem;
+  }
+
+  .forex-graph .forex-graph-datepicker-day-btn,
+  .forex-graph .forex-graph-datepicker-day-text {
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1rem;
+  }
+
+  .forex-graph .forex-graph-datepicker-calendar thead th {
+    font-size: 1rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .forex-graph .forex-graph-datepicker-title {
+    font-size: 1.46rem;
+  }
+}

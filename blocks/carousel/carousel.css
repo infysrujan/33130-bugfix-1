@@ -461,6 +461,5 @@
 
     .carousel-item:not(.active) .carousel-content .carousel-cta {
         top: 55%;
-        height: 1.375rem;
     }
 }

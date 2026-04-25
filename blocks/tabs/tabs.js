@@ -193,8 +193,8 @@ export default async function decorate(block) {
   const tabsContent = document.createElement('div');
   tabsContent.className = 'tabs-content';
 
-  // Process content rows
-  await Promise.all(contentRows.map(async (row, index) => {
+  // Create and append all panels in DOM order first, then load nested blocks in parallel
+  const panels = contentRows.map((row, index) => {
     const contentPanel = document.createElement('div');
     contentPanel.className = 'tab-panel';
     moveInstrumentation(row, contentPanel);
@@ -203,36 +203,29 @@ export default async function decorate(block) {
     contentPanel.id = `tab-panel-${index}`;
     contentPanel.setAttribute('aria-hidden', index === 0 ? 'false' : 'true');
 
-    // Get the single cell from this row
     const cell = row.children[0];
-
-    // Move all content from cell to panel
     while (cell.firstChild) {
       contentPanel.appendChild(cell.firstChild);
     }
 
-    // Decorate any nested blocks
-    // Find divs with a block class name (single class, not decorated yet)
+    tabsContent.appendChild(contentPanel);
+    row.remove();
+    return contentPanel;
+  });
+
+  // Load nested blocks in parallel (order no longer matters for DOM position)
+  await Promise.all(panels.map(async (contentPanel) => {
     const allDivs = contentPanel.querySelectorAll('div[class]');
     const blocksToLoad = [...allDivs].filter((el) => {
-      // Must have exactly one class (the block name)
       if (el.classList.length !== 1) return false;
-      // Don't process if already decorated
       if (el.dataset.blockStatus) return false;
-      // Don't process tab-related classes
       const className = el.classList[0];
       if (className.startsWith('tab-') || className.startsWith('tabs-')) return false;
       return true;
     });
 
-    // First decorate blocks to add metadata
     blocksToLoad.forEach((nestedBlock) => decorateBlock(nestedBlock));
-
-    // Then load blocks to execute their JS
     await Promise.all(blocksToLoad.map((nestedBlock) => loadBlock(nestedBlock)));
-
-    tabsContent.appendChild(contentPanel);
-    row.remove();
   }));
 
   block.appendChild(tabsContent);

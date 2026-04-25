@@ -1,0 +1,68 @@
+{
+  "definitions": [
+    {
+      "title": "Carousel Video",
+      "id": "carousel-video",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Carousel Video",
+              "model": "carousel-video",
+              "filter": "carousel-video"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Carousel Video Item",
+      "id": "carousel-video-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Carousel Video Item",
+              "model": "carousel-video-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "carousel-video",
+      "fields": []
+    },
+    {
+      "id": "carousel-video-item",
+      "fields": [
+        {
+          "component": "text",
+          "name": "youtubeUrl",
+          "label": "YouTube URL",
+          "description": "Enter the YouTube video URL.",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "reference",
+          "name": "thumbnail",
+          "label": "Thumbnail Image",
+          "multi": false
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "carousel-video",
+      "components": [
+        "carousel-video-item"
+      ]
+    }
+  ]
+}

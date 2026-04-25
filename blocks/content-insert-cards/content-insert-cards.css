@@ -8,20 +8,20 @@
 }
 
 /* --- Cards Wrapper --- */
-.content-insert-cards .content-insert-cards-wrapper {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .content-insert-cards-wrapper {
   display: flex;
   flex-direction: column;
   gap: var(--bbl-space-300);
 }
 
 /* --- Card Container --- */
-.content-insert-cards .content-insert-card {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .content-insert-card {
   width: 100%;
   max-width: 100%;
   display: block;
   border-radius: var(--bbl-rounded-150);
   overflow: hidden;
-  border: 1px solid rgb(0 0 0 / 8%);
+  border: 0.063rem solid rgb(0 0 0 / 8%);
   background-color: var(--bbl-color-white);
 }
 
@@ -29,20 +29,20 @@
 .content-insert-cards .content-insert-card-placeholder {
   min-height: 3.125rem;
   padding: var(--bbl-space-200);
-  border: 1px dashed var(--bbl-color-black-alpha-20);
+  border: 0.063rem dashed var(--bbl-color-black-alpha-20);
   border-radius: var(--bbl-rounded-150);
   background-color: rgb(0 0 0 / 2%);
 }
 
 /* --- Image Wrapper --- */
-.content-insert-cards .thumb-large {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .thumb-large {
   position: relative;
   display: block;
   margin: 0;
 }
 
 /* --- Category Badge --- */
-.content-insert-cards .category {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .category {
   position: absolute;
   top: 0.625rem;
   left: 0.625rem;
@@ -58,23 +58,22 @@
   margin: 0;
 }
 
-.content-insert-cards .thumb {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .thumb {
   display: block;
   width: 100%;
-  height: 13.75rem;
   overflow: hidden;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-.content-insert-cards .thumb picture {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .thumb picture {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-.content-insert-cards .thumb img {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -82,7 +81,7 @@
 }
 
 /* --- Content Info Box --- */
-.content-insert-cards .intro-info {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .intro-info {
   padding: var(--bbl-space-250);
   background-color: var(--bbl-color-white);
   display: flex;
@@ -92,38 +91,34 @@
 }
 
 /* --- Title --- */
-.content-insert-cards .title-2 {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .title-2 {
   font-size: 1.3125rem;
   line-height: 1.08;
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
-  margin: 0 0 0.625rem;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  margin: 0;
   position: relative;
   padding-bottom: var(--bbl-space-150);
 }
 
-.content-insert-cards .title-2::before {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .title-2::before {
   content: "";
   position: absolute;
   left: 0;
   bottom: 0;
-  height: 1px;
+  height: 0.063rem;
   width: 1.3125rem;
   background-color: var(--bbl-color-grey-150);
 }
 
 /* --- Description --- */
-.content-insert-cards .desc {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .desc {
   margin-bottom: var(--bbl-space-150);
+  padding-top: var(--bbl-space-250);
 }
 
-.content-insert-cards .text-default {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .text-default {
   font-size: var(--bbl-body-b1-size);
   line-height: 1.29;
   font-weight: var(--bbl-font-weight-regular);
@@ -136,12 +131,12 @@
 }
 
 /* --- Button --- */
-.content-insert-cards .button-group {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .button-group {
   margin-top: auto;
   padding-top: var(--bbl-space-200);
 }
 
-.content-insert-cards .btn-primary {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .btn-primary {
   display: block;
   padding: 0 var(--bbl-space-250);
   font-size: var(--bbl-body-b1-size);
@@ -150,7 +145,7 @@
   font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   color: var(--bbl-color-white);
   background-color: var(--bbl-color-active-blue);
-  border: 1px solid var(--bbl-color-active-blue);
+  border: 0.063rem solid var(--bbl-color-active-blue);
   border-radius: var(--bbl-rounded-100);
   text-decoration: none;
   transition: all 0.3s ease;
@@ -162,29 +157,29 @@
   letter-spacing: 0.05rem;
 }
 
-.content-insert-cards .btn-primary:hover {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .btn-primary:hover {
   background-color: var(--bbl-color-blue-90);
   border-color: var(--bbl-color-blue-90);
   color: var(--bbl-color-white);
 }
 
-.content-insert-cards .btn-primary:active {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .btn-primary:active {
   background-color: var(--bbl-color-active-blue);
   border-color: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
 }
 
-.content-insert-cards .btn-primary:focus {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .btn-primary:focus {
   outline: var(--bbl-space-025) solid var(--bbl-color-active-blue);
   outline-offset: var(--bbl-space-025);
 }
 
 @media (width > 47.5rem) {
-.content-insert-cards .content-insert-cards-wrapper {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .content-insert-cards-wrapper {
   gap: var(--bbl-space-500);
 }
 
-.content-insert-cards .content-insert-card {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .content-insert-card {
   max-width: 73.125rem;
   margin: 0 auto;
   position: relative;
@@ -195,23 +190,23 @@
   overflow: visible;
 }
 
-.content-insert-cards .thumb-large {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .thumb-large {
   border-radius: var(--bbl-rounded-100);
   overflow: visible;
 }
 
-.content-insert-cards .category {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .category {
   top: var(--bbl-space-250);
   left: var(--bbl-space-250);
 }
 
-.content-insert-cards .thumb {
-  height: 24rem;
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .thumb {
   border-radius: var(--bbl-rounded-100);
   width: auto;
+  max-height: 29.25rem;
 }
 
-.content-insert-cards .intro-info {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .intro-info {
   position: absolute;
   bottom: 1.875rem;
   right: 1.875rem;
@@ -227,7 +222,7 @@
   min-height: auto;
 }
 
-.content-insert-cards .title-2 {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .title-2 {
   font-size: 1.3125rem;
   line-height: 1.08;
   font-weight: var(--bbl-font-weight-regular);
@@ -236,16 +231,16 @@
   padding-bottom: var(--bbl-space-150);
 }
 
-.content-insert-cards .text-default {
-  font-size: 14px;
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .text-default {
+  font-size: var(--bbl-font-size-b2);
   line-height: 1.29;
 }
 
-.content-insert-cards .desc {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .desc {
   margin-bottom: var(--bbl-space-150);
 }
 
-.content-insert-cards .btn-primary {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .btn-primary {
   font-size: var(--bbl-body-b1-size);
   line-height: 2.75rem;
   padding: 0 var(--bbl-space-250);
@@ -254,18 +249,14 @@
   border-radius: var(--bbl-rounded-100);
 }
 
-.content-insert-cards .button-group {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .button-group {
   margin-top: auto;
   padding-top: var(--bbl-space-150);
 }
 }
 
 @media (width > 64rem) {
-.content-insert-cards .thumb {
-  height: 23.75rem;
-}
-
-.content-insert-cards .title-2 {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .title-2 {
   font-size: var(--bbl-heading-h5-size);
   line-height: 1.08;
   margin-bottom: 0.625rem;
@@ -274,16 +265,16 @@
   font-family: var(--bbl-font-family-medium);
 }
 
-.content-insert-cards .text-default {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .text-default {
   font-size: var(--bbl-body-b1-size);
   line-height: 1.375;
 }
 
-.content-insert-cards .btn-primary {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .btn-primary {
   font-size: var(--bbl-body-b1-size);
 }
 
-.content-insert-cards .category {
+:is(.content-insert-cards, .carousel-dotted .carousel-dotted-item.content-cards) .category {
   font-size: 0.9rem;
 }
 }

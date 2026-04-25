@@ -1,0 +1,8 @@
+{
+  "data": [
+    { "Key": "carousel-video-player-title", "Text": "เครื่องเล่นวิดีโอ YouTube" },
+    { "Key": "carousel-video-prev-label", "Text": "ก่อนหน้า" },
+    { "Key": "carousel-video-next-label", "Text": "ถัดไป" },
+    { "Key": "carousel-video-thumb-label", "Text": "เล่นวิดีโอ" }
+  ]
+}

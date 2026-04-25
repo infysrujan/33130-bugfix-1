@@ -1,0 +1,231 @@
+/* ── Wrapper ─────────────────────────────────────────────────────────────── */
+.carousel-video-wrapper {
+  max-width: 56.25rem;
+  width: 100%;
+  margin: auto;
+}
+
+/* ── Block positioning context ───────────────────────────────────────────── */
+.carousel-video {
+  position: relative;
+}
+
+/* ── Main player ─────────────────────────────────────────────────────────── */
+.carousel-video .cv-main-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--bbl-color-black);
+}
+
+.carousel-video .cv-main-player iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* ── Thumbnail carousel — mobile: overlay on player ─────────────────────── */
+.carousel-video .cv-carousel-section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Track hidden on mobile */
+.carousel-video .cv-track-wrap {
+  display: none;
+  width: 100%;
+  overflow: hidden;
+  margin: 1.875rem -0.3125rem;
+}
+
+.carousel-video .cv-track {
+  display: flex;
+  transition: transform 0.35s ease;
+}
+
+/* ── Thumbnails ──────────────────────────────────────────────────────────── */
+.carousel-video .cv-thumb {
+  flex: 0 0 11.5625rem;
+  width: 11.5625rem;
+  height: 6.25rem;
+  padding: 0;
+  margin: 0 0.3125rem;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bbl-color-black);
+  transition: opacity 0.2s ease, outline-color 0.2s ease;
+  opacity: 0.65;
+}
+
+.carousel-video .cv-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  border-radius: 0;
+}
+
+.carousel-video .cv-thumb:hover {
+  opacity: 0.9;
+}
+
+.carousel-video .cv-thumb.active {
+  /* outline: 0.125rem solid var(--bbl-color-active-blue); */
+  outline-offset: -0.125rem;
+  opacity: 1;
+}
+
+/* ── Prev / Next buttons — mobile: overlaid on video edges ───────────────── */
+.carousel-video .cv-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 0.0625rem solid var(--bbl-color-grey-125);
+  background: var(--bbl-color-white-alpha-80);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 0.125rem 0.375rem var(--bbl-color-black-alpha-20);
+  transition: background 0.2s ease;
+  z-index: 1;
+  pointer-events: all;
+}
+
+.carousel-video .cv-prev {
+  left: 0.75rem;
+}
+
+.carousel-video .cv-next {
+  right: 0.75rem;
+}
+
+.carousel-video .cv-nav:hover {
+  background: var(--bbl-color-grey-10);
+}
+
+.carousel-video .cv-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.carousel-video .cv-nav::before {
+  content: '';
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-top: 0.125rem solid var(--bbl-color-grey-100);
+  border-right: 0.125rem solid var(--bbl-color-grey-100);
+}
+
+.carousel-video .cv-prev::before {
+  transform: rotate(-135deg);
+  margin-left: 0.1875rem;
+}
+
+.carousel-video .cv-next::before {
+  transform: rotate(45deg);
+  margin-right: 0.1875rem;
+}
+
+/* ── Dots — hidden on mobile ─────────────────────────────────────────────── */
+.carousel-video .cv-dots {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0 1rem;
+}
+
+.carousel-video .cv-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  min-width: 0.5rem;
+  min-height: 0.5rem;
+  border-radius: 50%;
+  border: 0.0625rem solid var(--bbl-color-grey-150);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+}
+
+.carousel-video .cv-dot:hover {
+  border-color: var(--bbl-color-gray-600);
+}
+
+.carousel-video .cv-dot.active {
+  width: 0.625rem;
+  height: 0.625rem;
+  min-width: 0.625rem;
+  min-height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+/* ── Tablet: > 760px ─────────────────────────────────────────────────────── */
+@media (width > 47.5rem) {
+  .carousel-video .cv-carousel-section {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    aspect-ratio: unset;
+    height: 8.875rem;
+    margin: 1.875rem 0;
+    pointer-events: auto;
+    z-index: auto;
+  }
+
+  .carousel-video .cv-track-wrap {
+    display: block;
+  }
+
+  .carousel-video .cv-dots {
+    display: flex;
+  }
+
+  .carousel-video .cv-nav {
+    top: 40%;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--bbl-color-white);
+    pointer-events: auto;
+  }
+
+  .carousel-video .cv-prev {
+    left: -3rem;
+  }
+
+  .carousel-video .cv-next {
+    right: -3rem;
+  }
+}
+
+/* ── Desktop: > 1024px ───────────────────────────────────────────────────── */
+@media (width > 64rem) {
+  .carousel-video-wrapper {
+    padding: 0 3rem;
+  }
+}

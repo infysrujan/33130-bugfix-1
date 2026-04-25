@@ -38,9 +38,31 @@
       "search-page",
       "currency-converter",
       "popup-modal-card-offer",
+      "currency-converter-expanded",
+      "table",
       "locate-us",
       "rate-card",
-      "currency-converter-expanded"
+      "accordion-block",
+      "social-icons",
+      "card-list",
+      "card-list-wealth",
+      "privacy-modal",
+      "external-redirect-popup",
+      "video",
+      "carousel-video",
+      "forex-rates"
+    ]
+  },
+  {
+    "id": "card-list-wealth",
+    "components": [
+      "card-list-wealth-item"
+    ]
+  },
+  {
+    "id": "card-list",
+    "components": [
+      "card-list-item"
     ]
   },
   {
@@ -65,6 +87,12 @@
     "id": "showArrowsDots",
     "components": [
       "carousel-dotted-slide-arrows"
+    ]
+  },
+  {
+    "id": "carousel-video",
+    "components": [
+      "carousel-video-item"
     ]
   },
   {
@@ -194,9 +222,86 @@
     ]
   },
   {
+    "id": "social-icons",
+    "components": [
+      "social-icon"
+    ],
+    "maxItems": 3
+  },
+  {
     "id": "story-card",
     "components": [
       "button"
+    ]
+  },
+  {
+    "id": "table",
+    "rte": {
+      "toolbar": {
+        "format": [
+          "bold",
+          "italic",
+          "underline",
+          "strike"
+        ],
+        "alignment": [
+          "left",
+          "center",
+          "right",
+          "justify"
+        ],
+        "direction": [
+          "rtl",
+          "ltr"
+        ],
+        "indentation": [
+          "indent",
+          "outdent"
+        ],
+        "blocks": [
+          "paragraph",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "code_block"
+        ],
+        "list": [
+          "bullet_list",
+          "ordered_list"
+        ],
+        "insert": [
+          "link",
+          "unlink",
+          "image",
+          "table",
+          "special_characters"
+        ],
+        "sr_script": [
+          "superscript",
+          "subscript"
+        ],
+        "editor": [
+          "removeformat",
+          "paste_text"
+        ],
+        "sections": [
+          "format",
+          "alignment",
+          "direction",
+          "indentation",
+          "blocks",
+          "list",
+          "insert",
+          "sr_script",
+          "editor"
+        ]
+      }
+    },
+    "components": [
+      "nested-table"
     ]
   },
   {
@@ -223,7 +328,9 @@
       "brand-logo",
       "location",
       "login",
-      "main-nav-item"
+      "main-nav-item",
+      "forex-rates",
+      "forex-graph"
     ]
   },
   {
@@ -236,6 +343,12 @@
     "id": "top-nav",
     "components": [
       "top-nav-link"
+    ]
+  },
+  {
+    "id": "video",
+    "components": [
+      "video"
     ]
   }
 ]

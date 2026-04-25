@@ -1,20 +1,21 @@
 /**
- * Converts a date to Bangkok timezone
- * @param {Date} date - The date to convert
- * @returns {Date} - Date in Bangkok timezone
+ * Parses a date string, treating timezone-less strings as Bangkok time (UTC+7)
+ * @param {string} str - Date string to parse
+ * @returns {Date} - Parsed Date object
  */
-function toBangkokTime(date) {
-  // Create a date string in Bangkok timezone
-  const bangkokString = date.toLocaleString('en-US', {
-    timeZone: 'Asia/Bangkok',
-  });
-  return new Date(bangkokString);
+function parseBangkokDate(str) {
+  const trimmed = str.trim();
+  // If no timezone info, treat as Bangkok time (UTC+7)
+  if (!/[Zz]$/.test(trimmed) && !/[+-]\d{2}:?\d{2}$/.test(trimmed)) {
+    return new Date(`${trimmed}+07:00`);
+  }
+  return new Date(trimmed);
 }
 
 /**
  * Checks if current Bangkok time is within the date range
- * @param {string} startDate - ISO date string for start
- * @param {string} endDate - ISO date string for end
+ * @param {string} startDate - Date string for start (treated as Bangkok time if no timezone)
+ * @param {string} endDate - Date string for end (treated as Bangkok time if no timezone)
  * @returns {boolean} - True if current time is within range
  */
 function isWithinDateRange(startDate, endDate) {
@@ -24,17 +25,10 @@ function isWithinDateRange(startDate, endDate) {
 
   try {
     const now = new Date();
-    const bangkokNow = toBangkokTime(now);
+    const start = parseBangkokDate(startDate);
+    const end = parseBangkokDate(endDate);
 
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    const bangkokStart = toBangkokTime(start);
-    const bangkokEnd = toBangkokTime(end);
-
-    const isWithin = bangkokNow >= bangkokStart && bangkokNow <= bangkokEnd;
-
-    return isWithin;
+    return now >= start && now <= end;
   } catch (error) {
     return false;
   }

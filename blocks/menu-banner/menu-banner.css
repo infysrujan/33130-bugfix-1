@@ -39,8 +39,7 @@
   display: block;
   max-width: 75rem;
   margin: 0 auto;
-  padding: var(--bbl-space-400) var(--bbl-space-container-xs);
-  padding-top: 0;
+  padding: 0 var(--bbl-space-container-xs) var(--bbl-space-400);
 }
 
 /* Eyebrow text */
@@ -64,7 +63,7 @@
   width: 1.3125rem;
   bottom: 0;
   height: 0.0625rem;
-  background: #9e9e9e;
+  background: var(--bbl-color-grey-150);
 }
 
 /* Title */
@@ -230,11 +229,14 @@
 /* Desktop: width > 1024px */
 @media (width > 64rem) {
   .menu-banner .desktop-tools {
-    padding: var(--bbl-space-700) var(--bbl-space-1050);
+    padding: 0 var(--bbl-space-1050) var(--bbl-space-250);
+    display: flow-root;
   }
 
   .menu-banner .thumb-full {
-    max-height: 28.125rem;
+    height: auto;
+    min-height: 0;
+    max-height: none;
   }
 
   .menu-banner .sub-title-medium {
@@ -245,7 +247,7 @@
   .menu-banner .title-1 > * {
     font-size: 3rem;
     line-height: 2.875rem;
-    margin: var(--bbl-space-300) 0 var(--bbl-space-500);
+    margin: 0.625rem 0 var(--bbl-space-250);
   }
 
   .menu-banner .thumb-square {

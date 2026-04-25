@@ -1,161 +1,17 @@
-import { moveInstrumentation } from '../../scripts/scripts.js';
 import {
   readBoolean,
   readDotsAlignment,
   readPosition,
 } from '../../scripts/utils/carousel-helpers.js';
-import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
-
-/**
- * Build a slide WITH IMAGE variation
- * Structure: Badge Text | Image | Description | Link
- * Cell layout (carousel-dotted-slide, slideType = withImage):
- *   0: variant, 1: slideType, 2: badgeText, 3: image, 4: description,
- *   5: link, 6: linkText, 7: linkTitle, 8: linkType
- */
-function buildSlideWithImage(row, index, cells) {
-  const slide = document.createElement('div');
-  slide.className = 'carousel-dotted-item with-image';
-  slide.dataset.index = index;
-  moveInstrumentation(row, slide);
-
-  // Background image (cell 3)
-  const picture = cells[3]?.querySelector('picture');
-  if (picture) {
-    const media = document.createElement('div');
-    media.className = 'carousel-bg';
-    media.append(picture);
-    slide.append(media);
-  }
-
-  // Content container
-  const content = document.createElement('div');
-  content.className = 'carousel-dotted-content';
-
-  // Badge text (cell 2)
-  const badgeText = cells[2]?.textContent.trim();
-  if (badgeText) {
-    const badge = document.createElement('div');
-    badge.className = 'carousel-badge';
-    badge.textContent = badgeText;
-    content.append(badge);
-  }
-
-  // Description (cell 4)
-  if (cells[4]) {
-    const description = document.createElement('div');
-    description.className = 'carousel-dotted-description';
-    while (cells[4].firstChild) description.append(cells[4].firstChild);
-    content.append(description);
-  }
-
-  // Link/Button (cell 5)
-  const link = cells[5]?.querySelector('a');
-  if (link) {
-    content.append(link);
-  }
-
-  slide.append(content);
-  return slide;
-}
-
-/**
- * Build a slide WITHOUT IMAGE variation
- * Structure: Header Text | Default Text
- * Cell layout (carousel-dotted-slide, slideType = withoutImage):
- *   0: variant, 1: slideType,
- *   2: badgeText (empty), 3: image (empty), 4: description (empty),
- *   5: link group (merged, empty) — AEM UE merges link+linkText+linkTitle+linkType into 1 cell
- *   6: headerText, 7: defaultText
- */
-function buildSlideWithoutImage(row, index, cells) {
-  const slide = document.createElement('div');
-  slide.className = 'carousel-dotted-item without-image';
-  slide.dataset.index = index;
-  moveInstrumentation(row, slide);
-
-  // Content container
-  const content = document.createElement('div');
-  content.className = 'carousel-dotted-content';
-
-  // Header text (cell 6)
-  const headerText = cells[6]?.textContent.trim();
-  if (headerText) {
-    const header = document.createElement('div');
-    header.className = 'carousel-dotted-header';
-    header.textContent = headerText;
-    content.append(header);
-  }
-
-  // Default text (cell 7)
-  if (cells[7]) {
-    const defaultText = document.createElement('div');
-    defaultText.className = 'carousel-default-text';
-    while (cells[8].firstChild) defaultText.append(cells[8].firstChild);
-    content.append(defaultText);
-  }
-
-  slide.append(content);
-  return slide;
-}
-
-/**
- * Build a slide HERO BANNER IMAGE CAROUSEL or TEXT ANIMATION VARIANT
- * Structure: Image | Image Alt | Title | Subtitle | Button
- * Cell layout (carousel-dotted-slide, slideType = heroBannerImageCarousel / textAnimationVariant):
- *   0: variant, 1: slideType,
- *   2: badgeText (empty), 3: image (empty), 4: description (empty),
- *   5: link group (merged, empty) — link+linkText+linkTitle+linkType merged into 1 cell
- *   6: headerText (empty), 7: defaultText (empty),
- *   8: heroImage, 9: imageAlt, 10: title, 11: subtitle, 12: heroLink (merged)
- */
-function buildSlideHeroVariant(row, index, cells, variant) {
-  const slide = document.createElement('div');
-  slide.className = `carousel-item ${variant}`;
-  slide.dataset.index = index;
-  moveInstrumentation(row, slide);
-
-  // heroImage (cell 8), title (cell 10), subtitle (cell 11), heroLink (cell 12)
-  const heroImageCell = cells[8];
-  const titleCell = cells[9];
-  const subtitleCell = cells[10];
-  const linkCell = cells[11];
-
-  const picture = heroImageCell?.querySelector('picture');
-  if (picture) {
-    const media = document.createElement('div');
-    media.className = 'carousel-bg';
-    media.append(picture);
-    slide.append(media);
-  }
-
-  const content = document.createElement('div');
-  content.className = 'carousel-content content';
-
-  if (titleCell) {
-    const title = document.createElement('div');
-    title.classList.add('carousel-title', 'animated-text');
-    title.innerHTML = titleCell.innerHTML;
-    content.append(title);
-  }
-
-  if (subtitleCell) {
-    const subtitle = document.createElement('div');
-    subtitle.classList.add('carousel-subtitle', 'text-animation-variant', 'animated-text');
-    subtitle.innerHTML = subtitleCell.innerHTML;
-    content.append(subtitle);
-  }
-
-  if (linkCell) {
-    content.innerHTML += linkCell.innerHTML;
-  }
-
-  decorateButtonsV1(content);
-  content.querySelector('a')?.classList.add('button-m', 'animated-text');
-
-  slide.append(content);
-  return slide;
-}
+import buildCardListFragmentSlides, {
+  handleCardListLoopTransition,
+  setCardListTrackPosition,
+} from './card-list-carousel.js';
+import buildContentCardsSlide from './build-content-cards-slide.js';
+import buildImageSlide from './build-image-slide.js';
+import buildTextSlide from './build-text-slide.js';
+import buildHeroSlide from './build-hero-slide.js';
+import buildArrowsDotsSlide from './build-arrows-dots-slide.js';
 
 /**
  * Build a slide - determines which variation to use and delegates.
@@ -170,147 +26,23 @@ function buildSlide(row, index) {
   const slideType = cells[1]?.textContent.trim();
 
   if (slideType === 'heroBannerImageCarousel') {
-    return buildSlideHeroVariant(row, index, cells, 'hero-banner-image-carousel');
+    return buildHeroSlide(row, index, cells, 'hero-banner-image-carousel');
   }
 
   if (slideType === 'textAnimationVariant') {
-    return buildSlideHeroVariant(row, index, cells, 'text-animation-variant');
+    return buildHeroSlide(row, index, cells, 'text-animation-variant');
   }
 
   if (slideType === 'withImage') {
-    return buildSlideWithImage(row, index, cells);
+    return buildImageSlide(row, index, cells);
+  }
+
+  if (slideType === 'contentInsertCarouselCards') {
+    return buildContentCardsSlide(row, index, cells);
   }
 
   // Default: withoutImage
-  return buildSlideWithoutImage(row, index, cells);
-}
-
-/**
- * Build a slide for showArrowsDots variant.
- * Cell layout (carousel-dotted-slide-arrows):
- *  cells[0] = variant (hidden), cells[1] = slideType (select)
- * slideType values:
- *   withDefaultImage: 0:variant, 1:slideType, 2:defaultImage, 3:titleDefaultImage,
- *                     4:step, 5:descriptionDefaultImage  (no link group → no merging)
- *   withCircularImage: 0:variant, 1:slideType,
- *                      2-5: withDefaultImage fields (reserved, empty),
- *                      6:circularImage, 7:titleCircularImage, 8:descriptionCircularImage,
- *                      9:link (merged — AEM UE merges link+linkText+linkTitle+linkType into 1 cell)
- */
-function buildSlideArrowsandDots(row, index) {
-  const cells = [...row.children];
-  const slide = document.createElement('div');
-  slide.dataset.index = index;
-  moveInstrumentation(row, slide);
-
-  // cells[1] is now a select with the slide type value
-  const slideType = cells[1]?.textContent.trim();
-
-  if (slideType === 'withCircularImage') {
-    slide.className = 'carousel-dotted-item with-circular-image item';
-
-    // circularImage (cell 6), title (cell 7), description (cell 8), link (cell 9)
-    const circularImageCell = cells[6];
-    const titleCell = cells[7];
-    const descriptionCell = cells[8];
-    const linkCell = cells[9];
-
-    // image
-    const imageContainer = document.createElement('div');
-    imageContainer.className = 'circle-image';
-    const picture = circularImageCell?.querySelector('picture');
-    if (picture) imageContainer.append(picture);
-    slide.append(imageContainer);
-
-    // content container
-    const content = document.createElement('div');
-    content.className = 'caption';
-
-    if (titleCell && titleCell.textContent.trim()) {
-      const title = document.createElement('h3');
-      title.className = 'title-2';
-      title.innerHTML = titleCell.innerHTML;
-      content.append(title);
-    }
-
-    if (descriptionCell && descriptionCell.textContent.trim()) {
-      const description = document.createElement('div');
-      description.className = 'name text-brown text-default';
-      while (descriptionCell.firstChild) description.append(descriptionCell.firstChild);
-      content.append(description);
-    }
-
-    if (linkCell && linkCell.textContent.trim()) {
-      const linkWrap = document.createElement('div');
-      linkWrap.className = 'button-group';
-      const a = linkCell.querySelector('a');
-      if (a) {
-        a.className = 'sub-title-medium link-primary';
-        linkWrap.append(a);
-      } else {
-        while (linkCell.firstChild) linkWrap.append(linkCell.firstChild);
-      }
-      content.append(linkWrap);
-    }
-
-    slide.append(content);
-    return slide;
-  }
-
-  if (slideType === 'withDefaultImage') {
-    slide.className = 'carousel-dotted-item with-default-image item has-caption bgd-white';
-
-    // defaultImage (cell 2), title (cell 3), step (cell 4), description (cell 5)
-    const defaultImageCell = cells[2];
-    const titleCell = cells[3];
-    const stepCell = cells[4];
-    const descriptionCell = cells[5];
-
-    // image
-    const imageContainer = document.createElement('div');
-    imageContainer.className = 'img-thumb';
-    const picture = defaultImageCell?.querySelector('picture');
-    if (picture) imageContainer.append(picture);
-    slide.append(imageContainer);
-
-    // content container
-    const content = document.createElement('div');
-    content.className = 'caption editor';
-
-    if (titleCell && titleCell.textContent.trim()) {
-      const title = document.createElement('h3');
-      title.className = 'title-3';
-      title.innerHTML = titleCell.innerHTML;
-      content.append(title);
-    }
-
-    const hasTitle = titleCell && titleCell.textContent.trim();
-    const hasStep = stepCell && stepCell.textContent.trim();
-    const hasDesc = descriptionCell && descriptionCell.textContent.trim();
-
-    if (hasTitle || hasStep || hasDesc) {
-      const textWrap = document.createElement('div');
-      textWrap.className = 'text-default editor pad-bot';
-
-      if (hasStep) {
-        const step = document.createElement('p');
-        step.className = 'text-large text-light';
-        step.innerHTML = stepCell.innerHTML;
-        textWrap.append(step);
-      }
-
-      if (hasDesc) {
-        while (descriptionCell.firstChild) textWrap.append(descriptionCell.firstChild);
-      }
-      content.append(textWrap);
-    }
-
-    slide.append(content);
-    return slide;
-  }
-
-  slide.className = 'carousel-dotted-item';
-  return slide;
+  return buildTextSlide(row, index, cells);
 }
 
 /**
@@ -485,7 +217,7 @@ function initializeAutoScroll(
   }
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const rows = [...block.children];
   const hasAuthoringAttrs = rows.some((row) => [...row.attributes]
     .some(({ name }) => name.startsWith('data-aue-')));
@@ -508,7 +240,7 @@ export default function decorate(block) {
   const showArrows = variant === 'showArrowsDots';
 
   const slides = rows.slice(nextIndex);
-  block.className = 'carousel-dotted content';
+  block.classList.add('content');
 
   if (showDots) {
     block.classList.add(`dots-${dotsAlignment}-${dotsPosition}`);
@@ -530,9 +262,21 @@ export default function decorate(block) {
   block.setAttribute('role', 'region');
   block.setAttribute('aria-roledescription', 'carousel');
 
-  const slideEls = slides.map((row, index) => (showArrows
-    ? buildSlideArrowsandDots(row, index)
-    : buildSlide(row, index)));
+  const slideEls = (await Promise.all(slides.map((row, index) => {
+    const slideType = row.children[1]?.textContent.trim();
+    if (slideType === 'cardListCarousel') {
+      return buildCardListFragmentSlides(row, index);
+    }
+
+    if (showArrows) {
+      return buildArrowsDotsSlide(row, index);
+    }
+
+    return buildSlide(row, index);
+  }))).flat();
+  slideEls.forEach((slide, slideIndex) => {
+    slide.dataset.index = slideIndex;
+  });
 
   const slidesWithImage = slideEls.filter((s) => s.classList.contains('with-image')).length;
   const slidesWithoutImage = slideEls.filter((s) => s.classList.contains('without-image')).length;
@@ -540,6 +284,8 @@ export default function decorate(block) {
   const slidesTextAnimation = slideEls.filter((s) => s.classList.contains('text-animation-variant')).length;
   const slidesCircularImage = slideEls.filter((s) => s.classList.contains('with-circular-image')).length;
   const slidesDefaultImage = slideEls.filter((s) => s.classList.contains('with-default-image')).length;
+  const slidesFragment = slideEls.filter((s) => s.classList.contains('carousel-fragment')).length;
+  const slidesContentCards = slideEls.filter((s) => s.classList.contains('content-cards')).length;
   const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
     && slidesWithImage === 0
     && slidesWithoutImage === 0;
@@ -567,12 +313,28 @@ export default function decorate(block) {
   ) {
     block.classList.add('all-hero-banner-image-carousel');
   } else if (
+    slidesFragment > 0
+    && slidesWithImage === 0
+    && slidesWithoutImage === 0
+    && slidesHeroBanner === 0
+    && slidesTextAnimation === 0
+  ) {
+    block.classList.add('all-carousel-fragment');
+  } else if (
     slidesTextAnimation > 0
     && slidesWithImage === 0
     && slidesWithoutImage === 0
     && slidesHeroBanner === 0
   ) {
     block.classList.add('all-text-animation-variant');
+  } else if (
+    slidesContentCards > 0
+    && slidesWithImage === 0
+    && slidesWithoutImage === 0
+    && slidesHeroBanner === 0
+    && slidesTextAnimation === 0
+  ) {
+    block.classList.add('all-content-cards');
   } else {
     block.classList.add('mixed-image-slides');
   }
@@ -595,8 +357,15 @@ export default function decorate(block) {
 
   const zoomTimers = new Map();
 
-  // Determine if we have circular or default image slides (needed for circular navigation)
+  // Variants that use the wrapped arrow-track layout.
   const circularOrDefaultImage = slidesCircularImage > 0 || slidesDefaultImage > 0;
+  const allFragmentTrack = slidesFragment > 0
+    && slidesWithImage === 0
+    && slidesWithoutImage === 0
+    && slidesHeroBanner === 0
+    && slidesTextAnimation === 0;
+  const arrowTrackVariant = circularOrDefaultImage || allFragmentTrack;
+  const shouldCloneFragmentSlide = allFragmentTrack && slideEls.length > 1;
 
   function triggerBgZoom(slideEl) {
     const bg = slideEl.querySelector('.carousel-bg');
@@ -634,6 +403,7 @@ export default function decorate(block) {
       && slidesTextAnimation === 0;
 
     const isLoopingForward = index === 0 && prevIndex === slideEls.length - 1;
+    const isLoopingBackward = index === slideEls.length - 1 && prevIndex === 0;
 
     slideEls.forEach((slide, i) => {
       const active = i === index;
@@ -657,9 +427,8 @@ export default function decorate(block) {
       button.tabIndex = active ? 0 : -1;
     });
 
-    // Disable arrow buttons only when not in circular navigation mode
-    if (showArrows && circularOrDefaultImage) {
-      // Keep arrows enabled for circular navigation
+    // Keep arrows enabled for wrapped arrow-track variants so they can loop.
+    if (showArrows && arrowTrackVariant) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
     } else {
@@ -667,28 +436,42 @@ export default function decorate(block) {
       nextArrow.disabled = index === slideEls.length - 1;
     }
 
-    if (allHeroBanner || allWithoutImageTrack) {
+    if (allHeroBanner || allWithoutImageTrack || allFragmentTrack) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       if (trackWrapper) {
-        const slideWidth = block.offsetWidth;
-
-        if (isLoopingForward && canUseCloneLoop) {
-          if (isHeroVariant && !isFirstLoad) {
-            const cloneSlide = trackWrapper.lastElementChild;
-            triggerBgZoom(cloneSlide);
-            cloneSlide.classList.add('is-entering');
-            setTimeout(() => cloneSlide.classList.remove('is-entering'), 600);
+        if (allFragmentTrack) {
+          const handledLoop = handleCardListLoopTransition(
+            block,
+            trackWrapper,
+            slideEls,
+            isLoopingForward,
+            isLoopingBackward,
+            shouldCloneFragmentSlide,
+          );
+          if (!handledLoop) {
+            setCardListTrackPosition(block, trackWrapper, slideEls, index);
           }
-
-          trackWrapper.style.transform = `translate3d(${-slideEls.length * slideWidth}px, 0px, 0px)`;
-          setTimeout(() => {
-            trackWrapper.style.transition = 'none';
-            trackWrapper.style.transform = 'translate3d(0px, 0px, 0px)';
-            trackWrapper.getBoundingClientRect();
-            trackWrapper.style.transition = '';
-          }, 700);
         } else {
-          trackWrapper.style.transform = `translate3d(${-index * slideWidth}px, 0px, 0px)`;
+          const slideWidth = trackWrapper.offsetWidth;
+
+          if (isLoopingForward && canUseCloneLoop) {
+            if (isHeroVariant && !isFirstLoad) {
+              const cloneSlide = trackWrapper.lastElementChild;
+              triggerBgZoom(cloneSlide);
+              cloneSlide.classList.add('is-entering');
+              setTimeout(() => cloneSlide.classList.remove('is-entering'), 600);
+            }
+
+            trackWrapper.style.transform = `translate3d(${-slideEls.length * slideWidth}px, 0px, 0px)`;
+            setTimeout(() => {
+              trackWrapper.style.transition = 'none';
+              trackWrapper.style.transform = 'translate3d(0px, 0px, 0px)';
+              trackWrapper.getBoundingClientRect();
+              trackWrapper.style.transition = '';
+            }, 700);
+          } else {
+            trackWrapper.style.transform = `translate3d(${-index * slideWidth}px, 0px, 0px)`;
+          }
         }
       }
     }
@@ -696,7 +479,7 @@ export default function decorate(block) {
 
   prevArrow.addEventListener('click', () => {
     const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
-    if (showArrows && circularOrDefaultImage) {
+    if (showArrows && arrowTrackVariant) {
       // Enable circular navigation for showArrowsDots variant
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
       setActive(prevIndex);
@@ -707,7 +490,7 @@ export default function decorate(block) {
 
   nextArrow.addEventListener('click', () => {
     const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
-    if (showArrows && circularOrDefaultImage) {
+    if (showArrows && arrowTrackVariant) {
       // Enable circular navigation for showArrowsDots variant
       const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
       setActive(nextSlideIndex);
@@ -750,24 +533,47 @@ export default function decorate(block) {
     trackWrapper.className = 'carousel-track-wrapper';
     trackWrapper.replaceChildren(...slideEls);
     block.replaceChildren(trackWrapper);
-  } else if (circularOrDefaultImage) {
+  } else if (arrowTrackVariant) {
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
-    trackWrapper.replaceChildren(...slideEls);
-    block.replaceChildren(trackWrapper);
+    if (shouldCloneFragmentSlide) {
+      const cloneLast = slideEls[slideEls.length - 1].cloneNode(true);
+      cloneLast.setAttribute('aria-hidden', 'true');
+      const cloneFirst = slideEls[0].cloneNode(true);
+      cloneFirst.setAttribute('aria-hidden', 'true');
+      trackWrapper.replaceChildren(cloneLast, ...slideEls, cloneFirst);
+      if (allFragmentTrack) {
+        trackWrapper.style.transform = 'translate3d(-100%, 0px, 0px)';
+      }
+    } else {
+      trackWrapper.replaceChildren(...slideEls);
+    }
+    if (allFragmentTrack) {
+      const trackViewport = document.createElement('div');
+      trackViewport.className = 'carousel-track-viewport';
+      if (shouldCloneFragmentSlide) {
+        trackViewport.style.visibility = 'hidden';
+      }
+      trackViewport.append(trackWrapper);
+      block.replaceChildren(trackViewport);
+    } else {
+      block.replaceChildren(trackWrapper);
+    }
   } else {
     block.replaceChildren(...slideEls);
   }
 
-  if (showDots) {
-    block.append(dots);
-  } else if (showArrows) {
-    if (circularOrDefaultImage) {
-      const trackWrapper = block.querySelector('.carousel-track-wrapper');
-      block.replaceChildren(prevArrow, trackWrapper, nextArrow, dots);
+  if (showArrows) {
+    if (arrowTrackVariant) {
+      const trackContainer = allFragmentTrack
+        ? block.querySelector('.carousel-track-viewport')
+        : block.querySelector('.carousel-track-wrapper');
+      block.replaceChildren(prevArrow, trackContainer, nextArrow, dots);
     } else {
       block.append(dots, prevArrow, nextArrow);
     }
+  } else if (showDots || slidesContentCards > 0) {
+    block.append(dots);
   }
 
   if (seeMoreLink) {
@@ -780,6 +586,21 @@ export default function decorate(block) {
 
   if (slideEls.length) {
     setActive(0);
+    if (allFragmentTrack && shouldCloneFragmentSlide) {
+      requestAnimationFrame(() => {
+        const trackWrapper = block.querySelector('.carousel-track-wrapper');
+        const trackViewport = block.querySelector('.carousel-track-viewport');
+        if (trackWrapper) {
+          trackWrapper.style.transition = 'none';
+          setCardListTrackPosition(block, trackWrapper, slideEls, 0);
+          trackWrapper.getBoundingClientRect();
+          trackWrapper.style.transition = '';
+        }
+        if (trackViewport) {
+          trackViewport.style.visibility = '';
+        }
+      });
+    }
   }
 
   requestAnimationFrame(() => {
@@ -798,6 +619,7 @@ export default function decorate(block) {
     || slidesHeroBanner > 0
     || slidesTextAnimation > 0
     || slidesCircularImage > 0
-    || slidesDefaultImage > 0;
+    || slidesDefaultImage > 0
+    || slidesFragment > 0;
   initializeDragSwipe(block, slideEls, setActive, 50, enableLooping);
 }

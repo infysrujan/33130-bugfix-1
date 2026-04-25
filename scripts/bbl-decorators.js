@@ -1,10 +1,264 @@
+import { fetchConfigs } from './config.js';
+
+import {
+  getMetadata,
+  buildBlock,
+  decorateBlock,
+  loadBlock,
+} from './aem.js';
+/**
+ * Helper function to parse comma-separated URL strings from config
+ * @param {string} urlString - Comma-separated URL string
+ * @returns {Array<string>} Array of parsed URLs
+ */
+function parseUrlString(urlString) {
+  if (!urlString || !urlString.trim()) return [];
+
+  // Remove outer quotes if present and trim
+  const cleaned = urlString.trim().replace(/^["']|["']$/g, '');
+
+  // Split by comma and clean each URL
+  return cleaned.split(',').map((url) => url.trim().replace(/^["']|["']$/g, '')).filter((url) => url.length > 0);
+}
+
+/**
+ * Check if a URL matches any hostname in the list
+ * @param {string} url - URL to check
+ * @param {Array<string>} hostnameList - List of hostnames to match
+ * @returns {boolean} True if URL matches any hostname
+ */
+function matchesHostname(url, hostnameList) {
+  try {
+    const urlObj = new URL(url, window.location.href);
+    return hostnameList.some((hostname) => {
+      const cleanHostname = hostname.replace(/^https?:\/\//, '').split('/')[0];
+      return urlObj.hostname === cleanHostname || urlObj.hostname.endsWith(`.${cleanHostname}`);
+    });
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Check if URL exactly matches any URL in the list
+ * @param {string} url - URL to check
+ * @param {Array<string>} urlList - List of full URLs to match
+ * @returns {boolean} True if URL matches
+ */
+function matchesFullUrl(url, urlList) {
+  try {
+    const urlObj = new URL(url, window.location.href);
+    const urlString = urlObj.href;
+
+    return urlList.some((fullUrl) => {
+      try {
+        const fullUrlObj = new URL(fullUrl);
+        return urlString === fullUrlObj.href || urlString.startsWith(fullUrlObj.href);
+      } catch {
+        return false;
+      }
+    });
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Check if the HRPRIVACY cookie is already accepted.
+ * @returns {boolean}
+ */
+function isPrivacyAccepted() {
+  const key = encodeURIComponent('HRPRIVACY');
+  const match = document.cookie.split('; ').find((row) => row.startsWith(`${key}=`));
+  return match ? decodeURIComponent(match.split('=')[1]) === 'true' : false;
+}
+
+/**
+ * Load privacy modal fragment (once) then show it for the given URL.
+ * If the user already accepted (cookie set), navigate directly without the modal.
+ * @param {string} pendingUrl - The URL to navigate to after user agrees
+ */
+async function loadPrivacyModal(pendingUrl) {
+  try {
+    // Cookie already accepted — skip the modal and navigate directly
+    if (isPrivacyAccepted()) {
+      window.open(pendingUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    if (typeof window.showPrivacyModal === 'function') {
+      window.showPrivacyModal(pendingUrl);
+      return;
+    }
+
+    // Fragment not loaded yet — dispatch with callback so it opens once ready
+    const langPrefix = `/${document.documentElement.lang || 'en'}`;
+    document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
+      detail: {
+        path: `${langPrefix}/fragments/modals/privacy-modal`,
+        callbackName: 'showPrivacyModal',
+        callback: () => {
+          if (typeof window.showPrivacyModal === 'function') {
+            window.showPrivacyModal(pendingUrl);
+          }
+        },
+      },
+    }));
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to load privacy modal:', error);
+  }
+}
+
+/**
+ * Load external redirect popup fragment (once) then show it for the given URL.
+ * The block's decorate() registers window.showExternalRedirectPopup after loading.
+ * @param {string} url - The external URL the user clicked
+ */
+async function loadAndShowExternalRedirectPopup(url) {
+  try {
+    if (typeof window.showExternalRedirectPopup === 'function') {
+      window.showExternalRedirectPopup(url);
+      return;
+    }
+
+    // Fragment not loaded yet — dispatch with callback so it opens once ready
+    const langPrefix = `/${document.documentElement.lang || 'en'}`;
+    document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
+      detail: {
+        path: `${langPrefix}/fragments/modals/external-popup`,
+        callbackName: 'showExternalRedirectPopup',
+        callback: () => {
+          if (typeof window.showExternalRedirectPopup === 'function') {
+            window.showExternalRedirectPopup(url);
+          }
+        },
+      },
+    }));
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to load external redirect popup:', error);
+  }
+}
+
+/**
+ * Add global link click tracking and URL validation
+ */
+function handleGlobalLinkClicks() {
+  document.addEventListener('click', async (e) => {
+    const link = e.target.closest('a[href]');
+
+    if (!link) return;
+
+    const href = link.getAttribute('href');
+
+    // Skip internal links, hash links, and relative paths
+    if (!href || href.startsWith('#') || href.startsWith('/') || href.startsWith('./') || href.startsWith('../')) {
+      return;
+    }
+
+    // Check if it's an external URL
+    try {
+      const urlObj = new URL(href, window.location.href);
+
+      // Skip if same origin
+      if (urlObj.hostname === window.location.hostname) {
+        return;
+      }
+
+      // IMPORTANT: Prevent navigation immediately for all external links
+      // This must happen BEFORE any async operations
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      // Remove target attribute to prevent new tab opening
+      const originalTarget = link.getAttribute('target');
+      if (originalTarget) {
+        link.removeAttribute('target');
+      }
+
+      // Fetch config data
+      const configData = await fetchConfigs();
+
+      // Parse config arrays
+      const hostnameUrlArray = parseUrlString(configData.hostnameurl || '');
+      const excludedUrlArray = parseUrlString(configData.excludedurl || '');
+      const fullUrlArray = parseUrlString(configData.fullurl || '');
+
+      // eslint-disable-next-line no-console
+      console.log('URL Check:', {
+        clickedUrl: href,
+        hostnameUrls: hostnameUrlArray,
+        excludedUrls: excludedUrlArray,
+        fullUrls: fullUrlArray,
+      });
+
+      // Case 1: Check if URL is in hostnameurl or fullurl
+      const matchesHostnameList = matchesHostname(href, hostnameUrlArray);
+      const matchesFullUrlList = matchesFullUrl(href, fullUrlArray);
+
+      if (matchesHostnameList || matchesFullUrlList) {
+        // CASE 1: Show privacy modal
+        // eslint-disable-next-line no-console
+        console.log('Case 1: URL matches config - Loading privacy modal');
+        await loadPrivacyModal(href);
+        return;
+      }
+
+      // Case 2: Check if URL is NOT in excluded list
+      const isExcluded = matchesFullUrl(href, excludedUrlArray);
+
+      if (!isExcluded) {
+        // CASE 2: Show external redirect popup
+        // eslint-disable-next-line no-console
+        console.log('Case 2: URL not in config and not excluded - Showing redirect popup');
+        await loadAndShowExternalRedirectPopup(href);
+        return;
+      }
+
+      // Case 3: If URL is in excluded list, restore target and allow navigation
+      if (originalTarget) {
+        link.setAttribute('target', originalTarget);
+      }
+      // Re-trigger the click to allow normal navigation
+      link.click();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error processing link click:', error);
+    }
+  }, true); // Use capture phase
+}
+
+async function loadBreadcrumb(doc) {
+  const breadcrumbsMeta = getMetadata('breadcrumbs') || 'true';
+  if (breadcrumbsMeta.toLowerCase() === 'true') {
+    const footer = doc.querySelector('footer');
+    if (footer) {
+      const breadcrumbSection = document.createElement('div');
+      breadcrumbSection.className = 'section full-bleed-special';
+
+      const breadcrumbWrapper = document.createElement('div');
+      breadcrumbWrapper.className = 'breadcrumb-wrapper';
+      breadcrumbWrapper.setAttribute('aria-label', 'Breadcrumb');
+      breadcrumbSection.appendChild(breadcrumbWrapper);
+      footer.parentNode.insertBefore(breadcrumbSection, footer);
+
+      const breadcrumbBlock = buildBlock('breadcrumb', '');
+      breadcrumbWrapper.append(breadcrumbBlock);
+      decorateBlock(breadcrumbBlock);
+      await loadBlock(breadcrumbBlock);
+    }
+  }
+}
+
 function decorateButtonsV1(element) {
   element.querySelectorAll('a').forEach((a) => {
     a.title = a.title || a.textContent;
     if (a.href !== a.textContent) {
       const up = a.parentElement;
       const twoup = a.parentElement.parentElement;
-      if (!a.querySelector('img')) {
+      if (!a.querySelector('img') && !a.closest('.download-file')) {
         if (
           up.childNodes.length === 1
           && up.tagName === 'STRONG'
@@ -89,8 +343,17 @@ function decorateSvgWithAltText(element) {
   });
 }
 
+if (Window.LAZY_PHASE) {
+  handleGlobalLinkClicks();
+} else {
+  document.addEventListener('lazy-phase', () => {
+    handleGlobalLinkClicks();
+  });
+}
+
 export {
   decorateTerritoryButtons,
   decorateButtonsV1,
   decorateSvgWithAltText,
+  loadBreadcrumb,
 };

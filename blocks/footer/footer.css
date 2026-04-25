@@ -1,6 +1,6 @@
 /* ==========================================================================
    Footer Block - Bangkok Bank Style
-   Mobile-first approach with accordion (<= 1024px) and multi-column (>= 1025px)
+  Mobile-first approach with accordion (<= 64rem) and multi-column (> 64rem)
    ========================================================================== */
 
 /* Base footer styles */
@@ -45,7 +45,7 @@
 
 /* ==========================================================================
    MOBILE STYLES (Default - Mobile First)
-   < 761px: Accordion layout
+  <= 47.5rem: Accordion layout
    ========================================================================== */
 
 .footer .footer-container {
@@ -80,7 +80,7 @@
 .footer .footer-title {
   margin: 0;
   padding: var(--bbl-space-250) 0;
-  font-size: 15.4px;
+  font-size: 0.9625rem;
   font-weight: var(--bbl-font-weight-regular);
   line-height: normal;
   cursor: pointer;
@@ -89,14 +89,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--bbl-color-white-alpha-20);
+  border-bottom: 0.0625rem solid var(--bbl-color-white-alpha-20);
 }
 
 /* Toggle icon (+ / -) */
 .footer .footer-toggle-icon {
   position: relative;
-  width: 20px;
-  height: 20px;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
   flex-shrink: 0;
   margin-left: var(--bbl-space-150);
 }
@@ -105,18 +105,18 @@
   content: "+";
   color: var(--bbl-color-white-alpha-60);
   position: absolute;
-  right: 10px;
+  right: 0.625rem;
   top: 50%;
   transform: translateY(-50%);
-  font: 28px Muli-Light, sans-serif;
+  font: 1.75rem Muli-Light, sans-serif;
   transition: transform 0.3s ease;
 }
 
 /* When accordion is active, show minus */
 .footer .footer-group.active .footer-toggle-icon::before {
   content: "-";
-  font-size: 46px;
-  margin-top: -3px;
+  font-size: 2.875rem;
+  margin-top: -0.1875rem;
 }
 
 /* Links container (hidden by default on mobile) */
@@ -127,14 +127,14 @@
 }
 
 .footer .footer-group.active .footer-links {
-  max-height: 500px;
+  max-height: 31.25rem;
 }
 
 .footer .footer-links ul {
   display: flex;
   flex-direction: column;
   padding: var(--bbl-space-250) 0;
-  border-bottom: 1px solid var(--bbl-color-white-alpha-20);
+  border-bottom: 0.0625rem solid var(--bbl-color-white-alpha-20);
 }
 
 .footer .footer-links li {
@@ -148,7 +148,7 @@
 }
 
 .footer .footer-bottom p {
-  font-size: 12.6px;
+  font-size: 0.7875rem;
   line-height: 1;
   margin-bottom: var(--bbl-space-200);
   color: var(--bbl-color-white-alpha-30);
@@ -176,34 +176,34 @@
 
 .footer .footer-bottom a:hover {
   text-decoration: underline;
-  color: unset;
+  color: var(--bbl-color-active-blue);
 }
 
 /* ==========================================================================
    TABLET STYLES
-   761px - 1024px: Still accordion, but with adjusted spacing
+  > 47.5rem and <= 64rem: Still accordion, but with adjusted spacing
    ========================================================================== */
 
-@media (width >= 761px) {
+@media (width > 47.5rem) {
   .footer .footer-links li {
-    font-size: 15px;
+    font-size: 0.9375rem;
   }
 
   .footer .footer-bottom p {
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
 }
 
 /* ==========================================================================
    DESKTOP STYLES
-   1025px+: Multi-column layout, no accordion
+  > 64rem: Multi-column layout, no accordion
    ========================================================================== */
 
-@media (width >= 1025px) {
+@media (width > 64rem) {
   .footer .footer-inner {
     max-width: var(--bbl-layout-content-max-width-1920);
     margin: auto;
-    border-bottom: 1px solid var(--bbl-color-white-alpha-10);
+    border-bottom: 0.0625rem solid var(--bbl-color-white-alpha-10);
   }
 
   .footer .footer-row {
@@ -223,7 +223,7 @@
   .footer .footer-title {
     padding: var(--bbl-space-250) 0;
     cursor: default;
-    font-size: 17.6px;
+    font-size: 1.1rem;
     border: 0;
   }
 

@@ -167,6 +167,25 @@ button[type="submit"]:disabled,
   color: var(--bbl-color-grey-60);
 }
 
+.section.bg-truthful-blue .button-m.primary {
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-black);
+}
+
+.section.bg-truthful-blue .button-m.primary:hover {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+}
+
+.section.bg-truthful-blue .button:disabled,
+.section.bg-truthful-blue .button-primary:disabled,
+.section.bg-truthful-blue button[type="submit"]:disabled,
+.section.bg-truthful-blue .button-m.primary:disabled,
+.section.bg-truthful-blue .button-m.primary.disabled {
+  color: var(--bbl-color-grey-60);
+  background-color: var(--bbl-color-white-alpha-20);
+}
+
 /* =========================================================================
    SECONDARY BUTTONS
    Outlined buttons with border

@@ -1,0 +1,587 @@
+/* ============================================================
+   forex-rates block — mobile first, all values in rem
+   Breakpoints: 47.5rem / tablet (760px), 64rem / desktop (1024px)
+   1rem = 16px  |  tokens: colors, border-radius, spacing
+   ============================================================ */
+
+/* ── Controls ─────────────────────────────────────────────── */
+
+.forex-rates .forex-rates-control-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.forex-rates .forex-rates-calendar-label {
+  width: 100%;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bbl-color-grey-85);
+  margin-bottom: 0.625rem;
+}
+
+/* ── Date group (input + calendar icon + datepicker) ───────── */
+
+.forex-rates .forex-rates-date-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.forex-rates .forex-rates-date-text-input {
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 2.5rem 0 1.25rem;
+  color: var(--bbl-color-gray-121);
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
+  border-radius: 0.375rem;
+  outline: none;
+  box-sizing: border-box;
+  appearance: none;
+  font-size: 0.875rem;
+}
+
+.forex-rates .forex-rates-date-text-input:focus {
+  border-color: var(--bbl-color-active-blue);
+}
+
+/* Calendar icon via icomoon */
+.forex-rates .forex-rates-date-trigger {
+  position: absolute;
+  right: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bbl-color-gray-142);
+  font-size: 1.125rem;
+}
+
+/* ── Time dropdown ─────────────────────────────────────────── */
+
+.forex-rates .forex-rates-time-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 50%;
+}
+
+.forex-rates .forex-rates-time-dropdown {
+  position: relative;
+}
+
+.forex-rates .forex-rates-time-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 1rem;
+  font-size: 0.8313rem;
+  font-weight: 700;
+  color: var(--bbl-color-grey-85);
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.forex-rates .forex-rates-time-dropdown.is-open .forex-rates-time-trigger {
+  border-color: var(--bbl-color-active-blue);
+}
+
+.forex-rates .forex-rates-time-dropdown.is-disabled .forex-rates-time-trigger {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.forex-rates .forex-rates-time-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.forex-rates .forex-rates-time-chevron {
+  font-size: 0.375rem;
+  color: var(--bbl-color-black);
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+  pointer-events: none;
+}
+
+.forex-rates .forex-rates-time-list {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  width: 100%;
+  max-height: 15rem;
+  overflow-y: auto;
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-22);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 12%);
+  z-index: 400;
+  margin: 0;
+  padding: 0.5rem 0;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+.forex-rates .forex-rates-time-dropdown.is-open .forex-rates-time-list {
+  display: block;
+}
+
+.forex-rates .forex-rates-time-item {
+  padding: 0.625rem 1.875rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bbl-color-black);
+  cursor: pointer;
+}
+
+.forex-rates .forex-rates-time-item:hover {
+  color: var(--bbl-color-active-blue);
+}
+
+.forex-rates .forex-rates-time-item.is-active {
+  color: var(--bbl-color-active-blue);
+}
+
+/* Suppress active-blue on active item while hovering a different item */
+.forex-rates .forex-rates-time-list:hover .forex-rates-time-item.is-active:not(:hover) {
+  color: var(--bbl-color-black);
+}
+
+/* ── GO button ─────────────────────────────────────────────── */
+
+.forex-rates .forex-rates-go-btn {
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bbl-color-white);
+  background: var(--bbl-color-active-blue);
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  letter-spacing: 0.0313rem;
+  box-sizing: border-box;
+}
+
+.forex-rates .forex-rates-go-btn:hover {
+  background: var(--bbl-color-blue-90);
+}
+
+.forex-rates .forex-rates-go-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ── Print button ──────────────────────────────────────────── */
+
+.forex-rates .forex-rates-print-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-70);
+  cursor: pointer;
+  padding: 0.9375rem 0.625rem 0;
+  font-weight: 700;
+}
+
+.forex-rates .forex-rates-print-btn .icon-print {
+  font-size: 1rem;
+  color: var(--bbl-color-grey-70);
+}
+
+.forex-rates .forex-rates-print-btn:hover {
+  color: var(--bbl-color-gray-121);
+}
+
+.forex-rates .forex-rates-print-btn:hover .icon-print {
+  color: var(--bbl-color-gray-121);
+}
+
+/* ── Datepicker ────────────────────────────────────────────── */
+
+.forex-rates .forex-rates-datepicker {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  width: calc(100vw - 2rem);
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-22);
+  border-radius: var(--bbl-rounded-100);
+  box-shadow: 0 0.5rem 2rem var(--bbl-color-black-alpha-14);
+  z-index: 300;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.forex-rates .forex-rates-datepicker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto 0.75rem;
+  width: 92%;
+}
+
+.forex-rates .forex-rates-datepicker-title {
+  display: flex;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bbl-color-blue-105);
+}
+
+.forex-rates .forex-rates-datepicker-nav {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0.0625rem solid var(--bbl-color-grey-22);
+  border-radius: var(--bbl-rounded-full);
+  color: var(--bbl-color-gray-142);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.forex-rates .forex-rates-datepicker-nav .icon-arrow-left {
+  font-size: 0.75rem;
+}
+
+.forex-rates .forex-rates-datepicker-prev .icon-arrow-left {
+  transform: rotate(180deg);
+  display: inline-block;
+}
+
+.forex-rates .forex-rates-datepicker-nav.is-disabled,
+.forex-rates .forex-rates-datepicker-nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.forex-rates .forex-rates-datepicker-nav:not(:disabled, .is-disabled):hover {
+  background: var(--bbl-color-blue-80);
+  border-color: var(--bbl-color-blue-80);
+  color: var(--bbl-color-white);
+}
+
+.forex-rates .forex-rates-datepicker-calendar {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.forex-rates .forex-rates-datepicker-calendar thead th {
+  padding: 0.25rem 0 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--bbl-color-black);
+  text-align: center;
+}
+
+.forex-rates .forex-rates-datepicker-calendar tbody td {
+  padding: 0.1875rem;
+  text-align: center;
+}
+
+.forex-rates .forex-rates-datepicker-calendar tbody td.is-other-month {
+  visibility: hidden;
+}
+
+.forex-rates .forex-rates-datepicker-day-btn,
+.forex-rates .forex-rates-datepicker-day-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--bbl-rounded-full);
+  font-size: 0.8125rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--bbl-color-gray-121);
+  transition: all 0.3s;
+}
+
+.forex-rates .forex-rates-datepicker-day-btn:hover {
+  background: var(--bbl-color-blue-80);
+  color: var(--bbl-color-white);
+}
+
+.forex-rates .forex-rates-datepicker-day-text {
+  color: var(--bbl-color-grey-45);
+  cursor: default;
+}
+
+.forex-rates .forex-rates-datepicker-calendar td.is-weekend .forex-rates-datepicker-day-text {
+  color: var(--bbl-color-grey-125);
+}
+
+.forex-rates .forex-rates-datepicker-calendar td.is-current .forex-rates-datepicker-day-btn {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  font-weight: 700;
+}
+
+.forex-rates .forex-rates-datepicker-calendar td.is-current .forex-rates-datepicker-day-btn:hover {
+  background: var(--bbl-color-blue-90);
+}
+
+.forex-rates .forex-rates-datepicker-calendar td.is-today:not(.is-current) .forex-rates-datepicker-day-btn {
+  outline: 0.125rem solid var(--bbl-color-active-blue);
+  outline-offset: -0.125rem;
+  color: var(--bbl-color-active-blue);
+  font-weight: 700;
+}
+
+/* ── Table ─────────────────────────────────────────────────── */
+
+.forex-rates .forex-rates-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 1.25rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.forex-rates .forex-rates-table-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.forex-rates .forex-rates-table {
+  min-width: 61.9375rem;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  color: var(--bbl-color-gray-121);
+  border: 0.0625rem solid var(--bbl-color-grey-18);
+}
+
+.forex-rates .forex-rates-table thead tr {
+  background: var(--bbl-color-blue-steel-light);
+  height: 4.5rem;
+}
+
+.forex-rates .forex-rates-table thead th {
+  padding: 0.75rem 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--bbl-color-black);
+  text-align: left;
+  border-bottom: 0.125rem solid var(--bbl-color-grey-20);
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.forex-rates .forex-rates-table thead th:nth-child(n+3) {
+  text-align: center;
+}
+
+.forex-rates .forex-rates-table tbody tr {
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
+  height: 3.5rem;
+}
+
+.forex-rates .forex-rates-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.forex-rates .forex-rates-table tbody td {
+  padding: 0.625rem;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-70);
+  vertical-align: middle;
+  height: 2.25rem;
+}
+
+.forex-rates .forex-rates-table tbody td.is-right {
+  text-align: right;
+}
+
+.forex-rates .forex-rates-currency {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  white-space: nowrap;
+}
+
+.forex-rates .forex-rates-flag {
+  width: 1.1875rem;
+  height: 1.1875rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ── Disclaimer ────────────────────────────────────────────── */
+
+.forex-rates .forex-rates-disclaimer {
+  margin-top: 1.25rem;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-grey-150);
+  line-height: 1.6;
+}
+
+.forex-rates .forex-rates-disclaimer p {
+  margin: 0;
+}
+
+.forex-rates .forex-rates-disclaimer p:first-child {
+  padding-bottom: 0.9375rem;
+}
+
+.forex-rates .forex-rates-disclaimer p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Tablet: 47.5rem+ (760px) ──────────────────────────────── */
+
+@media (width > 47.5rem) {
+  .forex-rates .forex-rates-calendar-label {
+    width: auto;
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+
+  .forex-rates .forex-rates-date-group {
+    flex: 0 0 10rem;
+    width: 10rem;
+  }
+
+  .forex-rates .forex-rates-time-wrap {
+    flex: 0 0 9.375rem;
+    width: 9.375rem;
+    max-width: none;
+  }
+
+  .forex-rates .forex-rates-go-btn {
+    width: auto;
+    flex: 0 0 5rem;
+    min-width: 8.4375rem;
+  }
+
+  .forex-rates .forex-rates-print-btn {
+    margin-left: auto;
+  }
+
+  .forex-rates .forex-rates-datepicker {
+    max-width: 28.75rem;
+    width: 28.75rem;
+  }
+
+  .forex-rates .forex-rates-datepicker-header {
+    width: 70%;
+    margin: 0 auto 0.75rem;
+  }
+
+  .forex-rates .forex-rates-datepicker-title {
+    font-size: 1.2775rem;
+  }
+
+  .forex-rates .forex-rates-datepicker-day-btn,
+  .forex-rates .forex-rates-datepicker-day-text {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 0.875rem;
+  }
+
+  .forex-rates .forex-rates-table thead th {
+    font-size: 0.875rem;
+  }
+}
+
+/* ── Desktop: 64rem+ (1024px) ──────────────────────────────── */
+
+@media (width > 64rem) {
+  .forex-rates .forex-rates-calendar-label {
+    font-size: 1rem;
+  }
+
+  .forex-rates .forex-rates-date-text-input {
+    font-size: 1rem;
+  }
+
+  .forex-rates .forex-rates-time-trigger {
+    font-size: 0.95rem;
+  }
+
+  .forex-rates .forex-rates-date-group {
+    flex: 0 0 11.25rem;
+    width: 11.25rem;
+  }
+
+  .forex-rates .forex-rates-time-wrap {
+    flex: 0 0 10rem;
+    width: 10rem;
+    max-width: none;
+  }
+
+  .forex-rates .forex-rates-go-btn {
+    flex: 0 0 6.25rem;
+    font-size: 1rem;
+  }
+
+  .forex-rates .forex-rates-print-btn {
+    font-size: 1rem;
+  }
+
+  .forex-rates .forex-rates-table thead th {
+    font-size: 1rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .forex-rates .forex-rates-table tbody td {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .forex-rates .forex-rates-time-item {
+    font-size: 1rem;
+  }
+
+  .forex-rates .forex-rates-datepicker {
+    max-width: 33.75rem;
+    width: 33.75rem;
+  }
+
+  .forex-rates .forex-rates-datepicker-day-btn,
+  .forex-rates .forex-rates-datepicker-day-text {
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1rem;
+  }
+
+  .forex-rates .forex-rates-datepicker-calendar thead th {
+    font-size: 1rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .forex-rates .forex-rates-datepicker-title {
+    font-size: 1.46rem;
+  }
+}

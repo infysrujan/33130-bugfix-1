@@ -1,11 +1,17 @@
+@import url("./card-list-carousel.css");
+
 .carousel-dotted {
   position: relative;
-  overflow: hidden;
   height: auto;
   border-radius: var(--bbl-rounded-100);
   background: var(--bbl-color-white);
-  border: 1px solid var(--bbl-color-black-alpha-10);
+  border: 0.063rem solid var(--bbl-color-black-alpha-10);
   padding: var(--bbl-space-000);
+}
+
+.carousel-dotted .carousel-track-wrapper,
+.carousel-dotted .carousel-bg {
+  overflow: hidden;
 }
 
 .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) {
@@ -39,6 +45,7 @@
   position: relative;
   display: flex;
   width: 100%;
+  overflow: visible;
   transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }
@@ -87,7 +94,16 @@
   display: block;
   width: 100%;
   background-position: center;
-  background-size: cover;
+  transition: opacity 600ms ease;    
+}
+
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
+.carousel-bg {
+  overflow: hidden;
+}
+
+.carousel-dotted .carousel-dotted-item:not(.is-active) .carousel-bg {
+  opacity: 0;      
 }
 
 .carousel-dotted .carousel-bg::after {
@@ -176,7 +192,7 @@
   font-size: 0.875rem;
   line-height: 0.875rem;
   padding: 0 0 var(--bbl-space-250);
-  border-bottom: 1px solid var(--bbl-color-white-alpha-20);
+  border-bottom: 0.063rem solid var(--bbl-color-white-alpha-20);
   color: var(--bbl-color-grey-60);
 }
 
@@ -195,7 +211,7 @@
 
 .carousel-dotted a.button.primary {
   border-radius: var(--bbl-rounded-100);
-  height: 44px;
+  height: 2.75rem;
 }
 
 .carousel-dotted .slick-dots {
@@ -229,7 +245,7 @@
   min-width: var(--bbl-space-100);
   min-height: var(--bbl-space-100);
   border-radius: 50%;
-  border: 1px solid var(--bbl-color-black-alpha-20);
+  border: 0.063rem solid var(--bbl-color-black-alpha-20);
   padding: var(--bbl-space-000);
   margin: var(--bbl-space-000);
   cursor: pointer;
@@ -255,7 +271,7 @@
   height: 0.5rem;
   min-width: 0.5rem;
   min-height: 0.5rem;
-  border: 1px solid var(--bbl-border-dots);
+  border: 0.063rem solid var(--bbl-border-dots);
 }
 
 .carousel-dotted.show-arrows-dots .slick-dots button {
@@ -263,9 +279,17 @@
   height: 0.5rem;
   min-width: 0.5rem;
   min-height: 0.5rem;
-  border: 1px solid var(--bbl-color-grey-40);
+  border: 0.063rem solid var(--bbl-color-grey-40);
   background: transparent;
   border-radius: 50%;
+}
+
+.carousel-dotted.all-content-cards .slick-dots button {
+  width: 0.5rem;
+  height: 0.5rem;
+  min-width: 0.5rem;
+  min-height: 0.5rem;
+  border: 0.063rem solid var(--bbl-color-grey-40);
 }
 
 .carousel-dotted .slick-dots li.is-active button {
@@ -276,6 +300,13 @@
 }
 
 .carousel-dotted.show-arrows-dots .slick-dots li.is-active button {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+.carousel-dotted.all-content-cards .slick-dots li.is-active button {
   width: 0.625rem;
   height: 0.625rem;
   background: var(--bbl-color-active-blue);
@@ -296,12 +327,12 @@
 /* Override the generic display:none so all slides exist in the flex row */
 .carousel-dotted.all-without-image .carousel-dotted-item.without-image {
   position: relative;
-  display: block !important;
+  display: block ;
   opacity: 1;
   flex: 0 0 100%;
   width: 100%;
   min-height: 12.6875rem;
-  transition: none;
+  transition: opacity 600ms ease;  
 }
 
 /* Dot positioning – mobile */
@@ -413,11 +444,6 @@
   width: 100%;
   opacity: 1;
   transition: none;
-  overflow: hidden;
-}
-
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-bg {
   overflow: hidden;
 }
 
@@ -685,7 +711,7 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  border: 1px solid var(--bbl-color-grey-40);
+  border: 0.063rem solid var(--bbl-color-grey-40);
   background-color: var(--bbl-color-white);
   cursor: pointer;
   z-index: 10;
@@ -708,8 +734,8 @@
   display: block;
   width: 0.6rem;
   height: 0.6rem;
-  border-top: 2px solid var(--bbl-color-grey-80);
-  border-right: 2px solid var(--bbl-color-grey-80);
+  border-top: var(--bbl-space-025) solid var(--bbl-color-grey-80);
+  border-right: var(--bbl-space-025) solid var(--bbl-color-grey-80);
   transform: rotate(45deg);
 }
 
@@ -840,7 +866,7 @@
     height: 0.5625rem;
     min-width: 0.5625rem;
     min-height: 0.5625rem;
-    border-width: 1px;
+    border-width: 0.063rem;
   }
 
   .carousel-dotted .carousel-dotted-more {
@@ -933,7 +959,7 @@
   }
 
   .carousel-dotted.show-arrows-dots .with-default-image.carousel-dotted-item.is-active {
-    border: 1px solid var(--bbl-color-black-alpha-10);
+    border: 0.063rem solid var(--bbl-color-black-alpha-10);
     box-shadow: 0 0 0.625rem transparent;
     border-radius: var(--bbl-rounded-100);
     align-items: center;
@@ -982,7 +1008,7 @@
   }
 }
 
-@media (width > 47.5rem) and (width <= 64rem) {
+@media (width > 47.5rem) and (width < 64rem) {
   /* Fix tablet spacing and align arrows automatically to content size */
   .carousel-dotted.show-arrows-dots {
     display: grid;
@@ -1004,6 +1030,39 @@
   }
 }
 
+
+/* Content insert cards carousel variant */
+.carousel-dotted.all-content-cards {
+  overflow: visible;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.carousel-dotted.all-content-cards .slick-dots {
+  bottom: var(--bbl-space-200);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: auto;
+  height: auto;
+}
+
+@media (width > 47.5rem) {
+  .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards {
+    position: relative;
+    inset: unset;
+    display: none;
+    opacity: 1;
+    transition: none;
+  }
+
+  .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards.is-active {
+    display: block;
+    opacity: 1;
+  }
+}
 
 @media (width > 64rem) {
   .carousel-dotted.all-without-image {
@@ -1128,3 +1187,97 @@
   }
 }
 
+/* simple carousel section */
+
+.carousel-dotted-wrapper .simple-carousel{
+  margin: auto;
+  margin-top: 3.125rem;
+  margin-bottom: 1.25rem;
+}
+
+.slick-dots.simple-carousel-dots{
+  margin-bottom: 3.125rem;
+}
+
+@media (width > 64rem) {
+  .carousel-dotted.show-arrows-dots{
+    margin-inline: auto;
+  }
+}
+
+.section.central-aligned.center-title.carousel-dotted-container {
+  padding: 80px 20px 30px;
+}
+
+.card-list-modal-title {
+  margin-top: 1.875rem;
+  margin-bottom: 1.875rem;
+  padding-bottom: 1.25rem; 
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item img,
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item picture {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper {
+  width: 100%;
+}
+
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item {
+  width: 100%;
+}
+
+.carousel-dotted-item.simple-carousel.item {
+  width: 100% ;
+  max-width: 100% ;
+  flex: 1 1 100% ;
+  align-self: stretch ;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-dotted-item.simple-carousel.item picture,
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-dotted-item.simple-carousel.item img {
+  width: 100% ;
+  height: 100% ;
+  object-fit: fill ;
+  display: block ;
+}
+
+.carousel-dotted-container .default-content-wrapper {
+  padding: 0 3.5rem;
+}
+
+
+.central-aligned.carousel-dotted-container .default-content-wrapper {
+    max-width: var(--bbl-layout-central-aligned-max-width);
+    margin: 0 auto;
+}
+
+.central-aligned.carousel-dotted-container .carousel-dotted-wrapper .carousel-dotted {
+    position: relative;
+    margin-bottom: 5rem;
+    display: block;
+}
+
+.central-aligned.carousel-dotted-container .carousel-arrow-prev {
+    position: absolute;
+    top: 40%;
+    left: -3.4375rem;
+}
+
+.central-aligned.carousel-dotted-container .carousel-arrow-next {
+    position: absolute;
+    right: -3.4375rem;
+    top: 40%;
+}
+
+.carousel-dotted .carousel-dotted-item.simple-carousel {
+    margin-top: 0;
+}

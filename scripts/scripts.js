@@ -17,6 +17,7 @@ import {
   decorateSvgWithAltText,
   decorateTerritoryButtons,
   decorateButtonsV1,
+  loadBreadcrumb,
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
@@ -76,34 +77,6 @@ export function createElementFromHTML(html, doc) {
 }
 
 /**
- * Check if a URL is external (different domain from current site)
- * @param {string} url - The URL to check
- * @returns {boolean} True if URL is external
- */
-export function isExternalUrl(url) {
-  try {
-    const urlObj = new URL(url, window.location.href);
-    return urlObj.hostname !== window.location.hostname;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Set target="_blank" on external links in a container
- * @param {Element} container - The container element to process
- */
-export function setExternalLinksTarget(container) {
-  const links = container.querySelectorAll('a[href]');
-  links.forEach((link) => {
-    if (isExternalUrl(link.href)) {
-      link.setAttribute('target', '_blank');
-      link.setAttribute('rel', 'noopener noreferrer');
-    }
-  });
-}
-
-/**
  * load fonts.css and set a session storage flag
  */
 async function loadFonts() {
@@ -142,7 +115,6 @@ export function decorateMain(main) {
   decorateBlocks(main);
   decorateTerritoryButtons(main);
   decorateSvgWithAltText(main);
-  setExternalLinksTarget(main);
 
   const pageVariant = getMetadata('pagevariant');
   if (pageVariant) {
@@ -205,8 +177,15 @@ async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
+  await loadBreadcrumb(doc);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  // Add link click handler for URL validation
+  setTimeout(() => {
+    document.dispatchEvent(new Event('lazy-phase'));
+    Window.LAZY_PHASE = true;
+  }, 150);
 }
 
 /**

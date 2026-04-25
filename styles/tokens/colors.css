@@ -21,9 +21,11 @@
      ========================================================================= */
 
   --bbl-color-grey-10: #F5F5F5;
+  --bbl-color-grey-18: #EBEBEB;
   --bbl-color-grey-20: #E3E3E5;
   --bbl-color-grey-30: #DBDBDB;
   --bbl-color-grey-40: #C8C8CC;
+  --bbl-color-grey-45: #BBBBBB;
   --bbl-color-grey-50: #A9A9AA;
   --bbl-color-grey-60: #939399;
   --bbl-color-grey-70: #78787D;
@@ -44,6 +46,10 @@
   --bbl-color-gray-143: #6b6b6b;
   --bbl-color-gray-144: #F9F9F9;
   --bbl-color-gray-145: #DDDDDD;
+  --bbl-color-gray-146: #DEDEDE;
+  --bbl-color-gray-600: #6a6a6a;
+  --bbl-color-gray-300: #d6d6d6;
+  --bbl-color-grey-22: #E5E5E7;
 
   /* =========================================================================
      BLUE SCALE
@@ -57,12 +63,15 @@
   --bbl-color-blue-60: #5D99FF;
   --bbl-color-blue-70: #357EF8;
   /* Active Blue is at position ~75 */
+  --bbl-color-blue-80: #0068B7;
   --bbl-color-blue-90: #0048B7;
   --bbl-color-blue-100: #003382;
+  --bbl-color-blue-105: #003399;
   /* Truthful Blue is at position ~110 */
   --bbl-color-blue-120: #031D37;
   --bbl-color-blue-130: #002087;
   --bbl-color-blue-140: #4890ff;
+  --bbl-color-blue-steel-light: #E6EEF4;
 
   /* =========================================================================
      RED SCALE
@@ -143,6 +152,7 @@
   --bbl-color-orange-50: #FCAF7F;
   --bbl-color-orange-60: #FA995C;
   --bbl-color-orange-70: #F98339;
+  --bbl-color-orange-75: #FF6E00;
   --bbl-color-orange-80: #F86D16;
   --bbl-color-orange-90: #BB4F10;
   --bbl-color-orange-100: #7E330B;
@@ -172,6 +182,8 @@
   /* Black Transparencies */
   --bbl-color-black-alpha-5: rgba(0, 0, 0, 0.05);
   --bbl-color-black-alpha-10: rgba(0, 0, 0, 0.10);
+  --bbl-color-black-alpha-12: rgba(0, 0, 0, 0.12);
+  --bbl-color-black-alpha-14: rgba(0, 0, 0, 0.14);
   --bbl-color-black-alpha-20: rgba(0, 0, 0, 0.20);
   --bbl-color-black-alpha-30: rgba(0, 0, 0, 0.30);
   --bbl-color-black-alpha-40: rgba(0, 0, 0, 0.40);

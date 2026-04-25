@@ -2,9 +2,11 @@
   "mappings": [
     "/content/bangkokbank/:/",
     "/content/bangkokbank/configuration:/.helix/config.json",
-    "/content/bangkokbank/metadata:/metadata.json"
+    "/content/bangkokbank/metadata:/metadata.json",
+    "/content/forms/af:/content/forms/af"
   ],
   "includes": [
-    "/content/bangkokbank/"
+    "/content/bangkokbank/",
+    "/content/forms/af"
   ]
 }
