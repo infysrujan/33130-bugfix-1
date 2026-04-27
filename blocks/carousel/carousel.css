@@ -3,6 +3,10 @@
     padding-left: 16px;
 }
 
+.modal-body .section.central-aligned .block.simple-carousel{
+    margin-inline: 4rem;
+}
+
 .carousel-header {
     margin: var(--bbl-space-300) 0 14px;
     display: flex;

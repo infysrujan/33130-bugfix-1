@@ -1281,3 +1281,7 @@
 .carousel-dotted .carousel-dotted-item.simple-carousel {
     margin-top: 0;
 }
+
+.modal-body .central-aligned.carousel-dotted-container .carousel-dotted-wrapper .carousel-dotted .simple-carousel {
+    margin-inline: 4rem;
+}

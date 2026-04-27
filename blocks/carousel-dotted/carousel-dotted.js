@@ -433,7 +433,7 @@ export default async function decorate(block) {
       nextArrow.disabled = false;
     } else {
       prevArrow.disabled = index === 0;
-      nextArrow.disabled = index === slideEls.length - 1;
+      nextArrow.disabled = false;
     }
 
     if (allHeroBanner || allWithoutImageTrack || allFragmentTrack) {
@@ -494,8 +494,8 @@ export default async function decorate(block) {
       // Enable circular navigation for showArrowsDots variant
       const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
       setActive(nextSlideIndex);
-    } else if (currentIndex < slideEls.length - 1) {
-      setActive(currentIndex + 1);
+    } else {
+      setActive((currentIndex + 1) % slideEls.length);
     }
   });
   dotButtons = slideEls.map((slide, index) => {

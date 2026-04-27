@@ -163,7 +163,7 @@ function initCarousel(track) {
 
     // Update button states
     prevButton.disabled = currentIndex === 0;
-    nextButton.disabled = currentIndex >= totalItems - 1;
+    nextButton.disabled = false;
   }
 
   // Check if device is mobile/tablet (disable drag on desktop)
@@ -194,10 +194,8 @@ function initCarousel(track) {
   });
 
   nextButton.addEventListener('click', () => {
-    if (currentIndex < totalItems - 1) {
-      currentIndex += 1;
-      updateCarousel();
-    }
+    currentIndex = (currentIndex + 1) % totalItems;
+    updateCarousel();
   });
 
   // Handle window resize
