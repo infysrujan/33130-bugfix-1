@@ -7482,30 +7482,6 @@
         "label": "Update Date Prefix (e.g. 'Update as of')",
         "valueType": "string",
         "required": true
-      },
-      {
-        "component": "text",
-        "name": "updateTimeSeparator",
-        "label": "Update Time Label (e.g. 'at' or 'เวลา')",
-        "valueType": "string"
-      },
-      {
-        "component": "richtext",
-        "name": "disclaimerText",
-        "label": "Disclaimer Text",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "accordionTitle",
-        "label": "T&C Accordion Title (e.g. 'Terms & Conditions')",
-        "valueType": "string"
-      },
-      {
-        "component": "richtext",
-        "name": "accordionContent",
-        "label": "T&C Accordion Content",
-        "valueType": "string"
       }
     ]
   },

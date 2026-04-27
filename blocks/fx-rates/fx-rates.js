@@ -28,19 +28,14 @@ function parseAuthoring(block) {
 
   const decimalPlaces = parseInt(rows[3]?.textContent?.trim() || '2', 10);
 
-  const updateLabelCols = rows[4] ? [...rows[4].children] : [];
-  const updateDatePrefix = updateLabelCols[0]?.textContent?.trim() || 'Update as of';
-  const updateTimeSeparator = updateLabelCols[1]?.textContent?.trim() || '';
+  const updateDatePrefix = rows[4]?.textContent?.trim() || 'Update as of';
 
-  const disclaimerEl = rows[5]?.firstElementChild;
-  const disclaimerHtml = disclaimerEl?.innerHTML || '';
-
-  const accordionTitle = rows[6]?.textContent?.trim() || '';
-  const accordionEl = rows[7]?.firstElementChild;
+  const accordionTitle = rows[5]?.textContent?.trim() || '';
+  const accordionEl = rows[6]?.firstElementChild;
   const accordionContentHtml = accordionEl?.innerHTML || '';
 
   const currencies = [];
-  for (let i = 8; i < rows.length; i += 1) {
+  for (let i = 7; i < rows.length; i += 1) {
     const cols = [...rows[i].children];
     const apiCode = cols[0]?.textContent?.trim();
     if (!apiCode) continue; // eslint-disable-line no-continue
@@ -57,8 +52,6 @@ function parseAuthoring(block) {
     rateColumnLabel,
     decimalPlaces,
     updateDatePrefix,
-    updateTimeSeparator,
-    disclaimerHtml,
     accordionTitle,
     accordionContentHtml,
     currencies,
@@ -108,9 +101,7 @@ function renderBlock(block, authoring, ratesMap, updateDate, updateTime, buddhis
   const formattedDate = formatBuddhistDate(updateDate, buddhistYearOffset);
   let updateLabel = '';
   if (formattedDate) {
-    const timePart = authoring.updateTimeSeparator && updateTime
-      ? ` ${escapeHtml(authoring.updateTimeSeparator)} ${escapeHtml(updateTime)}`
-      : '';
+    const timePart = updateTime ? ` ${escapeHtml(updateTime)}` : '';
     updateLabel = `${escapeHtml(authoring.updateDatePrefix)} ${escapeHtml(formattedDate)}${timePart}`;
   }
 
@@ -131,7 +122,6 @@ function renderBlock(block, authoring, ratesMap, updateDate, updateTime, buddhis
         </table>
       </div>
       ${updateLabel ? `<p class="fx-rates-update">${updateLabel}</p>` : ''}
-      ${authoring.disclaimerHtml ? `<div class="fx-rates-disclaimer">${authoring.disclaimerHtml}</div>` : ''}
       ${authoring.accordionTitle ? `
       <div class="fx-rates-accordion">
         <div class="fx-rates-accordion-item">
