@@ -143,7 +143,7 @@ export default async function decorate(block) {
   const buddhistYearOffset = Number(configs?.buddhistYearOffset) || 0;
   const apiUrl = configs?.fxRatesBannerApiEndpoint || '';
 
-  let ratesMap = {};
+  const ratesMap = {};
   let updateDate = '';
   let updateTime = '';
 

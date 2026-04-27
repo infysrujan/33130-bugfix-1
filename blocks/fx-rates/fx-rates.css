@@ -20,7 +20,7 @@
   line-height: 1.3;
 }
 
-@media (min-width: 47.5rem) {
+@media (width >= 47.5rem) {
   .fx-rates .fx-rates-title {
     font-size: 2.25rem;
   }
@@ -147,7 +147,7 @@
 
 /* ── Responsive ──────────────────────────────────────────── */
 
-@media (min-width: 47.5rem) {
+@media (width >= 47.5rem) {
   .fx-rates .fx-rates-wrapper {
     padding: 2.5rem 2rem;
   }
