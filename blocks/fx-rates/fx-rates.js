@@ -181,11 +181,6 @@ function renderTable(rates, authoring) {
 
 // ── Accordion helpers ──────────────────────────────────────────────────────
 
-function accordionIconUrl(filename) {
-  const base = window.hlx?.codeBasePath || '';
-  return `${base}/icons/${encodeURIComponent(filename)}`;
-}
-
 function allPanelsExpanded(block) {
   const headers = [...block.querySelectorAll('.fx-rates-accordion-header')];
   return headers.length > 0 && headers.every((h) => h.getAttribute('aria-expanded') === 'true');
@@ -213,7 +208,7 @@ function syncExpandBtn(expandBtn, block, placeholders) {
   }
   expandBtn.setAttribute('aria-pressed', expanded ? 'true' : 'false');
   if (icon) {
-    icon.src = expanded ? accordionIconUrl('icon-close.svg') : accordionIconUrl('icon-expand.svg');
+    icon.textContent = expanded ? '×' : '≡';
   }
 }
 
@@ -303,13 +298,10 @@ function buildAccordionSection(container, fragment, authoring, placeholders, bas
       lbl.className = 'fx-rates-toolbar-label';
       lbl.textContent = placeholders.accordionExpandAll || 'ขยายทั้งหมด';
 
-      const ico = document.createElement('img');
-      ico.className = 'fx-rates-toolbar-icon';
-      ico.src = accordionIconUrl('icon-expand.svg');
-      ico.alt = '';
+      const ico = document.createElement('span');
+      ico.className = 'fx-rates-toolbar-icon fx-rates-expand-icon';
       ico.setAttribute('aria-hidden', 'true');
-      ico.width = 20;
-      ico.height = 20;
+      ico.textContent = '≡';
 
       expandBtn.append(lbl, ico);
       toolbar.appendChild(expandBtn);
