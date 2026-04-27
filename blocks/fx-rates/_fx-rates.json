@@ -1,0 +1,84 @@
+{
+	"definitions": [
+		{
+			"title": "FX Rates",
+			"id": "fx-rates",
+			"plugins": {
+				"xwalk": {
+					"page": {
+						"resourceType": "core/franklin/components/block/v1/block",
+						"template": {
+							"name": "FX Rates",
+							"model": "fx-rates"
+						}
+					}
+				}
+			}
+		}
+	],
+	"models": [
+		{
+			"id": "fx-rates",
+			"fields": [
+				{
+					"component": "text",
+					"name": "title",
+					"label": "Title",
+					"valueType": "string",
+					"required": true
+				},
+				{
+					"component": "richtext",
+					"name": "description",
+					"label": "Description",
+					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "currencyColumnLabel",
+					"label": "Currency Column Label",
+					"valueType": "string",
+					"required": true
+				},
+				{
+					"component": "text",
+					"name": "rateColumnLabel",
+					"label": "Rate Column Label",
+					"valueType": "string",
+					"required": true
+				},
+				{
+					"component": "select",
+					"name": "decimalPlaces",
+					"label": "Decimal Places (1 or 2)",
+					"valueType": "string",
+					"required": true,
+					"options": [
+						{ "name": "1", "value": "1" },
+						{ "name": "2", "value": "2" }
+					]
+				},
+				{
+					"component": "text",
+					"name": "updateDatePrefix",
+					"label": "Update Date Prefix (e.g. 'Update as of')",
+					"valueType": "string",
+					"required": true
+				},
+				{
+					"component": "text",
+					"name": "updateTimeSeparator",
+					"label": "Update Time Label (e.g. 'at' or 'เวลา')",
+					"valueType": "string"
+				},
+				{
+					"component": "richtext",
+					"name": "disclaimerText",
+					"label": "Disclaimer Text",
+					"valueType": "string"
+				}
+			]
+		}
+	],
+	"filters": []
+}
