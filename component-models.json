@@ -7589,72 +7589,59 @@
     "fields": [
       {
         "component": "text",
-        "name": "title",
-        "label": "Title",
-        "valueType": "string",
-        "required": true
-      },
-      {
-        "component": "richtext",
-        "name": "description",
-        "label": "Description",
-        "valueType": "string"
-      },
-      {
-        "component": "multifield",
-        "name": "currencies",
-        "label": "Currencies (in display order)",
-        "valueType": "string",
-        "fields": [
-          {
-            "component": "text",
-            "name": "apiCode",
-            "label": "API Currency Code (e.g. USD1, USD5, USD50, EUR, JPY)",
-            "valueType": "string"
-          },
-          {
-            "component": "text",
-            "name": "displayLabel",
-            "label": "Display Label (e.g. USD 1-2, USD 5-20, JPY :100)",
-            "valueType": "string"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "decimalPlaces",
-        "label": "Decimal Places for Selling Rate",
+        "name": "currencyColumnLabel",
+        "label": "Currency Column Label",
         "valueType": "string",
         "required": true,
-        "options": [
-          {
-            "name": "2",
-            "value": "2"
-          },
-          {
-            "name": "4",
-            "value": "4"
-          }
-        ]
+        "description": "Header label for the currency column (e.g. สกุลเงิน)"
       },
       {
         "component": "text",
-        "name": "updateDatePrefix",
-        "label": "Update Date Prefix (e.g. 'Update as of')",
+        "name": "rateColumnLabel",
+        "label": "Rate Column Label",
         "valueType": "string",
-        "required": true
+        "required": true,
+        "description": "Header label for the exchange rate column (e.g. อัตราแลกเปลี่ยน)"
       },
       {
-        "component": "richtext",
-        "name": "disclaimer",
-        "label": "Disclaimer Text",
-        "valueType": "string"
+        "component": "text",
+        "name": "updateTimeLabel",
+        "label": "Update Time Eyebrow Label",
+        "valueType": "string",
+        "required": false,
+        "description": "Prefix text shown before the API update time (e.g. อัพเดท ณ วันที่)"
       },
       {
-        "component": "richtext",
-        "name": "accordionContent",
-        "label": "T&C Accordion Content",
-        "valueType": "string"
+        "component": "text",
+        "name": "remarkText",
+        "label": "Remark Eyebrow Text",
+        "valueType": "string",
+        "required": false,
+        "description": "Static remark text shown below the update time (e.g. [หน่วย : เงินบาทต่อ 1 หน่วยเงินตราต่างประเทศ])"
+      },
+      {
+        "component": "aem-content",
+        "name": "accordionFragmentPath",
+        "label": "Accordion Fragment Path",
+        "valueType": "string",
+        "required": false,
+        "description": "Path to the accordion fragment to render below the table"
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "showExpandAll",
+        "value": true,
+        "label": "Show Expand All",
+        "description": "Show Expand All / Collapse All toggle in the accordion toolbar"
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "showPrint",
+        "value": true,
+        "label": "Show Print",
+        "description": "Show Print button in the accordion toolbar"
       }
     ]
   },

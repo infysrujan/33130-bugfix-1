@@ -1,241 +1,310 @@
 /* ============================================================
-   fx-rates block — mobile first
-   Breakpoints: 47.5rem (tablet/760px), 64rem (desktop/1024px)
+   fx-rates block — mobile first, all values in rem
+   Mirrors the design from the attached screenshot:
+   - Two-column table (สกุลเงิน | อัตราแลกเปลี่ยน)
+   - Light-blue steel header row
+   - Update-time eyebrow + remark eyebrow
+   - Accordion with expand-all / print toolbar
    ============================================================ */
 
+/* ── Wrapper ───────────────────────────────────────────────── */
+
 .fx-rates .fx-rates-wrapper {
-  max-width: 62.5rem;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  text-align: center;
+  width: 100%;
 }
 
-/* ── Title ───────────────────────────────────────────────── */
-
-.fx-rates .fx-rates-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--bbl-color-gray-121);
-  margin: 0 0 1rem;
-  line-height: 1.3;
-}
-
-@media (width >= 47.5rem) {
-  .fx-rates .fx-rates-title {
-    font-size: 2.25rem;
-  }
-}
-
-/* ── Divider ─────────────────────────────────────────────── */
-
-.fx-rates .fx-rates-divider {
-  width: 2.5rem;
-  border: none;
-  border-top: 0.1875rem solid var(--bbl-color-grey-85);
-  margin: 0 auto 1.25rem;
-}
-
-/* ── Description ─────────────────────────────────────────── */
-
-.fx-rates .fx-rates-description {
-  font-size: 0.9375rem;
-  color: var(--bbl-color-grey-85);
-  margin: 0 auto 1.5rem;
-  max-width: 50rem;
-  text-align: center;
-}
-
-.fx-rates .fx-rates-description p {
-  margin: 0;
-}
-
-/* ── Table ───────────────────────────────────────────────── */
+/* ── Table wrap ────────────────────────────────────────────── */
 
 .fx-rates .fx-rates-table-wrap {
   overflow-x: auto;
-  margin-bottom: 1rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+
+.fx-rates .fx-rates-table-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Table ─────────────────────────────────────────────────── */
 
 .fx-rates .fx-rates-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-gray-121, #555);
+  border: 0.0625rem solid var(--bbl-color-grey-18, #d0d0d0);
   table-layout: fixed;
 }
 
+/* Header row */
 .fx-rates .fx-rates-table thead tr {
-  background-color: var(--bbl-color-grey-110);
+  background: var(--bbl-color-blue-steel-light, #e8f0f8);
 }
 
-.fx-rates .fx-rates-table th {
-  color: var(--bbl-color-white);
+.fx-rates .fx-rates-table thead th {
+  padding: 1rem 1.25rem;
+  font-size: 0.9375rem;
   font-weight: 700;
-  font-size: 0.9375rem;
-  padding: 0.75rem 1rem;
-  border: 0.0625rem solid var(--bbl-color-grey-40);
+  color: var(--bbl-color-black, #1a1a1a);
   text-align: left;
+  border-bottom: 0.125rem solid var(--bbl-color-grey-20, #ccc);
+  white-space: nowrap;
 }
 
-.fx-rates .fx-rates-th-currency {
-  width: 58%;
+.fx-rates .fx-rates-col-currency {
+  width: 55%;
 }
 
-.fx-rates .fx-rates-th-rate {
-  width: 42%;
-  text-align: right !important;
+.fx-rates .fx-rates-col-rate {
+  width: 45%;
+  text-align: center;
 }
 
+/* Body rows */
 .fx-rates .fx-rates-table tbody tr {
-  background-color: var(--bbl-color-white);
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-20, #e0e0e0);
+  height: 3.5rem;
 }
 
-.fx-rates .fx-rates-table tbody tr:nth-child(even) {
-  background-color: var(--bbl-color-grey-10);
+.fx-rates .fx-rates-table tbody tr:last-child {
+  border-bottom: none;
 }
 
-.fx-rates .fx-rates-table td {
-  padding: 0.625rem 1rem;
-  border: 0.0625rem solid var(--bbl-color-grey-40);
-  font-size: 0.9375rem;
-  color: var(--bbl-color-gray-121);
-  vertical-align: middle;
-}
-
-/* ── Currency cell (flag + label) ────────────────────────── */
-
+/* Currency cell — flag + name inline */
 .fx-rates .fx-rates-currency-cell {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  text-align: left;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-grey-70, #555);
+  white-space: nowrap;
 }
 
-.fx-rates .fx-rates-flag {
-  width: 1.75rem;
-  height: 1.75rem;
-  object-fit: cover;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* ── Rate cell ───────────────────────────────────────────── */
-
+/* Rate cell — centred number */
 .fx-rates .fx-rates-rate-cell {
-  text-align: right;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-grey-70, #555);
+  text-align: center;
+  vertical-align: middle;
+  border-left: 0.0625rem solid var(--bbl-color-grey-20, #e0e0e0);
 }
 
-/* ── Update timestamp ────────────────────────────────────── */
-
-.fx-rates .fx-rates-update {
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-85);
-  margin: 0.75rem 0 0.5rem;
-  text-align: left;
+/* Flag icon */
+.fx-rates .fx-rates-flag {
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 50%;
 }
 
-/* ── Disclaimer ──────────────────────────────────────────── */
-
-.fx-rates .fx-rates-disclaimer {
-  font-size: 0.8125rem;
-  color: var(--bbl-color-grey-85);
-  text-align: left;
-  margin-top: 0.5rem;
+/* Empty state */
+.fx-rates .fx-rates-empty {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--bbl-color-grey-70, #888);
+  font-size: 0.9375rem;
 }
 
-.fx-rates .fx-rates-disclaimer p {
-  margin: 0.25rem 0;
+/* ── Eyebrow lines ─────────────────────────────────────────── */
+
+.fx-rates .fx-rates-update-time {
+  margin: 1.25rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-grey-70, #555);
+  line-height: 1.6;
 }
 
-/* ── T&C Accordion ───────────────────────────────────────── */
+.fx-rates .fx-rates-remark {
+  margin: 0.75rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-grey-70, #555);
+  line-height: 1.6;
+}
+
+/* ── Accordion container ───────────────────────────────────── */
 
 .fx-rates .fx-rates-accordion {
-  border-top: 0.0625rem solid var(--bbl-color-grey-40);
-  border-bottom: 0.0625rem solid var(--bbl-color-grey-40);
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
-.fx-rates .fx-rates-accordion-toggle {
+/* ── Accordion toolbar ─────────────────────────────────────── */
+
+.fx-rates .fx-rates-accordion-toolbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  width: 100%;
-  padding: 1rem 0;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-20, #e0e0e0);
+  margin-bottom: 0;
+}
+
+.fx-rates .fx-rates-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 0.9375rem;
   font-weight: 700;
-  color: var(--bbl-color-gray-121);
-  text-align: left;
+  color: var(--bbl-color-grey-85, #444);
+  padding: 0.25rem 0;
+  line-height: 1.4;
 }
 
-.fx-rates .fx-rates-accordion-icon {
+.fx-rates .fx-rates-toolbar-btn:hover {
+  color: var(--bbl-color-active-blue, #0060b2);
+}
+
+.fx-rates .fx-rates-toolbar-icon {
   width: 1.25rem;
   height: 1.25rem;
   flex-shrink: 0;
-  position: relative;
 }
 
-.fx-rates .fx-rates-accordion-icon::before,
-.fx-rates .fx-rates-accordion-icon::after {
-  content: '';
-  position: absolute;
-  background-color: var(--bbl-color-gray-121);
-  border-radius: 0.125rem;
+/* Print icon via icomoon */
+.fx-rates .fx-rates-toolbar-icon.icon-print {
+  font-size: 1.125rem;
+  width: auto;
+  height: auto;
+  color: var(--bbl-color-grey-70, #888);
 }
 
-.fx-rates .fx-rates-accordion-icon::before {
+.fx-rates .fx-rates-toolbar-print:hover .icon-print {
+  color: var(--bbl-color-active-blue, #0060b2);
+}
+
+/* ── Accordion items ───────────────────────────────────────── */
+
+.fx-rates .fx-rates-accordion-item {
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-20, #e0e0e0);
+}
+
+.fx-rates .fx-rates-accordion-item:first-of-type {
+  border-top: 0.0625rem solid var(--bbl-color-grey-20, #e0e0e0);
+}
+
+/* ── Accordion heading / header button ─────────────────────── */
+
+.fx-rates .fx-rates-accordion-heading {
   width: 100%;
-  height: 0.125rem;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
 }
 
-.fx-rates .fx-rates-accordion-icon::after {
-  width: 0.125rem;
-  height: 100%;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.fx-rates .fx-rates-accordion-toggle[aria-expanded='true'] .fx-rates-accordion-icon::after {
-  transform: translateX(-50%) rotate(90deg);
-  opacity: 0;
-}
-
-.fx-rates .fx-rates-accordion-body {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.25s ease;
-}
-
-.fx-rates .fx-rates-accordion-toggle[aria-expanded='true'] ~ .fx-rates-accordion-body {
-  grid-template-rows: 1fr;
-}
-
-.fx-rates .fx-rates-accordion-inner {
-  overflow: hidden;
-  padding-bottom: 1rem;
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-85);
+.fx-rates .fx-rates-accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1.25rem 0;
+  background: none;
+  border: none;
+  cursor: pointer;
   text-align: left;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--bbl-color-grey-85, #333);
+  line-height: 1.4;
 }
 
-.fx-rates .fx-rates-accordion-inner p {
-  margin: 0.25rem 0;
+.fx-rates .fx-rates-accordion-header::after {
+  content: '+';
+  flex-shrink: 0;
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--bbl-color-grey-85, #333);
+  transition: transform 0.2s ease;
 }
 
-/* ── Responsive ──────────────────────────────────────────── */
+.fx-rates .fx-rates-accordion-header[aria-expanded='true']::after {
+  content: '\2212'; /* minus sign */
+}
 
-@media (width >= 47.5rem) {
-  .fx-rates .fx-rates-wrapper {
-    padding: 2.5rem 2rem;
+.fx-rates .fx-rates-accordion-header-title {
+  flex: 1;
+  padding-right: 1rem;
+}
+
+/* ── Accordion panel ───────────────────────────────────────── */
+
+.fx-rates .fx-rates-accordion-panel {
+  overflow: hidden;
+  padding: 0 0 1.25rem;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-grey-70, #555);
+  line-height: 1.7;
+}
+
+.fx-rates .fx-rates-accordion-panel[hidden] {
+  display: none;
+}
+
+/* ── Tablet: 47.5rem+ (760 px) ─────────────────────────────── */
+
+@media (width > 47.5rem) {
+  .fx-rates .fx-rates-table {
+    font-size: 1rem;
   }
 
-  .fx-rates .fx-rates-table th,
-  .fx-rates .fx-rates-table td {
-    padding: 0.75rem 1.5rem;
+  .fx-rates .fx-rates-table thead th {
+    font-size: 1rem;
+    padding: 1rem 1.5rem;
+  }
+
+  .fx-rates .fx-rates-currency-cell {
+    font-size: 1rem;
+    padding: 0.875rem 1.5rem;
+  }
+
+  .fx-rates .fx-rates-rate-cell {
+    font-size: 1rem;
+    padding: 0.875rem 1.5rem;
+  }
+
+  .fx-rates .fx-rates-flag {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .fx-rates .fx-rates-update-time,
+  .fx-rates .fx-rates-remark {
+    font-size: 1rem;
+  }
+
+  .fx-rates .fx-rates-accordion-header {
+    font-size: 1.0625rem;
+  }
+
+  .fx-rates .fx-rates-accordion-panel {
+    font-size: 1rem;
+  }
+}
+
+/* ── Desktop: 64rem+ (1024 px) ─────────────────────────────── */
+
+@media (width > 64rem) {
+  .fx-rates .fx-rates-col-currency {
+    width: 60%;
+  }
+
+  .fx-rates .fx-rates-col-rate {
+    width: 40%;
+  }
+
+  .fx-rates .fx-rates-table thead th {
+    padding: 1.125rem 1.75rem;
+  }
+
+  .fx-rates .fx-rates-currency-cell {
+    padding: 1rem 1.75rem;
+  }
+
+  .fx-rates .fx-rates-rate-cell {
+    padding: 1rem 1.75rem;
   }
 }
