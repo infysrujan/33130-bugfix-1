@@ -7494,6 +7494,18 @@
         "name": "disclaimerText",
         "label": "Disclaimer Text",
         "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "accordionTitle",
+        "label": "T&C Accordion Title (e.g. 'Terms & Conditions')",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "accordionContent",
+        "label": "T&C Accordion Content",
+        "valueType": "string"
       }
     ]
   },

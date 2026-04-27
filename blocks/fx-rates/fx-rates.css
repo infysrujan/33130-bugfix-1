@@ -145,6 +145,57 @@
   margin: 0.25rem 0;
 }
 
+/* ── T&C Accordion ───────────────────────────────────────── */
+
+.fx-rates .fx-rates-accordion {
+  margin-top: 1.5rem;
+  border-top: 0.0625rem solid var(--bbl-color-grey-40);
+}
+
+.fx-rates .fx-rates-accordion-item {
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-40);
+}
+
+.fx-rates .fx-rates-accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1rem 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.fx-rates .fx-rates-accordion-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--bbl-color-gray-121);
+}
+
+.fx-rates .fx-rates-accordion-icon {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--bbl-color-gray-121);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.fx-rates .fx-rates-accordion-panel {
+  padding-bottom: 1rem;
+}
+
+.fx-rates .fx-rates-accordion-body {
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-85);
+  text-align: left;
+}
+
+.fx-rates .fx-rates-accordion-body p {
+  margin: 0.25rem 0;
+}
+
 /* ── Responsive ──────────────────────────────────────────── */
 
 @media (width >= 47.5rem) {

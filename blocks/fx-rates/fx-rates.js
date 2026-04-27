@@ -35,8 +35,12 @@ function parseAuthoring(block) {
   const disclaimerEl = rows[5]?.firstElementChild;
   const disclaimerHtml = disclaimerEl?.innerHTML || '';
 
+  const accordionTitle = rows[6]?.textContent?.trim() || '';
+  const accordionEl = rows[7]?.firstElementChild;
+  const accordionContentHtml = accordionEl?.innerHTML || '';
+
   const currencies = [];
-  for (let i = 6; i < rows.length; i += 1) {
+  for (let i = 8; i < rows.length; i += 1) {
     const cols = [...rows[i].children];
     const apiCode = cols[0]?.textContent?.trim();
     if (!apiCode) continue; // eslint-disable-line no-continue
@@ -55,6 +59,8 @@ function parseAuthoring(block) {
     updateDatePrefix,
     updateTimeSeparator,
     disclaimerHtml,
+    accordionTitle,
+    accordionContentHtml,
     currencies,
   };
 }
@@ -126,6 +132,18 @@ function renderBlock(block, authoring, ratesMap, updateDate, updateTime, buddhis
       </div>
       ${updateLabel ? `<p class="fx-rates-update">${updateLabel}</p>` : ''}
       ${authoring.disclaimerHtml ? `<div class="fx-rates-disclaimer">${authoring.disclaimerHtml}</div>` : ''}
+      ${authoring.accordionTitle ? `
+      <div class="fx-rates-accordion">
+        <div class="fx-rates-accordion-item">
+          <button type="button" class="fx-rates-accordion-header" aria-expanded="false" aria-controls="fx-rates-tnc-panel">
+            <span class="fx-rates-accordion-title">${escapeHtml(authoring.accordionTitle)}</span>
+            <span class="fx-rates-accordion-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="fx-rates-accordion-panel" id="fx-rates-tnc-panel" hidden>
+            <div class="fx-rates-accordion-body">${authoring.accordionContentHtml}</div>
+          </div>
+        </div>
+      </div>` : ''}
     </div>
   `;
 
@@ -165,4 +183,16 @@ export default async function decorate(block) {
   }
 
   renderBlock(block, authoring, ratesMap, updateDate, updateTime, buddhistYearOffset);
+
+  const accordionHeader = block.querySelector('.fx-rates-accordion-header');
+  if (accordionHeader) {
+    accordionHeader.addEventListener('click', () => {
+      const expanded = accordionHeader.getAttribute('aria-expanded') === 'true';
+      const panel = block.querySelector(`#${accordionHeader.getAttribute('aria-controls')}`);
+      const icon = accordionHeader.querySelector('.fx-rates-accordion-icon');
+      accordionHeader.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      if (panel) panel.hidden = expanded;
+      if (icon) icon.textContent = expanded ? '+' : '−';
+    });
+  }
 }
