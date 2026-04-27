@@ -152,7 +152,7 @@ function formatThaiDate(dateStr, timeStr, buddhistYearOffset, updateTimeLabel) {
 
 function renderTable(rates, authoring) {
   if (!rates.length) {
-    return `<div class="fx-rates-empty">-</div>`;
+    return '<div class="fx-rates-empty">-</div>';
   }
 
   const rows = rates.map((rate) => {
@@ -252,7 +252,7 @@ function buildAccordionPrintDoc(accordionEl) {
     if (panel) panel.hidden = !states[i]?.expanded;
   });
 
-  const css = `body{font-family:system-ui,sans-serif;padding:1.5rem;color:#111}.fx-rates-accordion-item{border-bottom:1px solid #ddd;padding-bottom:1rem;margin-bottom:1rem}.fx-rates-accordion-panel{display:block!important}.fx-rates-accordion-header{display:none}`;
+  const css = 'body{font-family:system-ui,sans-serif;padding:1.5rem;color:#111}.fx-rates-accordion-item{border-bottom:1px solid #ddd;padding-bottom:1rem;margin-bottom:1rem}.fx-rates-accordion-panel{display:block!important}.fx-rates-accordion-header{display:none}';
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${css}</style></head><body>${clone.outerHTML}</body></html>`;
 }
 
@@ -489,7 +489,12 @@ export default async function decorate(block) {
   wrapper.insertAdjacentHTML('beforeend', renderTable(rates, authoring));
 
   // 2. Update time eyebrow
-  const timeText = formatThaiDate(updateDate, updateTime, buddhistYearOffset, authoring.updateTimeLabel);
+  const timeText = formatThaiDate(
+    updateDate,
+    updateTime,
+    buddhistYearOffset,
+    authoring.updateTimeLabel,
+  );
   if (timeText) {
     const timeEl = document.createElement('p');
     timeEl.className = 'fx-rates-update-time';
