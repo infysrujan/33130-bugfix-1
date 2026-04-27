@@ -94,7 +94,16 @@
   display: block;
   width: 100%;
   background-position: center;
-  background-size: cover;
+  transition: opacity 600ms ease;    
+}
+
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
+.carousel-bg {
+  overflow: hidden;
+}
+
+.carousel-dotted .carousel-dotted-item:not(.is-active) .carousel-bg {
+  opacity: 0;      
 }
 
 .carousel-dotted .carousel-bg::after {
@@ -318,12 +327,12 @@
 /* Override the generic display:none so all slides exist in the flex row */
 .carousel-dotted.all-without-image .carousel-dotted-item.without-image {
   position: relative;
-  display: block !important;
+  display: block ;
   opacity: 1;
   flex: 0 0 100%;
   width: 100%;
   min-height: 12.6875rem;
-  transition: none;
+  transition: opacity 600ms ease;  
 }
 
 /* Dot positioning – mobile */
@@ -435,11 +444,6 @@
   width: 100%;
   opacity: 1;
   transition: none;
-  overflow: hidden;
-}
-
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-bg {
   overflow: hidden;
 }
 
@@ -1181,4 +1185,99 @@
     width: 2.5rem;
     height: 2.5rem;
   }
+}
+
+/* simple carousel section */
+
+.carousel-dotted-wrapper .simple-carousel{
+  margin: auto;
+  margin-top: 3.125rem;
+  margin-bottom: 1.25rem;
+}
+
+.slick-dots.simple-carousel-dots{
+  margin-bottom: 3.125rem;
+}
+
+@media (width > 64rem) {
+  .carousel-dotted.show-arrows-dots{
+    margin-inline: auto;
+  }
+}
+
+.section.central-aligned.center-title.carousel-dotted-container {
+  padding: 80px 20px 30px;
+}
+
+.card-list-modal-title {
+  margin-top: 1.875rem;
+  margin-bottom: 1.875rem;
+  padding-bottom: 1.25rem; 
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item img,
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item picture {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper {
+  width: 100%;
+}
+
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item {
+  width: 100%;
+}
+
+.carousel-dotted-item.simple-carousel.item {
+  width: 100% ;
+  max-width: 100% ;
+  flex: 1 1 100% ;
+  align-self: stretch ;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-dotted-item.simple-carousel.item picture,
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-dotted-item.simple-carousel.item img {
+  width: 100% ;
+  height: 100% ;
+  object-fit: fill ;
+  display: block ;
+}
+
+.carousel-dotted-container .default-content-wrapper {
+  padding: 0 3.5rem;
+}
+
+
+.central-aligned.carousel-dotted-container .default-content-wrapper {
+    max-width: var(--bbl-layout-central-aligned-max-width);
+    margin: 0 auto;
+}
+
+.central-aligned.carousel-dotted-container .carousel-dotted-wrapper .carousel-dotted {
+    position: relative;
+    margin-bottom: 5rem;
+    display: block;
+}
+
+.central-aligned.carousel-dotted-container .carousel-arrow-prev {
+    position: absolute;
+    top: 40%;
+    left: -3.4375rem;
+}
+
+.central-aligned.carousel-dotted-container .carousel-arrow-next {
+    position: absolute;
+    right: -3.4375rem;
+    top: 40%;
+}
+
+.carousel-dotted .carousel-dotted-item.simple-carousel {
+    margin-top: 0;
 }

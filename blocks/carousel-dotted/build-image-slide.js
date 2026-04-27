@@ -1,4 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
 /**
  * Build a slide WITH IMAGE variation
@@ -14,12 +15,18 @@ export default function buildSlideWithImage(row, index, cells) {
   moveInstrumentation(row, slide);
 
   // Background image (cell 3)
-  const picture = cells[3]?.querySelector('picture');
-  if (picture) {
-    const media = document.createElement('div');
-    media.className = 'carousel-bg';
-    media.append(picture);
-    slide.append(media);
+  const pictureDesktop = cells[3]?.querySelector('picture');
+  const pictureMobile = cells[4]?.querySelector('picture');
+  const imgAlt = cells[5];
+
+  if (pictureDesktop || pictureMobile) {
+    const picture = createSmartImage(pictureDesktop, pictureMobile, imgAlt);
+    if (picture) {
+      const media = document.createElement('div');
+      media.className = 'carousel-bg';
+      media.append(picture);
+      slide.append(media);
+    }
   }
 
   // Content container
@@ -35,16 +42,16 @@ export default function buildSlideWithImage(row, index, cells) {
     content.append(badge);
   }
 
-  // Description (cell 4)
-  if (cells[4]) {
+  // Description (cell 6)
+  if (cells[6]) {
     const description = document.createElement('div');
     description.className = 'carousel-dotted-description';
-    while (cells[4].firstChild) description.append(cells[4].firstChild);
+    while (cells[6].firstChild) description.append(cells[6].firstChild);
     content.append(description);
   }
 
-  // Link/Button (cell 5)
-  const link = cells[5]?.querySelector('a');
+  // Link/Button (cell 7)
+  const link = cells[7]?.querySelector('a');
   if (link) {
     content.append(link);
   }

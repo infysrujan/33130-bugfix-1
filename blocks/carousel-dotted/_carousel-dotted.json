@@ -380,10 +380,54 @@
           }
         },
         {
-          "component": "reference",
-          "name": "image",
-          "label": "Image",
-          "valueType": "string",
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopField",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withImage"
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopMimeTypeField",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+                
+              },
+              "withImage"
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+                
+              },
+              "withImage"
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+                
+              },
+              "withImage"
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerAltField",
           "condition": {
             "===": [
               {
@@ -916,6 +960,10 @@
               "name": "With Circular Image",
               "value": "withCircularImage"
             },
+             {
+              "name": "Simple Carousel",
+              "value": "onlyImage"
+            },
             {
               "name": "Card List Carousel",
               "value": "cardListCarousel"
@@ -1094,6 +1142,20 @@
           }
         },
         {
+          "component": "reference",
+          "name": "onlyImage",
+          "label": "Image",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "onlyImage"
+            ]
+          }
+        },
+        {
           "component": "aem-content",
           "name": "fragmentPath",
           "label": "Fragment Path",
@@ -1103,6 +1165,22 @@
               {
                 "var": "slideType"
               },
+              "cardListCarousel"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "onlyImageAlt",
+          "label": "Alt",
+          "value": "",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "onlyImage",
               "cardListCarousel"
             ]
           }

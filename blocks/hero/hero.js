@@ -1,5 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
+import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
 function changeBanner(block) {
   block.addEventListener('mouseenter', (e) => {
@@ -49,19 +50,41 @@ function createThumbItem(picture, index, { strip = false, active = false } = {})
 
 export default function decorate(block) {
   const variant = block.children[0]?.textContent?.trim() || 'default';
-
   const bannerList = createElement('ul', 'hero-banner-list');
-  const thumbnailList = createElement('ul', 'hero-banner-thumbnail-list', 'content');
+  let thumbnailList = '';
 
-  [...block.children].slice(2, 9).forEach((row, i) => {
-    const [imageCell, logoImageCell, thumbImgCell, headingCell, textCell, linkCell] = row.children;
+  if (variant === 'hero-with-thumbnail-images') {
+    thumbnailList = createElement('ul', 'hero-banner-thumbnail-list', 'content');
+  }
+
+  [...block.children].slice(1, 9).forEach((row, i) => {
+    const [
+      imageCellDesktop,
+      imageCellMobile,
+      imageAlt,
+      logoImageCell,
+      thumbImgCell,
+      headingCell,
+      textCell,
+      linkCell,
+    ] = row.children;
 
     const bannerItem = createElement('li', 'hero-banner-item');
     if (i === 0) bannerItem.classList.add('hero-banner-item-active');
     bannerItem.dataset.index = i;
 
-    const img = imageCell?.querySelector('img');
-    if (img) { img.className = 'hero-banner-img'; img.loading = 'lazy'; bannerItem.append(img); }
+    const pictureDesktop = imageCellDesktop?.querySelector('picture');
+    const pictureMobile = imageCellMobile?.querySelector('picture');
+
+    if (pictureDesktop || pictureMobile) {
+      const heroPicture = createSmartImage(pictureDesktop, pictureMobile, imageAlt);
+      if (heroPicture) {
+        const img = heroPicture?.querySelector('img');
+        img.className = 'hero-banner-img';
+        img.loading = 'lazy';
+        bannerItem.append(heroPicture);
+      }
+    }
 
     const contentInner = createElement('div', 'hero-banner-content-inner');
     const logoImg = logoImageCell?.querySelector('img');
@@ -84,20 +107,21 @@ export default function decorate(block) {
     content.append(contentInner);
     bannerItem.append(content);
 
-    const thumbPicture = thumbImgCell?.querySelector('picture');
-    const cloned = thumbPicture?.cloneNode(true);
-
-    const thumbImg = thumbPicture?.querySelector('img');
-    if (thumbImg) {
-      thumbImg.className = 'hero-banner-thumbnail-img';
-      thumbImg.style.display = 'none';
-      thumbImg.setAttribute('aria-hidden', 'true');
-      bannerItem.append(thumbImg);
+    if (variant === 'hero-with-thumbnail-images') {
+      const thumbPicture = thumbImgCell?.querySelector('picture');
+      const cloned = thumbPicture?.cloneNode(true);
+      const thumbImg = thumbPicture?.querySelector('img');
+      if (thumbImg) {
+        thumbImg.className = 'hero-banner-thumbnail-img';
+        thumbImg.style.display = 'none';
+        thumbImg.setAttribute('aria-hidden', 'true');
+        bannerItem.append(thumbImg);
+      }
+      thumbnailList.append(createThumbItem(cloned, i, { strip: true, active: i === 0 }));
     }
 
     moveInstrumentation(row, bannerItem);
     bannerList.append(bannerItem);
-    thumbnailList.append(createThumbItem(cloned, i, { strip: true, active: i === 0 }));
   });
 
   const mainImgContainer = createElement('div', 'hero-banner-container');

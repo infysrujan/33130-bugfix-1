@@ -51,28 +51,50 @@
             "id": "carousel-card",
             "fields": [
                 {
-                    "component": "reference",
-                    "name": "nonActiveImage",
-                    "label": "Non-Active Image",
-                    "valueType": "string"
+                    "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopField",
+                    "name": "nonActiveImageDesktop",
+                    "label": "Non-Active Image (Desktop)"
                 },
                 {
-                    "component": "text",
+                    "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopMimeTypeField",
+                    "name": "nonActiveImageDesktopMimeType"
+                },
+                {
+                    "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
+                    "name": "nonActiveImageMobile",
+                    "label": "Non-Active Image (Mobile)"
+                },
+                {
+                    "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
+                    "name": "nonActiveImageMobileMimeType"
+                },
+                {
+                    "...": "../../models/elements/_image-picker.json#/_imagePickerAltField",
                     "name": "nonActiveImageAlt",
-                    "label": "Non-Active Image Alt Text",
-                    "valueType": "string"
+                    "label": "Non-Active Image Alt Text"
                 },
                 {
-                    "component": "reference",
-                    "name": "activeImage",
-                    "label": "Active Image",
-                    "valueType": "string"
+                    "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopField",
+                    "name": "activeImageDesktop",
+                    "label": "Active Image (Desktop)"
                 },
                 {
-                    "component": "text",
+                    "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopMimeTypeField",
+                    "name": "activeImageDesktopMimeType"
+                },
+                {
+                    "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
+                    "name": "activeImageMobile",
+                    "label": "Active Image (Mobile)"
+                },
+                {
+                    "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
+                    "name": "activeImageMobileMimeType"
+                },
+                {
+                    "...": "../../models/elements/_image-picker.json#/_imagePickerAltField",
                     "name": "activeImageAlt",
-                    "label": "Active Image Alt Text",
-                    "valueType": "string"
+                    "label": "Active Image Alt Text"
                 },
                 {
                     "component": "text",

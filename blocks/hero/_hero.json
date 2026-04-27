@@ -45,21 +45,21 @@
           "label": "Variant",
           "valueType": "string",
           "options": [
-            { 
-              "name": "Hero With Thumbnail Images", 
-              "value": "hero-with-thumbnail-images" 
+            {
+              "name": "Hero With Thumbnail Images",
+              "value": "hero-with-thumbnail-images"
             },
             {
-              "name": "Simple", 
-              "value": "simple" 
+              "name": "Simple",
+              "value": "simple"
             },
             {
-              "name": "Private or Wealth banking", 
-              "value": "private-wealth-banking" 
+              "name": "Private or Wealth banking",
+              "value": "private-wealth-banking"
             },
             {
-              "name": "Simple with Logo Banner", 
-              "value": "simple-logo-banner" 
+              "name": "Simple with Logo Banner",
+              "value": "simple-logo-banner"
             }
           ]
         }
@@ -69,18 +69,7 @@
       "id": "hero-item",
       "fields": [
         {
-          "component": "reference",
-          "valueType": "string",
-          "name": "image",
-          "label": "Image",
-          "multi": false
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "imageAlt",
-          "label": "Alt",
-          "value": ""
+          "...": "../../models/elements/_image-picker.json#/imagePickerFields"
         },
         {
           "component": "reference",
@@ -126,7 +115,7 @@
           "name": "subtitle",
           "value": "",
           "label": "Sub Title",
-          "valueType": "string"        
+          "valueType": "string"
         },
         {
           "...": "../../models/elements/_button-fields.json"

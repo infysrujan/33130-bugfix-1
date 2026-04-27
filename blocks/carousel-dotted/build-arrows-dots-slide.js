@@ -21,6 +21,21 @@ export default function buildSlideArrowsandDots(row, index) {
   // cells[1] is now a select with the slide type value
   const slideType = cells[1]?.textContent.trim();
 
+  // Build a slide for the simpleCarousel / onlyImage variation.
+  if (slideType === 'simpleCarousel' || slideType === 'onlyImage') {
+    slide.className = 'carousel-dotted-item simple-carousel item';
+
+    // onlyImage (cell 10), onlyImageAlt (cell 11)
+    const onlyImageCell = cells[10];
+
+    const picture = onlyImageCell?.querySelector('picture');
+    if (picture) {
+      slide.append(picture);
+    }
+
+    return slide;
+  }
+
   if (slideType === 'withCircularImage') {
     slide.className = 'carousel-dotted-item with-circular-image item';
 

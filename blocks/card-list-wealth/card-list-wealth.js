@@ -1,3 +1,5 @@
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
 const CHECKMARK_SVG = `<svg width="18" height="13" viewBox="0 0 25 13" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M1.46094 5.63309L6.72891 10.9004L16.6567 0.972656" stroke="#0064FF" stroke-width="2"></path>
 </svg>`;
@@ -78,6 +80,7 @@ export default function decorate(block) {
       card.append(ctaDiv);
     }
 
+    moveInstrumentation(row, card);
     block.append(card);
   });
 }

@@ -1251,10 +1251,69 @@
         }
       },
       {
-        "component": "reference",
-        "name": "image",
-        "label": "Image",
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerDesktop",
+        "label": "Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
         "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withImage"
+          ]
+        }
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerDesktopMimeType",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withImage"
+          ]
+        }
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerMobile",
+        "label": "Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withImage"
+          ]
+        }
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerMobileMimeType",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withImage"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
         "condition": {
           "===": [
             {
@@ -1788,6 +1847,10 @@
             "value": "withCircularImage"
           },
           {
+            "name": "Simple Carousel",
+            "value": "onlyImage"
+          },
+          {
             "name": "Card List Carousel",
             "value": "cardListCarousel"
           }
@@ -1965,6 +2028,20 @@
         }
       },
       {
+        "component": "reference",
+        "name": "onlyImage",
+        "label": "Image",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "onlyImage"
+          ]
+        }
+      },
+      {
         "component": "aem-content",
         "name": "fragmentPath",
         "label": "Fragment Path",
@@ -1974,6 +2051,22 @@
             {
               "var": "slideType"
             },
+            "cardListCarousel"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "onlyImageAlt",
+        "label": "Alt",
+        "value": "",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "onlyImage",
             "cardListCarousel"
           ]
         }
@@ -2074,28 +2167,70 @@
     "id": "carousel-card",
     "fields": [
       {
-        "component": "reference",
-        "name": "nonActiveImage",
-        "label": "Non-Active Image",
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "nonActiveImageDesktop",
+        "label": "Non-Active Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
         "valueType": "string"
       },
       {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "nonActiveImageDesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "nonActiveImageMobile",
+        "label": "Non-Active Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "nonActiveImageMobileMimeType"
+      },
+      {
         "component": "text",
+        "valueType": "string",
         "name": "nonActiveImageAlt",
         "label": "Non-Active Image Alt Text",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "activeImageDesktop",
+        "label": "Active Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
         "valueType": "string"
       },
       {
-        "component": "reference",
-        "name": "activeImage",
-        "label": "Active Image",
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "activeImageDesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "activeImageMobile",
+        "label": "Active Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
         "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "activeImageMobileMimeType"
       },
       {
         "component": "text",
+        "valueType": "string",
         "name": "activeImageAlt",
         "label": "Active Image Alt Text",
-        "valueType": "string"
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
       },
       {
         "component": "text",
@@ -2282,17 +2417,37 @@
     "id": "cross-banner",
     "fields": [
       {
-        "component": "reference",
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerDesktop",
+        "label": "Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
+        "name": "imagePickerDesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerMobile",
+        "label": "Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerMobileMimeType"
       },
       {
         "component": "text",
-        "name": "imageAlt",
-        "label": "Image Alt",
-        "valueType": "string"
+        "valueType": "string",
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
       },
       {
         "component": "text",
@@ -7548,18 +7703,37 @@
     "id": "hero-item",
     "fields": [
       {
-        "component": "reference",
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerDesktop",
+        "label": "Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
+        "name": "imagePickerDesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerMobile",
+        "label": "Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerMobileMimeType"
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "imageAlt",
-        "label": "Alt",
-        "value": ""
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
       },
       {
         "component": "reference",

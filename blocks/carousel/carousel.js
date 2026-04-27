@@ -1,6 +1,5 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
-
+import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 /**
  * Create the carousel header section
  * @param {string} title - The carousel title
@@ -31,8 +30,12 @@ function createCarouselCard(cardElement, doc) {
 
   // Extract carousel card fields based on the model structure
   const [
-    nonActiveImageDiv,
-    activeImageDiv,
+    nonActiveImageDesktopDiv,
+    nonActiveImageMobileDiv,
+    nonActiveImageAlt,
+    activeImageDesktopDiv,
+    activeImageMobileDiv,
+    activeImageAlt,
     eyebrowDiv,
     cardTitleDiv,
     cardDescriptionDiv,
@@ -41,35 +44,29 @@ function createCarouselCard(cardElement, doc) {
 
   // Create image container with active and inactive states
   const imageContainer = createElementFromHTML('<div class="carousel-image-container"></div>', doc);
+  const nonActivePictureDesktop = nonActiveImageDesktopDiv?.querySelector('picture');
+  const nonActivePictureMobile = nonActiveImageMobileDiv?.querySelector('picture');
+  const activePictureDesktop = activeImageDesktopDiv?.querySelector('picture');
+  const activePictureMobile = activeImageDesktopDiv?.querySelector('picture');
 
-  // Process non-active image
-  if (nonActiveImageDiv?.querySelector('picture')) {
+  if (nonActivePictureDesktop || activePictureMobile) {
     const inactiveWrapper = createElementFromHTML('<div class="carousel-image-inactive"></div>', doc);
-    const nonActiveImg = nonActiveImageDiv.querySelector('img');
-    if (nonActiveImg) {
-      const optimizedPic = createOptimizedPicture(
-        nonActiveImg.src,
-        nonActiveImg.alt,
-        false,
-      );
-      moveInstrumentation(nonActiveImg, optimizedPic.querySelector('img'));
-      inactiveWrapper.appendChild(optimizedPic);
+    const picture = createSmartImage(
+      nonActivePictureDesktop,
+      nonActivePictureMobile,
+      nonActiveImageAlt,
+    );
+    if (picture) {
+      inactiveWrapper.appendChild(picture);
     }
     imageContainer.appendChild(inactiveWrapper);
   }
 
-  // Process active image
-  if (activeImageDiv?.querySelector('picture')) {
+  if (activePictureDesktop || activeImageMobileDiv) {
     const activeWrapper = createElementFromHTML('<div class="carousel-image-active"></div>', doc);
-    const activeImg = activeImageDiv.querySelector('img');
-    if (activeImg) {
-      const optimizedPic = createOptimizedPicture(
-        activeImg.src,
-        activeImg.alt,
-        false,
-      );
-      moveInstrumentation(activeImg, optimizedPic.querySelector('img'));
-      activeWrapper.appendChild(optimizedPic);
+    const picture = createSmartImage(activePictureDesktop, activePictureMobile, activeImageAlt);
+    if (picture) {
+      activeWrapper.appendChild(picture);
     }
     imageContainer.appendChild(activeWrapper);
   }
