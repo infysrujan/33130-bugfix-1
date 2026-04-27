@@ -34,28 +34,34 @@
 					"valueType": "string"
 				},
 				{
-					"component": "text",
-					"name": "currencyColumnLabel",
-					"label": "Currency Column Label",
+					"component": "multifield",
+					"name": "currencies",
+					"label": "Currencies (in display order)",
 					"valueType": "string",
-					"required": true
-				},
-				{
-					"component": "text",
-					"name": "rateColumnLabel",
-					"label": "Rate Column Label",
-					"valueType": "string",
-					"required": true
+					"fields": [
+						{
+							"component": "text",
+							"name": "apiCode",
+							"label": "API Currency Code (e.g. USD1, USD5, USD50, EUR, JPY)",
+							"valueType": "string"
+						},
+						{
+							"component": "text",
+							"name": "displayLabel",
+							"label": "Display Label (e.g. USD 1-2, USD 5-20, JPY :100)",
+							"valueType": "string"
+						}
+					]
 				},
 				{
 					"component": "select",
 					"name": "decimalPlaces",
-					"label": "Decimal Places (1 or 2)",
+					"label": "Decimal Places for Selling Rate",
 					"valueType": "string",
 					"required": true,
 					"options": [
-						{ "name": "1", "value": "1" },
-						{ "name": "2", "value": "2" }
+						{ "name": "2", "value": "2" },
+						{ "name": "4", "value": "4" }
 					]
 				},
 				{
@@ -66,9 +72,9 @@
 					"required": true
 				},
 				{
-					"component": "text",
-					"name": "accordionTitle",
-					"label": "T&C Accordion Title (e.g. 'Terms & Conditions')",
+					"component": "richtext",
+					"name": "disclaimer",
+					"label": "Disclaimer Text",
 					"valueType": "string"
 				},
 				{

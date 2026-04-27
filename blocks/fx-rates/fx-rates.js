@@ -18,43 +18,35 @@ function parseAuthoring(block) {
   const rows = [...block.children];
 
   const title = rows[0]?.textContent?.trim() || '';
+  const descriptionHtml = rows[1]?.firstElementChild?.innerHTML || '';
 
-  const descriptionEl = rows[1]?.firstElementChild;
-  const descriptionHtml = descriptionEl?.innerHTML || '';
-
-  const headerCols = rows[2] ? [...rows[2].children] : [];
-  const currencyColumnLabel = headerCols[0]?.textContent?.trim() || 'Currency';
-  const rateColumnLabel = headerCols[1]?.textContent?.trim() || 'Rate';
-
-  const decimalPlaces = parseInt(rows[3]?.textContent?.trim() || '2', 10);
-
-  const updateDatePrefix = rows[4]?.textContent?.trim() || 'Update as of';
-
-  const accordionTitle = rows[5]?.textContent?.trim() || '';
-  const accordionEl = rows[6]?.firstElementChild;
-  const accordionContentHtml = accordionEl?.innerHTML || '';
-
+  // Row 2: currencies multifield — each child div is one currency item
   const currencies = [];
-  for (let i = 7; i < rows.length; i += 1) {
-    const cols = [...rows[i].children];
-    const apiCode = cols[0]?.textContent?.trim();
-    if (!apiCode) continue; // eslint-disable-line no-continue
-    currencies.push({
-      apiCode,
-      displayLabel: cols[1]?.textContent?.trim() || apiCode,
+  if (rows[2]) {
+    [...rows[2].children].forEach((item) => {
+      const cols = [...item.children];
+      const apiCode = cols[0]?.textContent?.trim();
+      if (!apiCode) return;
+      currencies.push({
+        apiCode,
+        displayLabel: cols[1]?.textContent?.trim() || apiCode,
+      });
     });
   }
+
+  const decimalPlaces = parseInt(rows[3]?.textContent?.trim() || '2', 10);
+  const updateDatePrefix = rows[4]?.textContent?.trim() || 'Update as of';
+  const disclaimerHtml = rows[5]?.firstElementChild?.innerHTML || '';
+  const accordionContentHtml = rows[6]?.firstElementChild?.innerHTML || '';
 
   return {
     title,
     descriptionHtml,
-    currencyColumnLabel,
-    rateColumnLabel,
+    currencies,
     decimalPlaces,
     updateDatePrefix,
-    accordionTitle,
+    disclaimerHtml,
     accordionContentHtml,
-    currencies,
   };
 }
 
@@ -90,9 +82,11 @@ function renderBlock(block, authoring, ratesMap, updateDate, updateTime, buddhis
       ? formatRate(rateData.sellingRate, authoring.decimalPlaces)
       : '-';
     return `<tr>
-      <td class="fx-rates-currency-cell">
-        <img src="/icons/${escapeHtml(apiCode)}.svg" alt="${escapeHtml(apiCode)}" loading="lazy" class="fx-rates-flag">
-        <span>${escapeHtml(displayLabel)}</span>
+      <td>
+        <div class="fx-rates-currency-cell">
+          <img src="/icons/${escapeHtml(apiCode)}.svg" alt="${escapeHtml(apiCode)}" loading="lazy" class="fx-rates-flag">
+          <span>${escapeHtml(displayLabel)}</span>
+        </div>
       </td>
       <td class="fx-rates-rate-cell">${escapeHtml(rateValue)}</td>
     </tr>`;
@@ -101,9 +95,20 @@ function renderBlock(block, authoring, ratesMap, updateDate, updateTime, buddhis
   const formattedDate = formatBuddhistDate(updateDate, buddhistYearOffset);
   let updateLabel = '';
   if (formattedDate) {
-    const timePart = updateTime ? ` ${escapeHtml(updateTime)}` : '';
+    const timePart = updateTime ? `, ${escapeHtml(updateTime)}` : '';
     updateLabel = `${escapeHtml(authoring.updateDatePrefix)} ${escapeHtml(formattedDate)}${timePart}`;
   }
+
+  const accordionHtml = authoring.accordionContentHtml ? `
+    <div class="fx-rates-accordion">
+      <button class="fx-rates-accordion-toggle" aria-expanded="false" type="button">
+        <span>Terms &amp; Conditions</span>
+        <span class="fx-rates-accordion-icon" aria-hidden="true"></span>
+      </button>
+      <div class="fx-rates-accordion-body">
+        <div class="fx-rates-accordion-inner">${authoring.accordionContentHtml}</div>
+      </div>
+    </div>` : '';
 
   block.innerHTML = `
     <div class="fx-rates-wrapper">
@@ -114,26 +119,16 @@ function renderBlock(block, authoring, ratesMap, updateDate, updateTime, buddhis
         <table class="fx-rates-table">
           <thead>
             <tr>
-              <th class="fx-rates-th-currency">${escapeHtml(authoring.currencyColumnLabel)}</th>
-              <th class="fx-rates-th-rate">${escapeHtml(authoring.rateColumnLabel)}</th>
+              <th class="fx-rates-th-currency">Currency</th>
+              <th class="fx-rates-th-rate">Selling Rate</th>
             </tr>
           </thead>
           <tbody>${tableRows}</tbody>
         </table>
       </div>
       ${updateLabel ? `<p class="fx-rates-update">${updateLabel}</p>` : ''}
-      ${authoring.accordionTitle ? `
-      <div class="fx-rates-accordion">
-        <div class="fx-rates-accordion-item">
-          <button type="button" class="fx-rates-accordion-header" aria-expanded="false" aria-controls="fx-rates-tnc-panel">
-            <span class="fx-rates-accordion-title">${escapeHtml(authoring.accordionTitle)}</span>
-            <span class="fx-rates-accordion-icon" aria-hidden="true">+</span>
-          </button>
-          <div class="fx-rates-accordion-panel" id="fx-rates-tnc-panel" hidden>
-            <div class="fx-rates-accordion-body">${authoring.accordionContentHtml}</div>
-          </div>
-        </div>
-      </div>` : ''}
+      ${authoring.disclaimerHtml ? `<div class="fx-rates-disclaimer">${authoring.disclaimerHtml}</div>` : ''}
+      ${accordionHtml}
     </div>
   `;
 
@@ -142,6 +137,14 @@ function renderBlock(block, authoring, ratesMap, updateDate, updateTime, buddhis
       e.target.style.display = 'none';
     });
   });
+
+  const toggle = block.querySelector('.fx-rates-accordion-toggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
+    });
+  }
 }
 
 export default async function decorate(block) {
@@ -173,16 +176,4 @@ export default async function decorate(block) {
   }
 
   renderBlock(block, authoring, ratesMap, updateDate, updateTime, buddhistYearOffset);
-
-  const accordionHeader = block.querySelector('.fx-rates-accordion-header');
-  if (accordionHeader) {
-    accordionHeader.addEventListener('click', () => {
-      const expanded = accordionHeader.getAttribute('aria-expanded') === 'true';
-      const panel = block.querySelector(`#${accordionHeader.getAttribute('aria-controls')}`);
-      const icon = accordionHeader.querySelector('.fx-rates-accordion-icon');
-      accordionHeader.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-      if (panel) panel.hidden = expanded;
-      if (icon) icon.textContent = expanded ? '+' : '−';
-    });
-  }
 }
