@@ -145,8 +145,7 @@ export default async function decorate(block) {
 
   // Disclaimer
   const disclaimer = document.createElement('p');
-  disclaimer.textContent =
-    '[Unit : Baht per 1 unit of foreign currency] Remark: The above rates are subject to change. Please contact our foreign currency service counter for applicable rates when making a transaction.';
+  disclaimer.textContent = '[Unit : Baht per 1 unit of foreign currency] Remark: The above rates are subject to change. Please contact our foreign currency service counter for applicable rates when making a transaction.';
   block.appendChild(disclaimer);
 
   // Terms & Conditions accordion
