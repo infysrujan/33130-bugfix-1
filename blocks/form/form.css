@@ -826,7 +826,6 @@ main h3 {
   position: relative;
 }
 
-
 main h3::before {
   content: '';
   position: absolute;
