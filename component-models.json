@@ -7585,67 +7585,6 @@
     ]
   },
   {
-    "id": "fx-rates",
-    "fields": [
-      {
-        "component": "text",
-        "name": "currencyColumnLabel",
-        "label": "Currency Column Label",
-        "valueType": "string",
-        "required": true,
-        "description": "Header label for the currency column (e.g. สกุลเงิน)"
-      },
-      {
-        "component": "text",
-        "name": "rateColumnLabel",
-        "label": "Rate Column Label",
-        "valueType": "string",
-        "required": true,
-        "description": "Header label for the exchange rate column (e.g. อัตราแลกเปลี่ยน)"
-      },
-      {
-        "component": "text",
-        "name": "updateTimeLabel",
-        "label": "Update Time Eyebrow Label",
-        "valueType": "string",
-        "required": false,
-        "description": "Prefix text shown before the API update time (e.g. อัพเดท ณ วันที่)"
-      },
-      {
-        "component": "text",
-        "name": "remarkText",
-        "label": "Remark Eyebrow Text",
-        "valueType": "string",
-        "required": false,
-        "description": "Static remark text shown below the update time (e.g. [หน่วย : เงินบาทต่อ 1 หน่วยเงินตราต่างประเทศ])"
-      },
-      {
-        "component": "aem-content",
-        "name": "accordionFragmentPath",
-        "label": "Accordion Fragment Path",
-        "valueType": "string",
-        "required": false,
-        "description": "Path to the accordion fragment to render below the table"
-      },
-      {
-        "component": "boolean",
-        "valueType": "boolean",
-        "name": "showExpandAll",
-        "value": true,
-        "label": "Show Expand All",
-        "description": "Show Expand All / Collapse All toggle in the accordion toolbar"
-      },
-      {
-        "component": "boolean",
-        "valueType": "boolean",
-        "name": "showPrint",
-        "value": true,
-        "label": "Show Print",
-        "description": "Show Print button in the accordion toolbar"
-      }
-    ]
-  },
-  {
     "id": "header-section",
     "fields": [
       {
@@ -8966,6 +8905,30 @@
         "label": "URL",
         "valueType": "string",
         "required": true
+      }
+    ]
+  },
+  {
+    "id": "special-fx-rates",
+    "fields": []
+  },
+  {
+    "id": "fx-currency-item",
+    "fields": [
+      {
+        "component": "text",
+        "name": "currencyLabel",
+        "label": "Currency Label"
+      },
+      {
+        "component": "text",
+        "name": "apiKey",
+        "label": "API Key (USD1, EUR...)"
+      },
+      {
+        "component": "number",
+        "name": "order",
+        "label": "Order"
       }
     ]
   },

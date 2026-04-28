@@ -1,0 +1,13 @@
+.special-fx-rates table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.special-fx-rates td {
+  border: 1px solid #000;
+  padding: 10px;
+}
+
+.special-fx-rates td:last-child {
+  text-align: right;
+}

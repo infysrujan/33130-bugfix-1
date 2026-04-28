@@ -51,7 +51,7 @@
       "video",
       "carousel-video",
       "forex-rates",
-      "fx-rates"
+      "special-fx-rates"
     ]
   },
   {
@@ -228,6 +228,12 @@
       "social-icon"
     ],
     "maxItems": 3
+  },
+  {
+    "id": "special-fx-rates",
+    "components": [
+      "fx-currency-item"
+    ]
   },
   {
     "id": "story-card",
