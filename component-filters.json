@@ -230,12 +230,6 @@
     "maxItems": 3
   },
   {
-    "id": "special-fx-rates",
-    "components": [
-      "fx-currency-item"
-    ]
-  },
-  {
     "id": "story-card",
     "components": [
       "button"

@@ -8910,25 +8910,37 @@
   },
   {
     "id": "special-fx-rates",
-    "fields": []
-  },
-  {
-    "id": "fx-currency-item",
     "fields": [
       {
         "component": "text",
-        "name": "currencyLabel",
-        "label": "Currency Label"
+        "name": "title",
+        "label": "Title",
+        "valueType": "string"
       },
       {
-        "component": "text",
-        "name": "apiKey",
-        "label": "API Key (USD1, EUR...)"
+        "component": "richtext",
+        "name": "description",
+        "label": "Description",
+        "valueType": "string"
       },
       {
-        "component": "number",
-        "name": "order",
-        "label": "Order"
+        "component": "richtext",
+        "name": "currencyList",
+        "label": "Currency List (API Keys)",
+        "description": "Add each currency API key as a list item (e.g. JPY, USD1, USD5, USD50, EUR). The order of items determines the display order.",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "termsContent",
+        "label": "T&C Content",
+        "valueType": "string"
       }
     ]
   },

@@ -3,11 +3,69 @@
   border-collapse: collapse;
 }
 
+.special-fx-rates th {
+  border: 1px solid #000;
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: 600;
+  background-color: #fff;
+}
+
 .special-fx-rates td {
   border: 1px solid #000;
   padding: 10px;
 }
 
+/* Currency column: left-aligned with flag + text inline */
+.special-fx-rates td:first-child {
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Rate column: right-aligned */
 .special-fx-rates td:last-child {
   text-align: right;
+}
+
+/* Circular flag images */
+.special-fx-rates .fx-flag {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.special-fx-rates .fx-title {
+  text-align: center;
+}
+
+.special-fx-rates .fx-description {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.special-fx-rates .fx-update {
+  margin-top: 12px;
+}
+
+.special-fx-rates .fx-disclaimer {
+  margin-top: 12px;
+}
+
+.special-fx-rates details {
+  margin-top: 24px;
+  border-top: 1px solid #ccc;
+}
+
+.special-fx-rates details summary {
+  cursor: pointer;
+  padding: 12px 0;
+  font-weight: 600;
+}
+
+.special-fx-rates .fx-terms {
+  padding: 12px 0;
 }
