@@ -11,8 +11,8 @@ import createCard from '../content-insert-cards/create-cards-helper.js';
  *   5: link group (empty, merged), 6: headerText (empty), 7: defaultText (empty),
  *   8: heroImage (empty), 9: imageAlt (empty), 10: title (empty), 11: subtitle (empty),
  *   12: heroLink (empty, merged),
- *   15 promoTag (category), 16 cardImage, 17 cardTitle,
- *   18 cardDescription, 19 button (merged — cardLink+cardLinkText+cardLinkTitle+cardLinkType)
+ *   13: promoTag (category), 14: cardImage, 15: cardTitle,
+ *   16: cardDescription, 17: button (merged — cardLink+cardLinkText+cardLinkTitle+cardLinkType)
  *
  * @param {HTMLElement} row - Original row element from the block
  * @param {number} index - Slide index
@@ -27,10 +27,24 @@ export default function buildContentCardsSlide(row, index, cells) {
 
   // Build a cardItem matching the structure createCard expects:
   // children[0]=categoryRow, [1]=imageRow, [2]=titleRow, [3]=descRow, [4]=buttonRow
+  //
+  // In AEM Universal Editor all model fields render as cells (including empty ones for
+  // other slide types), so cardImage lands at cells[14]. In Google Docs authoring the
+  // empty heroLink cell (index 12) is absent and indices shift by 1. Detect cardImage
+  // by finding the first cell with a <picture> element so both environments work.
+  const imgIdx = cells.findIndex((cell, i) => i >= 2 && cell?.querySelector('picture'));
   const cardItem = document.createElement('div');
-  [cells[15], cells[16], cells[17], cells[18], cells[19]].forEach((cell) => {
-    if (cell) cardItem.append(cell);
-  });
+  if (imgIdx >= 0) {
+    [
+      cells[imgIdx - 1], // promoTag (category)
+      cells[imgIdx], // cardImage
+      cells[imgIdx + 1], // cardTitle
+      cells[imgIdx + 2], // cardDescription
+      cells[imgIdx + 3], // button
+    ].forEach((cell) => {
+      if (cell) cardItem.append(cell);
+    });
+  }
 
   const card = createCard(cardItem);
   if (card) slide.append(card);
