@@ -217,11 +217,49 @@ function initializeAutoScroll(
   }
 }
 
+function setupUEBlockRefresh(blockEl) {
+  const ueEvents = ['aue:content-patch', 'aue:content-update', 'aue:content-add'];
+
+  const handler = async (event) => {
+    const resource = event.detail?.request?.target?.resource
+      || event.detail?.request?.target?.container?.resource;
+    if (!resource) return;
+
+    const blockResource = blockEl.getAttribute('data-aue-resource');
+    const sectionResource = blockEl.closest('[data-aue-resource]')?.getAttribute('data-aue-resource');
+    if (resource !== blockResource && resource !== sectionResource) return;
+
+    ueEvents.forEach((e) => document.removeEventListener(e, handler, { capture: true }));
+    event.stopImmediatePropagation();
+
+    try {
+      const res = await fetch(window.location.href);
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const newBlock = doc.querySelector('.carousel-dotted');
+      if (newBlock) {
+        blockEl.replaceWith(newBlock);
+        setupUEBlockRefresh(newBlock);
+        return;
+      }
+    } catch {
+      // fall through
+    }
+    window.location.reload();
+  };
+
+  ueEvents.forEach((e) => document.addEventListener(e, handler, { capture: true }));
+}
+
 export default async function decorate(block) {
   const rows = [...block.children];
   const hasAuthoringAttrs = rows.some((row) => [...row.attributes]
     .some(({ name }) => name.startsWith('data-aue-')));
   const isAuthoring = hasAuthoringAttrs && window.self !== window.top;
+
+  if (isAuthoring) {
+    setupUEBlockRefresh(block);
+  }
 
   // Read configuration values from block rows
   const dotsAlignment = readDotsAlignment(rows[0]);
