@@ -245,7 +245,7 @@ function setupUEBlockRefresh(blockEl, decorateFn) {
         blockEl.replaceWith(newBlock);
         // Re-run decorate so the carousel renders correctly after the swap.
         // decorate will call setupUEBlockRefresh internally for future edits.
-        await decorate(newBlock);
+        await decorateFn(newBlock);
         return;
       }
     } catch {
@@ -267,7 +267,7 @@ export default async function decorate(block) {
   // window.self !== window.top directly rather than isAuthoring because
   // data-aue-* may not be on rows yet when decorate first runs.
   if (window.self !== window.top) {
-    setupUEBlockRefresh(block);
+    setupUEBlockRefresh(block, decorate);
   }
 
   // Read configuration values from block rows
