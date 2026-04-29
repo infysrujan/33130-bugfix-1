@@ -217,7 +217,7 @@ function initializeAutoScroll(
   }
 }
 
-function setupUEBlockRefresh(blockEl) {
+function setupUEBlockRefresh(blockEl, decorateFn) {
   const ueEvents = ['aue:content-patch', 'aue:content-update', 'aue:content-add'];
 
   const handler = async (event) => {
@@ -233,13 +233,19 @@ function setupUEBlockRefresh(blockEl) {
     event.stopImmediatePropagation();
 
     try {
-      const res = await fetch(window.location.href);
+      const res = await fetch(window.location.href, {
+        cache: 'no-store',
+        credentials: 'include',
+      });
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
-      const newBlock = doc.querySelector('.carousel-dotted');
+      const newBlock = (blockResource && doc.querySelector(`[data-aue-resource="${blockResource}"]`))
+        || doc.querySelector('.carousel-dotted');
       if (newBlock) {
         blockEl.replaceWith(newBlock);
-        setupUEBlockRefresh(newBlock);
+        // Re-run decorate so the carousel renders correctly after the swap.
+        // decorate will call setupUEBlockRefresh internally for future edits.
+        await decorate(newBlock);
         return;
       }
     } catch {
@@ -257,7 +263,10 @@ export default async function decorate(block) {
     .some(({ name }) => name.startsWith('data-aue-')));
   const isAuthoring = hasAuthoringAttrs && window.self !== window.top;
 
-  if (isAuthoring) {
+  // Register block refresh handler for any UE iframe context — using
+  // window.self !== window.top directly rather than isAuthoring because
+  // data-aue-* may not be on rows yet when decorate first runs.
+  if (window.self !== window.top) {
     setupUEBlockRefresh(block);
   }
 
