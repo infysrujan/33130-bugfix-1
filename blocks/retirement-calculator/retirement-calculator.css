@@ -1,0 +1,277 @@
+/* Basic styles for the retirement calculator */
+.retirement-calculator-block {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.calculator-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Stepper styles */
+.stepper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #ccc;
+}
+
+.step.active {
+  color: #007bff;
+}
+
+.step-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.step.active .step-number {
+  border-color: #007bff;
+  background-color: #007bff;
+  color: white;
+}
+
+.line {
+  flex-grow: 1;
+  height: 2px;
+  background-color: #ccc;
+  margin: 0 1rem;
+  transform: translateY(-15px);
+}
+
+/* Step 1 styles */
+.calculator-step {
+  display: none;
+}
+
+.calculator-step.active {
+  display: block;
+}
+
+.monthly-amount-container {
+  background-color: #003f7d;
+  color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.monthly-amount-container h3 {
+  margin-top: 0;
+}
+
+.amount-input-container {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  margin: 1rem 0;
+}
+
+.amount-input-container input {
+  font-size: 3rem;
+  font-weight: bold;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid white;
+  color: white;
+  text-align: center;
+  width: 200px;
+}
+
+.amount-input-container span {
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+}
+
+.age-inputs-container {
+  display: grid;
+  gap: 1rem;
+  text-align: left;
+}
+
+.age-inputs-container label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.age-inputs-container input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.next-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 2rem;
+}
+
+/* Step 2 styles */
+.results-container {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.total-amount-container,
+.monthly-amount-container-step2 {
+  display: flex;
+  flex-direction: column;
+}
+
+.note-text {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.step2-title {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.savings-inputs-container {
+  display: grid;
+  gap: 1rem;
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.savings-inputs-container label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.savings-inputs-container input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.back-btn,
+.calculate-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.back-btn {
+  background-color: white;
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+/* Step 3 styles */
+.recommendation-cards {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 250px;
+}
+
+.recommended-card {
+  background-color: #007bff;
+  color: white;
+}
+
+.alternative-card {
+  border: 1px solid #007bff;
+  color: #007bff;
+}
+
+.card h3 {
+  font-size: 2.5rem;
+  margin: 0.5rem 0;
+}
+
+.card p {
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.summary-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.summary-table {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.summary-table div {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.summary-table div:last-child {
+  border-bottom: none;
+}
+
+.summary-table .consistent-investment {
+  justify-content: center;
+  font-style: italic;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.blue-text {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.back-btn-step3 {
+  background-color: white;
+  color: #007bff;
+  border: 1px solid #007bff;
+  padding: 0.75rem 2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1rem;
+}
