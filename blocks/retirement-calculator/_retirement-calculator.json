@@ -16,84 +16,12 @@
       }
     }
   ],
-  "models": [],
-  "filters": [],
-  "data": {
-    "en": {
-      "common": {
-        "title": "Plan your finances for retirement",
-        "step1Label": "Your goal",
-        "step2Label": "Savings & investments",
-        "step3Label": "Result",
-        "unit": "baht",
-        "step2Title": "Give us more information\nfor a precise calculation",
-        "requiredAmount": "Total amount needed",
-        "forSpending": "Monthly amount available",
-        "noteText": "Including an inflation rate of {inflationRate}% p.a., the return on investment after retirement is assumed to be {afterretirerate}% p.a.",
-        "futureValueDisclaimer": ""
-      },
-      "buttons": {
-        "nextButton": "Next",
-        "backButton": "Back",
-        "calculateButton": "Calculate",
-        "getRecommendation": "Get recommendation",
-        "getRecommendationLink": "https://www.bangkokbank.com",
-        "backToPlan": "Back"
-      },
-      "validation": {
-        "percentageError": "Value must be a number between 0 and 100",
-        "percentageSavingError": "Value must be a number between 0.1 and 100",
-        "currentAgeRetirementAgeError": "Your current age must be less than your retirement age",
-        "retirementAgeLifeExpectancyError": "Your retirement age must be less than your life expectancy",
-        "minValueError": "Minimum must not exceed",
-        "maxValueError": "Maximum up to",
-        "betweenValueError": "Between {min} to {max}",
-        "annualSavingsIncreaseRateError": "% of annual increase in savings must be less than/equal to the expected annual return."
-      },
-      "steps": {
-        "step1": {
-          "monthlyIncomeTitle": "Monthly amount you want after retirement",
-          "currentValueNote": "At present value",
-          "currentAge": "How old are you?",
-          "retirementAge": "What age do you plan to retire?",
-          "lifeExpectancy": "Until what age do you expect to live?"
-        },
-        "step2": {
-          "savingsSection": "Savings",
-          "currentSavingsLabel": "Current savings balance",
-          "savingsExpectedReturnRateLabel": "Expected annual return (%)",
-          "annualSavingsIncreaseRateLabel": "Expected annual savings increase (%)",
-          "providentFundSection": "Provident fund",
-          "currentProvidentFundSavingsLabel": "Current balance in provident fund",
-          "providentFundExpectedReturnRateLabel": "Expected annual return (%)",
-          "monthlySalaryLabel": "Current salary",
-          "annualSalaryIncreaseRateLabel": "Estimated annual salary increase (%)",
-          "providentFundContributionRateLabel": "Monthly provident fund contribution (%)",
-          "rmfSection": "Retirement Mutual Fund (RMF)",
-          "currentRMFSavingsLabel": "Current balance in RMF",
-          "expectedAnnualRMFAccumulationLabel": "Expected annual RMF contribution",
-          "rmfExpectedReturnRateLabel": "Expected annual return (%)",
-          "lumpSumSection": "Lump sum at retirement",
-          "lumpSumAtRetirementLabel": "Expected lump sum at retirement",
-          "expectedAnnualInvestmentLabel": "Allocated lump sum for annual investing or savings",
-          "lumpSumExpectedReturnRateLabel": "Expected annual return (%)"
-        },
-        "results": {
-          "resultsTitle": "Calculation summary",
-          "resultsSubtitle": "If you know how to plan, you can reduce your monthly savings burden more than you think.",
-          "resultsGoalTitle": "Grow your money with smart investments",
-          "resultsGoal": "Awesome! After the calculation, you will have enough money for your retirement",
-          "recommendedMonthlySavingLabel": "Recommended\nmonthly savings",
-          "alternativeMonthlySavingLabel": "Or\nsave just",
-          "byInvestingAt3Percent": "Based on expected annual return on savings of {rate}%",
-          "byInvestingAt5Percent": "If you invest with an annual return of {rate}%",
-          "currentSavingsStatus": "Current savings amount",
-          "retirementGoal": "Total amount needed",
-          "recommendedMonthlySavingResult": "Recommended monthly savings",
-          "consistentInvestment": "You can save less each month by investing consistently",
-          "investmentReturnRate": "By increasing your annual savings by {rate}%"
-        }
-      }
+  "models": [
+    {
+      "id": "retirement-calculator",
+      "fields": [
+      ]
     }
-  }
+  ],
+  "filters": []
 }
