@@ -98,6 +98,10 @@
   display: none;
 }
 
+.calculator-step[hidden] {
+  display: none !important;
+}
+
 .calculator-step.active {
   display: block;
 }

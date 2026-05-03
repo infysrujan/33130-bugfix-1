@@ -1,4 +1,4 @@
-const RETIREMENT_CALCULATOR_DATA_URL = '/retirementPlan.json';
+const RETIREMENT_CALCULATOR_DATA_PATH = 'retirementplan.json';
 
 function parseCsv(text) {
   const rows = [];
@@ -72,11 +72,17 @@ function normalizeDataPayload(payload) {
 }
 
 function getDataUrl(block) {
+  const { pathname } = window.location;
+  const contentRoot = pathname.match(/^(\/content\/bangkokbank)(?:\/|$)/)?.[1];
+  const defaultDataUrl = contentRoot
+    ? `${contentRoot}/${RETIREMENT_CALCULATOR_DATA_PATH}`
+    : `/${RETIREMENT_CALCULATOR_DATA_PATH}`;
+
   return block.dataset.dataUrl
     || window.retirementCalculatorDataUrl
     || window.RETIREMENT_CALCULATOR_DATA_URL
     || block.querySelector('a')?.href
-    || RETIREMENT_CALCULATOR_DATA_URL;
+    || defaultDataUrl;
 }
 
 async function getJsonData(block) {
@@ -196,6 +202,15 @@ function updateStepper(stepper, currentStep) {
   });
 }
 
+function setActiveStep(steps, stepper, currentStep) {
+  steps.forEach((step, index) => {
+    const isActive = index + 1 === currentStep;
+    step.classList.toggle('active', isActive);
+    step.hidden = !isActive;
+  });
+  updateStepper(stepper, currentStep);
+}
+
 function createSummaryRow(labelText, valueText, helperText, valueClass) {
   const row = document.createElement('div');
   const label = document.createElement('span');
@@ -308,6 +323,7 @@ function createStep1(jsonData) {
 function createStep2(jsonData) {
   const step2 = document.createElement('div');
   step2.classList.add('calculator-step', 'step-2');
+  step2.hidden = true;
 
   const resultsContainer = document.createElement('div');
   resultsContainer.classList.add('results-container');
@@ -387,6 +403,7 @@ function createStep2(jsonData) {
 function createStep3(jsonData) {
   const step3 = document.createElement('div');
   step3.classList.add('calculator-step', 'step-3');
+  step3.hidden = true;
 
   // Re-using the same results container from step 2 for consistency
   const resultsContainer = document.createElement('div');
@@ -489,21 +506,20 @@ export default async function decorate(block) {
   const step3 = createStep3(jsonData);
   block.appendChild(step3);
 
+  const steps = [step1, step2, step3];
   const nextButton = step1.querySelector('.next-btn');
   const backButtonStep2 = step2.querySelector('.back-btn');
   const calculateButton = step2.querySelector('.calculate-btn');
   const backButtonStep3 = step3.querySelector('.back-btn-step3');
 
+  setActiveStep(steps, stepper, 1);
+
   nextButton.addEventListener('click', () => {
-    step1.classList.remove('active');
-    step2.classList.add('active');
-    updateStepper(stepper, 2);
+    setActiveStep(steps, stepper, 2);
   });
 
   backButtonStep2.addEventListener('click', () => {
-    step2.classList.remove('active');
-    step1.classList.add('active');
-    updateStepper(stepper, 1);
+    setActiveStep(steps, stepper, 1);
   });
 
   calculateButton.addEventListener('click', async () => {
@@ -589,14 +605,10 @@ export default async function decorate(block) {
       formatAmountWithUnit(recommendedSaving, `\u2193 11,092 ${getText(jsonData, 'common-unit')}`, '\u2193 '),
     );
 
-    step2.classList.remove('active');
-    step3.classList.add('active');
-    updateStepper(stepper, 3);
+    setActiveStep(steps, stepper, 3);
   });
 
   backButtonStep3.addEventListener('click', () => {
-    step3.classList.remove('active');
-    step2.classList.add('active');
-    updateStepper(stepper, 2);
+    setActiveStep(steps, stepper, 2);
   });
 }
