@@ -1,33 +1,20 @@
 {
   "definitions": [
     {
-      "title": "Retirement Calculator",
+      "title": "Retirement Calculator retirement-calculator",
       "id": "retirement-calculator",
       "plugins": {
         "xwalk": {
           "page": {
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
-              "name": "Retirement Calculator",
-              "model": "retirement-calculator"
+              "name": "Retirement Calculator"
             }
           }
         }
       }
     }
   ],
-  "models": [
-    {
-      "id": "retirement-calculator",
-      "fields": [
-        {
-          "component": "text",
-          "name": "dataUrl",
-          "valueType": "string",
-          "label": "Retirement Plan Data URL (e.g. /th/retirementPlan.json)"
-        }
-      ]
-    }
-  ],
+  "models": [],
   "filters": []
 }
