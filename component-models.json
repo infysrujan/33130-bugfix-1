@@ -8813,6 +8813,18 @@
     ]
   },
   {
+    "id": "retirement-calculator",
+    "fields": [
+      {
+        "component": "text",
+        "name": "dataUrl",
+        "valueType": "string",
+        "label": "Retirement Plan Data URL",
+        "value": "/retirementPlan.json"
+      }
+    ]
+  },
+  {
     "id": "search-page",
     "fields": [
       {
