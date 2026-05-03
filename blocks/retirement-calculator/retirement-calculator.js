@@ -1,14 +1,100 @@
-async function getJsonData(blockName) {
-  const code = document.documentElement.lang || 'en';
-  const jsonUrl = `/blocks/${blockName}/_${blockName}.json`;
+const RETIREMENT_CALCULATOR_DATA_URL = '/retirementPlan.json';
+
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let value = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i];
+    const nextChar = text[i + 1];
+
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        value += char;
+        i += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      row.push(value);
+      value = '';
+    } else if ((char === '\n' || char === '\r') && !inQuotes) {
+      if (char === '\r' && nextChar === '\n') i += 1;
+      row.push(value);
+      rows.push(row);
+      row = [];
+      value = '';
+    } else {
+      value += char;
+    }
+  }
+
+  if (value || row.length) {
+    row.push(value);
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+function mapKeyValueRows(rows) {
+  const dataMap = {};
+  const [header = []] = rows;
+  const keyIndex = header.indexOf('key');
+  const valueIndex = header.indexOf('value');
+
+  rows.slice(1).forEach((row) => {
+    const key = row[keyIndex >= 0 ? keyIndex : 0];
+    const value = row[valueIndex >= 0 ? valueIndex : 1];
+    if (key) dataMap[key] = value || '';
+  });
+
+  return dataMap;
+}
+
+function normalizeDataPayload(payload) {
+  if (!payload) return {};
+
+  const rows = Array.isArray(payload) ? payload : payload.data;
+  if (Array.isArray(rows)) {
+    return rows.reduce((dataMap, row) => {
+      if (row?.key) dataMap[row.key] = row.value || '';
+      return dataMap;
+    }, {});
+  }
+
+  if (payload.data && typeof payload.data === 'object') return payload.data;
+  if (payload.en && typeof payload.en === 'object') return payload.en;
+  if (payload.values && typeof payload.values === 'object') return payload.values;
+  return typeof payload === 'object' ? payload : {};
+}
+
+function getDataUrl(block) {
+  return block.dataset.dataUrl
+    || window.retirementCalculatorDataUrl
+    || window.RETIREMENT_CALCULATOR_DATA_URL
+    || block.querySelector('a')?.href
+    || RETIREMENT_CALCULATOR_DATA_URL;
+}
+
+async function getJsonData(block) {
+  const link = getDataUrl(block);
+  if (!link) return {};
   try {
-    const response = await fetch(jsonUrl);
+    const response = await fetch(link);
     if (!response.ok) throw new Error('Fetch failed');
+    const contentType = response.headers.get('content-type') || '';
+
+    if (contentType.includes('text/csv') || link.endsWith('.csv')) {
+      return mapKeyValueRows(parseCsv(await response.text()));
+    }
+
     const json = await response.json();
-    return json.data ? json.data[code] : null;
-  } catch (error) {
-    console.error('Error fetching JSON data:', error);
-    return null;
+    return normalizeDataPayload(json);
+  } catch {
+    return {};
   }
 }
 
@@ -23,7 +109,7 @@ function createButton(text, className, onClick) {
 function createHeading(tag, className, text) {
   const heading = document.createElement(tag);
   if (className) heading.className = className;
-  if (text) heading.innerHTML = text; // Allow breaks if \n is replaced
+  if (text) heading.textContent = text;
   return heading;
 }
 
@@ -34,26 +120,114 @@ function createLabel(text, htmlFor) {
   return label;
 }
 
-function createInput(type, id, placeholder) {
+function createInput(type, id, placeholder, value) {
   const input = document.createElement('input');
   input.type = type;
   input.id = id;
   if (placeholder) input.placeholder = placeholder;
+  if (value !== undefined) input.value = value;
   return input;
+}
+
+function createInputGroup(labelText, inputId, placeholder, suffixText) {
+  const group = document.createElement('div');
+  group.classList.add('input-group');
+
+  const label = createLabel(labelText, inputId);
+  const inputWrap = document.createElement('div');
+  inputWrap.classList.add('input-with-suffix');
+  const input = createInput('number', inputId, placeholder);
+  inputWrap.appendChild(input);
+
+  if (suffixText) {
+    const suffix = document.createElement('span');
+    suffix.classList.add('input-suffix');
+    suffix.textContent = suffixText;
+    inputWrap.appendChild(suffix);
+  }
+
+  group.appendChild(label);
+  group.appendChild(inputWrap);
+  return group;
+}
+
+function createAgeInputGroup(labelText, inputId, value) {
+  const group = document.createElement('div');
+  group.classList.add('age-input-group');
+  const label = createLabel(labelText, inputId);
+  const input = createInput('number', inputId, '', value);
+
+  group.appendChild(label);
+  group.appendChild(input);
+  return group;
+}
+
+function toNumber(value) {
+  return Number(String(value).replace(/,/g, ''));
+}
+
+function getInputNumber(container, selector) {
+  return toNumber(container.querySelector(selector)?.value || 0);
+}
+
+function getText(data, key) {
+  return data[key] || '';
+}
+
+function getNoteText(data) {
+  return getText(data, 'common-noteText')
+    .replace('{inflationRate}', '1.5')
+    .replace('{afterretirerate}', '3');
+}
+
+function updateStepper(stepper, currentStep) {
+  const steps = [...stepper.querySelectorAll('.step')];
+  const lines = [...stepper.querySelectorAll('.line')];
+  const isFinalStep = currentStep === steps.length;
+
+  steps.forEach((step, index) => {
+    const stepNumber = index + 1;
+    step.classList.toggle('active', stepNumber === currentStep && !isFinalStep);
+    step.classList.toggle('completed', stepNumber < currentStep || isFinalStep);
+  });
+
+  lines.forEach((line, index) => {
+    line.classList.toggle('active', index < currentStep - 1);
+  });
+}
+
+function createSummaryRow(labelText, valueText, helperText, valueClass) {
+  const row = document.createElement('div');
+  const label = document.createElement('span');
+  const value = document.createElement('span');
+
+  label.textContent = labelText;
+  value.textContent = valueText;
+  if (valueClass) value.classList.add(valueClass);
+
+  if (helperText) {
+    const helper = document.createElement('small');
+    helper.textContent = helperText;
+    label.appendChild(helper);
+  }
+
+  row.appendChild(label);
+  row.appendChild(value);
+  return row;
 }
 
 function createStepper(jsonData) {
   const stepperData = [
     {
-      label: jsonData.common.step1Label,
+      label: getText(jsonData, 'common-step1Label'),
       step: 1,
     },
     {
-      label: jsonData.common.step2Label,
+      label: getText(jsonData, 'common-step2Label'),
       step: 2,
     },
     {
-      label: jsonData.common.step3Label,
+      label: getText(jsonData, 'common-step3Label'),
       step: 3,
     },
   ];
@@ -95,21 +269,22 @@ function createStep1(jsonData) {
   const monthlyAmountContainer = document.createElement('div');
   monthlyAmountContainer.classList.add('monthly-amount-container');
 
-  const title = createHeading('h3', '', jsonData.steps.step1.monthlyIncomeTitle);
+  const title = createHeading('h3', '', getText(jsonData, 'steps-step1-monthlyIncomeTitle'));
   monthlyAmountContainer.appendChild(title);
 
   const amountInputContainer = document.createElement('div');
   amountInputContainer.classList.add('amount-input-container');
 
-  const amountInput = createInput('number', 'monthly-amount', '20,000');
+  const amountInput = createInput('text', 'monthly-amount', '', '20,000');
+  amountInput.inputMode = 'numeric';
   const unit = document.createElement('span');
-  unit.textContent = jsonData.common.unit;
+  unit.textContent = getText(jsonData, 'common-unit');
   amountInputContainer.appendChild(amountInput);
   amountInputContainer.appendChild(unit);
   monthlyAmountContainer.appendChild(amountInputContainer);
 
   const presentValueNote = document.createElement('p');
-  presentValueNote.textContent = jsonData.steps.step1.currentValueNote;
+  presentValueNote.textContent = getText(jsonData, 'steps-step1-currentValueNote');
   monthlyAmountContainer.appendChild(presentValueNote);
 
   step1.appendChild(monthlyAmountContainer);
@@ -117,24 +292,13 @@ function createStep1(jsonData) {
   const ageInputsContainer = document.createElement('div');
   ageInputsContainer.classList.add('age-inputs-container');
 
-  const currentAgeLabel = createLabel(jsonData.steps.step1.currentAge, 'current-age');
-  const currentAgeInput = createInput('number', 'current-age', '30');
-  ageInputsContainer.appendChild(currentAgeLabel);
-  ageInputsContainer.appendChild(currentAgeInput);
-
-  const retirementAgeLabel = createLabel(jsonData.steps.step1.retirementAge, 'retirement-age');
-  const retirementAgeInput = createInput('number', 'retirement-age', '60');
-  ageInputsContainer.appendChild(retirementAgeLabel);
-  ageInputsContainer.appendChild(retirementAgeInput);
-
-  const lifeExpectancyLabel = createLabel(jsonData.steps.step1.lifeExpectancy, 'life-expectancy');
-  const lifeExpectancyInput = createInput('number', 'life-expectancy', '80');
-  ageInputsContainer.appendChild(lifeExpectancyLabel);
-  ageInputsContainer.appendChild(lifeExpectancyInput);
+  ageInputsContainer.appendChild(createAgeInputGroup(getText(jsonData, 'steps-step1-currentAge'), 'current-age', '30'));
+  ageInputsContainer.appendChild(createAgeInputGroup(getText(jsonData, 'steps-step1-retirementAge'), 'retirement-age', '60'));
+  ageInputsContainer.appendChild(createAgeInputGroup(getText(jsonData, 'steps-step1-lifeExpectancy'), 'life-expectancy', '80'));
 
   step1.appendChild(ageInputsContainer);
 
-  const nextButton = createButton(jsonData.buttons.nextButton);
+  const nextButton = createButton(getText(jsonData, 'buttons-nextButton'));
   nextButton.classList.add('next-btn');
   step1.appendChild(nextButton);
 
@@ -150,14 +314,14 @@ function createStep2(jsonData) {
 
   const totalAmountContainer = document.createElement('div');
   totalAmountContainer.classList.add('total-amount-container');
-  const totalAmountLabel = createLabel(jsonData.common.requiredAmount);
+  const totalAmountLabel = createLabel(getText(jsonData, 'common-requiredAmount'));
   const totalAmountValue = createHeading('h3', '', '6,479,636');
   totalAmountContainer.appendChild(totalAmountLabel);
   totalAmountContainer.appendChild(totalAmountValue);
 
   const monthlyAmountContainer = document.createElement('div');
   monthlyAmountContainer.classList.add('monthly-amount-container-step2');
-  const monthlyAmountLabel = createLabel(jsonData.common.forSpending);
+  const monthlyAmountLabel = createLabel(getText(jsonData, 'common-forSpending'));
   const monthlyAmountValue = createHeading('h3', '', '31,262');
   monthlyAmountContainer.appendChild(monthlyAmountLabel);
   monthlyAmountContainer.appendChild(monthlyAmountValue);
@@ -168,44 +332,50 @@ function createStep2(jsonData) {
 
   const note = document.createElement('p');
   note.classList.add('note-text');
-  note.textContent = jsonData.common.noteText
-    .replace('{inflationRate}', '1.75')
-    .replace('{afterretirerate}', '2');
+  note.textContent = getNoteText(jsonData);
   step2.appendChild(note);
 
-  const step2Title = createHeading('h3', 'step2-title', jsonData.common.step2Title);
+  const step2Title = createHeading(
+    'h3',
+    'step2-title',
+    getText(jsonData, 'common-step2Title'),
+  );
   step2.appendChild(step2Title);
 
   const savingsInputsContainer = document.createElement('div');
   savingsInputsContainer.classList.add('savings-inputs-container');
 
-  const savingsLabel = createLabel(jsonData.steps.step2.currentSavingsLabel, 'current-savings');
-  const savingsInput = createInput('number', 'current-savings', '0');
-  savingsInputsContainer.appendChild(savingsLabel);
-  savingsInputsContainer.appendChild(savingsInput);
+  const savingsSectionTitle = createHeading('h4', 'section-title', getText(jsonData, 'steps-step2-savingsSection'));
+  savingsInputsContainer.appendChild(savingsSectionTitle);
+  savingsInputsContainer.appendChild(
+    createInputGroup(getText(jsonData, 'steps-step2-currentSavingsLabel'), 'current-savings', '0'),
+  );
 
-  const providentFundLabel = createLabel(jsonData.steps.step2.currentProvidentFundSavingsLabel, 'provident-fund');
-  const providentFundInput = createInput('number', 'provident-fund', '0');
-  savingsInputsContainer.appendChild(providentFundLabel);
-  savingsInputsContainer.appendChild(providentFundInput);
+  const providentSectionTitle = createHeading('h4', 'section-title', getText(jsonData, 'steps-step2-providentFundSection'));
+  savingsInputsContainer.appendChild(providentSectionTitle);
+  savingsInputsContainer.appendChild(
+    createInputGroup(getText(jsonData, 'steps-step2-currentProvidentFundSavingsLabel'), 'provident-fund', '0'),
+  );
 
-  const rmfLabel = createLabel(jsonData.steps.step2.currentRMFSavingsLabel, 'rmf-savings');
-  const rmfInput = createInput('number', 'rmf-savings', '0');
-  savingsInputsContainer.appendChild(rmfLabel);
-  savingsInputsContainer.appendChild(rmfInput);
+  const rmfSectionTitle = createHeading('h4', 'section-title', getText(jsonData, 'steps-step2-rmfSection'));
+  savingsInputsContainer.appendChild(rmfSectionTitle);
+  savingsInputsContainer.appendChild(
+    createInputGroup(getText(jsonData, 'steps-step2-currentRMFSavingsLabel'), 'rmf-savings', '0'),
+  );
 
-  const lumpSumLabel = createLabel(jsonData.steps.step2.lumpSumAtRetirementLabel, 'lump-sum');
-  const lumpSumInput = createInput('number', 'lump-sum', '0');
-  savingsInputsContainer.appendChild(lumpSumLabel);
-  savingsInputsContainer.appendChild(lumpSumInput);
+  const lumpSumSectionTitle = createHeading('h4', 'section-title', getText(jsonData, 'steps-step2-lumpSumSection'));
+  savingsInputsContainer.appendChild(lumpSumSectionTitle);
+  savingsInputsContainer.appendChild(
+    createInputGroup(getText(jsonData, 'steps-step2-lumpSumAtRetirementLabel'), 'lump-sum', '0'),
+  );
 
   step2.appendChild(savingsInputsContainer);
 
   const buttonContainer = document.createElement('div');
   buttonContainer.classList.add('button-container');
-  const backButton = createButton(jsonData.buttons.backButton);
+  const backButton = createButton(getText(jsonData, 'buttons-backButton'));
   backButton.classList.add('back-btn');
-  const calculateButton = createButton(jsonData.buttons.calculateButton);
+  const calculateButton = createButton(getText(jsonData, 'buttons-calculateButton'));
   calculateButton.classList.add('calculate-btn');
   buttonContainer.appendChild(backButton);
   buttonContainer.appendChild(calculateButton);
@@ -224,14 +394,14 @@ function createStep3(jsonData) {
 
   const totalAmountContainer = document.createElement('div');
   totalAmountContainer.classList.add('total-amount-container');
-  const totalAmountLabel = createLabel(jsonData.common.requiredAmount);
+  const totalAmountLabel = createLabel(getText(jsonData, 'common-requiredAmount'));
   const totalAmountValue = createHeading('h3', '', '6,479,636');
   totalAmountContainer.appendChild(totalAmountLabel);
   totalAmountContainer.appendChild(totalAmountValue);
 
   const monthlyAmountContainer = document.createElement('div');
   monthlyAmountContainer.classList.add('monthly-amount-container-step2');
-  const monthlyAmountLabel = createLabel(jsonData.common.forSpending);
+  const monthlyAmountLabel = createLabel(getText(jsonData, 'common-forSpending'));
   const monthlyAmountValue = createHeading('h3', '', '31,262');
   monthlyAmountContainer.appendChild(monthlyAmountLabel);
   monthlyAmountContainer.appendChild(monthlyAmountValue);
@@ -242,9 +412,7 @@ function createStep3(jsonData) {
 
   const note = document.createElement('p');
   note.classList.add('note-text');
-  note.textContent = jsonData.common.noteText
-    .replace('{inflationRate}', '1.75')
-    .replace('{afterretirerate}', '2');
+  note.textContent = getNoteText(jsonData);
   step3.appendChild(note);
 
   const recommendationCards = document.createElement('div');
@@ -252,20 +420,20 @@ function createStep3(jsonData) {
 
   const recommendedCard = document.createElement('div');
   recommendedCard.classList.add('card', 'recommended-card');
-  const recommendedLabel = createLabel(jsonData.steps.results.recommendedMonthlySavingLabel);
+  const recommendedLabel = createLabel(getText(jsonData, 'steps-results-recommendedMonthlySavingLabel'));
   const recommendedValue = createHeading('h3', '', '11,092');
   const recommendedNote = document.createElement('p');
-  recommendedNote.textContent = jsonData.steps.results.byInvestingAt3Percent.replace('{rate}', '3');
+  recommendedNote.textContent = getText(jsonData, 'steps-results-byInvestingAt3Percent').replace('{rate}', '3');
   recommendedCard.appendChild(recommendedLabel);
   recommendedCard.appendChild(recommendedValue);
   recommendedCard.appendChild(recommendedNote);
 
   const alternativeCard = document.createElement('div');
   alternativeCard.classList.add('card', 'alternative-card');
-  const alternativeLabel = createLabel(jsonData.steps.results.alternativeMonthlySavingLabel);
+  const alternativeLabel = createLabel(getText(jsonData, 'steps-results-alternativeMonthlySavingLabel'));
   const alternativeValue = createHeading('h3', '', '7,753');
   const alternativeNote = document.createElement('p');
-  alternativeNote.textContent = jsonData.steps.results.byInvestingAt5Percent.replace('{rate}', '5');
+  alternativeNote.textContent = getText(jsonData, 'steps-results-byInvestingAt5Percent').replace('{rate}', '5');
   alternativeCard.appendChild(alternativeLabel);
   alternativeCard.appendChild(alternativeValue);
   alternativeCard.appendChild(alternativeNote);
@@ -274,21 +442,28 @@ function createStep3(jsonData) {
   recommendationCards.appendChild(alternativeCard);
   step3.appendChild(recommendationCards);
 
-  const summaryTitle = createHeading('h3', 'summary-title', jsonData.steps.results.resultsTitle);
+  const summaryTitle = createHeading('h3', 'summary-title', getText(jsonData, 'steps-results-resultsTitle'));
   step3.appendChild(summaryTitle);
 
   const summaryTable = document.createElement('div');
   summaryTable.classList.add('summary-table');
-  // This would be dynamically populated with actual calculation results
-  summaryTable.innerHTML = `
-    <div><span>${jsonData.steps.results.retirementGoal}</span><span>6,479,636 ${jsonData.common.unit}</span></div>
-    <div><span>${jsonData.steps.results.currentSavingsStatus}</span><span>- ${jsonData.common.unit}</span></div>
-    <div><span>${jsonData.steps.results.recommendedMonthlySavingResult}</span><span class="blue-text">↓ 11,092 ${jsonData.common.unit}</span></div>
-    <div class="consistent-investment">${jsonData.steps.results.consistentInvestment}</div>
-  `;
+  summaryTable.appendChild(createSummaryRow(
+    getText(jsonData, 'steps-results-retirementGoal'),
+    `6,479,636 ${getText(jsonData, 'common-unit')}`,
+  ));
+  summaryTable.appendChild(createSummaryRow(
+    getText(jsonData, 'steps-results-currentSavingsStatus'),
+    `- ${getText(jsonData, 'common-unit')}`,
+  ));
+  summaryTable.appendChild(createSummaryRow(
+    getText(jsonData, 'steps-results-recommendedMonthlySavingResult'),
+    `\u219311,092 ${getText(jsonData, 'common-unit')}`,
+    getText(jsonData, 'steps-results-consistentInvestment'),
+    'blue-text',
+  ));
   step3.appendChild(summaryTable);
 
-  const backButton = createButton(jsonData.buttons.backButton);
+  const backButton = createButton(getText(jsonData, 'buttons-backButton'));
   backButton.classList.add('back-btn-step3');
   step3.appendChild(backButton);
 
@@ -296,9 +471,10 @@ function createStep3(jsonData) {
 }
 
 export default async function decorate(block) {
-  const jsonData = await getJsonData('retirement-calculator');
+  const jsonData = await getJsonData(block);
 
-  const title = createHeading('h2', 'calculator-title', jsonData.common.title);
+  const title = createHeading('h2', 'calculator-title', getText(jsonData, 'common-title'));
+  block.innerHTML = ''; // clear any placeholder content
   block.appendChild(title);
 
   const stepper = createStepper(jsonData);
@@ -321,32 +497,106 @@ export default async function decorate(block) {
   nextButton.addEventListener('click', () => {
     step1.classList.remove('active');
     step2.classList.add('active');
-    stepper.children[0].classList.remove('active');
-    stepper.children[1].classList.add('active');
-    stepper.children[2].classList.add('active');
+    updateStepper(stepper, 2);
   });
 
   backButtonStep2.addEventListener('click', () => {
     step2.classList.remove('active');
     step1.classList.add('active');
-    stepper.children[2].classList.remove('active');
-    stepper.children[1].classList.remove('active');
-    stepper.children[0].classList.add('active');
+    updateStepper(stepper, 1);
   });
 
-  calculateButton.addEventListener('click', () => {
+  calculateButton.addEventListener('click', async () => {
+    // Gather user inputs from step 1 and step 2
+    const payload = {
+      monthlyAmount: getInputNumber(step1, '#monthly-amount'),
+      currentAge: getInputNumber(step1, '#current-age'),
+      retirementAge: getInputNumber(step1, '#retirement-age'),
+      lifeExpectancy: getInputNumber(step1, '#life-expectancy'),
+      currentSavings: getInputNumber(step2, '#current-savings'),
+      savingsReturnRate: getInputNumber(step2, '#savings-return-rate'),
+      savingsIncreaseRate: getInputNumber(step2, '#savings-increase-rate'),
+      providentFund: getInputNumber(step2, '#provident-fund'),
+      providentFundReturnRate: getInputNumber(step2, '#provident-fund-return'),
+      monthlySalary: getInputNumber(step2, '#monthly-salary'),
+      annualSalaryIncreaseRate: getInputNumber(step2, '#salary-increase-rate'),
+      providentFundContributionRate: getInputNumber(step2, '#provident-fund-contribution'),
+      rmfSavings: getInputNumber(step2, '#rmf-savings'),
+      rmfAnnualAmount: getInputNumber(step2, '#rmf-annual-amount'),
+      rmfReturnRate: getInputNumber(step2, '#rmf-return-rate'),
+      lumpSum: getInputNumber(step2, '#lump-sum'),
+      lumpSumAnnualInvestment: getInputNumber(step2, '#lump-sum-annual'),
+      lumpSumReturnRate: getInputNumber(step2, '#lump-sum-return'),
+    };
+
+    const apiEndpoint = jsonData['api-endpoint'];
+    let results = {};
+
+    if (apiEndpoint) {
+      const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error('Retirement calculation failed');
+
+      const data = await response.json();
+      results = data.results || data.data || data;
+    }
+
+    const getResult = (...keys) => {
+      const key = keys.find((item) => results[item] !== undefined && results[item] !== null);
+      return key ? results[key] : undefined;
+    };
+    const formatAmount = (value) => (
+      typeof value === 'number' ? value.toLocaleString('en-US') : value
+    );
+    const setText = (element, value, fallback = element?.textContent) => {
+      if (element) element.textContent = formatAmount(value ?? fallback);
+    };
+    const formatAmountWithUnit = (value, fallback, prefix = '') => {
+      if (value === undefined || value === null) return fallback;
+      const amount = formatAmount(value);
+      return typeof value === 'number'
+        ? `${prefix}${amount} ${getText(jsonData, 'common-unit')}`.trim()
+        : `${prefix}${amount}`;
+    };
+
+    const step3Totals = step3.querySelectorAll('.results-container h3');
+    const retirementGoal = getResult('retirementGoal', 'requiredAmount', 'totalAmount');
+    const monthlySpending = getResult('monthlySpending', 'forSpending', 'monthlyAmount');
+    const recommendedSaving = getResult('recommendedMonthlySaving', 'recommendedMonthlySavingAt3Percent', 'recommendedSaving');
+    const alternativeSaving = getResult('alternativeMonthlySaving', 'alternativeMonthlySavingAt5Percent', 'alternativeSaving');
+    const currentSavingsStatus = getResult('currentSavingsStatus', 'totalCurrentSavings', 'currentSavingsStatusAmount');
+
+    setText(step3Totals[0], retirementGoal);
+    setText(step3Totals[1], monthlySpending);
+    setText(step3.querySelector('.recommended-card h3'), recommendedSaving);
+    setText(step3.querySelector('.alternative-card h3'), alternativeSaving);
+
+    const summaryRows = step3.querySelectorAll('.summary-table > div');
+    setText(
+      summaryRows[0]?.querySelector('span:last-child'),
+      formatAmountWithUnit(retirementGoal, `6,479,636 ${getText(jsonData, 'common-unit')}`),
+    );
+    setText(
+      summaryRows[1]?.querySelector('span:last-child'),
+      formatAmountWithUnit(currentSavingsStatus, `- ${getText(jsonData, 'common-unit')}`),
+    );
+    setText(
+      summaryRows[2]?.querySelector('span:last-child'),
+      formatAmountWithUnit(recommendedSaving, `\u2193 11,092 ${getText(jsonData, 'common-unit')}`, '\u2193 '),
+    );
+
     step2.classList.remove('active');
     step3.classList.add('active');
-    stepper.children[2].classList.remove('active');
-    stepper.children[3].classList.add('active');
-    stepper.children[4].classList.add('active');
+    updateStepper(stepper, 3);
   });
 
   backButtonStep3.addEventListener('click', () => {
     step3.classList.remove('active');
     step2.classList.add('active');
-    stepper.children[4].classList.remove('active');
-    stepper.children[3].classList.remove('active');
-    stepper.children[2].classList.add('active');
+    updateStepper(stepper, 2);
   });
 }
