@@ -1,0 +1,1421 @@
+// Saving Plan block — Bangkok Bank-style calculator.
+// All copy / dropdown options / disclaimer / products come from a runtime API.
+// API URLs and keys are loaded at runtime from /savingtools-config.json (AEM spreadsheet).
+// Preview: see preview.html (it stubs window.fetch with mock data).
+
+// eslint-disable-next-line import/no-unresolved
+import { fetchConfigs } from '../../scripts/config.js';
+
+async function fetchSavingToolsConfig() {
+  try {
+    const resp = await fetch('/savingtools-config.json');
+    if (!resp.ok) return {};
+    const json = await resp.json();
+    const cfg = {};
+    (json.data || []).forEach(({ Key, Value }) => { if (Key) cfg[Key] = Value; });
+    return cfg;
+  } catch {
+    return {};
+  }
+}
+
+const INFLATION_RATE = 1.5;
+const DEFAULT_VALIDATION_MESSAGES = {
+  goalAmount: 'Minimum must not exceed 10000',
+  annualReturn: 'Minimum must not exceed 0.1',
+  goalPeriod: 'Minimum must not exceed 1',
+  crossFieldIncreaseExceedsReturn: 'Annual saving increase rate must not be greater than expected annual return rate',
+};
+
+// eslint-disable-next-line import/no-unresolved
+const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
+
+const EMPTY_SHAPE = {
+  labels: {
+    sectionTitle: '',
+    calculateTitle: '',
+    resultTitle: '',
+    tweakTitle: '',
+    newPlanTitle: '',
+    productSectionTitle: '',
+    additionalInfoTitle: '',
+    additionalInfoLinkText: '',
+    additionalInfoUrl: '',
+    disclaimerTitle: '',
+    disclaimer: '',
+    fields: {
+      goal: '', goalAmount: '', goalPeriod: '', balance: '', annualReturn: '', annualIncrease: '',
+    },
+    buttons: { clear: '', calculate: '' },
+    result: {
+      futureValueTemplate: '',
+      monthlySavingLabel: '',
+      currency: '',
+      footnote: '',
+      footnoteReturnTemplate: '*Including inflation rate of 1.5% p.a. and expected annual return {return}%',
+    },
+    newPlan: {
+      futureValueTemplate: '',
+      monthlySavingLabel: '',
+      footnote: '',
+      footnoteIncreaseTemplate: 'Increase savings each year by {increase}%',
+      footnoteReturnTemplate: '*Including inflation rate of 1.5% p.a. and expected annual return {return}%',
+    },
+    chart: {
+      title: '',
+      xAxis: '',
+      yAxis: '',
+      legendResult: '',
+      legendFixed: '',
+      legendStepUp: '',
+      legendNewPlan: '',
+      legendStepUpAdjusted: '',
+      monthlySavingsTag: '',
+      goalAmountTag: '',
+    },
+    validation: {
+      goalAmount: '',
+      annualReturn: '',
+      goalPeriod: '',
+      crossFieldIncreaseExceedsReturn: '',
+    },
+  },
+  defaults: {
+    goalAmount: 0, goalPeriod: 0, balance: 0, annualReturn: 0, annualIncrease: 0,
+  },
+  validation: {
+    goalAmount: { min: 10000 },
+    goalPeriod: { min: 1, max: 50 },
+    balance: { min: 0 },
+    annualReturn: { min: 0.5, max: 40 },
+    annualIncrease: { min: 0, max: 100 },
+  },
+  goals: [],
+  products: [],
+};
+
+const ICONS = {
+  goal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',
+  goalAmount: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="4"/><path d="M3 21c0-3.5 3.1-6 7-6s7 2.5 7 6"/><path d="M16 13l5 0"/><path d="M19 11l2 2-2 2"/></svg>',
+  goalPeriod: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>',
+  balance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.5 11h-9z"/><path d="M9 8c0-2 1-4 3-4s3 2 3 4"/><line x1="6" y1="14" x2="18" y2="14"/></svg>',
+  annualReturn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 12A9 9 0 0 0 12 3v9z" fill="currentColor" fill-opacity="0.15"/><path d="M12 3v9l8 0"/></svg>',
+  annualIncrease: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>',
+  stepUp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>',
+};
+
+const SERIES_COLORS = {
+  result: '#1E6FFB',
+  resultDashed: '#9bb1ff',
+  newPlan: '#0F2A44',
+  newPlanDashed: '#7a8fb1',
+};
+
+async function loadChartJs() {
+  if (window.Chart) return window.Chart;
+  // eslint-disable-next-line import/no-unresolved
+  const chartModule = await import(/* webpackIgnore: true */ CHARTJS_ESM);
+  const { Chart, registerables } = chartModule;
+  Chart.register(...registerables);
+  window.Chart = Chart;
+  return Chart;
+}
+
+async function fetchSavingPlanData(apiUrl) {
+  if (!apiUrl) return EMPTY_SHAPE;
+  try {
+    const response = await fetch(apiUrl);
+    if (!response.ok) return EMPTY_SHAPE;
+    return await response.json();
+  } catch (e) {
+    return EMPTY_SHAPE;
+  }
+}
+
+function formatNumber(value) {
+  if (!Number.isFinite(value)) return '0';
+  return Math.round(value).toLocaleString('en-US');
+}
+
+function formatDecimal(value) {
+  if (!Number.isFinite(value)) return '0';
+  // Show up to 2 decimal places, strip trailing zeros for clean display.
+  return Number(value.toFixed(2)).toLocaleString('en-US', { maximumFractionDigits: 2 });
+}
+
+function parseNumber(value) {
+  if (typeof value !== 'string') return Number(value) || 0;
+  const cleaned = value.replace(/,/g, '').trim();
+  if (cleaned === '') return 0;
+  return Number(cleaned) || 0;
+}
+
+function fillTemplate(template, vars) {
+  return Object.entries(vars).reduce(
+    (acc, [k, v]) => acc.replace(new RegExp(`\\{${k}\\}`, 'g'), v),
+    template,
+  );
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function projectBalance({
+  balance, monthly, years, annualReturn, annualIncrease,
+}) {
+  const r = annualReturn / 100;
+  const g = annualIncrease / 100;
+  const rm = (1 + r) ** (1 / 12) - 1;
+  const points = [{ year: 0, value: balance }];
+  let current = balance;
+  for (let i = 0; i < years; i += 1) {
+    const yearMonthly = monthly * (1 + g) ** i;
+    let yearEnd = current;
+    for (let m = 0; m < 12; m += 1) {
+      yearEnd = yearEnd * (1 + rm) + yearMonthly;
+    }
+    current = yearEnd;
+    points.push({ year: i + 1, value: current });
+  }
+  return points;
+}
+
+function scaleSeriesToFuture(series, futureValue) {
+  const last = series[series.length - 1]?.value || 0;
+  if (!Number.isFinite(futureValue) || futureValue <= 0 || last <= 0) return series;
+  const scale = futureValue / last;
+  return series.map((point) => ({
+    ...point,
+    value: point.year === 0 ? point.value : point.value * scale,
+  }));
+}
+
+function solveMonthly({
+  target, balance, years, annualReturn, annualIncrease,
+}) {
+  if (!Number.isFinite(years) || years <= 0) return 0;
+  const r = annualReturn / 100;
+  const g = annualIncrease / 100;
+  const rm = r / 12; // nominal monthly rate — matches real API
+  const months = years * 12;
+  // Subtract future value of current balance from the target
+  const fvBalance = (balance || 0) * (1 + r) ** years;
+  const needed = target - fvBalance;
+  if (needed <= 0) return 0;
+  if (g === 0) {
+    const fvAnnuity = rm === 0 ? months : ((1 + rm) ** months - 1) / rm;
+    return fvAnnuity === 0 ? 0 : needed / fvAnnuity;
+  }
+  // Step-up: each year's savings grow by g
+  const annuityFactor = rm === 0 ? 12 : ((1 + rm) ** 12 - 1) / rm;
+  let coefficient = 0;
+  for (let i = 0; i < years; i += 1) {
+    coefficient += (1 + g) ** i * annuityFactor * (1 + r) ** (years - 1 - i);
+  }
+  return coefficient === 0 ? 0 : needed / coefficient;
+}
+
+function getFallbackCalculation(inputs) {
+  const futureValue = inputs.goalAmount * (1 + INFLATION_RATE / 100) ** inputs.goalPeriod;
+  return {
+    FutureValue: futureValue,
+    SavingMonth: solveMonthly({
+      target: futureValue,
+      balance: inputs.balance,
+      years: inputs.goalPeriod,
+      annualReturn: inputs.annualReturn,
+      annualIncrease: inputs.annualIncrease,
+    }),
+  };
+}
+
+function normalizeCalculationResponse(payload, fallback) {
+  const source = payload || {};
+  const future = Number(
+    source.FutureValue ?? source.futureValue ?? source.future ?? fallback.FutureValue,
+  );
+  const monthly = Number(
+    source.SavingMonth ?? source.savingMonth ?? source.monthlySaving ?? fallback.SavingMonth,
+  );
+  return {
+    FutureValue: Number.isFinite(future) ? future : fallback.FutureValue,
+    SavingMonth: Number.isFinite(monthly) ? monthly : fallback.SavingMonth,
+  };
+}
+
+function buildCalculationPayload(inputs) {
+  return {
+    FutureSavingAmount: inputs.goalAmount,
+    NYear: inputs.goalPeriod,
+    FirstSavingAmount: inputs.balance,
+    CompensationRate: inputs.annualReturn / 100,
+    SavingIncRate: inputs.annualIncrease / 100,
+    inflationrate: INFLATION_RATE,
+  };
+}
+
+async function fetchCalculation(inputs, calcUrl, apimKey) {
+  const fallback = getFallbackCalculation(inputs);
+  if (!calcUrl) return fallback;
+  try {
+    const payload = buildCalculationPayload(inputs);
+    // eslint-disable-next-line no-console
+    console.log('[saving-plan] API request payload:', payload);
+    const response = await fetch(calcUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Ocp-Apim-Subscription-Key': apimKey,
+      },
+      body: JSON.stringify(payload),
+    });
+    // eslint-disable-next-line no-console
+    console.log('[saving-plan] API status:', response.status, response.ok);
+    if (!response.ok) {
+      // eslint-disable-next-line no-console
+      console.warn('[saving-plan] API error — using fallback');
+      return fallback;
+    }
+    const json = await response.json();
+    // eslint-disable-next-line no-console
+    console.log('[saving-plan] API response:', json);
+    return normalizeCalculationResponse(json, fallback);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn('[saving-plan] API fetch failed — using fallback:', e.message);
+    return fallback;
+  }
+}
+
+function getFieldMinError(field, value, rules, messages) {
+  const message = messages[field] || DEFAULT_VALIDATION_MESSAGES[field] || '';
+  if (!Number.isFinite(value)) return message;
+  const rule = rules[field];
+  if (!rule) return '';
+  if (rule.min !== undefined && value < rule.min) return message;
+  if (rule.max !== undefined && value > rule.max) return message;
+  return '';
+}
+
+function buildField({
+  name, label, value, decimal = false, icon = '', placeholder = '',
+}) {
+  let formatted = '';
+  if (value || value === 0) {
+    formatted = decimal ? formatDecimal(value) : formatNumber(value);
+  }
+  return `
+    <div class="saving-plan-field" data-field="${name}" data-decimal="${decimal ? '1' : '0'}">
+      <div class="saving-plan-field-row">
+        <label class="saving-plan-field-label" for="sp-${name}">
+          <span class="saving-plan-field-icon" aria-hidden="true">${icon}</span>
+          <span class="saving-plan-field-text">${label}</span>
+        </label>
+        <input
+          id="sp-${name}"
+          class="saving-plan-field-input"
+          type="text"
+          inputmode="decimal"
+          value="${formatted}"
+          ${placeholder ? `placeholder="${placeholder}"` : ''}
+          autocomplete="off"
+        />
+      </div>
+    </div>
+  `;
+}
+
+function buildDropdownField({
+  name, label, value, options, icon = '',
+}) {
+  const selected = options.find((opt) => opt.key === value);
+  const optionsMarkup = options
+    .map((opt) => `
+      <li class="saving-plan-dropdown-option${opt.key === selected?.key ? ' is-selected' : ''}"
+          role="option" data-value="${opt.key}" tabindex="-1">
+        <span class="saving-plan-dropdown-option-label">${opt.label}</span>
+      </li>
+    `)
+    .join('');
+  return `
+    <div class="saving-plan-field saving-plan-field-dropdown" data-field="${name}" data-value="${selected?.key || ''}">
+      <button type="button" class="saving-plan-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+        <span class="saving-plan-field-icon" aria-hidden="true">${icon}</span>
+        <span class="saving-plan-dropdown-current">${selected?.label || label}</span>
+        <span class="saving-plan-field-chevron" aria-hidden="true"></span>
+      </button>
+      <ul class="saving-plan-dropdown-panel" role="listbox" tabindex="-1">
+        ${optionsMarkup}
+      </ul>
+    </div>
+  `;
+}
+
+function buildSlider({
+  name, label, value, min, max, step,
+}) {
+  const formatter = step < 1 ? formatDecimal : formatNumber;
+  return `
+    <div class="saving-plan-slider" data-slider="${name}">
+      <span class="saving-plan-slider-label">${label}</span>
+      <input
+        type="range"
+        class="saving-plan-slider-input"
+        min="${min}"
+        max="${max}"
+        step="${step}"
+        value="${value}"
+      />
+      <div class="saving-plan-slider-range">
+        <span class="saving-plan-slider-min">${formatter(min)}</span>
+        <span class="saving-plan-slider-value">${formatter(max)}</span>
+      </div>
+    </div>
+  `;
+}
+
+function buildProductCard(product) {
+  const cta = product.ctaUrl
+    ? `<a class="saving-plan-product-cta" href="${product.ctaUrl}">${product.ctaText || ''}</a>`
+    : `<button type="button" class="saving-plan-product-cta">${product.ctaText || ''}</button>`;
+  const imgStyle = product.image ? `style="background-image:url('${product.image}')"` : '';
+  return `
+    <article class="saving-plan-product">
+      <div class="saving-plan-product-image" ${imgStyle}></div>
+      <div class="saving-plan-product-body">
+        <h3 class="saving-plan-product-title">${product.title || ''}</h3>
+        <p class="saving-plan-product-description">${product.description || ''}</p>
+        ${cta}
+      </div>
+    </article>
+  `;
+}
+
+function buildInfoCard(goal) {
+  if (!goal) return '';
+  const cta = goal.infoUrl
+    ? `<a class="saving-plan-info-card-cta" href="${goal.infoUrl}">${goal.infoCta || ''}</a>`
+    : `<button type="button" class="saving-plan-info-card-cta">${goal.infoCta || ''}</button>`;
+  const bg = goal.infoBg ? `style="background-image:url('${goal.infoBg}')"` : '';
+  return `
+    <aside class="saving-plan-info-card" ${bg}>
+      <h3 class="saving-plan-info-card-title">${goal.infoTitle || ''}</h3>
+      <div class="saving-plan-info-card-art" aria-hidden="true"></div>
+      ${cta}
+    </aside>
+  `;
+}
+
+function buildChartLegend(labels) {
+  return `
+    <div class="saving-plan-chart-legend">
+      <div class="saving-plan-chart-legend-row">
+        <span class="saving-plan-chart-legend-item">
+          <span class="saving-plan-chart-legend-dot" style="background:${SERIES_COLORS.result}"></span>
+          <span class="saving-plan-chart-legend-text">${labels.legendResult}</span>
+        </span>
+        <span class="saving-plan-chart-legend-item">
+          <span class="saving-plan-chart-legend-icon">${ICONS.stepUp}</span>
+          <span class="saving-plan-chart-legend-text" data-variant-original>${labels.legendFixed}</span>
+        </span>
+      </div>
+      <div class="saving-plan-chart-legend-row" data-newplan-row hidden>
+        <span class="saving-plan-chart-legend-item">
+          <span class="saving-plan-chart-legend-dot" style="background:${SERIES_COLORS.newPlan}"></span>
+          <span class="saving-plan-chart-legend-text">${labels.legendNewPlan}</span>
+        </span>
+        <span class="saving-plan-chart-legend-item">
+          <span class="saving-plan-chart-legend-icon">${ICONS.stepUp}</span>
+          <span class="saving-plan-chart-legend-text" data-variant-newplan>${labels.legendStepUpAdjusted}</span>
+        </span>
+      </div>
+    </div>
+  `;
+}
+
+function buildShellMarkup(data) {
+  const { labels, defaults, goals } = data;
+  return `
+    <div class="saving-plan-section">
+      <header class="saving-plan-header">
+        <h2 class="saving-plan-header-title">${labels.sectionTitle}</h2>
+        <span class="saving-plan-header-divider" aria-hidden="true"></span>
+      </header>
+
+      <div class="saving-plan-calculator">
+        <div class="saving-plan-form">
+          <h3 class="saving-plan-form-title">${labels.calculateTitle}</h3>
+          <div class="saving-plan-form-grid">
+            ${buildDropdownField({
+    name: 'goal', label: labels.fields.goal, value: '', options: goals, icon: ICONS.goal,
+  })}
+            ${buildField({
+    name: 'balance', label: labels.fields.balance, value: defaults.balance, icon: ICONS.balance,
+  })}
+            ${buildField({
+    name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount, icon: ICONS.goalAmount,
+  })}
+            ${buildField({
+    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || '', decimal: true, icon: ICONS.annualReturn, placeholder: '0.5-40',
+  })}
+            ${buildField({
+    name: 'goalPeriod', label: labels.fields.goalPeriod, value: defaults.goalPeriod, icon: ICONS.goalPeriod,
+  })}
+            ${buildField({
+    name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, decimal: true, icon: ICONS.annualIncrease,
+  })}
+          </div>
+          <div class="saving-plan-form-actions">
+            <button type="button" class="saving-plan-form-btn saving-plan-form-btn-secondary" data-action="clear" disabled>${labels.buttons.clear}</button>
+            <button type="button" class="saving-plan-form-btn saving-plan-form-btn-primary" data-action="calculate" disabled>${labels.buttons.calculate}</button>
+          </div>
+        </div>
+
+        <aside class="saving-plan-result">
+          <h3 class="saving-plan-result-title">${labels.resultTitle}</h3>
+          <div class="saving-plan-result-card">
+            <p class="saving-plan-result-future" data-result="future"></p>
+            <p class="saving-plan-result-lead">${labels.result.monthlySavingLabel}</p>
+            <p class="saving-plan-result-monthly">
+              <span class="saving-plan-result-amount" data-result="monthly">0</span>
+              <span class="saving-plan-result-currency">${labels.result.currency}</span>
+            </p>
+          </div>
+          <p class="saving-plan-result-footnote" data-result="footnote-return"></p>
+        </aside>
+      </div>
+
+      <section class="saving-plan-chart-row" hidden>
+        <div class="saving-plan-chart-wrap">
+          ${buildChartLegend(labels.chart)}
+          <div class="saving-plan-chart-canvas-wrap">
+            <canvas class="saving-plan-chart" aria-label="${labels.chart.title}"></canvas>
+          </div>
+        </div>
+        <div class="saving-plan-info-card-slot"></div>
+      </section>
+
+      <section class="saving-plan-tweak" hidden>
+        <div class="saving-plan-tweak-header">
+          <h3 class="saving-plan-tweak-title">${labels.tweakTitle}</h3>
+          <h4 class="saving-plan-newplan-title">${labels.newPlanTitle}</h4>
+        </div>
+        <div class="saving-plan-tweak-grid">
+          <div class="saving-plan-tweak-sliders">
+            ${buildSlider({
+    name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount || 10000, min: 10000, max: 1000000, step: 10000,
+  })}
+            ${buildSlider({
+    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || 0.5, min: 0.5, max: 40, step: 0.1,
+  })}
+            ${buildSlider({
+    name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, min: 0, max: 40, step: 0.1,
+  })}
+          </div>
+          <div class="saving-plan-newplan">
+            <div class="saving-plan-newplan-card">
+              <p class="saving-plan-newplan-future" data-newplan="future"></p>
+              <p class="saving-plan-newplan-lead">${labels.newPlan.monthlySavingLabel}</p>
+              <p class="saving-plan-newplan-monthly">
+                <span class="saving-plan-newplan-amount" data-newplan="monthly">0</span>
+                <span class="saving-plan-newplan-currency">${labels.result.currency}</span>
+              </p>
+            </div>
+            <p class="saving-plan-newplan-footnote" data-newplan="footnote-increase"></p>
+            <p class="saving-plan-newplan-footnote" data-newplan="footnote-return"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="saving-plan-additional">
+        <h3 class="saving-plan-additional-title">${labels.additionalInfoTitle}</h3>
+        <ul class="saving-plan-additional-list">
+          <li><a class="saving-plan-additional-link" href="${labels.additionalInfoUrl || '#'}">${labels.additionalInfoLinkText}</a></li>
+        </ul>
+      </section>
+
+      <section class="saving-plan-disclaimer">
+        <h4 class="saving-plan-disclaimer-title">${labels.disclaimerTitle}</h4>
+        <div class="saving-plan-disclaimer-text">${labels.disclaimer}</div>
+      </section>
+
+      <section class="saving-plan-products" hidden>
+        <h3 class="saving-plan-products-title">${labels.productSectionTitle}</h3>
+        <span class="saving-plan-products-divider" aria-hidden="true"></span>
+        <div class="saving-plan-products-grid"></div>
+      </section>
+    </div>
+  `;
+}
+
+function readInputs(root) {
+  const goalWrap = root.querySelector('[data-field="goal"]');
+  return {
+    goal: goalWrap?.dataset.value || '',
+    goalAmount: parseNumber(root.querySelector('[data-field="goalAmount"] input')?.value),
+    goalPeriod: parseNumber(root.querySelector('[data-field="goalPeriod"] input')?.value),
+    balance: parseNumber(root.querySelector('[data-field="balance"] input')?.value),
+    annualReturn: parseNumber(root.querySelector('[data-field="annualReturn"] input')?.value),
+    annualIncrease: parseNumber(root.querySelector('[data-field="annualIncrease"] input')?.value),
+  };
+}
+
+function setFieldError(wrap, message) {
+  if (!wrap) return;
+  const input = wrap.querySelector('input');
+  const existing = wrap.querySelector('.saving-plan-field-error-message');
+  if (message) {
+    wrap.classList.add('saving-plan-field-error');
+    input?.setAttribute('aria-invalid', 'true');
+    if (existing) {
+      existing.textContent = message;
+    } else {
+      const span = document.createElement('span');
+      span.className = 'saving-plan-field-error-message';
+      span.setAttribute('role', 'alert');
+      span.textContent = message;
+      wrap.appendChild(span);
+    }
+  } else {
+    wrap.classList.remove('saving-plan-field-error');
+    input?.removeAttribute('aria-invalid');
+    if (existing) existing.remove();
+  }
+}
+
+function applyValidation(root, inputs, data) {
+  const messages = data.labels.validation;
+  const rules = data.validation;
+  const fields = ['goalAmount', 'goalPeriod', 'balance', 'annualReturn', 'annualIncrease'];
+  let isValid = true;
+  const fieldErrors = {};
+
+  fields.forEach((name) => {
+    fieldErrors[name] = getFieldMinError(name, inputs[name], rules, messages);
+    if (fieldErrors[name]) isValid = false;
+  });
+
+  // Cross-field: annual increase must not exceed annual return.
+  // Only applied when both fields pass their own min/max, so per-field messages take priority.
+  if (!fieldErrors.annualReturn && !fieldErrors.annualIncrease
+      && inputs.annualIncrease > inputs.annualReturn) {
+    fieldErrors.annualReturn = messages.crossFieldIncreaseExceedsReturn
+      || DEFAULT_VALIDATION_MESSAGES.crossFieldIncreaseExceedsReturn;
+    fieldErrors.annualIncrease = messages.crossFieldIncreaseExceedsReturn
+      || DEFAULT_VALIDATION_MESSAGES.crossFieldIncreaseExceedsReturn;
+    isValid = false;
+  }
+
+  fields.forEach((name) => {
+    setFieldError(root.querySelector(`[data-field="${name}"]`), fieldErrors[name]);
+  });
+
+  return isValid;
+}
+
+function getSavingsVariantLabel(annualIncrease, labels) {
+  return annualIncrease > 0 ? labels.legendStepUp : labels.legendFixed;
+}
+
+function setHTML(root, selector, html) {
+  const el = root.querySelector(selector);
+  if (el) el.innerHTML = html;
+}
+
+function setText(root, selector, text) {
+  const el = root.querySelector(selector);
+  if (el) el.textContent = text;
+}
+
+function renderResult(state, data, calculation) {
+  const { root } = state;
+  const inputs = readInputs(root);
+  const goalPeriod = inputs.goalPeriod || data.defaults?.goalPeriod || 0;
+  const annualReturn = inputs.annualReturn || data.defaults?.annualReturn || 0;
+  const futureText = fillTemplate(data.labels.result.futureValueTemplate, {
+    amount: `<strong>${escapeHtml(formatNumber(calculation.FutureValue))}</strong>`,
+    years: `<strong>${escapeHtml(String(goalPeriod))}</strong>`,
+  });
+  setHTML(root, '[data-result="future"]', futureText);
+  setText(root, '[data-result="monthly"]', formatNumber(calculation.SavingMonth));
+  const returnLabel = data.labels.result.footnoteReturnTemplate
+    ? fillTemplate(
+      data.labels.result.footnoteReturnTemplate,
+      { return: formatDecimal(annualReturn) },
+    )
+    : `*Including inflation rate of ${INFLATION_RATE}% p.a. and expected annual return ${formatDecimal(annualReturn)}%`;
+  setText(root, '[data-result="footnote-return"]', returnLabel);
+}
+
+function clearNewPlan(root) {
+  const future = root.querySelector('[data-newplan="future"]');
+  if (future) future.setAttribute('hidden', '');
+  const amount = root.querySelector('[data-newplan="monthly"]');
+  if (amount) { amount.textContent = ''; amount.setAttribute('hidden', ''); }
+  setText(root, '[data-newplan="footnote-increase"]', '');
+  setText(root, '[data-newplan="footnote-return"]', '');
+}
+
+function setSliderBounds(root, name, {
+  min, max, value, step,
+}) {
+  const input = root.querySelector(`[data-slider="${name}"] input`);
+  if (!input) return;
+  input.min = min;
+  input.max = max;
+  input.step = step;
+  input.value = value;
+  const minEl = root.querySelector(`[data-slider="${name}"] .saving-plan-slider-min`);
+  const maxEl = root.querySelector(`[data-slider="${name}"] .saving-plan-slider-value`);
+  const formatter = step < 1 ? formatDecimal : formatNumber;
+  if (minEl) minEl.textContent = formatter(min);
+  if (maxEl) maxEl.textContent = formatter(max);
+}
+
+function goalAmountStep(amount) {
+  if (amount >= 1000000) return 50000;
+  if (amount >= 100000) return 10000;
+  if (amount >= 10000) return 1000;
+  return 100;
+}
+
+function syncSliderDisplays(root) {
+  root.querySelectorAll('.saving-plan-slider').forEach((slider) => {
+    const input = slider.querySelector('input[type="range"]');
+    const display = slider.querySelector('.saving-plan-slider-value');
+    if (!input || !display) return;
+    const step = parseFloat(input.step);
+    const formatter = step < 1 ? formatDecimal : formatNumber;
+    display.textContent = formatter(parseNumber(input.value));
+    const min = parseFloat(input.min) || 0;
+    const max = parseFloat(input.max) || 100;
+    const val = parseFloat(input.value) || 0;
+    const pct = ((val - min) / (max - min)) * 100;
+    input.style.background = `linear-gradient(to right, var(--sp-blue) ${pct}%, #d0d0d0 ${pct}%)`;
+  });
+}
+
+function renderNewPlanPlaceholder(state, data, inputs) {
+  const { root } = state;
+  const goalMin = inputs.goalAmount;
+  const goalMax = inputs.goalAmount * 2;
+  setSliderBounds(root, 'goalAmount', {
+    min: goalMin, max: goalMax, value: inputs.goalAmount, step: goalAmountStep(inputs.goalAmount),
+  });
+  setSliderBounds(root, 'annualReturn', {
+    min: 0, max: 40, value: inputs.annualReturn, step: 0.1,
+  });
+  const returnSliderEl = root.querySelector('[data-slider="annualReturn"] input');
+  if (returnSliderEl) returnSliderEl.dataset.prev = inputs.annualReturn;
+  setSliderBounds(root, 'annualIncrease', {
+    min: 0, max: inputs.annualReturn, value: inputs.annualIncrease, step: 0.1,
+  });
+  syncSliderDisplays(root);
+  root.querySelector('.saving-plan-newplan-card')?.classList.add('is-placeholder');
+  const futureText = fillTemplate(data.labels.newPlan.futureValueTemplate, {
+    amount: '<strong>0</strong>',
+    years: `<strong>${escapeHtml(String(inputs.goalPeriod))}</strong>`,
+  });
+  const futureEl = root.querySelector('[data-newplan="future"]');
+  if (futureEl) { futureEl.innerHTML = futureText; futureEl.removeAttribute('hidden'); }
+  const amountEl = root.querySelector('[data-newplan="monthly"]');
+  if (amountEl) { amountEl.textContent = '0'; amountEl.removeAttribute('hidden'); }
+  const returnLabel = data.labels.newPlan.footnoteReturnTemplate
+    ? fillTemplate(
+      data.labels.newPlan.footnoteReturnTemplate,
+      { return: formatDecimal(inputs.annualReturn) },
+    )
+    : `*Including inflation rate of ${INFLATION_RATE}% p.a. `
+      + `and expected annual return ${formatDecimal(inputs.annualReturn)}%`;
+  setText(root, '[data-newplan="footnote-increase"]', '');
+  setText(root, '[data-newplan="footnote-return"]', returnLabel);
+}
+
+async function renderNewPlan(state, data, tweakInputs) {
+  const { root } = state;
+  const baseInputs = state.calculatedInputs || readInputs(root);
+  const tweakApiInputs = {
+    goalAmount: tweakInputs.goalAmount || baseInputs.goalAmount,
+    balance: baseInputs.balance,
+    goalPeriod: baseInputs.goalPeriod,
+    annualReturn: tweakInputs.annualReturn,
+    annualIncrease: tweakInputs.annualIncrease,
+  };
+  // eslint-disable-next-line max-len
+  const calculation = await fetchCalculation(tweakApiInputs, state.config.calcUrl, state.config.apimKey);
+  const futureText = fillTemplate(data.labels.newPlan.futureValueTemplate, {
+    amount: `<strong>${escapeHtml(formatNumber(calculation.FutureValue))}</strong>`,
+    years: `<strong>${escapeHtml(String(baseInputs.goalPeriod))}</strong>`,
+  });
+  root.querySelector('.saving-plan-newplan-card')?.classList.remove('is-placeholder');
+  const futureEl = root.querySelector('[data-newplan="future"]');
+  if (futureEl) { futureEl.innerHTML = futureText; futureEl.removeAttribute('hidden'); }
+  const amountEl = root.querySelector('[data-newplan="monthly"]');
+  if (amountEl) { amountEl.textContent = formatNumber(calculation.SavingMonth); amountEl.removeAttribute('hidden'); }
+  const increaseLabel = data.labels.newPlan.footnoteIncreaseTemplate
+    ? fillTemplate(
+      data.labels.newPlan.footnoteIncreaseTemplate,
+      { increase: formatDecimal(tweakInputs.annualIncrease) },
+    )
+    : `Increase savings each year by ${formatDecimal(tweakInputs.annualIncrease)}%`;
+  const returnLabel = data.labels.newPlan.footnoteReturnTemplate
+    ? fillTemplate(
+      data.labels.newPlan.footnoteReturnTemplate,
+      { return: formatDecimal(tweakInputs.annualReturn) },
+    )
+    : `*Including inflation rate of ${INFLATION_RATE}% p.a. `
+      + `and expected annual return ${formatDecimal(tweakInputs.annualReturn)}%`;
+  setText(root, '[data-newplan="footnote-increase"]', increaseLabel);
+  setText(root, '[data-newplan="footnote-return"]', returnLabel);
+  state.tweakCalculation = calculation;
+  return calculation;
+}
+
+function updateLegend(root, data, originalIncrease, newIncrease, hasNewPlan) {
+  const originalVariant = getSavingsVariantLabel(originalIncrease, data.labels.chart);
+  const newVariant = getSavingsVariantLabel(newIncrease, data.labels.chart);
+  const originalText = root.querySelector('[data-variant-original]');
+  const newText = root.querySelector('[data-variant-newplan]');
+  if (originalText) originalText.textContent = originalVariant;
+  if (newText) newText.textContent = newVariant;
+  const newplanRow = root.querySelector('[data-newplan-row]');
+  if (newplanRow) newplanRow.toggleAttribute('hidden', !hasNewPlan);
+}
+
+function drawRoundedRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function drawMonthlyTag(ctx, cx, cy, line1, line2, bg) {
+  const pad = 10;
+  const lh = 17;
+  const boxW = 118;
+  const boxH = lh * 2 + pad * 2;
+  const x = cx - boxW / 2;
+  const y = cy - boxH / 2;
+  ctx.save();
+  ctx.fillStyle = bg;
+  drawRoundedRect(ctx, x, y, boxW, boxH, 8);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.font = '11px system-ui,sans-serif';
+  ctx.fillText(line1, cx, y + pad + 12);
+  ctx.font = 'bold 14px system-ui,sans-serif';
+  ctx.fillText(line2, cx, y + pad + lh + 12);
+  ctx.restore();
+}
+
+function drawGoalLabel(ctx, x, y, line1, line2, color) {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.textAlign = 'left';
+  ctx.font = '11px system-ui,sans-serif';
+  ctx.fillText(line1, x, y);
+  ctx.font = 'bold 13px system-ui,sans-serif';
+  ctx.fillText(line2, x, y + 15);
+  ctx.restore();
+}
+
+function buildChartOverlayPlugin(originalSeries, newSeries, monthly, monthlyNew, labels) {
+  const monthlyLabel = labels.monthlySavingsTag || 'Monthly savings';
+  const goalLabel = labels.goalAmountTag || 'Goal amount';
+
+  return {
+    id: 'savingPlanOverlay',
+    afterDraw(chart) {
+      const { ctx, scales: { x: xScale, y: yScale } } = chart;
+      const lastIdx = originalSeries.length - 1;
+      const lastYear = originalSeries[lastIdx].year;
+      const tagX = xScale.getPixelForValue(1) + 44;
+      const goalX = xScale.getPixelForValue(lastYear) + 10;
+
+      const boxH = 57; // approx height of a monthly tag box (2 lines + padding)
+
+      // Monthly savings tag — blue (Result), shifted up so it sits above the dark box
+      const origY1 = originalSeries[1]?.value ?? originalSeries[0].value;
+      const origYPx = yScale.getPixelForValue(origY1);
+      const blueTagY = newSeries ? origYPx - boxH / 2 - 4 : origYPx;
+      drawMonthlyTag(
+        ctx,
+        tagX,
+        blueTagY,
+        monthlyLabel,
+        formatNumber(monthly),
+        SERIES_COLORS.result,
+      );
+
+      // Monthly savings tag — dark (New plan), shifted down so it sits below the blue box
+      if (newSeries) {
+        const newY1 = newSeries[1]?.value ?? newSeries[0].value;
+        const newYPx = yScale.getPixelForValue(newY1);
+        const darkTagY = newYPx + boxH / 2 + 4;
+        drawMonthlyTag(
+          ctx,
+          tagX,
+          darkTagY,
+          monthlyLabel,
+          formatNumber(monthlyNew),
+          SERIES_COLORS.newPlan,
+        );
+      }
+
+      // Goal amount label — blue (Result): above the line end
+      const origEndY = yScale.getPixelForValue(originalSeries[lastIdx].value);
+      const goalLabelH = 30; // two text lines height
+      drawGoalLabel(
+        ctx,
+        goalX,
+        origEndY - goalLabelH - 2,
+        goalLabel,
+        formatNumber(originalSeries[lastIdx].value),
+        SERIES_COLORS.result,
+      );
+
+      // Goal amount label — dark (New plan): below the line end
+      if (newSeries) {
+        const newEndY = yScale.getPixelForValue(newSeries[lastIdx].value);
+        drawGoalLabel(
+          ctx,
+          goalX,
+          newEndY + 6,
+          goalLabel,
+          formatNumber(newSeries[lastIdx].value),
+          SERIES_COLORS.newPlan,
+        );
+      }
+    },
+  };
+}
+
+function formatCompact(val) {
+  if (!Number.isFinite(val) || val === 0) return '0';
+  const abs = Math.abs(val);
+  if (abs >= 1_000_000) {
+    const m = val / 1_000_000;
+    return `${m % 1 === 0 ? m : m.toFixed(1)}M`;
+  }
+  if (abs >= 1000) {
+    const k = val / 1000;
+    return `${k % 1 === 0 ? k : k.toFixed(1)}k`;
+  }
+  return String(Math.round(val));
+}
+
+// eslint-disable-next-line max-len
+function buildChartConfig(originalSeries, newSeries, labels, increase, monthly, monthlyNew, overlayPlugin) {
+  const years = originalSeries.map((p) => p.year);
+  const allValues = [
+    ...originalSeries.map((p) => p.value),
+    ...(newSeries ? newSeries.map((p) => p.value) : []),
+  ];
+  const dataMax = Math.max(...allValues, 1);
+  const yMax = Math.ceil((dataMax * 1.3) / 1000) * 1000;
+
+  const datasets = [
+    {
+      label: labels.legendResult,
+      data: originalSeries.map((p) => p.value),
+      borderColor: SERIES_COLORS.result,
+      backgroundColor: 'transparent',
+      tension: 0,
+      borderWidth: 3,
+      pointRadius: 0,
+      pointHoverRadius: 0,
+    },
+  ];
+  if (newSeries) {
+    datasets.push({
+      label: labels.legendNewPlan,
+      data: newSeries.map((p) => p.value),
+      borderColor: SERIES_COLORS.newPlan,
+      backgroundColor: 'transparent',
+      tension: 0,
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 0,
+    });
+  }
+
+  return {
+    type: 'line',
+    data: { labels: years, datasets },
+    plugins: overlayPlugin ? [overlayPlugin] : [],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 0 },
+      layout: {
+        padding: {
+          right: 110, top: 10, left: 4, bottom: 4,
+        },
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: labels.xAxis || 'Year(s)',
+            color: '#9b9b9b',
+            font: { size: 12, family: 'system-ui, sans-serif' },
+          },
+          grid: { display: false },
+          border: { display: false },
+          ticks: { color: '#9b9b9b', font: { size: 12, family: 'system-ui, sans-serif' } },
+        },
+        y: {
+          min: 0,
+          max: yMax,
+          title: {
+            display: true,
+            text: labels.yAxis || 'Amount (baht)',
+            color: '#9b9b9b',
+            font: { size: 12, family: 'system-ui, sans-serif' },
+          },
+          ticks: {
+            callback: (val) => formatCompact(val),
+            color: '#9b9b9b',
+            font: { size: 12, family: 'system-ui, sans-serif' },
+            maxTicksLimit: 5,
+          },
+          grid: {
+            color: '#E5E7EB',
+            lineWidth: 1,
+            drawTicks: false,
+          },
+          border: { dash: [4, 4], display: false },
+          beginAtZero: true,
+        },
+      },
+    },
+  };
+}
+
+async function renderChart(state, data) {
+  const Chart = await loadChartJs();
+  if (!Chart) return;
+
+  const inputs = state.calculatedInputs;
+  if (!inputs) return;
+
+  const canvasWrap = state.root.querySelector('.saving-plan-chart-canvas-wrap');
+  if (!canvasWrap) return;
+
+  const calculation = state.calculatedCalculation || getFallbackCalculation(inputs);
+  const monthly = calculation.SavingMonth;
+  let original = projectBalance({
+    balance: inputs.balance,
+    monthly,
+    years: inputs.goalPeriod,
+    annualReturn: inputs.annualReturn,
+    annualIncrease: inputs.annualIncrease,
+  });
+  original = scaleSeriesToFuture(original, calculation.FutureValue);
+
+  let newSeries = null;
+  let tweakMonthly = 0;
+  if (state.tweakActive && state.tweakInputs && state.tweakCalculation) {
+    const t = state.tweakInputs;
+    tweakMonthly = state.tweakCalculation.SavingMonth;
+    newSeries = projectBalance({
+      balance: inputs.balance,
+      monthly: tweakMonthly,
+      years: inputs.goalPeriod,
+      annualReturn: t.annualReturn,
+      annualIncrease: t.annualIncrease,
+    });
+    newSeries = scaleSeriesToFuture(newSeries, state.tweakCalculation.FutureValue);
+  }
+
+  if (state.chartInstance) {
+    try { state.chartInstance.destroy(); } catch (_) { /* ignore */ }
+    state.chartInstance = null;
+  }
+
+  // Replace canvas for a clean 2d context
+  const oldCanvas = canvasWrap.querySelector('.saving-plan-chart');
+  const canvas = document.createElement('canvas');
+  canvas.className = 'saving-plan-chart';
+  if (oldCanvas) canvasWrap.replaceChild(canvas, oldCanvas);
+  else canvasWrap.appendChild(canvas);
+
+  // Wait for layout to settle, then set explicit pixel dimensions for Chart.js
+  await new Promise((resolve) => { setTimeout(resolve, 100); });
+
+  const cw = canvasWrap.offsetWidth || 600;
+  const ch = canvasWrap.offsetHeight || (cw < 600 ? 220 : 300);
+  canvas.width = cw;
+  canvas.height = ch;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  try {
+    // eslint-disable-next-line max-len
+    const overlayPlugin = buildChartOverlayPlugin(original, newSeries, monthly, tweakMonthly, data.labels.chart);
+    const config = buildChartConfig(
+      original,
+      newSeries,
+      data.labels.chart,
+      inputs.annualIncrease,
+      monthly,
+      tweakMonthly,
+      overlayPlugin,
+    );
+    config.options.responsive = false;
+    state.chartInstance = new Chart(ctx, config);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('[saving-plan] Chart.js creation error:', err);
+  }
+
+  if (!state.chartResizeListener) {
+    state.chartResizeListener = () => {
+      if (!state.chartInstance) return;
+      const wrap = state.root.querySelector('.saving-plan-chart-canvas-wrap');
+      const w = wrap?.offsetWidth || 600;
+      const c = wrap?.querySelector('.saving-plan-chart');
+      if (c) c.width = w;
+      const rh = wrap?.offsetHeight || (w < 600 ? 220 : 300);
+      state.chartInstance.resize(w, rh);
+    };
+    window.addEventListener('resize', state.chartResizeListener);
+  }
+
+  const newIncrease = state.tweakInputs?.annualIncrease ?? inputs.annualIncrease;
+  updateLegend(state.root, data, inputs.annualIncrease, newIncrease, !!newSeries);
+}
+
+function renderInfoCard(state, data) {
+  const slot = state.root.querySelector('.saving-plan-info-card-slot');
+  if (!slot) return;
+  const goalKey = state.root.querySelector('[data-field="goal"]')?.dataset.value;
+  const goal = data.goals.find((g) => g.key === goalKey);
+  slot.innerHTML = buildInfoCard(goal);
+}
+
+function renderProducts(state, data) {
+  const grid = state.root.querySelector('.saving-plan-products-grid');
+  if (!grid) return;
+  grid.innerHTML = data.products.map(buildProductCard).join('');
+}
+
+function setButtonsEnabled(root, enabled) {
+  const calc = root.querySelector('[data-action="calculate"]');
+  const clear = root.querySelector('[data-action="clear"]');
+  if (calc) calc.disabled = !enabled;
+  if (clear) clear.disabled = !enabled;
+}
+
+function isAnyFieldEmpty(root) {
+  const inputs = root.querySelectorAll('[data-field][data-decimal] input');
+  if (Array.from(inputs).some((input) => input.value.trim() === '')) return true;
+  const goalWrap = root.querySelector('[data-field="goal"]');
+  if (goalWrap && !goalWrap.dataset.value) return true;
+  return false;
+}
+
+function showAfterCalculate(root) {
+  root.querySelector('.saving-plan-chart-row')?.removeAttribute('hidden');
+  root.querySelector('.saving-plan-tweak')?.removeAttribute('hidden');
+  root.querySelector('.saving-plan-products')?.removeAttribute('hidden');
+}
+
+function readSliders(root) {
+  return {
+    goalAmount: parseNumber(root.querySelector('[data-slider="goalAmount"] input')?.value),
+    annualReturn: parseNumber(root.querySelector('[data-slider="annualReturn"] input')?.value),
+    annualIncrease: parseNumber(root.querySelector('[data-slider="annualIncrease"] input')?.value),
+  };
+}
+
+function formatFieldValue(input, decimal) {
+  const formatter = decimal ? formatDecimal : formatNumber;
+  const value = parseNumber(input.value);
+  input.value = formatter(value);
+}
+
+function formatLive(input, decimal) {
+  const raw = input.value;
+  const cursor = input.selectionStart;
+  // Count digits (and dot for decimal) before cursor to restore position after reformatting.
+  const digitsBeforeCursor = (raw.slice(0, cursor).match(/[\d.]/g) || []).length;
+  const value = parseNumber(raw);
+  if (!Number.isFinite(value) || raw.trim() === '') return;
+  const formatter = decimal ? formatDecimal : formatNumber;
+  const formatted = formatter(value);
+  input.value = formatted;
+  // Find new cursor: walk formatted string counting digits until we match digitsBeforeCursor.
+  let count = 0;
+  let newCursor = formatted.length;
+  for (let i = 0; i < formatted.length; i += 1) {
+    if (/[\d.]/.test(formatted[i])) count += 1;
+    if (count === digitsBeforeCursor) { newCursor = i + 1; break; }
+  }
+  input.setSelectionRange(newCursor, newCursor);
+}
+
+function resetCalculator(state, data) {
+  const { defaults } = data;
+  const { root } = state;
+  const setVal = (sel, val) => {
+    const el = root.querySelector(sel);
+    if (el) el.value = val;
+  };
+  // Reset dropdown back to unselected placeholder.
+  const goalWrap = root.querySelector('[data-field="goal"]');
+  if (goalWrap) {
+    goalWrap.dataset.value = '';
+    const current = goalWrap.querySelector('.saving-plan-dropdown-current');
+    if (current) current.textContent = data.labels.fields.goal || '';
+    goalWrap.querySelectorAll('.saving-plan-dropdown-option').forEach((opt) => {
+      opt.classList.remove('is-selected');
+    });
+  }
+  setVal('[data-field="goalAmount"] input', formatNumber(defaults.goalAmount));
+  setVal('[data-field="goalPeriod"] input', formatNumber(defaults.goalPeriod));
+  setVal('[data-field="balance"] input', formatNumber(defaults.balance));
+  setVal('[data-field="annualReturn"] input', defaults.annualReturn ? formatDecimal(defaults.annualReturn) : '');
+  setVal('[data-field="annualIncrease"] input', formatDecimal(defaults.annualIncrease));
+  root.querySelectorAll('.saving-plan-field-error').forEach((el) => el.classList.remove('saving-plan-field-error'));
+  root.querySelectorAll('.saving-plan-field-error-message').forEach((el) => el.remove());
+  root.querySelectorAll('[aria-invalid="true"]').forEach((el) => el.removeAttribute('aria-invalid'));
+  root.querySelector('.saving-plan-chart-row')?.setAttribute('hidden', '');
+  root.querySelector('.saving-plan-tweak')?.setAttribute('hidden', '');
+  root.querySelector('.saving-plan-products')?.setAttribute('hidden', '');
+  clearNewPlan(root);
+  state.tweakActive = false;
+  state.tweakInputs = null;
+  state.tweakCalculation = null;
+  state.calculatedInputs = null;
+  state.calculatedCalculation = null;
+  if (state.chartInstance) {
+    state.chartInstance.destroy();
+    state.chartInstance = null;
+  }
+  if (state.chartResizeListener) {
+    window.removeEventListener('resize', state.chartResizeListener);
+    state.chartResizeListener = null;
+  }
+  renderInfoCard(state, data);
+  renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
+}
+
+function attachDropdownHandlers(state, data, onSelectionChange) {
+  const { root } = state;
+  const wrap = root.querySelector('[data-field="goal"]');
+  if (!wrap) return;
+  const trigger = wrap.querySelector('.saving-plan-dropdown-trigger');
+  const panel = wrap.querySelector('.saving-plan-dropdown-panel');
+  const current = wrap.querySelector('.saving-plan-dropdown-current');
+  if (!trigger || !panel || !current) return;
+
+  const close = () => {
+    wrap.classList.remove('is-open');
+    trigger.setAttribute('aria-expanded', 'false');
+  };
+
+  const open = () => {
+    wrap.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+  };
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (wrap.classList.contains('is-open')) close();
+    else open();
+  });
+
+  panel.addEventListener('click', (e) => {
+    const option = e.target.closest('.saving-plan-dropdown-option');
+    if (!option) return;
+    const { value } = option.dataset;
+    wrap.dataset.value = value;
+    const goal = data.goals.find((g) => g.key === value);
+    current.textContent = goal?.label || '';
+    panel.querySelectorAll('.saving-plan-dropdown-option').forEach((opt) => {
+      opt.classList.toggle('is-selected', opt === option);
+    });
+    close();
+    renderInfoCard(state, data);
+    if (typeof onSelectionChange === 'function') onSelectionChange();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!wrap.contains(e.target)) close();
+  });
+
+  trigger.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      open();
+      panel.querySelector('.saving-plan-dropdown-option')?.focus();
+    }
+  });
+}
+
+function attachHandlers(state, data) {
+  const { root } = state;
+
+  const liveUpdate = async () => {
+    const inputs = readInputs(root);
+    const valid = applyValidation(root, inputs, data);
+    const filled = !isAnyFieldEmpty(root);
+    setButtonsEnabled(root, valid && filled);
+    if (!valid || !filled) return;
+    const chartShown = !root.querySelector('.saving-plan-chart-row')?.hasAttribute('hidden');
+    if (!chartShown) return;
+
+    const calculation = getFallbackCalculation(inputs);
+    state.calculatedInputs = inputs;
+    state.calculatedCalculation = calculation;
+    renderResult(state, data, calculation);
+    if (state.tweakActive && state.tweakInputs) {
+      await renderNewPlan(state, data, state.tweakInputs);
+    }
+    await renderChart(state, data);
+  };
+
+  root.querySelectorAll('[data-field][data-decimal]').forEach((wrap) => {
+    const input = wrap.querySelector('input');
+    if (!input) return;
+    const decimal = wrap.dataset.decimal === '1';
+    input.addEventListener('input', () => {
+      formatLive(input, decimal);
+      liveUpdate();
+    });
+    input.addEventListener('blur', () => {
+      formatFieldValue(input, decimal);
+      liveUpdate();
+    });
+  });
+
+  attachDropdownHandlers(state, data, liveUpdate);
+
+  root.querySelector('[data-action="clear"]')?.addEventListener('click', () => {
+    resetCalculator(state, data);
+    liveUpdate();
+  });
+
+  root.querySelector('[data-action="calculate"]')?.addEventListener('click', async () => {
+    const inputs = readInputs(root);
+    if (!applyValidation(root, inputs, data)) return;
+    // Fetch from API and store result; falls back to local calculation if API unavailable
+    const calculation = await fetchCalculation(inputs, state.config.calcUrl, state.config.apimKey);
+    state.calculatedInputs = inputs;
+    state.calculatedCalculation = calculation;
+    state.tweakActive = false;
+    state.tweakInputs = null;
+    state.tweakCalculation = null;
+    renderResult(state, data, calculation);
+
+    syncSliderDisplays(root);
+    renderInfoCard(state, data);
+    const isNegative = calculation.SavingMonth < 0;
+    if (isNegative) {
+      root.querySelector('.saving-plan-chart-row')?.setAttribute('hidden', '');
+      root.querySelector('.saving-plan-tweak')?.setAttribute('hidden', '');
+      root.querySelector('.saving-plan-products')?.setAttribute('hidden', '');
+    } else {
+      await loadChartJs(); // pre-load so Chart.js is ready before DOM update
+      renderProducts(state, data);
+      showAfterCalculate(root);
+      renderNewPlanPlaceholder(state, data, inputs);
+      await renderChart(state, data);
+    }
+  });
+
+  let sliderDebounceTimer = null;
+  root.querySelectorAll('.saving-plan-slider input').forEach((input) => {
+    input.addEventListener('input', () => {
+      const sliderName = input.closest('[data-slider]')?.dataset.slider;
+      const returnSlider = root.querySelector('[data-slider="annualReturn"] input');
+      const increaseSlider = root.querySelector('[data-slider="annualIncrease"] input');
+      if (returnSlider && increaseSlider) {
+        const returnVal = parseFloat(returnSlider.value);
+        const increaseVal = parseFloat(increaseSlider.value);
+        if (sliderName === 'annualReturn') {
+          // annualIncrease max always equals the current annualReturn value
+          const prevReturn = parseFloat(returnSlider.dataset.prev ?? returnVal);
+          returnSlider.dataset.prev = returnVal;
+          const delta = returnVal - prevReturn;
+          // move increase in the opposite direction by the same delta, then clamp to [0, returnVal]
+          const newIncrease = Math.min(returnVal, Math.max(0, increaseVal - delta));
+          increaseSlider.max = returnVal;
+          increaseSlider.value = newIncrease.toFixed(1);
+          const maxEl = root.querySelector('[data-slider="annualIncrease"] .saving-plan-slider-value');
+          if (maxEl) maxEl.textContent = formatDecimal(returnVal);
+        } else if (sliderName === 'annualIncrease' && increaseVal > returnVal) {
+          increaseSlider.value = returnVal;
+        }
+      }
+      syncSliderDisplays(root);
+
+      clearTimeout(sliderDebounceTimer);
+      sliderDebounceTimer = setTimeout(async () => {
+        const tweakInputs = {
+          ...(state.calculatedInputs || readInputs(root)),
+          ...readSliders(root),
+        };
+        state.tweakActive = true;
+        state.tweakInputs = tweakInputs;
+        await renderNewPlan(state, data, tweakInputs);
+        await renderChart(state, data);
+      }, 2000);
+    });
+  });
+
+  // Initial render — show projected balance with monthly=0 so result panel isn't empty on load.
+  liveUpdate();
+}
+
+export default async function decorate(block) {
+  const [cfg] = await Promise.all([fetchSavingToolsConfig(), fetchConfigs()]);
+
+  const apiUrl = cfg['saving-plan-api-url']
+    || (typeof window !== 'undefined' && window.SAVING_PLAN_API_URL)
+    || '';
+  const calcUrl = cfg['saving-plan-calculator-url']
+    || (typeof window !== 'undefined' && window.SAVING_PLAN_CALCULATOR_API_URL)
+    || 'https://bbl-sea-apim-p.azure-api.net/api/FinancialCalculationAPI/DEVELOP/FinancialCalculator/v1.2/Calculator/TargetCalculator';
+  const apimKey = cfg['saving-plan-apim-key']
+    || (typeof window !== 'undefined' && window.SAVING_PLAN_APIM_KEY)
+    || '7d1b09abe2ea413cbf95b2d99782ed37';
+
+  const data = await fetchSavingPlanData(apiUrl);
+  block.innerHTML = buildShellMarkup(data);
+  block.classList.add('saving-plan-block');
+
+  const state = {
+    root: block,
+    config: { apiUrl, calcUrl, apimKey },
+    calculatedInputs: null,
+    calculatedCalculation: null,
+    tweakActive: false,
+    tweakInputs: null,
+    tweakCalculation: null,
+    chartInstance: null,
+  };
+
+  renderInfoCard(state, data);
+  renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
+  attachHandlers(state, data);
+}

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saving Plan — Static Preview</title>
+  <link rel="stylesheet" href="./saving-plan.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      background: #fff;
+      color: #1a1a1a;
+    }
+
+    .preview-note {
+      max-width: 1200px;
+      margin: 16px auto;
+      padding: 12px 16px;
+      background: #fff8e1;
+      border: 1px solid #f0d774;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: #5b4500;
+    }
+
+    .preview-note code {
+      background: rgba(0, 0, 0, 0.06);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <p class="preview-note">
+    CMS data is mocked locally. Calculator calls go to the real BBL API — update
+    <code>REAL_CALC_URL</code> in the script below if the endpoint changes.
+  </p>
+
+  <div id="saving-plan-mount"></div>
+
+  <script>
+    // Mock content the preview pretends the API returns.
+    // Mirrors the EMPTY_SHAPE keys in saving-plan.js, populated with the BBL reference copy.
+    const MOCK_DATA = {
+      labels: {
+        sectionTitle: "Plan your savings goal",
+        calculateTitle: "Calculate your monthly savings",
+        resultTitle: "Result",
+        tweakTitle: "Let's tweak your plan to see the difference",
+        newPlanTitle: "New savings plan",
+        productSectionTitle: "Start a good investment plan to reduce your monthly savings requirement",
+        additionalInfoTitle: "Additional Information",
+        additionalInfoLinkText: "Click to learn more about Investment conditions, Tax benefits and Breaches of RMF / Thai ESG investment conditions.",
+        additionalInfoUrl: "#",
+        disclaimerTitle: "Disclaimer",
+        disclaimer: "<ul><li>Financial Calculator aims to make you aware of savings and investments to help you to reach your financial goals and manage your taxes. It is not intended to introduce any deposit, loan, investment, portfolio management or bancassurance product. Nor is there an intention to offer or invite you to buy any Bangkok Bank product or service. If you would like to make a deposit, or apply for a loan or buy bancassurance, please ask for information and study the product details.</li><li>Financial Calculator is a tool to help prepare for various financial goals, using a calculation formula based on personal financial planning. Information or formulae used for the calculation may be incomplete due to data limitation or changes to terms and conditions specified by the Revenue Department. Therefore, the Financial Calculator cannot be used as evidence regarding the achievement of financial goals.</li><li>Financial Calculator cannot be used as evidence or used to perform any transaction with Bangkok Bank. Bangkok Bank does not guarantee the accuracy, completeness and integrity of Financial Calculator.</li></ul>",
+        fields: {
+          goal: "*Select savings goal",
+          goalAmount: "Goal amount (baht)",
+          goalPeriod: "Goal period (years)",
+          balance: "Current savings balance (baht)",
+          annualReturn: "Expected annual return (%)",
+          annualIncrease: "Expected annual savings increase (%)"
+        },
+        buttons: { clear: "Clear", calculate: "Calculate" },
+        result: {
+          futureValueTemplate: "You will have {amount}* baht in {years} year(s)",
+          monthlySavingLabel: "You need to save each month",
+          currency: "baht",
+          footnote: "*Including inflation rate of 1.5% p.a. and expected annual return 18.25%"
+        },
+        newPlan: {
+          futureValueTemplate: "You will have {amount}* baht in {years} year(s)",
+          monthlySavingLabel: "You need to save each month",
+          footnote: "Increase savings each year by 2%<br>*Including inflation rate of 1.5% p.a. and expected annual return 18.25%"
+        },
+        chart: {
+          title: "Savings growth over time",
+          xAxis: "Year(s)",
+          yAxis: "Amount (baht)",
+          legendResult: "Result",
+          legendFixed: "Fixed savings",
+          legendStepUp: "Step-up savings",
+          legendNewPlan: "New savings plan",
+          legendStepUpAdjusted: "Step-up savings",
+          monthlySavingsTag: "Monthly savings",
+          goalAmountTag: "Goal amount"
+        },
+        validation: {
+          goalAmount: "Minimum must not exceed 10000",
+          annualReturn: "Minimum must not exceed 0.1",
+          goalPeriod: "Minimum must not exceed 1",
+          crossFieldIncreaseExceedsReturn: "Annual saving increase rate must not be greater than expected annual return rate"
+        }
+      },
+      defaults: {
+        goalAmount: 500000,
+        goalPeriod: 5,
+        balance: 0,
+        annualReturn: 0.5,
+        annualIncrease: 0
+      },
+      validation: {
+        goalAmount: { min: 10000 },
+        goalPeriod: { min: 1, max: 50 },
+        balance: { min: 0 },
+        annualReturn: { min: 0.1, max: 100 },
+        annualIncrease: { min: 0, max: 100 }
+      },
+      goals: [
+        { key: "marriage", label: "Marriage", infoTitle: "Plan your special day with confidence", infoBg: "", infoCta: "Read more", infoUrl: "#" },
+        { key: "house", label: "New house", infoTitle: "Manage debt smartly for peace of mind", infoBg: "", infoCta: "Read more", infoUrl: "#" },
+        { key: "car", label: "Car", infoTitle: "Drive your dream car sooner", infoBg: "", infoCta: "Read more", infoUrl: "#" },
+        { key: "other", label: "Other", infoTitle: "Save for any goal that matters to you", infoBg: "", infoCta: "Read more", infoUrl: "#" }
+      ],
+      products: [
+        {
+          title: "e-Savings Account",
+          description: "Boost your savings with an e-Saving account and move closer to your financial goals with confidence. Enjoy easy account opening and secure, seamless transactions at your fingertips.",
+          ctaText: "Read more",
+          ctaUrl: "#",
+          image: ""
+        },
+        {
+          title: "Mutual Funds",
+          description: "Diversify your investment effectively for long-term growth, with fund options tailored to every financial goal.",
+          ctaText: "Read more",
+          ctaUrl: "#",
+          image: ""
+        },
+        {
+          title: "Be Together Save+",
+          description: "Start saving for you and your loved ones with opportunities to receive profits from dividends.",
+          ctaText: "Read more",
+          ctaUrl: "#",
+          image: ""
+        }
+      ]
+    };
+
+    // Stub fetch for both CMS data and calculator.
+    // Real BBL calculator API — used for both Result and New Plan calculations.
+    const REAL_CALC_URL = "https://publish-p185039-e1938068.adobeaemcloud.com/api/FinancialCalculationAPI/DEVELOP/FinancialCalculator/v1.2/Calculator/TargetCalculator";
+    window.SAVING_PLAN_CALCULATOR_API_URL = REAL_CALC_URL;
+
+    // Only mock the CMS content URL; calculator calls go to the real API.
+    const MOCK_URL = "/__saving_plan_mock__";
+    window.SAVING_PLAN_API_URL = MOCK_URL;
+    const _origFetch = window.fetch.bind(window);
+    window.fetch = async (input, init) => {
+      const url = typeof input === "string" ? input : input?.url;
+      if (url === MOCK_URL) {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => MOCK_DATA
+        };
+      }
+      return _origFetch(input, init);
+    };
+  </script>
+
+  <script type="module">
+    import decorate from "./saving-plan.js";
+    const mount = document.getElementById("saving-plan-mount");
+    decorate(mount).catch((err) => {
+      mount.innerHTML = `<pre style="color:#c00;padding:16px;">Preview failed: ${err.message}</pre>`;
+      // eslint-disable-next-line no-console
+      console.error(err);
+    });
+  </script>
+</body>
+</html>
