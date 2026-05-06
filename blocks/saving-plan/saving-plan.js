@@ -1,23 +1,13 @@
 // Saving Plan block — Bangkok Bank-style calculator.
-// All copy / dropdown options / disclaimer / products come from a runtime API.
-// API URLs and keys are loaded at runtime from /savingtool-config.json (AEM spreadsheet).
+// All content, labels, goals, and defaults come from /savingtool-config.json (AEM spreadsheet).
 // Preview: see preview.html (it stubs window.fetch with mock data).
 
-// eslint-disable-next-line import/no-unresolved
-import { fetchConfigs } from '../../scripts/config.js';
-
-async function fetchSavingToolsConfig() {
+async function fetchSavingToolJson() {
   try {
     const resp = await fetch('/savingtool-config.json');
-    if (!resp.ok) return {};
-    const json = await resp.json();
-    const cfg = {};
-    const configRows = json['SavingTool-config']?.data || json.data || [];
-    const commonRows = json.common?.data || [];
-    [...configRows, ...commonRows].forEach(({ Key, Value }) => { if (Key) cfg[Key] = Value; });
-    return cfg;
+    return resp.ok ? resp.json() : null;
   } catch {
-    return {};
+    return null;
   }
 }
 
@@ -123,17 +113,6 @@ async function loadChartJs() {
   return Chart;
 }
 
-async function fetchSavingPlanData(apiUrl) {
-  if (!apiUrl) return EMPTY_SHAPE;
-  try {
-    const response = await fetch(apiUrl);
-    if (!response.ok) return EMPTY_SHAPE;
-    return await response.json();
-  } catch (e) {
-    return EMPTY_SHAPE;
-  }
-}
-
 function formatNumber(value) {
   if (!Number.isFinite(value)) return '0';
   return Math.round(value).toLocaleString('en-US');
@@ -157,6 +136,121 @@ function fillTemplate(template, vars) {
     (acc, [k, v]) => acc.replace(new RegExp(`\\{${k}\\}`, 'g'), v),
     template,
   );
+}
+
+function buildDataFromConfig(json, lang) {
+  const langData = json[lang]?.data || json.en?.data || [];
+  const commonData = json.common?.data || [];
+
+  const L = {};
+  langData.forEach(({ Key, Value }) => { if (Key) L[Key] = Value; });
+  const C = {};
+  commonData.forEach(({ Key, Value }) => { if (Key) C[Key] = Value; });
+
+  const unit = L['common-unit'] || 'baht';
+  const noteText = (L['common-noteText'] || `*Including inflation rate of ${INFLATION_RATE}% p.a.`)
+    .replace('{inflationRate}', String(INFLATION_RATE));
+  const noteReturn = (L['common-noterecommendSavingMonthly'] || 'and expected annual return {expectedReturnRate}%')
+    .replace('{expectedReturnRate}', '{return}');
+  const footnoteReturnTemplate = `${noteText} ${noteReturn}`;
+  const footnoteIncreaseTemplate = (L['common-noteincreasedSavingMonthly']
+    || 'Increase savings each year by {annualSavingIncreaseRate}')
+    .replace('{annualSavingIncreaseRate}', '{increase}%');
+  const futureValueTemplate = (L['common-toHaveMoney'] || `You will have {amount}* ${unit} in {years} year(s)`)
+    .replace('{money}', '{amount}').replace('{unit}', unit);
+
+  const minError = L['validation-minValueError'] || 'Minimum must not exceed {min}';
+
+  const goalKeys = [...new Set(
+    Object.keys(L)
+      .filter((k) => k.startsWith('savingGoals-') && k.endsWith('-label'))
+      .map((k) => k.slice('savingGoals-'.length, -'-label'.length)),
+  )];
+  const goals = goalKeys.map((gk) => ({
+    key: L[`savingGoals-${gk}-value`] || gk,
+    label: L[`savingGoals-${gk}-label`] || gk,
+    infoTitle: L[`cards-${gk}-title`] || '',
+    infoBg: L[`cards-${gk}-backgroundColor`] || '',
+    infoCta: L[`cards-${gk}-description`] || '',
+    infoUrl: L[`cards-${gk}-link`] || '#',
+    imageUrl: L[`cards-${gk}-imageUrl`] || '',
+  }));
+
+  return {
+    labels: {
+      sectionTitle: L['common-title'] || '',
+      calculateTitle: L['common-step1Title'] || '',
+      resultTitle: L['common-resultsTitle'] || '',
+      tweakTitle: L['common-adjustCalculationTitle'] || '',
+      newPlanTitle: L['common-newCalculationResultsTitle'] || '',
+      productSectionTitle: '',
+      additionalInfoTitle: '',
+      additionalInfoLinkText: '',
+      additionalInfoUrl: '',
+      disclaimerTitle: '',
+      disclaimer: '',
+      fields: {
+        goal: L['inputs-savingGoal'] || '',
+        goalAmount: L['inputs-desiredSavingAmount'] || '',
+        goalPeriod: L['inputs-yearsToSave'] || '',
+        balance: L['inputs-savedAmount'] || '',
+        annualReturn: L['inputs-expectedReturnRate'] || '',
+        annualIncrease: L['inputs-annualSavingIncreaseRate'] || '',
+      },
+      buttons: {
+        clear: L['common-clearButton'] || '',
+        calculate: L['common-calculateButtonText'] || '',
+      },
+      result: {
+        futureValueTemplate,
+        monthlySavingLabel: L['results-recommendSavingMonthly'] || '',
+        currency: unit,
+        footnote: '',
+        footnoteReturnTemplate,
+      },
+      newPlan: {
+        futureValueTemplate,
+        monthlySavingLabel: L['results-increasedSavingMonthly'] || '',
+        footnote: '',
+        footnoteIncreaseTemplate,
+        footnoteReturnTemplate,
+      },
+      chart: {
+        title: '',
+        xAxis: L['results-graph-xAxisLabel'] || '',
+        yAxis: L['results-graph-yAxisLabel'] || '',
+        legendResult: L['results-graph-originalCalculationLabel'] || '',
+        legendFixed: L['results-graph-constantSavingLabel'] || '',
+        legendStepUp: L['results-graph-savingIncreasedSteppedLabel'] || '',
+        legendNewPlan: L['results-graph-newCalculationLabel'] || '',
+        legendStepUpAdjusted: L['results-graph-savingIncreasedSteppedLabel'] || '',
+        monthlySavingsTag: L['results-graph-monthlySavingLabel'] || '',
+        goalAmountTag: L['results-graph-savingGoalLabel'] || '',
+      },
+      validation: {
+        goalAmount: fillTemplate(minError, { min: '10,000' }),
+        annualReturn: fillTemplate(minError, { min: '0.1' }),
+        goalPeriod: fillTemplate(minError, { min: '1' }),
+        crossFieldIncreaseExceedsReturn: L['validation-annualSavingIncreaseRateError'] || '',
+      },
+    },
+    defaults: {
+      goalAmount: Number(C['defaultFormValues-desiredSavingAmount']) || 500000,
+      goalPeriod: Number(C['defaultFormValues-yearsToSave']) || 5,
+      balance: Number(C['defaultFormValues-savedAmount']) || 0,
+      annualReturn: Number(C['defaultFormValues-expectedReturnRate']) || 0.5,
+      annualIncrease: Number(C['defaultFormValues-annualSavingIncreaseRate']) || 0,
+    },
+    validation: {
+      goalAmount: { min: 10000 },
+      goalPeriod: { min: 1, max: 50 },
+      balance: { min: 0 },
+      annualReturn: { min: 0.1, max: 100 },
+      annualIncrease: { min: 0, max: 100 },
+    },
+    goals,
+    products: [],
+  };
 }
 
 function escapeHtml(value) {
@@ -1390,37 +1484,27 @@ function attachHandlers(state, data) {
 }
 
 export default async function decorate(block) {
-  const [cfg] = await Promise.all([fetchSavingToolsConfig(), fetchConfigs()]);
+  const json = await fetchSavingToolJson();
 
-  const apiUrl = cfg['saving-plan-api-url']
-    || (typeof window !== 'undefined' && window.SAVING_PLAN_API_URL)
-    || '';
-  const calcUrl = cfg['saving-plan-calculator-url']
-    || (typeof window !== 'undefined' && window.SAVING_PLAN_CALCULATOR_API_URL)
-    || 'https://bbl-sea-apim-p.azure-api.net/api/FinancialCalculationAPI/DEVELOP/FinancialCalculator/v1.2/Calculator/TargetCalculator';
-  const apimKey = cfg['saving-plan-apim-key']
+  const configRows = json?.['SavingTool-config']?.data || [];
+  const CFG = {};
+  configRows.forEach(({ Key, Value }) => { if (Key) CFG[Key] = Value; });
+
+  // eslint-disable-next-line max-len
+  const calcUrl = CFG['saving-plan-calculator-url'] || (typeof window !== 'undefined' && window.SAVING_PLAN_CALCULATOR_API_URL) || 'https://bbl-sea-apim-p.azure-api.net/api/FinancialCalculationAPI/DEVELOP/FinancialCalculator/v1.2/Calculator/TargetCalculator';
+  const apimKey = CFG['saving-plan-apim-key']
     || (typeof window !== 'undefined' && window.SAVING_PLAN_APIM_KEY)
     || '7d1b09abe2ea413cbf95b2d99782ed37';
 
-  const data = await fetchSavingPlanData(apiUrl);
-
-  // Override defaults from the common sheet if the CMS API didn't supply them.
-  if (cfg['defaultFormValues-desiredSavingAmount']) {
-    data.defaults.goalAmount = Number(cfg['defaultFormValues-desiredSavingAmount']) || data.defaults.goalAmount;
-  }
-  if (cfg['defaultFormValues-yearsToSave']) {
-    data.defaults.goalPeriod = Number(cfg['defaultFormValues-yearsToSave']) || data.defaults.goalPeriod;
-  }
-  if (cfg['defaultFormValues-savedAmount']) {
-    data.defaults.balance = Number(cfg['defaultFormValues-savedAmount']) || data.defaults.balance;
-  }
+  const lang = (document.documentElement.lang || 'en').split('-')[0];
+  const data = json ? buildDataFromConfig(json, lang) : EMPTY_SHAPE;
 
   block.innerHTML = buildShellMarkup(data);
   block.classList.add('saving-plan-block');
 
   const state = {
     root: block,
-    config: { apiUrl, calcUrl, apimKey },
+    config: { calcUrl, apimKey },
     calculatedInputs: null,
     calculatedCalculation: null,
     tweakActive: false,
