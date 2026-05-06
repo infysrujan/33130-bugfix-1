@@ -12,8 +12,9 @@ async function fetchSavingToolsConfig() {
     if (!resp.ok) return {};
     const json = await resp.json();
     const cfg = {};
-    const rows = json['SavingTool-config']?.data || json.data || [];
-    rows.forEach(({ Key, Value }) => { if (Key) cfg[Key] = Value; });
+    const configRows = json['SavingTool-config']?.data || json.data || [];
+    const commonRows = json.common?.data || [];
+    [...configRows, ...commonRows].forEach(({ Key, Value }) => { if (Key) cfg[Key] = Value; });
     return cfg;
   } catch {
     return {};
@@ -1402,6 +1403,18 @@ export default async function decorate(block) {
     || '7d1b09abe2ea413cbf95b2d99782ed37';
 
   const data = await fetchSavingPlanData(apiUrl);
+
+  // Override defaults from the common sheet if the CMS API didn't supply them.
+  if (cfg['defaultFormValues-desiredSavingAmount']) {
+    data.defaults.goalAmount = Number(cfg['defaultFormValues-desiredSavingAmount']) || data.defaults.goalAmount;
+  }
+  if (cfg['defaultFormValues-yearsToSave']) {
+    data.defaults.goalPeriod = Number(cfg['defaultFormValues-yearsToSave']) || data.defaults.goalPeriod;
+  }
+  if (cfg['defaultFormValues-savedAmount']) {
+    data.defaults.balance = Number(cfg['defaultFormValues-savedAmount']) || data.defaults.balance;
+  }
+
   block.innerHTML = buildShellMarkup(data);
   block.classList.add('saving-plan-block');
 
