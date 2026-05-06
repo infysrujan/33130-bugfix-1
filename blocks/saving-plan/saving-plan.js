@@ -1,6 +1,6 @@
 // Saving Plan block — Bangkok Bank-style calculator.
 // All copy / dropdown options / disclaimer / products come from a runtime API.
-// API URLs and keys are loaded at runtime from /savingtools-config.json (AEM spreadsheet).
+// API URLs and keys are loaded at runtime from /savingtool-config.json (AEM spreadsheet).
 // Preview: see preview.html (it stubs window.fetch with mock data).
 
 // eslint-disable-next-line import/no-unresolved
@@ -8,7 +8,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 
 async function fetchSavingToolsConfig() {
   try {
-    const resp = await fetch('/savingtools-config.json');
+    const resp = await fetch('/savingtool-config.json');
     if (!resp.ok) return {};
     const json = await resp.json();
     const cfg = {};
