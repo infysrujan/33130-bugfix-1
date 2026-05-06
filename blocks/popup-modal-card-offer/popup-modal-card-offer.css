@@ -1,155 +1,182 @@
 .floating-popup-config-hidden {
-    display: none;
+  display: none;
 }
 
 .floating-popup {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    background: var(--bbl-color-black-alpha-40);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--bbl-color-black-alpha-40);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 .floating-popup-visible {
-    opacity: 1;
-    pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .floating-popup-inner {
-    position: relative;
-    width: 86.1333%;
-    margin: 0 auto;
-    padding: 0 var(--bbl-space-250) var(--bbl-space-250);
-    border-radius: 0.625rem;
-    background: linear-gradient(
-        115.36deg,
-        var(--bbl-color-white) 4.06%,
-        var(--bbl-color-white-alpha-40) 60%
-    );
-    box-shadow: 0.4375rem var(--bbl-space-base) 0.625rem var(--bbl-color-black-alpha-10);
-    backdrop-filter: blur(1.25rem);
-    overflow: visible;
-    border: 0.0625rem solid var(--bbl-color-white);
-    transform: translateY(1.5rem);
-    transition: transform 0.35s ease;
+  position: relative;
+  width: 86.1333%;
+  margin: 0 auto;
+  padding: 0 var(--bbl-space-250) var(--bbl-space-250);
+  border-radius: 0.625rem;
+  background: linear-gradient(115.36deg,
+      var(--bbl-color-white) 4.06%,
+      var(--bbl-color-white-alpha-40) 60%);
+  box-shadow: 0.4375rem var(--bbl-space-base) 0.625rem var(--bbl-color-black-alpha-10);
+  backdrop-filter: blur(1.25rem);
+  overflow: visible;
+  border: 0.0625rem solid var(--bbl-color-white);
+  transform: translateY(1.5rem);
+  transition: transform 0.35s ease;
 }
 
 .floating-popup-visible .floating-popup-inner {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 
 .floating-popup-close {
-    position: absolute;
-    right: var(--bbl-space-150);
-    top: -1.3125rem;
-    width: 2.5rem;
-    height: 2.5rem;
-    padding: 0;
-    border: 0.125rem solid var(--bbl-color-grey-150);
-    border-radius: 1.625rem;
-    background: var(--bbl-color-white);
-    color: var(--bbl-color-gray-142);
-    cursor: pointer;
-    z-index: 1;
+  position: absolute;
+  right: var(--bbl-space-150);
+  top: -1.3125rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0.125rem solid var(--bbl-color-grey-150);
+  border-radius: 1.625rem;
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-gray-142);
+  cursor: pointer;
+  z-index: 1;
 }
 
 .floating-popup-close::before,
 .floating-popup-close::after {
-    content: "";
-    position: absolute;
-    height: 1rem;
-    width: 0.125rem;
-    background: var(--bbl-color-gray-142);
+  content: "";
+  position: absolute;
+  height: 1rem;
+  width: 0.125rem;
+  background: var(--bbl-color-gray-142);
 }
 
 .floating-popup-close::before {
-    transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 .floating-popup-close::after {
-    transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 .floating-popup-body {
-    margin-top: -3.75rem;
-    line-height: 100%;
+  margin-top: -3.75rem;
+  line-height: 100%;
 }
 
 .floating-popup-body img {
-    margin-top: -8.125rem;
-    height: auto;
+  margin-top: -8.125rem;
+  height: auto;
 }
 
 .floating-popup-content {
-    margin-top: 0.625rem;
-    color: var(--bbl-color-truthful-blue);
+  margin-top: 0.625rem;
+  color: var(--bbl-color-truthful-blue);
 }
 
- .floating-popup-title :is(h1, h2, h3, h4, h5, h6) {
-    margin: 0;
-    font-size: 1.4rem;
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 1.6406rem;
+.floating-popup-title :is(h1, h2, h3, h4, h5, h6) {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.6406rem;
+}
+
+:lang(th) {
+  .floating-popup-title :is(h1) {
+    line-height: 2.4375rem;
+  }
+
+  .floating-popup-title :is(h2) {
+    line-height: 2.0625rem;
+  }
 }
 
 .floating-popup-description p {
-    margin-block: 0.625rem 0;
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 1.2031rem;
+  margin-block: 0.625rem 0;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.2031rem;
 }
 
 .floating-popup-inner .primary {
-    display: block;
-    text-align: center;
-    margin: 1.875rem auto 0;
-    min-width: 8.625rem;
-    max-width: 8.625rem;
-    width: 100%;
-    padding: 0;
-    font-weight: var(--bbl-font-weight-regular);
+  display: block;
+  text-align: center;
+  margin: 1.875rem auto 0;
+  min-width: 8.625rem;
+  max-width: 8.625rem;
+  width: 100%;
+  padding: 0;
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 @media (width > 47.5rem) {
-    .floating-popup {
-        align-items: flex-end;
-        justify-content: flex-end;
-    }
+  .floating-popup {
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
 
-    .floating-popup-inner {
-        width: 38.275%;
-        bottom: 2%;
-        margin: 0;
-        right: 1.3125rem;
-        padding: 0 1.875rem var(--bbl-space-250);
-    }
+  .floating-popup-inner {
+    width: 38.275%;
+    bottom: 2%;
+    margin: 0;
+    right: 1.3125rem;
+    padding: 0 1.875rem var(--bbl-space-250);
+  }
 
-     .floating-popup-title :is(h1, h2, h3, h4, h5, h6) {
-        font-size: 1.3125rem;
-    }
+  .floating-popup-title :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 1.3125rem;
+  }
 
-    .floating-popup-description p {
-        font-size: var(--bbl-font-size-b2);
-    }
+  .floating-popup-description p {
+    font-size: var(--bbl-font-size-b2);
+  }
 }
 
 @media (width > 64rem) {
-    .floating-popup-inner {
-        right: 1%;
-        width: 35.618%;
+  .floating-popup-inner {
+    right: 1%;
+    width: 35.618%;
+  }
+
+  .floating-popup-title :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 1.5rem;
+    line-height: 1.875rem;
+  }
+
+
+  :lang(th) {
+    .floating-popup-title :is(h1) {
+      line-height: 5.5rem;
     }
 
-    .floating-popup-title :is(h1, h2, h3, h4, h5, h6){
-        font-size: 1.5rem;
-        line-height: 1.875rem;
+    .floating-popup-title :is(h2) {
+      line-height: 4.875rem;
     }
 
-    .floating-popup-description p {
-        font-size: var(--bbl-font-size-b2);
-        line-height: 1.375rem;
+    .floating-popup-title :is(h3) {
+      line-height: 3.75rem;
     }
+
+    .floating-popup-title :is(h4) {
+      line-height: 2.5rem;
+    }
+  }
+
+  .floating-popup-description p {
+    font-size: var(--bbl-font-size-b2);
+    line-height: 1.375rem;
+  }
 }

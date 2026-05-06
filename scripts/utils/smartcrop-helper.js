@@ -23,7 +23,7 @@ function createElement(tag, ...classNames) {
   return el;
 }
 
-export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt) {
+export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt, blockName) {
   const imgDesktop = pictureDesktop?.querySelector('img');
   const imgMobile = pictureMobile?.querySelector('img');
   // Extract alt text from a cell that may contain HTML
@@ -59,6 +59,17 @@ export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt
 
     return picture;
   }
+  if (blockName === 'multi-column-tiles') {
+    const img = createElement('img');
+    img.setAttribute('loading', 'lazy');
+    let allSrc = imgDesktop.getAttribute('src');
+    allSrc = cleanImgSrc(allSrc);
+
+    img.setAttribute('alt', altText || img.alt || '');
+    img.setAttribute('src', allSrc);
+    return img;
+  }
+
   const img = imgMobile || imgDesktop;
   if (!img) return null;
   return createOptimizedPicture(

@@ -39,6 +39,9 @@ export default function decorateTabs(main) {
       } else if (tabVariant === 'media-tab') {
         tabIcon = tabData['tab-icon-media'];
         tabIconAlt = tabData['tab-icon-alt-media'] || '';
+      } else if (tabVariant === 'icon-tab-carousel') {
+        tabIcon = tabData['tab-icon-carousel'];
+        tabIconAlt = tabData['tab-icon-alt-carousel'] || '';
       }
 
       // Get all content from this section (excluding section-metadata)
@@ -69,12 +72,10 @@ export default function decorateTabs(main) {
 
   // Create tabs blocks for each group
   tabGroups.forEach((group) => {
-    // Filter out tabs with empty names or no content
-    const validTabs = group.filter(
-      (tab) => tab.tabName && tab.tabName.trim() !== '' && tab.content.length > 0,
-    );
+    // Filter out tabs with empty names only — allow tabs with no authored content
+    // (content can be injected dynamically by blocks like promotional-card-selector)
+    const validTabs = group.filter((tab) => tab.tabName && tab.tabName.trim() !== '');
 
-    // Skip if no valid tabs remain
     if (validTabs.length === 0) {
       return;
     }
@@ -84,6 +85,23 @@ export default function decorateTabs(main) {
 
     // For media-tab, create image row first
     if (firstVariant === 'media-tab') {
+      const imageCells = [];
+      validTabs.forEach(({ tabIcon, tabIconAlt }) => {
+        if (tabIcon) {
+          const imageCell = document.createElement('div');
+          const img = document.createElement('img');
+          img.src = tabIcon;
+          img.alt = tabIconAlt || '';
+          imageCell.appendChild(img);
+          imageCells.push(imageCell);
+        }
+      });
+      if (imageCells.length > 0) {
+        tabsBlockRows.push(imageCells);
+      }
+    }
+
+    if (firstVariant === 'icon-tab-carousel') {
       const imageCells = [];
       validTabs.forEach(({ tabIcon, tabIconAlt }) => {
         if (tabIcon) {
@@ -175,7 +193,7 @@ export default function decorateTabs(main) {
     }
 
     // Set data attributes from other metadata fields (same as decorateSections)
-    const ignoredMetaKeys = ['style', 'id', 'tab-name', 'tab-variant', 'tab-icon', 'tab-icon-alt-tiled', 'tab-icon-media', 'tab-icon-alt-media'];
+    const ignoredMetaKeys = ['style', 'id', 'tab-name', 'tab-variant', 'tab-icon', 'tab-icon-alt-tiled', 'tab-icon-media', 'tab-icon-alt-media', 'tab-icon-carousel', 'tab-icon-alt-carousel'];
     Object.keys(firstSectionMeta).forEach((key) => {
       if (!ignoredMetaKeys.includes(key)) {
         tabsSection.dataset[toCamelCase(key)] = firstSectionMeta[key];

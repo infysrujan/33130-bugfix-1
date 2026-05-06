@@ -307,6 +307,8 @@
 
 /* Calculate button */
 .currency-converter-expanded .converter-expanded-btn {
+  padding-right: 3.75rem;
+  position: relative;
   width: 100%;
   max-width: min-content;
   height: 2.75rem;
@@ -318,7 +320,6 @@
   font-weight: 500;
   cursor: pointer;
   transition: opacity 0.3s ease;
-  position: relative;
   text-align: center;
   display: inline-flex;
   align-items: center;
@@ -337,6 +338,9 @@
   transition: transform 0.2s ease-in-out;
   height: 1.5625rem;
   font-size: 1.5625rem;
+  position: absolute;
+  right: 0.625rem; 
+  top: 0.4375rem;
 }
 
 .currency-converter-expanded .converter-expanded-btn:hover {
@@ -462,6 +466,7 @@
 
   .currency-converter-expanded .converter-expanded-btn::after {
     height: 100%;
+    top: 0.1875rem;
   }
 
   .currency-converter-expanded .converter-expanded-disclaimer {

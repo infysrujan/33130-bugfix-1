@@ -1,266 +1,356 @@
 .teaser-bg-image-wrapper {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .teaser-bg-image-content {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
-.teaser-with-bg-image-container
-    .default-content-wrapper
-    :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 1.4rem;
-    font-weight: var(--bbl-font-family-regular);
-    line-height: 1.375rem;
-    letter-spacing: -0.0125rem;
+.teaser-with-bg-image-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+  font-size: 1.4rem;
+  font-weight: var(--bbl-font-family-regular);
+  line-height: 1.375rem;
+  letter-spacing: -0.0125rem;
+}
+
+:lang(th) {
+  .teaser-with-bg-image-container .default-content-wrapper :is(h1) {
+    line-height: 2.4375rem;
+  }
+
+  .teaser-with-bg-image-container .default-content-wrapper :is(h2) {
+    line-height: 2.0625rem;
+  }
+
+  .teaser-bg-image-title :is(h1) {
+    line-height: 2.4375rem;
+  }
+
+  .teaser-bg-image-title :is(h2) {
+    line-height: 2.0625rem;
+  }
+
+  .teaser-bg-image-card-title :is(h1) {
+    line-height: 2.4375rem;
+  }
+
+  .teaser-bg-image-card-title :is(h2) {
+    line-height: 2.0625rem;
+  }
 }
 
 .teaser-bg-image-card-title :is(h1, h2, h3, h4, h5, h6)::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    width: 2.5625rem;
-    bottom: 0;
-    height: 0.0625rem;
-    background: var(--bbl-color-grey-150);
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 2.5625rem;
+  bottom: 0;
+  height: 0.0625rem;
+  background: var(--bbl-color-grey-150);
 }
 
 .teaser-bg-image-bg {
-    width: 100%;
-    overflow: hidden;
+  width: 100%;
+  overflow: hidden;
 }
 
 .teaser-bg-image-bg img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .teaser-bg-image-overlay {
-    padding-block: 1.875rem;
-    display: flex;
-    order: 1;
-    flex-direction: column;
+  padding-block: 1.875rem;
+  display: flex;
+  order: 1;
+  flex-direction: column;
 }
 
 .teaser-bg-image-title :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 1.75rem;
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 1.75rem;
-    margin: 0;
-    color: var(--bbl-color-black);
-    padding-bottom: 0.625rem;
+  font-size: 1.75rem;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.75rem;
+  margin: 0;
+  color: var(--bbl-color-black);
+  padding-bottom: 0.625rem;
 }
 
 .teaser-bg-image-description p {
-    margin: 0;
-    color: var(--bbl-color-grey-150);
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 0.875rem;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 10;
-    -webkit-box-orient: vertical;
+  margin: 0;
+  color: var(--bbl-color-grey-150);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 0.875rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 10;
+  -webkit-box-orient: vertical;
 }
 
 .teaser-bg-image-cards {
-    display: flex;
-    flex-direction: column;
-    order: 2;
+  display: flex;
+  flex-direction: column;
+  order: 2;
 }
 
 .teaser-bg-image-card {
-    position: relative;
-    border-radius: 0.4375rem;
-    overflow: hidden;
-    margin-bottom: var(--bbl-space-250);
+  position: relative;
+  border-radius: 0.4375rem;
+  overflow: hidden;
+  margin-bottom: var(--bbl-space-250);
 }
 
 .teaser-bg-image-card-image {
-    position: absolute;
-    inset: 0;
-    border-radius: 0.4375rem;
+  position: absolute;
+  inset: 0;
+  border-radius: 0.4375rem;
 }
 
 .teaser-bg-image-card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .teaser-bg-image-card-body {
-    position: relative;
-    z-index: 1;
-    padding: 1.25rem;
-    height: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    background: var(--bbl-color-white-alpha-60);
+  position: relative;
+  z-index: 1;
+  padding: 1.25rem;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: var(--bbl-color-white-alpha-60);
 }
 
 .teaser-bg-image-card-title :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 1.3125rem;
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 1.4218rem;
-    padding-bottom: var(--bbl-space-250);
-    margin-block: 0 var(--bbl-space-250);
-    color: var(--bbl-color-black);
-    position: relative;
+  font-size: 1.3125rem;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.4218rem;
+  padding-bottom: var(--bbl-space-250);
+  margin-block: 0 var(--bbl-space-250);
+  color: var(--bbl-color-black);
+  position: relative;
 }
 
 .teaser-bg-image-card-description p {
-    margin: 0;
-    color: var(--bbl-color-grey-85);
-    line-height: 1.1244rem;
-    font-weight: var(--bbl-font-weight-regular);
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 10;
-    -webkit-box-orient: vertical;
+  margin: 0;
+  color: var(--bbl-color-grey-85);
+  line-height: 1.1244rem;
+  font-weight: var(--bbl-font-weight-regular);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 10;
+  -webkit-box-orient: vertical;
 }
 
 .teaser-bg-image-cta {
-    order: 3;
-    width: 100%;
-    box-sizing: border-box;
+  order: 3;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .teaser-bg-image-cta a {
-    min-width: 8.75rem;
-    max-width: none;
-    display: flex;
-    box-sizing: border-box;
-    width: 100%;
-    text-align: center;
-    justify-content: center;
+  min-width: 8.75rem;
+  max-width: none;
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
 }
 
 @media (width > 47.5rem) {
-    .teaser-bg-image-wrapper {
-        position: relative;
-        overflow: hidden;
+  .teaser-bg-image-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .teaser-bg-image-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .teaser-bg-image-overlay {
+    position: relative;
+    z-index: 2;
+    padding-block: 1.875rem 0;
+    width: 100%;
+    max-width: none;
+  }
+
+  .teaser-bg-image-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .teaser-bg-image-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--bbl-color-black-alpha-10);
+    pointer-events: none;
+  }
+
+  .teaser-bg-image-title :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--bbl-color-white);
+    padding: 0;
+    font-size: 1.4rem;
+    max-width: 37.5rem;
+    line-height: 1.3746rem;
+    margin-block: 0.625rem var(--bbl-space-250);
+  }
+
+  :lang(th) {
+    .teaser-bg-image-title :is(h1) {
+      line-height: 5.5rem;
     }
 
-    .teaser-bg-image-bg {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
+    .teaser-bg-image-title :is(h2) {
+      line-height: 4.875rem;
     }
 
-    .teaser-bg-image-overlay {
-        position: relative;
-        z-index: 2;
-        padding-block: 1.875rem 0;
-        width: 100%;
-        max-width: none;
+    .teaser-bg-image-title :is(h3) {
+      line-height: 3.75rem;
     }
 
-    .teaser-bg-image-content {
-        position: relative;
-        z-index: 2;
+    .teaser-bg-image-title :is(h4) {
+      line-height: 2.5rem;
     }
+  }
 
-    .teaser-bg-image-bg::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: var(--bbl-color-black-alpha-10);
-        pointer-events: none;
-    }
+  .teaser-bg-image-description p {
+    color: var(--bbl-color-white);
+    max-width: 37.5rem;
+  }
 
-    .teaser-bg-image-title :is(h1, h2, h3, h4, h5, h6) {
-        color: var(--bbl-color-white);
-        padding: 0;
-        font-size: 1.4rem;
-        max-width: 37.5rem;
-        line-height: 1.3746rem;
-        margin-block: 0.625rem var(--bbl-space-250);
-    }
+  .teaser-bg-image-cards {
+    position: relative;
+    z-index: 2;
+    flex-flow: row wrap;
+    padding-block: var(--bbl-space-250);
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--bbl-space-500);
+  }
 
-    .teaser-bg-image-description p {
-        color: var(--bbl-color-white);
-        max-width: 37.5rem;
-    }
+  .teaser-bg-image-card {
+    width: calc(33.3333% - var(--bbl-space-500));
+    margin: 0;
+  }
 
-    .teaser-bg-image-cards {
-        position: relative;
-        z-index: 2;
-        flex-flow: row wrap;
-        padding-block: var(--bbl-space-250);
-        align-items: stretch;
-        justify-content: flex-start;
-        gap: var(--bbl-space-500);
-    }
+  .teaser-bg-image-card-description p {
+    font-size: var(--bbl-font-size-b2);
+  }
 
-    .teaser-bg-image-card {
-        width: calc(33.3333% - var(--bbl-space-500));
-        margin: 0;
-    }
+  .teaser-bg-image-cta {
+    z-index: 2;
+    padding-block: 0 1.875rem;
+    width: 100%;
+  }
 
-    .teaser-bg-image-card-description p {
-        font-size: var(--bbl-font-size-b2);
-    }
-
-    .teaser-bg-image-cta {
-        z-index: 2;
-        padding-block: 0 1.875rem;
-        width: 100%;
-    }
-
-    .teaser-bg-image-cta a {
-        display: inline-block;
-        width: auto;
-        justify-content: initial;
-    }
+  .teaser-bg-image-cta a {
+    display: inline-block;
+    width: auto;
+    justify-content: initial;
+  }
 }
 
 @media (width > 64rem) {
-    .teaser-with-bg-image-container
-        .default-content-wrapper
-        :is(h1, h2, h3, h4, h5, h6) {
-        font-size: 3rem;
-        line-height: 2.875rem;
+  .teaser-with-bg-image-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 3rem;
+    line-height: 2.875rem;
+  }
+
+  :lang(th) {
+    .teaser-with-bg-image-container .default-content-wrapper :is(h1) {
+      line-height: 5.5rem;
     }
 
-    .teaser-bg-image-title :is(h1, h2, h3, h4, h5, h6) {
-        font-size: 3rem;
-        line-height: 2.875rem;
+    .teaser-with-bg-image-container .default-content-wrapper :is(h2) {
+      line-height: 4.875rem;
     }
 
-    .teaser-bg-image-description p {
-        font-size: var(--bbl-font-size-b);
-        line-height: 1.375rem;
+    .teaser-with-bg-image-container .default-content-wrapper :is(h3) {
+      line-height: 3.75rem;
     }
 
-    .teaser-bg-image-cards {
-        padding-block: 1.875rem;
-        order: 3;
+    .teaser-with-bg-image-container .default-content-wrapper :is(h4) {
+      line-height: 2.5rem;
     }
 
-    .teaser-bg-image-card {
-        margin-block: 0 var(--bbl-space-500);
-        order: 3;
-        width: calc(25% - var(--bbl-space-500));
+    .teaser-bg-image-title :is(h1) {
+      line-height: 5.5rem;
     }
 
-    .teaser-bg-image-card-title :is(h1, h2, h3, h4, h5, h6) {
-        font-size: 1.5rem;
-        line-height: 1.625rem;
+    .teaser-bg-image-title :is(h2) {
+      line-height: 4.875rem;
     }
 
-    .teaser-bg-image-card-description p {
-        font-size: var(--bbl-font-size-b);
-        line-height: 1.375rem;
+    .teaser-bg-image-title :is(h3) {
+      line-height: 3.75rem;
     }
 
-    .teaser-bg-image-cta {
-        order: 2;
-        padding-block: 0;
+    .teaser-bg-image-title :is(h4) {
+      line-height: 2.5rem;
     }
+
+    .teaser-bg-image-card-title :is(h1) {
+      line-height: 5.5rem;
+    }
+
+    .teaser-bg-image-card-title :is(h2) {
+      line-height: 4.875rem;
+    }
+
+    .teaser-bg-image-card-title :is(h3) {
+      line-height: 3.75rem;
+    }
+
+    .teaser-bg-image-card-title :is(h4) {
+      line-height: 2.5rem;
+    }
+  }
+
+  .teaser-bg-image-title :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 3rem;
+    line-height: 2.875rem;
+  }
+
+  .teaser-bg-image-description p {
+    font-size: var(--bbl-font-size-b);
+    line-height: 1.375rem;
+  }
+
+  .teaser-bg-image-cards {
+    padding-block: 1.875rem;
+    order: 3;
+  }
+
+  .teaser-bg-image-card {
+    margin-block: 0 var(--bbl-space-500);
+    order: 3;
+    width: calc(25% - var(--bbl-space-500));
+  }
+
+  .teaser-bg-image-card-title :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 1.5rem;
+    line-height: 1.625rem;
+  }
+
+  .teaser-bg-image-card-description p {
+    font-size: var(--bbl-font-size-b);
+    line-height: 1.375rem;
+  }
+
+  .teaser-bg-image-cta {
+    order: 2;
+    padding-block: 0;
+  }
 }

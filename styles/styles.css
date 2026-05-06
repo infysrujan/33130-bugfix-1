@@ -294,23 +294,6 @@ main img {
     }
 }
 
-/* sections (central-aligned) */
-.section.central-aligned .block {
-    margin-inline: 1rem;
-}
-
-@media (width > 47.5rem) {
-    .section.central-aligned .block {
-        margin-inline: 3rem;
-    }
-}
-
-@media (width > 64rem) {
-    .section.central-aligned .block {
-        max-width: var(--bbl-layout-central-aligned-max-width);
-        margin: 0 auto;
-    }
-}
 
 
 /* =========================================================================
@@ -511,6 +494,27 @@ body.bangkok-bankm-card main {
 
 .section.background-wealth a.button-tertiary {
     color: var(--bbl-color-grey-85);
+}
+
+/* sections (central-aligned) */
+.section.central-aligned .block,
+.section.central-aligned .default-content-wrapper {
+    margin-inline: 1rem;
+}
+ 
+@media (width > 47.5rem) {
+    .section.central-aligned .block,
+    .section.central-aligned .default-content-wrapper {
+        margin-inline: 3rem;
+    }
+}
+ 
+@media (width > 64rem) {
+    .section.central-aligned .block,
+    .section.central-aligned .default-content-wrapper {
+        max-width: var(--bbl-layout-central-aligned-max-width);
+        margin: 0 auto;
+    }
 }
 
 @media (width > 47.5rem) {

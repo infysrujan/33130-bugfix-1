@@ -113,6 +113,21 @@
           }
         },
         {
+          "title": "Card Comparator Results",
+          "id": "card-comparator-results",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Card Comparator Results",
+                  "model": "card-comparator-results"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Card List Wealth",
           "id": "card-list-wealth",
           "plugins": {
@@ -383,6 +398,98 @@
                 "template": {
                   "name": "Content Insert Card",
                   "model": "content-insert-card"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Cookie Alert",
+          "id": "cookie-alert",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Cookie Alert",
+                  "model": "cookie-alert"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Cookie Modal",
+          "id": "cookie-modal",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Cookie Modal",
+                  "model": "cookie-modal",
+                  "filter": "cookie-modal"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Cookie Modal Accordion Item",
+          "id": "cookie-modal-accordion-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Cookie Modal Accordion Item",
+                  "model": "cookie-modal-accordion-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Credit Card Comparator",
+          "id": "credit-card-comparator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Credit Card Comparator",
+                  "model": "credit-card-comparator"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Credit Card Selector",
+          "id": "credit-card-selector",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Credit Card Selector",
+                  "model": "credit-card-selector",
+                  "filter": "credit-card-selector"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Credit Card Section",
+          "id": "credit-card-section",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Credit Card Section",
+                  "model": "credit-card-section"
                 }
               }
             }
@@ -1309,6 +1416,36 @@
           }
         },
         {
+          "title": "Multi Column Tiles",
+          "id": "multi-column-tiles",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Multi Column Tiles",
+                  "filter": "multi-column-tiles"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Multi Column Tiles Item",
+          "id": "multi-column-tiles-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Multi Column Tiles Item",
+                  "model": "multi-column-tiles-item"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Popup Modal Card Offer",
           "id": "popup-modal-card-offer",
           "plugins": {
@@ -1333,6 +1470,36 @@
                 "template": {
                   "name": "Privacy Modal",
                   "model": "privacy-modal"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Promo Card Listing",
+          "id": "promo-card-listing",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Promo Card Listing",
+                  "model": "promo-card-listing"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Promotional Details",
+          "id": "promotional-details",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Promotional Details",
+                  "model": "promotional-details"
                 }
               }
             }
@@ -1438,6 +1605,21 @@
                 "template": {
                   "name": "Social Icon",
                   "model": "social-icon"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Special FX Rates",
+          "id": "special-fx-rates",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Special FX Rates",
+                  "model": "special-fx-rates"
                 }
               }
             }
@@ -1579,6 +1761,21 @@
                   "model": "top-nav-link",
                   "classes": "link-only",
                   "label": "{{linkText}}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Top Promotional Cards",
+          "id": "top-promotional-cards",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Top Promotional Cards",
+                  "model": "top-promotional-cards"
                 }
               }
             }

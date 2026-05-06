@@ -1,0 +1,159 @@
+.promotional-details .promo-detail-center {
+    max-width: 79.5rem;
+    margin: 0 auto;
+}
+
+.promotional-details .promo-detail-title-wrap {
+    text-align: center;
+}
+
+.promotional-details .promo-detail-title {
+    font-size: 1.4rem;
+    line-height: 1.375rem;
+    font-family: var(--bbl-font-family-medium);
+    color: var(--bbl-color-black);
+    margin: 1.875rem 0;
+    font-weight: var(--bbl-font-weight-regular);
+    padding-bottom: 1.875rem;
+    letter-spacing: -0.0125rem;
+    position: relative;
+}
+
+.promotional-details .promo-detail-title::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 5rem;
+    transform: translateX(-50%);
+    bottom: 0;
+    height: 0.0625rem;
+    background: var(--bbl-color-grey-60);
+}
+
+.promotional-details .promo-detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bbl-space-300);
+}
+
+.promotional-details .promo-detail-image a {
+    display: block;
+}
+
+.promotional-details .promo-detail-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 0.3125rem solid var(--bbl-color-white);
+    box-shadow: 0 var(--bbl-space-025) var(--bbl-space-100) 0
+        var(--bbl-color-grey-152);
+}
+
+.promotional-details .promo-detail-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.promotional-details .promo-detail-row-no-image .promo-detail-content {
+    width: 100%;
+    max-width: 100%;
+}
+
+.promotional-details .promo-detail-row-no-image .promo-detail-description {
+    text-align: center;
+}
+
+.promotional-details .promo-detail-date {
+    margin: 0;
+    line-height: 1.125rem;
+    color: var(--bbl-color-grey-85);
+}
+
+.promotional-details .promo-detail-description p {
+    margin: 0 0 0.75rem;
+    line-height: 1.125rem;
+    color: var(--bbl-color-grey-85);
+}
+
+.promotional-details .promo-detail-disclaimer p {
+    margin: 0;
+    color: var(--bbl-color-grey-85);
+    line-height: 1.125rem;
+}
+
+.promotional-details .promo-detail-description p:last-child {
+    margin-bottom: 0;
+}
+
+.promotional-details .promo-detail-card-logos {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.promotional-details .promo-detail-card-logo {
+    height: 1.5rem;
+    width: auto;
+}
+
+.promotional-details .promo-detail-error {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--bbl-color-grey-85);
+}
+
+@media (width > 47.5rem) {
+    .promotional-details .promo-detail-row {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .promotional-details .promo-detail-description p {
+        font-size: var(--bbl-font-size-b2);
+    }
+
+    .promotional-details .promo-detail-image {
+        width: 33.33%;
+        flex-shrink: 0;
+    }
+
+    .promotional-details .promo-detail-disclaimer p {
+        font-size: var(--bbl-font-size-b2);
+    }
+
+    .promotional-details .promo-detail-content {
+        width: 66.67%;
+    }
+
+    .promotional-details .promo-detail-date {
+        font-size: var(--bbl-font-size-b2);
+    }
+}
+
+@media (width > 64rem) {
+    .promotional-details .promo-detail-center {
+        padding: var(--bbl-space-500) 0;
+    }
+
+    .promotional-details .promo-detail-description p {
+        font-size: var(--bbl-font-size-b1);
+        line-height: 1.375rem;
+    }
+
+    .promotional-details .promo-detail-disclaimer p {
+        font-size: var(--bbl-font-size-b1);
+        line-height: 1.375rem;
+    }
+
+    .promotional-details .promo-detail-title {
+        font-size: var(--bbl-heading-h3-size);
+        line-height: 2.875rem;
+    }
+
+     .promotional-details .promo-detail-date {
+        font-size: var(--bbl-font-size-b1);
+        line-height: 1.375rem;
+    }
+}

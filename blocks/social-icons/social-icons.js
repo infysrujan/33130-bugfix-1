@@ -71,18 +71,23 @@ export default function decorate(block) {
 
     const clonedIcon = icon.cloneNode(true);
     clonedIcon.querySelectorAll('img').forEach((img) => {
-      // eslint-disable-next-line no-param-reassign
       img.loading = 'eager';
-      // Remove UE instrumentation from clones — the originals in the hidden rows
-      // already carry these attrs; duplicates confuse the UE content tree
-      img.removeAttribute('data-aue-prop');
-      img.removeAttribute('data-aue-type');
-      img.removeAttribute('data-aue-label');
-      img.removeAttribute('data-aue-resource');
     });
+
     a.appendChild(clonedIcon);
     li.appendChild(a);
     ul.appendChild(li);
+
+    // moveInstrumentation(row, li) above stripped data-aue-resource from the row,
+    // leaving cells[1], the original picture, and its img all without a parent
+    // resource. UE would traverse up to the block and surface them as "Icon" at
+    // the block level in the content tree. Strip every remaining data-aue-* attr
+    // from the hidden row's subtree so nothing leaks into the UE content tree.
+    row.querySelectorAll('*').forEach((el) => {
+      [...el.attributes]
+        .filter(({ name }) => name.startsWith('data-aue-'))
+        .forEach(({ name }) => el.removeAttribute(name));
+    });
   });
 
   iconsContainer.appendChild(ul);

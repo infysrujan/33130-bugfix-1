@@ -61,7 +61,7 @@
         {
           "component": "boolean",
           "name": "breadcrumb",
-          "value": "",
+          "value": true,
           "label": "Breadcrumb",
           "valueType": "boolean"
         }

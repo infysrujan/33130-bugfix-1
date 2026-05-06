@@ -1,0 +1,219 @@
+/* Authored source rows hidden after decoration — blocks UE inline-style overrides */
+.credit-card-comparator .ccs-source-row {
+  display: none;
+}
+
+/* ── Sticky bar ──────────────────────────────────────────────────────────── */
+
+.credit-card-comparator {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 11;
+  padding: 0.9375rem 0;
+  background: var(--bbl-color-white);
+  box-shadow: 0 0 0.625rem var(--bbl-color-black-alpha-20);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.credit-card-comparator.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Inner container — mobile: vertical stack ────────────────────────────── */
+
+.credit-card-comparator .inner-container {
+  padding: 0 var(--bbl-space-200);
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  gap: 0.625rem;
+  row-gap: 0;
+}
+
+/* ── Limit warning ───────────────────────────────────────────────────────── */
+
+.credit-card-comparator .compare-error {
+  width: 100%;
+  color: var(--bbl-color-system-red);
+  font-size: var(--bbl-font-size-b2);
+  font-weight: 600;
+  padding-bottom: var(--bbl-space-100);
+}
+
+/* ── Card group — mobile: scrollable row ─────────────────────────────────── */
+
+.credit-card-comparator .compare-group {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-150);
+  padding-bottom: 0.625rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* ── Each product card — fixed width so names stay readable; group scrolls ── */
+
+.credit-card-comparator .product-comparing {
+  display: flex;
+  align-items: center;
+  flex: 0 0 16.25rem;
+  min-width: 0;
+  padding: 0 var(--bbl-space-250);
+  position: relative;
+  white-space: normal;
+}
+
+.credit-card-comparator .product-comparing:first-child {
+  padding-left: 0;
+}
+
+.credit-card-comparator .product-comparing + .product-comparing {
+  border-left: 0.0625rem solid var(--bbl-color-grey-150);
+}
+
+.credit-card-comparator .product-comparing .text-small {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  font-size: 0.8rem;
+  line-height: 1.375;
+  margin: 0;
+  font-family: var(--bbl-font-family-medium);
+}
+
+/* ── Thumb ───────────────────────────────────────────────────────────────── */
+
+.credit-card-comparator .product-comparing .thumb {
+  flex-shrink: 0;
+  width: 5.125rem;
+  height: 3.125rem;
+  position: relative;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ── Close icon ──────────────────────────────────────────────────────────── */
+
+.credit-card-comparator .icon-close {
+  position: absolute;
+  top: -0.5rem;
+  left: -0.25rem;
+  z-index: 10;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+  border-radius: var(--bbl-radius-full);
+  background: var(--bbl-color-white);
+  border: solid 0.0313rem var(--bbl-color-gray-300);
+  color: var(--bbl-color-gray-600);
+  font-size: var(--bbl-font-size-b3);
+  font-weight: 300;
+  line-height: 1.0625rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.credit-card-comparator .icon-close:hover {
+  box-shadow: 0.0625rem 0.0625rem var(--bbl-space-075) 0 var(--bbl-color-black-alpha-30);
+}
+
+/* ── Info ────────────────────────────────────────────────────────────────── */
+
+.credit-card-comparator .product-comparing .info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0 0 0 var(--bbl-space-150);
+}
+
+/* ── Compare button — mobile: full width ─────────────────────────────────── */
+
+.credit-card-comparator .btn-primary {
+  flex-shrink: 0;
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border: none;
+  border-radius: 0.4375rem;
+  padding: 0 1.875rem;
+  height: 2.75rem;
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease-in-out;
+  min-width: 9.6875rem;
+  font-family: var(--bbl-font-family-primary);
+  width: 100%;
+}
+
+.credit-card-comparator .btn-primary:hover {
+  background: var(--bbl-color-blue-90);
+}
+
+.credit-card-comparator .btn-primary:disabled {
+  background: var(--bbl-color-grey-40);
+  color: var(--bbl-color-gray-600);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@media (width > 47.5rem) {
+  .credit-card-comparator .compare-group {
+    overflow-x: visible;
+    white-space: normal;
+  }
+
+  .credit-card-comparator .product-comparing {
+    flex-shrink: 1;
+  }
+
+  .credit-card-comparator .btn-primary {
+    width: auto;
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+@media (width > 64rem) {
+  .credit-card-comparator .inner-container {
+    padding: 0 var(--bbl-space-1050);
+    flex-direction: row;
+    gap: var(--bbl-space-250);
+  }
+
+  .credit-card-comparator .compare-group {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .credit-card-comparator .btn-primary {
+    width: auto;
+    margin: 0;
+    display: inline-block;
+  }
+}
+
+/* ── Authoring mode — keep sticky bar visible at bottom ──────────────────── */
+
+.adobe-ue-edit div[data-aue-component="credit-card-comparator"] {
+  position: sticky ;
+  bottom: 0;
+  opacity: 1;
+  transform: translateY(0);
+  z-index: 200;
+}
+
+.adobe-ue-edit div[data-aue-component="credit-card-comparator"] .compare-group {
+  display: none;
+}
+

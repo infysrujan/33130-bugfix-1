@@ -302,11 +302,10 @@
           "value": false
         },
         {
-          "component": "text",
-          "name": "dataModal",
-          "label": "Data Modal",
+          "component": "aem-content",
+          "name": "fragmentPath",
+          "label": "Fragment path",
           "valueType": "string",
-          "description": "Fragment path for the overlay modal data-modal attribute",
           "condition": {
             "!!": [
               {

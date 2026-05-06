@@ -205,10 +205,20 @@
         "card-list-wealth",
         "privacy-modal",
         "external-redirect-popup",
+        "credit-card-selector",
+        "credit-card-comparator",
+        "card-comparator-results",
         "video",
+        "saving-plan",
         "carousel-video",
         "forex-rates",
-        "saving-plan"
+        "special-fx-rates",
+        "promotional-details",
+        "promo-card-listing",
+        "top-promotional-cards",
+        "multi-column-tiles",
+        "cookie-alert",
+        "cookie-modal"
       ]
     }
   ]

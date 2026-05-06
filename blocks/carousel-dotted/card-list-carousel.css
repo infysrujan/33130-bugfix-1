@@ -61,6 +61,20 @@
     margin-bottom: 0;
 }
 
+.carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.carousel-dotted.all-carousel-fragment.show-arrows-dots
+    .carousel-arrow-prev:hover {
+    transform: translateY(-50%) translateX(-0.3rem);
+}
+
+.carousel-dotted.all-carousel-fragment.show-arrows-dots
+    .carousel-arrow-next:hover {
+    transform: translateY(-50%) translateX(0.3rem);
+}
+
 @media (width > 47.5rem) {
     .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
         gap: 0;
@@ -106,7 +120,7 @@
         z-index: 2;
     }
 
-     .carousel-dotted.all-carousel-fragment
+    .carousel-dotted.all-carousel-fragment
         .carousel-dotted-item.carousel-fragment
         .cards-list {
         gap: 0 var(--bbl-space-250);
@@ -122,11 +136,12 @@
 
     .carousel-dotted.all-carousel-fragment.show-arrows-dots
         .carousel-arrow-prev {
-        left:  -4.3125rem;
+        left: -4.3125rem;
     }
 
     .carousel-dotted.all-carousel-fragment.show-arrows-dots
         .carousel-arrow-next {
-        right:  -4.3125rem;
+        right: -4.3125rem;
     }
 }
+ 

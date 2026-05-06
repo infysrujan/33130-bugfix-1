@@ -18,6 +18,7 @@ import {
   decorateTerritoryButtons,
   decorateButtonsV1,
   loadBreadcrumb,
+  buildCookieAlert,
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
@@ -165,6 +166,8 @@ async function loadEager(doc) {
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
+
+  await buildCookieAlert(main);
 
   // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
   decorateButtonsV1(main);

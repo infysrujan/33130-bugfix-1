@@ -1,0 +1,283 @@
+.card-comparator-results .ccr-description {
+  text-align: center;
+}
+
+/* ── Comparison grid — scrollable on mobile (matches card-list scrollable) ── */
+
+.card-comparator-results .ccr-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--bbl-space-250);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 0.625rem 0;
+}
+
+.card-comparator-results .ccr-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Card — fixed width on mobile, snaps into place ─────────────────────── */
+
+.card-comparator-results .ccr-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
+  border-radius: var(--bbl-radius-md);
+  overflow: hidden;
+  flex: 0 0 16.875rem;
+  scroll-snap-align: start;
+}
+
+/* ── Image area — .thumb-default.card .inner + .thumb ────────────────────── */
+
+.card-comparator-results .ccr-inner {
+  min-height: 8.9375rem;
+  max-height: 10.9375rem;
+  height: calc(100vw * 0.12);
+  overflow: hidden;
+  padding: var(--bbl-space-250) var(--bbl-space-250) 0;
+}
+
+.card-comparator-results .ccr-thumb {
+  height: 100%;
+  border-radius: var(--bbl-radius-md);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Hidden — shown only when printing (matches live site .img-print) */
+
+.card-comparator-results .ccr-img-print {
+  display: none;
+}
+
+@media print {
+  .card-comparator-results .ccr-img-print {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* ── Caption — .thumb-default .caption ───────────────────────────────────── */
+
+.card-comparator-results .ccr-caption {
+  padding: var(--bbl-space-250);
+  flex-grow: 1;
+  font-size: var(--bbl-font-size-b1);
+  line-height: var(--bbl-line-height-body);
+  color: var(--bbl-color-grey-70);
+}
+
+/* Card name — .title-3 */
+
+.card-comparator-results .ccr-card-name {
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-h5-desktop);
+  line-height: 1.625rem;
+  color: var(--bbl-color-black);
+  margin: 0 0 var(--bbl-space-200);
+  min-height: 4.4375rem;
+  box-sizing: border-box;
+}
+
+/* ── Compare info rows — .compare-info dl/dt/dd ──────────────────────────── */
+
+.card-comparator-results .compare-info dl {
+  border-top: 0.0625rem solid var(--bbl-color-grey-150);
+  padding: var(--bbl-space-300) 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.card-comparator-results .compare-info dl:first-child {
+  border-top: none;
+  padding-top: 0.625rem;
+}
+
+.card-comparator-results .ccr-label {
+  font-size: var(--bbl-font-size-b1);
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-color-black);
+  margin: 0;
+}
+
+.card-comparator-results .ccr-value {
+  line-height: 1.625rem;
+  padding: var(--bbl-space-100) 0 0;
+  margin: 0;
+  color: var(--bbl-color-grey-70);
+}
+
+.card-comparator-results .ccr-learn-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 var(--bbl-space-250) var(--bbl-space-250);
+  min-height: 2.75rem;
+  padding: 0.3125rem 0;
+  box-sizing: border-box;
+  border-radius: var(--bbl-radius-md);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.card-comparator-results .ccr-learn-more:hover {
+  color: var(--bbl-color-white);
+  border-color: var(--bbl-color-active-blue);
+  background: var(--bbl-color-active-blue);
+}
+
+/* ── Apply area ───────────────────────────────────────────────────────────── */
+
+.card-comparator-results .ccr-apply-area {
+  margin-bottom: var(--bbl-space-200);
+}
+
+.card-comparator-results .ccr-apply-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bbl-space-100);
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.3125rem var(--bbl-space-150);
+  box-sizing: border-box;
+  border-radius: var(--bbl-radius-md);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.card-comparator-results .ccr-apply-btn:hover {
+  color: var(--bbl-color-white);
+  border-color: var(--bbl-color-active-blue);
+  background: var(--bbl-color-active-blue);
+}
+
+.card-comparator-results .ccr-apply-btn svg {
+  flex-shrink: 0;
+}
+
+/* Mobile: show two-button group, hide desktop button */
+
+.card-comparator-results .ccr-apply-desktop {
+  display: none;
+}
+
+.card-comparator-results .ccr-apply-mobile-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bbl-space-100);
+}
+
+.card-comparator-results .ccr-apply-mobile-btn {
+  font-size: var(--bbl-font-size-b2);
+  white-space: nowrap;
+}
+
+/* No results */
+
+.card-comparator-results .ccr-no-results {
+  padding: var(--bbl-space-300);
+  text-align: center;
+  color: var(--bbl-color-grey-70);
+}
+
+/* ── Scroll dots — mobile only ───────────────────────────────────────────── */
+
+.card-comparator-results .ccr-scroll-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--bbl-space-100);
+  margin-top: var(--bbl-space-150);
+  width: auto;
+  height: auto;
+}
+
+.card-comparator-results .ccr-scroll-dot {
+  appearance: none;
+  width: var(--bbl-space-100);
+  height: var(--bbl-space-100);
+  min-width: var(--bbl-space-100);
+  min-height: var(--bbl-space-100);
+  border-radius: var(--bbl-radius-full);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+  transition: all 180ms ease;
+}
+
+.card-comparator-results .ccr-scroll-dot.is-active {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+@media (width > 47.5rem) {
+  .card-comparator-results .ccr-scroll-dots {
+    display: none;
+  }
+
+  .card-comparator-results .ccr-grid {
+    overflow-x: visible;
+    scroll-snap-type: none;
+    justify-content: center;
+    gap: 0 var(--bbl-space-250);
+    padding: 0;
+  }
+
+  .card-comparator-results .ccr-card {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
+    scroll-snap-align: none;
+  }
+
+  .card-comparator-results .ccr-apply-mobile-group {
+    display: none;
+  }
+
+  .card-comparator-results .ccr-apply-desktop {
+    display: flex;
+    background: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
+  }
+
+  .card-comparator-results .ccr-apply-desktop:hover {
+    background: var(--bbl-color-blue-90);
+    border-color: var(--bbl-color-blue-90);
+  }
+}
+
+@media (width > 64rem) {
+  .card-comparator-results .ccr-grid {
+    gap: 0 var(--bbl-space-500);
+  }
+
+  .card-comparator-results .ccr-card {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+  }
+}

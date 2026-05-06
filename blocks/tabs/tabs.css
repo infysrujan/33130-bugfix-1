@@ -156,6 +156,110 @@
   max-height: fit-content;
 }
 
+/* ========================================================================
+   CAROUSEL VARIANTS: simple-tab-carousel & icon-tab-carousel
+   ======================================================================== */
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav-wrapper {
+  position: relative;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav {
+  display: flex;
+  gap: 0.9375rem;
+  padding: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav.is-dragging {
+  user-select: none;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) :is(.tabs-nav-prev, .tabs-nav-next) {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  font-size: var(--bbl-font-size-b2);
+  line-height: 2.375rem;
+  color: var(--bbl-color-grey-160);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0.0625rem solid var(--bbl-color-white-alpha-158-70);
+  border-radius: 50%;
+  background: var(--bbl-color-white);
+  box-shadow: 0 0 var(--bbl-space-050) 0 transparent;
+  z-index: 2;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav-prev {
+  left: -0.875rem;
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav-next {
+  right: -0.875rem;
+  transform: translateY(-50%);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) :is(.tabs-nav-prev, .tabs-nav-next):hover {
+  border-color: var(--bbl-color-grey-150);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) :is(.tabs-nav-prev, .tabs-nav-next).hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button {
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin: 0.6875rem;
+  color: var(--bbl-color-grey-85);
+  height: unset;
+  padding: var(--bbl-space-250) var(--bbl-space-075);
+  font-size: 0.7875rem;
+  line-height: 1.0631rem;
+  font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif !important;
+  text-transform: uppercase;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button::before {
+  display: none;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button.active {
+  text-decoration: underline;
+  color: var(--bbl-color-active-blue);
+  text-decoration-color: var(--bbl-color-active-blue);
+  text-decoration-thickness: 0.1875rem;
+  text-underline-offset: var(--bbl-space-base);
+}
+
+.tabs.icon-tab-carousel .tabs-nav {
+  gap: unset;
+}
+
+.tabs.icon-tab-carousel .tabs-nav button img {
+  width: 3.75rem;
+  box-sizing: border-box;
+  height: 3.75rem;
+  padding: var(--bbl-space-050);
+  margin: 0 auto var(--bbl-space-050);
+  display: block;
+}
+
 /* Tiled Tab Variant (with Icons) - Mobile First */
 .tabs.tiled-tab .tabs-nav {
   display: grid;
@@ -233,6 +337,10 @@
   color: var(--bbl-color-blue-90);
 }
 
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button:hover {
+  color: var(--bbl-color-blue-90);
+}
+
 /* Left-aligned Tab Variant */
 .tabs-container.left .tabs-nav-wrapper .tabs-nav,
 .tabs-container.left .tabs-nav-wrapper .tabs-dropdown {
@@ -293,15 +401,6 @@
     max-width: 75%;
   }
 
-  .tabs.simple-tab .tabs-nav button,
-  .tabs.media-tab .tabs-nav button {
-    padding: 0;
-    margin: 0 0.9375rem;
-    min-height: 1rem;
-    height: unset;
-    max-height: max-content;
-    text-wrap: wrap;
-  }
 
   .tabs-nav-wrapper .tabs-nav li:last-child {
     margin: 0;
@@ -366,10 +465,15 @@
 
 /* Desktop (>= 1025px) */
 @media (width >= 64.0625rem) {
-  .tabs-nav-wrapper .tabs-nav button { 
+  .tabs-nav-wrapper .tabs-nav button {
     font-size: 1rem;
     line-height: 1rem;
     padding: 0 0.9375rem;
+  }
+
+  .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button {
+    font-size:  0.9rem;
+    line-height: 1.21rem;
   }
 
   .tabs-nav-wrapper .tabs-nav li {

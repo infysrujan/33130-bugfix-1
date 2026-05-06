@@ -103,6 +103,16 @@
   text-indent: 0;
 }
 
+:lang(th) {
+  .privacy-modal-title :is(h1) {
+    line-height: 2.4375rem;
+  }
+
+  .privacy-modal-title :is(h2) {
+    line-height: 2.0625rem;
+  }
+}
+
 .privacy-modal-scroll-hint {
   display: none;
 }

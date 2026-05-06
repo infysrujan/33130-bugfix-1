@@ -11,12 +11,11 @@ async function fetchBreadcrumbData() {
   const configs = await fetchConfigs();
   const AEM_BASE_URL_FOR_BREADCRUMB = configs.aemBaseUrlForBreadcrumb;
   if (!AEM_BASE_URL_FOR_BREADCRUMB) {
-    console.log('No Breadcrumb data');
-    return { titleMap: {}, currentPageData: null };
+    return { titleMap: {}, currentPageData: null, homepageData: null };
   }
   try {
     const { pathname } = window.location;
-    const apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}/content/bangkokbank${pathname}.pageinfo.json`;
+    const apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}/content/bangkokbank${pathname}.pageinfo.parent.json`;
     const response = await fetch(apiUrl);
     if (!response.ok) {
       throw new Error(`API returned status ${response.status}`);
@@ -64,6 +63,9 @@ async function fetchBreadcrumbData() {
       allPages = pages;
     }
 
+    // Find homepage (lang root, pageDepth === 3) to use as first breadcrumb item
+    const homepageData = allPages.find((p) => p.pageDepth === 3) || null;
+
     // Filter pages: only include pages with pageDepth > 3 (after "en" level)
     // and build the titleMap
     allPages.forEach((page) => {
@@ -76,11 +78,11 @@ async function fetchBreadcrumbData() {
         titleMap[pagePath] = pageTitle;
       }
     });
-    return { titleMap, currentPageData };
+    return { titleMap, currentPageData, homepageData };
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Breadcrumb data fetch error:', error);
-    return { titleMap: {}, currentPageData: null };
+    return { titleMap: {}, currentPageData: null, homepageData: null };
   }
 }
 
@@ -108,6 +110,7 @@ export default async function decorate(block) {
 
   // Fetch parent page titles from AEM to use as breadcrumb labels
   const { titleMap: breadcrumbTitleMap, currentPageData } = await fetchBreadcrumbData();
+  const lang = currentPageData?.pagePath?.split('/')[3] || getLang();
 
   const innerContainer = document.createElement('div');
   innerContainer.className = 'inner-container content';
@@ -137,8 +140,9 @@ export default async function decorate(block) {
     .split('/')
     .filter(Boolean);
 
-  const langPattern = /^([a-z]{2}(-[A-Z]{2})?)$/;
-  const startIndex = pathSegments.length && langPattern.test(pathSegments[0]) ? 1 : 0;
+  const hasLangPrefix = pathSegments.length && pathSegments[0] === lang;
+  const startIndex = hasLangPrefix ? 1 : 0;
+  const langPrefix = hasLangPrefix ? `/${lang}` : '';
 
   let currentPath = '';
 
@@ -164,7 +168,7 @@ export default async function decorate(block) {
           .replace(/-/g, ' ')
           .replace(/\b\w/g, (char) => char.toUpperCase());
       const link = document.createElement('a');
-      link.href = currentPath;
+      link.href = langPrefix + currentPath;
       link.textContent = label;
       li.appendChild(link);
     }
@@ -174,9 +178,8 @@ export default async function decorate(block) {
 
   // Load social-icons block through fragments
   try {
-    const langPrefix = `/${getLang()}`;
     const { loadFragment } = await import('../fragment/fragment.js');
-    const fragment = await loadFragment(`${langPrefix}/fragments/social-icons`);
+    const fragment = await loadFragment(`/${lang}/fragments/social-icons`);
     if (fragment) {
       // Pick the social-icons block with the most child rows (handles orphaned items
       // that AEM may group into a second block at section level)

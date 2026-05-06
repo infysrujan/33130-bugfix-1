@@ -68,7 +68,6 @@ function createMenuCardItem(cardElement, doc) {
   /* ---------------- ACTION DEFAULT ---------------- */
   if (actionTypeText === 'default' && defaultButton) {
     const defaultButtonClone = defaultButton.cloneNode(true);
-    defaultButtonClone.classList.add('button-m');
     inner.appendChild(defaultButtonClone);
   }
 

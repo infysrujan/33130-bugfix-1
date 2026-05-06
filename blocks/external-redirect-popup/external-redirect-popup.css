@@ -1,192 +1,202 @@
 .external-redirect-popup-config-hidden {
-    display: none;
+  display: none;
 }
 
 /* ── Overlay ── */
 .external-redirect-popup {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    background-color: var(--bbl-color-black-alpha-40);
-    overflow: visible;
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-color: var(--bbl-color-black-alpha-40);
+  overflow: visible;
 }
 
 .external-redirect-popup-visible {
-    display: block;
+  display: block;
 }
 
 /* ── Dialog card — mobile-first base ── */
 .external-redirect-popup-inner {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-sizing: border-box;
-    width: 91.6667%;
-    padding: 0 var(--bbl-space-250) var(--bbl-space-250);
-    border-radius: 0.625rem;
-    background: linear-gradient(115.36deg,
-            var(--bbl-color-white) 4.06%,
-            var(--bbl-color-white-alpha-30) 60%);
-    box-shadow: 0.4375rem 0.5rem 0.625rem var(--bbl-color-black-alpha-10);
-    backdrop-filter: blur(1.25rem);
-    border: 0.0625rem solid var(--bbl-color-white);
-    overflow: visible;
-    line-height: 130%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  width: 91.6667%;
+  padding: 0 var(--bbl-space-250) var(--bbl-space-250);
+  border-radius: 0.625rem;
+  background: linear-gradient(115.36deg,
+      var(--bbl-color-white) 4.06%,
+      var(--bbl-color-white-alpha-30) 60%);
+  box-shadow: 0.4375rem 0.5rem 0.625rem var(--bbl-color-black-alpha-10);
+  backdrop-filter: blur(1.25rem);
+  border: 0.0625rem solid var(--bbl-color-white);
+  overflow: visible;
+  line-height: 130%;
 }
 
 /* ── Close button ── */
 .external-redirect-popup-close {
-    position: absolute;
-    right: -0.75rem;
-    top: -1.3125rem;
-    width: var(--bbl-space-500);
-    height: var(--bbl-space-500);
-    padding: 0;
-    border: 0.125rem solid var(--bbl-color-grey-150);
-    border-radius: 1.625rem;
-    background: var(--bbl-color-white);
-    cursor: pointer;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.15s ease;
-    font-size: 1.25rem;
-    color: var(--bbl-color-gray-142);
-    line-height: 1;
+  position: absolute;
+  right: -0.75rem;
+  top: -1.3125rem;
+  width: var(--bbl-space-500);
+  height: var(--bbl-space-500);
+  padding: 0;
+  border: 0.125rem solid var(--bbl-color-grey-150);
+  border-radius: 1.625rem;
+  background: var(--bbl-color-white);
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease;
+  font-size: 1.25rem;
+  color: var(--bbl-color-gray-142);
+  line-height: 1;
 }
 
 .external-redirect-popup-close:hover {
-    opacity: 0.85;
+  opacity: 0.85;
 }
 
 /* ── Card body (image + text) ── */
 .external-redirect-popup-body {
-    line-height: 130%;
+  line-height: 130%;
 }
 
 /* Icon */
 .external-redirect-popup-body img {
-    display: block;
-    width: 6.25rem;
-    height: auto;
-    margin-top: -1.25rem;
+  display: block;
+  width: 6.25rem;
+  height: auto;
+  margin-top: -1.25rem;
 }
 
 /* ── Text content ── */
 .external-redirect-popup-content {
-    margin-top: var(--bbl-space-250);
+  margin-top: var(--bbl-space-250);
 }
 
 /* Title — same size at all breakpoints per design */
 .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
-    margin: 0;
-    font-family: BangkokBank-Bold, 'BBL Sans', BangkokBank-Regular, sans-serif;
-    font-size: 1.5rem;
-    line-height: 1.625rem;
-    color: var(--bbl-color-truthful-blue);
-    font-weight: 700;
+  margin: 0;
+  font-family: BangkokBank-Bold, 'BBL Sans', BangkokBank-Regular, sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.625rem;
+  color: var(--bbl-color-truthful-blue);
+  font-weight: 700;
+}
+
+:lang(th) {
+  .external-redirect-popup-title :is(h1) {
+    line-height: 2.4375rem;
+  }
+
+  .external-redirect-popup-title :is(h2) {
+    line-height: 2.0625rem;
+  }
 }
 
 /* Description — mobile-first: smaller base, larger on tablet+ */
 .external-redirect-popup-description p {
-    margin-block: 0.625rem 0;
-    font-family: var(--bbl-font-family-medium);
-    font-size: var(--bbl-body-b1-size);
-    line-height: 1.5rem;
-    color: var(--bbl-color-truthful-blue);
-    font-weight: var(--bbl-font-weight-medium);
+  margin-block: 0.625rem 0;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-body-b1-size);
+  line-height: 1.5rem;
+  color: var(--bbl-color-truthful-blue);
+  font-weight: var(--bbl-font-weight-medium);
 }
 
 .external-redirect-popup-url {
-    word-break: break-all;
+  word-break: break-all;
 }
 
 /* ── Button row — side-by-side and centered at all sizes ── */
 .external-redirect-popup-btn-row {
-    display: flex;
-    justify-content: center;
-    gap: 0;
-    margin-top: 1.875rem;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-top: 1.875rem;
 }
 
 /* ── Buttons ── */
 .external-redirect-popup-btn {
-    appearance: none;
-    box-sizing: border-box;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: auto;
-    min-width: 8.625rem;
-    height: 2.75rem;
-    padding: 0 var(--bbl-space-200);
-    border-radius: 0.4375rem;
-    font-family: var(--bbl-font-family-primary);
-    font-size: var(--bbl-font-size-b1);
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 1.375;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: all 0.3s;
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 8.625rem;
+  height: 2.75rem;
+  padding: 0 var(--bbl-space-200);
+  border-radius: 0.4375rem;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.375;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
 /* Accept */
 .external-redirect-popup-btn-accept {
-    background: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
-    border: 0.0625rem solid var(--bbl-color-active-blue);
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
 }
 
 .external-redirect-popup-btn-accept:hover {
-    background: var(--bbl-color-blue-90);
-    border-color: var(--bbl-color-blue-90);
-    color: var(--bbl-color-white);
+  background: var(--bbl-color-blue-90);
+  border-color: var(--bbl-color-blue-90);
+  color: var(--bbl-color-white);
 }
 
 .external-redirect-popup-btn-accept:active {
-    background: var(--bbl-color-active-blue);
-    border-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
 }
 
 /* Cancel */
 .external-redirect-popup-btn-cancel {
-    background: var(--bbl-color-white);
-    color: var(--bbl-color-active-blue);
-    border: 0.0625rem solid var(--bbl-color-active-blue);
-    margin-left: 0.9375rem;
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  margin-left: 0.9375rem;
 }
 
 .external-redirect-popup-btn-cancel:hover {
-    background: var(--bbl-color-active-blue);
-    border-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
 }
 
 .external-redirect-popup-btn-cancel:active {
-    background: var(--bbl-color-active-blue);
-    border-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
 }
 
 @media (width > 47.5rem) {
-    .external-redirect-popup-inner {
-        width: 75%;
-    }
+  .external-redirect-popup-inner {
+    width: 75%;
+  }
 
-    .external-redirect-popup-btn {
-        min-width: 9.6875rem;
-    }
+  .external-redirect-popup-btn {
+    min-width: 9.6875rem;
+  }
 }
 
 @media (width > 64rem) {
-    .external-redirect-popup-inner {
-        width: 41.6667%;
-    }
+  .external-redirect-popup-inner {
+    width: 41.6667%;
+  }
 }

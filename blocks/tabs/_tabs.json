@@ -49,6 +49,14 @@
             {
               "name": "Media Tab",
               "value": "media-tab"
+            },
+            {
+              "name": "Simple Tab carousel",
+              "value": "simple-tab-carousel"
+            },
+            {
+              "name": "Icon Tab carousel",
+              "value": "icon-tab-carousel"
             }
           ]
         },
@@ -119,6 +127,37 @@
                 "var": "tab-variant"
               },
               "media-tab"
+            ]
+          }
+        },
+         {
+          "component": "reference",
+          "name": "tab-icon-carousel",
+          "label": "Tab Icon/Image",
+          "description": "Select the icon or image for the tab (Tiled Tab only)",
+          "valueType": "string",
+          "required": true,
+          "condition": {
+            "===": [
+              {
+                "var": "tab-variant"
+              },
+              "icon-tab-carousel"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "tab-icon-alt-carousel",
+          "label": "Icon/Image Alt Text",
+          "description": "Enter alt text for the icon/image (Tiled Tab only)",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "tab-variant"
+              },
+              "icon-tab-carousel"
             ]
           }
         },

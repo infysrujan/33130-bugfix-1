@@ -47,12 +47,53 @@ function activateTab(tabsContainer, targetIndex) {
   }
 }
 
+function enableMouseDragScroll(scroller) {
+  let startX = 0;
+  let startScrollLeft = 0;
+  let pending = false;
+  const DRAG_THRESHOLD = 5;
+
+  const stopDragging = (e) => {
+    pending = false;
+    if (!scroller.classList.contains('is-dragging')) return;
+    scroller.classList.remove('is-dragging');
+    scroller.releasePointerCapture(e.pointerId);
+  };
+
+  scroller.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0 || scroller.scrollWidth <= scroller.clientWidth) return;
+    startX = e.clientX;
+    startScrollLeft = scroller.scrollLeft;
+    pending = true;
+  });
+
+  scroller.addEventListener('pointermove', (e) => {
+    if (!pending && !scroller.classList.contains('is-dragging')) return;
+    if (pending && Math.abs(e.clientX - startX) > DRAG_THRESHOLD) {
+      pending = false;
+      scroller.classList.add('is-dragging');
+      scroller.setPointerCapture(e.pointerId);
+    }
+    if (!scroller.classList.contains('is-dragging')) return;
+    e.preventDefault();
+    scroller.scrollLeft = startScrollLeft - (e.clientX - startX);
+  });
+
+  scroller.addEventListener('pointerup', stopDragging);
+  scroller.addEventListener('pointercancel', stopDragging);
+}
+
 export default async function decorate(block) {
   const rows = [...block.children];
 
-  // Detect variant: check if first row has image-only cells
+  // Detect variant from first row's first cell data attribute (set by tabs-helper)
   const firstRow = rows[0];
-  const isMediaTab = [...firstRow.children].every((cell) => {
+  const firstCellVariant = firstRow?.children[0]?.dataset.variant;
+  const isCarouselVariant = firstCellVariant === 'simple-tab-carousel'
+    || firstCellVariant === 'icon-tab-carousel';
+
+  // Detect variant: check if first row has image-only cells (skip for carousel variants)
+  const isMediaTab = !isCarouselVariant && [...firstRow.children].every((cell) => {
     const img = cell.querySelector('img');
     if (!img) return false;
     // Clone cell and remove image to check for additional content
@@ -68,7 +109,7 @@ export default async function decorate(block) {
   let contentRows;
   let imageRow;
 
-  if (isMediaTab) {
+  if (isMediaTab || firstCellVariant === 'icon-tab-carousel') {
     // Media Tab: row 0 = images, row 1 = buttons, row 2+ = content
     [imageRow, tabButtonRow] = rows;
     contentRows = rows.slice(2);
@@ -81,6 +122,8 @@ export default async function decorate(block) {
   // Add variant class based on actual button row
   if (isMediaTab) {
     block.classList.add('media-tab');
+  } else if (isCarouselVariant) {
+    block.classList.add(firstCellVariant);
   } else {
     // Check if first button cell has tiled-tab or simple-tab variant
     const firstButtonCell = tabButtonRow?.children[0];
@@ -108,6 +151,13 @@ export default async function decorate(block) {
     imageRow.remove();
   }
 
+  // Extract icons from image row for icon-tab-carousel (icons go into button cells)
+  let iconCarouselImages = [];
+  if (firstCellVariant === 'icon-tab-carousel' && imageRow) {
+    iconCarouselImages = [...imageRow.children].map((cell) => cell.querySelector('img'));
+    imageRow.remove();
+  }
+
   // Create tabs navigation and dropdown container
   const tabsNavWrapper = document.createElement('div');
   tabsNavWrapper.className = 'tabs-nav-wrapper';
@@ -117,8 +167,8 @@ export default async function decorate(block) {
   tabsNav.className = 'tabs-nav';
   tabsNav.setAttribute('role', 'tablist');
 
-  // Create dropdown for mobile (not needed for tiled-tab)
-  const isTiledTab = block.classList.contains('tiled-tab');
+  // Create dropdown for mobile (not needed for tiled-tab or carousel variants)
+  const isTiledTab = block.classList.contains('tiled-tab') || isCarouselVariant;
   let tabsDropdown;
   let select;
 
@@ -145,6 +195,11 @@ export default async function decorate(block) {
       button.setAttribute('data-tab-variant', variantAttr);
     }
 
+    // For icon-tab-carousel, prepend icon image into the button
+    if (firstCellVariant === 'icon-tab-carousel' && iconCarouselImages[index]) {
+      button.appendChild(iconCarouselImages[index]);
+    }
+
     // Move content from cell to button (unwrap from wrapper divs if needed)
     const wrapper = cell.querySelector('div, p');
     const cellContent = wrapper || cell;
@@ -154,7 +209,7 @@ export default async function decorate(block) {
 
     tabsNav.appendChild(button);
 
-    // Create option for dropdown (skip for tiled-tab)
+    // Create option for dropdown (skip for tiled-tab and carousel variants)
     if (!isTiledTab) {
       const option = document.createElement('option');
       option.value = index;
@@ -173,7 +228,7 @@ export default async function decorate(block) {
     return button;
   });
 
-  // Append dropdown only if not tiled-tab
+  // Append dropdown only if not tiled-tab or carousel
   if (!isTiledTab) {
     tabsDropdown.appendChild(select);
 
@@ -186,6 +241,39 @@ export default async function decorate(block) {
   }
 
   tabsNavWrapper.appendChild(tabsNav);
+
+  // Add prev/next arrows for carousel variants
+  if (isCarouselVariant) {
+    enableMouseDragScroll(tabsNav);
+
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'tabs-nav-prev icon-arrow-left';
+    prevBtn.setAttribute('aria-label', 'Previous tabs');
+
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'tabs-nav-next icon-arrow-left';
+    nextBtn.setAttribute('aria-label', 'Next tabs');
+
+    const updateArrows = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = tabsNav;
+      prevBtn.classList.toggle('hidden', scrollLeft <= 0);
+      nextBtn.classList.toggle('hidden', scrollLeft + clientWidth >= scrollWidth - 1);
+    };
+
+    prevBtn.addEventListener('click', () => {
+      tabsNav.scrollBy({ left: -(tabsNav.clientWidth / 2), behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      tabsNav.scrollBy({ left: tabsNav.clientWidth / 2, behavior: 'smooth' });
+    });
+
+    tabsNav.addEventListener('scroll', updateArrows);
+    tabsNavWrapper.insertBefore(prevBtn, tabsNav);
+    tabsNavWrapper.appendChild(nextBtn);
+    requestAnimationFrame(updateArrows);
+  }
+
   block.appendChild(tabsNavWrapper);
   tabButtonRow.remove();
 

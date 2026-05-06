@@ -59,7 +59,7 @@ document.addEventListener('bbl:load-fragment', async (e) => {
       document.body.appendChild(fragment);
     }
     if (typeof callback === 'function') {
-      callback();
+      callback(fragment);
     }
   } catch (error) {
     // eslint-disable-next-line no-console
