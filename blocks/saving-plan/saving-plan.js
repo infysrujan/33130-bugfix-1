@@ -627,12 +627,13 @@ function buildShellMarkup(data) {
         </div>
       </section>
 
+      ${labels.additionalInfoLinkText ? `
       <section class="saving-plan-additional">
         <h3 class="saving-plan-additional-title">${labels.additionalInfoTitle}</h3>
         <ul class="saving-plan-additional-list">
           <li><a class="saving-plan-additional-link" href="${labels.additionalInfoUrl || '#'}">${labels.additionalInfoLinkText}</a></li>
         </ul>
-      </section>
+      </section>` : ''}
 
       <section class="saving-plan-disclaimer">
         <h4 class="saving-plan-disclaimer-title">${labels.disclaimerTitle}</h4>
