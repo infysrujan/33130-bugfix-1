@@ -1496,7 +1496,8 @@ export default async function decorate(block) {
     || (typeof window !== 'undefined' && window.SAVING_PLAN_APIM_KEY)
     || '7d1b09abe2ea413cbf95b2d99782ed37';
 
-  const lang = (document.documentElement.lang || 'en').split('-')[0];
+  const pathLang = window.location.pathname.split('/').find((s) => s === 'en' || s === 'th');
+  const lang = pathLang || (document.documentElement.lang || 'en').split('-')[0];
   const data = json ? buildDataFromConfig(json, lang) : EMPTY_SHAPE;
 
   block.innerHTML = buildShellMarkup(data);
