@@ -12,7 +12,8 @@ async function fetchSavingToolsConfig() {
     if (!resp.ok) return {};
     const json = await resp.json();
     const cfg = {};
-    (json.data || []).forEach(({ Key, Value }) => { if (Key) cfg[Key] = Value; });
+    const rows = json['SavingTool-config']?.data || json.data || [];
+    rows.forEach(({ Key, Value }) => { if (Key) cfg[Key] = Value; });
     return cfg;
   } catch {
     return {};
