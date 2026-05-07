@@ -12,12 +12,6 @@ async function fetchSavingToolJson() {
 }
 
 const INFLATION_RATE = 1.5;
-const DEFAULT_VALIDATION_MESSAGES = {
-  goalAmount: 'Minimum must not exceed 10000',
-  annualReturn: 'Minimum must not exceed 0.1',
-  goalPeriod: 'Minimum must not exceed 1',
-  crossFieldIncreaseExceedsReturn: 'Annual saving increase rate must not be greater than expected annual return rate',
-};
 
 // eslint-disable-next-line import/no-unresolved
 const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
@@ -139,7 +133,7 @@ function fillTemplate(template, vars) {
 }
 
 function buildDataFromConfig(json, lang) {
-  const langData = json[lang]?.data || json.en?.data || [];
+  const langData = json[lang]?.data || [];
   const commonData = json.common?.data || [];
 
   const L = {};
@@ -147,19 +141,18 @@ function buildDataFromConfig(json, lang) {
   const C = {};
   commonData.forEach(({ Key, Value }) => { if (Key) C[Key] = Value; });
 
-  const unit = L['common-unit'] || 'baht';
-  const noteText = (L['common-noteText'] || `*Including inflation rate of ${INFLATION_RATE}% p.a.`)
+  const unit = L['common-unit'] || '';
+  const noteText = (L['common-noteText'] || '')
     .replace('{inflationRate}', String(INFLATION_RATE));
-  const noteReturn = (L['common-noterecommendSavingMonthly'] || 'and expected annual return {expectedReturnRate}%')
+  const noteReturn = (L['common-noterecommendSavingMonthly'] || '')
     .replace('{expectedReturnRate}', '{return}');
-  const footnoteReturnTemplate = `${noteText} ${noteReturn}`;
-  const footnoteIncreaseTemplate = (L['common-noteincreasedSavingMonthly']
-    || 'Increase savings each year by {annualSavingIncreaseRate}')
+  const footnoteReturnTemplate = `${noteText} ${noteReturn}`.trim();
+  const footnoteIncreaseTemplate = (L['common-noteincreasedSavingMonthly'] || '')
     .replace('{annualSavingIncreaseRate}', '{increase}%');
-  const futureValueTemplate = (L['common-toHaveMoney'] || `You will have {amount}* ${unit} in {years} year(s)`)
+  const futureValueTemplate = (L['common-toHaveMoney'] || '')
     .replace('{money}', '{amount}').replace('{unit}', unit);
 
-  const minError = L['validation-minValueError'] || 'Minimum must not exceed {min}';
+  const minError = L['validation-minValueError'] || '';
 
   const goalKeys = [...new Set(
     Object.keys(L)
@@ -388,7 +381,7 @@ async function fetchCalculation(inputs, calcUrl, apimKey) {
 }
 
 function getFieldMinError(field, value, rules, messages) {
-  const message = messages[field] || DEFAULT_VALIDATION_MESSAGES[field] || '';
+  const message = messages[field] || '';
   if (!Number.isFinite(value)) return message;
   const rule = rules[field];
   if (!rule) return '';
@@ -496,11 +489,12 @@ function buildInfoCard(goal) {
   const cta = goal.infoUrl
     ? `<a class="saving-plan-info-card-cta" href="${goal.infoUrl}">${goal.infoCta || ''}</a>`
     : `<button type="button" class="saving-plan-info-card-cta">${goal.infoCta || ''}</button>`;
-  const bg = goal.infoBg ? `style="background-image:url('${goal.infoBg}')"` : '';
+  const bgStyle = goal.infoBg ? `background-color:${goal.infoBg}` : '';
+  const artStyle = goal.imageUrl ? `background-image:url('${goal.imageUrl}')` : '';
   return `
-    <aside class="saving-plan-info-card" ${bg}>
+    <aside class="saving-plan-info-card" style="${bgStyle}">
       <h3 class="saving-plan-info-card-title">${goal.infoTitle || ''}</h3>
-      <div class="saving-plan-info-card-art" aria-hidden="true"></div>
+      <div class="saving-plan-info-card-art" aria-hidden="true" style="${artStyle}"></div>
       ${cta}
     </aside>
   `;
@@ -642,8 +636,7 @@ function buildShellMarkup(data) {
 
       <section class="saving-plan-products" hidden>
         <h3 class="saving-plan-products-title">${labels.productSectionTitle}</h3>
-        <span class="saving-plan-products-divider" aria-hidden="true"></span>
-        <div class="saving-plan-products-grid"></div>
+<div class="saving-plan-products-grid"></div>
       </section>
     </div>
   `;
@@ -700,10 +693,8 @@ function applyValidation(root, inputs, data) {
   // Only applied when both fields pass their own min/max, so per-field messages take priority.
   if (!fieldErrors.annualReturn && !fieldErrors.annualIncrease
       && inputs.annualIncrease > inputs.annualReturn) {
-    fieldErrors.annualReturn = messages.crossFieldIncreaseExceedsReturn
-      || DEFAULT_VALIDATION_MESSAGES.crossFieldIncreaseExceedsReturn;
-    fieldErrors.annualIncrease = messages.crossFieldIncreaseExceedsReturn
-      || DEFAULT_VALIDATION_MESSAGES.crossFieldIncreaseExceedsReturn;
+    fieldErrors.annualReturn = messages.crossFieldIncreaseExceedsReturn || '';
+    fieldErrors.annualIncrease = messages.crossFieldIncreaseExceedsReturn || '';
     isValid = false;
   }
 
@@ -1058,7 +1049,7 @@ function buildChartConfig(originalSeries, newSeries, labels, increase, monthly, 
       animation: { duration: 0 },
       layout: {
         padding: {
-          right: 110, top: 10, left: 4, bottom: 4,
+          right: 110, top: 10, left: 4, bottom: 0,
         },
       },
       plugins: {
@@ -1498,7 +1489,7 @@ export default async function decorate(block) {
     || '7d1b09abe2ea413cbf95b2d99782ed37';
 
   const pathLang = window.location.pathname.split('/').find((s) => s === 'en' || s === 'th');
-  const lang = pathLang || (document.documentElement.lang || 'en').split('-')[0];
+  const lang = pathLang || 'en';
   const data = json ? buildDataFromConfig(json, lang) : EMPTY_SHAPE;
 
   block.innerHTML = buildShellMarkup(data);
@@ -1518,4 +1509,15 @@ export default async function decorate(block) {
   renderInfoCard(state, data);
   renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
   attachHandlers(state, data);
+
+  // // Hide the EDS section-separator <hr> that appears between the block's section and the next.
+  // let el = block.parentElement;
+  // while (el && el.tagName !== 'MAIN') {
+  //   let sib = el.nextElementSibling;
+  //   while (sib) {
+  //     if (sib.tagName === 'HR') sib.style.display = 'none';
+  //     sib = sib.nextElementSibling;
+  //   }
+  //   el = el.parentElement;
+  // }
 }
