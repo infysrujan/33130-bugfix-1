@@ -75,7 +75,7 @@
   --bbl-color-blue-130: #002087;
   --bbl-color-blue-140: #4890ff;
   --bbl-color-blue-steel-light: #E6EEF4;
- 
+  --bbl-color-blue-145: #e5edf4;
 
   /* =========================================================================
      RED SCALE
@@ -162,6 +162,7 @@
   --bbl-color-orange-100: #7E330B;
   --bbl-color-orange-110: #401906;
   --bbl-color-orange-120: #2B0F05;
+  --bbl-color-orange-130:#d9534f;
 
   /* =========================================================================
      SEMANTIC COLORS (System Feedback)
