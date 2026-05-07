@@ -29,8 +29,9 @@ export default function decorate(block) {
   const pic1 = buildPicture(pictureRows[0], pictureRows[1], '');
   const pic2 = buildPicture(pictureRows[2], pictureRows[3], '');
 
-  // Button is always the last 3 rows: link, text, title.
+  // Last 4 rows: backgroundColor, buttonLink, buttonText, buttonTitle.
   const n = rows.length;
+  const bgColor = rows[n - 4]?.querySelector(':scope > div')?.textContent?.trim() || '';
   const btnAnchor = rows[n - 3]?.querySelector('a');
   const btnText = rows[n - 2]?.querySelector(':scope > div')?.textContent?.trim() || '';
   const btnTitle = rows[n - 1]?.querySelector(':scope > div')?.textContent?.trim() || '';
@@ -40,6 +41,7 @@ export default function decorate(block) {
 
   const card = document.createElement('div');
   card.className = 'category-banner-card';
+  if (bgColor) card.style.backgroundColor = bgColor;
 
   if (title) {
     const h3 = document.createElement('h3');

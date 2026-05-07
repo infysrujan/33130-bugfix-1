@@ -2404,6 +2404,34 @@
         "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
       },
       {
+        "component": "select",
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Lavender",
+            "value": "#ede8f5"
+          },
+          {
+            "name": "Mint",
+            "value": "#e6f4f1"
+          },
+          {
+            "name": "Peach",
+            "value": "#fdeee6"
+          },
+          {
+            "name": "Sky Blue",
+            "value": "#e6f0fd"
+          },
+          {
+            "name": "Soft Yellow",
+            "value": "#fdf8e6"
+          }
+        ]
+      },
+      {
         "component": "aem-content",
         "name": "buttonLink",
         "label": "Button Link",
