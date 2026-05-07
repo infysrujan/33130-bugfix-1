@@ -2,6 +2,9 @@
 // All content, labels, goals, and defaults come from /savingtool-config.json (AEM spreadsheet).
 // Preview: see preview.html (it stubs window.fetch with mock data).
 
+// eslint-disable-next-line import/no-unresolved
+import { loadCategoryBannerFragment } from '../category-banner/category-banner.js';
+
 async function fetchSavingToolJson() {
   try {
     const resp = await fetch('/savingtool-config.json');
@@ -481,22 +484,6 @@ function buildProductCard(product) {
         ${cta}
       </div>
     </article>
-  `;
-}
-
-function buildInfoCard(goal) {
-  if (!goal) return '';
-  const cta = goal.infoUrl
-    ? `<a class="saving-plan-info-card-cta" href="${goal.infoUrl}">${goal.infoCta || ''}</a>`
-    : `<button type="button" class="saving-plan-info-card-cta">${goal.infoCta || ''}</button>`;
-  const bgStyle = goal.infoBg ? `background-color:${goal.infoBg}` : '';
-  const artStyle = goal.imageUrl ? `background-image:url('${goal.imageUrl}')` : '';
-  return `
-    <aside class="saving-plan-info-card" style="${bgStyle}">
-      <h3 class="saving-plan-info-card-title">${goal.infoTitle || ''}</h3>
-      <div class="saving-plan-info-card-art" aria-hidden="true" style="${artStyle}"></div>
-      ${cta}
-    </aside>
   `;
 }
 
@@ -1191,12 +1178,18 @@ async function renderChart(state, data) {
   updateLegend(state.root, data, inputs.annualIncrease, newIncrease, !!newSeries);
 }
 
-function renderInfoCard(state, data) {
+function renderInfoCard(state) {
+  // Clears the banner slot — the fragment is loaded only after Calculate.
+  const slot = state.root.querySelector('.saving-plan-info-card-slot');
+  if (slot) slot.innerHTML = '';
+}
+
+async function renderCategoryBannerForGoal(state) {
   const slot = state.root.querySelector('.saving-plan-info-card-slot');
   if (!slot) return;
   const goalKey = state.root.querySelector('[data-field="goal"]')?.dataset.value;
-  const goal = data.goals.find((g) => g.key === goalKey);
-  slot.innerHTML = buildInfoCard(goal);
+  if (!goalKey) return;
+  await loadCategoryBannerFragment(`/saving-plan/${goalKey}`, slot);
 }
 
 function renderProducts(state, data) {
@@ -1302,7 +1295,7 @@ function resetCalculator(state, data) {
     window.removeEventListener('resize', state.chartResizeListener);
     state.chartResizeListener = null;
   }
-  renderInfoCard(state, data);
+  renderInfoCard(state);
   renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
 }
 
@@ -1342,7 +1335,7 @@ function attachDropdownHandlers(state, data, onSelectionChange) {
       opt.classList.toggle('is-selected', opt === option);
     });
     close();
-    renderInfoCard(state, data);
+    renderInfoCard(state);
     if (typeof onSelectionChange === 'function') onSelectionChange();
   });
 
@@ -1416,7 +1409,7 @@ function attachHandlers(state, data) {
     renderResult(state, data, calculation);
 
     syncSliderDisplays(root);
-    renderInfoCard(state, data);
+    await renderCategoryBannerForGoal(state);
     const isNegative = calculation.SavingMonth < 0;
     if (isNegative) {
       root.querySelector('.saving-plan-chart-row')?.setAttribute('hidden', '');
@@ -1506,7 +1499,7 @@ export default async function decorate(block) {
     chartInstance: null,
   };
 
-  renderInfoCard(state, data);
+  renderInfoCard(state);
   renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
   attachHandlers(state, data);
 
