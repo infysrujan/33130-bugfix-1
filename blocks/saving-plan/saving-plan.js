@@ -1189,7 +1189,7 @@ async function renderCategoryBannerForGoal(state) {
   if (!slot) return;
   const goalKey = state.root.querySelector('[data-field="goal"]')?.dataset.value;
   if (!goalKey) return;
-  await loadCategoryBannerFragment(`/saving-plan/${goalKey}`, slot);
+  await loadCategoryBannerFragment(`/en/fragments/saving-plan-en/${goalKey}-en`, slot);
 }
 
 function renderProducts(state, data) {
