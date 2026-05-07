@@ -2405,86 +2405,23 @@
       },
       {
         "component": "aem-content",
-        "name": "button1Link",
-        "label": "Button 1 Link",
-        "description": "Destination URL for button 1"
+        "name": "buttonLink",
+        "label": "Button Link",
+        "description": "Destination URL for the button"
       },
       {
         "component": "text",
-        "name": "button1Text",
-        "label": "Button 1 Text",
-        "description": "Label for button 1",
+        "name": "buttonText",
+        "label": "Button Text",
+        "description": "Label for the button",
         "valueType": "string",
         "required": true
       },
       {
         "component": "text",
-        "name": "button1Title",
-        "label": "Button 1 Title",
-        "description": "Accessibility title attribute for button 1 (optional)",
-        "valueType": "string"
-      },
-      {
-        "component": "aem-content",
-        "name": "button2Link",
-        "label": "Button 2 Link",
-        "description": "Destination URL for button 2"
-      },
-      {
-        "component": "text",
-        "name": "button2Text",
-        "label": "Button 2 Text",
-        "description": "Label for button 2",
-        "valueType": "string",
-        "required": true
-      },
-      {
-        "component": "text",
-        "name": "button2Title",
-        "label": "Button 2 Title",
-        "description": "Accessibility title attribute for button 2 (optional)",
-        "valueType": "string"
-      },
-      {
-        "component": "aem-content",
-        "name": "button3Link",
-        "label": "Button 3 Link",
-        "description": "Destination URL for button 3"
-      },
-      {
-        "component": "text",
-        "name": "button3Text",
-        "label": "Button 3 Text",
-        "description": "Label for button 3",
-        "valueType": "string",
-        "required": true
-      },
-      {
-        "component": "text",
-        "name": "button3Title",
-        "label": "Button 3 Title",
-        "description": "Accessibility title attribute for button 3 (optional)",
-        "valueType": "string"
-      },
-      {
-        "component": "aem-content",
-        "name": "button4Link",
-        "label": "Button 4 Link",
-        "description": "Destination URL for button 4"
-      },
-      {
-        "component": "text",
-        "name": "button4Text",
-        "label": "Button 4 Text",
-        "description": "Label for button 4",
-        "valueType": "string",
-        "required": true
-      },
-      {
-        "component": "text",
-        "name": "button4Title",
-        "label": "Button 4 Title",
-        "description": "Accessibility title attribute for button 4 (optional)",
+        "name": "buttonTitle",
+        "label": "Button Title",
+        "description": "Accessibility title attribute (optional)",
         "valueType": "string"
       }
     ]

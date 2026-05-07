@@ -69,16 +69,10 @@ export default function decorate(block) {
   const pic1 = buildPicture(rows[1], rows[3], getText(rows[5]));
   const pic2 = buildPicture(rows[6], rows[8], getText(rows[10]));
 
-  const buttons = [];
-  const btnOffsets = [11, 14, 17, 20];
-  btnOffsets.forEach((offset) => {
-    const linkAnchor = getAnchor(rows[offset]);
-    const text = getText(rows[offset + 1]);
-    const titleAttr = getText(rows[offset + 2]);
-    if (text) {
-      buttons.push({ href: linkAnchor?.href || '#', text, title: titleAttr });
-    }
-  });
+  const btnAnchor = getAnchor(rows[11]);
+  const btnText = getText(rows[12]);
+  const btnTitle = getText(rows[13]);
+  const buttons = btnText ? [{ href: btnAnchor?.href || '#', text: btnText, title: btnTitle }] : [];
 
   block.innerHTML = '';
 

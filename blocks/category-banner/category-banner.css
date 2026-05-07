@@ -68,15 +68,6 @@
   outline: none;
 }
 
-@container (min-width: 360px) {
-  .category-banner-buttons {
-    flex-flow: row wrap;
-  }
-
-  .category-banner-btn {
-    flex: 1 1 calc(50% - 4px);
-  }
-}
 
 @container (min-width: 600px) {
   .category-banner-card {
