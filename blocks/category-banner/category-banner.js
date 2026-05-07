@@ -1,77 +1,39 @@
 import { loadFragment } from '../fragment/fragment.js';
 
-// EDS authors this block as a fragment page under /saving-plan/{goalKey}.
-// Row order from the model:
-//   0  title
-//   1  image1 desktop picture  (+ mime row auto-inserted by image-picker)
-//   2  image1 desktop mimetype (skipped — part of picture element)
-//   3  image1 mobile picture
-//   4  image1 mobile mimetype
-//   5  image1 alt              (plain text cell)
-//   6  image2 desktop picture
-//   7  image2 desktop mimetype
-//   8  image2 mobile picture
-//   9  image2 mobile mimetype
-//  10  image2 alt
-//  11  button1 link  (anchor)
-//  12  button1 text
-//  13  button1 title
-//  14  button2 link
-//  15  button2 text
-//  16  button2 title
-//  17  button3 link
-//  18  button3 text
-//  19  button3 title
-//  20  button4 link
-//  21  button4 text
-//  22  button4 title
-
-function buildPicture(desktopRow, mobileRow, altText) {
-  const desktopImg = desktopRow?.querySelector('img');
-  const mobileImg = mobileRow?.querySelector('img');
-  if (!desktopImg && !mobileImg) return null;
-
-  const picture = document.createElement('picture');
-
-  if (mobileImg) {
-    const mSrc = document.createElement('source');
-    mSrc.media = '(max-width: 767px)';
-    mSrc.srcset = mobileImg.src;
-    picture.append(mSrc);
-  }
-
-  const img = document.createElement('img');
-  img.src = (desktopImg || mobileImg).src;
-  img.alt = altText || '';
-  img.loading = 'lazy';
-  picture.append(img);
-
-  return picture;
-}
-
-function getCell(row) {
-  return row?.querySelector(':scope > div');
-}
-
-function getText(row) {
-  return getCell(row)?.textContent?.trim() || '';
-}
-
-function getAnchor(row) {
-  return getCell(row)?.querySelector('a');
-}
-
 export default function decorate(block) {
   const rows = [...block.children];
 
-  const title = getText(rows[0]);
+  // Title is always the first row.
+  const title = rows[0]?.querySelector(':scope > div')?.textContent?.trim() || '';
 
-  const pic1 = buildPicture(rows[1], rows[3], getText(rows[5]));
-  const pic2 = buildPicture(rows[6], rows[8], getText(rows[10]));
+  // Images: find all rows containing a <picture> element.
+  const pictureRows = rows.filter((r) => r.querySelector('picture'));
+  const buildPicture = (desktopRow, mobileRow, altText) => {
+    const desktopImg = desktopRow?.querySelector('img');
+    const mobileImg = mobileRow?.querySelector('img');
+    if (!desktopImg && !mobileImg) return null;
+    const pic = document.createElement('picture');
+    if (mobileImg) {
+      const src = document.createElement('source');
+      src.media = '(max-width: 767px)';
+      src.srcset = mobileImg.src;
+      pic.append(src);
+    }
+    const img = document.createElement('img');
+    img.src = (desktopImg || mobileImg).src;
+    img.alt = altText || '';
+    img.loading = 'lazy';
+    pic.append(img);
+    return pic;
+  };
+  const pic1 = buildPicture(pictureRows[0], pictureRows[1], '');
+  const pic2 = buildPicture(pictureRows[2], pictureRows[3], '');
 
-  const btnAnchor = getAnchor(rows[11]);
-  const btnText = getText(rows[12]);
-  const btnTitle = getText(rows[13]);
+  // Button is always the last 3 rows: link, text, title.
+  const n = rows.length;
+  const btnAnchor = rows[n - 3]?.querySelector('a');
+  const btnText = rows[n - 2]?.querySelector(':scope > div')?.textContent?.trim() || '';
+  const btnTitle = rows[n - 1]?.querySelector(':scope > div')?.textContent?.trim() || '';
   const buttons = btnText ? [{ href: btnAnchor?.href || '#', text: btnText, title: btnTitle }] : [];
 
   block.innerHTML = '';
@@ -109,8 +71,6 @@ export default function decorate(block) {
   block.append(card);
 }
 
-// Called from saving-plan to load this block as a fragment into a container element.
-// path — e.g. '/saving-plan/education'
 export async function loadCategoryBannerFragment(path, container) {
   container.innerHTML = '';
   if (!path) return;
