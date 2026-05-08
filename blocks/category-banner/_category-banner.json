@@ -22,6 +22,14 @@
       "fields": [
         {
           "component": "text",
+          "name": "fragmentId",
+          "label": "Fragment ID",
+          "description": "Unique identifier used to map this banner to a saving goal category (e.g. marriage, new-house, car)",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "text",
           "name": "title",
           "label": "Title",
           "valueType": "string"

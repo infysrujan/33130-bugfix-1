@@ -165,6 +165,7 @@ function buildDataFromConfig(json, lang) {
   const goals = goalKeys.map((gk) => ({
     key: L[`savingGoals-${gk}-value`] || gk,
     label: L[`savingGoals-${gk}-label`] || gk,
+    fragmentId: L[`savingGoals-${gk}-fragmentId`] || '',
     infoTitle: L[`cards-${gk}-title`] || '',
     infoBg: L[`cards-${gk}-backgroundColor`] || '',
     infoCta: L[`cards-${gk}-description`] || '',
@@ -1185,13 +1186,14 @@ function renderInfoCard(state) {
   if (slot) slot.innerHTML = '';
 }
 
-async function renderCategoryBannerForGoal(state) {
+async function renderCategoryBannerForGoal(state, data) {
   const slot = state.root.querySelector('.saving-plan-info-card-slot');
   if (!slot) return;
   const goalKey = state.root.querySelector('[data-field="goal"]')?.dataset.value;
   if (!goalKey) return;
-  const goalSlug = goalKey.toLowerCase().replace(/\s+/g, '-');
-  await loadCategoryBannerFragment(`/en/fragments/saving-plan-en/${goalSlug}-en`, slot);
+  const goal = data.goals.find((g) => g.key === goalKey);
+  const fragmentId = goal?.fragmentId || goalKey.toLowerCase().replace(/\s+/g, '-');
+  await loadCategoryBannerFragment(`/en/fragments/saving-plan-en/${fragmentId}`, slot);
 }
 
 function renderProducts(state, data) {
@@ -1416,7 +1418,7 @@ function attachHandlers(state, data) {
     renderResult(state, data, calculation);
 
     syncSliderDisplays(root);
-    await renderCategoryBannerForGoal(state);
+    await renderCategoryBannerForGoal(state, data);
     const isNegative = calculation.SavingMonth < 0;
     if (isNegative) {
       root.querySelector('.saving-plan-chart-row')?.setAttribute('hidden', '');
