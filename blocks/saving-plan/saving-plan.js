@@ -1192,8 +1192,9 @@ async function renderCategoryBannerForGoal(state, data) {
   const goalKey = state.root.querySelector('[data-field="goal"]')?.dataset.value;
   if (!goalKey) return;
   const goal = data.goals.find((g) => g.key === goalKey);
-  const fragmentId = goal?.fragmentId || goalKey.toLowerCase().replace(/\s+/g, '-');
-  await loadCategoryBannerFragment(`/en/fragments/saving-plan-en/${fragmentId}`, slot);
+  const rawId = goal?.fragmentId || goalKey;
+  const fragmentId = rawId.toLowerCase().replace(/\s+/g, '-');
+  await loadCategoryBannerFragment('/en/fragments/saving-plan-en', `${fragmentId}-en`, slot);
 }
 
 function renderProducts(state, data) {

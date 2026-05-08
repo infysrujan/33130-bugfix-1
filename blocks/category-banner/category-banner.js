@@ -3,8 +3,13 @@ import { loadFragment } from '../fragment/fragment.js';
 export default function decorate(block) {
   const rows = [...block.children];
 
-  // Title is always the first row.
-  const title = rows[0]?.querySelector(':scope > div')?.textContent?.trim() || '';
+  // First row is fragmentId (author-defined ID for goal mapping). Normalize to slug.
+  const fragmentIdRaw = rows[0]?.querySelector(':scope > div')?.textContent?.trim() || '';
+  const fragmentId = fragmentIdRaw.toLowerCase().replace(/\s+/g, '-');
+  if (fragmentId) block.dataset.fragmentId = fragmentId;
+
+  // Title is always the second row.
+  const title = rows[1]?.querySelector(':scope > div')?.textContent?.trim() || '';
 
   // Images: find all rows containing a <picture> element.
   const pictureRows = rows.filter((r) => r.querySelector('picture'));
@@ -73,11 +78,13 @@ export default function decorate(block) {
   block.append(card);
 }
 
-export async function loadCategoryBannerFragment(path, container) {
+export async function loadCategoryBannerFragment(basePath, goalId, container) {
   container.innerHTML = '';
-  if (!path) return;
-  const fragment = await loadFragment(path);
+  if (!basePath || !goalId) return;
+  const fragment = await loadFragment(`${basePath}/${goalId}`);
   if (!fragment) return;
-  const bannerBlock = fragment.querySelector('.category-banner');
+  const baseId = goalId.replace(/-en$/, '');
+  const bannerBlock = fragment.querySelector(`.category-banner[data-fragment-id="${baseId}"]`)
+    || fragment.querySelector('.category-banner');
   if (bannerBlock) container.append(bannerBlock);
 }
