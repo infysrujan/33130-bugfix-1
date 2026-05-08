@@ -85,7 +85,7 @@ const ICONS = {
   balance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.5 11h-9z"/><path d="M9 8c0-2 1-4 3-4s3 2 3 4"/><line x1="6" y1="14" x2="18" y2="14"/></svg>',
   annualReturn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 12A9 9 0 0 0 12 3v9z" fill="currentColor" fill-opacity="0.15"/><path d="M12 3v9l8 0"/></svg>',
   annualIncrease: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>',
-  stepUp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>',
+  stepUp: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.6 20.9999H3V2.3999" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"/><path d="M6 12L21 12" stroke="currentColor" stroke-width="2"/></svg>',
 };
 
 const SERIES_COLORS = {
@@ -896,7 +896,7 @@ function drawMonthlyTag(ctx, cx, cy, line1, line2, bg) {
 function drawGoalLabel(ctx, x, y, line1, line2, color) {
   ctx.save();
   ctx.fillStyle = color;
-  ctx.textAlign = 'left';
+  ctx.textAlign = 'right';
   ctx.font = '11px system-ui,sans-serif';
   ctx.fillText(line1, x, y);
   ctx.font = 'bold 13px system-ui,sans-serif';
@@ -915,7 +915,7 @@ function buildChartOverlayPlugin(originalSeries, newSeries, monthly, monthlyNew,
       const lastIdx = originalSeries.length - 1;
       const lastYear = originalSeries[lastIdx].year;
       const tagX = xScale.getPixelForValue(1) + 44;
-      const goalX = xScale.getPixelForValue(lastYear) + 10;
+      const goalX = xScale.getPixelForValue(lastYear) - 6;
 
       const boxH = 57; // approx height of a monthly tag box (2 lines + padding)
 
@@ -1034,7 +1034,7 @@ function buildChartConfig(originalSeries, newSeries, labels, increase, monthly, 
       animation: { duration: 0 },
       layout: {
         padding: {
-          right: 110, top: 10, left: 4, bottom: 0,
+          right: 10, top: 10, left: 4, bottom: 0,
         },
       },
       plugins: {
