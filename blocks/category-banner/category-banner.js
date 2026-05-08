@@ -83,8 +83,6 @@ export async function loadCategoryBannerFragment(basePath, goalId, container) {
   if (!basePath || !goalId) return;
   const fragment = await loadFragment(`${basePath}/${goalId}`);
   if (!fragment) return;
-  const baseId = goalId.replace(/-en$/, '');
-  const bannerBlock = fragment.querySelector(`.category-banner[data-fragment-id="${baseId}"]`)
-    || fragment.querySelector('.category-banner');
+  const bannerBlock = fragment.querySelector('.category-banner');
   if (bannerBlock) container.append(bannerBlock);
 }

@@ -1,9 +1,5 @@
-// Saving Plan block — Bangkok Bank-style calculator.
-// All content, labels, goals, and defaults come from /savingtool-config.json (AEM spreadsheet).
-// Preview: see preview.html (it stubs window.fetch with mock data).
-
-// eslint-disable-next-line import/no-unresolved
 import { loadCategoryBannerFragment } from '../category-banner/category-banner.js';
+import { getLang } from '../../scripts/bbl-decorators.js';
 
 async function fetchSavingToolJson() {
   try {
@@ -16,7 +12,6 @@ async function fetchSavingToolJson() {
 
 const INFLATION_RATE = 1.5;
 
-// eslint-disable-next-line import/no-unresolved
 const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
 
 const EMPTY_SHAPE = {
@@ -165,7 +160,8 @@ function buildDataFromConfig(json, lang) {
   const goals = goalKeys.map((gk) => ({
     key: L[`savingGoals-${gk}-value`] || gk,
     label: L[`savingGoals-${gk}-label`] || gk,
-    fragmentId: L[`savingGoals-${gk}-fragmentId`] || '',
+    configKey: gk,
+    fragmentId: L[`savingGoals-${gk}-fragmentId`] || L[`cards-${gk}-fragmentId`] || (L[`cards-${gk}-category`] || '').toLowerCase().replace(/\s+/g, '-'),
     infoTitle: L[`cards-${gk}-title`] || '',
     infoBg: L[`cards-${gk}-backgroundColor`] || '',
     infoCta: L[`cards-${gk}-description`] || '',
@@ -1192,9 +1188,14 @@ async function renderCategoryBannerForGoal(state, data) {
   const goalKey = state.root.querySelector('[data-field="goal"]')?.dataset.value;
   if (!goalKey) return;
   const goal = data.goals.find((g) => g.key === goalKey);
-  const rawId = goal?.fragmentId || goalKey;
-  const fragmentId = rawId.toLowerCase().replace(/\s+/g, '-');
-  await loadCategoryBannerFragment('/en/fragments/saving-plan-en', `${fragmentId}-en`, slot);
+  const fragmentId = goal?.fragmentId;
+  if (!fragmentId) {
+    // eslint-disable-next-line no-console
+    console.warn(`[saving-plan] No fragmentId set for goal "${goalKey}". Add savingGoals-<key>-fragmentId to the config spreadsheet.`);
+    return;
+  }
+  const lang = getLang();
+  await loadCategoryBannerFragment(`/${lang}/fragments/saving-plan-${lang}`, `${fragmentId}-${lang}`, slot);
 }
 
 function renderProducts(state, data) {
@@ -1491,8 +1492,7 @@ export default async function decorate(block) {
     || (typeof window !== 'undefined' && window.SAVING_PLAN_APIM_KEY)
     || '7d1b09abe2ea413cbf95b2d99782ed37';
 
-  const pathLang = window.location.pathname.split('/').find((s) => s === 'en' || s === 'th');
-  const lang = pathLang || 'en';
+  const lang = getLang();
   const data = json ? buildDataFromConfig(json, lang) : EMPTY_SHAPE;
 
   block.innerHTML = buildShellMarkup(data);
