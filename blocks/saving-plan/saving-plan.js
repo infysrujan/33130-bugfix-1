@@ -623,6 +623,7 @@ function buildShellMarkup(data) {
 
       <section class="saving-plan-products" hidden>
         <h3 class="saving-plan-products-title">${labels.productSectionTitle}</h3>
+        <div class="saving-plan-products-divider"></div>
 <div class="saving-plan-products-grid"></div>
       </section>
     </div>
@@ -1048,12 +1049,12 @@ function buildChartConfig(originalSeries, newSeries, labels, increase, monthly, 
           title: {
             display: true,
             text: labels.xAxis || 'Year(s)',
-            color: '#9b9b9b',
+            color: '#555',
             font: { size: 12, family: 'system-ui, sans-serif' },
           },
           grid: { display: false },
-          border: { display: false },
-          ticks: { color: '#9b9b9b', font: { size: 12, family: 'system-ui, sans-serif' } },
+          border: { display: true, color: '#aaa' },
+          ticks: { color: '#555', font: { size: 12, family: 'system-ui, sans-serif' } },
         },
         y: {
           min: 0,
@@ -1061,21 +1062,21 @@ function buildChartConfig(originalSeries, newSeries, labels, increase, monthly, 
           title: {
             display: true,
             text: labels.yAxis || 'Amount (baht)',
-            color: '#9b9b9b',
+            color: '#555',
             font: { size: 12, family: 'system-ui, sans-serif' },
           },
           ticks: {
             callback: (val) => formatCompact(val),
-            color: '#9b9b9b',
+            color: '#555',
             font: { size: 12, family: 'system-ui, sans-serif' },
             maxTicksLimit: 5,
           },
           grid: {
-            color: '#E5E7EB',
+            color: '#c8c8c8',
             lineWidth: 1,
             drawTicks: false,
           },
-          border: { dash: [4, 4], display: false },
+          border: { dash: [4, 4], display: true, color: '#aaa' },
           beginAtZero: true,
         },
       },
@@ -1189,7 +1190,8 @@ async function renderCategoryBannerForGoal(state) {
   if (!slot) return;
   const goalKey = state.root.querySelector('[data-field="goal"]')?.dataset.value;
   if (!goalKey) return;
-  await loadCategoryBannerFragment(`/en/fragments/saving-plan-en/${goalKey.toLowerCase()}-en`, slot);
+  const goalSlug = goalKey.toLowerCase().replace(/\s+/g, '-');
+  await loadCategoryBannerFragment(`/en/fragments/saving-plan-en/${goalSlug}-en`, slot);
 }
 
 function renderProducts(state, data) {
@@ -1336,6 +1338,11 @@ function attachDropdownHandlers(state, data, onSelectionChange) {
     });
     close();
     renderInfoCard(state);
+    state.root.querySelector('.saving-plan-chart-row')?.setAttribute('hidden', '');
+    state.root.querySelector('.saving-plan-tweak')?.setAttribute('hidden', '');
+    state.root.querySelector('.saving-plan-products')?.setAttribute('hidden', '');
+    state.calculatedInputs = null;
+    renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
     if (typeof onSelectionChange === 'function') onSelectionChange();
   });
 
