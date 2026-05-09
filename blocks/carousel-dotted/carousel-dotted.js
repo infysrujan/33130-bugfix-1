@@ -366,6 +366,8 @@ export default async function decorate(block) {
     && slidesTextAnimation === 0;
   const arrowTrackVariant = circularOrDefaultImage || allFragmentTrack;
   const shouldCloneFragmentSlide = allFragmentTrack && slideEls.length > 1;
+  const isSimpleCarousel = slideEls.some((s) => s.classList.contains('simple-carousel'));
+  if (isSimpleCarousel) block.classList.add('simple-carousel-variant');
 
   function triggerBgZoom(slideEl) {
     const bg = slideEl.querySelector('.carousel-bg');
@@ -428,7 +430,7 @@ export default async function decorate(block) {
     });
 
     // Keep arrows enabled for wrapped arrow-track variants so they can loop.
-    if (showArrows && arrowTrackVariant) {
+    if (showArrows && (arrowTrackVariant || isSimpleCarousel)) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
     } else {
@@ -479,8 +481,7 @@ export default async function decorate(block) {
 
   prevArrow.addEventListener('click', () => {
     const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
-    if (showArrows && arrowTrackVariant) {
-      // Enable circular navigation for showArrowsDots variant
+    if (showArrows && (arrowTrackVariant || isSimpleCarousel)) {
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
       setActive(prevIndex);
     } else if (currentIndex > 0) {

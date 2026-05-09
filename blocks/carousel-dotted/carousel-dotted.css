@@ -1282,3 +1282,24 @@
     margin-top: 0;
 }
 
+/* ── Simple carousel: dots — 12px active ─────────────────────────────────── */
+.carousel-dotted.show-arrows-dots.simple-carousel-variant .slick-dots li.is-active button {
+  width: 0.75rem;
+  height: 0.75rem;
+  min-width: 0.75rem;
+  min-height: 0.75rem;
+}
+
+/* ── Simple carousel: arrow hover ────────────────────────────────────────── */
+.carousel-dotted.show-arrows-dots.simple-carousel-variant .carousel-arrow:hover {
+  background-color: var(--bbl-color-white);
+}
+
+.carousel-dotted.show-arrows-dots.simple-carousel-variant .carousel-arrow-prev:hover {
+  transform: translateX(-0.125rem);
+}
+
+.carousel-dotted.show-arrows-dots.simple-carousel-variant .carousel-arrow-next:hover {
+  transform: translateX(0.125rem);
+}
+
