@@ -10699,7 +10699,7 @@
     ]
   },
   {
-    "id": "welcome-banner",
+    "id": "welcome-page-banner",
     "fields": [
       {
         "component": "custom-asset-namespace:custom-asset",
@@ -10733,38 +10733,6 @@
         "name": "imagePickerAlt",
         "label": "Alternative text for accessibility",
         "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta1_linkText",
-        "value": "",
-        "label": "CTA 1 Text",
-        "description": "Text to be shown inside button."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta1_link",
-        "value": "",
-        "label": "CTA 1 Link",
-        "description": "What link to open when clicking the button."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta2_linkText",
-        "value": "",
-        "label": "CTA 2 Text",
-        "description": "Text to be shown inside button."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta2_link",
-        "value": "",
-        "label": "CTA 2 Link",
-        "description": "What link to open when clicking the button."
       },
       {
         "component": "date-time",

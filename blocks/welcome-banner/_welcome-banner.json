@@ -1,16 +1,16 @@
 {
   "definitions": [
     {
-      "title": "Welcome Banner",
-      "id": "welcome-banner",
+      "title": "Welcome Page Banner",
+      "id": "welcome-page-banner",
       "plugins": {
         "xwalk": {
           "page": {
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
-              "name": "Welcome Banner",
-              "model": "welcome-banner",
-              "filter": "welcome-banner"
+              "name": "Welcome Page Banner",
+              "model": "welcome-page-banner",
+              "filter": "welcome-page-banner"
             }
           }
         }
@@ -19,51 +19,28 @@
   ],
   "models": [
     {
-      "id": "welcome-banner",
+      "id": "welcome-page-banner",
       "fields": [
         {
           "...": "../../models/elements/_image-picker.json#/imagePickerFields"
-        },      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta1_linkText",
-        "value": "",
-        "label": "CTA 1 Text",
-        "description": "Text to be shown inside button."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta1_link",
-        "value": "",
-        "label": "CTA 1 Link",
-        "description": "What link to open when clicking the button."
-      },  {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta2_linkText",
-        "value": "",
-        "label": "CTA 2 Text",
-        "description": "Text to be shown inside button."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta2_link",
-        "value": "",
-        "label": "CTA 2 Link",
-        "description": "What link to open when clicking the button."
-      },
-      {
-        "component": "date-time",
-        "valueType": "date-time",
-        "name": "content-modified-time",
-        "label": "Content Last Updated Date",
-        "description": "Sets the last content update date of the page in page metadata.",
-        "placeholder": "YYYY-MM-DD HH:mm:ss"
-      }
+        },
+        {
+          "component": "date-time",
+          "valueType": "date-time",
+          "name": "content-modified-time",
+          "label": "Content Last Updated Date",
+          "description": "Sets the last content update date of the page in page metadata.",
+          "placeholder": "YYYY-MM-DD HH:mm:ss"
+        }
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "welcome-page-banner",
+      "components": [
+        "button"
+      ]
+    }
+  ]
 }
