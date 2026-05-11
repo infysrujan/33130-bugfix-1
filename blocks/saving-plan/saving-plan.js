@@ -45,14 +45,14 @@ function getChartColors(block) {
 
 async function loadChartJs() {
   if (window.Chart) return window.Chart;
-  await new Promise((resolve, reject) => {
+  await new Promise((resolve) => {
     const script = document.createElement('script');
     script.src = '/scripts/vendor/chart.umd.js';
     script.onload = resolve;
-    script.onerror = reject;
+    script.onerror = resolve;
     document.head.appendChild(script);
   });
-  return window.Chart;
+  return window.Chart || null;
 }
 
 function formatNumber(value) {
