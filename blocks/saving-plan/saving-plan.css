@@ -1,6 +1,6 @@
 .saving-plan-block {
-  --sp-blue: var(--bbl-color-primary, #06f);
-  --sp-blue-dark: var(--bbl-color-primary-dark, #0a2540);
+  --sp-blue: #1e6ffb;
+  --sp-blue-dark: #0048b7;
   --sp-blue-soft: var(--bbl-color-primary-light, #e7efff);
   --sp-green: var(--bbl-color-success-light, #daf0d4);
   --sp-text: var(--bbl-color-black, #1a1a1a);
@@ -22,23 +22,8 @@
 
 
 .saving-plan-section {
-  max-width: 80rem;
-  margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
-}
-
-@media (width >= 761px) {
-  .saving-plan-section {
-    padding-right: 2rem;
-    padding-left: 2rem;
-  }
-}
-
-@media (width >= 1025px) {
-  .saving-plan-section {
-    padding-right: 3rem;
-    padding-left: 3rem;
-  }
+  padding-top: 1.5rem;
+  padding-bottom: 3rem;
 }
 
 .saving-plan-header {
@@ -445,11 +430,11 @@
 
 .saving-plan-chart-legend-row {
   display: inline-flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  padding: 0.5rem 1rem;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.5rem 1.25rem;
   background: #f2f3f5;
-  border-radius: 1.25rem;
+  border-radius: 0.5rem;
 }
 
 .saving-plan-chart-legend-row[hidden] {
@@ -926,7 +911,8 @@
 /* ── Tablet shared (600px – 899px) ──────────────────────────────── */
 @media (600px <= width <= 899px) {
   .saving-plan-section {
-    padding: 1.5rem 1rem 2.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
   }
 
   .saving-plan-header-title {
@@ -1014,7 +1000,8 @@
 /* ── Mobile (≤ 599px) ───────────────────────────────────────────── */
 @media (width <= 599px) {
   .saving-plan-section {
-    padding: 1.25rem 0.75rem 2rem;
+    padding-top: 1.25rem;
+    padding-bottom: 2rem;
   }
 
   .saving-plan-header-title {
