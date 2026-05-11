@@ -10699,7 +10699,7 @@
     ]
   },
   {
-    "id": "welcome-page-banner",
+    "id": "welcome-banner",
     "fields": [
       {
         "component": "custom-asset-namespace:custom-asset",

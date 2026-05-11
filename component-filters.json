@@ -381,7 +381,7 @@
     ]
   },
   {
-    "id": "welcome-page-banner",
+    "id": "welcome-banner",
     "components": [
       "button"
     ]
