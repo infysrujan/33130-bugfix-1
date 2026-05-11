@@ -217,7 +217,8 @@
         "top-promotional-cards",
         "multi-column-tiles",
         "cookie-alert",
-        "cookie-modal"
+        "cookie-modal",
+        "welcome-banner"
       ]
     }
   ]
