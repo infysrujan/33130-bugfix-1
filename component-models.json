@@ -10697,5 +10697,83 @@
         }
       }
     ]
+  },
+  {
+    "id": "welcome-banner",
+    "fields": [
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerDesktop",
+        "label": "Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerDesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerMobile",
+        "label": "Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerMobileMimeType"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta1_linkText",
+        "value": "",
+        "label": "CTA 1 Text",
+        "description": "Text to be shown inside button."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta1_link",
+        "value": "",
+        "label": "CTA 1 Link",
+        "description": "What link to open when clicking the button."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta2_linkText",
+        "value": "",
+        "label": "CTA 2 Text",
+        "description": "Text to be shown inside button."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta2_link",
+        "value": "",
+        "label": "CTA 2 Link",
+        "description": "What link to open when clicking the button."
+      },
+      {
+        "component": "date-time",
+        "valueType": "date-time",
+        "name": "content-modified-time",
+        "label": "Content Last Updated Date",
+        "description": "Sets the last content update date of the page in page metadata.",
+        "placeholder": "YYYY-MM-DD HH:mm:ss"
+      }
+    ]
   }
 ]
