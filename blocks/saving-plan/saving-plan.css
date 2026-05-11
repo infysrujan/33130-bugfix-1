@@ -10,6 +10,14 @@
   --sp-error: var(--bbl-color-red-130, #e63946);
   --sp-bg-soft: #f5f5f5;
   --sp-radius: 0.5rem;
+  --sp-chart-result: #1e6ffb;
+  --sp-chart-result-dashed: #9bb1ff;
+  --sp-chart-new-plan: #0f2a44;
+  --sp-chart-new-plan-dashed: #7a8fb1;
+  --sp-chart-axis: #555;
+  --sp-chart-border: #aaa;
+  --sp-chart-grid: #c8c8c8;
+  --sp-slider-track: #d0d0d0;
 
   display: block;
   width: 100%;

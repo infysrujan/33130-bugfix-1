@@ -12,97 +12,47 @@ async function fetchSavingToolJson() {
 
 const INFLATION_RATE = 1.5;
 
-const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
+const ICON_BASE = '/icons/saving-plan';
+const ICONS_CACHE = {};
 
-const EMPTY_SHAPE = {
-  labels: {
-    sectionTitle: '',
-    calculateTitle: '',
-    resultTitle: '',
-    tweakTitle: '',
-    newPlanTitle: '',
-    productSectionTitle: '',
-    additionalInfoTitle: '',
-    additionalInfoLinkText: '',
-    additionalInfoUrl: '',
-    disclaimerTitle: '',
-    disclaimer: '',
-    fields: {
-      goal: '', goalAmount: '', goalPeriod: '', balance: '', annualReturn: '', annualIncrease: '',
-    },
-    buttons: { clear: '', calculate: '' },
-    result: {
-      futureValueTemplate: '',
-      monthlySavingLabel: '',
-      currency: '',
-      footnote: '',
-      footnoteReturnTemplate: '*Including inflation rate of 1.5% p.a. and expected annual return {return}%',
-    },
-    newPlan: {
-      futureValueTemplate: '',
-      monthlySavingLabel: '',
-      footnote: '',
-      footnoteIncreaseTemplate: 'Increase savings each year by {increase}%',
-      footnoteReturnTemplate: '*Including inflation rate of 1.5% p.a. and expected annual return {return}%',
-    },
-    chart: {
-      title: '',
-      xAxis: '',
-      yAxis: '',
-      legendResult: '',
-      legendFixed: '',
-      legendStepUp: '',
-      legendNewPlan: '',
-      legendStepUpAdjusted: '',
-      monthlySavingsTag: '',
-      goalAmountTag: '',
-    },
-    validation: {
-      goalAmount: '',
-      annualReturn: '',
-      goalPeriod: '',
-      crossFieldIncreaseExceedsReturn: '',
-    },
-  },
-  defaults: {
-    goalAmount: 0, goalPeriod: 0, balance: 0, annualReturn: 0, annualIncrease: 0,
-  },
-  validation: {
-    goalAmount: { min: 10000 },
-    goalPeriod: { min: 1, max: 50 },
-    balance: { min: 0 },
-    annualReturn: { min: 0.5, max: 40 },
-    annualIncrease: { min: 0, max: 100 },
-  },
-  goals: [],
-  products: [],
-};
+async function loadIcons() {
+  const names = ['goal', 'goal-amount', 'goal-period', 'balance', 'annual-return', 'annual-increase', 'step-up', 'step-up-adjusted'];
+  await Promise.all(names.map(async (name) => {
+    try {
+      const resp = await fetch(`${ICON_BASE}/${name}.svg`);
+      if (resp.ok) ICONS_CACHE[name] = await resp.text();
+    } catch { /* empty */ }
+  }));
+}
 
-const ICONS = {
-  goal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',
-  goalAmount: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="4"/><path d="M3 21c0-3.5 3.1-6 7-6s7 2.5 7 6"/><path d="M16 13l5 0"/><path d="M19 11l2 2-2 2"/></svg>',
-  goalPeriod: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>',
-  balance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.5 11h-9z"/><path d="M9 8c0-2 1-4 3-4s3 2 3 4"/><line x1="6" y1="14" x2="18" y2="14"/></svg>',
-  annualReturn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 12A9 9 0 0 0 12 3v9z" fill="currentColor" fill-opacity="0.15"/><path d="M12 3v9l8 0"/></svg>',
-  annualIncrease: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>',
-  stepUp: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.6 20.9999H3V2.3999" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"/><path d="M6 12L21 12" stroke="currentColor" stroke-width="2"/></svg>',
-};
+function getIcon(name) {
+  return ICONS_CACHE[name] || '';
+}
 
-const SERIES_COLORS = {
-  result: '#1E6FFB',
-  resultDashed: '#9bb1ff',
-  newPlan: '#0F2A44',
-  newPlanDashed: '#7a8fb1',
-};
+function getChartColors(block) {
+  const style = getComputedStyle(block);
+  return {
+    result: style.getPropertyValue('--sp-chart-result').trim() || '#1e6ffb',
+    resultDashed: style.getPropertyValue('--sp-chart-result-dashed').trim() || '#9bb1ff',
+    newPlan: style.getPropertyValue('--sp-chart-new-plan').trim() || '#0f2a44',
+    newPlanDashed: style.getPropertyValue('--sp-chart-new-plan-dashed').trim() || '#7a8fb1',
+    axis: style.getPropertyValue('--sp-chart-axis').trim() || '#555',
+    border: style.getPropertyValue('--sp-chart-border').trim() || '#aaa',
+    grid: style.getPropertyValue('--sp-chart-grid').trim() || '#c8c8c8',
+    sliderTrack: style.getPropertyValue('--sp-slider-track').trim() || '#d0d0d0',
+  };
+}
 
 async function loadChartJs() {
   if (window.Chart) return window.Chart;
-  // eslint-disable-next-line import/no-unresolved
-  const chartModule = await import(/* webpackIgnore: true */ CHARTJS_ESM);
-  const { Chart, registerables } = chartModule;
-  Chart.register(...registerables);
-  window.Chart = Chart;
-  return Chart;
+  await new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = '/scripts/vendor/chart.umd.js';
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+  return window.Chart;
 }
 
 function formatNumber(value) {
@@ -489,21 +439,21 @@ function buildChartLegend(labels) {
     <div class="saving-plan-chart-legend">
       <div class="saving-plan-chart-legend-row">
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-dot" style="background:${SERIES_COLORS.result}"></span>
+          <span class="saving-plan-chart-legend-dot" style="background:var(--sp-chart-result)"></span>
           <span class="saving-plan-chart-legend-text">${labels.legendResult}</span>
         </span>
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-icon">${ICONS.stepUp}</span>
+          <span class="saving-plan-chart-legend-icon">${getIcon('step-up')}</span>
           <span class="saving-plan-chart-legend-text" data-variant-original>${labels.legendFixed}</span>
         </span>
       </div>
       <div class="saving-plan-chart-legend-row" data-newplan-row hidden>
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-dot" style="background:${SERIES_COLORS.newPlan}"></span>
+          <span class="saving-plan-chart-legend-dot" style="background:var(--sp-chart-new-plan)"></span>
           <span class="saving-plan-chart-legend-text">${labels.legendNewPlan}</span>
         </span>
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-icon">${ICONS.stepUp}</span>
+          <span class="saving-plan-chart-legend-icon">${getIcon('step-up-adjusted')}</span>
           <span class="saving-plan-chart-legend-text" data-variant-newplan>${labels.legendStepUpAdjusted}</span>
         </span>
       </div>
@@ -525,22 +475,22 @@ function buildShellMarkup(data) {
           <h3 class="saving-plan-form-title">${labels.calculateTitle}</h3>
           <div class="saving-plan-form-grid">
             ${buildDropdownField({
-    name: 'goal', label: labels.fields.goal, value: '', options: goals, icon: ICONS.goal,
+    name: 'goal', label: labels.fields.goal, value: '', options: goals, icon: getIcon('goal'),
   })}
             ${buildField({
-    name: 'balance', label: labels.fields.balance, value: defaults.balance, icon: ICONS.balance,
+    name: 'balance', label: labels.fields.balance, value: defaults.balance, icon: getIcon('balance'),
   })}
             ${buildField({
-    name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount, icon: ICONS.goalAmount,
+    name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount, icon: getIcon('goal-amount'),
   })}
             ${buildField({
-    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || '', decimal: true, icon: ICONS.annualReturn, placeholder: '0.5-40',
+    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || '', decimal: true, icon: getIcon('annual-return'), placeholder: '0.5-40',
   })}
             ${buildField({
-    name: 'goalPeriod', label: labels.fields.goalPeriod, value: defaults.goalPeriod, icon: ICONS.goalPeriod,
+    name: 'goalPeriod', label: labels.fields.goalPeriod, value: defaults.goalPeriod, icon: getIcon('goal-period'),
   })}
             ${buildField({
-    name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, decimal: true, icon: ICONS.annualIncrease,
+    name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, decimal: true, icon: getIcon('annual-increase'),
   })}
           </div>
           <div class="saving-plan-form-actions">
@@ -768,7 +718,7 @@ function syncSliderDisplays(root) {
     const max = parseFloat(input.max) || 100;
     const val = parseFloat(input.value) || 0;
     const pct = ((val - min) / (max - min)) * 100;
-    input.style.background = `linear-gradient(to right, var(--sp-blue) ${pct}%, #d0d0d0 ${pct}%)`;
+    input.style.background = `linear-gradient(to right, var(--sp-blue) ${pct}%, var(--sp-slider-track) ${pct}%)`;
   });
 }
 
@@ -884,7 +834,7 @@ function drawMonthlyTag(ctx, cx, cy, line1, line2, bg) {
   ctx.fillStyle = bg;
   drawRoundedRect(ctx, x, y, boxW, boxH, 8);
   ctx.fill();
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = '#fff';
   ctx.textAlign = 'center';
   ctx.font = '11px system-ui,sans-serif';
   ctx.fillText(line1, cx, y + pad + 12);
@@ -904,7 +854,7 @@ function drawGoalLabel(ctx, x, y, line1, line2, color) {
   ctx.restore();
 }
 
-function buildChartOverlayPlugin(originalSeries, newSeries, monthly, monthlyNew, labels) {
+function buildChartOverlayPlugin(originalSeries, newSeries, monthly, monthlyNew, labels, colors) {
   const monthlyLabel = labels.monthlySavingsTag || 'Monthly savings';
   const goalLabel = labels.goalAmountTag || 'Goal amount';
 
@@ -929,7 +879,7 @@ function buildChartOverlayPlugin(originalSeries, newSeries, monthly, monthlyNew,
         blueTagY,
         monthlyLabel,
         formatNumber(monthly),
-        SERIES_COLORS.result,
+        colors.result,
       );
 
       // Monthly savings tag — dark (New plan), shifted down so it sits below the blue box
@@ -943,7 +893,7 @@ function buildChartOverlayPlugin(originalSeries, newSeries, monthly, monthlyNew,
           darkTagY,
           monthlyLabel,
           formatNumber(monthlyNew),
-          SERIES_COLORS.newPlan,
+          colors.newPlan,
         );
       }
 
@@ -956,7 +906,7 @@ function buildChartOverlayPlugin(originalSeries, newSeries, monthly, monthlyNew,
         origEndY - goalLabelH - 2,
         goalLabel,
         formatNumber(originalSeries[lastIdx].value),
-        SERIES_COLORS.result,
+        colors.result,
       );
 
       // Goal amount label — dark (New plan): below the line end
@@ -968,7 +918,7 @@ function buildChartOverlayPlugin(originalSeries, newSeries, monthly, monthlyNew,
           newEndY + 6,
           goalLabel,
           formatNumber(newSeries[lastIdx].value),
-          SERIES_COLORS.newPlan,
+          colors.newPlan,
         );
       }
     },
@@ -990,7 +940,7 @@ function formatCompact(val) {
 }
 
 // eslint-disable-next-line max-len
-function buildChartConfig(originalSeries, newSeries, labels, increase, monthly, monthlyNew, overlayPlugin) {
+function buildChartConfig(originalSeries, newSeries, labels, increase, monthly, monthlyNew, overlayPlugin, colors) {
   const years = originalSeries.map((p) => p.year);
   const allValues = [
     ...originalSeries.map((p) => p.value),
@@ -1003,7 +953,7 @@ function buildChartConfig(originalSeries, newSeries, labels, increase, monthly, 
     {
       label: labels.legendResult,
       data: originalSeries.map((p) => p.value),
-      borderColor: SERIES_COLORS.result,
+      borderColor: colors.result,
       backgroundColor: 'transparent',
       tension: 0,
       borderWidth: 3,
@@ -1015,7 +965,7 @@ function buildChartConfig(originalSeries, newSeries, labels, increase, monthly, 
     datasets.push({
       label: labels.legendNewPlan,
       data: newSeries.map((p) => p.value),
-      borderColor: SERIES_COLORS.newPlan,
+      borderColor: colors.newPlan,
       backgroundColor: 'transparent',
       tension: 0,
       borderWidth: 2,
@@ -1046,12 +996,12 @@ function buildChartConfig(originalSeries, newSeries, labels, increase, monthly, 
           title: {
             display: true,
             text: labels.xAxis || 'Year(s)',
-            color: '#555',
+            color: colors.axis,
             font: { size: 12, family: 'system-ui, sans-serif' },
           },
           grid: { display: false },
-          border: { display: true, color: '#aaa' },
-          ticks: { color: '#555', font: { size: 12, family: 'system-ui, sans-serif' } },
+          border: { display: true, color: colors.border },
+          ticks: { color: colors.axis, font: { size: 12, family: 'system-ui, sans-serif' } },
         },
         y: {
           min: 0,
@@ -1059,17 +1009,17 @@ function buildChartConfig(originalSeries, newSeries, labels, increase, monthly, 
           title: {
             display: true,
             text: labels.yAxis || 'Amount (baht)',
-            color: '#555',
+            color: colors.axis,
             font: { size: 12, family: 'system-ui, sans-serif' },
           },
           ticks: {
             callback: (val) => formatCompact(val),
-            color: '#555',
+            color: colors.axis,
             font: { size: 12, family: 'system-ui, sans-serif' },
             maxTicksLimit: 5,
           },
           grid: {
-            color: '#c8c8c8',
+            color: colors.grid,
             lineWidth: 1,
             drawTicks: false,
           },
@@ -1141,8 +1091,9 @@ async function renderChart(state, data) {
   if (!ctx) return;
 
   try {
+    const colors = getChartColors(state.root);
     // eslint-disable-next-line max-len
-    const overlayPlugin = buildChartOverlayPlugin(original, newSeries, monthly, tweakMonthly, data.labels.chart);
+    const overlayPlugin = buildChartOverlayPlugin(original, newSeries, monthly, tweakMonthly, data.labels.chart, colors);
     const config = buildChartConfig(
       original,
       newSeries,
@@ -1151,6 +1102,7 @@ async function renderChart(state, data) {
       monthly,
       tweakMonthly,
       overlayPlugin,
+      colors,
     );
     config.options.responsive = false;
     state.chartInstance = new Chart(ctx, config);
@@ -1480,7 +1432,7 @@ function attachHandlers(state, data) {
 }
 
 export default async function decorate(block) {
-  const json = await fetchSavingToolJson();
+  const [json] = await Promise.all([fetchSavingToolJson(), loadIcons()]);
 
   const configRows = json?.['SavingTool-config']?.data || [];
   const CFG = {};
@@ -1492,8 +1444,10 @@ export default async function decorate(block) {
     || (typeof window !== 'undefined' && window.SAVING_PLAN_APIM_KEY)
     || '7d1b09abe2ea413cbf95b2d99782ed37';
 
+  if (!json) return;
+
   const lang = getLang();
-  const data = json ? buildDataFromConfig(json, lang) : EMPTY_SHAPE;
+  const data = buildDataFromConfig(json, lang);
 
   block.innerHTML = buildShellMarkup(data);
   block.classList.add('saving-plan-block');
