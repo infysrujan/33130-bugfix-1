@@ -1,0 +1,64 @@
+.stock-ticker-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 1.4rem;
+    line-height: 1.3746rem;
+    letter-spacing: -0.0125rem;
+    font-weight: var(--bbl-font-weight-regular);
+    flex-basis: 100%;
+}
+
+.stock-ticker-wrapper {
+    width: 100%;
+}
+
+.stock-ticker-embed {
+    text-align: center;
+}
+
+.stock-ticker-embed iframe {
+    display: inline-block;
+}
+
+.stock-ticker-container .default-content-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: var(--bbl-space-gap-md) var(--bbl-space-gap-sm);
+}
+
+.stock-ticker-container .default-content-wrapper .button-container {
+    flex: 0 0 auto;
+    margin-block: 0;
+}
+
+.stock-ticker-container .default-content-wrapper :is(p, a) {
+    color: var(--bbl-color-grey-85);
+    font-weight: var(--bbl-font-weight-regular);
+    line-height: 1.2031rem;
+}
+
+.stock-ticker-container .default-content-wrapper p:not(.button-container) {
+    flex-basis: 100%;
+    margin-block: 0 var(--bbl-space-500);
+}
+
+.stock-ticker-container .default-content-wrapper .button-tertiary::after {
+    content: "";
+    display: none;
+}
+
+.stock-ticker-container .default-content-wrapper a.button-tertiary {
+    text-decoration: underline;
+}
+
+@media (width > 64rem) {
+    .stock-ticker-container
+        .default-content-wrapper
+        :is(h1, h2, h3, h4, h5, h6) {
+        font-size: var(--bbl-font-size-h3-desktop);
+        line-height: 2.875rem;
+    }
+
+    .stock-ticker-container .default-content-wrapper :is(p, a) {
+        line-height: 1.375rem;
+    }
+}

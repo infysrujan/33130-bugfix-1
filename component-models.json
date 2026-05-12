@@ -9735,6 +9735,19 @@
     ]
   },
   {
+    "id": "stock-ticker",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "embedHtml",
+        "label": "Stock Ticker HTML",
+        "description": "Author iframe HTML, links, and supporting notes.",
+        "valueType": "string",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "story-card",
     "fields": [
       {
