@@ -2,6 +2,10 @@
   display: none;
 }
 
+.external-redirect-popup-placeholder {
+  display: none;
+}
+
 /* ── Overlay ── */
 .external-redirect-popup {
   display: none;

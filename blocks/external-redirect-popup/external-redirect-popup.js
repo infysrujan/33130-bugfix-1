@@ -103,13 +103,22 @@ export default async function decorate(block) {
   btnRow.appendChild(cancelBtn);
   inner.appendChild(btnRow);
 
-  // Append overlay directly to body so position:fixed works correctly.
-  doc.body.appendChild(overlay);
-
-  // Keep a placeholder in-place inside the Section for Universal Editor support
+  // Keep the placeholder in the Section so UE instrumentation stays at the correct
+  // DOM location. The overlay is only appended to <body> on first openPopup() call
+  // (matching privacy-modal pattern) so UE never sees the overlay in the DOM
+  // during authoring — preventing Card Image / Title from floating at wrong level.
   const placeholder = doc.createElement('div');
   placeholder.className = 'external-redirect-popup-placeholder';
   moveInstrumentation(block, placeholder);
+
+  // Transfer the block's original children (rows that carry data-aue-prop
+  // instrumentation for image, title, etc.) into the placeholder so UE finds
+  // them nested under the ERP resource and shows Card Image / Title correctly
+  // inside External Redirect Popup in the content tree.
+  // The placeholder (and its children) are hidden visually via CSS.
+  while (block.firstChild) {
+    placeholder.appendChild(block.firstChild);
+  }
 
   block.replaceWith(placeholder);
 
@@ -122,6 +131,7 @@ export default async function decorate(block) {
   };
 
   const openPopup = (url) => {
+    if (!overlay.isConnected) doc.body.appendChild(overlay);
     targetUrl = url;
     urlSpan.textContent = `"${url}"`;
     requestAnimationFrame(() => overlay.classList.add('external-redirect-popup-visible'));
@@ -140,4 +150,12 @@ export default async function decorate(block) {
 
   // Expose openPopup globally so scripts.js can call it after loading this fragment
   window.showExternalRedirectPopup = openPopup;
+
+  // In UE edit mode, show the popup preview so authors can see its appearance.
+  // The overlay has no data-aue-resource (instrumentation is on the placeholder),
+  // so appending it to body here does not affect the content tree hierarchy.
+  if (document.documentElement.classList.contains('adobe-ue-edit')) {
+    doc.body.appendChild(overlay);
+    overlay.classList.add('external-redirect-popup-visible');
+  }
 }
