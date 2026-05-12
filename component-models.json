@@ -362,6 +362,265 @@
     ]
   },
   {
+    "id": "bbm-cc-promo",
+    "fields": [
+      {
+        "component": "text",
+        "name": "promoId",
+        "label": "Promo ID",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "imageUrl",
+        "label": "Image",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "header",
+        "label": "Card Selection"
+      },
+      {
+        "component": "boolean",
+        "name": "platinum",
+        "label": "454628 - M Visa Platinum",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "boolean",
+        "name": "signature",
+        "label": "473014 - M Visa Signature",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "boolean",
+        "name": "infinite",
+        "label": "450535 - M Visa Infinite",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "header",
+        "label": "Registration Settings"
+      },
+      {
+        "component": "select",
+        "name": "isRegister",
+        "label": "Is Register",
+        "value": "No",
+        "options": [
+          {
+            "name": "No - no registration",
+            "value": "No"
+          },
+          {
+            "name": "Yes - yes register",
+            "value": "Yes"
+          },
+          {
+            "name": "D - register with data",
+            "value": "D"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "promotionDetailsTitleEn",
+        "label": "Promotion Details Title (EN)",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "Yes"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "D"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "promotionDetailsTitleTh",
+        "label": "Promotion Details Title (TH)",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "Yes"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "D"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "date-time",
+        "name": "promotionStartDate",
+        "label": "Promotion Start Date",
+        "placeholder": "MM/DD/YYYY",
+        "displayFormat": "MM/DD/YYYY",
+        "valueFormat": "MM/DD/YYYY",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "Yes"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "D"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "date-time",
+        "name": "promotionExpiryDate",
+        "label": "Promotion Expiry Date",
+        "placeholder": "MM/DD/YYYY",
+        "displayFormat": "MM/DD/YYYY",
+        "valueFormat": "MM/DD/YYYY",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "Yes"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "D"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "promotionFlag",
+        "label": "Promotion Flag",
+        "options": [
+          {
+            "name": "N - No Registration",
+            "value": "N"
+          },
+          {
+            "name": "Y - Register",
+            "value": "Y"
+          },
+          {
+            "name": "D - Register with Data",
+            "value": "D"
+          }
+        ],
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "Yes"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "D"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "header",
+        "label": "CTA Settings"
+      },
+      {
+        "component": "aem-content",
+        "name": "ctaLink",
+        "label": "CTA Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "CTA Label"
+      },
+      {
+        "component": "boolean",
+        "name": "responsibleLendingDisclaimerEnabled",
+        "label": "Responsible Lending Disclaimer",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "richtext",
+        "name": "responsibleLendingDisclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string",
+        "condition": {
+          "!!": [
+            {
+              "var": "responsibleLendingDisclaimerEnabled"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
     "id": "brand-logo",
     "fields": [
       {
