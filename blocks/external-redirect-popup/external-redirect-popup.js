@@ -103,14 +103,15 @@ export default async function decorate(block) {
   btnRow.appendChild(cancelBtn);
   inner.appendChild(btnRow);
 
-  // Append overlay directly to body so position:fixed works correctly,
-  // then remove the original block (and its EDS section wrapper) from the DOM.
+  // Append overlay directly to body so position:fixed works correctly.
   doc.body.appendChild(overlay);
 
-  // Move instrumentation attributes from block to overlay for Universal Editor support
-  moveInstrumentation(block, overlay);
+  // Keep a placeholder in-place inside the Section for Universal Editor support
+  const placeholder = doc.createElement('div');
+  placeholder.className = 'external-redirect-popup-placeholder';
+  moveInstrumentation(block, placeholder);
 
-  block.remove();
+  block.replaceWith(placeholder);
 
   // ── State & helpers ────────────────────────────────────────────────────────
   let targetUrl = '';
