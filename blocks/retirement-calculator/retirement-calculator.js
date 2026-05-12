@@ -44,9 +44,9 @@ async function loadData() {
 
 function buildStepper(i18n, activeStep) {
   const steps = [
-    i18n['common-step1Label'] || 'Your goal',
-    i18n['common-step2Label'] || 'Savings & investments',
-    i18n['common-step3Label'] || 'Result',
+    i18n['common-step1Label'],
+    i18n['common-step2Label'],
+    i18n['common-step3Label'],
   ];
   const wrap = el('<div class="rc-stepper"></div>');
   steps.forEach((label, idx) => {
@@ -319,6 +319,15 @@ function initProgressiveReveal(sectionEl) {
   }, { once: true });
 }
 
+function buildHeader(i18n) {
+  return el(`
+    <div class="rc-header">
+      <h1 class="rc-title">${i18n['common-title'] || 'Plan your finances for retirement'}</h1>
+      <div class="rc-divider"></div>
+    </div>
+  `);
+}
+
 // ─── Journey 1 ───────────────────────────────────────────────────────────────────
 
 function renderJourney1(block, data, onNext, savedValues = {}) {
@@ -327,6 +336,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   const { i18n, apiUrl } = data;
 
   const container = el('<div class="rc-container"></div>');
+  container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepper(i18n, 1));
 
   const content = el('<div class="rc-content"></div>');
@@ -443,6 +453,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   const { i18n, apiUrl } = data;
 
   const container = el('<div class="rc-container"></div>');
+  container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepper(i18n, 2));
 
   const content = el('<div class="rc-content rc-content--sections"></div>');
@@ -638,6 +649,7 @@ function renderJourney3(block, data, state, onBack) {
   const alreadySaved = savingMonth1 < 0;
 
   const container = el('<div class="rc-container"></div>');
+  container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepper(i18n, 3));
 
   const content = el('<div class="rc-content"></div>');
@@ -733,7 +745,7 @@ function renderJourney3(block, data, state, onBack) {
             </p>
           </div>
           <div class="rc-progress-bar-track">
-            <div class="rc-progress-bar-fill" style="width:${pct}%"></div>
+            <div class="rc-progress-bar-fill rc-progress-bar-fill-animated" style="width:${pct}%"></div>
           </div>
         </div>
       `));
@@ -752,7 +764,7 @@ function renderJourney3(block, data, state, onBack) {
             ${fmt(totalNeeded)} <span class="rc-summary-unit">${baht}</span>
           </p>
         </div>
-        <div class="rc-summary-row">
+        <div class="rc-summary-row rc-summary-row-secondary">
           <p class="rc-summary-label">
             ${i18n['steps-step3-currentSavingsAmountLabel'] || 'Current savings amount'}
           </p>
@@ -760,7 +772,7 @@ function renderJourney3(block, data, state, onBack) {
             ${currentSavingsDisplay} <span class="rc-summary-unit">${baht}</span>
           </p>
         </div>
-        <div class="rc-summary-row">
+        <div class="rc-summary-row rc-summary-row-highlight">
           <span>
             <p class="rc-summary-label">
               ${i18n['steps-step3-recommendedMonthlySavingsSummaryLabel'] || 'Recommended monthly savings'}
