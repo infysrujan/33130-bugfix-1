@@ -50,6 +50,12 @@ function getBlockData(block) {
 }
 
 export default async function decorate(block) {
+  // Hide global elements for campaign page
+  ['header', 'footer', '.breadcrumb-container', '.cookie-alert-container', '.filter-container', '.filters'].forEach((selector) => {
+    const el = document.querySelector(selector);
+    if (el) el.style.display = 'none';
+  });
+
   const data = getBlockData(block);
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';

@@ -4,6 +4,16 @@
     padding: 0 1rem;
 }
 
+/* Campaign Page - Hide Global Elements */
+header, 
+footer,
+.breadcrumb-container,
+.cookie-alert-container,
+.filter-container,
+.filters {
+    display: none;
+}
+
 .bbm-cc-promo .bbm-promo-title-wrap {
     text-align: center;
 }
