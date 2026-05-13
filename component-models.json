@@ -365,6 +365,10 @@
     "id": "bbm-cc-promo",
     "fields": [
       {
+        "component": "header",
+        "label": "Basic Information"
+      },
+      {
         "component": "text",
         "name": "promoId",
         "label": "Promo ID",
@@ -385,13 +389,13 @@
       {
         "component": "reference",
         "name": "imageUrl",
-        "label": "Image",
+        "label": "Hero Image",
         "valueType": "string",
         "multi": false
       },
       {
         "component": "header",
-        "label": "Card Selection"
+        "label": "Card Selection (Checkboxes)"
       },
       {
         "component": "boolean",
@@ -416,77 +420,23 @@
       },
       {
         "component": "header",
-        "label": "Registration Settings"
+        "label": "Registration Settings (Radio Buttons)"
       },
       {
         "component": "select",
         "name": "isRegister",
         "label": "Is Register",
-        "value": "No",
-        "options": [
-          {
-            "name": "No - no registration",
-            "value": "No"
-          },
-          {
-            "name": "Yes - yes register",
-            "value": "Yes"
-          },
-          {
-            "name": "D - register with data",
-            "value": "D"
-          }
-        ]
+        "value": "No"
       },
       {
         "component": "text",
         "name": "promotionDetailsTitleEn",
-        "label": "Promotion Details Title (EN)",
-        "condition": {
-          "or": [
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "Yes"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "D"
-              ]
-            }
-          ]
-        }
+        "label": "Promotion Details Title (EN)"
       },
       {
         "component": "text",
         "name": "promotionDetailsTitleTh",
-        "label": "Promotion Details Title (TH)",
-        "condition": {
-          "or": [
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "Yes"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "D"
-              ]
-            }
-          ]
-        }
+        "label": "Promotion Details Title (TH)"
       },
       {
         "component": "date-time",
@@ -494,27 +444,7 @@
         "label": "Promotion Start Date",
         "placeholder": "MM/DD/YYYY",
         "displayFormat": "MM/DD/YYYY",
-        "valueFormat": "MM/DD/YYYY",
-        "condition": {
-          "or": [
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "Yes"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "D"
-              ]
-            }
-          ]
-        }
+        "valueFormat": "MM/DD/YYYY"
       },
       {
         "component": "date-time",
@@ -522,76 +452,18 @@
         "label": "Promotion Expiry Date",
         "placeholder": "MM/DD/YYYY",
         "displayFormat": "MM/DD/YYYY",
-        "valueFormat": "MM/DD/YYYY",
-        "condition": {
-          "or": [
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "Yes"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "D"
-              ]
-            }
-          ]
-        }
+        "valueFormat": "MM/DD/YYYY"
       },
       {
         "component": "select",
         "name": "promotionFlag",
-        "label": "Promotion Flag",
-        "options": [
-          {
-            "name": "N - No Registration",
-            "value": "N"
-          },
-          {
-            "name": "Y - Register",
-            "value": "Y"
-          },
-          {
-            "name": "D - Register with Data",
-            "value": "D"
-          }
-        ],
-        "condition": {
-          "or": [
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "Yes"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "D"
-              ]
-            }
-          ]
-        }
-      },
-      {
-        "component": "header",
-        "label": "CTA Settings"
+        "label": "Promotion Flag"
       },
       {
         "component": "aem-content",
         "name": "ctaLink",
         "label": "CTA Link",
-        "description": "Destination URL for the button"
+        "description": "Deep link or registration URL"
       },
       {
         "component": "text",
