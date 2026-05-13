@@ -97,7 +97,7 @@ function buildIncomeCard(i18n, savedValue) {
 
   const setError = (msg) => {
     errorEl.textContent = msg;
-    inputWrap.classList.toggle('rc-income-input-wrap--error', !!msg);
+    inputWrap.classList.toggle('rc-income-input-wrap-error', !!msg);
     input.classList.toggle('rc-income-input-error', !!msg);
   };
 
@@ -392,7 +392,9 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   };
 
   const syncBtnState = () => {
-    nextBtn.disabled = !!block.querySelector('.rc-field-error:not(:empty), #rc-err-monthlyIncome:not(:empty)');
+    const hasError = !!block.querySelector('.rc-field-error:not(:empty), #rc-err-monthlyIncome:not(:empty)');
+    nextBtn.disabled = hasError;
+    nextBtn.classList.toggle('rc-btn-error', hasError);
   };
 
   container.addEventListener('input', () => { validateCrossFields(); syncBtnState(); });
@@ -456,7 +458,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepper(i18n, 2));
 
-  const content = el('<div class="rc-content rc-content--sections"></div>');
+  const content = el('<div class="rc-content rc-content-sections"></div>');
 
   // ── J1 result summary ──
   const j1Result = state.j1ApiResult || {};
@@ -568,7 +570,9 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   };
 
   const syncBtnState = () => {
-    calcBtn.disabled = !!block.querySelector('.rc-field-error:not(:empty)');
+    const hasError = !!block.querySelector('.rc-field-error:not(:empty)');
+    calcBtn.disabled = hasError;
+    calcBtn.classList.toggle('rc-btn-error', hasError);
   };
 
   container.addEventListener('input', () => { validateSavingsCross(); syncBtnState(); });
@@ -772,7 +776,7 @@ function renderJourney3(block, data, state, onBack) {
             ${currentSavingsDisplay} <span class="rc-summary-unit">${baht}</span>
           </p>
         </div>
-        <div class="rc-summary-row rc-summary-row-highlight">
+        <div class="rc-summary-row">
           <span>
             <p class="rc-summary-label">
               ${i18n['steps-step3-recommendedMonthlySavingsSummaryLabel'] || 'Recommended monthly savings'}
