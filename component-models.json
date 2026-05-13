@@ -365,10 +365,6 @@
     "id": "bbm-cc-promo",
     "fields": [
       {
-        "component": "header",
-        "label": "Basic Information"
-      },
-      {
         "component": "text",
         "name": "promoId",
         "label": "Promo ID",
@@ -378,24 +374,51 @@
       {
         "component": "text",
         "name": "title",
-        "label": "Title"
-      },
-      {
-        "component": "richtext",
-        "name": "description",
-        "label": "Description",
-        "valueType": "string"
+        "label": "Title (appears on the promotional page)"
       },
       {
         "component": "reference",
-        "name": "imageUrl",
-        "label": "Hero Image",
+        "name": "cardImageUrl",
+        "label": "Card Image",
         "valueType": "string",
         "multi": false
       },
       {
-        "component": "header",
-        "label": "Card Selection (Checkboxes)"
+        "component": "reference",
+        "name": "detailImageUrl",
+        "label": "Detail Image (appears on the promotional page)",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "cardShortDescription",
+        "label": "Card Short Description",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "detailDescription",
+        "label": "Detail Description (appears on the promotional page)",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "category",
+        "label": "Category",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "promotionFlag",
+        "label": "Promotion Flag",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "dateValidityLabel",
+        "label": "Date Validity Label",
+        "valueType": "string"
       },
       {
         "component": "boolean",
@@ -419,68 +442,56 @@
         "value": false
       },
       {
-        "component": "header",
-        "label": "Registration Settings (Radio Buttons)"
-      },
-      {
-        "component": "select",
-        "name": "isRegister",
-        "label": "Is Register",
-        "value": "No"
-      },
-      {
-        "component": "text",
-        "name": "promotionDetailsTitleEn",
-        "label": "Promotion Details Title (EN)"
-      },
-      {
-        "component": "text",
-        "name": "promotionDetailsTitleTh",
-        "label": "Promotion Details Title (TH)"
-      },
-      {
         "component": "date-time",
         "name": "promotionStartDate",
-        "label": "Promotion Start Date",
-        "placeholder": "MM/DD/YYYY",
-        "displayFormat": "MM/DD/YYYY",
-        "valueFormat": "MM/DD/YYYY"
+        "label": "Promotion Validity Start Date(appears on the promotional page)",
+        "valueType": "string"
       },
       {
         "component": "date-time",
-        "name": "promotionExpiryDate",
-        "label": "Promotion Expiry Date",
-        "placeholder": "MM/DD/YYYY",
-        "displayFormat": "MM/DD/YYYY",
-        "valueFormat": "MM/DD/YYYY"
-      },
-      {
-        "component": "select",
-        "name": "promotionFlag",
-        "label": "Promotion Flag"
+        "name": "promotionEndDate",
+        "label": "Promotion Expiry Date (appears on the promotional page)",
+        "valueType": "string"
       },
       {
         "component": "aem-content",
         "name": "ctaLink",
-        "label": "CTA Link",
-        "description": "Deep link or registration URL"
+        "label": "Cta Link",
+        "description": "Destination URL for the button"
       },
       {
         "component": "text",
         "name": "ctaLabel",
-        "label": "CTA Label"
+        "label": "Cta Label",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
       },
       {
         "component": "boolean",
         "name": "responsibleLendingDisclaimerEnabled",
-        "label": "Responsible Lending Disclaimer",
+        "label": "Responsible Lending Disclaimer (appears on the promotional page)",
         "valueType": "boolean",
         "value": false
       },
       {
         "component": "richtext",
         "name": "responsibleLendingDisclaimerText",
-        "label": "Disclaimer Text",
+        "label": "Disclaimer Text (appears on the promotional page)",
         "valueType": "string",
         "condition": {
           "!!": [
