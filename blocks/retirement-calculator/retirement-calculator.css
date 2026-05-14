@@ -768,8 +768,21 @@
 /* ── Tablet: 47.5rem+ (760px) ─────────────────────────────── */
 
 @media (width > 47.5rem) {
+  .section.retirement-calculator-container {
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+
   .retirement-calculator .rc-container {
     padding: 1rem;
+  }
+
+  .retirement-calculator .rc-income-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 2rem;
   }
 
   .retirement-calculator .rc-header {
