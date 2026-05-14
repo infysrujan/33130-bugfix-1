@@ -1,54 +1,48 @@
+import fetchBlockConfig from '../../scripts/block-config.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
 // ─── Utilities ──────────────────────────────────────────────────────────────────
 
-function el(html) {
-  const wrap = document.createElement('div');
-  wrap.innerHTML = html.trim();
-  return wrap.firstElementChild;
+function parseHTML(html) {
+  return new DOMParser().parseFromString(html.trim(), 'text/html').body.firstElementChild;
 }
 
-function fmt(val) {
+function formatNumber(val) {
   const n = parseFloat(String(val ?? '').replace(/,/g, ''));
   if (Number.isNaN(n)) return '';
   return n.toLocaleString('en-US');
 }
 
-function raw(str) {
+function stripCommas(str) {
   return String(str ?? '').replace(/,/g, '');
 }
 
-function getLang() {
-  return (document.documentElement.lang || 'en').startsWith('th') ? 'th' : 'en';
+function getString(labels, key, fallback = '') {
+  return labels[key] || fallback;
 }
 
 // ─── Data ────────────────────────────────────────────────────────────────────────
 
 async function loadData() {
-  const [resp, siteConfig] = await Promise.all([
-    fetch('/retirement.json'),
+  const [siteConfig, labels] = await Promise.all([
     fetchConfigs(),
+    fetchBlockConfig('/retirement-config.json'),
   ]);
-  if (!resp.ok) throw new Error('Failed to load retirement.json');
-  const json = await resp.json();
-  const lang = getLang();
-  const sheet = json[lang]?.data || json.en?.data || [];
-  const i18n = Object.fromEntries(sheet.map(({ Key, Value }) => [Key, Value]));
   return {
-    i18n,
+    labels,
     apiUrl: siteConfig.retireCalculator,
   };
 }
 
 // ─── Stepper ─────────────────────────────────────────────────────────────────────
 
-function buildStepper(i18n, activeStep) {
+function buildStepper(labels, activeStep) {
   const steps = [
-    i18n['common-step1Label'] || 'Your goal',
-    i18n['common-step2Label'] || 'Savings & investments',
-    i18n['common-step3Label'] || 'Result',
+    getString(labels, 'commonStep1Label', 'Your goal'),
+    getString(labels, 'commonStep2Label', 'Savings & investments'),
+    getString(labels, 'commonStep3Label', 'Result'),
   ];
-  const wrap = el('<div class="rc-stepper"></div>');
+  const stepsContainer = parseHTML('<div class="rc-stepper"></div>');
   steps.forEach((label, idx) => {
     const num = idx + 1;
     const isLastStep = activeStep === steps.length;
@@ -56,47 +50,47 @@ function buildStepper(i18n, activeStep) {
     if (num === activeStep) mod = isLastStep ? ' rc-step-done' : ' rc-step-active';
     else if (num < activeStep) mod = ' rc-step-done';
     const showTick = num < activeStep || (num === activeStep && isLastStep);
-    wrap.appendChild(el(`
+    stepsContainer.appendChild(parseHTML(`
       <div class="rc-step${mod}">
         <div class="rc-step-circle"><span>${showTick ? '✓' : num}</span></div>
         <div class="rc-step-label">${label}</div>
       </div>
     `));
     if (idx < steps.length - 1) {
-      wrap.appendChild(el(`<div class="rc-step-connector${num < activeStep ? ' rc-step-connector-done' : ''}"></div>`));
+      stepsContainer.appendChild(parseHTML(`<div class="rc-step-connector${num < activeStep ? ' rc-step-connector-done' : ''}"></div>`));
     }
   });
-  return wrap;
+  return stepsContainer;
 }
 
 // ─── Income Card (J1 hero field) ─────────────────────────────────────────────────
 
-function buildIncomeCard(i18n, savedValue) {
-  const minMsg = `${i18n['validation-minValueError'] || 'Minimum must not exceed'} 1`;
-  const maxMsg = `${i18n['validation-maxValueError'] || 'Maximum up to'} 999,999,999`;
+function buildIncomeCard(labels, savedValue) {
+  const minMsg = `${getString(labels, 'validationMinValueError', 'Minimum must not exceed')} 1`;
+  const maxMsg = `${getString(labels, 'validationMaxValueError', 'Maximum up to')} 999,999,999`;
 
-  const card = el(`
+  const card = parseHTML(`
     <div class="rc-income-card">
-      <div class="rc-income-title">${i18n['steps-step1-monthlyIncomeTitle'] || 'Monthly amount you want after retirement'}</div>
+      <div class="rc-income-title">${getString(labels, 'stepsStep1MonthlyIncomeTitle', 'Monthly amount you want after retirement')}</div>
       <div class="rc-income-input-wrap">
         <input type="text" id="rc-monthlyIncome" class="rc-income-input"
-          placeholder="1-999,999,999" maxlength="${fmt(999999999).length}" value="${fmt(savedValue ?? 20000)}">
-        <span class="rc-income-unit">${i18n['common-unit'] || 'baht'}</span>
+          placeholder="1-999,999,999" maxlength="${formatNumber(999999999).length}" value="${formatNumber(savedValue ?? 20000)}">
+        <span class="rc-income-unit">${getString(labels, 'commonUnit', 'baht')}</span>
       </div>
       <hr class="rc-income-divider">
       <div class="rc-income-footer">
         <span class="rc-error-text" id="rc-err-monthlyIncome"></span>
-        <span class="rc-present-value">${i18n['steps-step1-currentValueNote'] || 'At present value'}</span>
+        <span class="rc-present-value">${getString(labels, 'stepsStep1CurrentValueNote', 'At present value')}</span>
       </div>
     </div>
   `);
 
   const inputWrap = card.querySelector('.rc-income-input-wrap');
   const input = card.querySelector('#rc-monthlyIncome');
-  const errorEl = card.querySelector('#rc-err-monthlyIncome');
+  const errorElement = card.querySelector('#rc-err-monthlyIncome');
 
   const setError = (msg) => {
-    errorEl.textContent = msg;
+    errorElement.textContent = msg;
     inputWrap.classList.toggle('rc-income-input-wrap--error', !!msg);
     input.classList.toggle('rc-income-input-error', !!msg);
   };
@@ -113,17 +107,17 @@ function buildIncomeCard(i18n, savedValue) {
     }
   });
 
-  input.addEventListener('focus', () => { if (raw(input.value) === '0') input.value = ''; });
+  input.addEventListener('focus', () => { if (stripCommas(input.value) === '0') input.value = ''; });
   input.addEventListener('blur', () => {
-    const val = raw(input.value).trim();
-    input.value = fmt(val === '' ? 0 : val);
+    const val = stripCommas(input.value).trim();
+    input.value = formatNumber(val === '' ? 0 : val);
   });
 
   input.addEventListener('input', () => {
     const pos = input.selectionStart;
     const digitsBeforeCursor = input.value.substring(0, pos).replace(/,/g, '').length;
-    const rawVal = raw(input.value);
-    const formatted = rawVal === '' ? '' : fmt(rawVal);
+    const rawVal = stripCommas(input.value);
+    const formatted = rawVal === '' ? '' : formatNumber(rawVal);
     input.value = formatted;
 
     let digitCount = 0;
@@ -145,15 +139,15 @@ function buildIncomeCard(i18n, savedValue) {
 
 // ─── Age Field (J1) ───────────────────────────────────────────────────────────────
 
-function buildAgeField(id, label, savedValue, i18n) {
-  const minMsg = `${i18n['validation-minValueError'] || 'Minimum must not exceed'} 1`;
-  const maxMsg = `${i18n['validation-maxValueError'] || 'Maximum up to'} 120`;
+function buildAgeField(id, label, savedValue, labels) {
+  const minMsg = `${getString(labels, 'validationMinValueError', 'Minimum must not exceed')} 1`;
+  const maxMsg = `${getString(labels, 'validationMaxValueError', 'Maximum up to')} 120`;
 
-  const field = el(`
+  const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
         <input type="text" id="rc-${id}" class="rc-field-input"
-          placeholder="1-120" maxlength="${fmt(120).length}" value="${savedValue ?? 0}">
+          placeholder="1-120" maxlength="${formatNumber(120).length}" value="${savedValue ?? 0}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
       <p class="rc-field-error" id="rc-err-${id}"></p>
@@ -162,10 +156,10 @@ function buildAgeField(id, label, savedValue, i18n) {
 
   const inner = field.querySelector('.rc-field-inner');
   const input = field.querySelector(`#rc-${id}`);
-  const errorEl = field.querySelector(`#rc-err-${id}`);
+  const errorElement = field.querySelector(`#rc-err-${id}`);
 
   field.setError = (msg) => {
-    errorEl.textContent = msg;
+    errorElement.textContent = msg;
     inner.classList.toggle('rc-field-inner-error', !!msg);
     input.classList.toggle('rc-field-input-error', !!msg);
   };
@@ -185,14 +179,14 @@ function buildAgeField(id, label, savedValue, i18n) {
 
 // ─── Money Field (J2 sections) ───────────────────────────────────────────────────
 
-function buildMoneyField(id, label, savedValue, i18n) {
-  const maxMsg = `${i18n['validation-maxValueError'] || 'Maximum up to'} 999,999,999`;
+function buildMoneyField(id, label, savedValue, labels) {
+  const maxMsg = `${getString(labels, 'validationMaxValueError', 'Maximum up to')} 999,999,999`;
 
-  const field = el(`
+  const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
         <input type="text" id="rc-${id}" class="rc-field-input"
-          placeholder="0 - 999,999,999" maxlength="${fmt(999999999).length}" value="${fmt(savedValue ?? 0)}">
+          placeholder="0 - 999,999,999" maxlength="${formatNumber(999999999).length}" value="${formatNumber(savedValue ?? 0)}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
       <p class="rc-field-error" id="rc-err-${id}"></p>
@@ -201,14 +195,14 @@ function buildMoneyField(id, label, savedValue, i18n) {
 
   const inner = field.querySelector('.rc-field-inner');
   const input = field.querySelector(`#rc-${id}`);
-  const errorEl = field.querySelector(`#rc-err-${id}`);
+  const errorElement = field.querySelector(`#rc-err-${id}`);
 
   field.setError = (msg) => {
-    errorEl.textContent = msg;
+    errorElement.textContent = msg;
     inner.classList.toggle('rc-field-inner-error', !!msg);
     input.classList.toggle('rc-field-input-error', !!msg);
   };
-  field.getValue = () => parseFloat(raw(input.value)) || 0;
+  field.getValue = () => parseFloat(stripCommas(input.value)) || 0;
 
   input.addEventListener('keypress', (e) => { if (!/\d/.test(e.key)) e.preventDefault(); });
 
@@ -222,17 +216,17 @@ function buildMoneyField(id, label, savedValue, i18n) {
     }
   });
 
-  input.addEventListener('focus', () => { if (raw(input.value) === '0') input.value = ''; });
+  input.addEventListener('focus', () => { if (stripCommas(input.value) === '0') input.value = ''; });
   input.addEventListener('blur', () => {
-    const val = raw(input.value).trim();
-    input.value = fmt(val === '' ? 0 : val);
+    const val = stripCommas(input.value).trim();
+    input.value = formatNumber(val === '' ? 0 : val);
   });
 
   input.addEventListener('input', () => {
     const pos = input.selectionStart;
     const digitsBeforeCursor = input.value.substring(0, pos).replace(/,/g, '').length;
-    const rawVal = raw(input.value);
-    const formatted = rawVal === '' ? '' : fmt(rawVal);
+    const rawVal = stripCommas(input.value);
+    const formatted = rawVal === '' ? '' : formatNumber(rawVal);
     input.value = formatted;
 
     let digitCount = 0;
@@ -252,14 +246,14 @@ function buildMoneyField(id, label, savedValue, i18n) {
 
 // ─── Percent Field (J2 sections) ─────────────────────────────────────────────────
 
-function buildPercentField(id, label, savedValue, i18n, { min = 0, max = 100 } = {}) {
-  const rangeMsg = i18n['validation-percentageError'] || 'Value must be a number between 0 and 100';
+function buildPercentField(id, label, savedValue, labels, { min = 0, max = 100 } = {}) {
+  const rangeMsg = getString(labels, 'validationPercentageError', 'Value must be a number between 0 and 100');
 
-  const field = el(`
+  const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
         <input type="text" id="rc-${id}" class="rc-field-input"
-          placeholder="${min} - ${max}" maxlength="${fmt(Math.floor(max - 0.01)).length + 3}" value="${savedValue ?? 0}">
+          placeholder="${min} - ${max}" maxlength="${formatNumber(Math.floor(max - 0.01)).length + 3}" value="${savedValue ?? 0}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
       <p class="rc-field-error" id="rc-err-${id}"></p>
@@ -268,10 +262,10 @@ function buildPercentField(id, label, savedValue, i18n, { min = 0, max = 100 } =
 
   const inner = field.querySelector('.rc-field-inner');
   const input = field.querySelector(`#rc-${id}`);
-  const errorEl = field.querySelector(`#rc-err-${id}`);
+  const errorElement = field.querySelector(`#rc-err-${id}`);
 
   field.setError = (msg) => {
-    errorEl.textContent = msg;
+    errorElement.textContent = msg;
     inner.classList.toggle('rc-field-inner-error', !!msg);
     input.classList.toggle('rc-field-input-error', !!msg);
   };
@@ -303,7 +297,7 @@ function buildPercentField(id, label, savedValue, i18n, { min = 0, max = 100 } =
 // ─── Section Header (J2) ─────────────────────────────────────────────────────────
 
 function buildSectionHeader(title) {
-  return el(`<h3 class="rc-section-title">${title}</h3>`);
+  return parseHTML(`<h3 class="rc-section-title">${title}</h3>`);
 }
 
 // ─── Progressive Reveal (J2 sections) ────────────────────────────────────────────
@@ -324,27 +318,27 @@ function initProgressiveReveal(sectionEl) {
 function renderJourney1(block, data, onNext, savedValues = {}) {
   block.innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  const { i18n, apiUrl } = data;
+  const { labels, apiUrl } = data;
 
-  const container = el('<div class="rc-container"></div>');
-  container.appendChild(buildStepper(i18n, 1));
+  const container = parseHTML('<div class="rc-container"></div>');
+  container.appendChild(buildStepper(labels, 1));
 
-  const content = el('<div class="rc-content"></div>');
-  content.appendChild(buildIncomeCard(i18n, savedValues.monthlyIncome));
+  const content = parseHTML('<div class="rc-content"></div>');
+  content.appendChild(buildIncomeCard(labels, savedValues.monthlyIncome));
 
-  const fieldsWrap = el('<div class="rc-fields"></div>');
-  const currentAgeField = buildAgeField('currentAge', i18n['steps-step1-currentAge'] || 'How old are you?', savedValues.currentAge ?? 30, i18n);
-  const retirementAgeField = buildAgeField('retirementAge', i18n['steps-step1-retirementAge'] || 'What age do you plan to retire?', savedValues.retirementAge ?? 60, i18n);
-  const lifeExpectancyField = buildAgeField('lifeExpectancy', i18n['steps-step1-lifeExpectancy'] || 'Until what age do you expect to live?', savedValues.lifeExpectancy ?? 80, i18n);
+  const fieldsWrap = parseHTML('<div class="rc-fields"></div>');
+  const currentAgeField = buildAgeField('currentAge', getString(labels, 'stepsStep1CurrentAge', 'How old are you?'), savedValues.currentAge ?? 30, labels);
+  const retirementAgeField = buildAgeField('retirementAge', getString(labels, 'stepsStep1RetirementAge', 'What age do you plan to retire?'), savedValues.retirementAge ?? 60, labels);
+  const lifeExpectancyField = buildAgeField('lifeExpectancy', getString(labels, 'stepsStep1LifeExpectancy', 'Until what age do you expect to live?'), savedValues.lifeExpectancy ?? 80, labels);
   fieldsWrap.appendChild(currentAgeField);
   fieldsWrap.appendChild(retirementAgeField);
   fieldsWrap.appendChild(lifeExpectancyField);
   content.appendChild(fieldsWrap);
   container.appendChild(content);
 
-  const footer = el(`
+  const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-next-btn">${i18n['buttons-nextButton'] || 'Next'}</button>
+      <button type="button" class="rc-next-btn">${getString(labels, 'buttonsNextButton', 'Next')}</button>
     </div>
   `);
   container.appendChild(footer);
@@ -357,8 +351,8 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
     const retirementAge = retirementAgeField.getValue();
     const lifeExpectancy = lifeExpectancyField.getValue();
 
-    const crossAgeMsg = i18n['validation-currentAgeRetirementAgeError'] || 'Your current age must be less than your retirement age';
-    const crossRetireMsg = i18n['validation-retirementAgeLifeExpectancyError'] || 'Your retirement age must be less than your life expectancy';
+    const crossAgeMsg = getString(labels, 'validationCurrentAgeRetirementAgeError', 'Your current age must be less than your retirement age');
+    const crossRetireMsg = getString(labels, 'validationRetirementAgeLifeExpectancyError', 'Your retirement age must be less than your life expectancy');
 
     const ageErrEl = block.querySelector('#rc-err-currentAge');
     const retireErrEl = block.querySelector('#rc-err-retirementAge');
@@ -388,7 +382,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   container.addEventListener('input', () => { validateCrossFields(); syncBtnState(); });
 
   nextBtn.addEventListener('click', async () => {
-    const monthlyIncome = parseFloat(raw(block.querySelector('#rc-monthlyIncome')?.value || '0')) || 0;
+    const monthlyIncome = parseFloat(stripCommas(block.querySelector('#rc-monthlyIncome')?.value || '0')) || 0;
     const currentAge = currentAgeField.getValue();
     const retirementAge = retirementAgeField.getValue();
     const lifeExpectancy = lifeExpectancyField.getValue();
@@ -440,51 +434,52 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
 function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {}) {
   block.innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  const { i18n, apiUrl } = data;
+  const { labels, apiUrl } = data;
 
-  const container = el('<div class="rc-container"></div>');
-  container.appendChild(buildStepper(i18n, 2));
+  const container = parseHTML('<div class="rc-container"></div>');
+  container.appendChild(buildStepper(labels, 2));
 
-  const content = el('<div class="rc-content rc-content--sections"></div>');
+  const content = parseHTML('<div class="rc-content rc-content--sections"></div>');
 
   // ── J1 result summary ──
   const j1Result = state.j1ApiResult || {};
-  const totalNeeded = fmt(Math.round(j1Result.TotalChargesValue || 0));
-  const monthlyAvail = fmt(Math.round(j1Result.FvMonthlyGoals || 0));
-  const summaryCard = el(`
+  const totalNeeded = formatNumber(Math.round(j1Result.TotalChargesValue || 0));
+  const monthlyAvail = formatNumber(Math.round(j1Result.FvMonthlyGoals || 0));
+  const bahtUnit = getString(labels, 'commonBahtUnit', 'baht');
+  const summaryCard = parseHTML(`
     <div class="rc-j1-summary">
       <div class="rc-j1-summary-card">
         <div class="rc-j1-summary-row">
-          <p class="rc-j1-summary-label">${i18n['steps-step2-totalAmountNeededLabel'] || 'Total amount needed'}</p>
-          <p class="rc-j1-summary-value">${totalNeeded} <span class="rc-j1-summary-unit">${i18n['common-bahtUnit'] || 'baht'}</span></p>
+          <p class="rc-j1-summary-label">${getString(labels, 'stepsStep2TotalAmountNeededLabel', 'Total amount needed')}</p>
+          <p class="rc-j1-summary-value">${totalNeeded} <span class="rc-j1-summary-unit">${bahtUnit}</span></p>
         </div>
         <hr class="rc-j1-summary-divider">
         <div class="rc-j1-summary-row">
-          <p class="rc-j1-summary-label">${i18n['steps-step2-monthlyAmountAvailableLabel'] || 'Monthly amount available'}</p>
-          <p class="rc-j1-summary-value">${monthlyAvail} <span class="rc-j1-summary-unit">${i18n['common-bahtUnit'] || 'baht'}</span></p>
+          <p class="rc-j1-summary-label">${getString(labels, 'stepsStep2MonthlyAmountAvailableLabel', 'Monthly amount available')}</p>
+          <p class="rc-j1-summary-value">${monthlyAvail} <span class="rc-j1-summary-unit">${bahtUnit}</span></p>
         </div>
       </div>
-      <p class="rc-j1-summary-note">${i18n['steps-step2-inflationNote'] || 'Including an inflation rate of 1.5% p.a., the return on investment after retirement is assumed to be 3% p.a.'}</p>
+      <p class="rc-j1-summary-note">${getString(labels, 'stepsStep2InflationNote', 'Including an inflation rate of 1.5% p.a., the return on investment after retirement is assumed to be 3% p.a.')}</p>
     </div>
   `);
   content.appendChild(summaryCard);
 
   // ── J2 heading ──
-  content.appendChild(el(`
+  content.appendChild(parseHTML(`
     <div class="rc-j2-heading">
       <h2 class="rc-j2-heading-text">
-        <span>${i18n['steps-step2-moreInfoTitle'] || 'Give us more information'}</span><br>
-        <span>${i18n['steps-step2-moreInfoSubtitle'] || 'for a precise calculation'}</span>
+        <span>${getString(labels, 'stepsStep2MoreInfoTitle', 'Give us more information')}</span><br>
+        <span>${getString(labels, 'stepsStep2MoreInfoSubtitle', 'for a precise calculation')}</span>
       </h2>
     </div>
   `));
 
   // ── Savings ──
-  const savingsWrap = el('<div class="rc-section"></div>');
-  savingsWrap.appendChild(buildSectionHeader(i18n['steps-step2-savingsSection'] || 'Savings'));
-  const currentSavingsField = buildMoneyField('currentSavings', i18n['steps-step2-currentSavingsLabel'] || 'Current savings balance', savedValues.SavingBeginAmount, i18n);
-  const savingsReturnRateField = buildPercentField('savingsReturnRate', i18n['steps-step2-savingsExpectedReturnRateLabel'] || 'Expected annual return (%)', savedValues.CompensationRatePct ?? 3, i18n);
-  const savingsIncreaseRateField = buildPercentField('savingsIncreaseRate', i18n['steps-step2-annualSavingsIncreaseRateLabel'] || 'Expected annual savings increase (%)', savedValues.SavingIncRatePct ?? 0, i18n);
+  const savingsWrap = parseHTML('<div class="rc-section"></div>');
+  savingsWrap.appendChild(buildSectionHeader(getString(labels, 'stepsStep2SavingsSection', 'Savings')));
+  const currentSavingsField = buildMoneyField('currentSavings', getString(labels, 'stepsStep2CurrentSavingsLabel', 'Current savings balance'), savedValues.SavingBeginAmount, labels);
+  const savingsReturnRateField = buildPercentField('savingsReturnRate', getString(labels, 'stepsStep2SavingsExpectedReturnRateLabel', 'Expected annual return (%)'), savedValues.CompensationRatePct ?? 3, labels);
+  const savingsIncreaseRateField = buildPercentField('savingsIncreaseRate', getString(labels, 'stepsStep2AnnualSavingsIncreaseRateLabel', 'Expected annual savings increase (%)'), savedValues.SavingIncRatePct ?? 0, labels);
   savingsWrap.appendChild(currentSavingsField);
   savingsWrap.appendChild(savingsReturnRateField);
   savingsWrap.appendChild(savingsIncreaseRateField);
@@ -492,13 +487,13 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   content.appendChild(savingsWrap);
 
   // ── Provident Fund ──
-  const pvdWrap = el('<div class="rc-section"></div>');
-  pvdWrap.appendChild(buildSectionHeader(i18n['steps-step2-providentFundSection'] || 'Provident fund'));
-  const pvdCurrentField = buildMoneyField('pvdCurrent', i18n['steps-step2-currentProvidentFundSavingsLabel'] || 'Current balance in provident fund', savedValues.PVDRetire, i18n);
-  const pvdReturnRateField = buildPercentField('pvdReturnRate', i18n['steps-step2-providentFundExpectedReturnRateLabel'] || 'Expected annual return (%)', savedValues.CompensationRateRetirePct ?? 0, i18n);
-  const salaryField = buildMoneyField('salary', i18n['steps-step2-monthlySalaryLabel'] || 'Current salary', savedValues.IncomeRetire, i18n);
-  const salaryIncreaseField = buildPercentField('salaryIncrease', i18n['steps-step2-annualSalaryIncreaseRateLabel'] || 'Estimated annual salary increase (%)', savedValues.IncIncomeRetirePct ?? 0, i18n);
-  const pvdContribField = buildPercentField('pvdContrib', i18n['steps-step2-providentFundContributionRateLabel'] || 'Monthly provident fund contribution (%)', savedValues.SavingCurrentPct ?? 0, i18n);
+  const pvdWrap = parseHTML('<div class="rc-section"></div>');
+  pvdWrap.appendChild(buildSectionHeader(getString(labels, 'stepsStep2ProvidentFundSection', 'Provident fund')));
+  const pvdCurrentField = buildMoneyField('pvdCurrent', getString(labels, 'stepsStep2CurrentProvidentFundSavingsLabel', 'Current balance in provident fund'), savedValues.PVDRetire, labels);
+  const pvdReturnRateField = buildPercentField('pvdReturnRate', getString(labels, 'stepsStep2ProvidentFundExpectedReturnRateLabel', 'Expected annual return (%)'), savedValues.CompensationRateRetirePct ?? 0, labels);
+  const salaryField = buildMoneyField('salary', getString(labels, 'stepsStep2MonthlySalaryLabel', 'Current salary'), savedValues.IncomeRetire, labels);
+  const salaryIncreaseField = buildPercentField('salaryIncrease', getString(labels, 'stepsStep2AnnualSalaryIncreaseRateLabel', 'Estimated annual salary increase (%)'), savedValues.IncIncomeRetirePct ?? 0, labels);
+  const pvdContribField = buildPercentField('pvdContrib', getString(labels, 'stepsStep2ProvidentFundContributionRateLabel', 'Monthly provident fund contribution (%)'), savedValues.SavingCurrentPct ?? 0, labels);
   pvdWrap.appendChild(pvdCurrentField);
   pvdWrap.appendChild(pvdReturnRateField);
   pvdWrap.appendChild(salaryField);
@@ -508,11 +503,11 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   content.appendChild(pvdWrap);
 
   // ── RMF ──
-  const rmfWrap = el('<div class="rc-section"></div>');
-  rmfWrap.appendChild(buildSectionHeader(i18n['steps-step2-rmfSection'] || 'Retirement Mutual Fund (RMF)'));
-  const rmfCurrentField = buildMoneyField('rmfCurrent', i18n['steps-step2-currentRMFSavingsLabel'] || 'Current balance in RMF', savedValues.RMFSumRetire, i18n);
-  const rmfAnnualField = buildMoneyField('rmfAnnual', i18n['steps-step2-expectedAnnualRMFAccumulationLabel'] || 'Expected annual RMF contribution', savedValues.RMFSavingRateRetire, i18n);
-  const rmfReturnRateField = buildPercentField('rmfReturnRate', i18n['steps-step2-rmfExpectedReturnRateLabel'] || 'Expected annual return (%)', savedValues.RMFCompensationRateRetirePct ?? 0, i18n);
+  const rmfWrap = parseHTML('<div class="rc-section"></div>');
+  rmfWrap.appendChild(buildSectionHeader(getString(labels, 'stepsStep2RmfSection', 'Retirement Mutual Fund (RMF)')));
+  const rmfCurrentField = buildMoneyField('rmfCurrent', getString(labels, 'stepsStep2CurrentRMFSavingsLabel', 'Current balance in RMF'), savedValues.RMFSumRetire, labels);
+  const rmfAnnualField = buildMoneyField('rmfAnnual', getString(labels, 'stepsStep2ExpectedAnnualRMFAccumulationLabel', 'Expected annual RMF contribution'), savedValues.RMFSavingRateRetire, labels);
+  const rmfReturnRateField = buildPercentField('rmfReturnRate', getString(labels, 'stepsStep2RmfExpectedReturnRateLabel', 'Expected annual return (%)'), savedValues.RMFCompensationRateRetirePct ?? 0, labels);
   rmfWrap.appendChild(rmfCurrentField);
   rmfWrap.appendChild(rmfAnnualField);
   rmfWrap.appendChild(rmfReturnRateField);
@@ -520,11 +515,11 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   content.appendChild(rmfWrap);
 
   // ── Lump Sum ──
-  const lumpSumWrap = el('<div class="rc-section"></div>');
-  lumpSumWrap.appendChild(buildSectionHeader(i18n['steps-step2-lumpSumSection'] || 'Lump sum at retirement'));
-  const lumpSumField = buildMoneyField('lumpSum', i18n['steps-step2-lumpSumAtRetirementLabel'] || 'Expected lump sum at retirement', savedValues.SumYearRetire, i18n);
-  const annualInvestmentField = buildMoneyField('annualInvestment', i18n['steps-step2-expectedAnnualInvestmentLabel'] || 'Allocated lump sum for annual investing or savings', savedValues.OneTimeMoneyRetire, i18n);
-  const lumpSumReturnRateField = buildPercentField('lumpSumReturnRate', i18n['steps-step2-lumpSumExpectedReturnRateLabel'] || 'Expected annual return (%)', savedValues.YearCompensationRateRetirePct ?? 0, i18n);
+  const lumpSumWrap = parseHTML('<div class="rc-section"></div>');
+  lumpSumWrap.appendChild(buildSectionHeader(getString(labels, 'stepsStep2LumpSumSection', 'Lump sum at retirement')));
+  const lumpSumField = buildMoneyField('lumpSum', getString(labels, 'stepsStep2LumpSumAtRetirementLabel', 'Expected lump sum at retirement'), savedValues.SumYearRetire, labels);
+  const annualInvestmentField = buildMoneyField('annualInvestment', getString(labels, 'stepsStep2ExpectedAnnualInvestmentLabel', 'Allocated lump sum for annual investing or savings'), savedValues.OneTimeMoneyRetire, labels);
+  const lumpSumReturnRateField = buildPercentField('lumpSumReturnRate', getString(labels, 'stepsStep2LumpSumExpectedReturnRateLabel', 'Expected annual return (%)'), savedValues.YearCompensationRateRetirePct ?? 0, labels);
   lumpSumWrap.appendChild(lumpSumField);
   lumpSumWrap.appendChild(annualInvestmentField);
   lumpSumWrap.appendChild(lumpSumReturnRateField);
@@ -533,16 +528,16 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
 
   container.appendChild(content);
 
-  const footer = el(`
+  const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-back-btn">${i18n['buttons-backButton'] || 'Back'}</button>
-      <button type="button" class="rc-calculate-btn">${i18n['buttons-calculateButton'] || 'Calculate'}</button>
+      <button type="button" class="rc-back-btn">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+      <button type="button" class="rc-calculate-btn">${getString(labels, 'buttonsCalculateButton', 'Calculate')}</button>
     </div>
   `);
   container.appendChild(footer);
   block.appendChild(container);
 
-  const calcBtn = footer.querySelector('.rc-calculate-btn');
+  const calculateBtn = footer.querySelector('.rc-calculate-btn');
 
   const validateSavingsCross = () => {
     const returnRate = savingsReturnRateField.getValue();
@@ -550,23 +545,22 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
     const increaseErr = block.querySelector('#rc-err-savingsIncreaseRate').textContent;
     if (!increaseErr && increaseRate > returnRate) {
       savingsIncreaseRateField.setError(
-        i18n['validation-annualSavingsIncreaseRateError']
-        || '% of annual increase in savings must be less than/equal to the expected annual return.',
+        getString(labels, 'validationAnnualSavingsIncreaseRateError', '% of annual increase in savings must be less than/equal to the expected annual return.'),
       );
     }
   };
 
   const syncBtnState = () => {
-    calcBtn.disabled = !!block.querySelector('.rc-field-error:not(:empty)');
+    calculateBtn.disabled = !!block.querySelector('.rc-field-error:not(:empty)');
   };
 
   container.addEventListener('input', () => { validateSavingsCross(); syncBtnState(); });
 
   footer.querySelector('.rc-back-btn').addEventListener('click', onBack);
 
-  calcBtn.addEventListener('click', async () => {
-    calcBtn.disabled = true;
-    const j2Values = {
+  calculateBtn.addEventListener('click', async () => {
+    calculateBtn.disabled = true;
+    const journey2Values = {
       SavingBeginAmount: currentSavingsField.getValue(),
       CompensationRatePct: savingsReturnRateField.getValue(),
       SavingIncRatePct: savingsIncreaseRateField.getValue(),
@@ -589,20 +583,20 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
         RetireAGE: state.journey1.retirementAge,
         SavingAGE: state.journey1.lifeExpectancy,
         ChargesRetireAmount: state.journey1.monthlyIncome,
-        SavingBeginAmount: j2Values.SavingBeginAmount,
-        CompensationRate: j2Values.CompensationRatePct / 100,
-        SavingIncRate: j2Values.SavingIncRatePct / 100,
-        SavingCurrent: j2Values.SavingCurrentPct / 100,
-        IncomeRetire: j2Values.IncomeRetire,
-        PVDRetire: j2Values.PVDRetire,
-        IncIncomeRetire: j2Values.IncIncomeRetirePct / 100,
-        CompensationRateRetire: j2Values.CompensationRateRetirePct / 100,
-        RMFSumRetire: j2Values.RMFSumRetire,
-        RMFSavingRateRetire: j2Values.RMFSavingRateRetire,
-        RMFCompensationRateRetire: j2Values.RMFCompensationRateRetirePct / 100,
-        SumYearRetire: j2Values.SumYearRetire,
-        YearCompensationRateRetire: j2Values.YearCompensationRateRetirePct / 100,
-        OneTimeMoneyRetire: j2Values.OneTimeMoneyRetire,
+        SavingBeginAmount: journey2Values.SavingBeginAmount,
+        CompensationRate: journey2Values.CompensationRatePct / 100,
+        SavingIncRate: journey2Values.SavingIncRatePct / 100,
+        SavingCurrent: journey2Values.SavingCurrentPct / 100,
+        IncomeRetire: journey2Values.IncomeRetire,
+        PVDRetire: journey2Values.PVDRetire,
+        IncIncomeRetire: journey2Values.IncIncomeRetirePct / 100,
+        CompensationRateRetire: journey2Values.CompensationRateRetirePct / 100,
+        RMFSumRetire: journey2Values.RMFSumRetire,
+        RMFSavingRateRetire: journey2Values.RMFSavingRateRetire,
+        RMFCompensationRateRetire: journey2Values.RMFCompensationRateRetirePct / 100,
+        SumYearRetire: journey2Values.SumYearRetire,
+        YearCompensationRateRetire: journey2Values.YearCompensationRateRetirePct / 100,
+        OneTimeMoneyRetire: journey2Values.OneTimeMoneyRetire,
         inflationrate: '1.5',
         afterretirerate: '3',
       };
@@ -613,11 +607,11 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
       ]);
       if (!resp1.ok || !resp2.ok) throw new Error('API error');
       const [apiResult1, apiResult2] = await Promise.all([resp1.json(), resp2.json()]);
-      onCalculate(j2Values, apiResult1, apiResult2);
+      onCalculate(journey2Values, apiResult1, apiResult2);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Retirement calculator API error:', err);
-      calcBtn.disabled = false;
+      calculateBtn.disabled = false;
     }
   });
 }
@@ -627,7 +621,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
 function renderJourney3(block, data, state, onBack) {
   block.innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  const { i18n } = data;
+  const { labels } = data;
   const result1 = state.j2ApiResult1 || {};
   const result2 = state.j2ApiResult2 || {};
   const totalNeeded = Math.round(result1.TotalChargesValue || 0);
@@ -636,36 +630,37 @@ function renderJourney3(block, data, state, onBack) {
   const savingMonth2 = Math.round(result2.SavingMonth || 0);
   const currentSavings = state.journey2?.SavingBeginAmount || 0;
   const alreadySaved = savingMonth1 < 0;
+  const bahtUnit = getString(labels, 'commonBahtUnit', 'baht');
 
-  const container = el('<div class="rc-container"></div>');
-  container.appendChild(buildStepper(i18n, 3));
+  const container = parseHTML('<div class="rc-container"></div>');
+  container.appendChild(buildStepper(labels, 3));
 
-  const content = el('<div class="rc-content"></div>');
+  const content = parseHTML('<div class="rc-content"></div>');
 
   // ── Summary card (same as J2) ──
-  const summaryCard = el(`
+  const summaryCard = parseHTML(`
     <div class="rc-j1-summary">
       <div class="rc-j1-summary-card">
         <div class="rc-j1-summary-row">
           <p class="rc-j1-summary-label">
-            ${i18n['steps-step2-totalAmountNeededLabel'] || 'Total amount needed'}
+            ${getString(labels, 'stepsStep2TotalAmountNeededLabel', 'Total amount needed')}
           </p>
           <p class="rc-j1-summary-value">
-            ${fmt(totalNeeded)} <span class="rc-j1-summary-unit">${i18n['common-bahtUnit'] || 'baht'}</span>
+            ${formatNumber(totalNeeded)} <span class="rc-j1-summary-unit">${bahtUnit}</span>
           </p>
         </div>
         <hr class="rc-j1-summary-divider">
         <div class="rc-j1-summary-row">
           <p class="rc-j1-summary-label">
-            ${i18n['steps-step2-monthlyAmountAvailableLabel'] || 'Monthly amount available'}
+            ${getString(labels, 'stepsStep2MonthlyAmountAvailableLabel', 'Monthly amount available')}
           </p>
           <p class="rc-j1-summary-value">
-            ${fmt(monthlyAvail)} <span class="rc-j1-summary-unit">${i18n['common-bahtUnit'] || 'baht'}</span>
+            ${formatNumber(monthlyAvail)} <span class="rc-j1-summary-unit">${bahtUnit}</span>
           </p>
         </div>
       </div>
       <p class="rc-j1-summary-note">
-        ${i18n['steps-step2-inflationNote'] || 'Including an inflation rate of 1.5% p.a., the return on investment after retirement is assumed to be 3% p.a.'}
+        ${getString(labels, 'stepsStep2InflationNote', 'Including an inflation rate of 1.5% p.a., the return on investment after retirement is assumed to be 3% p.a.')}
       </p>
     </div>
   `);
@@ -673,10 +668,10 @@ function renderJourney3(block, data, state, onBack) {
 
   if (alreadySaved) {
     // ── Case 1: already saved enough ──
-    content.appendChild(el(`
+    content.appendChild(parseHTML(`
       <div class="rc-awesome-banner">
         <p class="rc-awesome-text">
-          ${i18n['steps-step3-alreadySavedMessage'] || 'Awesome! After the calculation, you will have enough money for your retirement'}
+          ${getString(labels, 'stepsStep3AlreadySavedMessage', 'Awesome! After the calculation, you will have enough money for your retirement')}
         </p>
       </div>
     `));
@@ -685,26 +680,26 @@ function renderJourney3(block, data, state, onBack) {
     const altCard = savingMonth2 >= 0 ? `
         <div class="rc-savings-card-alt">
           <p class="rc-savings-card-title rc-savings-card-title-alt">
-            ${i18n['steps-step3-orSaveJustLabel'] || 'Or\nsave just'}
+            ${getString(labels, 'stepsStep3OrSaveJustLabel', 'Or\nsave just')}
           </p>
           <p class="rc-savings-card-amount rc-savings-card-amount-alt">
-            ${fmt(savingMonth2)} <span class="rc-savings-card-unit rc-savings-card-unit-alt">${i18n['common-bahtUnit'] || 'baht'}</span>
+            ${formatNumber(savingMonth2)} <span class="rc-savings-card-unit rc-savings-card-unit-alt">${bahtUnit}</span>
           </p>
           <p class="rc-savings-card-note rc-savings-card-note-alt">
-            ${i18n['steps-step3-savingsReturnNote5'] || 'If you invest with an annual return of 5%'}
+            ${getString(labels, 'stepsStep3SavingsReturnNote5', 'If you invest with an annual return of 5%')}
           </p>
         </div>` : '';
-    content.appendChild(el(`
+    content.appendChild(parseHTML(`
       <div class="rc-savings-cards">
         <div class="rc-savings-card-recommended">
           <p class="rc-savings-card-title">
-            ${i18n['steps-step3-recommendedMonthlySavingsLabel'] || 'Recommended\nmonthly savings'}
+            ${getString(labels, 'stepsStep3RecommendedMonthlySavingsLabel', 'Recommended\nmonthly savings')}
           </p>
           <p class="rc-savings-card-amount">
-            ${fmt(savingMonth1)} <span class="rc-savings-card-unit">${i18n['common-bahtUnit'] || 'baht'}</span>
+            ${formatNumber(savingMonth1)} <span class="rc-savings-card-unit">${bahtUnit}</span>
           </p>
           <p class="rc-savings-card-note">
-            ${i18n['steps-step3-savingsReturnNote3'] || 'Based on expected annual return on savings of 3%'}
+            ${getString(labels, 'stepsStep3SavingsReturnNote3', 'Based on expected annual return on savings of 3%')}
           </p>
         </div>
         ${altCard}
@@ -712,24 +707,24 @@ function renderJourney3(block, data, state, onBack) {
     `));
 
     // ── Calculation summary heading ──
-    content.appendChild(el(`
+    content.appendChild(parseHTML(`
       <h2 class="rc-calc-summary-title">
-        ${i18n['steps-step3-calculationSummaryLabel'] || 'Calculation summary'}
+        ${getString(labels, 'stepsStep3CalculationSummaryLabel', 'Calculation summary')}
       </h2>
     `));
 
     // ── Case 3: progress bar ──
     if (currentSavings > 0) {
       const pct = Math.min((currentSavings / totalNeeded) * 100, 100);
-      content.appendChild(el(`
+      content.appendChild(parseHTML(`
         <div class="rc-progress-wrap">
-          <p class="rc-progress-label">${i18n['steps-step3-currentSavingsAmountLabel'] || 'Current savings amount'}</p>
+          <p class="rc-progress-label">${getString(labels, 'stepsStep3CurrentSavingsAmountLabel', 'Current savings amount')}</p>
           <div class="rc-progress-amounts">
             <p class="rc-progress-current">
-              ${fmt(currentSavings)} <span class="rc-progress-unit">${i18n['common-bahtUnit'] || 'baht'}</span>
+              ${formatNumber(currentSavings)} <span class="rc-progress-unit">${bahtUnit}</span>
             </p>
             <p class="rc-progress-total">
-              /${fmt(totalNeeded)} <span class="rc-progress-unit">${i18n['common-bahtUnit'] || 'baht'}</span>
+              /${formatNumber(totalNeeded)} <span class="rc-progress-unit">${bahtUnit}</span>
             </p>
           </div>
           <div class="rc-progress-bar-track">
@@ -740,41 +735,37 @@ function renderJourney3(block, data, state, onBack) {
     }
 
     // ── Summary table ──
-    const currentSavingsDisplay = currentSavings > 0 ? fmt(currentSavings) : '-';
-    const baht = i18n['common-bahtUnit'] || 'baht';
-    content.appendChild(el(`
+    const currentSavingsDisplay = currentSavings > 0 ? formatNumber(currentSavings) : '-';
+    content.appendChild(parseHTML(`
       <div class="rc-summary-table">
         <div class="rc-summary-row">
           <p class="rc-summary-label">
-            ${i18n['steps-step3-totalAmountNeededSummaryLabel'] || 'Total amount needed'}
+            ${getString(labels, 'stepsStep3TotalAmountNeededSummaryLabel', 'Total amount needed')}
           </p>
           <p class="rc-summary-value">
-            ${fmt(totalNeeded)} <span class="rc-summary-unit">${baht}</span>
+            ${formatNumber(totalNeeded)} <span class="rc-summary-unit">${bahtUnit}</span>
           </p>
         </div>
         <div class="rc-summary-row">
           <p class="rc-summary-label">
-            ${i18n['steps-step3-currentSavingsAmountLabel'] || 'Current savings amount'}
+            ${getString(labels, 'stepsStep3CurrentSavingsAmountLabel', 'Current savings amount')}
           </p>
           <p class="rc-summary-value rc-summary-value-plain">
-            ${currentSavingsDisplay} <span class="rc-summary-unit">${baht}</span>
+            ${currentSavingsDisplay} <span class="rc-summary-unit">${bahtUnit}</span>
           </p>
         </div>
         <div class="rc-summary-row">
           <span>
             <p class="rc-summary-label">
-              ${i18n['steps-step3-recommendedMonthlySavingsSummaryLabel'] || 'Recommended monthly savings'}
+              ${getString(labels, 'stepsStep3RecommendedMonthlySavingsSummaryLabel', 'Recommended monthly savings')}
             </p>
             <p class="rc-summary-sublabel">
-              ${i18n['steps-step3-investConsistentlyNote'] || 'You can save less each month by investing consistently'}
+              ${getString(labels, 'stepsStep3InvestConsistentlyNote', 'You can save less each month by investing consistently')}
             </p>
           </span>
           <p class="rc-summary-value rc-summary-value-arrow">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2.4375L12 21.4375" stroke="#0064FF" stroke-width="2" stroke-miterlimit="10"/>
-              <path d="M21 12.4375L12 21.4375L3 12.4375" stroke="#0064FF" stroke-width="2" stroke-miterlimit="10"/>
-            </svg>
-            ${fmt(savingMonth1)} <span class="rc-summary-unit">${baht}</span>
+            <img src="/icons/down-arrow.svg" aria-hidden="true" width="24" height="24">
+            ${formatNumber(savingMonth1)} <span class="rc-summary-unit">${bahtUnit}</span>
           </p>
         </div>
       </div>
@@ -783,9 +774,9 @@ function renderJourney3(block, data, state, onBack) {
 
   container.appendChild(content);
 
-  const footer = el(`
+  const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-back-btn">${i18n['buttons-backButton'] || 'Back'}</button>
+      <button type="button" class="rc-back-btn">${getString(labels, 'buttonsBackButton', 'Back')}</button>
     </div>
   `);
   container.appendChild(footer);
@@ -807,8 +798,8 @@ export default async function decorate(block) {
 
     const goToJourney2 = () => {
       // eslint-disable-next-line no-use-before-define
-      renderJourney2(block, data, state, goToJourney1, (j2Values, apiResult1, apiResult2) => {
-        state.journey2 = j2Values;
+      renderJourney2(block, data, state, goToJourney1, (journey2Values, apiResult1, apiResult2) => {
+        state.journey2 = journey2Values;
         state.j2ApiResult1 = apiResult1;
         state.j2ApiResult2 = apiResult2;
         goToJourney3();
