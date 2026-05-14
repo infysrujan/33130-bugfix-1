@@ -335,7 +335,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const { i18n, apiUrl } = data;
 
-  const container = el('<div class="rc-container"></div>');
+  const container = el('<div class="rc-container rc-step-1"></div>');
   container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepper(i18n, 1));
 
@@ -454,7 +454,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const { i18n, apiUrl } = data;
 
-  const container = el('<div class="rc-container"></div>');
+  const container = el('<div class="rc-container rc-step-2"></div>');
   container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepper(i18n, 2));
 
@@ -652,7 +652,7 @@ function renderJourney3(block, data, state, onBack) {
   const currentSavings = state.journey2?.SavingBeginAmount || 0;
   const alreadySaved = savingMonth1 < 0;
 
-  const container = el('<div class="rc-container"></div>');
+  const container = el('<div class="rc-container rc-step-3"></div>');
   container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepper(i18n, 3));
 
