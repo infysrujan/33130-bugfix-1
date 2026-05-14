@@ -1,5 +1,5 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { getLang, moveInstrumentation } from '../../scripts/scripts.js';
+import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { buildDateHtml, buildDisclaimerHtml, buildPromoHtml } from '../promotional-details/promotional-details.js';
 
@@ -25,27 +25,6 @@ async function fetchPromoData(apiUrl, promoId) {
 }
 
 export default async function decorate(block) {
-  // UE Duplication Fix: Analyze and remove other decorated instances of this block resource.
-  // Standard from credit-card-comparator.js
-  const blockResource = block.dataset.aueResource;
-  document.querySelectorAll('.bbm-cc-promo.block').forEach((other) => {
-    if (other === block) return;
-    if (!other.querySelector('.bbm-promo-inner')) return;
-    const otherResource = other.dataset.aueResource;
-    if (blockResource && otherResource && otherResource !== blockResource) return;
-    other.remove();
-  });
-
-  // Remove previously built UI so re-decoration starts clean
-  block.querySelector('.bbm-promo-inner')?.remove();
-
-  // Un-hide authored rows from any previous decoration pass
-  [...block.children].forEach((row) => {
-    row.classList.remove('bbm-promo-source-row');
-    // Project Standard: move instrumentation from rows to block wrapper
-    moveInstrumentation(row, block);
-  });
-
   // Hide global elements for campaign page
   ['header', 'footer', '.breadcrumb-container', '.cookie-alert-container',
     '.filter-container', '.filters']
@@ -54,7 +33,10 @@ export default async function decorate(block) {
       if (el) el.style.display = 'none';
     });
 
-  // Row 0: promoId authored in the block (used as fallback match)
+  // Project Standard (Audited from promotional-details.js):
+  // We extract data first, then replace the entire innerHTML of the block.
+  // This is the most robust way to prevent "multiple block insertion" (duplicates)
+  // inside the block because each re-decoration cycle completely overwrites the previous one.
   const promoId = block.children[0]?.textContent?.trim() || '';
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';
@@ -64,7 +46,6 @@ export default async function decorate(block) {
     fetchConfigs(),
   ]);
 
-  // Config key: bbm-cc-promo-selector → bbmCcPromoSelector
   const baseUrl = configs?.bbmCcPromoSelector || DEV_FALLBACK;
   const apiUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 
@@ -73,7 +54,7 @@ export default async function decorate(block) {
 
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
 
-  // Ensure all fields from JSON are mapped in JS context
+  // Map all JSON fields for use in the JS logic
   const data = {
     title: card.title || '',
     detailImageUrl: card.detailImageUrl || '',
@@ -85,13 +66,6 @@ export default async function decorate(block) {
     disclaimerText: card.responsibleLendingDisclaimerText || '',
     targetLink: card.targetLink === 'true' || card.targetLink === true,
     ctaLink: card.ctaLink || '',
-    category: card.category || '',
-    cardImageUrl: card.cardImageUrl || '',
-    cardShortDescription: card.cardShortDescription || '',
-    platinum: card.Platinum || false,
-    signature: card.Signeture || false,
-    infinite: card.infinite || false,
-    promotionFlag: card.promotionFlag || [],
   };
 
   const titleHtml = data.title ? `<h2 class="bbm-promo-title">${data.title}</h2>` : '';
@@ -118,6 +92,7 @@ export default async function decorate(block) {
   const rawDateHtml = buildDateHtml(data.startDate, data.endDate, data.dateValidityLabel, locale);
   const rawDisclaimerHtml = buildDisclaimerHtml(data.disclaimerEnabled, data.disclaimerText);
 
+  // Use the standard shared HTML builder
   const htmlString = buildPromoHtml({
     titleHtml,
     imageColHtml,
@@ -130,10 +105,8 @@ export default async function decorate(block) {
     prefix: 'bbm-promo',
   });
 
-  // Hide authored rows using project standard CSS class
-  [...block.children].forEach((row) => { row.classList.add('bbm-promo-source-row'); });
-
-  const wrapper = document.createElement('div');
-  wrapper.innerHTML = htmlString;
-  block.append(wrapper.firstElementChild);
+  // Final Step: Atomic replacement of block content.
+  // This prevents duplication because even if decorate() is called 10 times,
+  // each call overwrites the block content instead of appending to it.
+  block.innerHTML = htmlString;
 }
