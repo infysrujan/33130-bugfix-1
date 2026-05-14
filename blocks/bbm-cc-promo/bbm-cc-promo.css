@@ -149,8 +149,13 @@ footer,
         line-height: 2.875rem;
     }
 
-     .bbm-cc-promo .bbm-promo-date {
+    .bbm-cc-promo .bbm-promo-date {
         font-size: var(--bbl-font-size-b1);
         line-height: 1.375rem;
     }
+}
+
+/* Hide authored source rows in UE and production after decoration */
+.bbm-cc-promo .bbm-promo-source-row {
+    display: none;
 }

@@ -1,5 +1,5 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { getLang } from '../../scripts/scripts.js';
+import { getLang, moveInstrumentation } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { buildDateHtml, buildDisclaimerHtml, buildPromoHtml } from '../promotional-details/promotional-details.js';
 
@@ -24,7 +24,28 @@ async function fetchPromoData(apiUrl, promoId) {
   }
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
+  // UE Duplication Fix: Analyze and remove other decorated instances of this block resource.
+  // Standard from credit-card-comparator.js
+  const blockResource = block.dataset.aueResource;
+  document.querySelectorAll('.bbm-cc-promo.block').forEach((other) => {
+    if (other === block) return;
+    if (!other.querySelector('.bbm-promo-inner')) return;
+    const otherResource = other.dataset.aueResource;
+    if (blockResource && otherResource && otherResource !== blockResource) return;
+    other.remove();
+  });
+
+  // Remove previously built UI so re-decoration starts clean
+  block.querySelector('.bbm-promo-inner')?.remove();
+
+  // Un-hide authored rows from any previous decoration pass
+  [...block.children].forEach((row) => {
+    row.classList.remove('bbm-promo-source-row');
+    // Project Standard: move instrumentation from rows to block wrapper
+    moveInstrumentation(row, block);
+  });
+
   // Hide global elements for campaign page
   ['header', 'footer', '.breadcrumb-container', '.cookie-alert-container',
     '.filter-container', '.filters']
@@ -38,92 +59,81 @@ export default function decorate(block) {
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';
 
-  Promise.all([
+  const [placeholders, configs] = await Promise.all([
     fetchPlaceholders(),
     fetchConfigs(),
-  ]).then(([placeholders, configs]) => {
-    // Config key: bbm-cc-promo-selector → bbmCcPromoSelector
-    // When real API is ready: add "bbm-cc-promo-selector" key to /en/config.json
-    const baseUrl = configs?.bbmCcPromoSelector || DEV_FALLBACK;
-    const apiUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
+  ]);
 
-    fetchPromoData(apiUrl, promoId).then((card) => {
-      if (!card) return;
+  // Config key: bbm-cc-promo-selector → bbmCcPromoSelector
+  const baseUrl = configs?.bbmCcPromoSelector || DEV_FALLBACK;
+  const apiUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 
-      const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
+  const card = await fetchPromoData(apiUrl, promoId);
+  if (!card) return;
 
-      // Ensure remaining fields from JSON are mapped in JS
-      const data = {
-        title: card?.title || '',
-        detailImageUrl: card?.detailImageUrl || '',
-        detailDescription: card?.detailDescription || '',
-        startDate: card?.promotionStartDate || '',
-        endDate: card?.promotionEndDate || '',
-        dateValidityLabel: card?.dateValidityLabel || periodLabel,
-        disclaimerEnabled: card?.responsibleLendingDisclaimerEnabled,
-        disclaimerText: card?.responsibleLendingDisclaimerText || '',
-        targetLink: card?.targetLink === 'true' || card?.targetLink === true,
-        ctaLink: card?.ctaLink || '',
-        category: card?.category || '',
-        cardImageUrl: card?.cardImageUrl || '',
-        cardShortDescription: card?.cardShortDescription || '',
-        platinum: card?.Platinum || false,
-        signature: card?.Signeture || false,
-        infinite: card?.infinite || false,
-        promotionFlag: card?.promotionFlag || [],
-      };
+  const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
 
-      const titleHtml = data.title
-        ? `<h2 class="bbm-promo-title">${data.title}</h2>`
-        : '';
-      const imageHtml = data.detailImageUrl
-        ? `<img src="${data.detailImageUrl}" alt="${data.title || ''}" loading="lazy">`
-        : '';
+  // Ensure all fields from JSON are mapped in JS context
+  const data = {
+    title: card.title || '',
+    detailImageUrl: card.detailImageUrl || '',
+    detailDescription: card.detailDescription || '',
+    startDate: card.promotionStartDate || '',
+    endDate: card.promotionEndDate || '',
+    dateValidityLabel: card.dateValidityLabel || periodLabel,
+    disclaimerEnabled: card.responsibleLendingDisclaimerEnabled,
+    disclaimerText: card.responsibleLendingDisclaimerText || '',
+    targetLink: card.targetLink === 'true' || card.targetLink === true,
+    ctaLink: card.ctaLink || '',
+    category: card.category || '',
+    cardImageUrl: card.cardImageUrl || '',
+    cardShortDescription: card.cardShortDescription || '',
+    platinum: card.Platinum || false,
+    signature: card.Signeture || false,
+    infinite: card.infinite || false,
+    promotionFlag: card.promotionFlag || [],
+  };
 
-      const rowClass = imageHtml ? 'bbm-promo-row' : 'bbm-promo-row bbm-promo-row-no-image';
-      const clickToViewFull = placeholders.promoClickToViewFull || '';
-      const imageColHtml = imageHtml ? `
-              <div class="bbm-promo-image">
-                <a href="${data.detailImageUrl}" title="${clickToViewFull}">
-                  ${imageHtml}
-                </a>
-              </div>` : '';
+  const titleHtml = data.title ? `<h2 class="bbm-promo-title">${data.title}</h2>` : '';
+  const imageHtml = data.detailImageUrl
+    ? `<img src="${data.detailImageUrl}" alt="${data.title || ''}" loading="lazy">`
+    : '';
 
-      const targetAttr = data.targetLink ? ' target="_blank" rel="noopener noreferrer"' : '';
-      const ctaHtml = data.ctaLink ? `
-        <div class="bbm-promo-cta">
-          <a href="${data.ctaLink}" class="button primary"${targetAttr}>${placeholders.promoCtaLabel || 'Register'}</a>
-        </div>
-      ` : '';
+  const rowClass = imageHtml ? 'bbm-promo-row' : 'bbm-promo-row bbm-promo-row-no-image';
+  const clickToViewFull = placeholders.promoClickToViewFull || '';
+  const imageColHtml = imageHtml ? `
+          <div class="bbm-promo-image">
+            <a href="${data.detailImageUrl}" title="${clickToViewFull}">
+              ${imageHtml}
+            </a>
+          </div>` : '';
 
-      const rawDateHtml = buildDateHtml(
-        data.startDate,
-        data.endDate,
-        data.dateValidityLabel,
-        locale,
-      );
-      const rawDisclaimerHtml = buildDisclaimerHtml(data.disclaimerEnabled, data.disclaimerText);
+  const targetAttr = data.targetLink ? ' target="_blank" rel="noopener noreferrer"' : '';
+  const ctaHtml = data.ctaLink ? `
+    <div class="bbm-promo-cta">
+      <a href="${data.ctaLink}" class="button primary"${targetAttr}>${placeholders.promoCtaLabel || 'Register'}</a>
+    </div>
+  ` : '';
 
-      const htmlString = buildPromoHtml({
-        titleHtml,
-        imageColHtml,
-        rowClass,
-        descriptionHtml: data.detailDescription,
-        dateHtml: rawDateHtml.replace('promo-detail-date', 'bbm-promo-date'),
-        disclaimerHtml: rawDisclaimerHtml
-          .replace('promo-detail-disclaimer', 'bbm-promo-disclaimer'),
-        ctaHtml,
-        prefix: 'bbm-promo',
-      });
+  const rawDateHtml = buildDateHtml(data.startDate, data.endDate, data.dateValidityLabel, locale);
+  const rawDisclaimerHtml = buildDisclaimerHtml(data.disclaimerEnabled, data.disclaimerText);
 
-      // UE Robust Fix: Hide original children to preserve data-aue attributes, then append new DOM
-      [...block.children].forEach((row) => {
-        row.style.display = 'none';
-      });
-
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = htmlString;
-      block.append(wrapper.firstElementChild);
-    });
+  const htmlString = buildPromoHtml({
+    titleHtml,
+    imageColHtml,
+    rowClass,
+    descriptionHtml: data.detailDescription,
+    dateHtml: rawDateHtml.replace('promo-detail-date', 'bbm-promo-date'),
+    disclaimerHtml: rawDisclaimerHtml
+      .replace('promo-detail-disclaimer', 'bbm-promo-disclaimer'),
+    ctaHtml,
+    prefix: 'bbm-promo',
   });
+
+  // Hide authored rows using project standard CSS class
+  [...block.children].forEach((row) => { row.classList.add('bbm-promo-source-row'); });
+
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = htmlString;
+  block.append(wrapper.firstElementChild);
 }
