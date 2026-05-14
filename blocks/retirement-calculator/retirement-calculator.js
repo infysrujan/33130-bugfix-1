@@ -700,9 +700,9 @@ function renderJourney3(block, data, state, onBack) {
     // ── Cases 2 & 3: savings cards ──
     const altCard = savingMonth2 >= 0 ? `
         <div class="rc-savings-card-alt">
-          <p class="rc-savings-card-title rc-savings-card-title-alt">
-            ${i18n['steps-step3-orSaveJustLabel'] || 'Or\nsave just'}
-          </p>
+          <p class="rc-savings-card-title rc-savings-card-title-alt">${
+  i18n['steps-step3-orSaveJustLabel'] || 'Or\nsave just'
+}</p>
           <p class="rc-savings-card-amount rc-savings-card-amount-alt">
             ${fmt(savingMonth2)} <span class="rc-savings-card-unit rc-savings-card-unit-alt">${i18n['common-bahtUnit'] || 'baht'}</span>
           </p>
@@ -713,9 +713,9 @@ function renderJourney3(block, data, state, onBack) {
     content.appendChild(el(`
       <div class="rc-savings-cards">
         <div class="rc-savings-card-recommended">
-          <p class="rc-savings-card-title">
-            ${i18n['steps-step3-recommendedMonthlySavingsLabel'] || 'Recommended\nmonthly savings'}
-          </p>
+          <p class="rc-savings-card-title">${
+  i18n['steps-step3-recommendedMonthlySavingsLabel'] || 'Recommended\nmonthly savings'
+}</p>
           <p class="rc-savings-card-amount">
             ${fmt(savingMonth1)} <span class="rc-savings-card-unit">${i18n['common-bahtUnit'] || 'baht'}</span>
           </p>
