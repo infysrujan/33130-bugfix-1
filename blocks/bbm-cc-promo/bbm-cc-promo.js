@@ -47,7 +47,12 @@ export default async function decorate(block) {
   ]);
 
   const baseUrl = configs?.bbmCcPromoSelector || DEV_FALLBACK;
-  const apiUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
+  let apiUrl = baseUrl;
+
+  // Only apply language localization logic if we are NOT using the local dummy fallback
+  if (configs?.bbmCcPromoSelector) {
+    apiUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
+  }
 
   const card = await fetchPromoData(apiUrl, promoId);
   if (!card) return;
