@@ -9,17 +9,33 @@ const DEV_FALLBACK = '/en/bbm-promo.json';
 
 function parseBlockConfig(block) {
   const config = { promoId: '', targetLink: false };
-  [...block.children].forEach((row) => {
-    const label = row.children[0]?.textContent?.trim().toLowerCase();
-    const value = row.children[1]?.textContent?.trim().toLowerCase();
+  const rows = [...block.children];
 
-    if (label === 'promo id' || !label) { // Support both labeled and unlabeled ID row
-      config.promoId = row.children[1]?.textContent?.trim() || row.children[0]?.textContent?.trim() || '';
-    }
-    if (label === 'target settings' || label === 'targetlink') {
-      config.targetLink = value === 'true';
+  if (!rows.length) return config;
+
+  // Fallback 1: Blind index reading (Standard for simple EDS blocks)
+  // Row 0 is promoId, Row 1 is targetSettings
+  config.promoId = rows[0].children.length >= 2
+    ? rows[0].children[1]?.textContent?.trim()
+    : rows[0].textContent?.trim();
+
+  if (rows[1]) {
+    const val = rows[1].children.length >= 2
+      ? rows[1].children[1]?.textContent?.trim()
+      : rows[1].textContent?.trim();
+    config.targetLink = val?.toLowerCase() === 'true';
+  }
+
+  // Fallback 2: Key-Value override if explicit labels are authored
+  rows.forEach((row) => {
+    if (row.children.length >= 2) {
+      const label = row.children[0]?.textContent?.trim().toLowerCase();
+      const value = row.children[1]?.textContent?.trim();
+      if (label === 'promo id') config.promoId = value || '';
+      if (label === 'target settings' || label === 'targetlink') config.targetLink = value?.toLowerCase() === 'true';
     }
   });
+
   return config;
 }
 
