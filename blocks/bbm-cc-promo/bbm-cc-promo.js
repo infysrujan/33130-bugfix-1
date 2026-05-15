@@ -1,4 +1,3 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang, moveInstrumentation } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
@@ -14,7 +13,6 @@ function parseBlockConfig(block) {
   if (!rows.length) return config;
 
   // Fallback 1: Blind index reading (Standard for simple EDS blocks)
-  // Row 0 is promoId, Row 1 is targetSettings
   config.promoId = rows[0].children.length >= 2
     ? rows[0].children[1]?.textContent?.trim()
     : rows[0].textContent?.trim();
@@ -29,10 +27,31 @@ function parseBlockConfig(block) {
   // Fallback 2: Key-Value override if explicit labels are authored
   rows.forEach((row) => {
     if (row.children.length >= 2) {
-      const label = row.children[0]?.textContent?.trim().toLowerCase();
-      const value = row.children[1]?.textContent?.trim();
-      if (label === 'promo id') config.promoId = value || '';
+      // Normalize label: lowercase and remove anything in parentheses
+      const rawLabel = row.children[0]?.textContent?.trim().toLowerCase() || '';
+      const label = rawLabel.replace(/\s*\(.*?\)\s*/g, '').trim();
+
+      const col = row.children[1];
+      let value = col?.textContent?.trim();
+
+      // Extract specific media/links
+      if (col.querySelector('img')) value = col.querySelector('img').src;
+      else if (col.querySelector('a') && label.includes('link')) value = col.querySelector('a').href;
+      else if (col.querySelector('p')) value = col.innerHTML.trim(); // For rich text
+
+      if (!value) return;
+
+      if (label === 'promo id') config.promoId = value;
       if (label === 'target settings' || label === 'targetlink') config.targetLink = value?.toLowerCase() === 'true';
+      if (label === 'title') config.title = value;
+      if (label === 'card image') config.cardImageUrl = value;
+      if (label === 'detail image') config.detailImageUrl = value;
+      if (label === 'card short description') config.cardShortDescription = value;
+      if (label === 'detail description') config.detailDescription = value;
+      if (label === 'date validity label') config.dateValidityLabel = value;
+      if (label === 'promotion validity start date') config.promotionStartDate = value;
+      if (label === 'promotion expiry date') config.promotionEndDate = value;
+      if (label === 'cta link') config.ctaLink = value;
     }
   });
 
@@ -41,7 +60,8 @@ function parseBlockConfig(block) {
 
 function resolveAemPath(path) {
   if (!path || path.startsWith('http') || path.startsWith('//')) return path;
-  const isAuthor = window.location.hostname.includes('author-') || window.location.hostname.includes('localhost');
+  // Senior Audit Fix: Removed localhost. Local dev server correctly serves from root (/en/...).
+  const isAuthor = window.location.hostname.includes('author-');
   if (isAuthor && path.startsWith('/') && !path.startsWith('/content/')) {
     return `/content/bangkokbank${path}`;
   }
@@ -117,32 +137,44 @@ export default async function decorate(block) {
   }
 
   const card = await fetchPromoData(apiUrl, authConfig.promoId);
-  if (!card) {
+  const finalCard = { ...(card || {}) };
+
+  // Authored values always override API values
+  Object.keys(authConfig).forEach((key) => {
+    if (authConfig[key]) {
+      finalCard[key] = authConfig[key];
+    }
+  });
+
+  // If we have no API data AND no authored title/image, abort
+  if (!finalCard.promoId && !finalCard.title && !finalCard.detailImageUrl) {
     renderer.innerHTML = '';
     return;
   }
 
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
-
-  // Authored Target Link takes precedence over API Target Link for the block
-  const isTargetBlank = authConfig.targetLink || card.targetLink === 'true' || card.targetLink === true;
+  const isTargetBlank = finalCard.targetLink === 'true' || finalCard.targetLink === true;
 
   const data = {
-    title: card.title || '',
-    detailImageUrl: resolveAemPath(card.detailImageUrl || ''),
-    detailDescription: card.detailDescription || '',
-    startDate: card.promotionStartDate || '',
-    endDate: card.promotionEndDate || '',
-    dateValidityLabel: card.dateValidityLabel || periodLabel,
-    disclaimerEnabled: card.responsibleLendingDisclaimerEnabled,
-    disclaimerText: card.responsibleLendingDisclaimerText || '',
+    title: finalCard.title || '',
+    detailImageUrl: resolveAemPath(finalCard.detailImageUrl || ''),
+    detailDescription: finalCard.detailDescription || '',
+    startDate: finalCard.promotionStartDate || '',
+    endDate: finalCard.promotionEndDate || '',
+    dateValidityLabel: finalCard.dateValidityLabel || periodLabel,
+    disclaimerEnabled: finalCard.responsibleLendingDisclaimerEnabled,
+    disclaimerText: finalCard.responsibleLendingDisclaimerText || '',
     targetLink: isTargetBlank,
-    ctaLink: resolveAemPath(card.ctaLink || ''),
+    ctaLink: resolveAemPath(finalCard.ctaLink || ''),
   };
 
   const titleHtml = data.title ? `<h2 class="bbm-promo-title">${data.title}</h2>` : '';
-  const pic = data.detailImageUrl ? createOptimizedPicture(data.detailImageUrl, data.title || '', false) : null;
-  const imageHtml = pic ? pic.outerHTML : '';
+
+  // Align with promotional-details.js standard rendering
+  // (no createOptimizedPicture to support authored images safely)
+  const imageHtml = data.detailImageUrl
+    ? `<img src="${data.detailImageUrl}" alt="${data.title || ''}" loading="lazy">`
+    : '';
 
   const rowClass = imageHtml ? 'bbm-promo-row' : 'bbm-promo-row bbm-promo-row-no-image';
   const clickToViewFull = placeholders.promoClickToViewFull || '';
