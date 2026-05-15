@@ -1078,3 +1078,85 @@
     margin-top: 2.25rem;
   }
 }
+
+/* ── saving-plan-container2 (adjacent product section) ────────────── */
+.saving-plan-container2 {
+  display: none;
+}
+
+.saving-plan-container2.is-visible {
+  display: revert;
+  max-width: 1752px;
+  margin-top: 3.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+}
+
+.saving-plan-container2.is-visible .default-content-wrapper,
+.saving-plan-container2.is-visible .card-list-wrapper {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+}
+
+.saving-plan-container2.is-visible .cards-list.scrollable.center.cards-3 {
+  margin: 0 -20px;
+  padding: 0;
+}
+
+.saving-plan-container2.is-visible .cards-list-image.cards-list-image-default {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 272 / 175;
+  max-width: 272px;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── default-content-wrapper (Additional Information + Disclaimer) ── */
+.saving-plan-container .default-content-wrapper {
+  margin-top: 2.5rem;
+  font-size: 0.9375rem;
+  color: var(--sp-text, #1a1a1a);
+  line-height: 1.65;
+}
+
+.saving-plan-container .default-content-wrapper p {
+  margin: 0 0 0.375rem;
+}
+
+.saving-plan-container .default-content-wrapper p > strong {
+  font-family: BangkokBank-Bold, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.saving-plan-container .default-content-wrapper p ~ p {
+  margin-top: 1.75rem;
+}
+
+.saving-plan-container .default-content-wrapper ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.5rem;
+}
+
+.saving-plan-container .default-content-wrapper li {
+  margin-bottom: 0.875rem;
+  line-height: 1.65;
+}
+
+.saving-plan-container .default-content-wrapper li:last-child {
+  margin-bottom: 0;
+}
+
+.saving-plan-container .default-content-wrapper a {
+  color: var(--sp-text, #1a1a1a);
+  text-decoration: underline;
+  text-underline-offset: 0.125rem;
+}
+
+.saving-plan-container .default-content-wrapper a:hover {
+  color: var(--sp-blue, #1e6ffb);
+}

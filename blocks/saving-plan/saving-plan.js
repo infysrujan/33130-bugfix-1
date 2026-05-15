@@ -1190,6 +1190,7 @@ function showAfterCalculate(root) {
   root.querySelector('.saving-plan-chart-row')?.removeAttribute('hidden');
   root.querySelector('.saving-plan-tweak')?.removeAttribute('hidden');
   root.querySelector('.saving-plan-products')?.removeAttribute('hidden');
+  root.closest('.section')?.nextElementSibling?.classList.add('is-visible');
 }
 
 function readSliders(root) {
@@ -1270,6 +1271,7 @@ function resetCalculator(state, data) {
   }
   renderInfoCard(state);
   renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
+  root.closest('.section')?.nextElementSibling?.classList.remove('is-visible');
 }
 
 function attachDropdownHandlers(state, data, onSelectionChange) {
@@ -1481,6 +1483,11 @@ export default async function decorate(block) {
   renderInfoCard(state);
   renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
   attachHandlers(state, data);
+
+  // Tag the next section sibling so it can be styled relative to the saving-plan section.
+  const section = block.closest('.section');
+  const nextSection = section?.nextElementSibling;
+  if (nextSection) nextSection.classList.add('saving-plan-container2');
 
   // // Hide the EDS section-separator <hr> that appears between the block's section and the next.
   // let el = block.parentElement;
