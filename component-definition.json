@@ -1062,6 +1062,22 @@
           }
         },
         {
+          "title": "Hero Thumbnail Item",
+          "id": "hero-thumbnail-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Hero Thumbnail Item",
+                  "model": "hero-thumbnail-item",
+                  "label": "Use this item type for the 'Hero With Thumbnail Images' variant"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Locate Us",
           "id": "locate-us",
           "plugins": {

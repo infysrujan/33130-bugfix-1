@@ -32,6 +32,22 @@
           }
         }
       }
+    },
+    {
+      "title": "Hero Thumbnail Item",
+      "id": "hero-thumbnail-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Hero Thumbnail Item",
+              "model": "hero-thumbnail-item",
+              "label": "Use this item type for the 'Hero With Thumbnail Images' variant"
+            }
+          }
+        }
+      }
     }
   ],
   "models": [
@@ -69,12 +85,52 @@
       "id": "hero-item",
       "fields": [
         {
+          "...": "../../models/elements/_image-picker.json#/imagePickerFields"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "logoImage",
+          "label": "Logo Image",
+          "multi": false,
+          "description": "Optional logo image (for logo variants)"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "logoImageAlt",
+          "label": "Logo Alt",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "title",
+          "value": "",
+          "label": "Title",
+          "valueType": "string",
+          "description": "Optional for 'Simple with Logo Only' variant"
+        },
+        {
+          "component": "richtext",
+          "name": "subtitle",
+          "value": "",
+          "label": "Sub Title",
+          "valueType": "string"
+        },
+        {
+          "...": "../../models/elements/_button-fields.json"
+        }
+      ]
+    },
+    {
+      "id": "hero-thumbnail-item",
+      "fields": [
+        {
           "component": "select",
           "name": "mediaType",
           "value": "images",
           "label": "Media Type",
           "valueType": "string",
-          "description": "Select the media type. 'BG Video' options are only used for the 'Hero With Thumbnail Images' variant.",
           "options": [
             {
               "name": "Image",
@@ -168,7 +224,7 @@
           "name": "logoImage",
           "label": "Logo Image",
           "multi": false,
-          "description": "Optional logo image (for logo variants)"
+          "description": "Optional logo image"
         },
         {
           "component": "text",
@@ -183,23 +239,21 @@
           "name": "homeThumbImage",
           "label": "Thumbnail Image",
           "multi": false,
-          "description": "Only used for 'Hero With Thumbnail Images' variant"
+          "description": "Thumbnail shown in the thumbnail strip"
         },
         {
           "component": "text",
           "valueType": "string",
           "name": "homeThumbImageAlt",
           "label": "Thumbnail Alt",
-          "value": "",
-          "description": "Only used for 'Hero With Thumbnail Images' variant"
+          "value": ""
         },
         {
           "component": "richtext",
           "name": "title",
           "value": "",
           "label": "Title",
-          "valueType": "string",
-          "description": "Optional for 'Simple with Logo Only' variant"
+          "valueType": "string"
         },
         {
           "component": "richtext",
@@ -218,7 +272,8 @@
     {
       "id": "hero",
       "components": [
-        "hero-item"
+        "hero-item",
+        "hero-thumbnail-item"
       ],
       "maxItems": 8
     }

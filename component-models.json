@@ -7637,12 +7637,135 @@
     "id": "hero-item",
     "fields": [
       {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerDesktop",
+        "label": "Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerDesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerMobile",
+        "label": "Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerMobileMimeType"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "logoImage",
+        "label": "Logo Image",
+        "multi": false,
+        "description": "Optional logo image (for logo variants)"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "logoImageAlt",
+        "label": "Logo Alt",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "name": "title",
+        "value": "",
+        "label": "Title",
+        "valueType": "string",
+        "description": "Optional for 'Simple with Logo Only' variant"
+      },
+      {
+        "component": "richtext",
+        "name": "subtitle",
+        "value": "",
+        "label": "Sub Title",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)"
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hero-thumbnail-item",
+    "fields": [
+      {
         "component": "select",
         "name": "mediaType",
         "value": "images",
         "label": "Media Type",
         "valueType": "string",
-        "description": "Select the media type. 'BG Video' options are only used for the 'Hero With Thumbnail Images' variant.",
         "options": [
           {
             "name": "Image",
@@ -7788,7 +7911,7 @@
         "name": "logoImage",
         "label": "Logo Image",
         "multi": false,
-        "description": "Optional logo image (for logo variants)"
+        "description": "Optional logo image"
       },
       {
         "component": "text",
@@ -7803,23 +7926,21 @@
         "name": "homeThumbImage",
         "label": "Thumbnail Image",
         "multi": false,
-        "description": "Only used for 'Hero With Thumbnail Images' variant"
+        "description": "Thumbnail shown in the thumbnail strip"
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "homeThumbImageAlt",
         "label": "Thumbnail Alt",
-        "value": "",
-        "description": "Only used for 'Hero With Thumbnail Images' variant"
+        "value": ""
       },
       {
         "component": "richtext",
         "name": "title",
         "value": "",
         "label": "Title",
-        "valueType": "string",
-        "description": "Optional for 'Simple with Logo Only' variant"
+        "valueType": "string"
       },
       {
         "component": "richtext",

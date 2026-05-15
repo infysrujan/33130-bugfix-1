@@ -65,6 +65,59 @@ function createThumbItem(picture, index, { strip = false, active = false } = {})
   return item;
 }
 
+const THUMBNAIL_MEDIA_TYPES = new Set(['images', 'youtube-url', 'dam-video']);
+
+/*
+ * Detect whether a row was authored with the hero-thumbnail-item model
+ * (which has mediaType as its first cell) vs the plain hero-item model.
+ * We check the text of the first cell against the known mediaType option values.
+ */
+function isThumbnailRow(row) {
+  return THUMBNAIL_MEDIA_TYPES.has(row.children[0]?.textContent?.trim());
+}
+
+/*
+ * hero-item cell layout (unchanged, other variants):
+ * [0] imagePickerDesktop  [1] imagePickerMobile  [2] imagePickerAlt
+ * [3] logoImage           [4] title              [5] subtitle  [6] link
+ *
+ * hero-thumbnail-item cell layout:
+ * [0] mediaType           [1] imagePickerDesktop [2] imagePickerMobile
+ * [3] imagePickerAlt      [4] youtubeUrl         [5] damVideoAsset
+ * [6] logoImage           [7] homeThumbImage     [8] title
+ * [9] subtitle            [10] link
+ */
+function parseCells(row) {
+  if (isThumbnailRow(row)) {
+    return {
+      mediaType: row.children[0]?.textContent?.trim() || 'images',
+      imageCellDesktop: row.children[1],
+      imageCellMobile: row.children[2],
+      imageAlt: row.children[3],
+      youtubeUrlCell: row.children[4],
+      damVideoCell: row.children[5],
+      logoImageCell: row.children[6],
+      thumbImgCell: row.children[7],
+      headingCell: row.children[8],
+      textCell: row.children[9],
+      linkCell: row.children[10],
+    };
+  }
+  return {
+    mediaType: 'images',
+    imageCellDesktop: row.children[0],
+    imageCellMobile: row.children[1],
+    imageAlt: row.children[2],
+    youtubeUrlCell: null,
+    damVideoCell: null,
+    logoImageCell: row.children[3],
+    thumbImgCell: null,
+    headingCell: row.children[4],
+    textCell: row.children[5],
+    linkCell: row.children[6],
+  };
+}
+
 export default function decorate(block) {
   const isMobile = window.matchMedia('(width <= 47.5rem)').matches;
   const variant = block.children[0]?.textContent?.trim() || 'default';
@@ -75,28 +128,20 @@ export default function decorate(block) {
     thumbnailList = createElement('ul', 'hero-banner-thumbnail-list', 'content');
   }
 
-  /*
-   * Cell order matches the hero-item model field order.
-   * mimeType fields and reference-paired alt fields are stored as element
-   * attributes and do not produce separate DOM cells.
-   *
-   * [0] mediaType        [1] imagePickerDesktop  [2] imagePickerMobile
-   * [3] imagePickerAlt   [4] youtubeUrl          [5] damVideoAsset
-   * [6] logoImage        [7] homeThumbImage      [8] title (heading)
-   * [9] subtitle (text)  [10] linkCell
-   */
   [...block.children].slice(1, 9).forEach((row, i) => {
-    const mediaType = row.children[0]?.textContent?.trim() || 'images';
-    const imageCellDesktop = row.children[1];
-    const imageCellMobile = row.children[2];
-    const imageAlt = row.children[3];
-    const youtubeUrlCell = row.children[4];
-    const damVideoCell = row.children[5];
-    const logoImageCell = row.children[6];
-    const thumbImgCell = row.children[7];
-    const headingCell = row.children[8];
-    const textCell = row.children[9];
-    const linkCell = row.children[10];
+    const {
+      mediaType,
+      imageCellDesktop,
+      imageCellMobile,
+      imageAlt,
+      youtubeUrlCell,
+      damVideoCell,
+      logoImageCell,
+      thumbImgCell,
+      headingCell,
+      textCell,
+      linkCell,
+    } = parseCells(row);
 
     const bannerItem = createElement('li', 'hero-banner-item');
     if (i === 0) bannerItem.classList.add('hero-banner-item-active');
@@ -137,7 +182,7 @@ export default function decorate(block) {
         }
       }
     } else {
-      // Image rendering — all variants
+      // Image rendering — all variants + thumbnail when mediaType is 'images'
       const pictureDesktop = imageCellDesktop?.querySelector('picture');
       const pictureMobile = imageCellMobile?.querySelector('picture');
       if (pictureDesktop || pictureMobile) {

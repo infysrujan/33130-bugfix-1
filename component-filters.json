@@ -166,7 +166,8 @@
   {
     "id": "hero",
     "components": [
-      "hero-item"
+      "hero-item",
+      "hero-thumbnail-item"
     ],
     "maxItems": 8
   },
