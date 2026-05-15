@@ -80,6 +80,21 @@ function fillTemplate(template, vars) {
   );
 }
 
+function parseProducts(L) {
+  const nums = [...new Set(
+    Object.keys(L)
+      .filter((k) => /^products-\d+-title$/.test(k))
+      .map((k) => k.match(/^products-(\d+)-title$/)[1]),
+  )].sort((a, b) => Number(a) - Number(b));
+  return nums.map((n) => ({
+    title: L[`products-${n}-title`] || '',
+    description: L[`products-${n}-description`] || '',
+    image: L[`products-${n}-imageUrl`] || '',
+    ctaText: L[`products-${n}-ctaText`] || '',
+    ctaUrl: L[`products-${n}-ctaUrl`] || '',
+  }));
+}
+
 function buildDataFromConfig(json, lang) {
   const langData = json[lang]?.data || [];
   const commonData = json.common?.data || [];
@@ -126,12 +141,12 @@ function buildDataFromConfig(json, lang) {
       resultTitle: L['common-resultsTitle'] || '',
       tweakTitle: L['common-adjustCalculationTitle'] || '',
       newPlanTitle: L['common-newCalculationResultsTitle'] || '',
-      productSectionTitle: '',
-      additionalInfoTitle: '',
-      additionalInfoLinkText: '',
-      additionalInfoUrl: '',
-      disclaimerTitle: '',
-      disclaimer: '',
+      productSectionTitle: L['common-productSectionTitle'] || '',
+      additionalInfoTitle: L['common-additionalInfoTitle'] || '',
+      additionalInfoLinkText: L['common-additionalInfoLinkText'] || '',
+      additionalInfoUrl: L['common-additionalInfoUrl'] || '',
+      disclaimerTitle: L['common-disclaimerTitle'] || '',
+      disclaimer: L['common-disclaimerText'] || '',
       fields: {
         goal: L['inputs-savingGoal'] || '',
         goalAmount: L['inputs-desiredSavingAmount'] || '',
@@ -192,7 +207,7 @@ function buildDataFromConfig(json, lang) {
       annualIncrease: { min: 0, max: 100 },
     },
     goals,
-    products: [],
+    products: parseProducts(L),
   };
 }
 
@@ -730,7 +745,7 @@ function renderNewPlanPlaceholder(state, data, inputs) {
     min: goalMin, max: goalMax, value: inputs.goalAmount, step: goalAmountStep(inputs.goalAmount),
   });
   setSliderBounds(root, 'annualReturn', {
-    min: 0, max: 40, value: inputs.annualReturn, step: 0.1,
+    min: 0.5, max: 40, value: inputs.annualReturn, step: 0.1,
   });
   const returnSliderEl = root.querySelector('[data-slider="annualReturn"] input');
   if (returnSliderEl) returnSliderEl.dataset.prev = inputs.annualReturn;
@@ -1423,7 +1438,7 @@ function attachHandlers(state, data) {
         state.tweakInputs = tweakInputs;
         await renderNewPlan(state, data, tweakInputs);
         await renderChart(state, data);
-      }, 2000);
+      }, 600);
     });
   });
 
