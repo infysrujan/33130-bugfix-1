@@ -49,21 +49,34 @@ async function fetchPromoData(apiUrl, promoId) {
 }
 
 export default async function decorate(block) {
-  let renderer = block.querySelector('.bbm-promo-renderer');
-  if (!renderer) {
-    renderer = document.createElement('div');
-    renderer.className = 'bbm-promo-renderer';
-  }
-
-  const authConfig = parseBlockConfig(block);
-  [...block.children].forEach((row) => {
-    if (row !== renderer) {
-      row.style.display = 'none';
-      moveInstrumentation(row, block);
-    }
+  // UE inserts a fresh block element when a newly-added block is edited for the first time.
+  // The original decorated block stays in the DOM alongside the new one, causing duplication.
+  // Only remove the stale block if it shares the same data-aue-resource (same AEM content path).
+  const blockResource = block.dataset.aueResource;
+  document.querySelectorAll('.bbm-cc-promo.block').forEach((other) => {
+    if (other === block) return;
+    if (!other.querySelector('.bbm-promo-renderer')) return; // not yet decorated
+    const otherResource = other.dataset.aueResource;
+    if (blockResource && otherResource && otherResource !== blockResource) return;
+    other.remove();
   });
 
-  if (!renderer.parentElement) block.append(renderer);
+  // Remove existing renderer so we start fresh on re-decoration
+  const existingRenderer = block.querySelector('.bbm-promo-renderer');
+  if (existingRenderer) existingRenderer.remove();
+
+  const renderer = document.createElement('div');
+  renderer.className = 'bbm-promo-renderer';
+
+  const authConfig = parseBlockConfig(block);
+
+  // Hide authored rows and transfer instrumentation to block
+  [...block.children].forEach((row) => {
+    row.style.display = 'none';
+    moveInstrumentation(row, block);
+  });
+
+  block.append(renderer);
 
   // Hide global elements for campaign page
   ['header', 'footer', '.breadcrumb-container', '.cookie-alert-container',
