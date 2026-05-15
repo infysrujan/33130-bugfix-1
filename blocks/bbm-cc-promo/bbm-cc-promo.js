@@ -7,11 +7,22 @@ import { buildDateHtml, buildDisclaimerHtml, buildPromoHtml } from '../promotion
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 const DEV_FALLBACK = '/en/bbm-promo.json';
 
-/**
- * Senior Audit Fix: AEM Author Path Resolver
- * In AEM Universal Editor (Authoring), relative paths like /en/... must be prefixed
- * with the content root (/content/bangkokbank) to resolve correctly.
- */
+function parseBlockConfig(block) {
+  const config = { promoId: '', targetLink: false };
+  [...block.children].forEach((row) => {
+    const label = row.children[0]?.textContent?.trim().toLowerCase();
+    const value = row.children[1]?.textContent?.trim().toLowerCase();
+
+    if (label === 'promo id' || !label) { // Support both labeled and unlabeled ID row
+      config.promoId = row.children[1]?.textContent?.trim() || row.children[0]?.textContent?.trim() || '';
+    }
+    if (label === 'target settings' || label === 'targetlink') {
+      config.targetLink = value === 'true';
+    }
+  });
+  return config;
+}
+
 function resolveAemPath(path) {
   if (!path || path.startsWith('http') || path.startsWith('//')) return path;
   const isAuthor = window.location.hostname.includes('author-') || window.location.hostname.includes('localhost');
@@ -27,8 +38,6 @@ async function fetchPromoData(apiUrl, promoId) {
     if (!resp.ok) return null;
     const { cards } = await resp.json();
     const currentPath = window.location.pathname;
-
-    // Robust Matching: Match by ID or by path (resolving relative paths for match)
     return (
       cards?.find((c) => resolveAemPath(c.ctaLink) === currentPath)
       || cards?.find((c) => c.id === promoId)
@@ -40,15 +49,13 @@ async function fetchPromoData(apiUrl, promoId) {
 }
 
 export default async function decorate(block) {
-  // UE Robust Fix: Stable Renderer Container
-  // Instead of clearing the whole block, we manage a dedicated container.
   let renderer = block.querySelector('.bbm-promo-renderer');
   if (!renderer) {
     renderer = document.createElement('div');
     renderer.className = 'bbm-promo-renderer';
   }
 
-  // Immediate row hiding to prevent content flash in UE
+  const authConfig = parseBlockConfig(block);
   [...block.children].forEach((row) => {
     if (row !== renderer) {
       row.style.display = 'none';
@@ -58,7 +65,14 @@ export default async function decorate(block) {
 
   if (!renderer.parentElement) block.append(renderer);
 
-  const promoId = block.children[0]?.textContent?.trim() || '';
+  // Hide global elements for campaign page
+  ['header', 'footer', '.breadcrumb-container', '.cookie-alert-container',
+    '.filter-container', '.filters']
+    .forEach((selector) => {
+      const el = document.querySelector(selector);
+      if (el) el.style.display = 'none';
+    });
+
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';
 
@@ -69,12 +83,11 @@ export default async function decorate(block) {
 
   const baseUrl = resolveAemPath(configs?.bbmCcPromoSelector || DEV_FALLBACK);
   let apiUrl = baseUrl;
-
   if (configs?.bbmCcPromoSelector) {
     apiUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
   }
 
-  const card = await fetchPromoData(apiUrl, promoId);
+  const card = await fetchPromoData(apiUrl, authConfig.promoId);
   if (!card) {
     renderer.innerHTML = '';
     return;
@@ -82,7 +95,9 @@ export default async function decorate(block) {
 
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
 
-  // Senior Audit Fix: Resolve all URLs (images/links) for Authoring visibility
+  // Authored Target Link takes precedence over API Target Link for the block
+  const isTargetBlank = authConfig.targetLink || card.targetLink === 'true' || card.targetLink === true;
+
   const data = {
     title: card.title || '',
     detailImageUrl: resolveAemPath(card.detailImageUrl || ''),
@@ -92,7 +107,7 @@ export default async function decorate(block) {
     dateValidityLabel: card.dateValidityLabel || periodLabel,
     disclaimerEnabled: card.responsibleLendingDisclaimerEnabled,
     disclaimerText: card.responsibleLendingDisclaimerText || '',
-    targetLink: card.targetLink === 'true' || card.targetLink === true,
+    targetLink: isTargetBlank,
     ctaLink: resolveAemPath(card.ctaLink || ''),
   };
 
@@ -131,6 +146,5 @@ export default async function decorate(block) {
     prefix: 'bbm-promo',
   });
 
-  // Final rendering into the stable container
   renderer.innerHTML = htmlString;
 }
