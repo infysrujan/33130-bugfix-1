@@ -524,6 +524,7 @@ function buildShellMarkup(data) {
               <span class="saving-plan-result-currency">${labels.result.currency}</span>
             </p>
           </div>
+          <p class="saving-plan-result-footnote" data-result="footnote-increase"></p>
           <p class="saving-plan-result-footnote" data-result="footnote-return"></p>
         </aside>
       </div>
@@ -680,6 +681,15 @@ function renderResult(state, data, calculation) {
   });
   setHTML(root, '[data-result="future"]', futureText);
   setText(root, '[data-result="monthly"]', formatNumber(calculation.SavingMonth));
+  const annualIncrease = inputs.annualIncrease;
+  if (annualIncrease > 0) {
+    const increaseLabel = data.labels.newPlan.footnoteIncreaseTemplate
+      ? fillTemplate(data.labels.newPlan.footnoteIncreaseTemplate, { increase: formatDecimal(annualIncrease) })
+      : `Increase savings each year by ${formatDecimal(annualIncrease)}%`;
+    setText(root, '[data-result="footnote-increase"]', increaseLabel);
+  } else {
+    setText(root, '[data-result="footnote-increase"]', '');
+  }
   const returnLabel = data.labels.result.footnoteReturnTemplate
     ? fillTemplate(
       data.labels.result.footnoteReturnTemplate,

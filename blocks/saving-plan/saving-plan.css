@@ -736,14 +736,14 @@
 
 .saving-plan-newplan-future strong {
   font-weight: 700;
-  color: var(--sp-text);
+  color: var(--bbl-color-grey-70);
 }
 
 .saving-plan-newplan-lead {
   font: 1rem BangkokBank-Bold, Arial, sans-serif;
   font-weight: 700;
   margin: 0 0 0.375rem;
-  color: var(--sp-blue);
+  color: var(--bbl-color-active-blue);
 }
 
 .saving-plan-newplan-monthly {
@@ -754,7 +754,6 @@
   color: var(--sp-blue);
 }
 
-.saving-plan-newplan-card.is-placeholder .saving-plan-newplan-lead,
 .saving-plan-newplan-card.is-placeholder .saving-plan-newplan-monthly {
   color: var(--sp-text-muted);
 }
@@ -763,11 +762,13 @@
   font: 2.25rem BangkokBank-Bold, Arial, sans-serif;
   font-weight: 800;
   line-height: 1;
+  color: var(--bbl-color-active-blue);
 }
 
 .saving-plan-newplan-currency {
   font-size: 0.8125rem;
   font-weight: 400;
+  color: var(--bbl-color-active-blue);
 }
 
 .saving-plan-newplan-footnote {
@@ -840,11 +841,7 @@
 }
 
 .saving-plan-products-divider {
-  display: block;
-  width: 3.75rem;
-  height: 0.125rem;
-  background: var(--bbl-color-grey-300, #aaa);
-  margin: 0 auto 1.5rem;
+  display: none;
 }
 
 .saving-plan-products-grid {
@@ -1125,6 +1122,7 @@
 
 .saving-plan-container .default-content-wrapper p {
   margin: 0 0 0.375rem;
+  font-size: 0.9375rem;
 }
 
 .saving-plan-container .default-content-wrapper p > strong {
