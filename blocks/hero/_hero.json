@@ -69,7 +69,98 @@
       "id": "hero-item",
       "fields": [
         {
-          "...": "../../models/elements/_image-picker.json#/imagePickerFields"
+          "component": "select",
+          "name": "mediaType",
+          "value": "images",
+          "label": "Media Type",
+          "valueType": "string",
+          "description": "Select the media type. 'BG Video' options are only used for the 'Hero With Thumbnail Images' variant.",
+          "options": [
+            {
+              "name": "Image",
+              "value": "images"
+            },
+            {
+              "name": "BG Video – YouTube",
+              "value": "youtube-url"
+            },
+            {
+              "name": "BG Video – DAM Video",
+              "value": "dam-video"
+            }
+          ]
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset",
+          "name": "imagePickerDesktop",
+          "label": "Image (Desktop)",
+          "description": "Select an image shown at desktop breakpoints",
+          "configUrl": "/content/dam/image.config.json",
+          "valueType": "string",
+          "condition": {
+            "or": [
+              { "===": [{ "var": "mediaType" }, "images"] },
+              { "===": [{ "var": "mediaType" }, ""] }
+            ]
+          }
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset-mimetype",
+          "valueType": "string",
+          "name": "imagePickerDesktopMimeType"
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset",
+          "name": "imagePickerMobile",
+          "label": "Image (Mobile)",
+          "description": "Select an image shown at mobile breakpoints",
+          "configUrl": "/content/dam/image.config.json",
+          "valueType": "string",
+          "condition": {
+            "or": [
+              { "===": [{ "var": "mediaType" }, "images"] },
+              { "===": [{ "var": "mediaType" }, ""] }
+            ]
+          }
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset-mimetype",
+          "valueType": "string",
+          "name": "imagePickerMobileMimeType"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imagePickerAlt",
+          "label": "Alternative text for accessibility",
+          "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
+          "condition": {
+            "or": [
+              { "===": [{ "var": "mediaType" }, "images"] },
+              { "===": [{ "var": "mediaType" }, ""] }
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "youtubeUrl",
+          "label": "YouTube URL",
+          "description": "Enter the YouTube video URL.",
+          "valueType": "string",
+          "condition": {
+            "===": [{ "var": "mediaType" }, "youtube-url"]
+          }
+        },
+        {
+          "component": "reference",
+          "name": "damVideoAsset",
+          "label": "Video Asset",
+          "description": "Choose or upload an MP4 video file from DAM.",
+          "valueType": "string",
+          "multi": false,
+          "condition": {
+            "===": [{ "var": "mediaType" }, "dam-video"]
+          }
         },
         {
           "component": "reference",
