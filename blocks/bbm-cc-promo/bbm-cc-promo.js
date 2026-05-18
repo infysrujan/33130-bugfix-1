@@ -1,6 +1,5 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
-import { fetchConfigs } from '../../scripts/config.js';
 import { buildDateHtml, buildDisclaimerHtml, buildPromoHtml } from '../promotional-details/promotional-details.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
@@ -89,30 +88,6 @@ function resolveAemPath(path) {
   return path;
 }
 
-function toComparablePath(path) {
-  if (!path) return '';
-  try {
-    return new URL(path, window.location.origin).pathname.replace(/^\/content\/bangkokbank(?=\/)/, '');
-  } catch {
-    return path.replace(/^\/content\/bangkokbank(?=\/)/, '');
-  }
-}
-
-async function fetchPromoData(url, promoId) {
-  if (!url || !promoId) return null;
-  try {
-    const resp = await fetch(url);
-    if (!resp.ok) return null;
-    const { cards = [] } = await resp.json();
-    const currentPath = toComparablePath(window.location.pathname);
-    return cards.find((card) => toComparablePath(card.ctaLink) === currentPath)
-      || cards.find((card) => card.id === promoId)
-      || null;
-  } catch {
-    return null;
-  }
-}
-
 function removeDuplicatePreview(block) {
   const blockResource = block.dataset.aueResource;
   document.querySelectorAll('.bbm-cc-promo.block').forEach((other) => {
@@ -140,15 +115,8 @@ export default async function decorate(block) {
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';
 
-  const [placeholders, configs] = await Promise.all([
-    fetchPlaceholders(),
-    fetchConfigs(),
-  ]);
-
-  const promoPath = configs?.bbmCcPromoSelector || configs?.promotionalCardSelector || '';
-  const promoUrl = promoPath.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
-  const fetchedPromo = await fetchPromoData(resolveAemPath(promoUrl), authoredPromo.promoId);
-  const promo = { ...(fetchedPromo || {}), ...authoredPromo };
+  const placeholders = await fetchPlaceholders();
+  const promo = authoredPromo;
 
   if (!promo.title && !promo.detailImageUrl && !promo.detailDescription) {
     if (!isAuthoring(block)) {

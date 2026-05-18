@@ -149,9 +149,3 @@
 .bbm-cc-promo .bbm-promo-source-row {
     display: none !important;
 }
-
-.bbm-cc-promo .bbm-promo-error {
-    padding: var(--bbl-space-600) var(--bbl-space-200);
-    text-align: center;
-    color: var(--bbl-color-grey-85);
-}
