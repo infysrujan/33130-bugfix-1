@@ -48,6 +48,8 @@ export default async function decorate(block) {
 
   const items = allItems.filter((item) => item.id);
   const n = items.length;
+  // Extra trailing clones needed when n < VISIBLE so every scroll position shows a full row.
+  const extraCount = Math.max(0, VISIBLE - n);
 
   block.innerHTML = '';
 
@@ -130,9 +132,14 @@ export default async function decorate(block) {
   });
   // Trailing clones (set 2)
   const trailingClones = items.map(({ id, thumbSrc }, i) => createThumb(id, i, null, thumbSrc));
+  // Extra trailing clones to keep the visible window full when n < VISIBLE
+  const extraTrailingClones = Array.from({ length: extraCount }, (_, e) => {
+    const { id, thumbSrc } = items[e % n];
+    return createThumb(id, e % n, null, thumbSrc);
+  });
 
-  // All 3 sets flattened; domI % n gives the real item index
-  const allThumbBtns = [...leadingClones, ...thumbEls, ...trailingClones];
+  // All sets flattened; domI % n gives the real item index
+  const allThumbBtns = [...leadingClones, ...thumbEls, ...trailingClones, ...extraTrailingClones];
 
   trackWrap.appendChild(track);
   carouselSection.appendChild(prevBtn);
@@ -160,8 +167,7 @@ export default async function decorate(block) {
   function setActive(index) {
     activeIndex = index;
     iframe.src = `${embedBaseUrl}${items[index].id}`;
-    // Mark all 3 instances (leading clone, original, trailing clone)
-    allThumbBtns.forEach((btn, domI) => btn.classList.toggle('active', domI % n === index));
+    thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
   }
 
@@ -172,7 +178,7 @@ export default async function decorate(block) {
   }
 
   function scrollTrack(rawNew) {
-    rawScrollIndex = Math.max(0, Math.min(rawNew, 3 * n - VISIBLE));
+    rawScrollIndex = Math.max(0, Math.min(rawNew, 3 * n + extraCount - VISIBLE));
     const w = getThumbWidth();
     track.style.transform = `translateX(-${rawScrollIndex * (w + THUMB_GAP)}px)`;
   }
@@ -189,26 +195,38 @@ export default async function decorate(block) {
 
   // Return the DOM position (across all 3 sets) for realIndex that is
   // closest to the current rawScrollIndex — this drives infinite scrolling.
+  // When two candidates are equidistant, prefer the original zone (n..2n-1)
+  // over clones so that short carousels (n < VISIBLE) never scroll into empty space.
   function nearestRawForIndex(index) {
     const candidates = [index, n + index, 2 * n + index];
-    return candidates.reduce((best, c) => (
-      Math.abs(c - rawScrollIndex) < Math.abs(best - rawScrollIndex) ? c : best));
-  }
-
-  function ensureVisible(index) {
-    const itemRaw = nearestRawForIndex(index);
-    if (itemRaw < rawScrollIndex) {
-      scrollTrack(itemRaw);
-    } else if (itemRaw >= rawScrollIndex + VISIBLE) {
-      scrollTrack(itemRaw - VISIBLE + 1);
-    }
-    // else item is already in the visible window — no scroll needed
+    return candidates.reduce((best, c) => {
+      const cDist = Math.abs(c - rawScrollIndex);
+      const bestDist = Math.abs(best - rawScrollIndex);
+      if (cDist < bestDist) return c;
+      if (cDist === bestDist && c >= n && c < 2 * n && (best < n || best >= 2 * n)) return c;
+      return best;
+    });
   }
 
   // Scroll so the given index lands at the first (leftmost) visible slot.
   function scrollToFirst(index) {
     const itemRaw = nearestRawForIndex(index);
     scrollTrack(itemRaw);
+  }
+
+  // Always move right (next direction) to the nearest occurrence of index.
+  function scrollForward(index) {
+    let target = rawScrollIndex + 1;
+    while (target % n !== index) target += 1;
+    scrollTrack(target);
+  }
+
+  // Always move left (prev direction) to the nearest occurrence of index.
+  function scrollBackward(index) {
+    let target = rawScrollIndex - 1;
+    while (target >= 0 && target % n !== index) target -= 1;
+    if (target < 0) target = index;
+    scrollTrack(target);
   }
 
   // After each animated scroll, silently reset to the original zone so there
@@ -234,13 +252,13 @@ export default async function decorate(block) {
   prevBtn.addEventListener('click', () => {
     const newIndex = activeIndex === 0 ? n - 1 : activeIndex - 1;
     setActive(newIndex);
-    ensureVisible(newIndex);
+    scrollBackward(newIndex);
   });
 
   nextBtn.addEventListener('click', () => {
     const newIndex = activeIndex === n - 1 ? 0 : activeIndex + 1;
     setActive(newIndex);
-    scrollToFirst(newIndex);
+    scrollForward(newIndex);
   });
 
   dotEls.forEach((dot, i) => {

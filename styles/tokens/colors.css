@@ -75,7 +75,8 @@
   --bbl-color-blue-130: #002087;
   --bbl-color-blue-140: #4890ff;
   --bbl-color-blue-steel-light: #E6EEF4;
-  --bbl-color-blue-145: #e5edf4;
+  --bbl-color-blue-145: #E5EDF4;
+  --bbl-color-blue-222: #E0E6F8;
 
   /* =========================================================================
      RED SCALE
@@ -246,5 +247,16 @@
   --bbl-private-gold-86: #EBDCC6;
   --bbl-red-overlay-strong: rgb(70.6% 2% 2% / 45%);
   --bbl-red-overlay-light: rgb(100% 0% 0% / 15%);
+
+  /* =========================================================================
+     COMPONENT UTILITY COLORS
+     Colors used by specific components that have no match in the scale above
+     ========================================================================= */
+
+  --bbl-color-map-bg: #e5ecf3;             /* Locate Us — map area background */
+  --bbl-color-status-open: #67bb7f;        /* Locate Us — branch open status */
+  --bbl-color-status-closed: #e53935;      /* Locate Us — branch closed status */
+  --bbl-color-toast-error: #b85c5c;        /* Locate Us — error toast background */
+  --bbl-color-status-other: #bb6967;       /* Locate Us — branch status non-open */
 }
 

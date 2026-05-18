@@ -127,20 +127,10 @@ function getOverlayHref(linkDiv) {
 
 function createCardListItem(cardElement, doc) {
   const cells = [...cardElement.children];
-  const [
-    imageDiv,
-    promoTagDiv,
-    titleDiv,
-    descDiv,
-    remarkDiv,
-    buttonDiv,
-    imageLayoutDiv,
-    enableTitleUnderlineDiv,
-    isCardClickableDiv,
-    cardLinkDiv,
-    overlayLinkDiv,
-    enableOverlayModalDiv,
-  ] = cells;
+  const [imageDiv, promoTagDiv, titleDiv, descDiv, remarkDiv, buttonDiv] = cells;
+
+  const relIdx = cells.slice(6).findIndex((c) => !isBooleanLikeValue(c.textContent?.trim() ?? ''));
+  const base = relIdx === -1 ? cells.length : 6 + relIdx;
 
   const img = imageDiv?.querySelector('img');
   const promoTag = promoTagDiv?.textContent?.trim();
@@ -148,12 +138,12 @@ function createCardListItem(cardElement, doc) {
   const description = descDiv?.innerHTML;
   const remark = remarkDiv?.innerHTML;
   const buttonEl = buttonDiv?.querySelector('a');
-  const imageLayout = imageLayoutDiv?.textContent?.trim() || 'default';
-  const enableTitleUnderline = parseBooleanFlag(enableTitleUnderlineDiv?.textContent, false);
-  const isCardClickable = parseBooleanFlag(isCardClickableDiv?.textContent, true);
-  const enableOverlayModal = parseBooleanFlag(enableOverlayModalDiv?.textContent, true);
-  const overlayHref = getOverlayHref(overlayLinkDiv);
-  const cardLinkAnchor = cardLinkDiv?.querySelector('a');
+  const imageLayout = cells[base]?.textContent?.trim() || 'default';
+  const enableTitleUnderline = parseBooleanFlag(cells[base + 1]?.textContent, false);
+  const isCardClickable = parseBooleanFlag(cells[base + 2]?.textContent, true);
+  const overlayHref = getOverlayHref(cells[base + 5]);
+  const enableOverlayModal = parseBooleanFlag(cells[base + 4]?.textContent, true);
+  const cardLinkAnchor = cells[base + 3]?.querySelector('a');
   const cardLinkHref = cardLinkAnchor?.href || '';
   const cardLinkTarget = cardLinkAnchor?.target || '';
   const cardLinkTitle = cardLinkAnchor?.title || '';
@@ -245,6 +235,8 @@ function createCardListItem(cardElement, doc) {
 }
 
 export default function decorate(block) {
+  if (block.querySelector('.cards-list')) return;
+
   const doc = block.ownerDocument;
   const [LayoutRow, Alignment, cardsPerRowEl, ...cardRows] = [...block.children];
   const cardListLayout = LayoutRow?.textContent?.trim();
@@ -255,13 +247,17 @@ export default function decorate(block) {
     doc,
   );
 
+  [LayoutRow, Alignment, cardsPerRowEl].forEach((row) => {
+    if (row) row.hidden = true;
+  });
+
   cardRows.forEach((row) => {
     const card = createCardListItem(row, doc);
     moveInstrumentation(row, card);
     container.appendChild(card);
+    row.remove();
   });
 
-  block.textContent = '';
   block.appendChild(container);
 
   block.addEventListener('click', (event) => {

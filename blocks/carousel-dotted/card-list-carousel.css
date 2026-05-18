@@ -1,3 +1,7 @@
+.section.central-aligned .block.all-carousel-fragment {
+    margin-inline: auto;
+}
+
 .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
     position: relative;
     display: flex;
@@ -11,7 +15,8 @@
 }
 
 .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
-    width: 100%;
+    width: calc(100% + (2 * var(--bbl-space-section-xs)));
+    margin-inline: calc(-1 * var(--bbl-space-section-xs));
     overflow: hidden;
 }
 
@@ -76,6 +81,10 @@
 }
 
 @media (width > 47.5rem) {
+    .section.central-aligned .block.all-carousel-fragment {
+        margin-inline: 0;
+    }
+
     .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
         gap: 0;
         width: 100%;
@@ -83,7 +92,8 @@
     }
 
     .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
-        width: 100%;
+        width: calc(100% + (2 * var(--bbl-space-section-sm)));
+        margin-inline: calc(-1 * var(--bbl-space-section-sm));
     }
 
     .carousel-dotted.all-carousel-fragment.show-arrows-dots {
@@ -109,9 +119,26 @@
         max-width: 100%;
         justify-content: center;
     }
+
+    .carousel-dotted.all-carousel-fragment
+        .carousel-dotted-item.carousel-fragment
+        .cards-list-item {
+        flex: 1 1 0;
+        min-width: 0;
+        margin-bottom: 0;
+    }
 }
 
 @media (width > 64rem) {
+    .section.central-aligned .block.all-carousel-fragment {
+        margin: 0 auto;
+    }
+
+    .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
+        width: 100%;
+        margin-inline: 0;
+    }
+
     .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
         display: flex;
         position: absolute;
@@ -123,7 +150,7 @@
     .carousel-dotted.all-carousel-fragment
         .carousel-dotted-item.carousel-fragment
         .cards-list {
-        gap: 0 var(--bbl-space-250);
+        gap: 0 var(--bbl-space-500);
     }
 
     .carousel-dotted.all-carousel-fragment
@@ -144,4 +171,3 @@
         right: -4.3125rem;
     }
 }
- 

@@ -64,6 +64,7 @@ export default function decorate(block) {
       imageAlt,
       logoImageCell,
       thumbImgCell,
+      preTitleCell,
       headingCell,
       textCell,
       linkCell,
@@ -96,8 +97,13 @@ export default function decorate(block) {
     }
 
     const contentGroup = createElement('div', 'hero-banner-content-group');
+    if (preTitleCell?.firstElementChild) {
+      const preTitleEl = preTitleCell.firstElementChild;
+      preTitleEl.classList.add('hero-banner-pre-title');
+      if (preTitleEl.firstElementChild) preTitleEl.firstElementChild.classList.add('hero-banner-pre-title');
+    }
     if (textCell?.firstElementChild) textCell.firstElementChild.classList.add('hero-banner-content-inner-text');
-    [headingCell, textCell, linkCell].forEach((cell) => {
+    [preTitleCell, headingCell, textCell, linkCell].forEach((cell) => {
       if (cell) contentGroup.innerHTML += cell.innerHTML;
     });
     decorateButtonsV1(contentGroup);

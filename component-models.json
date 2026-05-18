@@ -42,6 +42,10 @@
           {
             "name": "Bangkok Bankm Card",
             "value": "bangkok-bankm-card"
+          },
+          {
+            "name": "Error Page",
+            "value": "error-page"
           }
         ]
       },
@@ -701,19 +705,12 @@
         ]
       },
       {
-        "component": "container",
-        "name": "targetSettings",
-        "label": "Target settings",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "targetLink",
-            "label": "Open link in new tab",
-            "description": "Enable to open the button link in a new browser tab",
-            "valueType": "boolean",
-            "value": false
-          }
-        ]
+        "component": "boolean",
+        "name": "targetLink",
+        "label": "Open link in new tab",
+        "description": "Enable to open the button link in a new browser tab",
+        "valueType": "boolean",
+        "value": false
       },
       {
         "component": "select",
@@ -8262,6 +8259,13 @@
       },
       {
         "component": "richtext",
+        "valueType": "string",
+        "name": "preTitle",
+        "label": "Pre Title",
+        "value": ""
+      },
+      {
+        "component": "richtext",
         "name": "title",
         "value": "",
         "label": "Title",
@@ -8330,6 +8334,69 @@
             "value": false
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "locate-us",
+    "fields": [
+      {
+        "component": "select",
+        "name": "locationType",
+        "label": "Location Type",
+        "valueType": "string",
+        "value": "thailand",
+        "options": [
+          {
+            "name": "Thailand",
+            "value": "thailand"
+          },
+          {
+            "name": "Overseas",
+            "value": "overseas"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "services",
+        "label": "Services",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "serviceName",
+        "label": "Service Name",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "serviceFragment",
+        "label": "Service Fragment",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
       }
     ]
   },
@@ -10825,6 +10892,41 @@
         "validation": {
           "customErrorMsg": "Please enter a valid end date and time for unpublishing the content"
         }
+      }
+    ]
+  },
+  {
+    "id": "radio-tabbed",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style Variant",
+        "description": "Visual style for the radio selection. Variants can be combined (e.g. pill + vertical).",
+        "valueType": "string",
+        "required": false,
+        "options": [
+          {
+            "name": "Pill",
+            "value": "pill"
+          },
+          {
+            "name": "Segment",
+            "value": "segment"
+          },
+          {
+            "name": "Outlined",
+            "value": "outlined"
+          },
+          {
+            "name": "Filled",
+            "value": "filled"
+          },
+          {
+            "name": "Vertical",
+            "value": "vertical"
+          }
+        ]
       }
     ]
   }

@@ -1842,6 +1842,21 @@
               }
             }
           }
+        },
+        {
+          "title": "Radio Tabbed",
+          "id": "radio-tabbed",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/fd/components/form/radiobutton/v1/radiobutton",
+                "template": {
+                  "name": "Radio Tabbed",
+                  "model": "radio-tabbed"
+                }
+              }
+            }
+          }
         }
       ]
     }

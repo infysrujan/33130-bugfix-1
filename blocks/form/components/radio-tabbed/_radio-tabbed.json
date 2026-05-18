@@ -1,0 +1,67 @@
+{
+  "definitions": [
+    {
+      "title": "Radio Tabbed",
+      "id": "radio-tabbed",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/fd/components/form/radiobutton/v1/radiobutton",
+            "template": {
+              "jcr:title": "Radio Tabbed",
+              "fieldType": "radio-group",
+              "fd:viewType": "radio-tabbed",
+              "enum": [
+                "0",
+                "1"
+              ],
+              "enumNames": [
+                "Item 1",
+                "Item 2"
+              ],
+              "orientation": "horizontal"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "radio-tabbed",
+      "fields": [
+        {
+          "component": "multiselect",
+          "name": "style",
+          "label": "Style Variant",
+          "description": "Visual style for the radio selection. Variants can be combined (e.g. pill + vertical).",
+          "valueType": "string",
+          "required": false,
+          "options": [
+            {
+              "name": "Pill",
+              "value": "pill"
+            },
+            {
+              "name": "Segment",
+              "value": "segment"
+            },
+            {
+              "name": "Outlined",
+              "value": "outlined"
+            },
+            {
+              "name": "Filled",
+              "value": "filled"
+            },
+            {
+              "name": "Vertical",
+              "value": "vertical"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

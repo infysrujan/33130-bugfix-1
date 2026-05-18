@@ -6,6 +6,7 @@ import {
 import buildCardListFragmentSlides, {
   handleCardListLoopTransition,
   setCardListTrackPosition,
+  tabletMin,
 } from './card-list-carousel.js';
 import buildContentCardsSlide from './build-content-cards-slide.js';
 import buildImageSlide from './build-image-slide.js';
@@ -365,6 +366,7 @@ export default async function decorate(block) {
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
   const arrowTrackVariant = circularOrDefaultImage || allFragmentTrack;
+  const isSimpleCarousel = slideEls.some((s) => s.classList.contains('simple-carousel'));
   const shouldCloneFragmentSlide = allFragmentTrack && slideEls.length > 1;
 
   function triggerBgZoom(slideEl) {
@@ -431,6 +433,9 @@ export default async function decorate(block) {
     if (showArrows && arrowTrackVariant) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
+    } else if (showArrows && isSimpleCarousel) {
+      prevArrow.disabled = false;
+      nextArrow.disabled = false;
     } else {
       prevArrow.disabled = index === 0;
       nextArrow.disabled = index === slideEls.length - 1;
@@ -483,6 +488,8 @@ export default async function decorate(block) {
       // Enable circular navigation for showArrowsDots variant
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
       setActive(prevIndex);
+    } else if (showArrows && isSimpleCarousel) {
+      setActive(currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1);
     } else if (currentIndex > 0) {
       setActive(currentIndex - 1);
     }
@@ -494,6 +501,8 @@ export default async function decorate(block) {
       // Enable circular navigation for showArrowsDots variant
       const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
       setActive(nextSlideIndex);
+    } else if (showArrows && isSimpleCarousel) {
+      setActive(currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0);
     } else if (currentIndex < slideEls.length - 1) {
       setActive(currentIndex + 1);
     }
@@ -626,4 +635,19 @@ export default async function decorate(block) {
     || slidesDefaultImage > 0
     || slidesFragment > 0;
   initializeDragSwipe(block, slideEls, setActive, 50, enableLooping);
+
+  if (allFragmentTrack) {
+    const breakpoint = window.matchMedia(`(max-width: ${tabletMin})`);
+    breakpoint.addEventListener('change', () => {
+      const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
+      const trackWrapper = block.querySelector('.carousel-track-wrapper');
+      if (trackWrapper) {
+        trackWrapper.style.transition = 'none';
+        const idx = currentIndex >= 0 ? currentIndex : 0;
+        setCardListTrackPosition(block, trackWrapper, slideEls, idx);
+        trackWrapper.getBoundingClientRect();
+        trackWrapper.style.transition = '';
+      }
+    });
+  }
 }

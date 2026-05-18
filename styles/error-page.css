@@ -1,0 +1,94 @@
+.error-page .section {
+    padding-inline: 0;
+}
+
+.default-content-wrapper > p:first-child {
+    margin: 0;
+    max-width: 100%;
+}
+
+.error-page .default-content-wrapper :is(h1,h2,h3,h4,h5,h6) {
+    margin: 0 auto;
+    padding: 0;
+    font-family: var(--bbl-font-family-medium);
+    font-size: 1.3125rem;
+    font-weight: var(--bbl-font-weight-regular);
+    line-height: 1.43rem;
+}
+
+.error-page .default-content-wrapper :is(h2,h3,h4,h5,h6)::after {
+    content: none;
+}
+
+.error-page .default-content-wrapper :is(h2,h3,h4,h5,h6):last-of-type {
+    padding-bottom: 1.25rem;
+}
+
+.error-page .default-content-wrapper :is(h2,h3,h4,h5,h6):last-of-type::after {
+    content: "";
+    display: block;
+    width: 5rem;
+    height: 0.0625rem;
+    margin: 1.25rem auto 0;
+    background-color: var(--bbl-color-grey-150);
+}
+
+.error-page .default-content-wrapper > p:not(.button-container, :has(picture)) {
+    margin: 0 auto;
+    font-size: var(--bbl-font-size-b2);
+    line-height: 1.125rem;
+    max-width: 100%;
+    font-family: var(--bbl-font-family-primary);
+    padding-bottom: 1.875rem;
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
+}
+
+.error-page .default-content-wrapper {
+    text-align: center;
+}
+
+.error-page .default-content-wrapper > .button-container {
+    display: inline-flex;
+    margin: 0 0.2rem;
+}
+
+.error-page .default-content-wrapper .button-m.primary,
+.error-page .default-content-wrapper .button-m.secondary {
+    padding: 0 1.25rem;
+    min-height: 2.75rem;
+    width: auto;
+    align-content: center;
+    min-width: 8.3313rem;
+}
+
+.error-page .default-content-wrapper .button-m.secondary {
+    border: 0.0625rem solid var(--bbl-color-active-blue);
+}
+
+@media (width > 47.5rem) {
+  .error-page .default-content-wrapper :is(h1,h2,h3,h4,h5,h6) {
+    font-size: 1.3125rem;
+  }
+
+  .error-page .default-content-wrapper > p:not(.button-container, :has(picture)) {
+    width: 65%;
+    max-width: 37.5rem;
+    margin: 0 auto;
+  }
+}
+
+@media (width > 64rem) {
+  .error-page .default-content-wrapper :is(h1,h2,h3,h4,h5,h6) {
+    font-size: 1.5rem;
+    line-height: 1.625rem;
+  }
+
+  .error-page .default-content-wrapper > p:not(.button-container, :has(picture)) {
+    font-size: var(--bbl-font-size-b1);
+    font-weight: var(--bbl-font-weight-regular);
+    line-height: 1.375rem;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}

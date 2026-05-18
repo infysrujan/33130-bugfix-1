@@ -76,6 +76,19 @@
   margin-inline: auto;
 }
 
+.hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
+  font-size: 0.7875rem;
+  margin: 0.625rem 0 0;
+  padding-bottom: 0.3125rem;
+  color: var(--bbl-color-black);
+  display: block;
+}
+
+.hero-banner-content .hero-banner-content-group .hero-banner-pre-title::before {
+  content: "";
+  position: unset;
+}
+
 .hero-banner-content-inner {
   float: left;
   width: 100%;
@@ -333,6 +346,11 @@
     padding-bottom: 0;
   }
 
+  .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
+    padding-bottom: 0.625rem;
+    color: var(--bbl-color-white);
+  }
+
   /* simple private wealth banking variant override */
   .section.full-bleed-bg .hero-banner-private-wealth-banking .hero-banner-content.content {
     padding: 0 var(--bbl-space-600) 0;
@@ -372,6 +390,11 @@
     -webkit-box-orient: vertical;
     overflow-y: clip;
     margin-inline: 0;
+  }
+
+  .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
+    font-size: 0.9rem;
+    height: 1.8125rem;
   }
 
   :lang(th) {

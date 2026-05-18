@@ -104,6 +104,13 @@
         },
         {
           "component": "richtext",
+          "valueType": "string",
+          "name": "preTitle",
+          "label": "Pre Title",
+          "value": ""
+        },
+        {
+          "component": "richtext",
           "name": "title",
           "value": "",
           "label": "Title",
