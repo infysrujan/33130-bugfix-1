@@ -4,16 +4,6 @@
     padding: 0 1rem;
 }
 
-/* Campaign Page - Hide Global Elements */
-header, 
-footer,
-.breadcrumb-container,
-.cookie-alert-container,
-.filter-container,
-.filters {
-    display: none;
-}
-
 .bbm-cc-promo .bbm-promo-title-wrap {
     text-align: center;
 }
@@ -157,5 +147,11 @@ footer,
 
 /* Hide authored source rows in UE and production after decoration */
 .bbm-cc-promo .bbm-promo-source-row {
-    display: none;
+    display: none !important;
+}
+
+.bbm-cc-promo .bbm-promo-error {
+    padding: var(--bbl-space-600) var(--bbl-space-200);
+    text-align: center;
+    color: var(--bbl-color-grey-85);
 }

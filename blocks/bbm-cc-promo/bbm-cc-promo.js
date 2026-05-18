@@ -4,19 +4,83 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { buildDateHtml, buildDisclaimerHtml, buildPromoHtml } from '../promotional-details/promotional-details.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
-const DEV_FALLBACK = '/en/bbm-promo.json';
+const SOURCE_ROW_CLASS = 'bbm-promo-source-row';
+const PREVIEW_CLASS = 'bbm-promo-preview';
 
-/**
- * Safely validates date strings to prevent RangeError in formatDate.
- */
-function isValidDate(str) {
-  if (!str || typeof str !== 'string') return false;
-  return !Number.isNaN(Date.parse(str));
+const FIELD_ORDER = [
+  'promoId',
+  'title',
+  'cardImageUrl',
+  'detailImageUrl',
+  'cardShortDescription',
+  'detailDescription',
+  'category',
+  'promotionFlag',
+  'dateValidityLabel',
+  'platinum',
+  'signature',
+  'infinite',
+  'promotionStartDate',
+  'promotionEndDate',
+  'ctaLink',
+  'ctaLabel',
+  'targetLink',
+  'responsibleLendingDisclaimerEnabled',
+  'responsibleLendingDisclaimerText',
+];
+
+const URL_FIELDS = ['cardImageUrl', 'detailImageUrl', 'ctaLink'];
+const HTML_FIELDS = ['cardShortDescription', 'detailDescription', 'responsibleLendingDisclaimerText'];
+
+function stripEditorAttrs(html) {
+  const template = document.createElement('template');
+  template.innerHTML = html;
+  template.content.querySelectorAll('*').forEach((el) => {
+    [...el.attributes]
+      .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
+      .forEach(({ name }) => el.removeAttribute(name));
+  });
+  return template.innerHTML.trim();
 }
 
-/**
- * Resolves paths for AEM authors and preview links.
- */
+function readCell(row, fieldName) {
+  const cell = row.children.length > 1 ? row.children[1] : row.children[0];
+  if (!cell) return '';
+
+  if (URL_FIELDS.includes(fieldName)) {
+    return cell.querySelector('img')?.src
+      || cell.querySelector('a')?.href
+      || cell.textContent.trim();
+  }
+
+  if (HTML_FIELDS.includes(fieldName)) {
+    return stripEditorAttrs(cell.innerHTML.trim());
+  }
+
+  return cell.textContent.trim();
+}
+
+function readAuthoredPromo(block) {
+  return [...block.children].reduce((promo, row, index) => {
+    if (row.classList.contains(PREVIEW_CLASS)) return promo;
+
+    const fieldName = row.querySelector('[data-aue-prop]')?.dataset.aueProp || FIELD_ORDER[index];
+    if (!fieldName) return promo;
+
+    const value = readCell(row, fieldName);
+    if (value) promo[fieldName] = value;
+    return promo;
+  }, {});
+}
+
+function isTrue(value) {
+  return String(value || '').trim().toLowerCase() === 'true';
+}
+
+function isValidDate(value) {
+  return value && !Number.isNaN(Date.parse(value));
+}
+
 function resolveAemPath(path) {
   if (!path || path.startsWith('http') || path.startsWith('//')) return path;
   if (window.location.hostname.includes('author-') && path.startsWith('/') && !path.startsWith('/content/')) {
@@ -25,43 +89,54 @@ function resolveAemPath(path) {
   return path;
 }
 
-/**
- * Fetches campaign card data from the API endpoint.
- */
-async function fetchPromoData(apiUrl, promoId) {
+function toComparablePath(path) {
+  if (!path) return '';
   try {
-    const resp = await fetch(apiUrl);
+    return new URL(path, window.location.origin).pathname.replace(/^\/content\/bangkokbank(?=\/)/, '');
+  } catch {
+    return path.replace(/^\/content\/bangkokbank(?=\/)/, '');
+  }
+}
+
+async function fetchPromoData(url, promoId) {
+  if (!url || !promoId) return null;
+  try {
+    const resp = await fetch(url);
     if (!resp.ok) return null;
-    const { cards } = await resp.json();
-    const currentPath = window.location.pathname;
-    return (
-      cards?.find((c) => resolveAemPath(c.ctaLink) === currentPath)
-      || cards?.find((c) => c.id === promoId)
-      || null
-    );
+    const { cards = [] } = await resp.json();
+    const currentPath = toComparablePath(window.location.pathname);
+    return cards.find((card) => toComparablePath(card.ctaLink) === currentPath)
+      || cards.find((card) => card.id === promoId)
+      || null;
   } catch {
     return null;
   }
 }
 
-/**
- * Main decorator for the BBM CC Promo block.
- */
-export default async function decorate(block) {
-  // 1. Parse authored config rows dynamically
-  const cfg = {};
-  [...block.children].forEach((row) => {
-    const rawLabel = row.children[0]?.textContent?.trim().toLowerCase() || '';
-    const label = rawLabel.replace(/\s*\(.*?\)\s*/g, '').trim();
-    if (label) {
-      const col = row.children[1];
-      const img = col?.querySelector('img');
-      const anchor = col?.querySelector('a');
-      cfg[label] = img?.src || anchor?.href || col?.textContent?.trim() || '';
-    }
+function removeDuplicatePreview(block) {
+  const blockResource = block.dataset.aueResource;
+  document.querySelectorAll('.bbm-cc-promo.block').forEach((other) => {
+    if (other === block || !other.querySelector(`.${PREVIEW_CLASS}`)) return;
+    const otherResource = other.dataset.aueResource;
+    if (blockResource && otherResource && blockResource !== otherResource) return;
+    other.remove();
   });
+}
 
-  // 2. Fetch configurations and placeholders
+function resetBlock(block) {
+  block.querySelector(`:scope > .${PREVIEW_CLASS}`)?.remove();
+  [...block.children].forEach((row) => row.classList.remove(SOURCE_ROW_CLASS));
+}
+
+function isAuthoring(block) {
+  return window.self !== window.top && block.hasAttribute('data-aue-resource');
+}
+
+export default async function decorate(block) {
+  removeDuplicatePreview(block);
+  resetBlock(block);
+
+  const authoredPromo = readAuthoredPromo(block);
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';
 
@@ -70,70 +145,58 @@ export default async function decorate(block) {
     fetchConfigs(),
   ]);
 
-  // 3. Resolve API URL and fetch card details
-  const promoId = cfg['promo id'] || block.children[0]?.textContent?.trim() || '';
-  const baseUrl = resolveAemPath(configs?.bbmCcPromoSelector || DEV_FALLBACK);
-  const apiUrl = configs?.bbmCcPromoSelector
-    ? baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json')
-    : baseUrl;
+  const promoPath = configs?.bbmCcPromoSelector || configs?.promotionalCardSelector || '';
+  const promoUrl = promoPath.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
+  const fetchedPromo = await fetchPromoData(resolveAemPath(promoUrl), authoredPromo.promoId);
+  const promo = { ...(fetchedPromo || {}), ...authoredPromo };
 
-  const card = await fetchPromoData(apiUrl, promoId);
-  const finalCard = { ...(card || {}) };
-
-  // 4. Override API details with authored properties if present
-  const title = cfg.title || finalCard.title || '';
-  const detailImageUrl = cfg['detail image'] || finalCard.detailImageUrl || '';
-  const detailDescription = cfg['detail description'] || finalCard.detailDescription || '';
-  const rawStartDate = cfg['promotion validity start date'] || finalCard.promotionStartDate || '';
-  const rawEndDate = cfg['promotion expiry date'] || finalCard.promotionEndDate || '';
-  const dateValidityLabel = cfg['date validity label'] || finalCard.dateValidityLabel || placeholders.promotionPeriodText || 'Promotion Period:';
-  const ctaLink = cfg['cta link'] || finalCard.ctaLink || '';
-  const ctaLabel = cfg['cta label'] || finalCard.ctaLabel || placeholders.promoCtaLabel || 'Register';
-
-  const disclaimerEnabled = (cfg['responsible lending disclaimer'] || finalCard.responsibleLendingDisclaimerEnabled)?.toString().toLowerCase() === 'true';
-  const disclaimerText = cfg['disclaimer text'] || finalCard.responsibleLendingDisclaimerText || '';
-  const targetLink = (cfg['open link in new tab'] || cfg['target settings'] || cfg.targetlink || finalCard.targetLink)?.toString().toLowerCase() === 'true';
-
-  // 5. Exit if there is no data to show
-  if (!promoId && !title && !detailImageUrl) {
-    block.innerHTML = '';
+  if (!promo.title && !promo.detailImageUrl && !promo.detailDescription) {
+    if (!isAuthoring(block)) {
+      [...block.children].forEach((row) => row.classList.add(SOURCE_ROW_CLASS));
+    }
     return;
   }
 
-  // 6. Build the promo presentation
-  const safeStartDate = isValidDate(rawStartDate) ? rawStartDate : '';
-  const safeEndDate = isValidDate(rawEndDate) ? rawEndDate : '';
+  [...block.children].forEach((row) => row.classList.add(SOURCE_ROW_CLASS));
 
-  const titleHtml = title ? `<h2 class="bbm-promo-title">${title}</h2>` : '';
-  const imageHtml = detailImageUrl ? `<img src="${resolveAemPath(detailImageUrl)}" alt="${title}" loading="lazy">` : '';
+  const title = promo.title || '';
+  const imageUrl = resolveAemPath(promo.detailImageUrl || '');
+  const imageHtml = imageUrl ? `<img src="${imageUrl}" alt="${title}" loading="lazy">` : '';
   const rowClass = imageHtml ? 'bbm-promo-row' : 'bbm-promo-row bbm-promo-row-no-image';
-
-  const clickToViewFull = placeholders.promoClickToViewFull || '';
   const imageColHtml = imageHtml ? `
     <div class="bbm-promo-image">
-      <a href="${resolveAemPath(detailImageUrl)}" title="${clickToViewFull}">
+      <a href="${imageUrl}" title="${placeholders.promoClickToViewFull || ''}">
         ${imageHtml}
       </a>
     </div>` : '';
-
-  const targetAttr = targetLink ? ' target="_blank" rel="noopener noreferrer"' : '';
-  const ctaHtml = ctaLink ? `
+  const startDate = isValidDate(promo.promotionStartDate) ? promo.promotionStartDate : '';
+  const endDate = isValidDate(promo.promotionEndDate) ? promo.promotionEndDate : '';
+  const targetAttr = isTrue(promo.targetLink) ? ' target="_blank" rel="noopener noreferrer"' : '';
+  const ctaHtml = promo.ctaLink ? `
     <div class="bbm-promo-cta">
-      <a href="${resolveAemPath(ctaLink)}" class="button primary"${targetAttr}>${ctaLabel}</a>
+      <a href="${resolveAemPath(promo.ctaLink)}" class="button primary"${targetAttr}>${promo.ctaLabel || placeholders.promoCtaLabel || 'Register'}</a>
     </div>` : '';
 
-  const rawDateHtml = buildDateHtml(safeStartDate, safeEndDate, dateValidityLabel, locale);
-  const rawDisclaimerHtml = buildDisclaimerHtml(disclaimerEnabled, disclaimerText);
-
-  // Set block inner HTML cleanly
-  block.innerHTML = buildPromoHtml({
-    titleHtml,
+  const preview = document.createElement('div');
+  preview.className = PREVIEW_CLASS;
+  preview.innerHTML = buildPromoHtml({
+    titleHtml: title ? `<h2 class="bbm-promo-title">${title}</h2>` : '',
     imageColHtml,
     rowClass,
-    descriptionHtml: detailDescription,
-    dateHtml: rawDateHtml.replace('promo-detail-date', 'bbm-promo-date'),
-    disclaimerHtml: rawDisclaimerHtml.replace('promo-detail-disclaimer', 'bbm-promo-disclaimer'),
+    descriptionHtml: promo.detailDescription || '',
+    dateHtml: buildDateHtml(
+      startDate,
+      endDate,
+      promo.dateValidityLabel || placeholders.promotionPeriodText || 'Promotion Period:',
+      locale,
+    ).replace('promo-detail-date', 'bbm-promo-date'),
+    disclaimerHtml: buildDisclaimerHtml(
+      isTrue(promo.responsibleLendingDisclaimerEnabled),
+      promo.responsibleLendingDisclaimerText || '',
+    ).replace('promo-detail-disclaimer', 'bbm-promo-disclaimer'),
     ctaHtml,
     prefix: 'bbm-promo',
   });
+
+  block.append(preview);
 }
