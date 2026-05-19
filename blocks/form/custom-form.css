@@ -36,27 +36,6 @@ main h3::before {
   background: var(--bbl-color-grey-150);
 }
 
-/*
-.form input,
-.form select,
-.form textarea {
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
-  height: 2.75rem;
-  max-width: unset;
-  margin: 0;
-  padding: 0 1.25rem;
-  color: var(--bbl-color-black);
-  border: 0.0625rem solid var(--bbl-color-grey-150);
-  border-radius: 0.4375rem;
-  background-color: var(--bbl-color-white);
-  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 400;
-  line-height: 2.75rem;
-} */
-
 .form textarea {
   height: auto;
   min-height: 6.25rem;
@@ -95,7 +74,10 @@ main h3::before {
 
 .text-wrapper.field-wrapper input,
 .number-wrapper.field-wrapper input,
-.email-wrapper.field-wrapper input {
+.email-wrapper.field-wrapper input,
+.text-wrapper.field-dob input,
+.text-wrapper.field-monthlyincome input,
+.text-wrapper.field-installment-period input{
   width: 100%;
   height: 2.75rem;
   margin-top: 0;
@@ -135,9 +117,9 @@ main .form form select:invalid {
   box-shadow: none;
 }
 
- .form form .field-wrapper.field-invalid .field-validation-error,
- .form form .field-invalid .field-description,
- .form form .field-wrapper.field-invalid .field-description {
+.form form .field-wrapper.field-invalid .field-validation-error,
+.form form .field-invalid .field-description,
+.form form .field-wrapper.field-invalid .field-description {
   position: relative;
   display: block;
   clear: both;
@@ -151,6 +133,7 @@ main .form form select:invalid {
 main .form form .field-wrapper.col-12 {
   margin-bottom: 0.3125rem;
   gap: unset;
+  display:flex;
 }
 
 main .form form p {
@@ -179,8 +162,7 @@ main .form form p {
   cursor: default;
 }
 
-main .form .field-submitcta .button,
-main .form .field-submitcta .button:disabled {
+main .form .field-submitcta .button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -205,24 +187,29 @@ main .form .field-submitcta .button:disabled {
   transform: none;
 }
 
-main .form .field-submitcta .button:hover,
-main .form .field-submitcta .button:disabled:hover {
+main .form .field-submitcta .button:hover{
   color: var(--bbl-color-white);
   border-color: var(--bbl-color-active-blue);
   background: var(--bbl-color-active-blue);
   box-shadow: none;
   transform: none;
+} 
+
+main .form .field-submitcta .button:disabled,
+main .form .field-submitcta .button:disabled:hover {
+  color: var(--bbl-color-grey-60);
+  background: var(--bbl-color-gray-300);
+  border: 0.0625rem solid var(--bbl-color-gray-300);
 }
 
- .form form .field-privacyconsent,
- .form form .field-privacyconsent .field-wrapper {
+.form form .field-privacyconsent,
+.form form .field-privacyconsent .field-wrapper {
   gap: 0;
   margin: 0;
 }
 
 form fieldset.panel-wrapper.field-wrapper {
   position: relative;
-  display: flex;
   grid-column: span 12;
   flex-direction: row;
   align-items: flex-start;
@@ -281,7 +268,10 @@ form .email-wrapper {
 
 .text-wrapper.field-wrapper::before,
 .number-wrapper.field-juristicpersonregistrationnumber::before,
-.email-wrapper.field-email::before{
+.email-wrapper.field-email::before,
+.text-wrapper.field-dob::before,
+.text-wrapper.field-monthlyincome::before,
+.text-wrapper.field-installment-period::before {
   position: absolute;
   left: 0.9375rem;
   z-index: 1;
@@ -300,7 +290,7 @@ form .email-wrapper {
   top: 3rem;
 }
 
-.text-wrapper.field-firstname.field-wrapper.col-6::before {
+.text-wrapper.field-firstname::before {
   content: "\e906";
   top: 1.4375rem;
 }
@@ -308,6 +298,21 @@ form .email-wrapper {
 .text-wrapper.field-lastname::before {
   content: "\e906";
   top: 1.4375rem;
+}
+
+.text-wrapper.field-installment-period::before{
+  content: "\e918";
+  top: 1.4375rem;
+}
+
+.text-wrapper.field-monthlyincome::before{
+  content: "\e90a";
+  top: 1.375rem;
+}
+
+.text-wrapper.field-dob::before{
+  content: "\e908";
+  top: 1.375rem;
 }
 
 .text-wrapper.field-companyname::before,
@@ -418,3 +423,4 @@ form .email-wrapper {
 .radio-group-wrapper.field-convenienttime.field-invalid .radio-wrapper {
   border-color: var(--bbl-color-orange-130);
 }
+ 
