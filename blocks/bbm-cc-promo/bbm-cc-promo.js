@@ -6,31 +6,6 @@ const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 const SOURCE_ROW_CLASS = 'bbm-promo-source-row';
 const PREVIEW_CLASS = 'bbm-promo-preview';
 
-const FIELD_ORDER = [
-  'promoId',
-  'title',
-  'cardImageUrl',
-  'detailImageUrl',
-  'cardShortDescription',
-  'detailDescription',
-  'category',
-  'promotionFlag',
-  'dateValidityLabel',
-  'platinum',
-  'signature',
-  'infinite',
-  'promotionStartDate',
-  'promotionEndDate',
-  'ctaLink',
-  'ctaLabel',
-  'targetLink',
-  'responsibleLendingDisclaimerEnabled',
-  'responsibleLendingDisclaimerText',
-];
-
-const URL_FIELDS = ['cardImageUrl', 'detailImageUrl', 'ctaLink'];
-const HTML_FIELDS = ['cardShortDescription', 'detailDescription', 'responsibleLendingDisclaimerText'];
-
 function stripEditorAttrs(html) {
   const template = document.createElement('template');
   template.innerHTML = html;
@@ -46,24 +21,23 @@ function readCell(row, fieldName) {
   const cell = row.children.length > 1 ? row.children[1] : row.children[0];
   if (!cell) return '';
 
-  if (URL_FIELDS.includes(fieldName)) {
-    return cell.querySelector('img')?.src
-      || cell.querySelector('a')?.href
-      || cell.textContent.trim();
-  }
+  const isRichText = cell.querySelector('[data-richtext-prop]')
+    || cell.hasAttribute('data-richtext-prop')
+    || fieldName.toLowerCase().includes('description')
+    || fieldName.toLowerCase().includes('disclaimer');
 
-  if (HTML_FIELDS.includes(fieldName)) {
-    return stripEditorAttrs(cell.innerHTML.trim());
-  }
+  if (isRichText) return stripEditorAttrs(cell.innerHTML.trim());
 
-  return cell.textContent.trim();
+  return cell.querySelector('img')?.src
+    || cell.querySelector('a')?.href
+    || cell.textContent.trim();
 }
 
 function readAuthoredPromo(block) {
-  return [...block.children].reduce((promo, row, index) => {
+  return [...block.children].reduce((promo, row) => {
     if (row.classList.contains(PREVIEW_CLASS)) return promo;
 
-    const fieldName = row.querySelector('[data-aue-prop]')?.dataset.aueProp || FIELD_ORDER[index];
+    const fieldName = row.querySelector('[data-aue-prop]')?.dataset.aueProp;
     if (!fieldName) return promo;
 
     const value = readCell(row, fieldName);
@@ -111,12 +85,11 @@ export default async function decorate(block) {
   removeDuplicatePreview(block);
   resetBlock(block);
 
-  const authoredPromo = readAuthoredPromo(block);
+  const promo = readAuthoredPromo(block);
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';
 
   const placeholders = await fetchPlaceholders();
-  const promo = authoredPromo;
 
   if (!promo.title && !promo.detailImageUrl && !promo.detailDescription) {
     if (!isAuthoring(block)) {
@@ -140,9 +113,10 @@ export default async function decorate(block) {
   const startDate = isValidDate(promo.promotionStartDate) ? promo.promotionStartDate : '';
   const endDate = isValidDate(promo.promotionEndDate) ? promo.promotionEndDate : '';
   const targetAttr = isTrue(promo.targetLink) ? ' target="_blank" rel="noopener noreferrer"' : '';
+  const ctaLabel = promo.ctaLabel || placeholders.promoCtaLabel || '';
   const ctaHtml = promo.ctaLink ? `
     <div class="bbm-promo-cta">
-      <a href="${resolveAemPath(promo.ctaLink)}" class="button primary"${targetAttr}>${promo.ctaLabel || placeholders.promoCtaLabel || 'Register'}</a>
+      <a href="${resolveAemPath(promo.ctaLink)}" class="button primary"${targetAttr}>${ctaLabel}</a>
     </div>` : '';
 
   const preview = document.createElement('div');
@@ -155,7 +129,7 @@ export default async function decorate(block) {
     dateHtml: buildDateHtml(
       startDate,
       endDate,
-      promo.dateValidityLabel || placeholders.promotionPeriodText || 'Promotion Period:',
+      promo.dateValidityLabel || placeholders.promotionPeriodText || '',
       locale,
     ).replace('promo-detail-date', 'bbm-promo-date'),
     disclaimerHtml: buildDisclaimerHtml(
