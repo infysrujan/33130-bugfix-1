@@ -1,3 +1,10 @@
+.hero-wrapper {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
 .hero-banner {
   width: 100%;
   position: relative;
@@ -51,9 +58,23 @@
   object-position: center;
 }
 
-.hero-banner-hero-with-thumbnail-images .hero-banner-img {
-  aspect-ratio: 5/4;
+.hero-banner-video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: 0;
+    object-fit: cover;
+    object-position: center;
 }
+
+.hero-banner-hero-with-thumbnail-images .hero-banner-img {
+    aspect-ratio: 5/4;
+}
+
+.hero-banner-hero-with-thumbnail-images .hero-banner-video {
+    aspect-ratio: 5/4;
+}
+
 
 .section.full-bleed-bg .hero-banner-content.content {
   position: absolute;
@@ -92,6 +113,7 @@
 .hero-banner-content-inner {
   float: left;
   width: 100%;
+  line-height: 1rem;
 }
 
 .hero-banner-content-inner-text {
@@ -102,15 +124,22 @@
 }
 
 .hero-banner-content-inner .button-container {
-  margin: 2.0625rem 0 0;
+    margin: 2.0625rem 0 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
 }
 
 .hero-banner-private-wealth-banking .button-container {
   margin-block: 1.875rem 0;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner .button-container {
   margin: 1.875rem 0 0;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 .hero-banner-thumbnail-outer {
@@ -146,6 +175,12 @@
   white-space: nowrap;
 }
 
+.hero-banner-content-group .hero-banner-private-wealth-banking .button-container .button-m {
+  max-width: 135px;
+  width: 48%;
+}
+ 
+
 .hero-banner-thumbnail-list {
   margin: 0;
   position: relative;
@@ -173,9 +208,6 @@
   width: calc((((100vw - 2.8125rem) / 4) * 1.5));
 }
 
-.hero-banner-thumbnail-item:first-child {
-  display: none;
-}
 
 .hero-banner-thumbnail-img {
   display: block;
@@ -301,9 +333,37 @@
   -webkit-text-fill-color: transparent;
 }
 
+.section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
+  position: static;
+  color: var(--bbl-color-black);
+  
+}
+
+.section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-img) .hero-banner-content.content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  color: var(--bbl-color-white);
+  
+}
+
+ :is(.hero-banner-private-wealth-banking, .hero-banner-simple)
+.hero-banner-content-group .button-container .button-m {
+    min-width: 8.4375rem;
+    width: 48%;
+}
+
 @media (width > 47.5rem) {
   .hero-banner::after {
     width: calc(100% - 6rem);
+  }
+
+  .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    color: var(--bbl-color-white);
+    
   }
 
   .hero-banner-thumbnail-outer {
@@ -365,6 +425,11 @@
   .hero-banner-simple-logo-banner {
     margin-bottom: 0;
   }
+
+  :is(.hero-banner-private-wealth-banking, .hero-banner-simple)
+.hero-banner-content-group .button-container .button-m {
+    min-width: 11.25rem;
+}
 }
 
 @media (width > 64rem) {
@@ -379,6 +444,9 @@
   .section.full-bleed-bg .hero-banner-content.content {
     text-align: left;
     bottom: 4.6875rem;
+    padding-left: 5.25rem;
+    padding-right: 5.25rem;
+    margin-bottom: 1.5625rem;
   }
 
   .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
@@ -390,6 +458,10 @@
     -webkit-box-orient: vertical;
     overflow-y: clip;
     margin-inline: 0;
+  }
+
+  .hero-banner-content h1 {
+    font-size: 5.6rem;
   }
 
   .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
@@ -451,6 +523,10 @@
     width: 66.6667%;
   }
 
+  .hero-banner-content-group {
+    width: 66.6667%;
+  }
+
   :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner {
     width: 100%;
   }
@@ -460,9 +536,11 @@
     line-height: 1.725rem;
   }
 
-  .hero-banner-content-inner .button-container {
-    margin: 2.25rem 0 0;
-  }
+    .hero-banner-content-inner .button-container {
+        margin: 2.25rem 0 0;
+        text-align: left;
+        justify-content: flex-start;
+    }
 
   .hero-banner-thumbnail-outer {
     overflow: auto;
@@ -499,10 +577,16 @@
     height: 14.875rem;
   }
 
-  .hero-banner-hero-with-thumbnail-images .hero-banner-img {
-    aspect-ratio: 192 / 85;
-    height: 53.125rem;
-  }
+    .hero-banner-hero-with-thumbnail-images .hero-banner-img {
+        aspect-ratio: 192 / 85;
+        height: 53.125rem;
+    }
+
+    .hero-banner-hero-with-thumbnail-images .hero-banner-video {
+        aspect-ratio: 192 / 85;
+        height: 53.125rem;
+    }
+
 
   .hero-banner-simple .hero-banner-content-inner-text {
     color: var(--bbl-color-white);

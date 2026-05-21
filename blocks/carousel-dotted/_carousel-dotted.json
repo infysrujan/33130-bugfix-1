@@ -985,7 +985,7 @@
           }
         },
         {
-          "component": "text",
+          "component": "richtext",
           "name": "titleDefaultImage",
           "label": "Title Text",
           "valueType": "string",
@@ -1000,8 +1000,8 @@
         },
         {
           "component": "text",
-          "name": "step",
-          "label": "Step Text",
+          "name": "stepText1",
+          "label": "Step Text 1",
           "valueType": "string",
           "condition": {
             "===": [
@@ -1014,9 +1014,110 @@
         },
         {
           "component": "richtext",
-          "name": "descriptionDefaultImage",
+          "name": "description1",
           "label": "Description",
           "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "stepText2",
+          "label": "Step Text 2",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "description2",
+          "label": "Description",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "ctaLink",
+          "label": "Link",
+          "description": "Destination URL for the button",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "ctaLinkText",
+          "label": "Text",
+          "description": "Button label text",
+          "required": true,
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "ctaLinkTitle",
+          "label": "Title",
+          "description": "Accessibility title attribute (optional)",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "select",
+          "name": "ctaLinkType",
+          "label": "Type",
+          "description": "Button style variant",
+          "valueType": "string",
+          "value": "",
+          "options": [
+            {
+              "name": "Primary",
+              "value": "primary"
+            },
+            {
+              "name": "Secondary",
+              "value": "secondary"
+            },
+            {
+              "name": "Tertiary",
+              "value": "tertiary"
+            }
+          ],
           "condition": {
             "===": [
               {

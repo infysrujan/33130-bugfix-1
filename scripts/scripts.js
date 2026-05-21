@@ -124,6 +124,41 @@ export function decorateMain(main) {
 }
 
 /**
+ * Handles 'bbl:load-fragment' events so any module can load a fragment via
+ * dispatchEvent without importing fragment.js (which imports scripts.js,
+ * creating a cycle). Registering here ensures the listener is active on every
+ * page, even pages that contain no fragment blocks.
+ */
+document.addEventListener('bbl:load-fragment', async (e) => {
+  const { path, callback } = e.detail;
+  if (!path) return;
+
+  try {
+    const cleanPath = path.replace(/(\.plain)?\.html/, '');
+    const resp = await fetch(`${cleanPath}.plain.html`);
+    let fragment = null;
+    if (resp.ok) {
+      fragment = document.createElement('main');
+      fragment.innerHTML = await resp.text();
+      const resetBase = (tag, attr) => {
+        fragment.querySelectorAll(`${tag}[${attr}^="./media_"]`).forEach((el) => {
+          // eslint-disable-next-line no-param-reassign
+          el[attr] = new URL(el.getAttribute(attr), new URL(cleanPath, window.location)).href;
+        });
+      };
+      resetBase('img', 'src');
+      resetBase('source', 'srcset');
+      decorateMain(fragment);
+      await loadSections(fragment);
+    }
+    if (typeof callback === 'function') callback(fragment);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(`[bbl:load-fragment] Failed to load: ${path}`, err);
+  }
+});
+
+/**
  * Resolves html lang from URL path (locale segment after host, e.g. bangkokbank.com/en/...).
  * @param {string} pathname - `window.location.pathname`
  * @returns {'en'|'th'}

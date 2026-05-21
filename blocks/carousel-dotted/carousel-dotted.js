@@ -219,6 +219,21 @@ function initializeAutoScroll(
 }
 
 export default async function decorate(block) {
+  // UE deduplication guard: must run before the carouselInit check because UE may insert
+  // a copy of the already-decorated block (including data-carousel-init and the `content`
+  // class). When decorate() is called on that copy, we still need to clean up the stale
+  // original. The `content` class is always added during decoration, making it the
+  // reliable indicator of an already-decorated block.
+  const section = block.closest('.section') || block.parentElement;
+  section.querySelectorAll('.carousel-dotted.block').forEach((other) => {
+    if (other === block) return;
+    if (other.classList.contains('content')) other.remove();
+  });
+
+  // Prevent double-decoration of the same element (guards async re-entry)
+  if (block.dataset.carouselInit) return;
+  block.dataset.carouselInit = 'true';
+
   const rows = [...block.children];
   const hasAuthoringAttrs = rows.some((row) => [...row.attributes]
     .some(({ name }) => name.startsWith('data-aue-')));

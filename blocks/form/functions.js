@@ -516,6 +516,12 @@ function validateCreditCardNumber(inputNum) {
   return sum % 10 === 0;
 }
 
+function getidAndDob(id, dob) {
+  console.log('id', id);
+  console.log('dob', dob);
+  return `${id}+${dob.replaceAll('/', '')}`;
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -534,4 +540,5 @@ export {
   fetchBranchesByProvince,
   getBranchEnum,
   getBranchEnumNames,
+  getidAndDob,
 };

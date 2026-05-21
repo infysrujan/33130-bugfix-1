@@ -647,30 +647,55 @@
   margin-bottom: 1.875rem;
 }
 
-.carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
-  font-size: 0.875rem;
-  line-height: 1.125rem;
-  color: var(--bbl-color-grey-85);
-  margin: unset;
+.carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default.pad-bot {
+  margin-top: 0;
+  margin-bottom: 1rem;
 }
 
+.carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
+  font-size: 1rem;
+  line-height: 1.285rem;
+  margin: unset;
+  color: var(--bbl-color-grey-85);
+}
+
+/* title-3: use regular weight (matches live site inherited font) */
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 {
-  font-size: 1.3125rem;
-  line-height: 1.4219rem;
+  font-size: 1.3rem;
+  line-height: 1.428rem;
+  font-family: var(--bbl-font-family-primary);
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 p {
   margin: unset;
 }
 
+/* Step numbers: use Muli-Light to match live site */
 .carousel-dotted
 .carousel-dotted-item.with-default-image
 .caption.editor
-.text-large.text-light p {
-  font-size: 3rem;
-  line-height: 2.875rem;
-  font-weight: 300;
+.text-large.text-light p,
+.carousel-dotted
+.carousel-dotted-item.with-default-image
+.caption.editor
+p.text-large.text-light {
+  font-family: Muli-Light, sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.571rem;
   margin: 0;
+}
+
+/* Description padding — only when no step text is present in the wrapper */
+.carousel-dotted .carousel-dotted-item.with-default-image
+.caption.editor .text-default.pad-bot:not(:has(p.text-large)) p {
+  padding-top: 1.875rem;
+  padding-bottom: 1.875rem;
+}
+
+/* Bold inline text: use Muli-Bold to match live site */
+.carousel-dotted .carousel-dotted-item.with-default-image .caption.editor strong {
+  font-family: Muli-Bold, sans-serif;
 }
 
 @media (width > 47.5rem) {
@@ -841,10 +866,11 @@
     padding: 0 1.875rem;
   }
 
+  /* title-3 desktop: regular weight to match live site */
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 {
     font-size: 1.5rem;
     line-height: 1.625rem;
-    font-family: var(--bbl-font-family-medium);
+    font-family: BangkokBank-Medium, sans-serif;
     font-weight: var(--bbl-font-weight-regular);
   }
 
@@ -866,6 +892,26 @@
     line-height: 1.625rem;
     font-family: var(--bbl-font-family-primary);
     font-weight: var(--bbl-font-weight-regular);
+  }
+
+  .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+
+  /* Step numbers desktop: Muli-Light + exact live sizes */
+  .carousel-dotted
+  .carousel-dotted-item.with-default-image
+  .caption.editor
+  .text-large.text-light p,
+  .carousel-dotted
+  .carousel-dotted-item.with-default-image
+  .caption.editor
+  p.text-large.text-light {
+    font-family: Muli-Light, sans-serif;
+    font-size: 3rem;
+    line-height: 2.875rem;
+    color: var(--bbl-color-grey-85);
   }
 }
 
@@ -1000,4 +1046,4 @@
     padding-right: 0.9375rem;
   }
 }
- 
+

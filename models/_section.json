@@ -211,6 +211,9 @@
         "video",
         "carousel-video",
         "forex-rates",
+        "multi-column-tiles",
+        "retirement-calculator",
+        "tax-calculator",
         "special-fx-rates",
         "promotional-details",
         "promo-card-listing",
@@ -218,7 +221,11 @@
         "multi-column-tiles",
         "stock-ticker",
         "cookie-alert",
-        "cookie-modal"
+        "cookie-modal",
+        "news-media-details",
+        "news-media",
+        "latest-news",
+        "forward-points-sme"
       ]
     }
   ]

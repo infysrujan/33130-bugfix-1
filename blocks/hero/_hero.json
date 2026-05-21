@@ -69,7 +69,64 @@
       "id": "hero-item",
       "fields": [
         {
-          "...": "../../models/elements/_image-picker.json#/imagePickerFields"
+          "component": "select",
+          "name": "mediaType",
+          "label": "Background Media",
+          "valueType": "string",
+          "value": "images",
+          "options": [
+            { "name": "Images", "value": "images" },
+            { "name": "BG Video", "value": "bg-video" }
+          ]
+        },
+        {
+          "component": "boolean",
+          "name": "isDefault",
+          "label": "Set as Default",
+          "description": "Enable to display this item as the active item on page load.",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopField",
+          "condition": { "===": [{ "var": "mediaType" }, "images"] }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopMimeTypeField",
+          "condition": { "===": [{ "var": "mediaType" }, "images"] }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
+          "condition": { "===": [{ "var": "mediaType" }, "images"] }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
+          "condition": { "===": [{ "var": "mediaType" }, "images"] }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imagePickerAlt",
+          "label": "Alternative text for accessibility",
+          "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
+          "condition": { "===": [{ "var": "mediaType" }, "images"] }
+        },
+        {
+          "component": "text",
+          "name": "youtubeUrl",
+          "label": "YouTube URL",
+          "description": "Enter the YouTube video URL (e.g. https://www.youtube.com/watch?v=...)",
+          "valueType": "string",
+          "condition": { "===": [{ "var": "mediaType" }, "bg-video"] }
+        },
+        {
+          "component": "reference",
+          "name": "damVideoAsset",
+          "label": "DAM Video Asset",
+          "description": "Upload and select a DAM video asset (MP4)",
+          "valueType": "string",
+          "multi": false,
+          "condition": { "===": [{ "var": "mediaType" }, "bg-video"] }
         },
         {
           "component": "reference",

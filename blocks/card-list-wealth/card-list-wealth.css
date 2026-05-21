@@ -18,11 +18,13 @@
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-bottom-left-radius: 0.4375rem;
   border-bottom-right-radius: 0.4375rem;
+  background: var(--bbl-color-white);
 }
 
 /* ── Logo area ─────────────────────────────────────────── */
 .card-logo {
   height: 5rem;
+  box-sizing: border-box;
   padding: 1.25rem;
   display: flex;
   align-items: center;
@@ -54,8 +56,9 @@
 }
 
 .card-title {
-  font-size: 1.5rem;
-  line-height: 1.5rem;
+  font-size: 1.3125rem;
+  font-weight: 400;
+  line-height: 1.4219rem;
   margin: 0 0 1.25rem;
 }
 
@@ -66,12 +69,12 @@
 }
 
 .card-eyebrow {
-  font-size: 1.23rem;
+  font-size: 0.875rem;
   font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
   font-weight: 400;
   line-height: 1.375;
   margin: 1.25rem 0;
-  color: inherit;
+  color: var(--bbl-color-grey-70);
 }
 
 /* ── Benefits list ─────────────────────────────────────── */
@@ -106,7 +109,7 @@
   align-items: center;
   text-align: center;
   text-decoration: none;
-  padding: 0.3125rem 0;
+  padding: 0.3125rem 1.25rem;
   min-height: 2.75rem;
   height: auto;
   letter-spacing: 0.05rem;
@@ -135,7 +138,6 @@
   .card-list-wealth {
     gap: 1.5rem;
     padding: 0 2.5rem;
-    overflow-x: unset;
   }
 
   .card-list-wealth-card {
@@ -157,7 +159,7 @@
 @media (width > 64rem) {
   .card-list-wealth {
     gap: 2.1875rem;
-    padding: 0 5.25rem;
+    overflow-x: unset;
   }
 
   .card-list-wealth-card {
@@ -174,3 +176,4 @@
     font-size: 1rem;
   }
 }
+
