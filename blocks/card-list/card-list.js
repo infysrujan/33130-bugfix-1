@@ -126,6 +126,56 @@ function getOverlayHref(linkDiv) {
   return '';
 }
 
+const IMAGE_LAYOUT_VALUES = new Set(['full', 'default', 'card', 'x-small']);
+
+function isImageLayoutCell(cell) {
+  return IMAGE_LAYOUT_VALUES.has(getTextValue(cell?.textContent).toLowerCase());
+}
+
+function findImageLayoutIndex(cells, startIndex = 7) {
+  for (let i = startIndex; i < cells.length; i += 1) {
+    if (isImageLayoutCell(cells[i])) return i;
+  }
+  return -1;
+}
+
+function parseActionFields(cells, actionType, startIndex, endIndex) {
+  const actionCells = cells.slice(startIndex, endIndex);
+  let defaultButton = null;
+  let openInNewTab = false;
+  let multipleDownloadLinks = null;
+
+  actionCells.forEach((cell) => {
+    const anchors = [...cell.querySelectorAll('a')];
+    const textValue = getTextValue(cell?.textContent);
+    const hasParagraphLink = !!cell.querySelector('p a');
+    const hasMultipleAnchors = anchors.length > 1;
+
+    if (actionType === 'default-button') {
+      if (!defaultButton && anchors.length) {
+        [defaultButton] = anchors;
+      }
+
+      if (isBooleanLikeValue(textValue)) {
+        openInNewTab = parseBooleanFlag(textValue, openInNewTab);
+      }
+      return;
+    }
+
+    if (actionType === 'multiple-download') {
+      if (!multipleDownloadLinks && (hasParagraphLink || hasMultipleAnchors)) {
+        multipleDownloadLinks = cell.innerHTML;
+      }
+    }
+  });
+
+  return {
+    defaultButton,
+    openInNewTab,
+    multipleDownloadLinks,
+  };
+}
+
 function createCardListItem(cardElement, doc) {
   const cells = [...cardElement.children];
   const [
@@ -135,43 +185,61 @@ function createCardListItem(cardElement, doc) {
     subtitleDiv,
     descDiv,
     remarkDiv,
-    actionTypeTextDiv,
-    defaultButtonDiv,
-    multipleDownloadLinksDiv,
+    actionTypeDiv,
   ] = cells;
 
-  const actionTypeText = actionTypeTextDiv?.textContent?.trim().replace('-button', '') || 'default';
+  const rawActionType = getTextValue(actionTypeDiv?.textContent).toLowerCase();
+  const actionType = rawActionType === 'default' ? 'default-button' : (rawActionType || 'default-button');
 
-  const downloadLinksCell = multipleDownloadLinksDiv?.querySelector('a') ? multipleDownloadLinksDiv : cells[9];
-  const multipleDownloadLinks = downloadLinksCell?.querySelector('a') ? downloadLinksCell.innerHTML : null;
-  const stubOffset = downloadLinksCell === cells[9] ? 1 : 0;
+  const imageLayoutIndex = findImageLayoutIndex(cells, 7);
 
-  const relIdx = cells.slice(9 + stubOffset).findIndex((c) => !isBooleanLikeValue(c.textContent?.trim() ?? ''));
-  const base = relIdx === -1 ? cells.length : (9 + stubOffset) + relIdx;
+  const {
+    defaultButton,
+    openInNewTab,
+    multipleDownloadLinks,
+  } = parseActionFields(
+    cells,
+    actionType,
+    7,
+    imageLayoutIndex === -1 ? cells.length : imageLayoutIndex,
+  );
 
   const img = imageDiv?.querySelector('img');
-  const promoTag = promoTagDiv?.textContent?.trim();
+  const promoTag = getTextValue(promoTagDiv?.textContent);
   const title = titleDiv?.innerHTML?.trim();
-  const subtitle = subtitleDiv?.textContent?.trim() || '';
+  const subtitle = getTextValue(subtitleDiv?.textContent);
   const description = descDiv?.innerHTML;
   const remark = remarkDiv?.innerHTML;
-  const defaultButton = defaultButtonDiv?.querySelector('a');
-  const imageLayout = cells[base]?.textContent?.trim() || 'default';
-  const enableTitleUnderline = parseBooleanFlag(cells[base + 1]?.textContent, false);
-  const isCardClickable = parseBooleanFlag(cells[base + 2]?.textContent, false);
-  const cardLinkAnchor = cells[base + 3]?.querySelector('a');
-  const cardLinkHref = cardLinkAnchor?.getAttribute('href') || '';
-  const cardLinkTarget = cardLinkAnchor?.target || '';
-  const cardLinkTitle = cardLinkAnchor?.title || '';
-  const cell4Text = cells[base + 4]?.textContent?.trim();
-  const isCell4Boolean = isBooleanLikeValue(cell4Text);
-  let overlayHref;
-  if (isCell4Boolean) {
-    overlayHref = getOverlayHref(cells[base + 5]);
-  } else {
-    overlayHref = getOverlayHref(cells[base + 4]);
+
+  const imageLayout = imageLayoutIndex !== -1
+    ? getTextValue(cells[imageLayoutIndex]?.textContent).toLowerCase()
+    : 'default';
+
+  let cursor = imageLayoutIndex !== -1 ? imageLayoutIndex + 1 : cells.length;
+
+  const enableTitleUnderline = parseBooleanFlag(cells[cursor]?.textContent, false);
+  if (cursor < cells.length) cursor += 1;
+
+  const isCardClickable = parseBooleanFlag(cells[cursor]?.textContent, false);
+  if (cursor < cells.length) cursor += 1;
+
+  let cardLinkAnchor = null;
+  if (isCardClickable && cells[cursor]?.querySelector('a')) {
+    cardLinkAnchor = cells[cursor].querySelector('a');
+    cursor += 1;
   }
-  const enableOverlayModal = isCell4Boolean ? parseBooleanFlag(cell4Text, false) : !!overlayHref;
+
+  let enableOverlayModal = false;
+  if (isBooleanLikeValue(cells[cursor]?.textContent)) {
+    enableOverlayModal = parseBooleanFlag(cells[cursor]?.textContent, false);
+    cursor += 1;
+  }
+
+  const overlayHref = getOverlayHref(cells[cursor]);
+
+  const cardLinkHref = cardLinkAnchor?.getAttribute('href') || '';
+  const cardLinkTarget = cardLinkAnchor?.getAttribute('target') || '';
+  const cardLinkTitle = cardLinkAnchor?.getAttribute('title') || '';
 
   const card = createElementFromHTML('<div class="cards-list-item"></div>', doc);
   const inner = createElementFromHTML('<div class="cards-list-inner"></div>', doc);
@@ -220,19 +288,25 @@ function createCardListItem(cardElement, doc) {
     );
   }
 
-  if (content.children.length) {
-    inner.appendChild(content);
-  }
+  if (content.children.length) inner.appendChild(content);
 
-  if (actionTypeText === 'default' && defaultButton) {
+  if (actionType === 'default-button' && defaultButton) {
     const buttonLink = defaultButton.cloneNode(true);
     buttonLink.removeAttribute('data-modal');
 
+    if (openInNewTab) {
+      buttonLink.setAttribute('target', '_blank');
+      buttonLink.setAttribute('rel', 'noopener noreferrer');
+    } else {
+      buttonLink.removeAttribute('target');
+      buttonLink.removeAttribute('rel');
+    }
+
     if (enableOverlayModal && overlayHref) {
       buttonLink.removeAttribute('href');
+      buttonLink.removeAttribute('target');
+      buttonLink.removeAttribute('rel');
       buttonLink.setAttribute('data-modal', overlayHref);
-    } else {
-      buttonLink.removeAttribute('data-modal');
     }
 
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
@@ -240,7 +314,7 @@ function createCardListItem(cardElement, doc) {
     inner.appendChild(buttonWrapper);
   }
 
-  if (actionTypeText === 'multiple-download' && multipleDownloadLinks) {
+  if (actionType === 'multiple-download' && multipleDownloadLinks) {
     const temp = createElementFromHTML(`<div>${multipleDownloadLinks}</div>`, doc);
     const buttonWrapper = createElementFromHTML(
       '<div class="cards-list-button cards-list-downloads"></div>',
@@ -256,9 +330,7 @@ function createCardListItem(cardElement, doc) {
       }
     });
 
-    if (buttonWrapper.children.length) {
-      inner.appendChild(buttonWrapper);
-    }
+    if (buttonWrapper.children.length) inner.appendChild(buttonWrapper);
   }
 
   if (isCardClickable && cardLinkHref) {
@@ -269,6 +341,7 @@ function createCardListItem(cardElement, doc) {
     if (cardLinkTarget === '_blank') wrapper.setAttribute('rel', 'noopener noreferrer');
 
     if (enableOverlayModal && overlayHref) {
+      wrapper.removeAttribute('href');
       wrapper.setAttribute('data-modal', overlayHref);
     } else {
       wrapper.setAttribute('href', cardLinkHref);

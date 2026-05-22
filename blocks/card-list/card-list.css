@@ -28,6 +28,7 @@
 .cards-list-description p {
   font-weight: var(--bbl-font-family-regular);
   color: var(--bbl-color-grey-70);
+  overflow-wrap: break-word;
 }
 
 .cards-list-subtitle p {
