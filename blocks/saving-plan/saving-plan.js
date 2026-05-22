@@ -681,10 +681,11 @@ function renderResult(state, data, calculation) {
   });
   setHTML(root, '[data-result="future"]', futureText);
   setText(root, '[data-result="monthly"]', formatNumber(calculation.SavingMonth));
-  const annualIncrease = inputs.annualIncrease;
+  const { annualIncrease } = inputs;
   if (annualIncrease > 0) {
-    const increaseLabel = data.labels.newPlan.footnoteIncreaseTemplate
-      ? fillTemplate(data.labels.newPlan.footnoteIncreaseTemplate, { increase: formatDecimal(annualIncrease) })
+    const { footnoteIncreaseTemplate } = data.labels.newPlan;
+    const increaseLabel = footnoteIncreaseTemplate
+      ? fillTemplate(footnoteIncreaseTemplate, { increase: formatDecimal(annualIncrease) })
       : `Increase savings each year by ${formatDecimal(annualIncrease)}%`;
     setText(root, '[data-result="footnote-increase"]', increaseLabel);
   } else {
