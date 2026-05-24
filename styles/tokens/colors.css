@@ -265,6 +265,12 @@
   --bbl-red-overlay-strong: rgb(70.6% 2% 2% / 45%);
   --bbl-red-overlay-light: rgb(100% 0% 0% / 15%);
 
+  /* SME Loan Calculator */
+  --bbl-color-sme-section-bg: #565e69;
+  --bbl-color-sme-tab-inactive: #445974;
+  --bbl-color-sme-caret: #40a0f0;
+  --bbl-color-sme-field-border: rgb(158 158 158 / 60%);
+  
   /* =========================================================================
      COMPONENT UTILITY COLORS
      Colors used by specific components that have no match in the scale above
