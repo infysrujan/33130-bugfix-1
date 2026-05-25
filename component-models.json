@@ -3324,6 +3324,100 @@
     ]
   },
   {
+    "id": "dynamic-board",
+    "fields": [
+      {
+        "component": "select",
+        "name": "boardType",
+        "label": "Board Type",
+        "valueType": "string",
+        "required": true,
+        "value": "secondary-market",
+        "options": [
+          {
+            "name": "Secondary Market",
+            "value": "secondary-market"
+          },
+          {
+            "name": "Government Saving Bonds",
+            "value": "government-saving-bonds"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "calendarLabel",
+        "label": "Calendar Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "filterLabel",
+        "label": "Filter Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "clearFilterLabel",
+        "label": "Clear Filter Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "printLabel",
+        "label": "Print Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "ctaButtonLabel",
+        "label": "CTA Button Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "tableHeading",
+        "label": "Table Heading",
+        "valueType": "string",
+        "value": "",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "remarks",
+        "label": "Remarks",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "maturityDateLabel",
+        "label": "Maturity Date Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "maturityRateLabel",
+        "label": "Maturity Rate Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "maturityTypes",
+        "label": "Maturity Types",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "embed-adaptive-form",
     "fields": [
       {
@@ -9842,11 +9936,46 @@
   },
   {
     "id": "promo-card-listing",
-    "fields": []
+    "fields": [
+      {
+        "component": "select",
+        "name": "promotionType",
+        "label": "Promotion Type",
+        "valueType": "string",
+        "value": "credit-card",
+        "options": [
+          {
+            "name": "Credit Card",
+            "value": "credit-card"
+          },
+          {
+            "name": "Bangkok Bank M",
+            "value": "bangkok-bank-m"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "promotional-details",
     "fields": [
+      {
+        "component": "select",
+        "name": "promotionType",
+        "label": "Promotion Type",
+        "valueType": "string",
+        "value": "credit-card",
+        "options": [
+          {
+            "name": "Credit Card",
+            "value": "credit-card"
+          },
+          {
+            "name": "Bangkok Bank M",
+            "value": "bangkok-bank-m"
+          }
+        ]
+      },
       {
         "component": "text",
         "name": "promoId",
@@ -9959,17 +10088,17 @@
         "valueType": "string"
       },
       {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "Cta Label",
+        "value": "",
+        "required": true
+      },
+      {
         "component": "aem-content",
         "name": "ctaLink",
         "label": "Cta Link",
         "description": "Destination URL for the button"
-      },
-      {
-        "component": "text",
-        "name": "ctaLabel",
-        "label": "Cta Label",
-        "description": "Button label text",
-        "required": true
       },
       {
         "component": "container",
@@ -10017,6 +10146,50 @@
             {
               "var": "responsibleLendingDisclaimerEnabled"
             }
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "isRegister",
+        "label": "Is Register",
+        "valueType": "string",
+        "value": "N",
+        "options": [
+          {
+            "name": "No Registration",
+            "value": "N"
+          },
+          {
+            "name": "Register",
+            "value": "Y"
+          },
+          {
+            "name": "Register with Data",
+            "value": "D"
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "promotionType"
+            },
+            "bangkok-bank-m"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "isRegisterCtaLabel",
+        "label": "Register CTA Label",
+        "value": "",
+        "required": true,
+        "condition": {
+          "!==": [
+            {
+              "var": "isRegister"
+            },
+            "N"
           ]
         }
       }
@@ -10301,6 +10474,89 @@
     ]
   },
   {
+    "id": "sme-loan-calculator",
+    "fields": [
+      {
+        "component": "text",
+        "name": "buttonName",
+        "label": "1st Button Name",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "resultValue",
+        "label": "Default Result Value",
+        "description": "Default result text with a value (e.g., result value displayed as 0.00).",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "description",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "addToTableButtonName",
+        "label": "2nd Button Name",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "resultText",
+        "label": "Result Text",
+        "description": "can add the result text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "sme-field",
+    "fields": [
+      {
+        "component": "text",
+        "name": "id",
+        "label": "Id",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "label",
+        "label": "Label",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "topText",
+        "label": "Group Title",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "bottomText",
+        "label": "unit name",
+        "valueType": "string"
+      },
+      {
+        "component": "select",
+        "name": "valueType",
+        "label": "Value Type",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Integer",
+            "value": "integer"
+          },
+          {
+            "name": "Decimal",
+            "value": "decimal"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "social-icon",
     "fields": [
       {
@@ -10494,6 +10750,14 @@
     "id": "table",
     "fields": [
       {
+        "component": "text",
+        "name": "id",
+        "label": "Id",
+        "valueType": "string",
+        "value": "",
+        "description": "The id of the table"
+      },
+      {
         "component": "multiselect",
         "name": "style",
         "label": "Variation",
@@ -10556,6 +10820,15 @@
               {
                 "name": "Header Light Gray",
                 "value": "header-light-gray"
+              }
+            ]
+          },
+          {
+            "name": "Row",
+            "children": [
+              {
+                "name": "Zebra Light Gray",
+                "value": "zebra-light-gray"
               }
             ]
           },

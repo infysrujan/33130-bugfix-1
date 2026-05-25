@@ -531,6 +531,60 @@ function createAccordionItemElements(baseId, itemIndex, titleText, fallbackTitle
   };
 }
 
+/* Group the download-file-wrapper nodes after each default-content-wrapper heading */
+/**
+ * @param {Node} node
+ * @returns {boolean}
+ */
+function isDefaultContentHeaderWrapper(node) {
+  return node.nodeType === Node.ELEMENT_NODE
+    && /** @type {Element} */ (node).classList.contains('default-content-wrapper')
+    && /** @type {Element} */ (node).querySelector('h1, h2, h3, h4, h5, h6') !== null;
+}
+
+/* Check if the node is a download-file-wrapper */
+/**
+ * @param {Node} node
+ * @returns {boolean}
+ */
+function isDownloadFileWrapper(node) {
+  return node.nodeType === Node.ELEMENT_NODE
+    && /** @type {Element} */ (node).classList.contains('download-file-wrapper');
+}
+
+/**
+ * Wraps each default-content-wrapper heading and its consecutive download-file-wrapper
+ * siblings in a download-section container (heading first).
+ * @param {DocumentFragment} contentFrag
+ */
+function groupDownloadSections(contentFrag) {
+  const nodes = [...contentFrag.childNodes];
+  while (contentFrag.firstChild) {
+    contentFrag.removeChild(contentFrag.firstChild);
+  }
+
+  let i = 0;
+  while (i < nodes.length) {
+    const node = nodes[i];
+    if (isDefaultContentHeaderWrapper(node)) {
+      const section = document.createElement('div');
+      section.classList.add('download-section');
+      section.appendChild(node);
+      i += 1;
+
+      while (i < nodes.length && isDownloadFileWrapper(nodes[i])) {
+        section.appendChild(nodes[i]);
+        i += 1;
+      }
+
+      contentFrag.appendChild(section);
+    }
+
+    contentFrag.appendChild(node);
+    i += 1;
+  }
+}
+
 /**
  * @param {Element} block
  * @param {string} baseId
@@ -545,6 +599,7 @@ function appendAccordionItem(block, baseId, itemTitle, contentFrag, index) {
     itemTitle,
     `Item ${index + 1}`,
   );
+  groupDownloadSections(contentFrag);
   panel.appendChild(contentFrag);
   block.appendChild(item);
   wireAccordionHeader(header, panel);

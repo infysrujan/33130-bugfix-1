@@ -22,6 +22,14 @@
       "id": "table",
       "fields": [
         {
+          "component": "text",
+          "name": "id",
+          "label": "Id",
+          "valueType": "string",
+          "value": "",
+          "description": "The id of the table"
+        },
+        {
           "component": "multiselect",
           "name": "style",
           "label": "Variation",
@@ -84,6 +92,15 @@
                 {
                   "name": "Header Light Gray",
                   "value": "header-light-gray"
+                }
+              ]
+            },
+            {
+              "name": "Row",
+              "children": [
+                {
+                  "name": "Zebra Light Gray",
+                  "value": "zebra-light-gray"
                 }
               ]
             },

@@ -249,3 +249,94 @@
         right: var(--bbl-space-250);
     }
 }
+
+body.mobile-app-view {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+body.mobile-app-view main {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+body.mobile-app-view header.is-not-overlapped ~ main {
+    padding-top: 0;
+}
+
+body.mobile-app-view main > div:first-child {
+    margin-top: 0;
+}
+
+@media (width > 64rem) {
+    body.mobile-app-view header.is-not-overlapped ~ main {
+        padding-top: 0;
+    }
+}
+
+/* ==========================================================================
+   Issue 1 Fix: Category Carousel – prevent text truncation and add scroll fade
+   Scoped to .tabs that are siblings/ancestors of .promo-card-listing only.
+   Uses .promo-card-listing-section as a contextual anchor (added by JS below).
+   ========================================================================== */
+
+/* Scope: tabs nav inside the same section as the promo-card-listing block */
+.promo-card-listing-section .tabs-nav-wrapper {
+    position: relative;
+}
+
+/* Right-edge gradient fade — signals horizontal scroll affordance */
+.promo-card-listing-section .tabs-nav-wrapper::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 3.5rem;
+    height: 100%;
+    background: linear-gradient(to right, transparent, var(--bbl-bg-primary, #fff));
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.2s;
+}
+
+/* Hide the fade when fully scrolled to the right */
+.promo-card-listing-section .tabs-nav-wrapper.is-scroll-end::after {
+    opacity: 0;
+}
+
+/* Left-edge fade appears once the user has scrolled right */
+.promo-card-listing-section .tabs-nav-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3.5rem;
+    height: 100%;
+    background: linear-gradient(to left, transparent, var(--bbl-bg-primary, #fff));
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.promo-card-listing-section .tabs-nav-wrapper.is-scroll-start::before {
+    opacity: 1;
+}
+
+/* Add enough right padding so the last button text clears the arrow button */
+.promo-card-listing-section .tabs-nav {
+    padding-inline-end: 3rem;
+}
+
+/* On desktop the full nav is visible — remove fades */
+@media (width > 64rem) {
+    .promo-card-listing-section .tabs-nav-wrapper::before,
+    .promo-card-listing-section .tabs-nav-wrapper::after {
+        display: none;
+    }
+
+    .promo-card-listing-section .tabs-nav {
+        padding-inline-end: 0;
+    }
+}
+

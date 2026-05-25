@@ -438,6 +438,7 @@ function printElement() {
     printWindow.focus();
     setTimeout(() => {
       printWindow.print();
+      printWindow.close();
     }, 100);
   };
   if (printWindow.document.readyState === 'complete') {

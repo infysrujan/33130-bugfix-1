@@ -59,7 +59,7 @@ export default function decorate(block) {
 
   // Render print logo in <main> so it isn't hidden by print styles on the header.
   // Guard against duplicate insertion when the header rebuilds on viewport change.
-  if (printLogoPicture && !document.querySelector('main > .brand-logo-print-logo')) {
+  if (printLogoPicture) {
     const printContainer = document.createElement('div');
     printContainer.className = 'brand-logo-print-logo';
     const clonedLogo = printLogoPicture.cloneNode(true);
@@ -69,6 +69,6 @@ export default function decorate(block) {
       if (printLogoAltText) clonedImg.alt = printLogoAltText;
     }
     printContainer.appendChild(clonedLogo);
-    document.querySelector('main')?.prepend(printContainer);
+    block.appendChild(printContainer);
   }
 }

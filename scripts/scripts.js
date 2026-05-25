@@ -186,11 +186,52 @@ function decorateOgImage() {
 }
 
 /**
+ * Strip AEM image optimization query params from a URL.
+ * @param {string|null|undefined} url
+ * @returns {string|null|undefined}
+ */
+function stripImageOptimizationParams(url) {
+  if (typeof url !== 'string') return url;
+  const q = url.indexOf('?');
+  return q === -1 ? url : url.slice(0, q);
+}
+
+/**
+ * Strip AEM image optimization query params from a srcset value.
+ * @param {string|null|undefined} srcset
+ * @returns {string|null|undefined}
+ */
+function stripSrcsetOptimizationParams(srcset) {
+  if (typeof srcset !== 'string') return srcset;
+  return srcset.split(',').map((entry) => {
+    const parts = entry.trim().split(/\s+/);
+    parts[0] = stripImageOptimizationParams(parts[0]);
+    return parts.join(' ');
+  }).join(', ');
+}
+
+/**
+ * Remove optimization params from all picture source/img URLs in the document.
+ * @param {Document|Element} root
+ */
+export function removePictureOptimizationParams(root) {
+  root.querySelectorAll('picture').forEach((picture) => {
+    picture.querySelectorAll('source[srcset]').forEach((source) => {
+      source.setAttribute('srcset', stripSrcsetOptimizationParams(source.getAttribute('srcset')));
+    });
+    picture.querySelectorAll('img[src]').forEach((img) => {
+      img.setAttribute('src', stripImageOptimizationParams(img.getAttribute('src')));
+    });
+  });
+}
+
+/**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
+  removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
   decorateOgImage();
   const main = doc.querySelector('main');
