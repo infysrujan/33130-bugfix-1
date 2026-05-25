@@ -15,7 +15,6 @@ function decorateModalContent(modalBody) {
 
   wrappers.forEach((wrapper) => {
     let textIndex = 0;
-
     [...wrapper.children].forEach((el, index) => {
       if (el.matches('h1, h2, h3, h4, h5, h6')) {
         if (!hasTitle) {
@@ -126,120 +125,29 @@ function getOverlayHref(linkDiv) {
   return '';
 }
 
-const IMAGE_LAYOUT_VALUES = new Set(['full', 'default', 'card', 'x-small']);
-
-function isImageLayoutCell(cell) {
-  return IMAGE_LAYOUT_VALUES.has(getTextValue(cell?.textContent).toLowerCase());
-}
-
-function findImageLayoutIndex(cells, startIndex = 7) {
-  for (let i = startIndex; i < cells.length; i += 1) {
-    if (isImageLayoutCell(cells[i])) return i;
-  }
-  return -1;
-}
-
-function parseActionFields(cells, actionType, startIndex, endIndex) {
-  const actionCells = cells.slice(startIndex, endIndex);
-  let defaultButton = null;
-  let openInNewTab = false;
-  let multipleDownloadLinks = null;
-
-  actionCells.forEach((cell) => {
-    const anchors = [...cell.querySelectorAll('a')];
-    const textValue = getTextValue(cell?.textContent);
-    const hasParagraphLink = !!cell.querySelector('p a');
-    const hasMultipleAnchors = anchors.length > 1;
-
-    if (actionType === 'default-button') {
-      if (!defaultButton && anchors.length) {
-        [defaultButton] = anchors;
-      }
-
-      if (isBooleanLikeValue(textValue)) {
-        openInNewTab = parseBooleanFlag(textValue, openInNewTab);
-      }
-      return;
-    }
-
-    if (actionType === 'multiple-download') {
-      if (!multipleDownloadLinks && (hasParagraphLink || hasMultipleAnchors)) {
-        multipleDownloadLinks = cell.innerHTML;
-      }
-    }
-  });
-
-  return {
-    defaultButton,
-    openInNewTab,
-    multipleDownloadLinks,
-  };
-}
-
 function createCardListItem(cardElement, doc) {
   const cells = [...cardElement.children];
-  const [
-    imageDiv,
-    promoTagDiv,
-    titleDiv,
-    subtitleDiv,
-    descDiv,
-    remarkDiv,
-    actionTypeDiv,
-  ] = cells;
 
-  const rawActionType = getTextValue(actionTypeDiv?.textContent).toLowerCase();
-  const actionType = rawActionType === 'default' ? 'default-button' : (rawActionType || 'default-button');
-
-  const imageLayoutIndex = findImageLayoutIndex(cells, 7);
-
-  const {
-    defaultButton,
-    openInNewTab,
-    multipleDownloadLinks,
-  } = parseActionFields(
-    cells,
-    actionType,
-    7,
-    imageLayoutIndex === -1 ? cells.length : imageLayoutIndex,
-  );
-
-  const img = imageDiv?.querySelector('img');
-  const promoTag = getTextValue(promoTagDiv?.textContent);
-  const title = titleDiv?.innerHTML?.trim();
-  const subtitle = getTextValue(subtitleDiv?.textContent);
-  const description = descDiv?.innerHTML;
-  const remark = remarkDiv?.innerHTML;
-
-  const imageLayout = imageLayoutIndex !== -1
-    ? getTextValue(cells[imageLayoutIndex]?.textContent).toLowerCase()
-    : 'default';
-
-  let cursor = imageLayoutIndex !== -1 ? imageLayoutIndex + 1 : cells.length;
-
-  const enableTitleUnderline = parseBooleanFlag(cells[cursor]?.textContent, false);
-  if (cursor < cells.length) cursor += 1;
-
-  const isCardClickable = parseBooleanFlag(cells[cursor]?.textContent, false);
-  if (cursor < cells.length) cursor += 1;
-
-  let cardLinkAnchor = null;
-  if (isCardClickable && cells[cursor]?.querySelector('a')) {
-    cardLinkAnchor = cells[cursor].querySelector('a');
-    cursor += 1;
-  }
-
-  let enableOverlayModal = false;
-  if (isBooleanLikeValue(cells[cursor]?.textContent)) {
-    enableOverlayModal = parseBooleanFlag(cells[cursor]?.textContent, false);
-    cursor += 1;
-  }
-
-  const overlayHref = getOverlayHref(cells[cursor]);
-
+  const actionTypeText = cells[6]?.textContent?.trim().replace('-button', '') || 'default';
+  const openInNewTab = parseBooleanFlag(cells[8]?.textContent, false);
+  const multipleDownloadLinks = cells[9]?.querySelector('a') ? cells[9].innerHTML : null;
+  const imageLayout = cells[10]?.textContent?.trim() || 'default';
+  const enableTitleUnderline = parseBooleanFlag(cells[11]?.textContent, false);
+  const isCardClickable = parseBooleanFlag(cells[12]?.textContent, false);
+  const cardLinkAnchor = cells[13]?.querySelector('a');
   const cardLinkHref = cardLinkAnchor?.getAttribute('href') || '';
   const cardLinkTarget = cardLinkAnchor?.getAttribute('target') || '';
   const cardLinkTitle = cardLinkAnchor?.getAttribute('title') || '';
+  const overlayHref = getOverlayHref(cells[14]);
+  const enableOverlayModal = !!overlayHref;
+
+  const img = cells[0]?.querySelector('img');
+  const promoTag = cells[1]?.textContent?.trim();
+  const title = cells[2]?.innerHTML?.trim();
+  const subtitle = cells[3]?.textContent?.trim() || '';
+  const description = cells[4]?.innerHTML;
+  const remark = cells[5]?.innerHTML;
+  const defaultButton = cells[7]?.querySelector('a');
 
   const card = createElementFromHTML('<div class="cards-list-item"></div>', doc);
   const inner = createElementFromHTML('<div class="cards-list-inner"></div>', doc);
@@ -290,23 +198,21 @@ function createCardListItem(cardElement, doc) {
 
   if (content.children.length) inner.appendChild(content);
 
-  if (actionType === 'default-button' && defaultButton) {
+  if (actionTypeText === 'default' && defaultButton) {
     const buttonLink = defaultButton.cloneNode(true);
+
+    // Always clear target/rel first, then re-apply based on openInNewTab boolean
+    buttonLink.removeAttribute('target');
+    buttonLink.removeAttribute('rel');
     buttonLink.removeAttribute('data-modal');
 
-    if (openInNewTab) {
+    if (enableOverlayModal && overlayHref) {
+      // Modal takes priority — remove href, set data-modal
+      buttonLink.removeAttribute('href');
+      buttonLink.setAttribute('data-modal', overlayHref);
+    } else if (openInNewTab) {
       buttonLink.setAttribute('target', '_blank');
       buttonLink.setAttribute('rel', 'noopener noreferrer');
-    } else {
-      buttonLink.removeAttribute('target');
-      buttonLink.removeAttribute('rel');
-    }
-
-    if (enableOverlayModal && overlayHref) {
-      buttonLink.removeAttribute('href');
-      buttonLink.removeAttribute('target');
-      buttonLink.removeAttribute('rel');
-      buttonLink.setAttribute('data-modal', overlayHref);
     }
 
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
@@ -314,7 +220,7 @@ function createCardListItem(cardElement, doc) {
     inner.appendChild(buttonWrapper);
   }
 
-  if (actionType === 'multiple-download' && multipleDownloadLinks) {
+  if (actionTypeText === 'multiple-download' && multipleDownloadLinks) {
     const temp = createElementFromHTML(`<div>${multipleDownloadLinks}</div>`, doc);
     const buttonWrapper = createElementFromHTML(
       '<div class="cards-list-button cards-list-downloads"></div>',
@@ -337,14 +243,14 @@ function createCardListItem(cardElement, doc) {
     const wrapper = createElementFromHTML('<a class="cards-list-item-link"></a>', doc);
 
     if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle);
-    if (cardLinkTarget) wrapper.setAttribute('target', cardLinkTarget);
-    if (cardLinkTarget === '_blank') wrapper.setAttribute('rel', 'noopener noreferrer');
 
     if (enableOverlayModal && overlayHref) {
-      wrapper.removeAttribute('href');
+      // Modal takes priority — no href, set data-modal, click handler opens modal
       wrapper.setAttribute('data-modal', overlayHref);
     } else {
       wrapper.setAttribute('href', cardLinkHref);
+      if (cardLinkTarget) wrapper.setAttribute('target', cardLinkTarget);
+      if (cardLinkTarget === '_blank') wrapper.setAttribute('rel', 'noopener noreferrer');
     }
 
     wrapper.appendChild(inner);
