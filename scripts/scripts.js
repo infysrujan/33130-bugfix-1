@@ -246,7 +246,7 @@ async function loadLazy(doc) {
   // Add link click handler for URL validation
   setTimeout(() => {
     document.dispatchEvent(new Event('lazy-phase'));
-    Window.LAZY_PHASE = true;
+    window.LAZY_PHASE = true;
   }, 150);
 }
 
