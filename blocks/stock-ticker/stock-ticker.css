@@ -16,6 +16,13 @@
 
 .stock-ticker-embed iframe {
     display: inline-block;
+    width: 15.625rem;
+    height: 15.625rem;
+}
+
+.stock-ticker-embed table {
+    width: 12.5rem;
+    height: 12.5rem;
 }
 
 .stock-ticker-container .default-content-wrapper {

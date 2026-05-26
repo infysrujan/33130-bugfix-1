@@ -59,7 +59,7 @@
   line-height: normal;
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
-  font-weight: var(--bbl-font-weight-medium);
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 .story-card .sub-title-medium.line {
@@ -115,6 +115,7 @@
 @media (width > 47.5rem) {
   .story-card .thumb-full {
     flex-direction: row;
+    justify-content: space-between;
   }
 
   .story-card.image-right .thumb-full {

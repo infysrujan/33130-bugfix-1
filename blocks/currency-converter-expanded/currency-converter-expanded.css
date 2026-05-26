@@ -46,7 +46,7 @@
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
-  border: 0.0625rem solid rgb(255 255 255 / 30%);
+  border: 0.0625rem solid var(--bbl-color-white-alpha-30);
   border-radius: 0.4375rem;
 }
 
@@ -93,7 +93,7 @@
   line-height: 1.2031rem;
   vertical-align: middle;
   min-width: 0;
-  color: rgb(255 255 255 / 50%);
+  color: var(--bbl-color-white-alpha-50);
 }
 
 /* Dropdown icon */
@@ -167,7 +167,7 @@
   opacity: 0;
   border-radius: 0.5rem;
   background: var(--bbl-color-white);
-  box-shadow: 0 0 0.25rem 0 rgb(0 0 0 / 5%), 0 0.125rem 0.5rem 0 rgb(0 0 0 / 50%);
+  box-shadow: 0 0 0.25rem 0 var(--bbl-color-black-alpha-5), 0 0.125rem 0.5rem 0 var(--bbl-color-black-alpha-50);
   border: solid 0.0625rem var(--bbl-color-gray-122);
   position: absolute;
   z-index: 10;
@@ -227,11 +227,11 @@
 }
 
 .currency-converter-expanded .currency-dropdown-list li.active {
-  background-color: #e5edf4;
+  background-color: var(--bbl-color-blue-steel);
 }
 
 .currency-converter-expanded .currency-dropdown-list li:hover {
-  background-color: #e5edf4;
+  background-color: var(--bbl-color-blue-steel);
 }
 
 /* Currency Flag Icon in dropdown */
@@ -271,7 +271,7 @@
 
 /* Result content span color */
 .currency-converter-expanded .converter-expanded-result-content span {
-  color: rgb(255 255 255 / 50%);
+  color: var(--bbl-color-white-alpha-50);
 }
 
 /* Currency name in dropdown */
@@ -308,7 +308,6 @@
 /* Calculate button */
 .currency-converter-expanded .converter-expanded-btn {
   padding-right: 3.75rem;
-  position: relative;
   width: 100%;
   max-width: min-content;
   height: 2.75rem;
@@ -330,7 +329,7 @@
 
 .currency-converter-expanded .converter-expanded-btn::after {
   content: "\e900";
-  color: #111582;
+  color: var(--bbl-color-blue-indigo);
   display: inline-block;
   font-family: icomoon, sans-serif;
   vertical-align: middle;
@@ -359,7 +358,7 @@
 
 /* Result section */
 .currency-converter-expanded .converter-expanded-result {
-  background: #565e6a;
+  background: var(--bbl-color-slate-60);
   padding: 0 1rem;
   max-height: 0;
   overflow: hidden;
@@ -395,7 +394,7 @@
 .currency-converter-expanded .converter-expanded-result-content p {
   font-size: 1.3125rem;
   line-height: 1.4219rem;
-  color: rgb(255 255 255 / 50%);
+  color: var(--bbl-color-white-alpha-50);
   text-align: center;
   margin: 0;
   padding-bottom: 1.875rem;
@@ -432,7 +431,7 @@
 }
 
 /* Desktop styles */
-@media (width >= 47.5rem) {
+@media (width > 47.5rem) {
   .currency-converter-expanded .guide-txt {
     font-size: 1rem;
     line-height: 3.125rem;

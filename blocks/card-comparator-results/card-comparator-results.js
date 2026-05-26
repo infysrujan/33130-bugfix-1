@@ -48,7 +48,7 @@ async function loadIconSvg(name) {
 async function loadAllCards() {
   try {
     const configs = await fetchConfigs();
-    const cardSuggesterData = configs.creditCardSuggesterData;
+    const cardSuggesterData = configs.creditCardSelectorSuggesterData;
     if (!cardSuggesterData) {
       return [];
     }
@@ -76,7 +76,7 @@ function normalizeRow(row) {
 async function loadSourcingOrder() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.creditCardFilteringMatrixUrl;
+    const url = configs.creditCardSelectorFilteringMatrixUrl;
     if (!url) return null;
     const resp = await fetch(url);
     if (!resp.ok) return null;
