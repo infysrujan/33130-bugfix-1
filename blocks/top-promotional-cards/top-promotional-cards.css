@@ -1,15 +1,26 @@
-@import url("../promo-card-listing/promo-card-listing.css");
+@import url("../../styles/components/listing-card.css");
 
-.top-promo-footer {
+.top-promo-view-all {
     display: flex;
+    justify-content: center;
+    margin-block: 0;
+}
+
+.top-promo-view-all a {
+    min-width: 13.125rem;
+}
+
+.top-promo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.top-promo-grid:has(.top-promo-empty),
+.top-promo-grid:has(.listing-card-container:only-child) {
     justify-content: center;
 }
 
-.top-promo-footer a {
-    width: auto;
-    box-sizing: border-box;
-    min-width: 13.125rem;
-}
 
 @keyframes top-promo-settle-up {
     from {
@@ -44,10 +55,6 @@
 }
 
 @media (width > 64rem) {
-    .top-promo-footer a {
-        min-width: 15rem;
-    }
-
     .top-promo-grid {
         margin-inline: -1.25rem;
     }

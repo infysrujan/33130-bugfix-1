@@ -12,10 +12,6 @@ main div.default-content-wrapper {
   box-shadow: none;
 }
 
-main .form form {
-  gap: 0;
-}
-
 main h3 {
   position: relative;
   margin: 2.5rem 0 1.875rem;
@@ -40,9 +36,10 @@ main h3::before {
   background: var(--bbl-color-grey-150);
 }
 
-main .form input,
-main .form select,
-main .form textarea {
+/*
+.form input,
+.form select,
+.form textarea {
   display: block;
   box-sizing: border-box;
   width: 100%;
@@ -58,16 +55,16 @@ main .form textarea {
   font-size: 0.95rem;
   font-weight: 400;
   line-height: 2.75rem;
-}
+} */
 
-main .form textarea {
+.form textarea {
   height: auto;
   min-height: 6.25rem;
   padding: 0.625rem 1.25rem;
   line-height: 1.5;
 }
 
-main .form select {
+.form select {
   padding-top: 0;
   padding-right: 2.5rem;
   padding-bottom: 0;
@@ -79,7 +76,7 @@ main .form select {
   background-size: 1.25rem 1.25rem;
 }
 
-main .form select option {
+.form select option {
   color: var(--bbl-color-black);
   background-color: var(--bbl-color-white);
   font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
@@ -87,17 +84,18 @@ main .form select option {
   font-weight: 400;
 }
 
-main .form select option[value=""] {
+.form select option[value=""] {
   color: var(--bbl-color-black);
   font-weight: 400;
 }
 
-.text-wrapper.field-firstname input,
-.text-wrapper.field-lastname input,
-.text-wrapper.field-companyname input,
-.number-wrapper.field-juristicpersonregistrationnumber input,
-.email-wrapper.field-email input,
-.text-wrapper.field-phonenumber input {
+.field-invalid input {
+  border: 0.0625rem solid var(--bbl-color-orange-130);
+}
+
+.text-wrapper.field-wrapper input,
+.number-wrapper.field-wrapper input,
+.email-wrapper.field-wrapper input {
   width: 100%;
   height: 2.75rem;
   margin-top: 0;
@@ -113,18 +111,11 @@ main .form select option[value=""] {
   padding: 0 1.25rem 0 2.5rem;
 }
 
-.text-wrapper.field-mobilenumberoremail input,
-.text-wrapper.field-additionalinfo input {
-  margin: 0;
-  padding: 0 1.25rem;
-}
-
 .number-wrapper.field-invalid input,
 .email-wrapper.field-invalid input,
 .text-wrapper.field-invalid input,
-main .form .field-invalid input,
-main .form .field-invalid select,
-main .form .field-invalid textarea {
+.field-invalid select,
+.field-invalid textarea {
   border: 0.0625rem solid var(--bbl-color-orange-130);
 }
 
@@ -144,28 +135,9 @@ main .form form select:invalid {
   box-shadow: none;
 }
 
-.text-wrapper.field-firstname input:hover,
-.text-wrapper.field-firstname input:focus,
-.text-wrapper.field-lastname input:hover,
-.text-wrapper.field-lastname input:focus,
-.text-wrapper.field-companyname input:hover,
-.text-wrapper.field-companyname input:focus,
-.number-wrapper.field-juristicpersonregistrationnumber input:hover,
-.number-wrapper.field-juristicpersonregistrationnumber input:focus,
-.email-wrapper.field-email input:hover,
-.email-wrapper.field-email input:focus,
-.text-wrapper.field-phonenumber input:hover,
-.text-wrapper.field-phonenumber input:focus,
-.text-wrapper.field-mobilenumberoremail input:hover,
-.text-wrapper.field-mobilenumberoremail input:focus {
-  color: var(--bbl-color-black);
-  border-color: var(--bbl-color-blue-90);
-  outline: none;
-}
-
-main .form form .field-invalid .field-description,
-main .form form .field-wrapper.field-invalid .field-validation-error,
-main .form form .field-wrapper.field-invalid .field-description {
+ .form form .field-wrapper.field-invalid .field-validation-error,
+ .form form .field-invalid .field-description,
+ .form form .field-wrapper.field-invalid .field-description {
   position: relative;
   display: block;
   clear: both;
@@ -176,14 +148,9 @@ main .form form .field-wrapper.field-invalid .field-description {
   font-weight: 400;
 }
 
-main .form form p,
-main .form form .repeat-wrapper,
-main .form form .field-wrapper {
-  margin: 0.1875rem;
-}
-
 main .form form .field-wrapper.col-12 {
   margin-bottom: 0.3125rem;
+  gap: unset;
 }
 
 main .form form p {
@@ -194,42 +161,19 @@ main .form form p {
   line-height: 1.5;
 }
 
-.text-wrapper.field-firstname .field-label,
-.text-wrapper.field-lastname .field-label,
-.text-wrapper.field-companyname .field-label,
-.number-wrapper.field-juristicpersonregistrationnumber .field-label,
-.email-wrapper.field-email .field-label,
-.text-wrapper.field-phonenumber .field-label,
-.text-wrapper.field-additionalinfo .field-label,
-.text-wrapper.field-name .field-label,
-.text-wrapper.field-mobilenumberoremail .field-label {
+.radio-group-wrapper legend.field-label {
   display: block;
-  margin-bottom: 0.25rem;
-  padding: 0;
-  line-height: 1.2;
-}
-
-main .form form .field-wrapper label,
-main .form form .field-wrapper .field-label,
-main .form form fieldset legend.field-label {
-  color: var(--bbl-color-grey-85);
-  font-size: 1.0625rem;
-  font-weight: 700;
-  cursor: default;
-}
-
-main .form form .field-wrapper label font,
-main .form form fieldset legend.field-label font,
-main .form form .field-wrapper .field-label font {
-  color: var(--bbl-color-grey-85);
-  font-size: 1.0625rem;
-  font-weight: 700;
-}
-
-main .form form fieldset.checkbox-group-wrapper > legend,
-main .form form fieldset.radio-group-wrapper > legend {
+  width: 100%;
   margin-bottom: 0.5rem;
-  padding: 0 0.625rem;
+  padding: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.form form .field-wrapper label,
+.form form .field-wrapper .field-label,
+.form form fieldset legend.field-label {
+  color: var(--bbl-color-grey-85);
   font-size: 1.0625rem;
   font-weight: 700;
   cursor: default;
@@ -270,18 +214,13 @@ main .form .field-submitcta .button:disabled:hover {
   transform: none;
 }
 
-main .form form .field-privacyconsent,
-main .form form .field-privacyconsent .field-wrapper {
+ .form form .field-privacyconsent,
+ .form form .field-privacyconsent .field-wrapper {
   gap: 0;
   margin: 0;
 }
 
-main .form .panel-wrapper.field-privacyconsent .field-tnctext {
-  order: 1;
-  margin-bottom: 0;
-}
-
-main form fieldset.panel-wrapper.field-wrapper {
+form fieldset.panel-wrapper.field-wrapper {
   position: relative;
   display: flex;
   grid-column: span 12;
@@ -290,29 +229,20 @@ main form fieldset.panel-wrapper.field-wrapper {
   padding-bottom: 1.875rem;
 }
 
-main form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper {
+form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper {
   flex-shrink: 0;
   order: 1;
   margin-right: 0.625rem;
   padding-top: 0.125rem;
 }
 
-main form fieldset.panel-wrapper.field-wrapper .plain-text-wrapper {
+form fieldset.panel-wrapper.field-wrapper .plain-text-wrapper {
   flex: 1;
   min-width: 0;
   order: 2;
 }
 
-main .form .plain-text-wrapper.field-tnctext {
-  box-sizing: border-box;
-  height: 12.5rem;
-  padding: 0.75rem;
-  overflow-y: auto;
-  border: 0.0625rem solid var(--bbl-color-grey-125);
-  border-radius: 0.4375rem;
-}
-
-main form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper .field-description {
+form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper .field-description {
   position: absolute;
   top: 9.375rem;
   bottom: 0;
@@ -322,19 +252,17 @@ main form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper .field-descript
   font-size: 0.875rem;
 }
 
-main form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper input[type="checkbox"]:invalid {
-  border-color: var(--bbl-color-grey-150);
+.checkbox-wrapper.field-approvalcheckbox.field-wrapper input[type="checkbox"]:hover {
+  border: 0.0625rem solid var(--bbl-color-grey-125);
+}
+
+form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper input[type="checkbox"]:invalid {
   box-shadow: none;
   outline: none;
 }
 
-main form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper input[type="checkbox"]:hover {
-  border-color: var(--bbl-color-blue-90);
-  outline: none;
-}
-
-main form fieldset.panel-wrapper.field-wrapper.field-invalid .plain-text-wrapper.field-tnctext,
-main form fieldset.panel-wrapper.field-wrapper:has(input[name="approvalcheckbox"]:user-invalid) .plain-text-wrapper.tnc-text-decoration {
+form fieldset.panel-wrapper.field-wrapper.field-invalid .plain-text-wrapper.field-tnctext,
+form fieldset.panel-wrapper.field-wrapper:has(input[name="approvalcheckbox"]:user-invalid) .plain-text-wrapper.tnc-text-decoration {
   border: 0.0625rem solid var(--bbl-color-orange-130);
 }
 
@@ -351,12 +279,9 @@ form .email-wrapper {
   margin-bottom: 1.25rem;
 }
 
-.text-wrapper.field-firstname::before,
-.text-wrapper.field-lastname::before,
-.text-wrapper.field-companyname::before,
+.text-wrapper.field-wrapper::before,
 .number-wrapper.field-juristicpersonregistrationnumber::before,
-.email-wrapper.field-email::before,
-.text-wrapper.field-phonenumber::before {
+.email-wrapper.field-email::before{
   position: absolute;
   left: 0.9375rem;
   z-index: 1;
@@ -367,7 +292,6 @@ form .email-wrapper {
   height: 1.25rem;
   color: var(--bbl-color-grey-150);
   font-family: icomoon, sans-serif;
-  pointer-events: none;
   transform: translateY(-50%);
 }
 
@@ -420,7 +344,7 @@ form .email-wrapper {
   transform: translateY(-50%);
 }
 
-main .form fieldset.radio-group-wrapper.field-convenienttime {
+.radio-group-wrapper {
   display: block;
   box-sizing: border-box;
   width: 100%;
@@ -430,16 +354,15 @@ main .form fieldset.radio-group-wrapper.field-convenienttime {
   border: none;
 }
 
-main .form fieldset.radio-group-wrapper.field-convenienttime legend.field-label {
-  display: block;
-  width: 100%;
-  margin-bottom: 0.5rem;
-  padding: 0;
-  font-size: 1.0625rem;
-  font-weight: 700;
+.radio-wrapper:last-child,
+.radio-wrapper:last-of-type,
+.field-invalid .radio-wrapper:last-child,
+.field-invalid .radio-wrapper:nth-last-child(2) {
+  border-top-right-radius: 0.625rem;
+  border-bottom-right-radius: 0.625rem;
 }
 
-main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper {
+.radio-group-wrapper.field-wrapper .radio-wrapper {
   display: flex;
   float: left;
   box-sizing: border-box;
@@ -452,32 +375,26 @@ main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper {
   overflow: hidden;
   border: 0.0625rem solid var(--bbl-color-grey-125);
   border-left: none;
-  border-radius: 0;
+  gap:0;
 }
 
-main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper:first-of-type {
+.radio-group-wrapper .radio-wrapper:first-of-type {
   border-left: 0.0625rem solid var(--bbl-color-grey-125);
   border-top-left-radius: 0.625rem;
   border-bottom-left-radius: 0.625rem;
 }
 
-main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper:nth-last-child(2),
-main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper:last-of-type {
-  border-top-right-radius: 0.625rem;
-  border-bottom-right-radius: 0.625rem;
-}
-
-main .form fieldset.radio-group-wrapper.field-convenienttime::after {
+.radio-group-wrapper.field-convenienttime::after {
   content: "";
   display: table;
   clear: both;
 }
 
-main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper input[type="radio"] {
+.radio-group-wrapper .radio-wrapper input[type="radio"] {
   display: none;
 }
 
-main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper label.field-label {
+.radio-group-wrapper .radio-wrapper label.field-label {
   display: flex;
   flex: 1;
   align-items: center;
@@ -493,11 +410,11 @@ main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper labe
   cursor: pointer;
 }
 
-main .form fieldset.radio-group-wrapper.field-convenienttime .radio-wrapper input[type="radio"]:checked + label.field-label {
+.radio-group-wrapper .radio-wrapper input[type="radio"]:checked + label.field-label {
   color: var(--bbl-color-grey-85);
   background-color: var(--bbl-color-blue-145);
 }
 
-main .form fieldset.radio-group-wrapper.field-convenienttime.field-invalid .radio-wrapper {
+.radio-group-wrapper.field-convenienttime.field-invalid .radio-wrapper {
   border-color: var(--bbl-color-orange-130);
 }

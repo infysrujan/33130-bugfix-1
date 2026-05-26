@@ -61,6 +61,10 @@ function getFieldValue(fe, payload) {
       return fe.value;
     }
   } else if (fe.type !== 'file') {
+    // For date fields with a valueFormat, use the pre-formatted submitValue
+    if (fe.dataset.submitValue !== undefined && fe.dataset.valueFormat) {
+      return fe.dataset.submitValue;
+    }
     return fe.value;
   }
   return null;

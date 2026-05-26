@@ -72,7 +72,7 @@ function sortBySourcing(cards) {
 async function loadSheetData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.creditCardFilteringMatrixUrl;
+    const url = configs.creditCardSelectorFilteringMatrixUrl;
     if (!url) return [];
     const resp = await fetch(url);
     if (!resp.ok) return [];
@@ -87,7 +87,7 @@ async function loadSheetData() {
 async function loadCardData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.creditCardSuggesterData;
+    const url = configs.creditCardSelectorSuggesterData;
     if (!url) return [];
     const resp = await fetch(url);
     if (!resp.ok) return [];

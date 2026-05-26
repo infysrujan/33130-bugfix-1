@@ -129,6 +129,11 @@ export function createButton(fd) {
     button.disabled = true;
     button.setAttribute('disabled', '');
   }
+  // Apply button style variant (primary/secondary/tertiary) from properties
+  const linkType = fd.properties?.linkType;
+  if (linkType) {
+    button.classList.add(linkType);
+  }
   wrapper.replaceChildren(button);
   return wrapper;
 }

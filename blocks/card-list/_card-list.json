@@ -157,6 +157,13 @@
           ]
         },
         {
+          "component": "text",
+          "name": "subtitle",
+          "value": "",
+          "label": "Subtitle",
+          "valueType": "string"
+        },
+        {
           "component": "richtext",
           "name": "description",
           "value": "",
@@ -171,23 +178,65 @@
           "valueType": "string"
         },
         {
+          "component": "select",
+          "valueType": "string",
+          "description": "Select type of button action",
+          "name": "buttonActionType",
+          "value": "default",
+          "label": "Button ActionType",
+          "options": [
+            {
+              "name": "Default Button",
+              "value": "default-button"
+            },
+            {
+              "name": "Multiple Download",
+              "value": "multiple-download"
+            }
+          ]
+        },
+        {
           "component": "aem-content",
           "name": "link",
           "label": "Link",
-          "description": "Destination URL for the button"
+          "description": "Destination URL for the button",
+          "condition": {
+            "===": [
+              {
+                "var": "buttonActionType"
+              },
+              "default-button"
+            ]
+          }
         },
         {
           "component": "text",
           "name": "linkText",
           "label": "Text",
           "description": "Button label text",
-          "required": true
+          "required": true,
+          "condition": {
+            "===": [
+              {
+                "var": "buttonActionType"
+              },
+              "default-button"
+            ]
+          }
         },
         {
           "component": "text",
           "name": "linkTitle",
           "label": "Title",
-          "description": "Accessibility title attribute (optional)"
+          "description": "Accessibility title attribute (optional)",
+          "condition": {
+            "===": [
+              {
+                "var": "buttonActionType"
+              },
+              "default-button"
+            ]
+          }
         },
         {
           "component": "select",
@@ -209,22 +258,46 @@
               "name": "Tertiary",
               "value": "tertiary"
             }
-          ]
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "buttonActionType"
+              },
+              "default-button"
+            ]
+          }
         },
         {
-          "component": "container",
-          "name": "targetSettings",
-          "label": "Target settings",
-          "fields": [
-            {
-              "component": "boolean",
-              "name": "targetLink",
-              "label": "Open link in new tab",
-              "description": "Enable to open the button link in a new browser tab",
-              "valueType": "boolean",
-              "value": false
-            }
-          ]
+          "component": "boolean",
+          "name": "targetLink",
+          "label": "Open link in new tab",
+          "description": "Enable to open the button link in a new browser tab",
+          "valueType": "boolean",
+          "value": false,
+          "condition": {
+            "===": [
+              {
+                "var": "buttonActionType"
+              },
+              "default-button"
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "multipleDownloadLinks",
+          "value": "",
+          "label": "Multiple Download Links",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "buttonActionType"
+              },
+              "multiple-download"
+            ]
+          }
         },
         {
           "component": "select",

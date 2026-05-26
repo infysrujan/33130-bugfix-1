@@ -175,7 +175,7 @@ export default async function decorate(block) {
         <div class="search-modal-search-input inner-content">
           <input type="text" class="search-modal-input" placeholder="${escapeHtml(config.placeholder)}" autocomplete="off" aria-label="${escapeHtml(config.ariaLabel)}">
           <div class="inner-content search-modal-search-button">
-            <button type="button" class="button primary button-m search-modal-submit-button" title="${escapeHtml(config.searchLabel)}">${escapeHtml(config.searchLabel)}</button>
+            <button type="button" class="button primary search-modal-submit-button" title="${escapeHtml(config.searchLabel)}">${escapeHtml(config.searchLabel)}</button>
           </div>
         </div>
       </div>

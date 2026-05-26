@@ -290,8 +290,8 @@ export default async function decorate(block) {
   const asOfLabel = placeholders?.asOf || 'As of';
   const atLabel = placeholders?.at || 'at';
 
-  const apiBaseUrl = configs?.exchangeRateService || '';
-  const dateTimeApiUrl = configs?.getDateTime || '';
+  const apiBaseUrl = configs?.currencyConverterExchangeRateService || '';
+  const dateTimeApiUrl = configs?.currencyConverterExpandedGetDateTime || '';
 
   if (!apiBaseUrl) {
     // eslint-disable-next-line no-console

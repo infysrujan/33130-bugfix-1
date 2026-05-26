@@ -1,5 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { showModal, hideModal, setupModalHandlers } from '../../scripts/utils/modal.js';
 
 export default async function decorate(block) {
   const doc = block.ownerDocument;
@@ -116,15 +117,17 @@ export default async function decorate(block) {
   let targetUrl = '';
 
   const closePopup = () => {
-    overlay.classList.remove('external-redirect-popup-visible');
+    hideModal(overlay, 'external-redirect-popup-visible');
     targetUrl = '';
   };
 
   const openPopup = (url) => {
     targetUrl = url;
     urlSpan.textContent = `"${url}"`;
-    requestAnimationFrame(() => overlay.classList.add('external-redirect-popup-visible'));
+    showModal(overlay, 'external-redirect-popup-visible');
   };
+
+  setupModalHandlers(overlay, inner, closePopup, { clickOutside: false });
 
   // ── Event listeners ────────────────────────────────────────────────────────
   closeBtn.addEventListener('click', closePopup);

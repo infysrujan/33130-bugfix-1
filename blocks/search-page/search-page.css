@@ -1,3 +1,11 @@
+body:has(.search-modal) header.is-not-overlapped :is(.mobile-top-bar, .main-nav-desktop) {
+  background-color: transparent;
+}
+
+body:has(.search-modal) header.is-not-overlapped ~ main {
+  padding-top: 0;
+}
+
 .search-modal {
   background: var(--bbl-color-white);
 }

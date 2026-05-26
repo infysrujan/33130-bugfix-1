@@ -114,7 +114,7 @@ function renderBlock(block, rates, timestamp, authoring) {
 export default async function decorate(block) {
   const authoring = parseAuthoring(block);
   const configs = await fetchConfigs();
-  const apiUrl = configs?.specialDiscountFxRate || '';
+  const apiUrl = configs?.specialFxRatesDiscountFxRate || '';
   const configUrl = configs?.specialFxRatesConfig || '';
   const fxConfig = await fetchFxRatesConfig(configUrl);
   const sortOrder = (fxConfig?.['special-fx-sort-order']?.data || []).map((row) => row.currency)

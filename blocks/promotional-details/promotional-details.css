@@ -3,6 +3,35 @@
     margin: 0 auto;
 }
 
+body.mobile-app-view header,
+body.mobile-app-view footer {
+    display: none;
+}
+
+body.mobile-app-view {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+body.mobile-app-view main {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+body.mobile-app-view header.is-not-overlapped ~ main {
+    padding-top: 0;
+}
+
+body.mobile-app-view main > div:first-child {
+    margin-top: 0;
+}
+
+@media (width > 64rem) {
+    body.mobile-app-view header.is-not-overlapped ~ main {
+        padding-top: 0;
+    }
+}
+
 .promotional-details .promo-detail-title-wrap {
     text-align: center;
 }
@@ -74,6 +103,10 @@
     margin: 0 0 0.75rem;
     line-height: 1.125rem;
     color: var(--bbl-color-grey-85);
+}
+
+.promotional-details .promo-detail-cta {
+    margin-top: var(--bbl-space-200);
 }
 
 .promotional-details .promo-detail-disclaimer p {

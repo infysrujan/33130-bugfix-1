@@ -98,6 +98,21 @@
           }
         },
         {
+          "title": "Bcap",
+          "id": "bcap",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Bcap",
+                  "model": "bcap"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Brand Logo",
           "id": "brand-logo",
           "plugins": {
@@ -565,6 +580,21 @@
                 "template": {
                   "name": "Download File",
                   "model": "download-file"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Dynamic Board",
+          "id": "dynamic-board",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Dynamic Board",
+                  "model": "dynamic-board"
                 }
               }
             }
@@ -1120,6 +1150,21 @@
           }
         },
         {
+          "title": "Forward Points SME",
+          "id": "forward-points-sme",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Forward Points SME",
+                  "model": "forward-points-sme"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Fragment",
           "id": "fragment",
           "plugins": {
@@ -1178,6 +1223,21 @@
                   "name": "Hero Item",
                   "model": "hero-item",
                   "label": "Maximum 6 items allowed"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Latest News",
+          "id": "latest-news",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Latest News",
+                  "model": "latest-news"
                 }
               }
             }
@@ -1286,6 +1346,21 @@
                 "template": {
                   "name": "Quick Nav Item",
                   "model": "quick-nav-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Market Report",
+          "id": "market-report",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Market Report",
+                  "model": "market-report"
                 }
               }
             }
@@ -1461,6 +1536,36 @@
           }
         },
         {
+          "title": "News Media Details",
+          "id": "news-media-details",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "News Media Details",
+                  "model": "news-media-details"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "News Media",
+          "id": "news-media",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "News Media",
+                  "model": "news-media"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Popup Modal Card Offer",
           "id": "popup-modal-card-offer",
           "plugins": {
@@ -1521,6 +1626,36 @@
           }
         },
         {
+          "title": "Property for Sale Details",
+          "id": "property-for-sale-details",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Property for Sale Details",
+                  "model": "property-for-sale-details"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Property for Sale",
+          "id": "property-for-sale",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Property for Sale",
+                  "model": "property-for-sale"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Rate Card",
           "id": "rate-card",
           "plugins": {
@@ -1545,6 +1680,21 @@
                 "template": {
                   "name": "Rate Card Item",
                   "model": "rate-card-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Retirement Calculator",
+          "id": "retirement-calculator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Retirement Calculator",
+                  "model": "retirement-calculator"
                 }
               }
             }
@@ -1590,6 +1740,37 @@
                 "template": {
                   "name": "Search",
                   "model": "search"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "SME Loan Calculator",
+          "id": "sme-loan-calculator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "SME Loan Calculator",
+                  "model": "sme-loan-calculator",
+                  "filter": "sme-loan-calculator"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "SME Field",
+          "id": "sme-field",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "SME Field",
+                  "model": "sme-field"
                 }
               }
             }
@@ -1703,21 +1884,6 @@
           }
         },
         {
-          "title": "Nested Table",
-          "id": "nested-table",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Nested Table",
-                  "model": "nested-table"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "Tab Section",
           "id": "tab-section",
           "plugins": {
@@ -1728,6 +1894,20 @@
                   "name": "Tab Section",
                   "model": "tab-section",
                   "filter": "tab-section"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Tax Calculator",
+          "id": "tax-calculator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Tax Calculator"
                 }
               }
             }
@@ -1838,6 +2018,22 @@
                 "template": {
                   "name": "Warning Card",
                   "model": "warning-card"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Welcome Banner",
+          "id": "welcome-banner",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Welcome Banner",
+                  "model": "welcome-banner",
+                  "filter": "welcome-banner"
                 }
               }
             }
