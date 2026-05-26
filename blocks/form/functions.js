@@ -326,6 +326,109 @@ async function getProvinceEnAsArray() {
     console.error('Error fetching provinces:', error);
     return [];
   }
+
+  const data = JSON.parse(xhr.responseText);
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+* Returns BranchNo values for a given province.
+* Maps to enum for branch dropdown.
+*
+* @name getBranchEnum
+* @param {string} province - Province name matching the selected language
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string[]}
+*/
+function getBranchEnum(province, lang = 'th') {
+  const data = fetchBranchesByProvince(province, lang);
+  return data.map((item) => item.BranchNo);
+}
+
+/**
+* Returns BranchName display labels for a given province.
+* Maps to enumNames for branch dropdown.
+*
+* @name getBranchEnumNames
+* @param {string} province - Province name matching the selected language
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string[]}
+*/
+function getBranchEnumNames(province, lang = 'th') {
+  const data = fetchBranchesByProvince(province, lang);
+  return data.map((item) => item.BranchName);
+}
+
+/**
+ * Validates Thai Citizen ID using the official algorithm
+ * @name validateThaiCitizenID
+ * @param {string} id - The 13-digit Thai Citizen ID to validate
+ * @returns {boolean} - Returns true if the ID is valid, false otherwise
+ *
+ * @example
+ * // Usage in form validation
+ * validateThaiCitizenID('1234567890123') // returns true or false
+ */
+function validateThaiCitizenID(id) {
+  if (
+    id.length !== 13
+    || id.charAt(0).match(/[09]/)
+  ) return false;
+
+  let sum = 0;
+  for (let i = 0; i < 12; i += 1) {
+    sum += parseInt(id.charAt(i), 10) * (13 - i);
+  }
+
+  if ((11 - (sum % 11)) % 10 !== parseInt(id.charAt(12), 10)) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Validates credit card number using the Luhn algorithm (Mod 10)
+ * @name validateCreditCardNumber
+ * @param {string|number} inputNum - The credit card number to validate
+ * @returns {boolean} - Returns true if the credit card number is valid, false otherwise
+ *
+ * @example
+ * // Usage in form validation
+ * validateCreditCardNumber('4532015112830366') // returns true or false
+ * validateCreditCardNumber(4532015112830366) // returns true or false
+ */
+function validateCreditCardNumber(inputNum) {
+  if (inputNum.length < 16) {
+    return false;
+  }
+
+  let flag = true;
+  let sum = 0;
+  const digits = (`${inputNum}`).split('').reverse();
+
+  for (let i = 0; i < digits.length; i += 1) {
+    let digit = digits[i];
+    digit = parseInt(digit, 10);
+
+    // eslint-disable-next-line no-cond-assign
+    if ((flag = !flag)) {
+      digit *= 2;
+    }
+
+    if (digit > 9) {
+      digit -= 9;
+    }
+
+    sum += digit;
+  }
+
+  return sum % 10 === 0;
+}
+
+function getidAndDob(id, dob) {
+  console.log('id', id);
+  console.log('dob', dob);
+  return `${id}${dob.replaceAll('/', '').replaceAll('-', '')}`;
 }
  
 // eslint-disable-next-line import/prefer-default-export

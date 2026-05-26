@@ -113,7 +113,7 @@
 }
 
 .accordion-panel {
-  padding: 1.25rem 1.875rem;
+  padding: 1.25rem 0;
 }
 
 .accordion-panel-loading {
@@ -135,3 +135,8 @@
   margin-top:0
 }
 
+@media (width > 47.5rem) {
+  .accordion-panel {
+    padding: 1.25rem 1.875rem;
+  }
+}

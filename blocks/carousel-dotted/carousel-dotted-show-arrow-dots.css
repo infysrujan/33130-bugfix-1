@@ -66,6 +66,22 @@
   background-color: var(--bbl-color-grey-10);
 }
 
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:hover {
+  background-color: var(--bbl-color-white);
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:active {
+  background-color: var(--bbl-color-gray-300);
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next:hover {
+  margin-left: 0.313rem;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev:hover {
+  margin-left: -0.313rem;
+}
+
 .carousel-dotted.show-arrows-dots .carousel-arrow::before {
   content: '';
   display: block;

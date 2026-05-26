@@ -462,7 +462,7 @@ a.link-inverted[aria-disabled="true"] {
     background: var(--bbl-color-ice-blue);
     box-shadow: 0 0.125rem 0.5rem 0 var(--bbl-color-white-alpha-125);
     margin-bottom: 0.4375rem;
-    padding: 0 var(--bbl-space-500) 0 1.875rem;
+    padding: 0 var(--bbl-space-500) 0 0.9375rem;
     max-width: 100%;
     text-align: left;
     position: relative;
@@ -595,6 +595,11 @@ a.link-inverted[aria-disabled="true"] {
         max-width: none;
         white-space: nowrap;
     }
+
+    .download-button-wrapper .download-files {
+      padding: 0 var(--bbl-space-500) 0 1.875rem;
+    }
+
 }
 
 @media (width > 64rem) {

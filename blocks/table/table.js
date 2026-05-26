@@ -31,36 +31,10 @@ function parseVariationClasses(cell) {
   return [...new Set(classes)];
 }
 
-function applyVariationClasses(table, styles) {
-  if (!table || !styles.length) return;
+function applyVariationClasses(table, styles, id) {
+  if (!table) return;
   table.classList.add(...styles);
-}
-
-function getNestedTables(rows) {
-  const nestedTables = new Map();
-
-  rows.forEach((row) => {
-    const cols = [...row.children];
-    const nestedId = getCellText(cols[0]);
-    const variationStyles = parseVariationClasses(cols[1]);
-    const nestedTable = cols[2]?.querySelector('table');
-
-    if (!nestedId || !nestedTable) return;
-
-    applyVariationClasses(nestedTable, variationStyles);
-    nestedTables.set(nestedId, nestedTable);
-  });
-
-  return nestedTables;
-}
-
-function hasUnresolvedPlaceholders(table, nestedTables) {
-  const walker = document.createTreeWalker(table, NodeFilter.SHOW_TEXT);
-  while (walker.nextNode()) {
-    const match = /\{\{\s*([-\w]+)\s*\}\}/.exec(walker.currentNode.textContent);
-    if (match && !nestedTables.has(match[1])) return true;
-  }
-  return false;
+  if (id) table.setAttribute('id', id);
 }
 
 function replaceNestedTablePlaceholders(parentTable, nestedTables, cloneAll = false) {
@@ -257,14 +231,27 @@ export default async function decorate(block) {
   const rows = [...block.children];
   if (rows.length < 2) return;
 
-  const parentStyles = parseVariationClasses(rows[0].children[0]);
+  const firstRowText = rows[0]?.textContent.trim().toLowerCase();
+  const tableRowIndex = rows.findIndex((row, i) => i > 0 && row.querySelector('table'));
+  if (tableRowIndex === -1) return;
+  const parentTable = rows[tableRowIndex].querySelector('table');
+
+  // Row 0 always holds variation classes (and doubles as the id)
+  const row0Styles = firstRowText
+    .split(',').map((item) => toClassName(item.trim())).filter(Boolean);
+  // When the table is not immediately at index 1, row 1 is a dedicated styles row
+  const row1Styles = tableRowIndex > 1 ? parseVariationClasses(rows[1].children[0]) : [];
+  const parentStyles = [...new Set([...row0Styles, ...row1Styles])];
+
   if (parentStyles.includes('scroll')) {
     block.classList.add('scroll');
   }
-  const parentTable = rows[1].querySelector('table');
-  if (!parentTable) return;
 
-  applyVariationClasses(parentTable, parentStyles);
+  const nestedRow = tableRowIndex > 2 ? rows[tableRowIndex - 1] : null;
+  const nestedTableId = nestedRow?.children[0]?.textContent.trim() || null;
+
+  applyVariationClasses(parentTable, parentStyles, firstRowText);
+  if (nestedTableId) parentTable.dataset.nestedId = nestedTableId;
 
   const nestedRows = rows.slice(2);
   const isAuthoring = block.hasAttribute('data-aue-resource');

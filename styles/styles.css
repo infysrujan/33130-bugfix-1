@@ -15,7 +15,8 @@
 @import url('./background.css');
 @import url('./icomoon.css');
 @import url('./overlay.css');
-
+@import url('./calendar-picker.css');
+@import url('./error-page.css');
 
 :root {
     /* site-level sizing */
@@ -196,7 +197,7 @@ main img {
         padding-inline: var(--bbl-space-section-xl);
     }
 
-    .section.columns-3 {
+    .section.columns-3 { 
         flex-direction: row;
     }
 
@@ -386,13 +387,44 @@ body.wealth main :is(.button-container .button, .button) {
     text-align: center;
 }
 
-.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+.section.center-image .section-image-item {
+    display: block;
+    text-align: center;
+}
+
+.section.center-image .default-content-wrapper > p {
+    text-align: center;
+}
+
+.section.center-image .default-content-wrapper > p > picture,
+.section.center-image .default-content-wrapper > p > img {
+    display: inline-block;
+    max-width: 100%;
+}
+
+.section.center-image .section-image-item :is(picture, img) {
+    display: block;
+    margin-inline: auto;
+    max-width: 100%;
+}
+
+.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
+.section.underline-image .section-image-item {
     position: relative;
     padding-bottom: var(--bbl-space-250);
     margin: 1.875rem 0;
 }
 
-.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+.section.underline-image .default-content-wrapper > p > picture,
+.section.underline-image .default-content-wrapper > p > img {
+    position: relative;
+    display: inline-block;
+    padding-bottom: var(--bbl-space-250);
+    max-width: 100%;
+}
+
+.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+.section.underline-image .section-image-item::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -402,13 +434,35 @@ body.wealth main :is(.button-container .button, .button) {
     background-color: var(--bbl-color-grey-150);
 }
 
-.section.underline-title.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+.section.underline-image .default-content-wrapper > p > picture::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: var(--bbl-space-1000);
+    height: 0.0625rem;
+    background-color: var(--bbl-color-grey-150);
+}
+
+.section.underline-title.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+.section.underline-image.center-image .section-image-item::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.section.underline-image.center-image .default-content-wrapper > p > picture::after {
     left: 50%;
     transform: translateX(-50%);
 }
 
 @media (width > 47.5rem) {
-    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
+    .section.underline-image .section-image-item {
+        padding-bottom: 1.875rem;
+    }
+
+    .section.underline-image .default-content-wrapper > p > picture,
+    .section.underline-image .default-content-wrapper > p > img {
         padding-bottom: 1.875rem;
     }
 }
@@ -551,4 +605,8 @@ body.bangkok-bankm-card main {
         font-weight: var(--bbl-font-weight-medium);
         line-height: 2.875rem;
     }
+}
+
+.hidden {
+    display: none;
 }

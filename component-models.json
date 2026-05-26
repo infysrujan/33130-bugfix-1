@@ -63,6 +63,19 @@
         "value": true,
         "label": "Breadcrumb",
         "valueType": "boolean"
+      },
+      {
+        "component": "boolean",
+        "label": "Enable Welcome Banner",
+        "name": "isWelcomeBanner",
+        "valueType": "boolean"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "ogImage",
+        "label": "OG Image",
+        "description": "Select the image asset to use for the Open Graph og:image meta tag."
       }
     ]
   },
@@ -308,6 +321,14 @@
                 "value": "center-title"
               },
               {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
+              },
+              {
                 "name": "Center Content",
                 "value": "center-content"
               }
@@ -358,6 +379,39 @@
           "rootPath": "/en/fragments/accordions",
           "allowFolders": false
         }
+      }
+    ]
+  },
+  {
+    "id": "bcap",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "date-label",
+        "value": "",
+        "label": "Calander Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "print-label",
+        "value": "",
+        "label": "Print Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "error-message",
+        "value": "",
+        "label": "Error Message Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimer-text",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
       }
     ]
   },
@@ -2744,6 +2798,13 @@
             ]
           }
         ]
+      },
+      {
+        "component": "richtext",
+        "name": "exclusionUrls",
+        "label": "Exclusion URLs",
+        "description": "List of page URLs where the cookie alert should NOT appear. Enter each URL on a new line or as a bulleted list.",
+        "valueType": "string"
       }
     ]
   },
@@ -3203,6 +3264,100 @@
     ]
   },
   {
+    "id": "dynamic-board",
+    "fields": [
+      {
+        "component": "select",
+        "name": "boardType",
+        "label": "Board Type",
+        "valueType": "string",
+        "required": true,
+        "value": "secondary-market",
+        "options": [
+          {
+            "name": "Secondary Market",
+            "value": "secondary-market"
+          },
+          {
+            "name": "Government Saving Bonds",
+            "value": "government-saving-bonds"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "calendarLabel",
+        "label": "Calendar Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "filterLabel",
+        "label": "Filter Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "clearFilterLabel",
+        "label": "Clear Filter Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "printLabel",
+        "label": "Print Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "ctaButtonLabel",
+        "label": "CTA Button Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "tableHeading",
+        "label": "Table Heading",
+        "valueType": "string",
+        "value": "",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "remarks",
+        "label": "Remarks",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "maturityDateLabel",
+        "label": "Maturity Date Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "maturityRateLabel",
+        "label": "Maturity Rate Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "maturityTypes",
+        "label": "Maturity Types",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "embed-adaptive-form",
     "fields": [
       {
@@ -3554,6 +3709,28 @@
           {
             "name": "12 column",
             "value": "12"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "properties.linkType",
+        "label": "Button Style",
+        "valueType": "string",
+        "value": "primary",
+        "description": "Visual style variant for the button",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
           }
         ]
       },
@@ -4231,10 +4408,15 @@
         "label": "Display Format",
         "name": "displayFormat",
         "valueType": "string",
+        "value": "dd/MM/yyyy",
         "options": [
           {
             "name": "No Pattern",
             "value": ""
+          },
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
           },
           {
             "name": "01 April, 2007",
@@ -4253,7 +4435,33 @@
             "value": "EEEE, MMMM d, y"
           },
           {
-            "name": "1/4/2007",
+            "name": "D/M/YYYY (1/4/2007)",
+            "value": "d/M/y"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "label": "Submit Value Format",
+        "name": "valueFormat",
+        "valueType": "string",
+        "value": "dd/MM/yyyy",
+        "description": "Format of the date value sent on form submission",
+        "options": [
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
+          },
+          {
+            "name": "YYYY-MM-DD (2007-04-01) — ISO 8601",
+            "value": "yyyy-MM-dd"
+          },
+          {
+            "name": "MM/DD/YYYY (04/01/2007)",
+            "value": "MM/dd/yyyy"
+          },
+          {
+            "name": "D/M/YYYY (1/4/2007)",
             "value": "d/M/y"
           }
         ]
@@ -9218,11 +9426,46 @@
   },
   {
     "id": "promo-card-listing",
-    "fields": []
+    "fields": [
+      {
+        "component": "select",
+        "name": "promotionType",
+        "label": "Promotion Type",
+        "valueType": "string",
+        "value": "credit-card",
+        "options": [
+          {
+            "name": "Credit Card",
+            "value": "credit-card"
+          },
+          {
+            "name": "Bangkok Bank M",
+            "value": "bangkok-bank-m"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "promotional-details",
     "fields": [
+      {
+        "component": "select",
+        "name": "promotionType",
+        "label": "Promotion Type",
+        "valueType": "string",
+        "value": "credit-card",
+        "options": [
+          {
+            "name": "Credit Card",
+            "value": "credit-card"
+          },
+          {
+            "name": "Bangkok Bank M",
+            "value": "bangkok-bank-m"
+          }
+        ]
+      },
       {
         "component": "text",
         "name": "promoId",
@@ -9335,17 +9578,17 @@
         "valueType": "string"
       },
       {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "Cta Label",
+        "value": "",
+        "required": true
+      },
+      {
         "component": "aem-content",
         "name": "ctaLink",
         "label": "Cta Link",
         "description": "Destination URL for the button"
-      },
-      {
-        "component": "text",
-        "name": "ctaLabel",
-        "label": "Cta Label",
-        "description": "Button label text",
-        "required": true
       },
       {
         "component": "container",
@@ -9395,8 +9638,60 @@
             }
           ]
         }
+      },
+      {
+        "component": "select",
+        "name": "isRegister",
+        "label": "Is Register",
+        "valueType": "string",
+        "value": "N",
+        "options": [
+          {
+            "name": "No Registration",
+            "value": "N"
+          },
+          {
+            "name": "Register",
+            "value": "Y"
+          },
+          {
+            "name": "Register with Data",
+            "value": "D"
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "promotionType"
+            },
+            "bangkok-bank-m"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "isRegisterCtaLabel",
+        "label": "Register CTA Label",
+        "value": "",
+        "required": true,
+        "condition": {
+          "!==": [
+            {
+              "var": "isRegister"
+            },
+            "N"
+          ]
+        }
       }
     ]
+  },
+  {
+    "id": "property-for-sale-details",
+    "fields": []
+  },
+  {
+    "id": "property-for-sale",
+    "fields": []
   },
   {
     "id": "rate-card-item",
@@ -9669,6 +9964,89 @@
     ]
   },
   {
+    "id": "sme-loan-calculator",
+    "fields": [
+      {
+        "component": "text",
+        "name": "buttonName",
+        "label": "1st Button Name",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "resultValue",
+        "label": "Default Result Value",
+        "description": "Default result text with a value (e.g., result value displayed as 0.00).",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "description",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "addToTableButtonName",
+        "label": "2nd Button Name",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "resultText",
+        "label": "Result Text",
+        "description": "can add the result text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "sme-field",
+    "fields": [
+      {
+        "component": "text",
+        "name": "id",
+        "label": "Id",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "label",
+        "label": "Label",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "topText",
+        "label": "Group Title",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "bottomText",
+        "label": "unit name",
+        "valueType": "string"
+      },
+      {
+        "component": "select",
+        "name": "valueType",
+        "label": "Value Type",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Integer",
+            "value": "integer"
+          },
+          {
+            "name": "Decimal",
+            "value": "decimal"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "social-icon",
     "fields": [
       {
@@ -9862,168 +10240,12 @@
     "id": "table",
     "fields": [
       {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Variation",
-        "valueType": "string",
-        "required": false,
-        "options": [
-          {
-            "name": "Border Type",
-            "children": [
-              {
-                "name": "No Border",
-                "value": "no-border"
-              },
-              {
-                "name": "Outline Border",
-                "value": "outline-border"
-              },
-              {
-                "name": "Border Bottom",
-                "value": "border-bottom"
-              }
-            ]
-          },
-          {
-            "name": "Border Color",
-            "children": [
-              {
-                "name": "Border Black",
-                "value": "border-black"
-              },
-              {
-                "name": "Border Light Gray",
-                "value": "border-light-gray"
-              },
-              {
-                "name": "Border Gray",
-                "value": "border-gray"
-              }
-            ]
-          },
-          {
-            "name": "Header",
-            "children": [
-              {
-                "name": "Center Aligned",
-                "value": "header-center-aligned"
-              },
-              {
-                "name": "Header Blue",
-                "value": "header-blue"
-              },
-              {
-                "name": "Header Light Blue",
-                "value": "header-light-blue"
-              },
-              {
-                "name": "Header Mixed Blue",
-                "value": "header-mixed-blue"
-              }
-            ]
-          },
-          {
-            "name": "Cells",
-            "children": [
-              {
-                "name": "Cells Center Aligned",
-                "value": "cells-center-aligned"
-              },
-              {
-                "name": "Cells Center Aligned Except First",
-                "value": "cells-center-aligned-except-first"
-              },
-              {
-                "name": "Dash Cell Highlight",
-                "value": "dash-cell-highlight"
-              }
-            ]
-          },
-          {
-            "name": "Padding",
-            "children": [
-              {
-                "name": "Compact Padding",
-                "value": "compact-padding"
-              },
-              {
-                "name": "Border Bottom Tight Columns",
-                "value": "border-bottom-tight-cols"
-              }
-            ]
-          },
-          {
-            "name": "Functional",
-            "children": [
-              {
-                "name": "Merge Tables",
-                "value": "merge-tables"
-              },
-              {
-                "name": "Scroll",
-                "value": "scroll"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "component": "richtext",
-        "name": "tableContent",
-        "label": "Table Content",
-        "valueType": "string",
-        "value": "",
-        "rte": {
-          "toolbar": {
-            "format": [
-              "bold",
-              "italic",
-              "underline"
-            ],
-            "list": [
-              "bullet_list",
-              "ordered_list"
-            ],
-            "insert": [
-              "link",
-              "unlink",
-              "table"
-            ],
-            "editor": [
-              "removeformat"
-            ],
-            "sections": [
-              "format",
-              "list",
-              "insert",
-              "editor"
-            ]
-          },
-          "actions": {
-            "table": {
-              "label": "Insert Table",
-              "shortcut": "Mod-Alt-T",
-              "wrapInParagraphs": true
-            },
-            "link": {
-              "hideTarget": false
-            }
-          }
-        }
-      }
-    ]
-  },
-  {
-    "id": "nested-table",
-    "fields": [
-      {
         "component": "text",
         "name": "id",
         "label": "Id",
         "valueType": "string",
         "value": "",
-        "required": true
+        "description": "The id of the table"
       },
       {
         "component": "multiselect",
@@ -10084,6 +10306,19 @@
               {
                 "name": "Header Mixed Blue",
                 "value": "header-mixed-blue"
+              },
+              {
+                "name": "Header Light Gray",
+                "value": "header-light-gray"
+              }
+            ]
+          },
+          {
+            "name": "Row",
+            "children": [
+              {
+                "name": "Zebra Light Gray",
+                "value": "zebra-light-gray"
               }
             ]
           },
@@ -10125,12 +10360,31 @@
                 "value": "merge-tables"
               },
               {
+                "name": "Nested Table",
+                "value": "nested-table"
+              },
+              {
                 "name": "Scroll",
                 "value": "scroll"
               }
             ]
           }
         ]
+      },
+      {
+        "component": "text",
+        "name": "nestedTableId",
+        "label": "Nested Table ID",
+        "valueType": "string",
+        "required": false,
+        "condition": {
+          "in": [
+            "nested-table",
+            {
+              "var": "style"
+            }
+          ]
+        }
       },
       {
         "component": "richtext",
@@ -10825,6 +11079,58 @@
         "validation": {
           "customErrorMsg": "Please enter a valid end date and time for unpublishing the content"
         }
+      }
+    ]
+  },
+  {
+    "id": "welcome-banner",
+    "fields": [
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerDesktop",
+        "label": "Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerDesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerMobile",
+        "label": "Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerMobileMimeType"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+      },
+      {
+        "component": "date-time",
+        "valueType": "date-time",
+        "name": "Publish-Date",
+        "label": "Publish Date",
+        "placeholder": "YYYY-MM-DD HH:mm:ss"
+      },
+      {
+        "component": "date-time",
+        "valueType": "date-time",
+        "name": "Unpublish-Date",
+        "label": "Unpublish Date",
+        "placeholder": "YYYY-MM-DD HH:mm:ss"
       }
     ]
   }

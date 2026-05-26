@@ -57,18 +57,20 @@ export default function decorate(block) {
     thumbnailList = createElement('ul', 'hero-banner-thumbnail-list', 'content');
   }
 
-  [...block.children].slice(1, 9).forEach((row, i) => {
-    const [
-      imageCellDesktop,
-      imageCellMobile,
-      imageAlt,
-      logoImageCell,
-      thumbImgCell,
-      headingCell,
-      textCell,
-      linkCell,
-    ] = row.children;
+  const heroRows = [...block.children].slice(1, 8);
 
+  // Pre-pass: find which item has isDefault checked (stored as "true" at children[1])
+  let defaultIndex = 0;
+  const hasExplicitDefault = heroRows.some((row, i) => {
+    if (row.children[1]?.textContent?.trim() === 'true') {
+      defaultIndex = i;
+      return true;
+    }
+    return false;
+  });
+  if (!hasExplicitDefault) defaultIndex = 0;
+
+  heroRows.forEach((row, i) => {
     const bannerItem = createElement('li', 'hero-banner-item');
     if (i === 0) bannerItem.classList.add('hero-banner-item-active');
     bannerItem.dataset.index = i;

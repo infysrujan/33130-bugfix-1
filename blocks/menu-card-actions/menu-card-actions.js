@@ -1,6 +1,45 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
+import { openModal } from '../../scripts/utils/modal.js';
+
+function getTextValue(value) {
+  return value?.toString().trim() || '';
+}
+
+function formatMenuCardDate(dateStr) {
+  if (!dateStr) return '';
+  const lang = getLang();
+  const date = new Date(dateStr);
+  if (lang === 'th') {
+    const buddhistYear = date.getFullYear() + 543;
+    const month = date.toLocaleString('th-TH', { month: 'long' });
+    const day = date.getDate();
+    return `${day} ${month} ${buddhistYear}`;
+  }
+  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function parseBooleanFlag(value, defaultValue = false) {
+  const normalizedValue = getTextValue(value).toLowerCase();
+  if (!normalizedValue) return defaultValue;
+  if (normalizedValue === 'true') return true;
+  if (normalizedValue === 'false') return false;
+  return defaultValue;
+}
+
+function isBooleanLikeValue(value) {
+  const normalizedValue = getTextValue(value).toLowerCase();
+  return normalizedValue === 'true' || normalizedValue === 'false';
+}
+
+function getOverlayHref(linkDiv) {
+  const linkedHref = linkDiv?.querySelector('a')?.getAttribute('href')?.trim();
+  if (linkedHref && !isBooleanLikeValue(linkedHref)) return linkedHref;
+  const textValue = getTextValue(linkDiv?.textContent);
+  if (textValue && !isBooleanLikeValue(textValue)) return textValue;
+  return '';
+}
 
 function createMenuCardItem(cardElement, doc) {
   const [
@@ -109,4 +148,12 @@ export default function decorate(block) {
 
   block.textContent = '';
   block.appendChild(container);
+
+  block.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-modal]');
+    if (!trigger || !block.contains(trigger)) return;
+    event.preventDefault();
+    const fragmentPath = trigger.getAttribute('data-modal');
+    if (fragmentPath) openModal(doc, { fragmentPath });
+  });
 }

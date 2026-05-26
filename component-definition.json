@@ -98,6 +98,21 @@
           }
         },
         {
+          "title": "Bcap",
+          "id": "bcap",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Bcap",
+                  "model": "bcap"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Brand Logo",
           "id": "brand-logo",
           "plugins": {
@@ -565,6 +580,21 @@
                 "template": {
                   "name": "Download File",
                   "model": "download-file"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Dynamic Board",
+          "id": "dynamic-board",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Dynamic Board",
+                  "model": "dynamic-board"
                 }
               }
             }
@@ -1292,6 +1322,21 @@
           }
         },
         {
+          "title": "Market Report",
+          "id": "market-report",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Market Report",
+                  "model": "market-report"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Megamenu",
           "id": "megamenu",
           "plugins": {
@@ -1521,6 +1566,36 @@
           }
         },
         {
+          "title": "Property for Sale Details",
+          "id": "property-for-sale-details",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Property for Sale Details",
+                  "model": "property-for-sale-details"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Property for Sale",
+          "id": "property-for-sale",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Property for Sale",
+                  "model": "property-for-sale"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Rate Card",
           "id": "rate-card",
           "plugins": {
@@ -1590,6 +1665,37 @@
                 "template": {
                   "name": "Search",
                   "model": "search"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "SME Loan Calculator",
+          "id": "sme-loan-calculator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "SME Loan Calculator",
+                  "model": "sme-loan-calculator",
+                  "filter": "sme-loan-calculator"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "SME Field",
+          "id": "sme-field",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "SME Field",
+                  "model": "sme-field"
                 }
               }
             }
@@ -1697,21 +1803,6 @@
                   "name": "Table",
                   "model": "table",
                   "filter": "table"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Nested Table",
-          "id": "nested-table",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Nested Table",
-                  "model": "nested-table"
                 }
               }
             }
@@ -1838,6 +1929,22 @@
                 "template": {
                   "name": "Warning Card",
                   "model": "warning-card"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Welcome Banner",
+          "id": "welcome-banner",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Welcome Banner",
+                  "model": "welcome-banner",
+                  "filter": "welcome-banner"
                 }
               }
             }
