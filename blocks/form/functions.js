@@ -237,7 +237,8 @@ function addCustomHeader(payload, headerName, headerValue) {
 
 /**
  * Fetches province names in English from the LocationSearchService API.
- * This function retrieves a list of provinces from the backend service and returns them as an array.
+ * This function retrieves a list of provinces from the backend service and returns them as an
+ * array.
  * Returns an empty array if the fetch fails or encounters an error.
  *
  * @async
@@ -327,7 +328,7 @@ async function getProvinceEnAsArray() {
     return [];
   }
 }
- 
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
