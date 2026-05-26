@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fund Prices – Preview</title>
+  <link rel="stylesheet" href="../fund-prices-dropdown/fund-prices-dropdown.css" />
+  <style>
+    /* ── BBL Fonts ─────────────────────────────────────────────── */
+    @font-face {
+      font-family: BangkokBank-Regular;
+      src: url('../../fonts/BBLSans-regular.woff2') format('woff2'),
+           url('../../fonts/BBLSans-regular.woff') format('woff');
+      font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: BangkokBank-Medium;
+      src: url('../../fonts/BBLSans-medium.woff2') format('woff2'),
+           url('../../fonts/BBLSans-medium.woff') format('woff');
+      font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: BangkokBank-Bold;
+      src: url('../../fonts/BBLSans-bold.woff2') format('woff2'),
+           url('../../fonts/BBLSans-bold.woff') format('woff');
+      font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: Muli-Bold;
+      src: url('../../fonts/BBLSans-bold.woff2') format('woff2'),
+           url('../../fonts/BBLSans-bold.woff') format('woff');
+      font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: icomoon;
+      src: url('../../fonts/icomoon.woff') format('woff');
+      font-weight: normal; font-style: normal; font-display: block;
+    }
+
+    /* ── Design tokens ─────────────────────────────────────────── */
+    :root {
+      --bbl-color-truthful-blue:      #002850;
+      --bbl-color-active-blue:        #0064FF;
+      --bbl-color-white:              #FFFFFF;
+      --bbl-color-black:              #000000;
+      --bbl-color-grey-10:            #F5F5F5;
+      --bbl-color-grey-18:            #EBEBEB;
+      --bbl-color-grey-30:            #DBDBDB;
+      --bbl-color-grey-40:            #C8C8CC;
+      --bbl-color-grey-70:            #78787D;
+      --bbl-color-grey-85:            #4E4E4E;
+      --bbl-color-grey-100:           #323238;
+      --bbl-color-grey-125:           #CCC;
+      --bbl-color-grey-150:           #9E9E9E;
+      --bbl-color-red-130:            #d9534f;
+      --bbl-color-blue-steel-light:   #E6EEF4;
+      --bbl-font-family-primary:      BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+      --bbl-font-family-medium:       BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
+      --bbl-font-family-bold:         BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
+    }
+
+    /* ── Reset ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--bbl-font-family-primary);
+      background: var(--bbl-color-grey-10);
+      color: var(--bbl-color-grey-100);
+    }
+
+    /* icomoon icon helper */
+    [class^="icon-"]::before,
+    [class*=" icon-"]::before {
+      font-family: icomoon, sans-serif !important;
+      font-style: normal; font-weight: normal;
+      font-variant: normal; text-transform: none; line-height: 1;
+      -webkit-font-smoothing: antialiased;
+    }
+    .icon-calendar::before { content: "\e912"; }
+    .icon-print::before    { content: "\e90e"; }
+    .icon-dropdown::before { content: "\e902"; }
+
+    /* ── Dark navy search bar ──────────────────────────────────── */
+    .search-bar {
+      background: #002850;
+      padding: 12px 0;
+      z-index: 5;
+      position: relative;
+      border: 0 solid rgba(0,0,0,.1);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      padding-inline: 2rem;
+    }
+    .search-bar label {
+      color: var(--bbl-color-white);
+      font-family: var(--bbl-font-family-medium);
+      font-size: 0.9375rem;
+      white-space: nowrap;
+    }
+
+    /* custom dropdown */
+    .fund-select-wrapper { position: relative; flex: 0 1 22rem; }
+    .fund-select-btn {
+      width: 100%;
+      padding: 0.45rem 2.5rem 0.45rem 0.85rem;
+      border: 1.5px solid rgba(255,255,255,0.6);
+      border-radius: 4px;
+      background: rgba(255,255,255,0.08);
+      color: var(--bbl-color-white);
+      font-family: var(--bbl-font-family-primary);
+      font-size: 0.875rem;
+      cursor: pointer;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      position: relative;
+    }
+    .fund-select-btn .icon-dropdown::before {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--bbl-color-white);
+      font-size: 0.7rem;
+      opacity: 0.85;
+    }
+    .fund-dropdown {
+      position: absolute;
+      top: calc(100% + 2px);
+      left: 0;
+      min-width: 35rem;
+      background: var(--bbl-color-white);
+      border: 1px solid var(--bbl-color-grey-40);
+      border-radius: 0 0 4px 4px;
+      max-height: 18rem;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,.12);
+      list-style: none;
+    }
+    .fund-dropdown.open { display: block; }
+    .fund-dropdown li {
+      padding: 0.6rem 1rem;
+      font-family: var(--bbl-font-family-primary);
+      font-size: 0.9375rem;
+      font-weight: 400;
+      cursor: pointer;
+      color: var(--bbl-color-grey-100);
+      background: transparent;
+      border: none;
+    }
+    .fund-dropdown li:hover { color: var(--bbl-color-active-blue); background: transparent; }
+    .fund-dropdown li.active { color: var(--bbl-color-active-blue); background: transparent; font-weight: 400; }
+
+    /* GO button */
+    .search-go-btn {
+      padding: 0.5rem 1.75rem;
+      background: var(--bbl-color-active-blue);
+      color: var(--bbl-color-white);
+      border: none;
+      border-radius: 4px;
+      font-family: var(--bbl-font-family-medium);
+      font-size: 0.9375rem;
+      cursor: pointer;
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+    .search-go-btn:hover { background: #0050cc; }
+
+    /* ── Page body ─────────────────────────────────────────────── */
+    .page-body { padding: 2rem; background: var(--bbl-color-white); }
+    h1 {
+      font-family: var(--bbl-font-family-bold);
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: var(--bbl-color-black);
+      margin-bottom: 0.5rem;
+    }
+    hr { border: none; border-top: 2px solid var(--bbl-color-grey-30); margin: 0.75rem 0 1.5rem; width: 3rem; }
+
+    /* ── Table block ──────────────────────────────────────────── */
+    .table { width: 100%; overflow-x: auto; padding: 0; }
+    .table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--bbl-font-family-primary);
+      font-size: 0.875rem;
+      color: var(--bbl-color-grey-85);
+    }
+    .table table td {
+      border: 0.0625rem solid var(--bbl-color-grey-30);
+      padding: 0.625rem 0.75rem;
+      vertical-align: middle;
+    }
+    .table table.border-bottom td {
+      border: none;
+      border-bottom: 0.0625rem solid var(--bbl-color-grey-18);
+    }
+    .table table tr.header-row td {
+      font-family: Muli-Bold, var(--bbl-font-family-bold);
+      font-weight: 400;
+      color: var(--bbl-color-black);
+      background: var(--bbl-color-grey-10);
+    }
+    .table table tr:not(.header-row) td {
+      font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+      color: var(--bbl-color-grey-70);
+    }
+    @media (width > 64rem) {
+      .table table { font-size: 1rem; }
+      .table table td { padding: 0.75rem; }
+    }
+
+    /* ── Fund-prices block ────────────────────────────────────── */
+    .fund-prices-table.table { margin: 1.25rem 0 2.5rem; }
+
+    .fund-prices-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .calendar-wrapper {
+      display: flex;
+      gap: 0.625rem;
+      align-items: center;
+    }
+    .calendar-wrapper p {
+      font-size: 0.8rem;
+      line-height: 1.375;
+      font-family: var(--bbl-font-family-medium);
+      font-weight: 400;
+    }
+
+    .calendar-input { position: relative; }
+    .calendar-input input {
+      padding-inline: 1.25rem 2.5rem;
+      height: 2.5rem;
+      border: 0.0625rem solid var(--bbl-color-grey-150);
+      border-radius: 0.4375rem;
+      width: 10rem;
+      font-family: var(--bbl-font-family-primary);
+      font-size: 0.875rem;
+      cursor: pointer;
+      color: var(--bbl-color-grey-100);
+    }
+    .calendar-input.icon-calendar::before {
+      position: absolute;
+      right: 11%;
+      top: 27%;
+      font-size: 1rem;
+      color: var(--bbl-color-grey-85);
+    }
+
+    .fund-prices-print-label {
+      display: flex;
+      align-items: center;
+      position: relative;
+      cursor: pointer;
+      padding-right: 1.75rem;
+    }
+    .fund-prices-print-label p {
+      font: 1rem var(--bbl-font-family-medium);
+      color: var(--bbl-color-grey-100);
+    }
+    .fund-prices-print-label.icon-print::before {
+      position: absolute;
+      right: 0;
+      top: 3px;
+      font-size: 1.1rem;
+      color: var(--bbl-color-grey-85);
+    }
+
+    .fund-prices-error-message p {
+      color: var(--bbl-color-red-130);
+      text-align: center;
+      margin-bottom: 1.25rem;
+      font-family: var(--bbl-font-family-primary);
+    }
+    .hidden { display: none !important; }
+
+    .fund-prices-disclaimer-text {
+      font-family: var(--bbl-font-family-primary);
+      font-size: 0.75rem;
+      color: var(--bbl-color-grey-70);
+      margin-top: 1rem;
+      line-height: 1.5;
+    }
+
+    .fund-prices-table.table table tr.header-row td {
+      font-family: Muli-Bold, var(--bbl-font-family-bold);
+      color: var(--bbl-color-black);
+      height: 2.875rem;
+      vertical-align: middle;
+      background: var(--bbl-color-grey-10);
+    }
+    .fund-prices-table.table table tr:not(.header-row) td {
+      color: var(--bbl-color-grey-70);
+      font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+      font-weight: 400;
+    }
+    .fund-prices-table.table table tr:not(.header-row) td span.dnav {
+      font-style: italic;
+      font-size: 0.6875rem;
+      line-height: 1.63;
+      letter-spacing: -0.0063rem;
+      padding-left: 0.3125rem;
+    }
+    td.merged-fund-type { vertical-align: top; }
+
+    /* ── Date-picker popup ───────────────────────────────────── */
+    #date-picker-popup {
+      position: fixed;
+      background: var(--bbl-color-white);
+      border: 1px solid var(--bbl-color-grey-125);
+      border-radius: 0.4375rem;
+      padding: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+      z-index: 2000;
+      display: none;
+      width: 17rem;
+      font-family: var(--bbl-font-family-primary);
+    }
+    #date-picker-popup.open { display: block; }
+    #date-picker-popup header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;
+    }
+    #date-picker-popup header button {
+      background: none; border: none; cursor: pointer;
+      font-size: 1.1rem; padding: 0 0.3rem;
+      color: var(--bbl-color-grey-85);
+    }
+    #dp-month-year {
+      font-family: var(--bbl-font-family-medium);
+      font-size: 0.9rem;
+      color: var(--bbl-color-grey-100);
+    }
+    #dp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+    #dp-grid span {
+      text-align: center; padding: 0.3rem 0; border-radius: 4px;
+      font-size: 0.8rem; cursor: default;
+      font-family: var(--bbl-font-family-primary);
+    }
+    #dp-grid span.day-name {
+      font-family: var(--bbl-font-family-medium);
+      color: var(--bbl-color-grey-85);
+    }
+    #dp-grid span.enabled { cursor: pointer; }
+    #dp-grid span.enabled:hover { background: var(--bbl-color-blue-steel-light); }
+    #dp-grid span.selected { background: var(--bbl-color-active-blue); color: var(--bbl-color-white); }
+    #dp-grid span.disabled { color: var(--bbl-color-grey-40); }
+
+    /* ── fund-prices-dropdown block container ──────────────────── */
+    .fund-prices-dropdown { padding: 0 2rem 2rem; background: var(--bbl-color-white); }
+  </style>
+</head>
+<body>
+
+<!-- ── Dark navy search bar ──────────────────────────────────── -->
+<div class="search-bar">
+  <label>Search Fund</label>
+  <div class="fund-select-wrapper">
+    <button class="fund-select-btn" id="fund-select-btn" aria-haspopup="listbox" aria-expanded="false">
+      All Funds <span class="icon-dropdown"></span>
+    </button>
+    <ul class="fund-dropdown" id="fund-dropdown" role="listbox"></ul>
+  </div>
+  <button class="search-go-btn" id="search-go-btn">GO</button>
+</div>
+
+<!-- ── Page content ──────────────────────────────────────────── -->
+<div class="page-body">
+  <h1>Fund Prices – BBL Asset Management</h1>
+  <hr />
+
+  <div class="section">
+    <div class="fund-prices-wrapper">
+      <div id="fund-prices-block" class="block fund-prices">
+        <div><div><p>As of :</p></div></div>
+        <div><div><p>Print</p></div></div>
+        <div><div><p>Data older than 3 years is not available.</p></div></div>
+        <div><div><p>* Dividend paid fund &nbsp;&nbsp; ** Foreign investment fund</p></div></div>
+      </div>
+      <div class="table-wrapper">
+        <div class="table" id="fund-table-block">
+          <table class="border-bottom">
+            <tbody>
+              <tr>
+                <td>Fund Type</td>
+                <td>Open-End Fund</td>
+                <td>NAV</td>
+                <td>Selling Price</td>
+                <td>Redemption Price</td>
+                <td>Total Net Assets</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Fund Prices Dropdown block ─────────────────────────────── -->
+<div id="fdd-block" class="block fund-prices-dropdown"></div>
+
+<!-- placeholder kept to avoid breaking the date picker popup reference below
+<div style="display:none"><table><thead><tr><th>Date</th><th>NAV</th><th>Selling Price</th><th>Redemption Price</th></tr>
+      </thead></table></div> -->
+
+<!-- Date picker popup -->
+<div id="date-picker-popup">
+  <header>
+    <button id="dp-prev">&#8249;</button>
+    <span id="dp-month-year"></span>
+    <button id="dp-next">&#8250;</button>
+  </header>
+  <div id="dp-grid"></div>
+</div>
+
+<script>
+/* ── Dropdown fund names ─────────────────────────────────────── */
+const FUND_NAMES = [
+  'All Funds',
+  'Bualuang Treasury Fund',
+  'Bualuang Thanatavee Fixed Income Fund',
+  'Bualuang Short Term Fixed Income Fund',
+  'Bualuang Short Term Fixed Income Plus Fund',
+  'Bualuang Fixed Income Fund',
+  'Bualuang Enhanced Fixed Income Fund**',
+  'B-Flex Open-end Fund',
+  'B-Active Open-end Fund',
+  'Bualuang Mixed 75/25 Fund*',
+  'B Senior Citizen Mixed Fund',
+  'B Senior Citizen Extra Mixed Fund**',
+  'Bualuang Income Fund**',
+  'BUALUANG MAPS 25**',
+  'BUALUANG MAPS 55**',
+  'BUALUANG MAPS 100**',
+  'Buakaew Income Fund',
+  'Bualuang Siriphol Corporate Governance',
+  'Bualuang Basic Open-end Fund',
+  'Bualuang Basic Plus Fund*',
+  'Bualuang Small Mid Equity Fund',
+  'Buakaew Open-end Fund',
+  'Buakaew 2 Open-end Fund',
+  'Bualuang Equity Fund*',
+  'BKIND Fund',
+  'Bualuang Thai Equity CG Fund',
+  'Bualuang Infrastructure Open-end Fund',
+  'Bualuang Thanakom Open-end Fund',
+  'Bualuang Top-Ten Fund',
+  'Bualuang Equity Top-Ten Fund*',
+  'Bualuang ASEAN Equity Fund',
+  'Bualuang Dynamic Bond Fund**',
+  'Bualuang High Yield Fund (Hedged75) not for Retail Investors**',
+  'Bualuang High Yield Fund (Unhedged) not for Retail Investors**',
+  'Bualuang Japan Equity Passive Fund**',
+  'Bualuang China Equity A500 Passive Fund**',
+  'Bualuang US Equity Passive Fund**',
+  'Bualuang US Equity 2000 Passive Fund**',
+  'Bualuang Europe Equity Passive Fund**',
+  'Bualuang Nippon Equity Fund**',
+  'Bualuang Bharata Fund**',
+  'Bualuang China Equity Fund**',
+  'Bualuang China Next Economy Fund**',
+  'Bualuang US Alpha Fund**',
+  'Bualuang Vietnam Equity Fund**',
+  'Bualuang Asia Equity Fund**',
+  'Bualuang Global Equity Fund**',
+  'Bualuang Future Generation Equity Fund**',
+  'Bualuang Global Thematic Opportunities Fund**',
+  'Bualuang Sustainable Investing Portfolio**',
+  'Bualuang Premium Brands Equity Fund**',
+  'Bualuang Equity Opportunities Fund**',
+  'Bualuang FinTech Fund**',
+  'Bualuang Global Infrastructure Equity Fund**',
+  'Bualuang Asia Technology Fund**',
+  'Bualuang Global Health Care Fund**',
+  'Bualuang Global Innovation & Technology Fund**',
+  'Bualuang Gold Fund**',
+  'Bualuang Infrastructure and Real Estate Fund of Funds**',
+  'Bualuang Money Market RMF*',
+  'Bualuang Fixed-income RMF*',
+  'Bualuang Dynamic Bond RMF*,**',
+  'Bualuang Equity 25% RMF*',
+  'Bualuang Flexible RMF*',
+  'BUALUANG MAPS 25 RMF*,**',
+  'BUALUANG MAPS 55 RMF*,**',
+  'BUALUANG MAPS 100 RMF*,**',
+  'Bualuang Equity RMF*',
+  'Bualuang Infrastructure RMF*',
+  'Bualuang Small-Mid Cap RMF*',
+  'Bualuang Siriphol Corporate Governance RMF*',
+  'Bualuang Basic RMF*',
+  'Bualuang Top-Ten RMF*',
+  'Bualuang ASEAN Equity RMF*',
+  'Bualuang US Equity Passive RMF*,**',
+  'Bualuang India Mid Cap RMF*,**',
+  'Bualuang China A-Shares Equity RMF*,**',
+  'Bualuang Vietnam Equity RMF*,**',
+  'Bualuang US Alpha RMF*,**',
+  'Bualuang Asia Equity RMF*,**',
+  'Bualuang Global Equity RMF*,**',
+  'Bualuang Future Equity RMF*,**',
+  'Bualuang Global Thematic Opportunities RMF*,**',
+  'Bualuang Sustainable Investing Portfolio RMF*,**',
+  'Bualuang Premium Brands Equity RMF*,**',
+  'Bualuang Equity Opportunities RMF*,**',
+  'Bualuang Global Infrastructure Equity RMF*,**',
+  'Bualuang Asia Technology RMF*,**',
+  'Bualuang Global Health Care RMF*,**',
+  'Bualuang Global Innovation & Technology RMF*,**',
+  'Bualuang Gold RMF*,**',
+  'Bualuang Infrastructure and Real Estate Fund of Funds RMF*,**',
+  'Bualuang Dynamic Bond Super Savings Fund*,**',
+  'Bualuang Income Super Savings Fund*,**',
+  'Bualuang Mixed 70/30 Super Savings Fund*',
+  'Bualuang Thai Equity Super Savings Fund*',
+  'Bualuang China Equity Super Savings Fund*,**',
+  'Bualuang Vietnam Equity Super Savings Fund*,**',
+  'Bualuang US Alpha Super Savings Fund*,**',
+  'Bualuang Asia Equity Super Savings Fund*,**',
+  'Bualuang Future Equity Super Savings Fund*,**',
+  'Bualuang Global Thematic Opportunities Super Savings Fund*,**',
+  'Bualuang Sustainable Investing Portfolio Super Savings Fund*,**',
+  'Bualuang Global Infrastructure Equity Super Savings Fund*,**',
+  'Bualuang Global Health Care Super Savings Fund*,**',
+  'Bualuang Global Innovation & Technology Super Savings Fund*,**',
+  'Bualuang Sovereign Instruments Thailand* ESG Fund',
+  'Bualuang Mixed Thailand ESG Fund*',
+  'Bualuang Equity Thailand ESG Fund*',
+  'Bualuang Top-Ten Thailand ESG Fund*',
+  'Bualuang Mixed Dividend Thailand ESG Extra Fund*',
+  'Bualuang Mixed 70/30 Thailand ESG Extra Fund*',
+  'Bualuang Equity Thailand ESG Extra Fund*',
+  'Bualuang Thanasarn Plus 11/25 Not For Retail Investors',
+  'Bualuang Thanasarn Plus 12/25 Not For Retail Investors',
+  'Bualuang Thanasarn Plus 13/25 Not For Retail Investors',
+  'Bualuang Thanasarn Plus 19/25 Not For Retail Investors',
+  'Bualuang Thanasarn Plus 20/25 Not For Retail Investors',
+  'Bualuang Thanasarn Plus 21/25 Not For Retail Investors',
+  'Bualuang Thanasarn Plus 22/25 Not For Retail Investors',
+  'Bualuang Thanasarn Plus 23/25 Not For Retail Investors',
+  'Bualuang Thanasarn Plus 24/25 Not For Retail Investors',
+  'Bualuang Thanasarn Plus 1/26 Not For Retail Investors',
+  'Bualuang Thanasarn Plus 2/26 Not For Retail Investors',
+  'Bualuang Thanasarn Plus 3/26 Not For Retail Investors',
+  'Bualuang Thanarat 10/25',
+  'Bualuang Thanarat 11/25',
+  'Bualuang Thanarat 1/26',
+  'Bualuang Thanarat 2/26',
+  'Bualuang Thanarat 3/26',
+  'Bualuang Thanarat 4/26',
+  'Bualuang Thanarat 5/26',
+  'Bualuang Thanarat 6/26',
+  'Bualuang Thanarat 7/26',
+];
+
+/* ── Build dropdown ──────────────────────────────────────────── */
+let selectedFund = null; // { id, name } or null for All Funds
+const dropdownEl = document.getElementById('fund-dropdown');
+const selectBtn  = document.getElementById('fund-select-btn');
+
+function setSelected(fund) {
+  selectedFund = fund;
+  selectBtn.childNodes[0].textContent = (fund ? fund.name : 'ALL FUNDS') + ' ';
+  dropdownEl.querySelectorAll('li').forEach(l => l.classList.remove('active'));
+  dropdownEl.querySelector(`li[data-fund-id="${fund ? fund.id : ''}"]`)?.classList.add('active');
+  if (!fund) dropdownEl.querySelector('li[data-fund-id=""]')?.classList.add('active');
+  dropdownEl.classList.remove('open');
+  selectBtn.setAttribute('aria-expanded', 'false');
+}
+
+// "All Funds" option
+const allLi = document.createElement('li');
+allLi.textContent = 'ALL FUNDS';
+allLi.setAttribute('role', 'option');
+allLi.setAttribute('data-fund-id', '');
+allLi.classList.add('active');
+allLi.addEventListener('click', () => setSelected(null));
+dropdownEl.appendChild(allLi);
+
+// Per-fund options built from MOCK_FUNDS (available via the fetch mock data defined above)
+// They are added after MOCK_FUNDS is defined — see the DOMContentLoaded block below
+
+selectBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const open = dropdownEl.classList.toggle('open');
+  selectBtn.setAttribute('aria-expanded', String(open));
+});
+document.addEventListener('click', () => {
+  dropdownEl.classList.remove('open');
+  selectBtn.setAttribute('aria-expanded', 'false');
+});
+
+/* ── Mock data & fetch intercept ────────────────────────────── */
+/* ── Mock: AllFundsName (fund list for dropdown, NAV values are 0) ── */
+const MOCK_ALL_FUNDS_NAME = [
+  { mf_iNumber:"265", mf_sEng:"Bualuang Treasury Fund",                                         mf_sTha:"บัวหลวงตราสารหนี้ภาครัฐ",          mf_catenumber:8,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"11",  mf_sEng:"Bualuang Thanatavee Fixed Income Fund",                          mf_sTha:"บัวหลวงธนทวี",                      mf_catenumber:1,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"449", mf_sEng:"Bualuang Short Term Fixed Income Fund",                          mf_sTha:"บัวหลวงตราสารหนี้ระยะสั้น",        mf_catenumber:1,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"252", mf_sEng:"Bualuang Fixed Income Fund",                                     mf_sTha:"บัวหลวงตราสารหนี้",                mf_catenumber:1,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"9",   mf_sEng:"B-Flex Open-end Fund",                                           mf_sTha:"บีเฟล็กซ์",                         mf_catenumber:2,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"41",  mf_sEng:"Bualuang Mixed 75/25 Fund*",                                     mf_sTha:"บัวหลวงผสม 75/25*",                mf_catenumber:2,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"3",   mf_sEng:"Buakaew Income Fund",                                            mf_sTha:"บัวแก้วปันผล",                      mf_catenumber:3,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"16",  mf_sEng:"Bualuang Equity Fund*",                                          mf_sTha:"บัวหลวงหุ้นทุน*",                  mf_catenumber:0,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"6",   mf_sEng:"Bualuang Top-Ten Fund",                                          mf_sTha:"บัวหลวงทศพล",                      mf_catenumber:3,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"392", mf_sEng:"Bualuang Dynamic Bond Fund**",                                   mf_sTha:"บัวหลวงไดนามิก บอนด์**",           mf_catenumber:4,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"217", mf_sEng:"Bualuang Gold Fund**",                                           mf_sTha:"บัวหลวงโกลด์ฟันด์**",              mf_catenumber:5,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"151", mf_sEng:"Bualuang Money Market RMF*",                                     mf_sTha:"บัวหลวงมันนี่มาร์เก็ตเพื่อการเลี้ยงชีพ*", mf_catenumber:6, mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"14",  mf_sEng:"Bualuang Flexible RMF*",                                         mf_sTha:"บัวหลวงเฟล็กซิเบิ้ลเพื่อการเลี้ยงชีพ*", mf_catenumber:6, mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+];
+
+/* ── Mock: AllFundPrices by year (full data with categories and real NAV) ── */
+const MOCK_FUNDS = [
+  { mf_iNumber:"265", mf_sEng:"Bualuang Treasury Fund",                   mf_sTha:"บัวหลวงตราสารหนี้ภาครัฐ",          mf_cateEng:"Money Market Funds",      mf_cateTha:"ตลาดเงิน",           mfr_fNav:11.849,  mfr_fBuy:11.849,  mfr_fSel:11.8491, mf_sAUM:41885025253.3 },
+  { mf_iNumber:"11",  mf_sEng:"Bualuang Thanatavee Fixed Income Fund",    mf_sTha:"บัวหลวงธนทวี",                      mf_cateEng:"Fixed Income Funds",      mf_cateTha:"ตราสารหนี้",         mfr_fNav:14.1215, mfr_fBuy:14.1216, mfr_fSel:14.1215, mf_sAUM:100071678038.45 },
+  { mf_iNumber:"449", mf_sEng:"Bualuang Short Term Fixed Income Fund",    mf_sTha:"บัวหลวงตราสารหนี้ระยะสั้น",        mf_cateEng:"Fixed Income Funds",      mf_cateTha:"ตราสารหนี้",         mfr_fNav:10.3296, mfr_fBuy:10.3297, mfr_fSel:10.3296, mf_sAUM:36695838659.42 },
+  { mf_iNumber:"252", mf_sEng:"Bualuang Fixed Income Fund",               mf_sTha:"บัวหลวงตราสารหนี้",                mf_cateEng:"Fixed Income Funds",      mf_cateTha:"ตราสารหนี้",         mfr_fNav:13.5345, mfr_fBuy:13.5346, mfr_fSel:13.5345, mf_sAUM:33584848715.59 },
+  { mf_iNumber:"9",   mf_sEng:"B-Flex Open-end Fund",                     mf_sTha:"บีเฟล็กซ์",                         mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:17.7217, mfr_fBuy:17.6774, mfr_fSel:17.7218, mf_sAUM:340767120.65 },
+  { mf_iNumber:"41",  mf_sEng:"Bualuang Mixed 75/25 Fund*",               mf_sTha:"บัวหลวงผสม 75/25*",                mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:24.6729, mfr_fBuy:24.6729, mfr_fSel:24.673,  mf_sAUM:7894519383.05 },
+  { mf_iNumber:"3",   mf_sEng:"Buakaew Income Fund",                      mf_sTha:"บัวแก้วปันผล",                      mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:3.187,   mfr_fBuy:3.1552,  mfr_fSel:3.1871,  mf_sAUM:2691094022.85 },
+  { mf_iNumber:"16",  mf_sEng:"Bualuang Equity Fund*",                    mf_sTha:"บัวหลวงหุ้นทุน*",                  mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:34.6007, mfr_fBuy:34.6007, mfr_fSel:34.6008, mf_sAUM:14803692177.26 },
+  { mf_iNumber:"6",   mf_sEng:"Bualuang Top-Ten Fund",                    mf_sTha:"บัวหลวงทศพล",                      mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:36.6258, mfr_fBuy:36.2596, mfr_fSel:36.6259, mf_sAUM:5306219670.01 },
+  { mf_iNumber:"392", mf_sEng:"Bualuang Dynamic Bond Fund**",             mf_sTha:"บัวหลวงไดนามิก บอนด์**",           mf_cateEng:"FIF",                     mf_cateTha:"FIF",                mfr_fNav:10.4023, mfr_fBuy:10.4023, mfr_fSel:10.4544, mf_sAUM:8164629750.89, mf_backdate:"2026-05-12T00:00:00" },
+  { mf_iNumber:"217", mf_sEng:"Bualuang Gold Fund**",                     mf_sTha:"บัวหลวงโกลด์ฟันด์**",              mf_cateEng:"Alternative Asset Funds", mf_cateTha:"ทรัพย์สินทางเลือก", mfr_fNav:32.2672, mfr_fBuy:32.2285, mfr_fSel:32.306,  mf_sAUM:6995406777.61 },
+  { mf_iNumber:"151", mf_sEng:"Bualuang Money Market RMF*",               mf_sTha:"บัวหลวงมันนี่มาร์เก็ตเพื่อการเลี้ยงชีพ*", mf_cateEng:"RMF",            mf_cateTha:"RMF",                mfr_fNav:12.3599, mfr_fBuy:12.3599, mfr_fSel:12.36,   mf_sAUM:11454741548.43 },
+  { mf_iNumber:"14",  mf_sEng:"Bualuang Flexible RMF*",                   mf_sTha:"บัวหลวงเฟล็กซิเบิ้ลเพื่อการเลี้ยงชีพ*", mf_cateEng:"RMF",             mf_cateTha:"RMF",                mfr_fNav:51.7436, mfr_fBuy:51.7436, mfr_fSel:51.7437, mf_sAUM:15273805033.00 },
+];
+// Build per-fund dropdown items from MOCK_FUNDS
+MOCK_FUNDS.forEach((f) => {
+  const name = f.mf_sEng || f.mf_sTha;
+  if (!name) return;
+  const li = document.createElement('li');
+  li.textContent = name;
+  li.setAttribute('role', 'option');
+  li.setAttribute('data-fund-id', f.mf_iNumber);
+  li.addEventListener('click', () => setSelected({ id: String(f.mf_iNumber), name }));
+  dropdownEl.appendChild(li);
+});
+
+const MOCK_FUND_HISTORY = [
+  { mfr_iId:356363, mf_iNumber:265, mfr_fNav:11.849,  mfr_fSel:11.8491, mfr_fBuy:11.849,  mfr_dDataDate:'2026-05-13T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+  { mfr_iId:356234, mf_iNumber:265, mfr_fNav:11.8488, mfr_fSel:11.8489, mfr_fBuy:11.8488, mfr_dDataDate:'2026-05-12T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+  { mfr_iId:356105, mf_iNumber:265, mfr_fNav:11.8486, mfr_fSel:11.8487, mfr_fBuy:11.8486, mfr_dDataDate:'2026-05-11T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+  { mfr_iId:355976, mf_iNumber:265, mfr_fNav:11.8479, mfr_fSel:11.848,  mfr_fBuy:11.8479, mfr_dDataDate:'2026-05-08T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+  { mfr_iId:355847, mf_iNumber:265, mfr_fNav:11.8478, mfr_fSel:11.8479, mfr_fBuy:11.8478, mfr_dDataDate:'2026-05-07T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+  { mfr_iId:355718, mf_iNumber:265, mfr_fNav:11.8475, mfr_fSel:11.8476, mfr_fBuy:11.8475, mfr_dDataDate:'2026-05-06T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+];
+
+const MOCK_FUND_MINMAX = {
+  MinSelected_mfr_fNav:11.8475, MinSelected_mfr_dDataDate:'2026-05-06T00:00:00',
+  MaxSelected_mfr_fNav:11.849,  MaxSelected_mfr_dDataDate:'2026-05-13T00:00:00',
+  MinYear_mfr_fNav:11.7287,     MinYear_mfr_dDataDate:'2025-05-13T00:00:00',
+  MaxYear_mfr_fNav:11.849,      MaxYear_mfr_dDataDate:'2026-05-13T00:00:00',
+  MinSince_mfr_fNav:10.073,     MinSince_mfr_dDataDate:'2012-11-19T00:00:00',
+  MaxSince_mfr_fNav:11.849,     MaxSince_mfr_dDataDate:'2026-05-13T00:00:00',
+  Begin_mfr_fNav:11.8475,       Begin_mfr_dDataDate:'2026-05-06T00:00:00',
+  End_mfr_fNav:11.849,          End_mfr_dDataDate:'2026-05-13T00:00:00',
+};
+
+const _realFetch = window.fetch.bind(window);
+window.fetch = async (url, opts) => {
+  const s = String(url);
+  if (s.includes('/api/fundpriceservice/LatestDate'))
+    return new Response(JSON.stringify([{ mDate:'2026-05-13T00:00:00' }]), { status:200, headers:{'Content-Type':'application/json'} });
+  if (s.includes('/api/fundpriceservice/AllFundsName'))
+    return new Response(JSON.stringify(MOCK_ALL_FUNDS_NAME), { status:200, headers:{'Content-Type':'application/json'} });
+  if (s.includes('/api/fundpriceservice/GetUpdateInMonth'))
+    return new Response(JSON.stringify([{Day:13},{Day:12},{Day:11},{Day:8},{Day:7},{Day:6},{Day:5}]), { status:200, headers:{'Content-Type':'application/json'} });
+  if (s.includes('/api/fundpriceservice/FundMinMax'))
+    return new Response(JSON.stringify(MOCK_FUND_MINMAX), { status:200, headers:{'Content-Type':'application/json'} });
+  if (s.includes('/api/fundpriceservice/FundPrice'))
+    return new Response(JSON.stringify(MOCK_FUND_HISTORY), { status:200, headers:{'Content-Type':'application/json'} });
+  if (/\/api\/fundpriceservice\/\d{4}$/.test(s))
+    return new Response(JSON.stringify(MOCK_FUNDS), { status:200, headers:{'Content-Type':'application/json'} });
+  return _realFetch(url, opts);
+};
+
+/* ── Calendar picker stub ────────────────────────────────────── */
+function attachCalendarPicker({ input, value, fetchEnabledDays, onChange }) {
+  const popup = document.getElementById('date-picker-popup');
+  const grid  = document.getElementById('dp-grid');
+  const label = document.getElementById('dp-month-year');
+  let current  = value ? new Date(value) : new Date();
+  let selected = current;
+  let enabledDays = [];
+
+  const MONTHS = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
+
+  function fmt(d) {
+    return `${String(d.getDate()).padStart(2,'0')} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+  }
+  async function loadGrid(y, m) {
+    const raw = await fetchEnabledDays({ year:y, month:m }).catch(() => []);
+    enabledDays = Array.isArray(raw) ? raw.map(i => i?.Day ?? i?.day ?? i).filter(Number.isInteger) : raw;
+    renderGrid(y, m);
+  }
+  function renderGrid(y, m) {
+    label.textContent = `${MONTHS[m]} ${y}`;
+    grid.innerHTML = '';
+    ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => {
+      const s = document.createElement('span');
+      s.className = 'day-name'; s.textContent = d; grid.appendChild(s);
+    });
+    const first = new Date(y, m, 1).getDay();
+    for (let i = 0; i < first; i++) grid.appendChild(document.createElement('span'));
+    const days = new Date(y, m + 1, 0).getDate();
+    for (let d = 1; d <= days; d++) {
+      const s = document.createElement('span');
+      s.textContent = d;
+      if (enabledDays.includes(d)) {
+        s.classList.add('enabled');
+        if (selected && selected.getFullYear()===y && selected.getMonth()===m && selected.getDate()===d)
+          s.classList.add('selected');
+        s.addEventListener('click', () => {
+          selected = new Date(y, m, d);
+          input.value = fmt(selected);
+          popup.classList.remove('open');
+          onChange(selected);
+        });
+      } else { s.classList.add('disabled'); }
+      grid.appendChild(s);
+    }
+  }
+
+  input.value = fmt(selected);
+  input.readOnly = true;
+  input.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const rect = input.getBoundingClientRect();
+    popup.style.top  = (rect.bottom + 4) + 'px';
+    popup.style.left = rect.left + 'px';
+    popup.classList.toggle('open');
+    if (popup.classList.contains('open')) loadGrid(current.getFullYear(), current.getMonth());
+  });
+  document.getElementById('dp-prev').addEventListener('click', () => {
+    current = new Date(current.getFullYear(), current.getMonth() - 1, 1);
+    loadGrid(current.getFullYear(), current.getMonth());
+  });
+  document.getElementById('dp-next').addEventListener('click', () => {
+    current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
+    loadGrid(current.getFullYear(), current.getMonth());
+  });
+  document.addEventListener('click', () => popup.classList.remove('open'));
+}
+
+function isAuthoringInstance() { return false; }
+
+/* ── Fund-prices block logic ─────────────────────────────────── */
+const ALL_FUND_NAMES_URL       = 'https://www.bangkokbank.com/api/fundpriceservice/AllFundsName';
+const LATEST_DATE_URL          = 'https://www.bangkokbank.com/api/fundpriceservice/LatestDate';
+const GET_UPDATE_IN_MONTH_BASE = 'https://www.bangkokbank.com/api/fundpriceservice/GetUpdateInMonth';
+const ALL_FUND_PRICES_URL      = 'https://www.bangkokbank.com/api/fundpriceservice/';
+const MAX_FUND_PRICE_HISTORY_YEARS = 3;
+let latestMdate  = null;
+let allFundsData = [];
+let _tableEl     = null;
+
+function isDateOlderThanFundHistoryLimit(d) {
+  const today = new Date();
+  const cutoff = new Date(today.getFullYear() - MAX_FUND_PRICE_HISTORY_YEARS, today.getMonth(), today.getDate());
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate()) < cutoff;
+}
+function pad2(n) { return String(n).padStart(2,'0'); }
+function fmtPath(d) { return `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`; }
+
+async function fetchAllFundPrices(date) {
+  const res = await fetch(`${ALL_FUND_PRICES_URL}${date.getFullYear()}`);
+  if (!res.ok) throw new Error(`AllFundPrices ${res.status}`);
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+async function fetchNavEnabledDaysForMonth({ year, month }) {
+  const res = await fetch(`${GET_UPDATE_IN_MONTH_BASE}/${year}/${month+1}/0`);
+  if (!res.ok) throw new Error(`GetUpdateInMonth ${res.status}`);
+  const data = await res.json();
+  if (!Array.isArray(data)) return [];
+  return data.map(i => i?.day != null ? Number(i.day) : NaN).filter(d => !isNaN(d));
+}
+function parseLocalDateFromYmd(ymd) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd).trim());
+  if (!m) return null;
+  const d = new Date(+m[1], +m[2]-1, +m[3]);
+  return (d.getFullYear()===+m[1] && d.getMonth()===+m[2]-1 && d.getDate()===+m[3]) ? d : null;
+}
+function normalizeHeaderKey(h) { return h.toLowerCase().replace(/[^a-z0-9]/g,''); }
+function getLang() {
+  const l = document.documentElement.getAttribute('lang');
+  return l && l.toLowerCase().startsWith('th') ? 'th' : 'en';
+}
+const localizedHeaderMap = {
+  fundtype:        { en:'mf_cateEng', th:'mf_cateTha' },
+  openendfund:     { en:'mf_sEng',    th:'mf_sTha' },
+  nav:             'mfr_fNav',
+  sellingprice:    'mfr_fBuy',
+  redemptionprice: 'mfr_fSel',
+  totalnetassets:  'mf_sAUM',
+};
+function resolveColumnKey(k, lang) {
+  const m = localizedHeaderMap[k];
+  if (!m) return k;
+  return typeof m === 'object' ? m[lang] : m;
+}
+function buildCategoryOrder(rows, key) {
+  const order=[], seen=new Set();
+  rows.forEach(r => { if (r[key]!==undefined && !seen.has(r[key])) { order.push(r[key]); seen.add(r[key]); } });
+  return order;
+}
+function groupRowsByCategory(rows, key) {
+  return rows.reduce((acc,r) => { if (!acc[r[key]]) acc[r[key]]=[]; acc[r[key]].push(r); return acc; }, {});
+}
+function clearNonHeaderRows(tbody) { tbody.querySelectorAll('tr:not(.header-row)').forEach(tr => tr.remove()); }
+
+const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function formatBackdate(iso) {
+  // "2026-05-06T00:00:00" → "06 May 2026"
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+  if (!m) return iso;
+  return `${m[3]} ${MONTHS_SHORT[+m[2]-1]} ${m[1]}`;
+}
+
+function formatBodyCellText(nk, row, ck) {
+  if (nk === 'openendfund') {
+    // mf_backdate takes priority; fall back to mfr_dDataDate / mf_dnav
+    const rawDate = row.mf_backdate || row.mfr_dDataDate || row.mf_dnav;
+    if (rawDate && row[ck] !== undefined) {
+      // Compare date portion only against latestMdate (YYYY-MM-DD)
+      const datePart = rawDate.split('T')[0];
+      if (datePart !== latestMdate) {
+        const label = row.mf_backdate ? formatBackdate(rawDate) : rawDate;
+        return `${row[ck]} <span class="dnav">${label}</span>`;
+      }
+    }
+    return row[ck] !== undefined ? `${row[ck]}` : '';
+  }
+  if (ck && row[ck] !== undefined) {
+    const v = String(row[ck]);
+    const num = parseFloat(v);
+    if (!isNaN(num) && Math.abs(num) >= 1000)
+      return num.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:4 });
+    return v === 'null' ? 'N/A' : v;
+  }
+  return '';
+}
+
+function appendRowFromData(tableElement, dataArray) {
+  const lang  = getLang();
+  const tbody = tableElement.querySelector('tbody');
+  if (!tbody || !Array.isArray(dataArray)) return;
+
+  let headerRow = tbody.querySelector('.header-row');
+  if (!headerRow) {
+    const first = tbody.querySelector('tr');
+    if (first) { headerRow = first; headerRow.classList.add('header-row'); }
+  }
+  if (!headerRow) return;
+
+  const headers     = [...headerRow.querySelectorAll('td')];
+  const categoryKey = lang === 'th' ? 'mf_cateTha' : 'mf_cateEng';
+  const order       = buildCategoryOrder(dataArray, categoryKey);
+  const groups      = groupRowsByCategory(dataArray, categoryKey);
+
+  clearNonHeaderRows(tbody);
+
+  order.forEach(category => {
+    const group = groups[category];
+    group.forEach((row, idx) => {
+      const tr = document.createElement('tr');
+      headers.forEach(hCell => {
+        const nk = normalizeHeaderKey(hCell.textContent.trim());
+        const ck = resolveColumnKey(nk, lang);
+        if (nk === 'fundtype') {
+          if (idx === 0) {
+            const td = document.createElement('td');
+            td.textContent = row[ck] !== undefined ? row[ck] : '';
+            td.rowSpan = group.length;
+            td.classList.add('merged-fund-type');
+            tr.appendChild(td);
+          }
+          return;
+        }
+        const td = document.createElement('td');
+        td.innerHTML = formatBodyCellText(nk, row, ck);
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  });
+}
+
+function filterFunds(data, fund) {
+  if (!fund) return data;
+  return data.filter(r => r.mf_iNumber === fund.id || r.mf_sEng === fund.name || r.mf_sTha === fund.name);
+}
+
+async function refreshTableFromPrices(tableEl, fallback, date) {
+  try {
+    const prices = await fetch(`${ALL_FUND_PRICES_URL}${date.getFullYear()}`).then(r => r.json());
+    allFundsData = Array.isArray(prices) ? prices : fallback;
+  } catch { allFundsData = fallback; }
+  appendRowFromData(tableEl, filterFunds(allFundsData, selectedFund));
+}
+
+function richTextFromRow(row) {
+  if (!row) return '';
+  const cell = row.querySelector(':scope > div');
+  return (cell ?? row).innerHTML.trim();
+}
+
+function printFundPricesContent() {
+  const section = document.querySelector('.fund-prices-root');
+  if (!section) return;
+  const clone = section.cloneNode(true);
+  clone.querySelectorAll('.fund-prices-print-label').forEach(el => el.remove());
+  clone.querySelectorAll('.fund-prices-error-message').forEach(el => el.remove());
+  const inp = clone.querySelector('.calendar-input input');
+  if (inp) inp.parentNode?.replaceChild(document.createTextNode(inp.value), inp);
+  const orig = document.body.innerHTML;
+  document.body.innerHTML = clone.outerHTML;
+  window.print();
+  document.body.innerHTML = orig;
+  window.location.reload();
+}
+
+/* ── GO button ───────────────────────────────────────────────── */
+document.getElementById('search-go-btn').addEventListener('click', () => {
+  const fddBlock = document.getElementById('fdd-block');
+  if (selectedFund) {
+    document.querySelector('.page-body').style.display = 'none';
+    fddBlock.dispatchEvent(new CustomEvent('fund-prices-dropdown:show', {
+      detail: { fund: selectedFund, mdate: latestMdate },
+    }));
+  } else {
+    document.querySelector('.page-body').style.display = '';
+    fddBlock.dispatchEvent(new CustomEvent('fund-prices-dropdown:hide'));
+    if (_tableEl) appendRowFromData(_tableEl, filterFunds(allFundsData, null));
+  }
+});
+
+/* ── REMOVED (now handled by fund-prices-dropdown.js module) ──── */
+const MOCK_DETAIL_STATS_BY_PERIOD_UNUSED_DO_NOT_USE = {
+  '1W': {
+    MaxSelected_fNav: 11.8478, MaxSelected_fBuy: 11.8479, MaxSelected_fSel: 11.8478,
+    MinSelected_fNav: 11.8301, MinSelected_fBuy: 11.8302, MinSelected_fSel: 11.8301,
+    MaxYear_fNav: 11.9200,    MaxYear_fBuy: 11.9201,    MaxYear_fSel: 11.9200,
+    MinYear_fNav: 11.7500,    MinYear_fBuy: 11.7501,    MinYear_fSel: 11.7500,
+    MaxSince_fNav: 11.9500,   MaxSince_fBuy: 11.9501,   MaxSince_fSel: 11.9500,
+    MinSince_fNav: 10.0000,   MinSince_fBuy: 10.0001,   MinSince_fSel: 10.0000,
+    Begin_fNav: 11.8301, End_fNav: 11.8478,
+  },
+  '1M': {
+    MaxSelected_fNav: 11.8478, MaxSelected_fBuy: 11.8479, MaxSelected_fSel: 11.8478,
+    MinSelected_fNav: 11.8100, MinSelected_fBuy: 11.8101, MinSelected_fSel: 11.8100,
+    MaxYear_fNav: 11.9200,    MaxYear_fBuy: 11.9201,    MaxYear_fSel: 11.9200,
+    MinYear_fNav: 11.7500,    MinYear_fBuy: 11.7501,    MinYear_fSel: 11.7500,
+    MaxSince_fNav: 11.9500,   MaxSince_fBuy: 11.9501,   MaxSince_fSel: 11.9500,
+    MinSince_fNav: 10.0000,   MinSince_fBuy: 10.0001,   MinSince_fSel: 10.0000,
+    Begin_fNav: 11.8100, End_fNav: 11.8478,
+  },
+  '3M': {
+    MaxSelected_fNav: 11.9200, MaxSelected_fBuy: 11.9201, MaxSelected_fSel: 11.9200,
+    MinSelected_fNav: 11.7800, MinSelected_fBuy: 11.7801, MinSelected_fSel: 11.7800,
+    MaxYear_fNav: 11.9200,    MaxYear_fBuy: 11.9201,    MaxYear_fSel: 11.9200,
+    MinYear_fNav: 11.7500,    MinYear_fBuy: 11.7501,    MinYear_fSel: 11.7500,
+    MaxSince_fNav: 11.9500,   MaxSince_fBuy: 11.9501,   MaxSince_fSel: 11.9500,
+    MinSince_fNav: 10.0000,   MinSince_fBuy: 10.0001,   MinSince_fSel: 10.0000,
+    Begin_fNav: 11.7800, End_fNav: 11.8478,
+  },
+  '6M': {
+    MaxSelected_fNav: 11.9200, MaxSelected_fBuy: 11.9201, MaxSelected_fSel: 11.9200,
+    MinSelected_fNav: 11.7200, MinSelected_fBuy: 11.7201, MinSelected_fSel: 11.7200,
+    MaxYear_fNav: 11.9200,    MaxYear_fBuy: 11.9201,    MaxYear_fSel: 11.9200,
+    MinYear_fNav: 11.7200,    MinYear_fBuy: 11.7201,    MinYear_fSel: 11.7200,
+    MaxSince_fNav: 11.9500,   MaxSince_fBuy: 11.9501,   MaxSince_fSel: 11.9500,
+    MinSince_fNav: 10.0000,   MinSince_fBuy: 10.0001,   MinSince_fSel: 10.0000,
+    Begin_fNav: 11.7200, End_fNav: 11.8478,
+  },
+  '1Y': {
+    MaxSelected_fNav: 11.9500, MaxSelected_fBuy: 11.9501, MaxSelected_fSel: 11.9500,
+    MinSelected_fNav: 11.7000, MinSelected_fBuy: 11.7001, MinSelected_fSel: 11.7000,
+    MaxYear_fNav: 11.9500,    MaxYear_fBuy: 11.9501,    MaxYear_fSel: 11.9500,
+    MinYear_fNav: 11.7000,    MinYear_fBuy: 11.7001,    MinYear_fSel: 11.7000,
+    MaxSince_fNav: 11.9500,   MaxSince_fBuy: 11.9501,   MaxSince_fSel: 11.9500,
+    MinSince_fNav: 10.0000,   MinSince_fBuy: 10.0001,   MinSince_fSel: 10.0000,
+    Begin_fNav: 11.7000, End_fNav: 11.8478,
+  },
+};
+
+const MOCK_DETAIL_HISTORY_BY_PERIOD = {
+  '1W': [
+    { mfr_dDataDate:'2026-05-07', mfr_fNav:11.8478, mfr_fBuy:11.8479, mfr_fSel:11.8478 },
+    { mfr_dDataDate:'2026-05-06', mfr_fNav:11.8412, mfr_fBuy:11.8413, mfr_fSel:11.8412 },
+    { mfr_dDataDate:'2026-05-05', mfr_fNav:11.8382, mfr_fBuy:11.8383, mfr_fSel:11.8382 },
+    { mfr_dDataDate:'2026-05-02', mfr_fNav:11.8350, mfr_fBuy:11.8351, mfr_fSel:11.8350 },
+    { mfr_dDataDate:'2026-05-01', mfr_fNav:11.8301, mfr_fBuy:11.8302, mfr_fSel:11.8301 },
+  ],
+  '1M': [
+    { mfr_dDataDate:'2026-05-07', mfr_fNav:11.8478, mfr_fBuy:11.8479, mfr_fSel:11.8478 },
+    { mfr_dDataDate:'2026-05-02', mfr_fNav:11.8350, mfr_fBuy:11.8351, mfr_fSel:11.8350 },
+    { mfr_dDataDate:'2026-04-28', mfr_fNav:11.8250, mfr_fBuy:11.8251, mfr_fSel:11.8250 },
+    { mfr_dDataDate:'2026-04-21', mfr_fNav:11.8200, mfr_fBuy:11.8201, mfr_fSel:11.8200 },
+    { mfr_dDataDate:'2026-04-14', mfr_fNav:11.8150, mfr_fBuy:11.8151, mfr_fSel:11.8150 },
+    { mfr_dDataDate:'2026-04-07', mfr_fNav:11.8100, mfr_fBuy:11.8101, mfr_fSel:11.8100 },
+  ],
+  '3M': [
+    { mfr_dDataDate:'2026-05-07', mfr_fNav:11.8478, mfr_fBuy:11.8479, mfr_fSel:11.8478 },
+    { mfr_dDataDate:'2026-04-28', mfr_fNav:11.8250, mfr_fBuy:11.8251, mfr_fSel:11.8250 },
+    { mfr_dDataDate:'2026-03-31', mfr_fNav:11.8050, mfr_fBuy:11.8051, mfr_fSel:11.8050 },
+    { mfr_dDataDate:'2026-02-28', mfr_fNav:11.7900, mfr_fBuy:11.7901, mfr_fSel:11.7900 },
+  ],
+  '6M': [
+    { mfr_dDataDate:'2026-05-07', mfr_fNav:11.8478, mfr_fBuy:11.8479, mfr_fSel:11.8478 },
+    { mfr_dDataDate:'2026-03-31', mfr_fNav:11.8050, mfr_fBuy:11.8051, mfr_fSel:11.8050 },
+    { mfr_dDataDate:'2026-01-30', mfr_fNav:11.7600, mfr_fBuy:11.7601, mfr_fSel:11.7600 },
+    { mfr_dDataDate:'2025-11-28', mfr_fNav:11.7200, mfr_fBuy:11.7201, mfr_fSel:11.7200 },
+  ],
+  '1Y': [
+    { mfr_dDataDate:'2026-05-07', mfr_fNav:11.8478, mfr_fBuy:11.8479, mfr_fSel:11.8478 },
+    { mfr_dDataDate:'2026-01-30', mfr_fNav:11.7600, mfr_fBuy:11.7601, mfr_fSel:11.7600 },
+    { mfr_dDataDate:'2025-10-31', mfr_fNav:11.7900, mfr_fBuy:11.7901, mfr_fSel:11.7900 },
+    { mfr_dDataDate:'2025-07-31', mfr_fNav:11.7500, mfr_fBuy:11.7501, mfr_fSel:11.7500 },
+    { mfr_dDataDate:'2025-05-07', mfr_fNav:11.7000, mfr_fBuy:11.7001, mfr_fSel:11.7000 },
+  ],
+};
+
+/* ── Old detail view state/functions removed — now handled by fund-prices-dropdown.js ── */
+// (renderStatTables, renderChart, renderHistTable, periodDateRange, renderDetailView,
+//  showDetailView, hideDetailView, period dropdown wiring, DR pickers, tab wiring,
+//  back button handler, and old GO handler all removed — handled by fund-prices-dropdown.js)
+
+
+/* ── Decorate ────────────────────────────────────────────────── */
+async function decorate(block) {
+  const doc  = block.ownerDocument;
+  const rows = [...block.children];
+  const table = block.closest('.fund-prices-wrapper').querySelector('.table');
+  if (!table) return;
+  table.classList.add('fund-prices-table');
+  _tableEl = table;
+
+  let funds = [], calendarDate = new Date();
+
+  const dateLabelHtml  = richTextFromRow(rows[0]);
+  const printLabelHtml = richTextFromRow(rows[1]);
+  const errorMsgHtml   = richTextFromRow(rows[2]);
+  const disclaimerHtml = richTextFromRow(rows[3]);
+
+  block.innerHTML = '';
+
+  const root = doc.createElement('div');
+  root.className = 'fund-prices-root';
+
+  const dateLabel = doc.createElement('div');
+  dateLabel.className = 'calendar-wrapper';
+  dateLabel.innerHTML = dateLabelHtml;
+
+  const printLabel = doc.createElement('div');
+  printLabel.className = 'fund-prices-print-label icon-print';
+  printLabel.innerHTML = printLabelHtml;
+
+  const errorMessage = doc.createElement('div');
+  errorMessage.classList.add('fund-prices-error-message', 'hidden');
+  errorMessage.hidden = true;
+  errorMessage.setAttribute('role', 'alert');
+  errorMessage.innerHTML = errorMsgHtml;
+
+  const disclaimer = doc.createElement('div');
+  disclaimer.className = 'fund-prices-disclaimer-text';
+  disclaimer.innerHTML = disclaimerHtml;
+
+  try {
+    const [namesRes, latestRes] = await Promise.all([fetch(ALL_FUND_NAMES_URL), fetch(LATEST_DATE_URL)]);
+    if (latestRes.ok) {
+      const lj = await latestRes.json();
+      const rawDate = Array.isArray(lj) ? lj[0]?.mDate : lj?.mDate;
+      latestMdate = rawDate ? rawDate.split('T')[0] : null;
+      const parsed = latestMdate ? parseLocalDateFromYmd(latestMdate) : null;
+      if (parsed) calendarDate = parsed;
+    }
+    if (namesRes.ok) {
+      const data = await namesRes.json();
+      funds = Array.isArray(data) ? data : [];
+    }
+  } catch (e) { console.error('fund-prices: init failed', e); }
+
+  const calendarInput = doc.createElement('div');
+  const input = doc.createElement('input');
+  input.id = 'date-to'; input.type = 'text'; input.name = 'date-to';
+  calendarInput.classList.add('calendar-input', 'icon-calendar');
+  calendarInput.appendChild(input);
+  dateLabel.appendChild(calendarInput);
+
+  attachCalendarPicker({
+    input, value: calendarDate,
+    fetchEnabledDays: fetchNavEnabledDaysForMonth,
+    onChange: (selectedDate) => {
+      if (!table) return;
+      if (isDateOlderThanFundHistoryLimit(selectedDate)) {
+        errorMessage.classList.remove('hidden'); errorMessage.hidden = false; return;
+      }
+      errorMessage.classList.add('hidden'); errorMessage.hidden = true;
+      refreshTableFromPrices(table, funds, selectedDate);
+    },
+  });
+
+  await refreshTableFromPrices(table, funds, calendarDate);
+
+  const toolbar = doc.createElement('div');
+  toolbar.className = 'fund-prices-toolbar';
+  toolbar.appendChild(dateLabel);
+  toolbar.appendChild(printLabel);
+
+  root.append(toolbar, errorMessage, table, disclaimer);
+  block.appendChild(root);
+  printLabel.addEventListener('click', (e) => { e.preventDefault(); printFundPricesContent(); });
+}
+
+decorate(document.getElementById('fund-prices-block'));
+</script>
+
+<script type="module">
+/* ── Load and wire fund-prices-dropdown block ────────────────── */
+import decorateFdd from '../fund-prices-dropdown/fund-prices-dropdown.js';
+
+const fddBlock = document.getElementById('fdd-block');
+await decorateFdd(fddBlock);
+
+/* When the back button inside the dropdown fires, restore the main view */
+fddBlock.addEventListener('fund-prices-dropdown:back', () => {
+  document.querySelector('.page-body').style.display = '';
+  // Reset fund selector to All Funds
+  const allLi = document.querySelector('#fund-dropdown li[data-fund-id=""]');
+  allLi?.click();
+});
+</script>
+</body>
+</html>

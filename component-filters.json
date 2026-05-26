@@ -190,6 +190,24 @@
     ]
   },
   {
+    "id": "fund-prices-table",
+    "rte": {
+      "toolbar": {
+        "insert": [
+          "table"
+        ],
+        "editor": [
+          "removeformat"
+        ],
+        "sections": [
+          "insert",
+          "editor"
+        ]
+      }
+    },
+    "components": []
+  },
+  {
     "id": "header-section",
     "components": [
       "top-nav",

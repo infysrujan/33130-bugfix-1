@@ -1,0 +1,34 @@
+/* Low-specificity td rule first to satisfy no-descending-specificity */
+td.merged-fund-type {
+  vertical-align: top;
+}
+
+.fund-prices-table {
+  margin: 1.25rem 0 2.5rem;
+}
+
+.fund-prices-table table.outline-border,
+.fund-prices-table table.border-bottom td {
+  border-color: var(--bbl-color-grey-18);
+}
+
+.fund-prices-table table tr.header-row td {
+  font: 1rem Muli-Bold, Arial, sans-serif;
+  color: var(--bbl-color-black);
+  height: 2.875rem;
+  vertical-align: middle;
+}
+
+.fund-prices-table table tr:not(.header-row) td {
+  color: var(--bbl-color-grey-70);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+}
+
+.fund-prices-table table tr:not(.header-row) td span {
+  font-style: italic;
+  font-size: 0.6875rem;
+  line-height: 1.63;
+  letter-spacing: -0.0063rem;
+  padding-left: 0.3125rem;
+}

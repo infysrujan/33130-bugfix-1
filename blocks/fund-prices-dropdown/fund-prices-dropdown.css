@@ -1,0 +1,395 @@
+/* ── Detail view header ──────────────────────────────────────── */
+.fdd-header {
+  margin-bottom: 1.5rem;
+  padding-top: 1.5rem;
+}
+
+.fdd-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.fdd-back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-active-blue);
+  padding: 0;
+}
+
+.fdd-title {
+  font-family: BangkokBank-Bold, Arial, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: var(--bbl-color-black);
+  margin-bottom: 0.5rem;
+}
+
+.fdd-title-rule {
+  border: none;
+  border-top: 2px solid var(--bbl-color-grey-30);
+  margin: 0.75rem 0;
+  width: 3rem;
+}
+
+.fdd-fund-label {
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-70);
+}
+
+/* ── Calendar input ──────────────────────────────────────────── */
+.calendar-input {
+  position: relative;
+}
+
+.calendar-input input {
+  padding-inline: 1.25rem 2.5rem;
+  height: 2.5rem;
+  border: 0.0625rem solid var(--bbl-color-grey-150, #9e9e9e);
+  border-radius: 0.4375rem;
+  width: 10rem;
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: var(--bbl-color-grey-100);
+}
+
+.calendar-input.icon-calendar::before {
+  position: absolute;
+  right: 11%;
+  top: 27%;
+  font-size: 1rem;
+  color: var(--bbl-color-grey-85);
+  pointer-events: none;
+}
+
+/* ── Calendar popup ──────────────────────────────────────────── */
+.bbl-cal-popup {
+  position: absolute;
+  background: var(--bbl-color-white, #fff);
+  border: 1px solid var(--bbl-color-grey-125, #ccc);
+  border-radius: 0.4375rem;
+  padding: 0.75rem;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  z-index: 2000;
+  display: none;
+  width: 17rem;
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+}
+
+.bbl-cal-popup.open {
+  display: block;
+}
+
+.bbl-cal-popup header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.bbl-cal-popup header button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0 0.3rem;
+  color: var(--bbl-color-grey-85);
+}
+
+.bbl-cal-popup .cal-label {
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-size: 0.9rem;
+  color: var(--bbl-color-grey-100);
+}
+
+.bbl-cal-popup .cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.bbl-cal-popup .cal-grid span {
+  text-align: center;
+  padding: 0.3rem 0;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: default;
+}
+
+.bbl-cal-popup .cal-day-name {
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  color: var(--bbl-color-grey-85);
+}
+
+.bbl-cal-popup .cal-enabled {
+  cursor: pointer;
+}
+
+.bbl-cal-popup .cal-enabled:hover {
+  background: var(--bbl-color-blue-steel-light, #e6eef4);
+}
+
+.bbl-cal-popup .cal-selected {
+  background: var(--bbl-color-active-blue, #0064ff);
+  color: var(--bbl-color-white, #fff);
+}
+
+.bbl-cal-popup .cal-disabled {
+  color: var(--bbl-color-grey-40, #c8c8cc);
+}
+
+/* ── Period selector ─────────────────────────────────────────── */
+.fdd-period-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.period-select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.period-select-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--bbl-color-grey-30);
+  border-radius: 6px;
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-grey-85);
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  min-width: 8rem;
+  justify-content: space-between;
+}
+
+.period-dropdown-list {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-grey-30);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+  min-width: 10rem;
+  z-index: 500;
+  list-style: none;
+  display: none;
+}
+
+.period-dropdown-list.open {
+  display: block;
+}
+
+/* period-dropdown-list li must come before hover/active (ascending specificity) */
+.period-dropdown-list li {
+  padding: 0.6rem 1rem;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  color: var(--bbl-color-grey-85);
+}
+
+.period-dropdown-list li:hover,
+.period-dropdown-list li.active {
+  color: var(--bbl-color-active-blue);
+}
+
+.period-date-range {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.period-date-range label {
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-85);
+}
+
+.fdd-range-error {
+  color: var(--bbl-color-red-130);
+  font-size: 0.875rem;
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+}
+
+/* ── Stat tables ─────────────────────────────────────────────── */
+.stat-tables-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (width <= 700px) {
+  .stat-tables-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-table-card {
+  overflow: hidden;
+}
+
+.stat-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+}
+
+.stat-table th {
+  background: var(--bbl-color-grey-10);
+  color: var(--bbl-color-black);
+  font: 1rem Muli-Bold, Arial, sans-serif;
+  font-weight: 400;
+  text-align: left;
+  height: 2.875rem;
+  vertical-align: middle;
+  padding: 0 1rem;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 1px solid var(--bbl-color-grey-18);
+}
+
+/* ascending specificity: td (0,1,1) → td:first-child (0,1,2) */
+.stat-table td {
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 1px solid var(--bbl-color-grey-18);
+  padding: 0.75rem 1rem;
+  color: var(--bbl-color-grey-70);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+}
+
+.stat-th-nav {
+  text-align: right;
+}
+
+.stat-nav-val {
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  color: var(--bbl-color-grey-70);
+  text-align: right;
+}
+
+/* ── Tabs ────────────────────────────────────────────────────── */
+.tab-switcher {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.tab-btn {
+  padding: 0.5rem 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-grey-70);
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn.active {
+  color: var(--bbl-color-active-blue);
+  border-bottom-color: var(--bbl-color-active-blue);
+}
+
+/* ── Chart ───────────────────────────────────────────────────── */
+.chart-wrap {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-grey-18);
+  border-radius: 4px;
+  padding: 1.25rem 1.25rem 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.chart-subtitle {
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-85);
+}
+
+.chart-nav-labels {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.chart-nav-item {
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-size: 0.9375rem;
+  color: #f60;
+}
+
+.detail-chart-svg {
+  display: block;
+  width: 100%;
+  min-width: 520px;
+}
+
+/* ── History table ───────────────────────────────────────────── */
+.detail-hist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.9375rem;
+}
+
+.detail-hist-table th {
+  background: var(--bbl-color-grey-10);
+  font-family: Muli-Bold, Arial, sans-serif;
+  font-weight: 400;
+  color: var(--bbl-color-black);
+  padding: 1.1rem 1.25rem;
+  border-top: 1px solid var(--bbl-color-grey-30);
+  border-bottom: 1px solid var(--bbl-color-grey-30);
+  text-align: left;
+}
+
+.detail-hist-table th:not(:first-child) {
+  text-align: right;
+}
+
+/* ascending specificity: td (0,1,1) → td:first-child (0,1,2) → tr:hover td (0,2,1) */
+.detail-hist-table td {
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--bbl-color-grey-18);
+  color: var(--bbl-color-grey-70);
+  text-align: right;
+}
+
+.detail-hist-table td:first-child {
+  text-align: left;
+  color: var(--bbl-color-grey-85);
+}
+
+.detail-hist-table tr:hover td {
+  background: var(--bbl-color-grey-10);
+}

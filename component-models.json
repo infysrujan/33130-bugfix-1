@@ -8543,6 +8543,69 @@
     ]
   },
   {
+    "id": "fund-prices-dropdown",
+    "fields": []
+  },
+  {
+    "id": "fund-prices-table",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "tableContent",
+        "label": "Table Content",
+        "valueType": "string",
+        "value": "",
+        "rte": {
+          "toolbar": {
+            "insert": [
+              "table"
+            ],
+            "editor": [
+              "removeformat"
+            ],
+            "sections": [
+              "insert",
+              "editor"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fund-prices",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "date-label",
+        "value": "",
+        "label": "Calander Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "print-label",
+        "value": "",
+        "label": "Print Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "error-message",
+        "value": "",
+        "label": "Error Message Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimer-text",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "header-section",
     "fields": [
       {

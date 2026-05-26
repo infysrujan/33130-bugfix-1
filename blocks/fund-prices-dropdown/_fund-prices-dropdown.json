@@ -1,0 +1,26 @@
+{
+  "definitions": [
+    {
+      "title": "Fund Prices Dropdown",
+      "id": "fund-prices-dropdown",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Fund Prices Dropdown",
+              "model": "fund-prices-dropdown"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "fund-prices-dropdown",
+      "fields": []
+    }
+  ],
+  "filters": []
+}
