@@ -9,6 +9,7 @@ import {
   loadBlock,
   loadSections,
 } from './aem.js';
+
 /**
  * Helper function to parse comma-separated URL strings from config
  * @param {string} urlString - Comma-separated URL string
@@ -397,17 +398,7 @@ function isAuthoringInstance(block) {
 }
 
 if (window.LAZY_PHASE) {
-function isAuthoringInstance(block) {
-  const section = block.closest('.section');
-  const hasAueAttrs = [block, section]
-    .filter(Boolean)
-    .some((el) => [...el.attributes].some(({ name }) => name.startsWith('data-aue-')));
-
-  return hasAueAttrs && window.self !== window.top;
-}
-
-if (window.LAZY_PHASE) {
- handleGlobalLinkClicks();
+  handleGlobalLinkClicks();
 } else {
   document.addEventListener('lazy-phase', () => {
     handleGlobalLinkClicks();
@@ -476,44 +467,6 @@ async function buildCookieAlert(main) {
     // eslint-disable-next-line no-console
     console.warn('[cookie-alert] Could not load fragment:', error);
   }
-}
-
-function createPictureWithoutOptimization(
-  src,
-  alt = '',
-  eager = false,
-  breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }],
-) {
-  const url = new URL(src, window.location.href);
-  const picture = document.createElement('picture');
-  const { pathname } = url;
-
-  // webp
-  breakpoints.forEach((br) => {
-    const source = document.createElement('source');
-    if (br.media) source.setAttribute('media', br.media);
-    source.setAttribute('type', 'image/webp');
-    source.setAttribute('srcset', `${pathname}`);
-    picture.appendChild(source);
-  });
-
-  // fallback
-  breakpoints.forEach((br, i) => {
-    if (i < breakpoints.length - 1) {
-      const source = document.createElement('source');
-      if (br.media) source.setAttribute('media', br.media);
-      source.setAttribute('srcset', `${pathname}`);
-      picture.appendChild(source);
-    } else {
-      const img = document.createElement('img');
-      img.setAttribute('loading', eager ? 'eager' : 'lazy');
-      img.setAttribute('alt', alt);
-      picture.appendChild(img);
-      img.setAttribute('src', `${pathname}`);
-    }
-  });
-
-  return picture;
 }
 
 function createPictureWithoutOptimization(

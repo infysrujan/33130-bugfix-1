@@ -1,4 +1,5 @@
 import { getSubmitBaseUrl } from './constant.js';
+import { fetchConfigs } from '../../scripts/config.js';
 
 /**
  * Get Full Name
@@ -236,27 +237,148 @@ function addCustomHeader(payload, headerName, headerValue) {
 }
 
 /**
- * Fetches province names in English from the LocationSearchService API.
- * This function retrieves a list of provinces from the backend service and returns them as an array.
- * Returns an empty array if the fetch fails or encounters an error.
+* Fetches and normalizes province data.
+* Expected API shape:
+* [
+*   { "Province": "Bangkok" },
+*   { "Province": "Chiang Mai" }
+* ]
+*
+* @private
+* @returns {Promise<Array<{value: string, label: string}>>}
+*/
+async function getProvinceData() {
+  const configs = await fetchConfigs();
+  const urlPath = configs.getprovinceen || '/api/LocationSearchService/GetProvinceEn';
+  const url = `${getSubmitBaseUrl()}${urlPath}`;
+  const xhr = new XMLHttpRequest();
+
+  xhr.open('GET', url, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    return [];
+  }
+
+  const response = JSON.parse(xhr.responseText);
+
+  if (!Array.isArray(response)) {
+    return [];
+  }
+
+  return response
+    .map((item) => {
+      const province = item && item.Province ? String(item.Province) : '';
+
+      return {
+        value: province,
+        label: province,
+      };
+    })
+    .filter((item) => item.value !== '');
+}
+
+/**
+* Returns the stored dropdown values for Province.
+* Maps to enum.
+*
+* @name getProvinceEnum
+* @returns {Promise<string[]>}
+*/
+async function getProvinceEnum() {
+  const data = await getProvinceData();
+  return data.map((item) => item.value);
+}
+
+/**
+* Returns the display labels for Province.
+* Maps to enumNames.
+*
+* @name getProvinceEnumNames
+* @returns {Promise<string[]>}
+*/
+async function getProvinceEnumNames() {
+  const data = await getProvinceData();
+  return data.map((item) => item.label);
+}
+
+/**
+* Fetches and normalizes province data in TH.
+* Expected API shape:
+* [
+*   { "Province": "กรุงเทพมหานคร" },
+*   { "Province": "กระบี่" }
+* ]
+*
+* @private
+* @returns {Promise<Array<{value: string, label: string}>>}
+*/
+async function getProvinceDataTh() {
+  const configs = await fetchConfigs();
+  const urlPath = configs.getprovinceth || '/api/LocationSearchService/GetProvinceTh';
+  const url = `${getSubmitBaseUrl()}${urlPath}`;
+  const xhr = new XMLHttpRequest();
+
+  xhr.open('GET', url, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    return [];
+  }
+
+  const response = JSON.parse(xhr.responseText);
+
+  if (!Array.isArray(response)) {
+    return [];
+  }
+
+  return response
+    .map((item) => {
+      const province = item && item.Province ? String(item.Province) : '';
+
+      return {
+        value: province,
+        label: province,
+      };
+    })
+    .filter((item) => item.value !== '');
+}
+
+/**
+* Returns the stored dropdown values for Province.
+* Maps to enum.
+*
+* @name getProvinceEnumTh
+* @returns {Promise<string[]>}
+*/
+async function getProvinceEnumTh() {
+  const data = await getProvinceDataTh();
+  return data.map((item) => item.value);
+}
+
+/**
+* Returns the display labels for Province in Thai.
+* Maps to enumNames.
+*
+* @name getProvinceEnumNamesTh
+* @returns {Promise<string[]>}
+*/
+async function getProvinceEnumNamesTh() {
+  const data = await getProvinceDataTh();
+  return data.map((item) => item.label);
+}
+
+/**
+ * Fetches BBL branch locations for a given province.
+ * Calls the LocationSearchService endpoint with BRC (Branch) type.
+ * Supports both Thai ('th') and English ('en') language endpoints.
  *
- * @async
- * @returns {Promise<Array<string>>} - Array of province names (strings) or empty array on error
- *
- * @example
- * // Usage 1: Populate a dropdown field with provinces on form load
- * {
- *   "fieldType": "drop-down",
- *   "name": "province",
- *   "label": { "value": "Select Province" },
- *   "events": {
- *     "custom:setOptions": [
- *       "const provinces = await getProvinceEnAsArray();",
- *       "$field.enum = provinces;",
- *       "$field.enumNames = provinces;"
- *     ]
- *   }
- * }
+ * @name fetchBranchesByProvince
+ * @param {string} province - Province name matching the selected language
+ * @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+ * @returns {Array} - Array of branch objects from the API, or [] on error
  *
  * @example
  * // Usage 2: Load provinces when another field changes
@@ -301,27 +423,20 @@ function addCustomHeader(payload, headerName, headerValue) {
  *   }
  * }
  */
-async function getProvinceEnAsArray() {
-  const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/LocationSearchService/GetProvinceEn';
+function fetchBranchesByProvince(province, lang = 'th') {
+  if (!province) return [];
 
-  try {
-    const response = await fetch(url);
+  const baseUrl = getSubmitBaseUrl();
+  const encoded = encodeURIComponent(province);
+  const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
+  const url = `${baseUrl}/api/LocationSearchService/${segment}/${encoded}/0/0/0/BRC`;
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
 
-    // Parse JSON response
-    const data = await response.json();
-
-    // Convert response into JS Array
-    const jsArray = Array.isArray(data) ? data : Object.values(data);
-
-    // eslint-disable-next-line no-console
-    console.log(jsArray);
-
-    return jsArray;
-  } catch (error) {
+  if (xhr.status < 200 || xhr.status >= 300) {
     // eslint-disable-next-line no-console
     console.error('Error fetching provinces:', error);
     return [];

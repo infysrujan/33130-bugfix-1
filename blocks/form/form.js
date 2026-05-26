@@ -1,11 +1,17 @@
 import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
-import { emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE } from './constant.js';
+import {
+  emailPattern,
+  getSubmitBaseUrl,
+  setSubmitBaseUrl,
+  SUBMISSION_SERVICE,
+} from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit, setFormPlaceholders } from './submit.js';
 import DocBasedFormToAF from './transform.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { fetchConfigs } from '../../scripts/config.js';
 import {
   checkValidation,
   createButton,
@@ -559,6 +565,14 @@ export default async function decorate(block) {
   // Load placeholders early for form error messages
   const placeholders = await fetchPlaceholders();
   setFormPlaceholders(placeholders);
+  // Load AEM base URL from site configs (breadcrumb-aem-base-url → aemBaseUrlForBreadcrumb)
+  if (!getSubmitBaseUrl()) {
+    const configs = await fetchConfigs();
+    const aemBaseUrl = configs.breadcrumbAemBaseUrl || configs.aemBaseUrlForBreadcrumb || '';
+    if (aemBaseUrl) {
+      setSubmitBaseUrl(aemBaseUrl);
+    }
+  }
   let container = block.querySelector('a[href]');
   let formDef;
   let pathname;
