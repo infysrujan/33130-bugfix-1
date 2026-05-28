@@ -369,6 +369,25 @@ body.fund-prices-search-in-header header.is-not-overlapped ~ main {
   display: none !important;
 }
 
+.fund-prices-page-title {
+  font-size: 2.25rem !important;
+  line-height: 1.2 !important;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  position: relative;
+}
+
+.fund-prices-page-title::after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 3rem;
+  height: 2px;
+  background: var(--bbl-color-grey-30, #ccc);
+}
+
 body.fund-prices-detail-active .default-content-wrapper {
   display: none;
 }

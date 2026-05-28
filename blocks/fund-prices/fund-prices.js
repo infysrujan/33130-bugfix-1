@@ -22,14 +22,7 @@ function moveSearchBarToHeader(el, doc) {
     headerBlock.appendChild(el);
     const h1 = doc.querySelector('h1');
     if (h1) {
-      h1.style.setProperty('font-size', '2.25rem', 'important');
-      h1.style.setProperty('line-height', '1.2', 'important');
-      h1.style.marginBottom = '0.75rem';
-      h1.style.paddingBottom = '0.75rem';
-      h1.style.position = 'relative';
-      const underline = doc.createElement('span');
-      underline.style.cssText = 'display:block;position:absolute;bottom:0;left:0;width:3rem;height:2px;background:var(--bbl-color-grey-30,#ccc)';
-      h1.appendChild(underline);
+      h1.classList.add('fund-prices-page-title');
     }
     return true;
   };
