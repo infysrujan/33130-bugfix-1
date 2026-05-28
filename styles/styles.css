@@ -99,6 +99,10 @@ h6 {
     font-weight: var(--bbl-text-body-small-weight);
 }
 
+strong{
+  font-family: var(--bbl-font-family-medium);
+}
+
 p,
 dl,
 ol,
