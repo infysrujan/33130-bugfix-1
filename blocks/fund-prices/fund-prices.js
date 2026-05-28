@@ -1,6 +1,8 @@
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
+import { getLang } from '../../scripts/scripts.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import {
   ALL_FUND_NAMES_URL,
   LATEST_DATE_URL,
@@ -39,12 +41,6 @@ function moveSearchBarToHeader(el, doc) {
   setTimeout(() => observer.disconnect(), 8000);
 }
 
-function getLang() {
-  const path = typeof window !== 'undefined' ? window.location.pathname : '';
-  if (path.startsWith('/th') || path.startsWith('/BangkokBankThai')) return 'th';
-  return 'en';
-}
-
 function richTextFromRow(row) {
   if (!row) return '';
   const cell = row.querySelector(':scope > div');
@@ -77,16 +73,17 @@ function isDateOlderThanFundHistoryLimit(date) {
 
 // ─── Parse EDS block data ─────────────────────────────────────────────────────
 
-function parseBlockData(block) {
+async function parseBlockData(block) {
   const rows = Array.from(block.children);
+  const ph = await fetchPlaceholders();
   return {
     dateLabelHtml: richTextFromRow(rows[0]),
     printLabelHtml: richTextFromRow(rows[1]),
     errorMessageHtml: richTextFromRow(rows[2]),
     disclaimerHtml: richTextFromRow(rows[3]),
-    searchLabel: rows[4]?.querySelector('p')?.textContent?.trim() || 'Search Fund',
-    goLabel: rows[5]?.querySelector('p')?.textContent?.trim() || 'GO',
-    allFundsLabel: rows[6]?.querySelector('p')?.textContent?.trim() || 'ALL FUNDS',
+    searchLabel: rows[4]?.querySelector('p')?.textContent?.trim() || ph.fundPricesSearchLabel || 'Search Fund',
+    goLabel: rows[5]?.querySelector('p')?.textContent?.trim() || ph.fundPricesGoLabel || 'GO',
+    allFundsLabel: rows[6]?.querySelector('p')?.textContent?.trim() || ph.fundPricesAllFundsLabel || 'ALL FUNDS',
   };
 }
 
@@ -191,7 +188,7 @@ export default async function decorate(block) {
   const {
     dateLabelHtml, printLabelHtml, errorMessageHtml, disclaimerHtml,
     searchLabel, goLabel, allFundsLabel,
-  } = parseBlockData(block);
+  } = await parseBlockData(block);
 
   block.innerHTML = '';
 
