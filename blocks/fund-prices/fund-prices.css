@@ -400,6 +400,7 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
     flex-direction: row;
     align-items: center;
     gap: var(--bbl-space-150);
+    padding-left: 0;
   }
 
   .fund-prices .calendar-wrapper {
@@ -431,6 +432,15 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
 }
 
 @media (width > 64rem) {
+  .fund-prices .calendar-wrapper p {
+    margin-top: 0;
+    font-size: 12.8px;
+  }
+
+  .fund-prices .calendar-input input {
+    width: 10rem;
+  }
+
   body.fund-prices-search-in-header header.is-not-overlapped ~ main {
     padding-top: calc(var(--header-d-height, 7.8125rem) + 4rem);
   }
