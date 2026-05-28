@@ -1,4 +1,5 @@
 import { getLang } from '../../scripts/bbl-decorators.js';
+import { loadFragment } from '../fragment/fragment.js';
 
 async function fetchSavingToolJson() {
   try {
@@ -1153,6 +1154,33 @@ async function renderChart(state, data) {
   updateLegend(state.root, data, inputs.annualIncrease, newIncrease, !!newSeries);
 }
 
+function renderInfoCard(state) {
+  const slot = state.root.querySelector('.saving-plan-info-card-slot');
+  if (slot) slot.innerHTML = '';
+}
+
+async function renderCategoryBannerForGoal(state, data) {
+  const slot = state.root.querySelector('.saving-plan-info-card-slot');
+  if (!slot) return;
+  const goalKey = state.root.querySelector('[data-field="goal"]')?.dataset.value;
+  if (!goalKey) return;
+  const goal = data.goals.find((g) => g.key === goalKey);
+  const fragmentId = goal?.fragmentId;
+  if (!fragmentId) {
+    // eslint-disable-next-line no-console
+    console.warn(`[saving-plan] No fragmentId for goal "${goalKey}". Add savingGoals-<key>-fragmentId to the config.`);
+    return;
+  }
+  const lang = getLang();
+  const fragment = await loadFragment(`/${lang}/fragments/saving-plan-${lang}/${fragmentId}-${lang}`);
+  if (fragment) {
+    slot.innerHTML = '';
+    const section = fragment.querySelector(':scope .section');
+    if (section) slot.append(...section.childNodes);
+    else slot.append(...fragment.childNodes);
+  }
+}
+
 function renderProducts(state, data) {
   const grid = state.root.querySelector('.saving-plan-products-grid');
   if (!grid) return;
@@ -1257,6 +1285,7 @@ function resetCalculator(state, data) {
     window.removeEventListener('resize', state.chartResizeListener);
     state.chartResizeListener = null;
   }
+  renderInfoCard(state);
   renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
   root.closest('.section')?.nextElementSibling?.classList.remove('is-visible');
 }
@@ -1297,6 +1326,7 @@ function attachDropdownHandlers(state, data, onSelectionChange) {
       opt.classList.toggle('is-selected', opt === option);
     });
     close();
+    renderInfoCard(state);
     state.root.querySelector('.saving-plan-chart-row')?.setAttribute('hidden', '');
     state.root.querySelector('.saving-plan-tweak')?.setAttribute('hidden', '');
     state.root.querySelector('.saving-plan-products')?.setAttribute('hidden', '');
@@ -1375,6 +1405,7 @@ function attachHandlers(state, data) {
     renderResult(state, data, calculation);
 
     syncSliderDisplays(root);
+    await renderCategoryBannerForGoal(state, data);
     const isNegative = calculation.SavingMonth < 0;
     if (isNegative) {
       root.querySelector('.saving-plan-chart-row')?.setAttribute('hidden', '');
@@ -1465,6 +1496,7 @@ export default async function decorate(block) {
     chartInstance: null,
   };
 
+  renderInfoCard(state);
   renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
   attachHandlers(state, data);
 
