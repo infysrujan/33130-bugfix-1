@@ -1,4 +1,4 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
+import { createPictureWithoutOptimization } from '../../scripts/bbl-decorators.js';
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 
 /**
@@ -42,7 +42,7 @@ function createMenuCard(cardElement, doc) {
 
     // Add image to link
     if (iconImg) {
-      const optimizedPic = createOptimizedPicture(
+      const optimizedPic = createPictureWithoutOptimization(
         iconImg.src,
         iconImg.alt || titleText || '',
         false,
@@ -66,7 +66,7 @@ function createMenuCard(cardElement, doc) {
     }
 
     if (iconImg) {
-      const optimizedPic = createOptimizedPicture(
+      const optimizedPic = createPictureWithoutOptimization(
         iconImg.src,
         iconImg.alt || titleText || '',
         false,

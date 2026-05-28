@@ -1,0 +1,120 @@
+/* Calendar popover (scripts/utils/calendar-picker.js) */
+
+.bbl-calendar-picker-popover {
+  position: fixed;
+  z-index: 10050;
+  min-width: 280px;
+  padding: 16px;
+  background: var(--bbl-color-white);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%), 0 2px 8px rgb(0 0 0 / 6%);
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.bbl-calendar-picker-popover *,
+.bbl-calendar-picker-popover *::before,
+.bbl-calendar-picker-popover *::after {
+  box-sizing: border-box;
+}
+
+.bbl-calendar-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.bbl-calendar-picker-nav {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--bbl-color-grey-30);
+  border-radius: 50%;
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-grey-100);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.bbl-calendar-picker-nav:hover {
+  border-color: var(--bbl-color-grey-50);
+}
+
+.bbl-calendar-picker-nav:focus-visible {
+  outline: 2px solid var(--bbl-color-active-blue);
+  outline-offset: 2px;
+}
+
+.bbl-calendar-picker-title {
+  flex: 1 1 auto;
+  margin: 0;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--bbl-color-blue-105);
+}
+
+.bbl-calendar-picker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.bbl-calendar-picker-weekdays span {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--bbl-color-black);
+}
+
+.bbl-calendar-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.bbl-calendar-picker-day {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: 40px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--bbl-color-grey-100);
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+.bbl-calendar-picker-day-muted {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.bbl-calendar-picker-day:disabled {
+  color: var(--bbl-color-grey-45);
+  cursor: not-allowed;
+}
+
+.bbl-calendar-picker-day:not(:disabled):hover {
+  background: var(--bbl-color-grey-10);
+}
+
+.bbl-calendar-picker-day-selected {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+}
+
+.bbl-calendar-picker-day-selected:hover {
+  background: var(--bbl-color-blue-70);
+}

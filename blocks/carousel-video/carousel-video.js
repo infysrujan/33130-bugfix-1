@@ -20,9 +20,9 @@ export default async function decorate(block) {
 
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
 
-  const embedBaseUrl = configs.youtubeEmbedBaseUrl || 'https://www.youtube.com/embed/';
-  const thumbBaseUrl = configs.youtubeThumbnailBaseUrl || 'https://img.youtube.com/vi/';
-  const thumbQuality = configs.youtubeThumbnailQuality || 'hqdefault';
+  const embedBaseUrl = configs.carouselVideoEmbedBaseUrl || 'https://www.youtube.com/embed/';
+  const thumbBaseUrl = configs.carouselVideoThumbnailBaseUrl || 'https://img.youtube.com/vi/';
+  const thumbQuality = configs.carouselVideoThumbnailQuality || 'hqdefault';
 
   const playerTitle = placeholders.carouselVideoPlayerTitle || 'YouTube Video Player';
   const prevLabel = placeholders.carouselVideoPrevLabel || 'Previous';

@@ -15,16 +15,16 @@ import {
 export async function buildThailandUI(container, data, placeholders, configs) {
   const { services, specialServiceName, specialFragmentPath } = data;
 
-  if (!configs?.selectServiceCodes) {
+  if (!configs?.locateUsSelectServiceCodes) {
     // eslint-disable-next-line no-console
-    console.error('[locate-us] Missing config key: select-service-codes');
+    console.error('[locate-us] Missing config key: locate-us-select-service-codes');
   }
-  if (!configs?.defaultServiceCode) {
+  if (!configs?.locateUsDefaultServiceCode) {
     // eslint-disable-next-line no-console
-    console.error('[locate-us] Missing config key: default-service-code');
+    console.error('[locate-us] Missing config key: locate-us-default-service-code');
   }
 
-  const serviceCodes = (configs?.selectServiceCodes || '')
+  const serviceCodes = (configs?.locateUsSelectServiceCodes || '')
     .split(',').map((s) => s.trim()).filter(Boolean);
   const serviceCodeMap = {};
   let codeIdx = 0;
@@ -32,7 +32,8 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     if (name === specialServiceName) {
       serviceCodeMap[name] = null;
     } else {
-      const fallbackCode = serviceCodes[serviceCodes.length - 1] ?? configs?.defaultServiceCode;
+      const fallbackCode = serviceCodes[serviceCodes.length - 1]
+        ?? configs?.locateUsDefaultServiceCode;
       serviceCodeMap[name] = serviceCodes[codeIdx] ?? fallbackCode;
       codeIdx += 1;
     }
@@ -40,8 +41,8 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
   const FALLBACK_LAT = 13.72643339;
   const FALLBACK_LNG = 100.5303671;
-  const defaultLat = parseFloat(configs?.defaultLat) || FALLBACK_LAT;
-  const defaultLng = parseFloat(configs?.defaultLng) || FALLBACK_LNG;
+  const defaultLat = parseFloat(configs?.locateUsDefaultLat) || FALLBACK_LAT;
+  const defaultLng = parseFloat(configs?.locateUsDefaultLng) || FALLBACK_LNG;
 
   const [location, provincesCache] = await Promise.all([
     getUserLocation(defaultLat, defaultLng),
@@ -49,7 +50,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   ]);
   const userLat = location.lat;
   const userLng = location.lng;
-  const serviceParamKeys = (configs?.serviceLocationCodes || '')
+  const serviceParamKeys = (configs?.locateUsServiceLocationCodes || '')
     .split(',').map((s) => s.trim()).filter(Boolean);
 
   let selectedServiceCode = '';
@@ -272,7 +273,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
       li.setAttribute('aria-selected', li.dataset.value === selectedService ? 'true' : 'false');
     });
 
-    selectedServiceCode = serviceCodeMap[selectedService] ?? configs?.defaultServiceCode;
+    selectedServiceCode = serviceCodeMap[selectedService] ?? configs?.locateUsDefaultServiceCode;
 
     const serviceIdx = services.indexOf(selectedService);
     const serviceUrlCode = serviceParamKeys[serviceIdx] || '';
@@ -374,10 +375,10 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 // ─── Overseas UI ─────────────────────────────────────────────────────────────
 
 export async function buildOverseasUI(container, placeholders, configs) {
-  const API_GET_COUNTRY = configs?.getCountry;
-  const API_GET_CITY = configs?.getCity;
-  const API_SEARCH_INTL = configs?.searchInternational;
-  const API_SEARCH_KW = configs?.searchKeywordOverseas;
+  const API_GET_COUNTRY = configs?.locateUsGetCountry;
+  const API_GET_CITY = configs?.locateUsGetCity;
+  const API_SEARCH_INTL = configs?.locateUsSearchInternational;
+  const API_SEARCH_KW = configs?.locateUsSearchKeywordOverseas;
 
   if (!API_GET_COUNTRY) {
     // eslint-disable-next-line no-console

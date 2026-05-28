@@ -32,15 +32,15 @@ async function loadData() {
   ]);
   return {
     labels,
-    apiUrl: siteConfig.retireCalculator,
-    inflationRate: String(siteConfig['inflation-rate'] ?? '1.5'),
-    afterRetirementRate: String(siteConfig['after-retirement-rate'] ?? '3'),
-    altCompensationRate: parseFloat(siteConfig['alt-compensation-rate']) || 0.05,
-    defaultMonthlyIncome: parseFloat(placeholders['default-monthly-income']) || 20000,
-    defaultCurrentAge: parseInt(placeholders['default-current-age'], 10) || 30,
-    defaultRetirementAge: parseInt(placeholders['default-retirement-age'], 10) || 60,
-    defaultLifeExpectancy: parseInt(placeholders['default-life-expectancy'], 10) || 80,
-    defaultSavingsReturnRate: parseFloat(placeholders['default-savings-return-rate']) || 3,
+    apiUrl: siteConfig.retirementCalculatorApiUrl,
+    inflationRate: String(siteConfig.retirementCalculatorInflationRate ?? '1.5'),
+    afterRetirementRate: String(siteConfig.retirementCalculatorAfterRetirementRate ?? '3'),
+    altCompensationRate: parseFloat(siteConfig.retirementCalculatorAltCompensationRate) || 0.05,
+    defaultMonthlyIncome: parseFloat(placeholders.defaultMonthlyIncome) || 20000,
+    defaultCurrentAge: parseInt(placeholders.defaultCurrentAge, 10) || 30,
+    defaultRetirementAge: parseInt(placeholders.defaultRetirementAge, 10) || 60,
+    defaultLifeExpectancy: parseInt(placeholders.defaultLifeExpectancy, 10) || 80,
+    defaultSavingsReturnRate: parseFloat(placeholders.defaultSavingsReturnRate) || 3,
   };
 }
 

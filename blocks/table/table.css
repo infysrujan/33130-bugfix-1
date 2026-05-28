@@ -78,12 +78,12 @@
 
 /* Border Light Gray — lightgray */
 .table table.border-light-gray td {
-  border-color: lightgray;
+  border-color: var(--bbl-color-grey-27);
 }
 
 /* Border Gray — #cacaca */
 .table table.border-gray td {
-  border-color: #cacaca;
+  border-color: var(--bbl-color-grey-21);
 }
 
 /* --------------------------------------------------------------------------
@@ -140,7 +140,7 @@
 
 /* Dash Cell Highlight — #d9d9d9 background for cells containing only "-" */
 .table table.dash-cell-highlight td.cell-dash {
-  background: #d9d9d9;
+  background: var(--bbl-color-grey-26);
 }
 
 /* --------------------------------------------------------------------------
@@ -155,12 +155,16 @@
 
 /* Header Blue — #deeaf6 background */
 .table table.header-blue tr.header-row td {
-  background: #deeaf6;
+  background: var(--bbl-color-blue-steel-dark);
 }
 
 /* Header Light Blue — #e6eef4 background */
 .table table.header-light-blue tr.header-row td {
-  background: #e6eef4;
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.header-light-gray tr.header-row td {
+  background: var(--bbl-color-grey-19);
 }
 
 /* --------------------------------------------------------------------------
@@ -188,11 +192,11 @@
 
 /* Header Mixed Blue — first half light blue, second half dark blue */
 .table table.header-mixed-blue tr.header-row td.mixed-blue-light {
-  background: #e6eef4;
+  background: var(--bbl-color-blue-steel-light);
 }
 
 .table table.header-mixed-blue tr.header-row td.mixed-blue-dark {
-  background: #deeaf6;
+  background: var(--bbl-color-blue-steel-dark);
 }
 
 /* --------------------------------------------------------------------------
@@ -218,6 +222,13 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   ROW VARIANTS — center aligned except first (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+.table table.zebra-light-gray tr:nth-child(odd) {
+  background-color: var(--bbl-color-grey-10);
 }
 
 /* --------------------------------------------------------------------------

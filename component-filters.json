@@ -54,6 +54,10 @@
       "video",
       "carousel-video",
       "forex-rates",
+      "market-report",
+      "sme-loan-calculator",
+      "dynamic-board",
+      "bcap",
       "multi-column-tiles",
       "retirement-calculator",
       "tax-calculator",
@@ -62,9 +66,12 @@
       "promo-card-listing",
       "top-promotional-cards",
       "multi-column-tiles",
+      "property-for-sale-details",
+      "property-for-sale",
       "stock-ticker",
       "cookie-alert",
       "cookie-modal",
+      "welcome-banner",
       "news-media-details",
       "news-media",
       "latest-news",
@@ -258,6 +265,12 @@
     ]
   },
   {
+    "id": "sme-loan-calculator",
+    "components": [
+      "sme-field"
+    ]
+  },
+  {
     "id": "social-icons",
     "components": [
       "social-icon"
@@ -350,7 +363,6 @@
       "cards-product",
       "columns",
       "fragment",
-      "megamenu",
       "carousel",
       "story-card",
       "warning-card",
@@ -359,12 +371,13 @@
       "cross-banner",
       "form",
       "embed-adaptive-form",
-      "brand-logo",
-      "location",
-      "login",
-      "main-nav-item",
+      "download-file",
+      "table",
+      "accordion-block",
       "forex-rates",
-      "forex-graph"
+      "forex-graph",
+      "sme-loan-calculator",
+      "table"
     ]
   },
   {
@@ -383,6 +396,12 @@
     "id": "video",
     "components": [
       "video"
+    ]
+  },
+  {
+    "id": "welcome-banner",
+    "components": [
+      "button"
     ]
   }
 ]

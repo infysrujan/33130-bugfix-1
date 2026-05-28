@@ -43,15 +43,15 @@ async function loadData() {
   ]);
   return {
     labels,
-    apiCalculateTax: siteConfig.calculateTaxWithReduce,
-    apiCalculateSaving: siteConfig.calculateSavingTaxBySelf,
-    combinedInsuranceMax: parseFloat(siteConfig['combined-insurance-max']) || 100000,
-    fatherInsureMax: parseFloat(siteConfig['father-insure-max']) || 15000,
-    homeInterestMax: parseFloat(siteConfig['home-interest-max']) || 100000,
-    otherDeductionsMax: parseFloat(siteConfig['other-deductions-max']) || 1000000,
-    donateMax: parseFloat(siteConfig['donate-max']) || 999999999,
-    maxChildrenCount: parseInt(siteConfig['max-children-count'], 10) || 10,
-    providentFundMaxPct: parseFloat(siteConfig['provident-fund-max-pct']) || 15,
+    apiCalculateTax: siteConfig.taxCalculatorCalculateTaxWithReduce,
+    apiCalculateSaving: siteConfig.taxCalculatorCalculateSavingTaxBySelf,
+    combinedInsuranceMax: parseFloat(siteConfig.taxCalculatorCombinedInsuranceMax) || 100000,
+    fatherInsureMax: parseFloat(siteConfig.taxCalculatorFatherInsureMax) || 15000,
+    homeInterestMax: parseFloat(siteConfig.taxCalculatorHomeInterestMax) || 100000,
+    otherDeductionsMax: parseFloat(siteConfig.taxCalculatorOtherDeductionsMax) || 1000000,
+    donateMax: parseFloat(siteConfig.taxCalculatorDonateMax) || 999999999,
+    maxChildrenCount: parseInt(siteConfig.taxCalculatorMaxChildrenCount, 10) || 10,
+    providentFundMaxPct: parseFloat(siteConfig.taxCalculatorProvidentFundMaxPct) || 15,
   };
 }
 

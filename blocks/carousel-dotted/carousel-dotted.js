@@ -4,8 +4,9 @@ import {
   readPosition,
 } from '../../scripts/utils/carousel-helpers.js';
 import buildCardListFragmentSlides, {
-  handleCardListLoopTransition,
+  updateFragmentTrack,
   setCardListTrackPosition,
+  isFragmentNoScroll,
   tabletMin,
 } from './card-list-carousel.js';
 import buildContentCardsSlide from './build-content-cards-slide.js';
@@ -100,7 +101,7 @@ function initializeDragSwipe(
         } else {
           nextIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : currentIndex;
         }
-        if (nextIndex !== currentIndex) setActive(nextIndex);
+        if (nextIndex !== currentIndex) setActive(nextIndex, 'forward');
       } else if (deltaX > dragThreshold) {
         let prevIndex;
         if (enableLooping) {
@@ -108,7 +109,7 @@ function initializeDragSwipe(
         } else {
           prevIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex;
         }
-        if (prevIndex !== currentIndex) setActive(prevIndex);
+        if (prevIndex !== currentIndex) setActive(prevIndex, 'backward');
       }
     }
 
@@ -170,7 +171,7 @@ function initializeAutoScroll(
       const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
       let nextIdx = currentIndex + itemsPerScroll;
       if (nextIdx >= slideEls.length) nextIdx = 0;
-      setActive(nextIdx);
+      setActive(nextIdx, 'forward');
     }, delay);
   };
 
@@ -234,10 +235,38 @@ export default async function decorate(block) {
   if (block.dataset.carouselInit) return;
   block.dataset.carouselInit = 'true';
 
-  const rows = [...block.children];
+  const rows = [...block.children].filter((row) => !row.classList.contains('carousel-rendered'));
   const hasAuthoringAttrs = rows.some((row) => [...row.attributes]
     .some(({ name }) => name.startsWith('data-aue-')));
   const isAuthoring = hasAuthoringAttrs && window.self !== window.top;
+  const sourceRows = rows;
+
+  const stripAuthoringAttrs = (root) => {
+    if (!root) return;
+    const all = [root, ...root.querySelectorAll('*')];
+    all.forEach((el) => {
+      [...el.attributes]
+        .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
+        .forEach(({ name }) => el.removeAttribute(name));
+    });
+  };
+
+  const ensureRenderHost = () => {
+    if (!isAuthoring) return block;
+    let host = block.querySelector(':scope > .carousel-rendered');
+    if (!host) {
+      host = document.createElement('div');
+      host.className = 'carousel-rendered';
+      block.append(host);
+    }
+    return host;
+  };
+
+  if (isAuthoring) {
+    sourceRows.forEach((row) => {
+      row.style.display = 'none';
+    });
+  }
 
   // Read configuration values from block rows
   const dotsAlignment = readDotsAlignment(rows[0]);
@@ -256,6 +285,9 @@ export default async function decorate(block) {
   const showArrows = variant === 'showArrowsDots';
 
   const slides = rows.slice(nextIndex);
+  const renderSlides = isAuthoring
+    ? slides.map((row) => row.cloneNode(true))
+    : slides;
   block.classList.add('content');
 
   if (showDots) {
@@ -278,7 +310,7 @@ export default async function decorate(block) {
   block.setAttribute('role', 'region');
   block.setAttribute('aria-roledescription', 'carousel');
 
-  const slideEls = (await Promise.all(slides.map((row, index) => {
+  const slideEls = (await Promise.all(renderSlides.map((row, index) => {
     const slideType = row.children[1]?.textContent.trim();
     if (slideType === 'cardListCarousel') {
       return buildCardListFragmentSlides(row, index);
@@ -382,7 +414,7 @@ export default async function decorate(block) {
     && slidesTextAnimation === 0;
   const arrowTrackVariant = circularOrDefaultImage || allFragmentTrack;
   const isSimpleCarousel = slideEls.some((s) => s.classList.contains('simple-carousel'));
-  const shouldCloneFragmentSlide = allFragmentTrack && slideEls.length > 1;
+  const shouldCloneFragmentSlide = allFragmentTrack && slideEls.length > 1 && !isAuthoring;
 
   function triggerBgZoom(slideEl) {
     const bg = slideEl.querySelector('.carousel-bg');
@@ -406,7 +438,7 @@ export default async function decorate(block) {
 
   let isFirstLoad = true;
 
-  function setActive(index) {
+  function setActive(index, direction = null) {
     const prevIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
 
     const isHeroVariant = block.classList.contains('all-hero-banner-image-carousel')
@@ -420,7 +452,6 @@ export default async function decorate(block) {
       && slidesTextAnimation === 0;
 
     const isLoopingForward = index === 0 && prevIndex === slideEls.length - 1;
-    const isLoopingBackward = index === slideEls.length - 1 && prevIndex === 0;
 
     slideEls.forEach((slide, i) => {
       const active = i === index;
@@ -460,17 +491,15 @@ export default async function decorate(block) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       if (trackWrapper) {
         if (allFragmentTrack) {
-          const handledLoop = handleCardListLoopTransition(
+          updateFragmentTrack(
             block,
             trackWrapper,
             slideEls,
-            isLoopingForward,
-            isLoopingBackward,
+            index,
+            prevIndex,
+            direction,
             shouldCloneFragmentSlide,
           );
-          if (!handledLoop) {
-            setCardListTrackPosition(block, trackWrapper, slideEls, index);
-          }
         } else {
           const slideWidth = trackWrapper.offsetWidth;
 
@@ -502,11 +531,11 @@ export default async function decorate(block) {
     if (showArrows && arrowTrackVariant) {
       // Enable circular navigation for showArrowsDots variant
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
-      setActive(prevIndex);
+      setActive(prevIndex, 'backward');
     } else if (showArrows && isSimpleCarousel) {
       setActive(currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1);
     } else if (currentIndex > 0) {
-      setActive(currentIndex - 1);
+      setActive(currentIndex - 1, 'backward');
     }
   });
 
@@ -515,11 +544,11 @@ export default async function decorate(block) {
     if (showArrows && arrowTrackVariant) {
       // Enable circular navigation for showArrowsDots variant
       const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
-      setActive(nextSlideIndex);
+      setActive(nextSlideIndex, 'forward');
     } else if (showArrows && isSimpleCarousel) {
       setActive(currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0);
     } else if (currentIndex < slideEls.length - 1) {
-      setActive(currentIndex + 1);
+      setActive(currentIndex + 1, 'forward');
     }
   });
   dotButtons = slideEls.map((slide, index) => {
@@ -540,6 +569,7 @@ export default async function decorate(block) {
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
 
+  const renderHost = ensureRenderHost();
   if (allHeroBanner) {
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
@@ -550,13 +580,13 @@ export default async function decorate(block) {
     } else {
       trackWrapper.replaceChildren(...slideEls);
     }
-    block.replaceChildren(trackWrapper);
+    renderHost.replaceChildren(trackWrapper);
   } else if (allWithoutImage) {
     // Without-image variant uses track wrapper for sliding, but NO clone (looping is disabled)
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
     trackWrapper.replaceChildren(...slideEls);
-    block.replaceChildren(trackWrapper);
+    renderHost.replaceChildren(trackWrapper);
   } else if (arrowTrackVariant) {
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
@@ -579,25 +609,31 @@ export default async function decorate(block) {
         trackViewport.style.visibility = 'hidden';
       }
       trackViewport.append(trackWrapper);
-      block.replaceChildren(trackViewport);
+      renderHost.replaceChildren(trackViewport);
     } else {
-      block.replaceChildren(trackWrapper);
+      renderHost.replaceChildren(trackWrapper);
     }
   } else {
-    block.replaceChildren(...slideEls);
+    renderHost.replaceChildren(...slideEls);
   }
+
+  const noNav = allFragmentTrack && isFragmentNoScroll(slideEls);
 
   if (showArrows) {
     if (arrowTrackVariant) {
       const trackContainer = allFragmentTrack
         ? block.querySelector('.carousel-track-viewport')
         : block.querySelector('.carousel-track-wrapper');
-      block.replaceChildren(prevArrow, trackContainer, nextArrow, dots);
+      if (!noNav) {
+        renderHost.replaceChildren(prevArrow, trackContainer, nextArrow, dots);
+      }
     } else {
-      block.append(dots, prevArrow, nextArrow);
+      renderHost.append(dots, prevArrow, nextArrow);
     }
   } else if (showDots || slidesContentCards > 0) {
-    block.append(dots);
+    if (!noNav) {
+      renderHost.append(dots);
+    }
   }
 
   if (seeMoreLink) {
@@ -609,7 +645,11 @@ export default async function decorate(block) {
     const linkWrap = document.createElement('span');
     linkWrap.append(seeMoreLink);
     moreWrap.append(linkWrap);
-    block.append(moreWrap);
+    renderHost.append(moreWrap);
+  }
+
+  if (isAuthoring) {
+    stripAuthoringAttrs(renderHost);
   }
 
   if (slideEls.length) {

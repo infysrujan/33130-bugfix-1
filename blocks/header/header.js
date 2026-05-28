@@ -1,5 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { getLang } from '../../scripts/scripts.js';
 import {
   getLoginState,
   openPanel,
@@ -609,9 +610,14 @@ function applyLayout(header, fragmentTemplate, desktop) {
  */
 export default async function decorate(block) {
   const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+  let navPath = '';
+  if (document.querySelector('body.error-page')) {
+    const lang = getLang();
+    navPath = `/${lang}/nav`;
+  } else {
+    navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+  }
   const fragment = await loadFragment(navPath);
-
   if (!fragment) return;
 
   // Keep a persistent template so we can re-build layout on resize/orientation change

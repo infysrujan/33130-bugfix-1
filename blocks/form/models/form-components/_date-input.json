@@ -52,10 +52,15 @@
                     "label": "Display Format",
                     "name": "displayFormat",
                     "valueType": "string",
+                    "value": "dd/MM/yyyy",
                     "options": [
                         {
                             "name": "No Pattern",
                             "value": ""
+                        },
+                        {
+                            "name": "DD/MM/YYYY (01/04/2007)",
+                            "value": "dd/MM/yyyy"
                         },
                         {
                             "name": "01 April, 2007",
@@ -74,12 +79,34 @@
                             "value": "EEEE, MMMM d, y"
                         },
                         {
-                            "name": "1/4/2007",
+                            "name": "D/M/YYYY (1/4/2007)",
                             "value": "d/M/y"
+                        }
+                    ]
+                },
+                {
+                    "component": "select",
+                    "label": "Submit Value Format",
+                    "name": "valueFormat",
+                    "valueType": "string",
+                    "value": "dd/MM/yyyy",
+                    "description": "Format of the date value sent on form submission",
+                    "options": [
+                        {
+                            "name": "DD/MM/YYYY (01/04/2007)",
+                            "value": "dd/MM/yyyy"
                         },
                         {
-                            "name": "1/4/2007",
-                            "value": "dd/MM/yyyy"
+                            "name": "YYYY-MM-DD (2007-04-01) — ISO 8601",
+                            "value": "yyyy-MM-dd"
+                        },
+                        {
+                            "name": "MM/DD/YYYY (04/01/2007)",
+                            "value": "MM/dd/yyyy"
+                        },
+                        {
+                            "name": "D/M/YYYY (1/4/2007)",
+                            "value": "d/M/y"
                         }
                     ]
                 },

@@ -18,6 +18,7 @@ import {
   decorateTerritoryButtons,
   decorateButtonsV1,
   loadBreadcrumb,
+  loadWelcomeBanner,
   buildCookieAlert,
 } from './bbl-decorators.js';
 
@@ -170,13 +171,70 @@ function getDocumentLangFromPath(pathname) {
   return 'th';
 }
 
+function decorateOgImage() {
+  const ogImagePath = getMetadata('ogImage') || getMetadata('ogimage');
+  if (!ogImagePath) return;
+
+  const url = ogImagePath.startsWith('http') ? ogImagePath : `${window.location.origin}${ogImagePath}`;
+
+  let meta = document.head.querySelector('meta[property="og:image"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.setAttribute('property', 'og:image');
+    document.head.append(meta);
+  }
+  meta.setAttribute('content', url);
+}
+
+/**
+ * Strip AEM image optimization query params from a URL.
+ * @param {string|null|undefined} url
+ * @returns {string|null|undefined}
+ */
+function stripImageOptimizationParams(url) {
+  if (typeof url !== 'string') return url;
+  const q = url.indexOf('?');
+  return q === -1 ? url : url.slice(0, q);
+}
+
+/**
+ * Strip AEM image optimization query params from a srcset value.
+ * @param {string|null|undefined} srcset
+ * @returns {string|null|undefined}
+ */
+function stripSrcsetOptimizationParams(srcset) {
+  if (typeof srcset !== 'string') return srcset;
+  return srcset.split(',').map((entry) => {
+    const parts = entry.trim().split(/\s+/);
+    parts[0] = stripImageOptimizationParams(parts[0]);
+    return parts.join(' ');
+  }).join(', ');
+}
+
+/**
+ * Remove optimization params from all picture source/img URLs in the document.
+ * @param {Document|Element} root
+ */
+export function removePictureOptimizationParams(root) {
+  root.querySelectorAll('picture').forEach((picture) => {
+    picture.querySelectorAll('source[srcset]').forEach((source) => {
+      source.setAttribute('srcset', stripSrcsetOptimizationParams(source.getAttribute('srcset')));
+    });
+    picture.querySelectorAll('img[src]').forEach((img) => {
+      img.setAttribute('src', stripImageOptimizationParams(img.getAttribute('src')));
+    });
+  });
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
+  removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
+  decorateOgImage();
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
@@ -200,6 +258,7 @@ async function loadEager(doc) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
+  await loadWelcomeBanner(doc);
   await loadSections(main);
 
   await buildCookieAlert(main);
@@ -222,7 +281,7 @@ async function loadLazy(doc) {
   // Add link click handler for URL validation
   setTimeout(() => {
     document.dispatchEvent(new Event('lazy-phase'));
-    Window.LAZY_PHASE = true;
+    window.LAZY_PHASE = true;
   }, 150);
 }
 

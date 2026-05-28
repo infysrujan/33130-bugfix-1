@@ -1,260 +1,288 @@
 {
-	"definitions": [
-		{
-			"title": "Table",
-			"id": "table",
-			"plugins": {
-				"xwalk": {
-					"page": {
-						"resourceType": "core/franklin/components/block/v1/block",
-						"template": {
-							"name": "Table",
-							"model": "table",
-							"filter": "table"
-						}
-					}
-				}
-			}
-		}
-	],
-	"models": [
-		{
-			"id": "table",
-			"fields": [
-				{
-					"component": "multiselect",
-					"name": "style",
-					"label": "Variation",
-					"valueType": "string",
-					"required": false,
-					"options": [
-						{
-							"name": "Border Type",
-							"children": [
-								{
-									"name": "No Border",
-									"value": "no-border"
-								},
-								{
-									"name": "Outline Border",
-									"value": "outline-border"
-								},
-								{
-									"name": "Border Bottom",
-									"value": "border-bottom"
-								}
-							]
-						},
-						{
-							"name": "Border Color",
-							"children": [
-								{
-									"name": "Border Black",
-									"value": "border-black"
-								},
-								{
-									"name": "Border Light Gray",
-									"value": "border-light-gray"
-								},
-								{
-									"name": "Border Gray",
-									"value": "border-gray"
-								}
-							]
-						},
-						{
-							"name": "Header",
-							"children": [
-								{
-									"name": "Center Aligned",
-									"value": "header-center-aligned"
-								},
-								{
-									"name": "Header Blue",
-									"value": "header-blue"
-								},
-								{
-									"name": "Header Light Blue",
-									"value": "header-light-blue"
-								},
-								{
-									"name": "Header Mixed Blue",
-									"value": "header-mixed-blue"
-								}
-							]
-						},
-						{
-							"name": "Cells",
-							"children": [
-								{
-									"name": "Cells Center Aligned",
-									"value": "cells-center-aligned"
-								},
-								{
-									"name": "Cells Center Aligned Except First",
-									"value": "cells-center-aligned-except-first"
-								},
-								{
-									"name": "Dash Cell Highlight",
-									"value": "dash-cell-highlight"
-								}
-							]
-						},
-						{
-							"name": "Padding",
-							"children": [
-								{
-									"name": "Compact Padding",
-									"value": "compact-padding"
-								},
-								{
-									"name": "Border Bottom Tight Columns",
-									"value": "border-bottom-tight-cols"
-								}
-							]
-						},
-						{
-							"name": "Functional",
-							"children": [
-								{
-									"name": "Merge Tables",
-									"value": "merge-tables"
-								},
-								{
-									"name": "Nested Table",
-									"value": "nested-table"
-								},
-								{
-									"name": "Scroll",
-									"value": "scroll"
-								}
-							]
-						}
-					]
-				},
-				{
-					"component": "text",
-					"name": "nestedTableId",
-					"label": "Nested Table ID",
-					"valueType": "string",
-					"required": false,
-					"condition": { "in": ["nested-table", { "var": "style" }] }
-				},
-				{
-					"component": "richtext",
-					"name": "tableContent",
-					"label": "Table Content",
-					"valueType": "string",
-					"value": "",
-					"rte": {
-						"toolbar": {
-							"format": [
-								"bold",
-								"italic",
-								"underline"
-							],
-							"list": [
-								"bullet_list",
-								"ordered_list"
-							],
-							"insert": [
-								"link",
-								"unlink",
-								"table"
-							],
-							"editor": [
-								"removeformat"
-							],
-							"sections": [
-								"format",
-								"list",
-								"insert",
-								"editor"
-							]
-						},
-						"actions": {
-							"table": {
-								"label": "Insert Table",
-								"shortcut": "Mod-Alt-T",
-								"wrapInParagraphs": true
-							},
-							"link": {
-								"hideTarget": false
-							}
-						}
-					}
-				}
-			]
-		}
-	],
-	"filters": [
-		{
-			"id": "table",
-			"rte": {
-				"toolbar": {
-					"format": [
-						"bold",
-						"italic",
-						"underline",
-						"strike"
-					],
-					"alignment": [
-						"left",
-						"center",
-						"right",
-						"justify"
-					],
-					"direction": [
-						"rtl",
-						"ltr"
-					],
-					"indentation": [
-						"indent",
-						"outdent"
-					],
-					"blocks": [
-						"paragraph",
-						"h1",
-						"h2",
-						"h3",
-						"h4",
-						"h5",
-						"h6",
-						"code_block"
-					],
-					"list": [
-						"bullet_list",
-						"ordered_list"
-					],
-					"insert": [
-						"link",
-						"unlink",
-						"image",
-						"table",
-						"special_characters"
-					],
-					"sr_script": [
-						"superscript",
-						"subscript"
-					],
-					"editor": [
-						"removeformat",
-						"paste_text"
-					],
-					"sections": [
-						"format",
-						"alignment",
-						"direction",
-						"indentation",
-						"blocks",
-						"list",
-						"insert",
-						"sr_script",
-						"editor"
-					]
-				}
-			},
-			"components": []
-		}
-	]
+  "definitions": [
+    {
+      "title": "Table",
+      "id": "table",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Table",
+              "model": "table",
+              "filter": "table"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "table",
+      "fields": [
+        {
+          "component": "text",
+          "name": "id",
+          "label": "Id",
+          "valueType": "string",
+          "value": "",
+          "description": "The id of the table"
+        },
+        {
+          "component": "multiselect",
+          "name": "style",
+          "label": "Variation",
+          "valueType": "string",
+          "required": false,
+          "options": [
+            {
+              "name": "Border Type",
+              "children": [
+                {
+                  "name": "No Border",
+                  "value": "no-border"
+                },
+                {
+                  "name": "Outline Border",
+                  "value": "outline-border"
+                },
+                {
+                  "name": "Border Bottom",
+                  "value": "border-bottom"
+                }
+              ]
+            },
+            {
+              "name": "Border Color",
+              "children": [
+                {
+                  "name": "Border Black",
+                  "value": "border-black"
+                },
+                {
+                  "name": "Border Light Gray",
+                  "value": "border-light-gray"
+                },
+                {
+                  "name": "Border Gray",
+                  "value": "border-gray"
+                }
+              ]
+            },
+            {
+              "name": "Header",
+              "children": [
+                {
+                  "name": "Center Aligned",
+                  "value": "header-center-aligned"
+                },
+                {
+                  "name": "Header Blue",
+                  "value": "header-blue"
+                },
+                {
+                  "name": "Header Light Blue",
+                  "value": "header-light-blue"
+                },
+                {
+                  "name": "Header Mixed Blue",
+                  "value": "header-mixed-blue"
+                },
+                {
+                  "name": "Header Light Gray",
+                  "value": "header-light-gray"
+                }
+              ]
+            },
+            {
+              "name": "Row",
+              "children": [
+                {
+                  "name": "Zebra Light Gray",
+                  "value": "zebra-light-gray"
+                }
+              ]
+            },
+            {
+              "name": "Cells",
+              "children": [
+                {
+                  "name": "Cells Center Aligned",
+                  "value": "cells-center-aligned"
+                },
+                {
+                  "name": "Cells Center Aligned Except First",
+                  "value": "cells-center-aligned-except-first"
+                },
+                {
+                  "name": "Dash Cell Highlight",
+                  "value": "dash-cell-highlight"
+                }
+              ]
+            },
+            {
+              "name": "Padding",
+              "children": [
+                {
+                  "name": "Compact Padding",
+                  "value": "compact-padding"
+                },
+                {
+                  "name": "Border Bottom Tight Columns",
+                  "value": "border-bottom-tight-cols"
+                }
+              ]
+            },
+            {
+              "name": "Functional",
+              "children": [
+                {
+                  "name": "Merge Tables",
+                  "value": "merge-tables"
+                },
+                {
+                  "name": "Nested Table",
+                  "value": "nested-table"
+                },
+                {
+                  "name": "Scroll",
+                  "value": "scroll"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "name": "nestedTableId",
+          "label": "Nested Table ID",
+          "valueType": "string",
+          "required": false,
+          "condition": {
+            "in": [
+              "nested-table",
+              {
+                "var": "style"
+              }
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "tableContent",
+          "label": "Table Content",
+          "valueType": "string",
+          "value": "",
+          "rte": {
+            "toolbar": {
+              "format": [
+                "bold",
+                "italic",
+                "underline"
+              ],
+              "list": [
+                "bullet_list",
+                "ordered_list"
+              ],
+              "insert": [
+                "link",
+                "unlink",
+                "table"
+              ],
+              "editor": [
+                "removeformat"
+              ],
+              "sections": [
+                "format",
+                "list",
+                "insert",
+                "editor"
+              ]
+            },
+            "actions": {
+              "table": {
+                "label": "Insert Table",
+                "shortcut": "Mod-Alt-T",
+                "wrapInParagraphs": true
+              },
+              "link": {
+                "hideTarget": false
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "table",
+      "rte": {
+        "toolbar": {
+          "format": [
+            "bold",
+            "italic",
+            "underline",
+            "strike"
+          ],
+          "alignment": [
+            "left",
+            "center",
+            "right",
+            "justify"
+          ],
+          "direction": [
+            "rtl",
+            "ltr"
+          ],
+          "indentation": [
+            "indent",
+            "outdent"
+          ],
+          "blocks": [
+            "paragraph",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "code_block"
+          ],
+          "list": [
+            "bullet_list",
+            "ordered_list"
+          ],
+          "insert": [
+            "link",
+            "unlink",
+            "image",
+            "table",
+            "special_characters"
+          ],
+          "sr_script": [
+            "superscript",
+            "subscript"
+          ],
+          "editor": [
+            "removeformat",
+            "paste_text"
+          ],
+          "sections": [
+            "format",
+            "alignment",
+            "direction",
+            "indentation",
+            "blocks",
+            "list",
+            "insert",
+            "sr_script",
+            "editor"
+          ]
+        }
+      },
+      "components": []
+    }
+  ]
 }

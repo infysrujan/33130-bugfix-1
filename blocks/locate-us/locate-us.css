@@ -335,6 +335,7 @@
 
 .locate-us .locate-us-no-results {
   color: var(--bbl-color-grey-85);
+  text-align: center;
 }
 
 .locate-us .locate-us-map {
@@ -526,7 +527,7 @@
   font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
-  margin: 0.625rem 0 var(--bbl-space-100);
+  margin: var(--bbl-space-250) 0 0.625rem;
   overflow-wrap: break-word;
 }
 
@@ -1033,11 +1034,11 @@
 
   .locate-us .locate-us-map {
     height: 100%;
-    width: 75%;
+    width: 60%;
   }
 
   .locate-us .locate-us-map-sidebar {
-    width: 25%;
+    width: 40%;
     box-sizing: border-box;
     overflow-y: auto;
     display: flex;
@@ -1063,7 +1064,7 @@
     display: grid;
     padding: 0 var(--bbl-space-1050) 1.875rem;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--bbl-space-200);
+    gap: 1.875rem var(--bbl-space-250);
     margin-top: 0;
     align-items: stretch;
   }
@@ -1073,7 +1074,7 @@
     background-color: var(--bbl-color-white);
     cursor: pointer;
     border: 0.0625rem solid var(--bbl-color-gray-122);
-    box-shadow: 0 var(--bbl-space-025) 1.125rem rgb(0 0 0 / 8%);
+    box-shadow: 0 0 var(--bbl-space-200) 0 var(--bbl-color-black-alpha-10);
     overflow: hidden;
     display: grid;
     grid-template-rows: subgrid;
@@ -1243,7 +1244,15 @@
 
   .locate-us .locate-us-cards {
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--bbl-space-250) var(--bbl-space-500);
+    gap: 1.875rem var(--bbl-space-500);
+  }
+
+  .locate-us .locate-us-map {
+    width: 75%;
+  }
+
+  .locate-us .locate-us-map-sidebar {
+    width: 25%;
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-cards {
@@ -1341,7 +1350,7 @@
     flex: 1;
     display: flex;
     margin: 0;
-    padding: 0 25px 15px 0;
+    padding: 0 1.5625rem 0.9375rem 0;
     padding-bottom: 0.9375rem;
   }
 

@@ -1,0 +1,112 @@
+.market-report-container [role="tabpanel"].market-report-is-loading {
+  position: relative;
+  min-height: 12rem;
+}
+
+.market-report-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: url("/icons/loading.gif") center 9.6875rem / 1.875rem no-repeat;
+  top: 25%;
+}
+
+.tabs-content.market-report-is-loading {
+  visibility: hidden;
+}
+
+.market-report-col-left :is(h1, h2, h3, h4, h5, h6),
+.market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
+  font-size: 1rem;
+  line-height: 1.375rem;
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  color: var(--bbl-color-grey-85);
+}
+
+.market-report-top-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.9375rem;
+}
+
+.market-report-date {
+  color: var(--bbl-color-black);
+  font-size: 1.5rem;
+  line-height: 1.625rem;
+  font-family: BangkokBank-Medium, sans-serif;
+  font-weight: 400;
+}
+
+.market-report-written-by {
+  margin-block: 1.875rem;
+}
+
+.market-report-page a.print-button.icon-print {
+  font: 1rem BangkokBank-Medium, sans-serif;
+  color: var(--bbl-color-black);
+  text-transform: uppercase;
+  display: block;
+  position: relative;
+  padding-right: 1.75rem;
+}
+
+.market-report-page a.print-button.icon-print::before {
+  position: absolute;
+  right: 0;
+  top: 0.125rem;
+}
+
+.market-report-page .table table tr td {
+  color: var(--bbl-color-grey-70);
+  height: 2rem;
+  vertical-align: middle;
+  font-size: 0.875rem;
+  text-align: right;
+  width: 25%;
+}
+
+.market-report-page .table table tr td:first-child {
+  text-align: left;
+}
+
+.market-report-page .table table[class*="header-"] tr.header-row td {
+  height: 2.875rem;
+  color: var(--bbl-color-black);
+  font-weight: 700;
+}
+
+.market-report-page .table.block {
+  margin: 1.25rem 0 2.5rem;
+}
+
+.market-report-page .button-container a {
+  font: 1rem BangkokBank-Medium, sans-serif;
+  color: var(--bbl-color-black);
+}
+
+.market-report-page .button-container a::after {
+  display: none;
+}
+
+.market-report-page .button-container {
+  float: right;
+}
+
+.market-report-page p.text-small {
+  font-size: 0.6875rem;
+  line-height: 1.63;
+  letter-spacing: -0.0063rem;
+  margin-block: -1.875rem 1.875rem;
+}
+
+/* Built in JS only while the print dialog is open; kept off-screen before print. */
+.market-report-print-area {
+  position: fixed;
+  left: -625rem;
+  top: 0;
+  width: 0.0625rem;
+  height: 0.0625rem;
+  overflow: hidden;
+  box-sizing: border-box;
+}

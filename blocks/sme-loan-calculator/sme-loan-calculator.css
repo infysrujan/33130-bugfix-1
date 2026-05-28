@@ -1,0 +1,483 @@
+/* ── Wrapper paragraph reset (must precede higher-specificity rules) ── */
+.sme-loan-calculator-wrapper > p {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Remove <p> bottom margin that exposes dark-blue section bg ── */
+.section.tabs-container .tab-panel > p {
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Page section background ──────────────────────────────── */
+.section.tabs-container {
+  background: var(--bbl-color-truthful-dark-blue);
+  overflow-x: hidden;
+}
+
+.section.central-aligned {
+  background-color: var(--bbl-color-white);
+}
+
+.section.central-aligned.full-bleed-bg {
+  position: relative;
+  bottom: 0.625rem;
+  padding-bottom: 0.625rem;
+}
+
+.section.central-aligned .default-content-wrapper p {
+  text-align: center;
+}
+
+/* ── Title section ────────────────────────────────────────── */
+
+main {
+  background: var(--bbl-color-white);
+}
+
+/* ── Remark section ───────────────────────────────────────── */
+.section:not(.tabs-container, .center-title) .default-content-wrapper p {
+  color: var(--bbl-color-grey-150);
+  font-size: 0.6875rem;
+  line-height: 1.63;
+  margin-top: 0;
+  padding: 1.5rem 3rem;
+}
+
+/* ── Hide tab dropdown ────────────────────────────────────── */
+.tabs.simple-tab .tabs-dropdown {
+  display: none;
+}
+
+/* ── Tab navigation ───────────────────────────────────────── */
+.section.tabs-container .tabs.simple-tab .tabs-nav-wrapper {
+  background-color: var(--bbl-color-truthful-dark-blue);
+  padding: 0;
+  overflow: hidden;
+  border-bottom: none;
+  max-width: 79.5rem;
+  margin: 0 auto;
+}
+
+.section.tabs-container .tabs.simple-tab .tabs-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  overflow: hidden;
+  border: none;
+  padding: 0;
+  margin-top: 0;
+  gap: 0;
+  max-width: 100%;
+}
+
+.section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: var(--bbl-color-sme-tab-inactive);
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  font-weight: 400;
+  padding: 0.625rem 0.25rem;
+  cursor: pointer;
+  text-align: center;
+  flex: 1;
+  max-width: unset;
+  box-sizing: border-box;
+  white-space: normal;
+  transition: color 0.2s;
+  letter-spacing: 0.02em;
+  outline: none;
+}
+
+.section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"]:hover {
+  color: var(--bbl-color-white);
+}
+
+.section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"].active,
+.section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"][aria-selected="true"] {
+  color: var(--bbl-color-white);
+  font-weight: 700;
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+  text-decoration-thickness: 0.125rem;
+}
+
+/* remove any default EDS tab indicator or white gap */
+.section.tabs-container .tabs.simple-tab .tabs-nav-wrapper::after,
+.section.tabs-container .tabs.simple-tab .tabs-nav::after {
+  display: none;
+}
+
+/* override global BBL blue active indicator on tab buttons */
+.section.tabs-container .tabs.simple-tab .tabs-nav button::before {
+  background: transparent;
+  display: none;
+}
+
+/* ── Block + wrapper full width ──────────────────────────── */
+.sme-loan-calculator-wrapper {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Block container ─────────────────────────────────────── */
+.sme-loan-calculator {
+  font-family: inherit;
+  width: 100%;
+  color: var(--bbl-color-white);
+}
+
+/* ── Layout helpers (scoped) ─────────────────────────────── */
+.sme-loan-calculator .row {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.sme-loan-calculator .alignc {
+  justify-content: center;
+  text-align: center;
+}
+
+.sme-loan-calculator .alignright {
+  text-align: right;
+}
+
+/* ── Dark card (inputs + calculate button) ───────────────── */
+.sme-calc-dark-section {
+  background-color: var(--bbl-color-truthful-dark-blue);
+  border-radius: 0.5rem 0.5rem 0 0;
+  padding: 1.5rem 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  color: var(--bbl-color-white);
+  max-width: 79.5rem;
+  margin: 0 auto;
+}
+
+/* ── Group header (Account Receivable / Stock / …) ──────── */
+.sme-loan-calculator .fontcontent {
+  width: 100%;
+  font-size: 0.75rem;
+  color: var(--bbl-color-white);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 600;
+}
+
+/* ── Fields row ──────────────────────────────────────────── */
+.row.paddingmain {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.col-md-4.paddingcal {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.box-textbox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex: 1;
+  border: 0.0625rem solid var(--bbl-color-sme-field-border);
+  border-radius: 0.5rem;
+  padding: 0.875rem 1.25rem 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.box-textbox:hover {
+  border-color: var(--bbl-color-white);
+}
+
+/* Label column */
+.box-textbox .col-md-6.col-xs-6:first-child {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+
+/* Input column */
+.box-textbox .col-md-6.col-xs-6.alignright {
+  flex-shrink: 0;
+  width: auto;
+}
+
+.label-cal {
+  font-family: var(--bbl-font-family-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--bbl-color-grey-150);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.textbox-cal {
+  background: transparent;
+  border: none;
+  color: var(--bbl-color-white);
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-align: right;
+  width: 5rem;
+  outline: none;
+  padding: 0;
+  caret-color: var(--bbl-color-sme-caret);
+}
+
+.textbox-cal::placeholder {
+  color: var(--bbl-color-white-alpha-30);
+}
+
+/* ── Bottom text under each field (Baht, Month, % per year) ─ */
+.sme-loan-calculator .fontcondition {
+  font-size: 1rem;
+  color: var(--bbl-color-grey-150);
+  margin-top: 0.375rem;
+  line-height: 1.4;
+}
+
+.fontcondition.alignright.padbottom25 {
+  font-family: var(--bbl-font-family-primary);
+  display: block;
+  text-align: right;
+}
+
+/* ── Calculate button ────────────────────────────────────── */
+.sme-calc-btn {
+  background-color: var(--bbl-color-grey-05);
+  color: var(--bbl-color-grey-85);
+  border: none;
+  border-radius: 0.4375rem;
+  min-width: 11.125rem;
+  width: 100%;
+  height: 2.75rem;
+  padding: 0.0625rem 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.2s;
+}
+
+.sme-calc-btn:hover {
+  background-color: var(--bbl-color-blue-steel-light);
+}
+
+/* ── Result section (below dark card) ────────────────────── */
+.sme-calc-result-section {
+  background-color: var(--bbl-color-sme-section-bg);
+  border-radius: 0 0 0.5rem 0.5rem;
+  padding: 1.75rem 1rem;
+  text-align: center;
+}
+
+.sme-calc-result-label {
+  display: block;
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: var(--bbl-color-white);
+  letter-spacing: 0.01em;
+  line-height: 1.625rem;
+  margin: 0 0 1rem;
+}
+
+.sme-calc-result-label strong {
+  font-weight: 700;
+}
+
+/* ── Formula / substituted expression (hidden) ───────────── */
+.sme-calc-formula-description {
+  display: none;
+}
+
+/* ── Description text ────────────────────────────────────── */
+.sme-calc-description {
+  font-size: 1rem;
+  color: var(--bbl-color-white-alpha-80);
+  margin: 0 0 1.75rem;
+  line-height: 1.375rem;
+  padding: 0 1.5rem;
+}
+
+/* ── Add to table button ─────────────────────────────────── */
+.sme-calc-add-table-btn {
+  display: block;
+  margin: 0 auto;
+  background-color: var(--bbl-color-grey-40);
+  color: var(--bbl-color-gray-144);
+  border: none;
+  border-radius: 0.5rem;
+  min-width: 11.125rem;
+  width: 100%;
+  height: 3.125rem;
+  padding: 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.2s;
+}
+
+.sme-calc-add-table-btn:hover {
+  background-color: var(--bbl-color-grey-45);
+}
+
+/* ── Comparison table ────────────────────────────────────── */
+.sme-calc-table-section {
+  margin-top: 0;
+  background: var(--bbl-color-white);
+  padding: 2.5rem 3rem 3rem;
+}
+
+.sme-calc-table-heading {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: var(--bbl-color-grey-100);
+  margin: 0 0 2rem;
+  padding-bottom: 0;
+}
+
+.sme-calc-table-heading::after {
+  content: '';
+  display: block;
+  width: 5rem;
+  height: 0.0625rem;
+  background: var(--bbl-color-grey-60);
+  margin: 1rem auto 0;
+}
+
+.resulttbl {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tablelong.fontcomparetable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.tablelong.fontcomparetable .lineth {
+  background: none;
+  color: var(--bbl-color-gray-121);
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0 0.3125rem;
+  text-align: center;
+  line-height: 1.63;
+  border-bottom: 0.125rem solid var(--bbl-color-grey-125);
+}
+
+.tablelong.fontcomparetable thead tr:first-child .lineth[colspan] {
+  border-bottom: 0.125rem solid var(--bbl-color-gray-122);
+}
+
+.tablelong.fontcomparetable thead tr:last-child .lineth {
+  font-size: 0.8125rem;
+  color: var(--bbl-color-grey-140);
+  border-bottom: 0.125rem solid var(--bbl-color-grey-125);
+}
+
+.tablelong.fontcomparetable .linetd {
+  color: var(--bbl-color-grey-100);
+  font-size: 1rem;
+  line-height: 1.375rem;
+  padding: 0.3125rem 0;
+  text-align: center;
+  border-top: 0.0625rem solid var(--bbl-color-grey-125);
+}
+
+.tablelong.fontcomparetable tbody tr:first-child .linetd {
+  border-top: none;
+}
+
+.tablelong.fontcomparetable tbody tr:hover td {
+  background-color: var(--bbl-color-gray-144);
+}
+
+/* ── Tablet and above ─────────────────────────────────────── */
+@media (width > 47.5rem) {
+  .section.tabs-container .tabs.simple-tab .tabs-nav-wrapper {
+    padding: 0 3rem;
+    overflow: visible;
+  }
+
+  .section.tabs-container .tabs.simple-tab .tabs-nav {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
+    font-size: 1rem;
+    line-height: normal;
+    padding: 1.25rem 1rem;
+    white-space: nowrap;
+    max-width: none;
+  }
+
+  .sme-calc-dark-section {
+    border-radius: 0.75rem 0.75rem 0 0;
+    padding: 2.5rem 3rem 3rem;
+    display: block;
+  }
+
+  .sme-calc-result-section {
+    padding: 1.875rem 0.625rem;
+    border-radius: 0;
+  }
+
+  .row.paddingmain {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0 1rem;
+  }
+
+  .col-md-4.paddingcal {
+    flex: 0 0 calc((100% - 2rem) / 3);
+    max-width: calc((100% - 2rem) / 3);
+    min-width: 12.5rem;
+    width: auto;
+  }
+
+  .textbox-cal {
+    width: 6.25rem;
+    font-size: 1.25rem;
+  }
+
+  .sme-calc-result-label {
+    font-size: 1.5rem;
+  }
+
+  .sme-calc-btn {
+    width: auto;
+    padding: 0.0625rem 0.375rem;
+  }
+
+  .sme-calc-add-table-btn {
+    width: auto;
+    padding: 0 1.5rem;
+  }
+}

@@ -741,7 +741,9 @@ async function loadSections(element) {
   }
 }
 
-init();
+if (typeof window !== 'undefined') {
+  init();
+}
 
 export {
   buildBlock,

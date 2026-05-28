@@ -668,9 +668,9 @@ export default async function decorate(block) {
   const openCalendarLabel = placeholders?.openCalendar;
   const selectTimeLabel = placeholders?.selectTime;
   const language = getLang();
-  const monthLabels = parseCsvConfigList(configs?.monthLabels, buildIntlMonthLabels(language));
-  const dayLabels = parseCsvConfigList(configs?.dayLabels, buildIntlDayLabels(language));
-  const buddhistYearOffset = Number(configs?.buddhistYearOffset) || 0;
+  const monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
+  const dayLabels = parseCsvConfigList(placeholders?.dayLabels, buildIntlDayLabels(language));
+  const buddhistYearOffset = getLang() === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
   const endpoints = createApiEndpoints(configs);
 
   const createSectionState = () => ({

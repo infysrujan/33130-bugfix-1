@@ -74,7 +74,7 @@ export default function decorate(block) {
     thumbnailList = createElement('ul', 'hero-banner-thumbnail-list', 'content');
   }
 
-  const heroRows = [...block.children].slice(1, 7);
+  const heroRows = [...block.children].slice(1, 8);
 
   // Pre-pass: find which item has isDefault checked (stored as "true" at children[1])
   let defaultIndex = 0;

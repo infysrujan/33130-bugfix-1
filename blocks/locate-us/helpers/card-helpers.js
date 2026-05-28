@@ -13,7 +13,7 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
 
-  const dirTemplate = configs?.googleMapsDirectionsUrl;
+  const dirTemplate = configs?.locateUsGoogleMapsDirectionsUrl;
   const directionsUrl = (dirTemplate && loc.Lat && loc.Lng)
     ? buildUrl(dirTemplate, { LAT: loc.Lat, LNG: loc.Lng })
     : '';

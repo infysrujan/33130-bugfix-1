@@ -68,6 +68,19 @@
           "value": true,
           "label": "Breadcrumb",
           "valueType": "boolean"
+        },
+        {
+          "component": "boolean",
+          "label": "Enable Welcome Banner",
+          "name": "isWelcomeBanner",
+          "valueType": "boolean"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "ogImage",
+          "label": "OG Image",
+          "description": "Select the image asset to use for the Open Graph og:image meta tag."
         }
       ]
     }

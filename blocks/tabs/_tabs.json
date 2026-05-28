@@ -299,7 +299,6 @@
         "cards-product",
         "columns",
         "fragment",
-        "megamenu",
         "carousel",
         "story-card",
         "warning-card",
@@ -308,12 +307,13 @@
         "cross-banner",
         "form",
         "embed-adaptive-form",
-        "brand-logo",
-        "location",
-        "login",
-        "main-nav-item",
+        "download-file",
+        "table",
+        "accordion-block",
         "forex-rates",
-        "forex-graph"
+        "forex-graph",
+        "sme-loan-calculator",
+        "table"
       ]
     }
   ]

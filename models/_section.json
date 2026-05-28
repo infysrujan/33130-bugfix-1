@@ -140,6 +140,14 @@
                   "value": "center-title"
                 },
                 {
+                  "name": "Center Image",
+                  "value": "center-image"
+                },
+                {
+                  "name": "Underline Image",
+                  "value": "underline-image"
+                },
+                {
                   "name": "Center Content",
                   "value": "center-content"
                 }
@@ -211,6 +219,10 @@
         "video",
         "carousel-video",
         "forex-rates",
+        "market-report",
+        "sme-loan-calculator",
+        "dynamic-board",
+        "bcap",
         "multi-column-tiles",
         "retirement-calculator",
         "tax-calculator",
@@ -219,9 +231,12 @@
         "promo-card-listing",
         "top-promotional-cards",
         "multi-column-tiles",
+        "property-for-sale-details",
+        "property-for-sale",
         "stock-ticker",
         "cookie-alert",
         "cookie-modal",
+        "welcome-banner",
         "news-media-details",
         "news-media",
         "latest-news",

@@ -38,15 +38,15 @@ function replaceTemplateTokens(url, values) {
  *     fwbRateServiceGetFwdfxrates            - forward point rates for a date+update
  */
 export function createApiEndpoints(configs) {
-  const latestFxRatesUrl = configs?.fwbRateServiceGetLatestFxrates || '';
-  const dayInMonthTemplate = configs?.fwbRateServiceGetDayInMonth || '';
-  const updateInDayTemplate = configs?.fwbRateServiceGetUpdateInDay || '';
-  const fxRatesTemplate = configs?.fwbRateServiceGetFxrates || '';
+  const latestFxRatesUrl = configs?.forwardPointsSmeGetLatestFxrates || '';
+  const dayInMonthTemplate = configs?.forwardPointsSmeGetDayInMonth || '';
+  const updateInDayTemplate = configs?.forwardPointsSmeGetUpdateInDay || '';
+  const fxRatesTemplate = configs?.forwardPointsSmeGetFxrates || '';
 
-  const fwdLatestUrl = configs?.fwbRateServiceGetFwdDateTimeLastUpdate || '';
-  const fwdDayInMonthTemplate = configs?.fwbRateServiceGetFwdDayInMonth || '';
-  const fwdUpdateInDayTemplate = configs?.fwbRateServiceGetFwdUpdateInDay || '';
-  const fwdRatesTemplate = configs?.fwbRateServiceGetFwdfxrates || '';
+  const fwdLatestUrl = configs?.forwardPointsSmeGetFwdDateTimeLastUpdate || '';
+  const fwdDayInMonthTemplate = configs?.forwardPointsSmeGetFwdDayInMonth || '';
+  const fwdUpdateInDayTemplate = configs?.forwardPointsSmeGetFwdUpdateInDay || '';
+  const fwdRatesTemplate = configs?.forwardPointsSmeGetFwdfxrates || '';
 
   return {
     // Section 1

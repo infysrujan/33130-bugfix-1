@@ -1,0 +1,170 @@
+.welcome-banner-placeholder {
+  display: none;
+}
+
+.welcome-banner-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bbl-color-white, #fff);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  overflow: hidden auto;
+  padding: var(--bbl-space-300) var(--bbl-space-200);
+  box-sizing: border-box;
+}
+
+.welcome-banner-overlay.welcome-banner-overlay-visible {
+  opacity: 1;
+}
+
+.welcome-banner-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 22rem;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.welcome-banner-close {
+  position: absolute;
+  top: -2.5rem;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: var(--bbl-color-white, #fff);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  z-index: 1;
+}
+
+.welcome-banner-media {
+  width: 100%;
+  line-height: 0;
+}
+
+.welcome-banner-desktop-img {
+  display: none;
+  width: 100%;
+}
+
+.welcome-banner-mobile-img {
+  display: block;
+  width: 100%;
+}
+
+.welcome-banner-desktop-img img,
+.welcome-banner-mobile-img img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.welcome-banner-ctas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bbl-space-100);
+  width: 100%;
+  padding: var(--bbl-space-150);
+  box-sizing: border-box;
+  background: transparent;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.welcome-banner-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 13.125rem;
+  height: 2.75rem;
+  padding: var(--bbl-space-000) var(--bbl-space-250);
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  text-decoration: none;
+  border-radius: 0.4375rem;
+  font-family: var(--bbl-font-family-primary);
+  font-weight: var(--bbl-font-weight-medium);
+  font-size: 0.9375rem;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.welcome-banner-ctas .welcome-banner-cta {
+  color: var(--bbl-color-white);
+}
+
+.welcome-banner-cta:hover,
+.welcome-banner-cta:active {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  text-decoration: none;
+}
+
+@media (width > 47.5rem) {
+  .welcome-banner-dialog {
+    max-width: 26rem;
+  }
+
+  .welcome-banner-ctas {
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--bbl-space-200);
+    padding: var(--bbl-space-250) var(--bbl-space-200);
+  }
+
+  .welcome-banner-cta {
+    flex: 1;
+    width: auto;
+    max-width: 13.125rem;
+  }
+}
+
+@media (width > 64rem) {
+  .welcome-banner-overlay {
+    overflow: hidden;
+  }
+
+  .welcome-banner-dialog {
+    max-width: 60rem;
+  }
+
+  .welcome-banner-desktop-img {
+    display: block;
+  }
+
+  .welcome-banner-mobile-img {
+    display: none;
+  }
+
+  .welcome-banner-ctas {
+    position: static;
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--bbl-space-300);
+    padding: var(--bbl-space-300) var(--bbl-space-000);
+    background: var(--bbl-color-white, #fff);
+  }
+
+  .welcome-banner-cta {
+    width: 15rem;
+    height: 2.75rem;
+    font-size: var(--bbl-font-size-b1);
+  }
+}
