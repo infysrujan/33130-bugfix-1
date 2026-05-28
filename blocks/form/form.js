@@ -576,10 +576,14 @@ export default async function decorate(block) {
   // Load placeholders early for form error messages
   const placeholders = await fetchPlaceholders();
   setFormPlaceholders(placeholders);
-  // Load AEM base URL from site configs (breadcrumb-aem-base-url → aemBaseUrlForBreadcrumb)
+  // Load AEM base URL from site configs
+  // Config key 'aem-base-url' → camelCase: 'aemBaseUrl'
   if (!getSubmitBaseUrl()) {
     const configs = await fetchConfigs();
-    const aemBaseUrl = configs.breadcrumbAemBaseUrl || configs.aemBaseUrlForBreadcrumb || '';
+    const aemBaseUrl = configs.aemBaseUrl
+      || configs.breadcrumbAemBaseUrl
+      || configs.aemBaseUrlForBreadcrumb
+      || '';
     if (aemBaseUrl) {
       setSubmitBaseUrl(aemBaseUrl);
     }
