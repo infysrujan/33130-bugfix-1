@@ -77,7 +77,8 @@
       "news-media-details",
       "news-media",
       "latest-news",
-      "forward-points-sme"
+      "forward-points-sme",
+      "menu-list"
     ]
   },
   {
@@ -253,6 +254,13 @@
       "menu-card"
     ],
     "maxItems": 6
+  },
+  {
+    "id": "menu-list",
+    "components": [
+      "menu-list-item"
+    ],
+    "maxItems": 5
   },
   {
     "id": "multi-column-tiles",

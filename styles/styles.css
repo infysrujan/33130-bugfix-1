@@ -186,6 +186,11 @@ main img {
     flex-direction: column;
 }
 
+.section.columns-2-65 {
+    display: flex;
+    flex-direction: column;
+}
+
 @media (width > 47.5rem) {
     .section {
         padding-inline: var(--bbl-space-section-sm);
@@ -211,17 +216,30 @@ main img {
     }
 
     .section.columns-2-50 > * {
-        padding-inline: 20px;
+        padding-inline: var(--bbl-space-250);
         flex: 1;
+    }
+
+    .section.columns-2-65 {
+        flex-direction: row;
     }
 
     .section.columns-2-75 {
         flex-direction: row;
     }
 
-    .section.columns-2-75 > * {
-        padding-inline: 20px;
+    .section.columns-2-65 > * {
+        padding-inline: var(--bbl-space-250);
         flex: 1;
+    }
+
+    .section.columns-2-75 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-65 > *:first-child {
+        flex: 0 0 65%;
     }
 
     .section.columns-2-75 > *:first-child {

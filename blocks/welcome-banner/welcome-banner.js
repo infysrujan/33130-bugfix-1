@@ -52,7 +52,10 @@ export default function decorate(block) {
   if (!isDateActive(publishDate, unpublishDate)) return;
 
   const desktopPic = desktopImgRow?.querySelector('picture')?.cloneNode(true) ?? null;
+  if (desktopImgRow && desktopPic) moveInstrumentation(desktopImgRow, desktopPic);
+
   const mobilePic = mobileImgRow?.querySelector('picture')?.cloneNode(true) ?? null;
+  if (mobileImgRow && mobilePic) moveInstrumentation(mobileImgRow, mobilePic);
 
   const ctaLinks = buttonRows.map((row) => {
     const a = row?.querySelector('a');
@@ -61,6 +64,7 @@ export default function decorate(block) {
       href: a.getAttribute('href') || '#',
       label: a.textContent.trim(),
       target: a.getAttribute('target') || '',
+      sourceAnchor: a,
     };
   }).filter(Boolean);
   if (ctaLinks.length === 0) {
@@ -69,6 +73,7 @@ export default function decorate(block) {
         href: a.getAttribute('href') || '#',
         label: a.textContent.trim(),
         target: a.getAttribute('target') || '',
+        sourceAnchor: a,
       });
     });
   }
@@ -107,6 +112,7 @@ export default function decorate(block) {
     a.href = ctaData.href;
     a.textContent = ctaData.label;
     if (ctaData.target) a.setAttribute('target', ctaData.target);
+    if (ctaData.sourceAnchor) moveInstrumentation(ctaData.sourceAnchor, a);
     a.addEventListener('click', (e) => {
       e.preventDefault();
       setBannerDismissed();

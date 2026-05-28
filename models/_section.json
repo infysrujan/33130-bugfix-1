@@ -125,6 +125,10 @@
                 {
                   "name":"Columns 2(50-50)",
                   "value": "columns-2-50"
+                },
+                {
+                  "name":"Columns 2(65-35)",
+                  "value": "columns-2-65"
                 }
               ]
             },
@@ -242,7 +246,8 @@
         "news-media-details",
         "news-media",
         "latest-news",
-        "forward-points-sme"
+        "forward-points-sme",
+        "menu-list"
       ]
     }
   ]
