@@ -1,26 +1,9 @@
+import { fetchGet, buildUrl } from '../../../scripts/utils/fetchApi.js';
+
 export function trimValue(value) {
   if (value === null || value === undefined) return '-';
   const normalized = String(value).trim();
   return normalized || '-';
-}
-
-async function fetchJson(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
-  return response.json();
-}
-
-function replaceTemplateTokens(url, values) {
-  let output = url;
-  Object.entries(values).forEach(([key, value]) => {
-    const replacements = [`{{${key}}}`, `{{${key}`, `{${key}}`, `{${key}`, `:${key}`];
-    replacements.forEach((token) => {
-      output = output.split(token).join(String(value));
-    });
-  });
-  return output;
 }
 
 export function createApiEndpoints(configs) {
@@ -31,11 +14,11 @@ export function createApiEndpoints(configs) {
 
   return {
     fxFamily: () => fxFamilyUrl,
-    dayInMonth: (year, month) => replaceTemplateTokens(dayInMonthTemplate, {
+    dayInMonth: (year, month) => buildUrl(dayInMonthTemplate, {
       YEAR: year,
       MONTH: month,
     }),
-    chartRates: (sDay, sMon, sYear, eDay, eMon, eYear, family, lang) => replaceTemplateTokens(
+    chartRates: (sDay, sMon, sYear, eDay, eMon, eYear, family, lang) => buildUrl(
       chartTemplate,
       {
         START_DATE: sDay,
@@ -48,7 +31,7 @@ export function createApiEndpoints(configs) {
         LANG: lang,
       },
     ),
-    downloadRates: (sDay, sMon, sYear, eDay, eMon, eYear, family, lang) => replaceTemplateTokens(
+    downloadRates: (sDay, sMon, sYear, eDay, eMon, eYear, family, lang) => buildUrl(
       downloadTemplate,
       {
         START_DATE: sDay,
@@ -65,11 +48,11 @@ export function createApiEndpoints(configs) {
 }
 
 export async function getFxFamily(endpoints) {
-  return fetchJson(endpoints.fxFamily());
+  return fetchGet(endpoints.fxFamily());
 }
 
 export async function getEnabledDays(endpoints, year, month) {
-  const data = await fetchJson(endpoints.dayInMonth(Number(year), Number(month)));
+  const data = await fetchGet(endpoints.dayInMonth(Number(year), Number(month)));
   return (Array.isArray(data) ? data : [])
     .map((item) => String(item.Day || '').trim())
     .filter(Boolean)
@@ -80,7 +63,7 @@ export async function getChartRates(endpoints, sDay, sMon, sYear, eDay, eMon, eY
   const url = endpoints.chartRates(sDay, sMon, sYear, eDay, eMon, eYear, family, lang);
   if (!url) return [];
   try {
-    return await fetchJson(url);
+    return await fetchGet(url);
   } catch (e) {
     return [];
   }

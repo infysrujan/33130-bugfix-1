@@ -1,18 +1,5 @@
 import { pad2 } from './date-helpers.js';
-
-async function fetchJson(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`API ${res.status}: ${url}`);
-  return res.json();
-}
-
-function replaceTemplateTokens(url, values) {
-  let output = url;
-  Object.entries(values).forEach(([key, value]) => {
-    output = output.split(`{{${key}}}`).join(String(value));
-  });
-  return output;
-}
+import { fetchGet, buildUrl } from '../../../scripts/utils/fetchApi.js';
 
 function resolveUrls(configs, isGov) {
   if (isGov) {
@@ -58,43 +45,43 @@ export default function createApiService(configs, boardType) {
   return {
     getLastUpdate: () => {
       if (!urls.lastUpdate) return Promise.resolve(null);
-      return fetchJson(urls.lastUpdate);
+      return fetchGet(urls.lastUpdate);
     },
     getLatestRates: () => {
       if (!urls.latestRates) return Promise.resolve(null);
-      return fetchJson(urls.latestRates);
+      return fetchGet(urls.latestRates);
     },
     getDayInMonth: (date) => {
       if (!urls.dayInMonth) return Promise.resolve([]);
-      const url = replaceTemplateTokens(urls.dayInMonth, {
+      const url = buildUrl(urls.dayInMonth, {
         YEAR: date.getFullYear(),
         MONTH: date.getMonth() + 1,
       });
-      return fetchJson(url);
+      return fetchGet(url);
     },
     getUpdatesInDay: (date) => {
       if (!urls.updateInDay) return Promise.resolve([]);
-      const url = replaceTemplateTokens(urls.updateInDay, {
+      const url = buildUrl(urls.updateInDay, {
         DATE: pad2(date.getDate()),
         MONTH: pad2(date.getMonth() + 1),
         YEAR: date.getFullYear(),
       });
-      return fetchJson(url);
+      return fetchGet(url);
     },
     getRatesByDate: (date, update) => {
       if (!urls.ratesByDate) return Promise.resolve([]);
-      const url = replaceTemplateTokens(urls.ratesByDate, {
+      const url = buildUrl(urls.ratesByDate, {
         DATE: pad2(date.getDate()),
         MONTH: pad2(date.getMonth() + 1),
         YEAR: date.getFullYear(),
         UPDATE: update,
       });
-      return fetchJson(url);
+      return fetchGet(url);
     },
     getRatesByDateWithFilter: (date, update, maturity, fromDate, toDate) => {
       const template = filterTemplates[maturity] || '';
       if (!template) return Promise.resolve([]);
-      const url = replaceTemplateTokens(template, {
+      const url = buildUrl(template, {
         DATE: pad2(date.getDate()),
         MONTH: pad2(date.getMonth() + 1),
         YEAR: date.getFullYear(),
@@ -102,7 +89,7 @@ export default function createApiService(configs, boardType) {
         FROM: fromDate,
         TO: toDate,
       });
-      return fetchJson(url);
+      return fetchGet(url);
     },
   };
 }

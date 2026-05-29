@@ -1,6 +1,7 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const TABLET_MIN = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim();
 
@@ -52,9 +53,8 @@ async function loadAllCards() {
     if (!cardSuggesterData) {
       return [];
     }
-    const resp = await fetch(cardSuggesterData);
-    if (!resp.ok) return [];
-    const json = await resp.json();
+    const json = await fetchGet(cardSuggesterData, { throwOnError: false });
+    if (!json) return [];
     const cards = json.data?.creditCardsList?.items || json.data || json.items || [];
     return cards;
   } catch {
@@ -78,9 +78,8 @@ async function loadSourcingOrder() {
     const configs = await fetchConfigs();
     const url = configs.creditCardSelectorFilteringMatrixUrl;
     if (!url) return null;
-    const resp = await fetch(url);
-    if (!resp.ok) return null;
-    const json = await resp.json();
+    const json = await fetchGet(url, { throwOnError: false });
+    if (!json) return null;
     const lang = getLang();
     const productNameKey = lang === 'th' ? 'Product Name (TH)' : 'Product Name (EN)';
     const map = {};

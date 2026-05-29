@@ -1,3 +1,5 @@
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
+
 const IS_LOCAL = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 const BBL_API_BASE = IS_LOCAL
   ? 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService'
@@ -31,16 +33,12 @@ async function fetchAllFundPrices(date) {
   const dd = pad2(date.getDate());
   const mm = pad2(date.getMonth() + 1);
   const yyyy = date.getFullYear();
-  const res = await fetch(`${BBL_API_BASE}/AllFundPrices/${dd}/${mm}/${yyyy}`);
-  if (!res.ok) throw new Error(`AllFundPrices ${res.status}`);
-  const data = await res.json();
+  const data = await fetchGet(`${BBL_API_BASE}/AllFundPrices/${dd}/${mm}/${yyyy}`);
   return Array.isArray(data) ? data : [];
 }
 
 export async function fetchNavEnabledDaysForMonth({ year, month }) {
-  const res = await fetch(`${GET_UPDATE_IN_MONTH_BASE}/${year}/${month + 1}/0`);
-  if (!res.ok) throw new Error(`GetUpdateInMonth ${res.status}`);
-  const data = await res.json();
+  const data = await fetchGet(`${GET_UPDATE_IN_MONTH_BASE}/${year}/${month + 1}/0`);
   if (!Array.isArray(data)) return [];
   return data.map((i) => (i?.Day != null ? Number(i.Day) : NaN)).filter((d) => !Number.isNaN(d));
 }
@@ -242,21 +240,19 @@ export default async function decorate(block) {
   if (isControlled) return;
 
   try {
-    const [namesRes, latestRes] = await Promise.all([
-      fetch(ALL_FUND_NAMES_URL),
-      fetch(LATEST_DATE_URL),
+    const [latestJson, namesData] = await Promise.all([
+      fetchGet(LATEST_DATE_URL, { throwOnError: false }),
+      fetchGet(ALL_FUND_NAMES_URL, { throwOnError: false }),
     ]);
     let date = new Date();
-    if (latestRes.ok) {
-      const lj = await latestRes.json();
-      const rawDate = Array.isArray(lj) ? lj[0]?.mDate : lj?.mDate;
+    if (latestJson) {
+      const rawDate = Array.isArray(latestJson) ? latestJson[0]?.mDate : latestJson?.mDate;
       latestMdate = rawDate ? rawDate.split('T')[0] : null;
       const parsed = latestMdate ? parseLocalDateFromYmd(latestMdate) : null;
       if (parsed) date = parsed;
     }
-    if (namesRes.ok) {
-      const data = await namesRes.json();
-      cachedFunds = Array.isArray(data) ? data : [];
+    if (namesData) {
+      cachedFunds = Array.isArray(namesData) ? namesData : [];
     }
     await refreshTableFromPrices(tableEl, cachedFunds, date);
   } catch (err) {

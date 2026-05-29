@@ -1,5 +1,6 @@
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import { parseLocalDateFromYmd } from '../fund-prices-table/fund-prices-table.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const IS_LOCAL = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 const BBL_API_BASE = IS_LOCAL
@@ -37,16 +38,12 @@ function isRangeExceedsLimit(fromDate, toDate) {
 }
 
 async function fetchFundDetailStats(fundId, fromDate, toDate) {
-  const res = await fetch(`${FUND_DETAIL_STATS_BASE}/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
-  if (!res.ok) throw new Error(`FundDetailStats ${res.status}`);
-  const data = await res.json();
+  const data = await fetchGet(`${FUND_DETAIL_STATS_BASE}/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
   return Array.isArray(data) ? data[0] : data;
 }
 
 async function fetchFundDetailHistory(fundId, fromDate, toDate) {
-  const res = await fetch(`${FUND_DETAIL_HISTORY_BASE}/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
-  if (!res.ok) throw new Error(`FundDetailHistory ${res.status}`);
-  const data = await res.json();
+  const data = await fetchGet(`${FUND_DETAIL_HISTORY_BASE}/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
   return Array.isArray(data) ? data : [];
 }
 

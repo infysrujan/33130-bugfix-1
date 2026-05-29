@@ -1,6 +1,7 @@
 import fetchBlockConfig from '../../scripts/block-config.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { fetchPost } from '../../scripts/utils/fetchApi.js';
 
 // ─── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -434,13 +435,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
         inflationrate: data.inflationRate,
         afterretirerate: data.afterRetirementRate,
       };
-      const resp = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!resp.ok) throw new Error('API error');
-      const apiResult = await resp.json();
+      const apiResult = await fetchPost(apiUrl, payload);
       onNext({
         monthlyIncome, currentAge, retirementAge, lifeExpectancy,
       }, apiResult);
@@ -627,12 +622,10 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
         afterretirerate: data.afterRetirementRate,
       };
       const payload5 = { ...payload, CompensationRate: data.altCompensationRate };
-      const [resp1, resp2] = await Promise.all([
-        fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
-        fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload5) }),
+      const [apiResult1, apiResult2] = await Promise.all([
+        fetchPost(apiUrl, payload),
+        fetchPost(apiUrl, payload5),
       ]);
-      if (!resp1.ok || !resp2.ok) throw new Error('API error');
-      const [apiResult1, apiResult2] = await Promise.all([resp1.json(), resp2.json()]);
       onCalculate(journey2Values, apiResult1, apiResult2);
     } catch (err) {
       // eslint-disable-next-line no-console

@@ -1,26 +1,9 @@
+import { fetchGet, buildUrl } from '../../../scripts/utils/fetchApi.js';
+
 export function trimValue(value) {
   if (value === null || value === undefined) return '-';
   const normalized = String(value).trim();
   return normalized || '-';
-}
-
-async function fetchJson(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
-  return response.json();
-}
-
-function replaceTemplateTokens(url, values) {
-  let output = url;
-  Object.entries(values).forEach(([key, value]) => {
-    const replacements = [`{{${key}}}`, `{{${key}`, `{${key}}`, `{${key}`, `:${key}`];
-    replacements.forEach((token) => {
-      output = output.split(token).join(String(value));
-    });
-  });
-  return output;
 }
 
 /**
@@ -51,26 +34,26 @@ export function createApiEndpoints(configs) {
   return {
     // Section 1
     latestFxRates: () => latestFxRatesUrl,
-    dayInMonth: (year, month) => replaceTemplateTokens(
+    dayInMonth: (year, month) => buildUrl(
       dayInMonthTemplate,
       { YEAR: year, MONTH: month },
     ),
-    updateInDay: (day, month, year) => replaceTemplateTokens(updateInDayTemplate, {
+    updateInDay: (day, month, year) => buildUrl(updateInDayTemplate, {
       DATE: day, DAY: day, MONTH: month, YEAR: year,
     }),
-    fxRates: (day, month, year, update) => replaceTemplateTokens(fxRatesTemplate, {
+    fxRates: (day, month, year, update) => buildUrl(fxRatesTemplate, {
       DATE: day, DAY: day, MONTH: month, YEAR: year, NUM: update, UPDATE: update,
     }),
     // Section 2
     fwdLatest: () => fwdLatestUrl,
-    fwdDayInMonth: (year, month) => replaceTemplateTokens(
+    fwdDayInMonth: (year, month) => buildUrl(
       fwdDayInMonthTemplate,
       { YEAR: year, MONTH: month },
     ),
-    fwdUpdateInDay: (day, month, year) => replaceTemplateTokens(fwdUpdateInDayTemplate, {
+    fwdUpdateInDay: (day, month, year) => buildUrl(fwdUpdateInDayTemplate, {
       DATE: day, DAY: day, MONTH: month, YEAR: year,
     }),
-    fwdRates: (day, month, year, update) => replaceTemplateTokens(fwdRatesTemplate, {
+    fwdRates: (day, month, year, update) => buildUrl(fwdRatesTemplate, {
       DATE: day, DAY: day, MONTH: month, YEAR: year, NUM: update, UPDATE: update,
     }),
   };
@@ -120,14 +103,14 @@ export function normalizeFwdRates(list) {
 export async function getLatestFxRates(endpoints) {
   const url = endpoints.latestFxRates();
   if (!url) return [];
-  return fetchJson(url);
+  return fetchGet(url);
 }
 
 export async function getLatestFwdUpdate(endpoints) {
   const url = endpoints.fwdLatest();
   if (!url) return null;
   try {
-    const data = await fetchJson(url);
+    const data = await fetchGet(url);
     return Array.isArray(data) ? data[0] : data;
   } catch (e) {
     return null;
@@ -137,7 +120,7 @@ export async function getLatestFwdUpdate(endpoints) {
 export async function getEnabledDays(url) {
   if (!url) return [];
   try {
-    const data = await fetchJson(url);
+    const data = await fetchGet(url);
     return (Array.isArray(data) ? data : [])
       .map((item) => String(item.Day || '').trim())
       .filter(Boolean)
@@ -150,7 +133,7 @@ export async function getEnabledDays(url) {
 export async function getUpdatesInDay(url) {
   if (!url) return [];
   try {
-    const data = await fetchJson(url);
+    const data = await fetchGet(url);
     return Array.isArray(data) ? data : [];
   } catch (e) {
     return [];
@@ -160,7 +143,7 @@ export async function getUpdatesInDay(url) {
 export async function getFxRates(url) {
   if (!url) return [];
   try {
-    return await fetchJson(url);
+    return await fetchGet(url);
   } catch (e) {
     return [];
   }

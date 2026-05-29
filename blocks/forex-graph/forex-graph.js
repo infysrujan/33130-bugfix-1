@@ -20,6 +20,7 @@ import {
   normalizeChartData,
 } from './helpers/api-helpers.js';
 import parseAuthoring from './helpers/authoring-helpers.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 function escapeHtml(value) {
   return String(value)
@@ -695,9 +696,8 @@ export default async function decorate(block) {
         );
         if (!url) return;
         try {
-          const response = await fetch(url);
-          if (!response.ok) return;
-          const data = await response.json();
+          const data = await fetchGet(url, { throwOnError: false });
+          if (!data) return;
           const rows = Array.isArray(data) ? data : [];
           if (!rows.length) return;
           // Build CSV from all keys in the first row

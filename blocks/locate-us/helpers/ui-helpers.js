@@ -2,6 +2,7 @@ import { loadFragment } from '../../fragment/fragment.js';
 import {
   buildUrl, showToast, getUserLocation, hasValue,
 } from './utils.js';
+import { fetchGet } from '../../../scripts/utils/fetchApi.js';
 import {
   updateMapIframe, populateSidebar,
   fetchNearMe, fetchProvinces, fetchDistricts, fetchByProvince, fetchByKeyword,
@@ -402,36 +403,31 @@ export async function buildOverseasUI(container, placeholders, configs) {
 
   async function fetchCountries() {
     if (!API_GET_COUNTRY) return [];
-    const resp = await fetch(API_GET_COUNTRY);
-    if (!resp.ok) return [];
-    const data = await resp.json();
+    const data = await fetchGet(API_GET_COUNTRY, { throwOnError: false });
+    if (!data) return [];
     return data.map((c) => c.Country);
   }
 
   async function fetchCities(country) {
     if (!API_GET_CITY) return [];
     const url = buildUrl(API_GET_CITY, { COUNTRY: country });
-    const resp = await fetch(url);
-    if (!resp.ok) return [];
-    const data = await resp.json();
+    const data = await fetchGet(url, { throwOnError: false });
+    if (!data) return [];
     return data.map((c) => c.City);
   }
 
   async function fetchByCountryCity(country, city) {
     if (!API_SEARCH_INTL) return [];
     const url = buildUrl(API_SEARCH_INTL, { COUNTRY: country, CITY: city || '0' });
-    const resp = await fetch(url);
-    if (!resp.ok) return [];
-    const data = await resp.json();
+    const data = await fetchGet(url, { throwOnError: false });
+    if (!data) return [];
     return Array.isArray(data) ? data : [data];
   }
 
   async function fetchByKeywordOverseas(keyword) {
     if (!API_SEARCH_KW) return [];
     const url = buildUrl(API_SEARCH_KW, { KEYWORD: keyword });
-    const resp = await fetch(url);
-    if (!resp.ok) return [];
-    return resp.json();
+    return (await fetchGet(url, { throwOnError: false })) ?? [];
   }
 
   const enterKeywordText = placeholders?.enterKeywordText || 'Enter Keyword';

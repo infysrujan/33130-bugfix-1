@@ -1,5 +1,6 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { createElementFromHTML, moveInstrumentation } from '../../scripts/scripts.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 /**
  * Format date string from API format to display format
@@ -44,18 +45,8 @@ function formatDate(dateString, timeString = '') {
  */
 async function fetchAPIData(url) {
   try {
-    if (!url) {
-      throw new Error('API URL not provided');
-    }
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`API returned status ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+    if (!url) throw new Error('API URL not provided');
+    return await fetchGet(url);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('API fetch error:', error);
