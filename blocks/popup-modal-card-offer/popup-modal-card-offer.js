@@ -1,4 +1,5 @@
 import { createElementFromHTML } from '../../scripts/scripts.js';
+import { showModal, hideModal } from '../../scripts/utils/modal.js';
 
 const STORAGE_KEY_PREFIX = 'floatingCardPopupDismissed:';
 
@@ -101,11 +102,10 @@ export default function decorate(block) {
   const show = () => {
     if (!shouldShowPopup(storageKey, config.reopenOnRevisit)) return;
 
-    requestAnimationFrame(() => popupEl.classList.add('floating-popup-visible'));
+    showModal(popupEl, 'floating-popup-visible');
 
     const closePopup = () => {
-      popupEl.classList.remove('floating-popup-visible');
-      markDismissed(storageKey, config.reopenOnRevisit);
+      hideModal(popupEl, 'floating-popup-visible', () => markDismissed(storageKey, config.reopenOnRevisit));
     };
 
     popupEl.querySelector('.floating-popup-close')?.addEventListener('click', closePopup);

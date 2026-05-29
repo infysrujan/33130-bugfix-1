@@ -1,4 +1,4 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
+import { createPictureWithoutOptimization } from '../../scripts/bbl-decorators.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 /**
@@ -105,7 +105,7 @@ function buildThumb(img, imageAlt, imageRow, doc) {
 
   if (img) {
     // Create optimized picture element like carousel
-    const optimizedPicture = createOptimizedPicture(
+    const optimizedPicture = createPictureWithoutOptimization(
       img.src,
       imageAlt || img.alt || '',
       false,

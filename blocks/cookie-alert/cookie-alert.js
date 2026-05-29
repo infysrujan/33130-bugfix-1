@@ -43,6 +43,37 @@ function dispatchConsentSaved(preferences) {
   }));
 }
 
+function parseExclusionUrls(block) {
+  const urls = [];
+  block.querySelectorAll('ul li, p').forEach((node) => {
+    const text = node.textContent.trim();
+    if (text.startsWith('http') || text.startsWith('/')) {
+      urls.push(text);
+    }
+  });
+  return urls;
+}
+
+function isCurrentUrlExcluded(exclusionUrls) {
+  const { href, pathname, search } = window.location;
+  return exclusionUrls.some((url) => {
+    if (url === href) return true;
+    try {
+      const parsed = new URL(url);
+      return pathname === parsed.pathname && search === parsed.search;
+    } catch {
+      return pathname + search === url;
+    }
+  });
+}
+
+function isExclusionUrlsRow(row) {
+  return [...row.querySelectorAll('ul li, p')].some((node) => {
+    const text = node.textContent.trim();
+    return text.startsWith('http') || text.startsWith('/');
+  });
+}
+
 function acceptAll(section) {
   const preferences = {
     [COOKIE_ANALYTIC]: true,
@@ -78,7 +109,16 @@ async function ensureCookieModal(fragmentPath) {
 }
 
 export default async function decorate(block) {
+  /* Skip in Universal Editor — the section must not be removed while authoring. */
+  if (window.self !== window.top) return;
+
   if (getCookie(COOKIE_CONSENT) === 'ALERT') {
+    block.closest('.section')?.remove();
+    return;
+  }
+
+  const exclusionUrls = parseExclusionUrls(block);
+  if (exclusionUrls.length && isCurrentUrlExcluded(exclusionUrls)) {
     block.closest('.section')?.remove();
     return;
   }
@@ -111,6 +151,8 @@ export default async function decorate(block) {
 
   // Process each row in the block
   [...block.children].forEach((row) => {
+    if (isExclusionUrlsRow(row)) return;
+
     const content = row.firstElementChild || row;
 
     // Check if it's a button container or not
@@ -135,7 +177,7 @@ export default async function decorate(block) {
           copyAnchorAttributes(anchor, btn);
           moveInstrumentation(anchor, btn);
 
-          const fragmentPath = configs.cookieModalPath;
+          const fragmentPath = configs.cookieAlertCookieModalPath;
           btn.addEventListener('click', async () => {
             const loaded = await ensureCookieModal(fragmentPath);
             if (loaded && typeof window.showCookieModal === 'function') {

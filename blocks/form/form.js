@@ -1,11 +1,17 @@
 import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
-import { emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE } from './constant.js';
+import {
+  emailPattern,
+  getSubmitBaseUrl,
+  setSubmitBaseUrl,
+  SUBMISSION_SERVICE,
+} from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit, setFormPlaceholders } from './submit.js';
 import DocBasedFormToAF from './transform.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { fetchConfigs } from '../../scripts/config.js';
 import {
   checkValidation,
   createButton,
@@ -103,6 +109,17 @@ function createRadioOrCheckboxGroup(fd) {
   if (fd.tooltip) {
     wrapper.title = stripTags(fd.tooltip, '');
   }
+  // Apply style variant classes from the model's style property (set via Universal Editor)
+  const styleVariant = fd.properties?.style;
+  if (styleVariant) {
+    const styleClasses = Array.isArray(styleVariant)
+      ? styleVariant
+      : styleVariant.split(' ');
+    styleClasses
+      .map((cls) => cls.trim())
+      .filter((cls) => cls.length > 0)
+      .forEach((cls) => wrapper.classList.add(cls));
+  }
   setConstraintsMessage(wrapper, fd.constraintMessages);
   return wrapper;
 }
@@ -156,10 +173,51 @@ const handleFocus = (input, field) => {
   input.value = editValue;
 };
 
+/**
+ * Formats a date string (ISO: YYYY-MM-DD) using simple pattern token substitution.
+ * Supported tokens: yyyy, MM, dd, MMMM, MMM, d, M, y, EEEE, EEE
+ * @param {string} isoDate - Date string in YYYY-MM-DD format
+ * @param {string} pattern - Format pattern (e.g. 'dd/MM/yyyy')
+ * @returns {string} Formatted date string, or the original isoDate if parsing fails
+ */
+function formatDateByPattern(isoDate, pattern) {
+  if (!isoDate || !pattern) return isoDate || '';
+  const [yearStr, monthStr, dayStr] = isoDate.split('-');
+  if (!yearStr || !monthStr || !dayStr) return isoDate;
+  const year = parseInt(yearStr, 10);
+  const month = parseInt(monthStr, 10);
+  const day = parseInt(dayStr, 10);
+  if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day)) return isoDate;
+  const monthNamesLong = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+  const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dayNamesLong = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const dayNamesShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayOfWeek = new Date(year, month - 1, day).getDay();
+  return pattern
+    .replace('EEEE', dayNamesLong[dayOfWeek])
+    .replace('EEE', dayNamesShort[dayOfWeek])
+    .replace('MMMM', monthNamesLong[month - 1])
+    .replace('MMM', monthNamesShort[month - 1])
+    .replace('yyyy', String(year).padStart(4, '0'))
+    .replace('MM', String(month).padStart(2, '0'))
+    .replace('dd', String(day).padStart(2, '0'))
+    .replace('y', year)
+    .replace('M', month)
+    .replace('d', day);
+}
+
 const handleFocusOut = (input) => {
   const displayValue = input.getAttribute('display-value');
   input.type = 'text';
   input.value = displayValue;
+  // Keep submit-value in sync using valueFormat (falls back to displayValue)
+  const { valueFormat } = input.dataset;
+  if (valueFormat) {
+    const editValue = input.getAttribute('edit-value');
+    input.dataset.submitValue = formatDateByPattern(editValue, valueFormat);
+  }
 };
 
 function inputDecorator(field, element) {
@@ -183,6 +241,12 @@ function inputDecorator(field, element) {
       input.setAttribute('display-value', field.displayValue ?? '');
       input.type = 'text';
       input.value = field.displayValue ?? '';
+      // Store valueFormat for date fields so handleFocusOut can format the submit value
+      if (fieldType === 'date' && field.valueFormat) {
+        input.dataset.valueFormat = field.valueFormat;
+        // Set initial submitValue so the value is correct even before blur
+        input.dataset.submitValue = formatDateByPattern(field.value ?? '', field.valueFormat);
+      }
       // Handle mobile touch events to enable native date picker
       let isMobileTouch = false;
       input.addEventListener('touchstart', () => {
@@ -512,6 +576,18 @@ export default async function decorate(block) {
   // Load placeholders early for form error messages
   const placeholders = await fetchPlaceholders();
   setFormPlaceholders(placeholders);
+  // Load AEM base URL from site configs
+  // Config key 'aem-base-url' → camelCase: 'aemBaseUrl'
+  if (!getSubmitBaseUrl()) {
+    const configs = await fetchConfigs();
+    const aemBaseUrl = configs.aemBaseUrl
+      || configs.breadcrumbAemBaseUrl
+      || configs.aemBaseUrlForBreadcrumb
+      || '';
+    if (aemBaseUrl) {
+      setSubmitBaseUrl(aemBaseUrl);
+    }
+  }
   let container = block.querySelector('a[href]');
   let formDef;
   let pathname;

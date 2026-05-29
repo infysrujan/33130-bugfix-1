@@ -1,0 +1,85 @@
+td.merged-fund-type {
+  vertical-align: top;
+  color: var(--bbl-color-grey-55, #999);
+}
+
+.fund-prices-table {
+  margin: 2.875rem 0 0;
+  overflow-x: auto;
+}
+
+.fund-prices-table table {
+  width: 100%;
+  min-width: 62.5rem;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 0.0625rem solid var(--bbl-color-grey-18);
+  background: var(--bbl-color-grey-10);
+}
+
+@media (width > 64rem) {
+  .fund-prices-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .fund-prices-table table {
+    min-width: 62.5rem;
+  }
+}
+
+.fund-prices-table table td {
+  border-left: none;
+  border-right: none;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-18);
+}
+
+.fund-prices-table table.outline-border,
+.fund-prices-table table.border-bottom td {
+  border-color: var(--bbl-color-grey-18);
+}
+
+.fund-prices-table table tr:not(.header-row) td {
+  color: var(--bbl-color-grey-70);
+  font-family: var(--bbl-font-family-primary);
+  font-size: 0.9375rem;
+  font-weight: var(--bbl-font-weight-regular);
+  background: var(--bbl-color-white);
+  padding: var(--bbl-space-300) 1.125rem;
+  text-align: right;
+  vertical-align: middle;
+}
+
+.fund-prices-table table tr:not(.header-row) td span {
+  font-style: italic;
+  font-size: 0.6875rem;
+  line-height: 1.63;
+  letter-spacing: -0.0063rem;
+  padding-left: 0.3125rem;
+}
+
+.fund-prices-table table tr:not(.header-row) td.merged-fund-type,
+.fund-prices-table table tr:not(.header-row) td.col-openendfund {
+  text-align: left;
+}
+
+.fund-prices-table table tr:not(.header-row) td.col-nav,
+.fund-prices-table table tr:not(.header-row) td.col-sellingprice,
+.fund-prices-table table tr:not(.header-row) td.col-redemptionprice,
+.fund-prices-table table tr:not(.header-row) td.col-totalnetassets {
+  text-align: right;
+}
+
+.fund-prices-table table tr.header-row td {
+  font: 0.9375rem/1.35 BangkokBank-Bold, Arial, sans-serif;
+  color: var(--bbl-color-black);
+  background: var(--bbl-color-grey-10);
+  padding: 0 var(--bbl-space-250);
+  vertical-align: middle;
+  border-color: var(--bbl-color-grey-18);
+  text-align: center;
+}
+
+.fund-prices-table table tr.header-row {
+  height: 4.375rem;
+}

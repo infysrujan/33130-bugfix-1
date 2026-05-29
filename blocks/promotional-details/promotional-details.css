@@ -3,6 +3,35 @@
     margin: 0 auto;
 }
 
+body.mobile-app-view header,
+body.mobile-app-view footer {
+    display: none;
+}
+
+body.mobile-app-view {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+body.mobile-app-view main {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+body.mobile-app-view header.is-not-overlapped ~ main {
+    padding-top: 0;
+}
+
+body.mobile-app-view main > div:first-child {
+    margin-top: 0;
+}
+
+@media (width > 64rem) {
+    body.mobile-app-view header.is-not-overlapped ~ main {
+        padding-top: 0;
+    }
+}
+
 .promotional-details .promo-detail-title-wrap {
     text-align: center;
 }
@@ -33,7 +62,6 @@
 .promotional-details .promo-detail-row {
     display: flex;
     flex-direction: column;
-    gap: var(--bbl-space-300);
 }
 
 .promotional-details .promo-detail-image a {
@@ -76,6 +104,10 @@
     color: var(--bbl-color-grey-85);
 }
 
+.promotional-details .promo-detail-cta {
+    margin-top: var(--bbl-space-200);
+}
+
 .promotional-details .promo-detail-disclaimer p {
     margin: 0;
     color: var(--bbl-color-grey-85);
@@ -108,6 +140,7 @@
     .promotional-details .promo-detail-row {
         flex-direction: row;
         align-items: flex-start;
+        gap: var(--bbl-space-500);
     }
 
     .promotional-details .promo-detail-description p {
@@ -156,4 +189,9 @@
         font-size: var(--bbl-font-size-b1);
         line-height: 1.375rem;
     }
+}
+
+/* Authoring preview: hide only promotion-type and promo-id config rows */
+.promotional-details.has-preview > div[data-config-row] {
+    display: none;
 }

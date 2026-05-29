@@ -9,7 +9,7 @@ import { fetchConfigs } from '../../scripts/config.js';
  */
 async function fetchBreadcrumbData() {
   const configs = await fetchConfigs();
-  const AEM_BASE_URL_FOR_BREADCRUMB = configs.aemBaseUrlForBreadcrumb;
+  const AEM_BASE_URL_FOR_BREADCRUMB = configs.breadcrumbAemBaseUrl;
   if (!AEM_BASE_URL_FOR_BREADCRUMB) {
     return { titleMap: {}, currentPageData: null, homepageData: null };
   }
@@ -87,6 +87,32 @@ async function fetchBreadcrumbData() {
 }
 
 /**
+ * Loads and appends the social-icons fragment as a sibling of the breadcrumb block.
+ * @param {Element} block The breadcrumb block element
+ */
+async function loadSocialIcons(block) {
+  try {
+    const { loadFragment } = await import('../fragment/fragment.js');
+    const fragment = await loadFragment(`/${getLang()}/fragments/social-icons`);
+    if (fragment) {
+      const allSocialBlocks = [...fragment.querySelectorAll('.social-icons.block')];
+      const socialIconsBlock = allSocialBlocks.reduce((best, current) => (
+        current.children.length > (best?.children.length ?? -1) ? current : best
+      ), null);
+      if (socialIconsBlock) {
+        const socialWrapper = socialIconsBlock.parentElement;
+        if (socialWrapper) {
+          block.parentElement.appendChild(socialWrapper);
+        }
+      }
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to load social-icons fragment:', error);
+  }
+}
+
+/**
  * Builds breadcrumb navigation from the current URL path
  * @param {Element} block The breadcrumb block element
  */
@@ -133,6 +159,7 @@ export default async function decorate(block) {
     li.setAttribute('aria-current', 'page');
     ol.appendChild(li);
 
+    await loadSocialIcons(block);
     return;
   }
 
@@ -177,27 +204,5 @@ export default async function decorate(block) {
   }
 
   // Load social-icons block through fragments
-  try {
-    const { loadFragment } = await import('../fragment/fragment.js');
-    const fragment = await loadFragment(`/${lang}/fragments/social-icons`);
-    if (fragment) {
-      // Pick the social-icons block with the most child rows (handles orphaned items
-      // that AEM may group into a second block at section level)
-      const allSocialBlocks = [...fragment.querySelectorAll('.social-icons.block')];
-      const socialIconsBlock = allSocialBlocks.reduce((best, current) => (
-        current.children.length > (best?.children.length ?? -1) ? current : best
-      ), null);
-      if (socialIconsBlock) {
-        const socialWrapper = socialIconsBlock.parentElement;
-        if (socialWrapper) {
-          // Append as sibling of the breadcrumb block (not inside it) so that
-          // the CSS rule `.breadcrumb + .social-icons-wrapper` can match
-          block.parentElement.appendChild(socialWrapper);
-        }
-      }
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to load social-icons fragment:', error);
-  }
+  await loadSocialIcons(block);
 }

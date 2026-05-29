@@ -1,6 +1,6 @@
 .breadcrumb {
   overflow: hidden;
-  padding: var(--bbl-space-250) var(--bbl-space-container-xs) var(--bbl-space-250);
+  padding: var(--bbl-space-250) var(--bbl-space-container-xs) 0;
   margin: 0 auto;
   box-sizing: border-box;
   background-color: var(--bbl-bg-primary);
@@ -58,7 +58,7 @@
 }
 
 .breadcrumb+.social-icons-wrapper {
-  padding: var(--bbl-space-inline-md) var(--bbl-space-container-xs);
+  padding: 0 var(--bbl-space-container-xs) var(--bbl-space-inline-md);
   margin: 0 auto;
   max-width: 77.5rem;
   box-sizing: border-box;
