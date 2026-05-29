@@ -107,12 +107,12 @@ async function fetchAndRender(block, type, year) {
     if (isLocal) {
       res = await fetch('/blocks/search-reports-results/results.mock.json');
     } else {
-      res = await fetch(`${apiBase}/${lang}.reports.${type}.${year}.json`);
-      if (res.status === 204 && lang !== 'en') {
-        res = await fetch(`${apiBase}/en.reports.${type}.${year}.json`);
+      res = await fetch(`${apiBase}/${lang}.reports.${type}.${year}.json`, { cache: 'no-store' });
+      if ((res.status === 204 || res.status === 404) && lang !== 'en') {
+        res = await fetch(`${apiBase}/en.reports.${type}.${year}.json`, { cache: 'no-store' });
       }
     }
-    if (res.status === 204) throw new Error('no content');
+    if (res.status === 204 || res.status === 404) throw new Error('no content');
     const data = await res.json();
 
     loading.remove();
