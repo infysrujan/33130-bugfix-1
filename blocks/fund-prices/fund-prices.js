@@ -2,8 +2,8 @@ import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 import {
-  ALL_FUND_NAMES_URL,
-  LATEST_DATE_URL,
+  getAllFundNamesUrl,
+  getLatestDateUrl,
   fetchNavEnabledDaysForMonth,
   parseLocalDateFromYmd,
 } from '../fund-prices-table/fund-prices-table.js';
@@ -220,9 +220,13 @@ export default async function decorate(block) {
   let currentDate = calendarDate;
 
   try {
+    const [allFundNamesUrl, latestDateUrl] = await Promise.all([
+      getAllFundNamesUrl(),
+      getLatestDateUrl(),
+    ]);
     const [namesRes, latestRes] = await Promise.all([
-      fetch(ALL_FUND_NAMES_URL),
-      fetch(LATEST_DATE_URL),
+      fetch(allFundNamesUrl),
+      fetch(latestDateUrl),
     ]);
     if (latestRes.ok) {
       const lj = await latestRes.json();

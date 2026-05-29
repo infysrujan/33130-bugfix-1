@@ -1,13 +1,28 @@
-const IS_LOCAL = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-const BBL_API_BASE = IS_LOCAL
-  ? 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService'
-  : '/api/fundpriceservice';
-const BBL_API_NAMES_BASE = IS_LOCAL
-  ? 'https://publish-p185039-e1938068.adobeaemcloud.com/api/FundPriceService'
-  : '/api/fundpriceservice';
-export const ALL_FUND_NAMES_URL = `${BBL_API_NAMES_BASE}/AllFundsName`;
-export const LATEST_DATE_URL = `${BBL_API_BASE}/LatestDate`;
-export const GET_UPDATE_IN_MONTH_BASE = `${BBL_API_BASE}/GetUpdateInMonth`;
+import { fetchConfigs } from '../../scripts/config.js';
+
+const FALLBACK_API_BASE = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/FundPriceService';
+
+async function getApiBase() {
+  const configs = await fetchConfigs();
+  return configs.fundPricesApiUrl || FALLBACK_API_BASE;
+}
+
+async function getNamesApiBase() {
+  const configs = await fetchConfigs();
+  return configs.fundPricesNamesApiUrl || configs.fundPricesApiUrl || FALLBACK_API_BASE;
+}
+
+export async function getAllFundNamesUrl() {
+  return `${await getNamesApiBase()}/AllFundsName`;
+}
+
+export async function getLatestDateUrl() {
+  return `${await getApiBase()}/LatestDate`;
+}
+
+async function getUpdateInMonthBase() {
+  return `${await getApiBase()}/GetUpdateInMonth`;
+}
 const MONTHS_SHORT = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
@@ -31,14 +46,16 @@ async function fetchAllFundPrices(date) {
   const dd = pad2(date.getDate());
   const mm = pad2(date.getMonth() + 1);
   const yyyy = date.getFullYear();
-  const res = await fetch(`${BBL_API_BASE}/AllFundPrices/${dd}/${mm}/${yyyy}`);
+  const base = await getApiBase();
+  const res = await fetch(`${base}/AllFundPrices/${dd}/${mm}/${yyyy}`);
   if (!res.ok) throw new Error(`AllFundPrices ${res.status}`);
   const data = await res.json();
   return Array.isArray(data) ? data : [];
 }
 
 export async function fetchNavEnabledDaysForMonth({ year, month }) {
-  const res = await fetch(`${GET_UPDATE_IN_MONTH_BASE}/${year}/${month + 1}/0`);
+  const base = await getUpdateInMonthBase();
+  const res = await fetch(`${base}/${year}/${month + 1}/0`);
   if (!res.ok) throw new Error(`GetUpdateInMonth ${res.status}`);
   const data = await res.json();
   if (!Array.isArray(data)) return [];
@@ -242,9 +259,13 @@ export default async function decorate(block) {
   if (isControlled) return;
 
   try {
+    const [allFundNamesUrl, latestDateUrl] = await Promise.all([
+      getAllFundNamesUrl(),
+      getLatestDateUrl(),
+    ]);
     const [namesRes, latestRes] = await Promise.all([
-      fetch(ALL_FUND_NAMES_URL),
-      fetch(LATEST_DATE_URL),
+      fetch(allFundNamesUrl),
+      fetch(latestDateUrl),
     ]);
     let date = new Date();
     if (latestRes.ok) {
