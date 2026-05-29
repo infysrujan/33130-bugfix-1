@@ -193,6 +193,10 @@
   flex-wrap: wrap;
 }
 
+.fund-prices-dropdown .period-date-range.hidden {
+  display: none;
+}
+
 .fund-prices-dropdown .period-date-range label {
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b2);
