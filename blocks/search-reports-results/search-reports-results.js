@@ -141,6 +141,10 @@ export default function decorate(block) {
 
   if (type && year) {
     fetchAndRender(block, type, year);
+  } else if (window.pendingSearchReport) {
+    const { type: t, year: y } = window.pendingSearchReport;
+    window.pendingSearchReport = null;
+    fetchAndRender(block, t, y);
   }
 
   window.addEventListener('popstate', () => {

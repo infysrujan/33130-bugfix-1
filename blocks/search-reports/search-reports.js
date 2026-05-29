@@ -230,6 +230,7 @@ export default async function decorate(block) {
     const year = getYear();
     const params = new URLSearchParams({ type, year });
     window.history.pushState({}, '', `?${params.toString()}`);
+    window.pendingSearchReport = { type, year };
     window.dispatchEvent(new CustomEvent('search-reports:submit', { detail: { type, year } }));
     closeModal(overlay);
   });
