@@ -1,6 +1,8 @@
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
+import { getLang } from '../../scripts/scripts.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import {
   getAllFundNamesUrl,
   getLatestDateUrl,
@@ -8,8 +10,6 @@ import {
   parseLocalDateFromYmd,
 } from '../fund-prices-table/fund-prices-table.js';
 import { MAX_FUND_PRICE_HISTORY_YEARS } from '../fund-prices-dropdown/fund-prices-dropdown.js';
-import { getLang } from '../../scripts/scripts.js';
-import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
 function moveSearchBarToHeader(el, doc) {
   const check = () => {
