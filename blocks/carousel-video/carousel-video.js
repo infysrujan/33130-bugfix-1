@@ -176,9 +176,11 @@ export default async function decorate(block) {
   }
 
   function getThumbWidth() {
-    // Fall back to the CSS-declared width so the initial scroll is correct
-    // even before the first browser layout pass.
-    return allThumbBtns[0]?.offsetWidth || 193;
+    const btn = allThumbBtns[0];
+    if (!btn) return 193;
+    if (btn.offsetWidth > 0) return btn.offsetWidth;
+    const computed = parseFloat(window.getComputedStyle(btn).width);
+    return computed > 0 ? Math.round(computed) : 193;
   }
 
   function scrollTrack(rawNew) {
@@ -195,21 +197,6 @@ export default async function decorate(block) {
     track.style.transform = `translate3d(-${rawScrollIndex * (w + THUMB_GAP)}px, 0px, 0px)`;
     track.getBoundingClientRect(); // force reflow so the transition suppression takes effect
     track.style.transition = '';
-  }
-
-  // Return the DOM position (across all 3 sets) for realIndex that is
-  // closest to the current rawScrollIndex — this drives infinite scrolling.
-  // When two candidates are equidistant, prefer the original zone (n..2n-1)
-  // over clones so that short carousels (n < VISIBLE) never scroll into empty space.
-  function nearestRawForIndex(index) {
-    const candidates = [index, n + index, 2 * n + index];
-    return candidates.reduce((best, c) => {
-      const cDist = Math.abs(c - rawScrollIndex);
-      const bestDist = Math.abs(best - rawScrollIndex);
-      if (cDist < bestDist) return c;
-      if (cDist === bestDist && c >= n && c < 2 * n && (best < n || best >= 2 * n)) return c;
-      return best;
-    });
   }
 
   // Scroll so the given index lands at the first (leftmost) visible slot.
@@ -281,8 +268,12 @@ export default async function decorate(block) {
   nextBtn.disabled = n <= 1;
 
   // Place the track at the start of the original set without animation.
-  scrollTrackSilent(n);
-  requestAnimationFrame(() => mainPlayer.classList.add('active'));
+  // Use rAF so offsetWidth reflects the actual rendered thumb size for the
+  // current breakpoint rather than falling back to the hardcoded default.
+  requestAnimationFrame(() => {
+    scrollTrackSilent(n);
+    mainPlayer.classList.add('active');
+  });
 
   // Recalculate scroll offset on resize
   let resizeTimer;

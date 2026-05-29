@@ -26,6 +26,24 @@ function urlMatchesLang(url, lang) {
   }
 }
 
+function getLinkLogoHref(anchorHref) {
+  if (!anchorHref) return anchorHref;
+  try {
+    const anchorUrl = new URL(anchorHref, document.baseURI || window.location.origin);
+    const currentPathSegments = window.location.pathname.split('/');
+    const anchorPathSegments = anchorUrl.pathname.split('/');
+
+    if (currentPathSegments.length > 1 && anchorPathSegments.length > 1 && anchorPathSegments[1]) {
+      [, currentPathSegments[1]] = anchorPathSegments;
+    }
+
+    anchorUrl.pathname = currentPathSegments.join('/') || '/';
+    return anchorUrl.toString();
+  } catch {
+    return anchorHref;
+  }
+}
+
 /**
  * Decorates the Top Nav block.
  * The Top Nav contains navigation links that can be:
@@ -55,6 +73,9 @@ export default function decorate(block) {
 
     if (anchor) {
       const link = document.createElement('a');
+      if (isLinkLogo) {
+        anchor.href = getLinkLogoHref(anchor.href);
+      }
       link.href = anchor.href;
       link.className = 'top-nav-link';
 
