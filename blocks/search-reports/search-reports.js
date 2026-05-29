@@ -2,6 +2,7 @@ import { getLang } from '../../scripts/scripts.js';
 import { decorateIcons } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { createModalHeader } from '../../scripts/utils/modal.js';
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -179,18 +180,10 @@ export default async function decorate(block) {
   const dialog = el('div', { className: 'sr-dialog' });
 
   // Header
-  const header = el('div', { className: 'sr-header' });
-  const logoLink = el('a', { className: 'sr-logo-link', attrs: { href: `/${lang}`, 'aria-label': 'Bangkok Bank Home' } });
-  const logoImg = el('img', {
-    attrs: {
-      src: '/icons/logo.svg', alt: 'Bangkok Bank', width: '120', height: '40', onerror: "this.style.display='none'",
-    },
-  });
-  logoLink.append(logoImg);
   const closeBtn = el('button', { className: 'sr-close-btn', attrs: { type: 'button', 'aria-label': 'Close search modal' } });
   closeBtn.innerHTML = '<span class="icon icon-close"></span>';
   decorateIcons(closeBtn);
-  header.append(logoLink, closeBtn);
+  const header = createModalHeader(lang, closeBtn, { headerClass: 'sr-header', logoLinkClass: 'sr-logo-link' });
 
   // Body
   const body = el('div', { className: 'sr-body' });

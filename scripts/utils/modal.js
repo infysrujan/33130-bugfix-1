@@ -1,5 +1,29 @@
 import { loadFragment } from '../../blocks/fragment/fragment.js';
 
+export function createModalHeader(lang, closeBtn, {
+  headerClass = 'modal-header',
+  logoLinkClass = 'modal-logo-link',
+} = {}) {
+  const header = document.createElement('div');
+  header.className = headerClass;
+
+  const logoLink = document.createElement('a');
+  logoLink.className = logoLinkClass;
+  logoLink.href = `/${lang}`;
+  logoLink.setAttribute('aria-label', 'Bangkok Bank Home');
+
+  const logoImg = document.createElement('img');
+  logoImg.src = '/icons/logo.svg';
+  logoImg.alt = 'Bangkok Bank';
+  logoImg.width = 120;
+  logoImg.height = 40;
+  logoImg.onerror = "this.style.display='none'";
+
+  logoLink.append(logoImg);
+  header.append(logoLink, closeBtn);
+  return header;
+}
+
 function fromHTML(markup) {
   const t = document.createElement('template');
   t.innerHTML = markup.trim();

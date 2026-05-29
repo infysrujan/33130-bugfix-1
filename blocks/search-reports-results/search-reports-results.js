@@ -1,6 +1,7 @@
 import { getLang } from '../../scripts/scripts.js';
 import {
   createModalShell,
+  createModalHeader,
   showModal,
   hideModal,
   setupModalHandlers,
@@ -46,33 +47,8 @@ function openPdfPreview(path, name, googleViewerUrl) {
   });
   decorateIcons(closeBtn);
 
-  // Header: clone from search-reports modal header
-  const srHeader = document.querySelector('.search-reports-overlay .sr-header');
-  const header = el('div', { className: 'srr-preview-header' });
-  if (srHeader) {
-    const cloned = srHeader.cloneNode(true);
-    const clonedCloseBtn = cloned.querySelector('.sr-close-btn');
-    if (clonedCloseBtn) cloned.replaceChild(closeBtn, clonedCloseBtn);
-    header.append(cloned);
-  } else {
-    const innerContainer = el('div', { className: 'srr-preview-inner-container' });
-    const logoLink = el('a', {
-      className: 'srr-preview-logo',
-      attrs: { href: `/${lang}`, 'aria-label': 'Bangkok Bank Home' },
-    });
-    const logoImg = el('img', {
-      attrs: {
-        src: '/icons/logo.svg',
-        alt: 'Bangkok Bank',
-        width: '120',
-        height: '40',
-        onerror: "this.style.display='none'",
-      },
-    });
-    logoLink.append(logoImg);
-    innerContainer.append(logoLink, closeBtn);
-    header.append(innerContainer);
-  }
+  // Header
+  const header = createModalHeader(lang, closeBtn, { headerClass: 'srr-preview-header', logoLinkClass: 'srr-preview-logo' });
 
   // Body: embed + download button
   const body = el('div', { className: 'srr-preview-body' });
