@@ -14,7 +14,7 @@
   left: 0;
   width: var(--bbl-space-600);
   height: 2px;
-  background: var(--bbl-color-grey-30, var(--bbl-color-grey-125));
+  background: var(--bbl-color-grey-30);
 }
 
 .fund-prices-disclaimer-text {
@@ -35,7 +35,7 @@
 .fund-prices-disclaimer-text li {
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b2);
-  color: var(--bbl-color-grey-55, #999);
+  color: var(--bbl-color-grey-55);
   line-height: 1.6;
   margin-top: 0;
   margin-bottom: var(--bbl-space-100);
@@ -157,7 +157,7 @@
   padding: 0.45rem var(--bbl-space-500) 0.45rem 0.85rem;
   border: 0.0938rem solid var(--bbl-color-white-alpha-60);
   border-radius: var(--bbl-space-050);
-  background: rgb(255 255 255 / 8%);
+  background: var(--bbl-color-fund-prices-hover);
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b2);
@@ -244,10 +244,10 @@
 .bbl-cal-popup {
   position: absolute;
   background: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-grey-125, #ccc);
+  border: 0.0625rem solid var(--bbl-color-grey-125);
   border-radius: 0.4375rem;
   padding: var(--bbl-space-150);
-  box-shadow: 0 var(--bbl-space-050) var(--bbl-space-150) rgb(0 0 0 / 15%);
+  box-shadow: 0 var(--bbl-space-050) var(--bbl-space-150) var(--bbl-color-fund-prices-focus);
   z-index: 2000;
   display: none;
   width: 17rem;
@@ -305,7 +305,7 @@
 }
 
 .bbl-cal-popup .cal-enabled:hover {
-  background: var(--bbl-color-blue-steel-light, #e6eef4);
+  background: var(--bbl-color-blue-steel-light);
 }
 
 .bbl-cal-popup .cal-selected {
@@ -338,7 +338,7 @@ body.fund-prices-search-in-header header.is-not-overlapped ~ main {
   min-height: unset;
   padding: var(--bbl-space-150) var(--bbl-space-200);
   gap: 0.9375rem;
-  background: var(--bbl-color-truthful-blue, #002850);
+  background: var(--bbl-color-truthful-blue);
 }
 
 .fund-prices-search-bar.is-in-header label {

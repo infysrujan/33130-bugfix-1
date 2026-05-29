@@ -32,7 +32,7 @@
 .fdd-period-bar .period-select-wrapper .period-select-btn{
   width: 100%;
   height: 2.75rem;
-  border-color: rgb(145 157 171);
+  border-color: var(--bbl-color-fund-prices-border-color);
 }
 
 .fund-prices-dropdown .fdd-header-top {
@@ -88,7 +88,7 @@
 .fund-prices-dropdown .calendar-input input {
   padding-inline: var(--bbl-space-250) var(--bbl-space-500);
   height: var(--bbl-space-500);
-  border: 0.0625rem solid var(--bbl-color-grey-150, #9e9e9e);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: 0.4375rem;
   width: 10rem;
   font-family: var(--bbl-font-family-primary);
@@ -139,7 +139,7 @@
   background: var(--bbl-color-white);
   border: solid 0.0625rem var(--bbl-color-gray-122);
   border-radius: var(--bbl-space-100);
-  box-shadow: 0 0 var(--bbl-space-050) 0 rgb(0 0 0 / 5%);
+  box-shadow: 0 0 var(--bbl-space-050) 0 var(--bbl-color-fund-prices-box-shadow);
   min-width: 10rem;
   z-index: 500;
   list-style: none;
@@ -165,12 +165,12 @@
 }
 
 .fund-prices-dropdown .period-dropdown-list::-webkit-scrollbar-thumb {
-  background: #aaa;
+  background: var(--bbl-color-fund-prices-color);
   border-radius: var(--bbl-space-050);
 }
 
 .fund-prices-dropdown .period-dropdown-list::-webkit-scrollbar-thumb:hover {
-  background: #888;
+  background: var(--bbl-color-fund-prices-background);
 }
 
 .fund-prices-dropdown .period-dropdown-list li {
@@ -328,7 +328,7 @@
 }
 
 #fdd-stat-low th {
-  background: var(--bbl-color-blue-steel-light, #e6eef4);
+  background: var(--bbl-color-blue-steel-light);
 }
 
 .fund-prices-dropdown .tab-switcher {
@@ -345,7 +345,7 @@
   height: 2.8125rem;
   text-align: left;
   padding: var(--bbl-space-150) var(--bbl-space-500) var(--bbl-space-150) var(--bbl-space-200);
-  border: 0.0625rem solid var(--bbl-color-grey-150, #ddd);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: var(--bbl-space-100);
   background: var(--bbl-color-white);
   cursor: pointer;
@@ -383,7 +383,7 @@
   border-radius: var(--bbl-space-100) var(--bbl-space-100) 0 0;
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
-  border-color: var(--bbl-color-grey-150, #ddd);
+  border-color: var(--bbl-color-grey-150);
   border-bottom: none;
 }
 
@@ -396,7 +396,7 @@
   display: block;
   position: static;
   background: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-grey-150, #ddd);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
   border-top: none;
   border-radius: 0 0 var(--bbl-space-100) var(--bbl-space-100);
   width: 14.25rem;
@@ -438,7 +438,7 @@
 .fund-prices-dropdown .chart-nav-item {
   font-family: var(--bbl-font-family-medium);
   font-size: 0.9375rem;
-  color: #f60;
+  color: var(--bbl-color-fund-prices-highlight);
 }
 
 .fund-prices-dropdown .detail-chart-svg {

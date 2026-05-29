@@ -306,5 +306,14 @@
   --bbl-color-toast-error: #b85c5c;        /* Locate Us — error toast background */
   --bbl-color-status-other: #bb6967;       /* Locate Us — branch status non-open */
   --bbl-color-grey-70-alpha-62: rgb(70 70 70 / 62%);  /* Privacy Modal — close button background */
-}
 
+/*fund-prices-block-colors*/
+
+--bbl-color-fund-prices-box-shadow: rgb(0 0 0 / 5%);
+--bbl-color-fund-prices-border-color :rgb(145 157 171);
+--bbl-color-fund-prices-color: #aaa;
+--bbl-color-fund-prices-background: #888;
+--bbl-color-fund-prices-highlight: #f60;
+--bbl-color-fund-prices-hover: rgb(255 255 255 / 8%);
+--bbl-color-fund-prices-focus: rgb(0 0 0 / 15%);
+}
