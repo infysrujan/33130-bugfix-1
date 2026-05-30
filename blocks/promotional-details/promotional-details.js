@@ -26,12 +26,12 @@ function isRegisterEnabled(value) {
 }
 
 function resolveCtaLabel(isRegister, data) {
-  if (!isRegisterEnabled(isRegister)) return '';
-  return data?.isRegisterCtaLabel || '';
+  if (!isRegister || !isRegisterEnabled(isRegister)) return '';
+  return data?.isRegisterCtaLabel || data?.ctaLabel || '';
 }
 
 function resolveCtaUrl(isRegister, registerCtaUrl) {
-  if (!isRegisterEnabled(isRegister)) return '';
+  if (!isRegister || !isRegisterEnabled(isRegister)) return '';
   return registerCtaUrl || '';
 }
 
