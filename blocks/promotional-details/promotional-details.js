@@ -25,12 +25,12 @@ function isRegisterEnabled(value) {
   return normalized !== 'N';
 }
 
-function resolveCtaLabel(isRegister, data) {
+function getRegisterCtaLabelValue(isRegister, data) {
   if (!isRegister || !isRegisterEnabled(isRegister)) return '';
   return data?.isRegisterCtaLabel || data?.ctaLabel || '';
 }
 
-function resolveCtaUrl(isRegister, registerCtaUrl) {
+function getRegisterCtaUrl(isRegister, registerCtaUrl) {
   if (!isRegister || !isRegisterEnabled(isRegister)) return '';
   return registerCtaUrl || '';
 }
@@ -137,8 +137,8 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
   const isRegister = data?.isRegister || '';
-  const ctaLabel = resolveCtaLabel(isRegister, data);
-  const ctaUrl = resolveCtaUrl(isRegister, registerCtaUrl);
+  const ctaLabel = getRegisterCtaLabelValue(isRegister, data);
+  const ctaUrl = getRegisterCtaUrl(isRegister, registerCtaUrl);
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
