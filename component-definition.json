@@ -98,6 +98,21 @@
           }
         },
         {
+          "title": "Bcap",
+          "id": "bcap",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Bcap",
+                  "model": "bcap"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Brand Logo",
           "id": "brand-logo",
           "plugins": {
@@ -107,6 +122,21 @@
                 "template": {
                   "name": "Brand Logo",
                   "model": "brand-logo"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Card Comparator Results",
+          "id": "card-comparator-results",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Card Comparator Results",
+                  "model": "card-comparator-results"
                 }
               }
             }
@@ -344,6 +374,21 @@
           }
         },
         {
+          "title": "Category Banner",
+          "id": "category-banner",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Category Banner",
+                  "model": "category-banner"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Columns",
           "id": "columns",
           "plugins": {
@@ -383,6 +428,98 @@
                 "template": {
                   "name": "Content Insert Card",
                   "model": "content-insert-card"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Cookie Alert",
+          "id": "cookie-alert",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Cookie Alert",
+                  "model": "cookie-alert"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Cookie Modal",
+          "id": "cookie-modal",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Cookie Modal",
+                  "model": "cookie-modal",
+                  "filter": "cookie-modal"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Cookie Modal Accordion Item",
+          "id": "cookie-modal-accordion-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Cookie Modal Accordion Item",
+                  "model": "cookie-modal-accordion-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Credit Card Comparator",
+          "id": "credit-card-comparator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Credit Card Comparator",
+                  "model": "credit-card-comparator"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Credit Card Selector",
+          "id": "credit-card-selector",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Credit Card Selector",
+                  "model": "credit-card-selector",
+                  "filter": "credit-card-selector"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Credit Card Section",
+          "id": "credit-card-section",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Credit Card Section",
+                  "model": "credit-card-section"
                 }
               }
             }
@@ -443,6 +580,21 @@
                 "template": {
                   "name": "Download File",
                   "model": "download-file"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Dynamic Board",
+          "id": "dynamic-board",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Dynamic Board",
+                  "model": "dynamic-board"
                 }
               }
             }
@@ -998,6 +1150,21 @@
           }
         },
         {
+          "title": "Forward Points SME",
+          "id": "forward-points-sme",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Forward Points SME",
+                  "model": "forward-points-sme"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Fragment",
           "id": "fragment",
           "plugins": {
@@ -1007,6 +1174,52 @@
                 "template": {
                   "name": "Fragment",
                   "model": "fragment"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Fund Prices Dropdown",
+          "id": "fund-prices-dropdown",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Fund Prices Dropdown",
+                  "model": "fund-prices-dropdown"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Fund Prices Table",
+          "id": "fund-prices-table",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Fund Prices Table",
+                  "model": "fund-prices-table",
+                  "filter": "fund-prices-table"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Fund Prices",
+          "id": "fund-prices",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Fund Prices",
+                  "model": "fund-prices"
                 }
               }
             }
@@ -1056,6 +1269,21 @@
                   "name": "Hero Item",
                   "model": "hero-item",
                   "label": "Maximum 6 items allowed"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Latest News",
+          "id": "latest-news",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Latest News",
+                  "model": "latest-news"
                 }
               }
             }
@@ -1164,6 +1392,21 @@
                 "template": {
                   "name": "Quick Nav Item",
                   "model": "quick-nav-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Market Report",
+          "id": "market-report",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Market Report",
+                  "model": "market-report"
                 }
               }
             }
@@ -1309,6 +1552,157 @@
           }
         },
         {
+          "title": "Menu List",
+          "id": "menu-list",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Menu List",
+                  "model": "menu-list",
+                  "filter": "menu-list"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Menu List Item",
+          "id": "menu-list-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Menu List Item",
+                  "model": "menu-list-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "MF Comparator Results",
+          "id": "mf-comparator-results",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "MF Comparator Results",
+                  "model": "mf-comparator-results"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "MF Comparator",
+          "id": "mf-comparator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "MF Comparator",
+                  "model": "mf-comparator"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "MF Questionnaire",
+          "id": "mf-questionnaire",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "MF Questionnaire",
+                  "model": "mf-questionnaire"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "MF Results",
+          "id": "mf-results",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "MF Results",
+                  "model": "mf-results"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Multi Column Tiles",
+          "id": "multi-column-tiles",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Multi Column Tiles",
+                  "filter": "multi-column-tiles"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Multi Column Tiles Item",
+          "id": "multi-column-tiles-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Multi Column Tiles Item",
+                  "model": "multi-column-tiles-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "News Media Details",
+          "id": "news-media-details",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "News Media Details",
+                  "model": "news-media-details"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "News Media",
+          "id": "news-media",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "News Media",
+                  "model": "news-media"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Popup Modal Card Offer",
           "id": "popup-modal-card-offer",
           "plugins": {
@@ -1333,6 +1727,66 @@
                 "template": {
                   "name": "Privacy Modal",
                   "model": "privacy-modal"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Promo Card Listing",
+          "id": "promo-card-listing",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Promo Card Listing",
+                  "model": "promo-card-listing"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Promotional Details",
+          "id": "promotional-details",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Promotional Details",
+                  "model": "promotional-details"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Property for Sale Details",
+          "id": "property-for-sale-details",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Property for Sale Details",
+                  "model": "property-for-sale-details"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Property for Sale",
+          "id": "property-for-sale",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Property for Sale",
+                  "model": "property-for-sale"
                 }
               }
             }
@@ -1369,6 +1823,36 @@
           }
         },
         {
+          "title": "Retirement Calculator",
+          "id": "retirement-calculator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Retirement Calculator",
+                  "model": "retirement-calculator"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Saving Plan",
+          "id": "saving-plan",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Saving Plan",
+                  "model": "saving-plan"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Search Page",
           "id": "search-page",
           "plugins": {
@@ -1384,6 +1868,36 @@
           }
         },
         {
+          "title": "Search Reports Results",
+          "id": "search-reports-results",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Search Reports Results",
+                  "model": "search-reports-results"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Search Reports",
+          "id": "search-reports",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Search Reports",
+                  "model": "search-reports"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Search",
           "id": "search",
           "plugins": {
@@ -1393,6 +1907,37 @@
                 "template": {
                   "name": "Search",
                   "model": "search"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "SME Loan Calculator",
+          "id": "sme-loan-calculator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "SME Loan Calculator",
+                  "model": "sme-loan-calculator",
+                  "filter": "sme-loan-calculator"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "SME Field",
+          "id": "sme-field",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "SME Field",
+                  "model": "sme-field"
                 }
               }
             }
@@ -1423,6 +1968,36 @@
                 "template": {
                   "name": "Social Icon",
                   "model": "social-icon"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Special FX Rates",
+          "id": "special-fx-rates",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Special FX Rates",
+                  "model": "special-fx-rates"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Stock Ticker",
+          "id": "stock-ticker",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Stock Ticker",
+                  "model": "stock-ticker"
                 }
               }
             }
@@ -1476,21 +2051,6 @@
           }
         },
         {
-          "title": "Nested Table",
-          "id": "nested-table",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Nested Table",
-                  "model": "nested-table"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "Tab Section",
           "id": "tab-section",
           "plugins": {
@@ -1501,6 +2061,20 @@
                   "name": "Tab Section",
                   "model": "tab-section",
                   "filter": "tab-section"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Tax Calculator",
+          "id": "tax-calculator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Tax Calculator"
                 }
               }
             }
@@ -1570,6 +2144,21 @@
           }
         },
         {
+          "title": "Top Promotional Cards",
+          "id": "top-promotional-cards",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Top Promotional Cards",
+                  "model": "top-promotional-cards"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Video",
           "id": "video",
           "plugins": {
@@ -1596,6 +2185,22 @@
                 "template": {
                   "name": "Warning Card",
                   "model": "warning-card"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Welcome Banner",
+          "id": "welcome-banner",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Welcome Banner",
+                  "model": "welcome-banner",
+                  "filter": "welcome-banner"
                 }
               }
             }

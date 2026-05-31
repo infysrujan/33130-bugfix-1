@@ -1,0 +1,203 @@
+/* ==========================================================================
+   MF Fund Cards Carousel Slide
+   Mirrors mf-results.css card styles, scoped to the carousel slide context.
+   Slide wrapper:  .mf-fund-cards-item
+   Card block:     .card-list.mf-card-list
+   ========================================================================== */
+
+/* ── No results message ───────────────────────────────────────────────────── */
+
+/* When no results: collapse the grid, hide arrows and dots */
+.carousel-dotted.show-arrows-dots:has(.mf-fund-cards-item.has-no-results) {
+  display: block;
+}
+
+.carousel-dotted.show-arrows-dots:has(.mf-fund-cards-item.has-no-results) .carousel-arrow {
+  display: none;
+}
+
+.carousel-dotted:has(.mf-fund-cards-item.has-no-results) .slick-dots {
+  display: none;
+}
+
+/* Center the no-results text */
+.carousel-dotted.show-arrows-dots .mf-fund-cards-item.has-no-results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+}
+
+.mf-fund-cards-item .mfr-no-results {
+  text-align: center;
+  padding: var(--bbl-space-layout-xl) var(--bbl-space-container-xs);
+  font-size: var(--bbl-font-size-b1, 1rem);
+  color: var(--bbl-color-grey-70);
+}
+
+/* ── Description (notes/disclaimer below carousel) ───────────────────────── */
+
+.mf-fund-cards-description {
+  padding: var(--bbl-space-200) var(--bbl-space-container-xs);
+  font-size: var(--bbl-font-size-b2, 0.875rem);
+  line-height: 1.5;
+  color: var(--bbl-color-grey-70);
+}
+
+.mf-fund-cards-description p {
+  margin: 0 0 0.5em;
+}
+
+.mf-fund-cards-description p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Mobile: hide scrollbar on the cards-list ─────────────────────────────── */
+
+.mf-fund-cards-item .cards-list.scrollable {
+  scrollbar-width: none;
+}
+
+.mf-fund-cards-item .cards-list.scrollable::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Image area (image layout = "default") ────────────────────────────────── */
+
+.card-list.mf-card-list .cards-list-image {
+  height: 11rem;
+  overflow: hidden;
+}
+
+.card-list.mf-card-list .cards-list-image img {
+  width: 100%;
+  height: 100%;
+  min-width: unset;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Logo in remark area ──────────────────────────────────────────────────── */
+
+.card-list.mf-card-list .cards-list-remark img.mfr-logo {
+  height: 2.5rem;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  margin-top: var(--bbl-space-200);
+}
+
+/* ── Card title h3 ────────────────────────────────────────────────────────── */
+
+.card-list.mf-card-list .cards-list-title h3 {
+  font-size: 1.1375rem;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--bbl-color-black);
+  overflow-wrap: anywhere;
+}
+
+/* ── Button area: stack Read More above Compare ───────────────────────────── */
+
+.card-list.mf-card-list .cards-list-inner .cards-list-button {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+/* Read More — full-width solid blue (primary) */
+
+.card-list.mf-card-list .cards-list-button a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0 var(--bbl-space-200);
+  box-sizing: border-box;
+  border-radius: 0.4375rem;
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-medium);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.card-list.mf-card-list .cards-list-button a::before,
+.card-list.mf-card-list .cards-list-button a::after {
+  display: none;
+}
+
+.card-list.mf-card-list .cards-list-button a:hover {
+  background-color: var(--bbl-color-blue-90);
+  border: none;
+  text-decoration: none;
+}
+
+/* ── Compare button — sits inside .cards-list-button below Read More ──────── */
+
+.card-list.mf-card-list .mfr-compare-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0 var(--bbl-space-200);
+  box-sizing: border-box;
+  border-radius: 0.4375rem;
+  background-color: transparent;
+  color: var(--bbl-color-active-blue);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-medium);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.card-list.mf-card-list .mfr-compare-btn:hover {
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+}
+
+.card-list.mf-card-list .mfr-compare-btn.is-comparing {
+  background-color: var(--bbl-color-grey-10);
+  border-color: var(--bbl-color-grey-60);
+  color: var(--bbl-color-grey-60);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ── Tablet & desktop: 3-column wrap grid ─────────────────────────────────── */
+
+@media (width > 47.5rem) {
+  .card-list.mf-card-list .cards-list.scrollable.cards-3 {
+    flex-flow: row wrap;
+    overflow: visible;
+    scroll-snap-type: none;
+    gap: 0 var(--bbl-space-250);
+  }
+
+  .card-list.mf-card-list .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-250)) / 3);
+    margin-bottom: var(--bbl-space-250);
+    scroll-snap-align: none;
+  }
+}
+
+@media (width > 64rem) {
+  .card-list.mf-card-list .cards-list.scrollable.cards-3 {
+    gap: 0 var(--bbl-space-500);
+    margin-right: calc(-1 * var(--bbl-space-250));
+    margin-left: calc(-1 * var(--bbl-space-250));
+  }
+
+  .card-list.mf-card-list .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 3);
+    margin-bottom: var(--bbl-space-500);
+  }
+}

@@ -27,16 +27,21 @@
   background: transparent;
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) {
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant) {
   border: none;
   border-radius: 0;
   overflow: hidden;
+  contain: paint;
   animation: carouselFadeIn 600ms ease-out;
 }
 
 .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) > .carousel-dotted {
-  width: 100%;
   height: 100%;
+}
+
+.section.full-bleed-bg .content:is(.all-hero-banner-image-carousel, .all-text-animation-variant){
+  padding-inline: 0;
+  max-width: 100%;
 }
 
 .carousel-dotted.all-without-image .carousel-track-wrapper {
@@ -48,11 +53,19 @@
   will-change: transform;
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-track-wrapper {
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant) .carousel-track-viewport {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant) .carousel-track-wrapper {
   position: relative;
   display: flex;
   width: 100%;
   height: 100%;
+  overflow: visible;
   transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }
@@ -166,6 +179,7 @@
   padding: var(--bbl-space-050) 0.4375rem;
   border-radius: var(--bbl-rounded-200);
   margin-bottom: 0.875rem;
+  font-family: var(--bbl-font-family-looped);
 }
 
 .carousel-dotted .carousel-dotted-description {
@@ -344,7 +358,7 @@
   font-size: 0.8rem;
   line-height: 1.12rem;
   margin-right: 0.9375rem;
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
 }
 
 /* Override button-tertiary's SVG arrow with icomoon icon font */
@@ -382,7 +396,7 @@
   opacity: 1;
 }
 
-.carousel-dotted .carousel-item.hero-banner-image-carousel .carousel-content {
+.carousel-dotted .carousel-item.hero-banner-image-carousel:not(.is-active) .carousel-content {
   display: none;
 }
 
@@ -392,7 +406,7 @@
   border: 0.1875rem solid var(--bbl-color-active-blue);
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant)
 .carousel-item:is(.hero-banner-image-carousel, .text-animation-variant) {
   position: relative;
   display: block;
@@ -490,6 +504,21 @@
   transition: all 0.6s 0.4s;
 }
 
+.bangkok-bankm-card .carousel-dotted:is(.all-hero-banner-image-carousel)
+.carousel-title :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--bbl-color-white);
+}
+
+:lang(th) {
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
+    line-height: 1.875rem;
+  }
+
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
+    line-height: 1.5rem;
+  }
+}
+
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-subtitle p{
   font-size: 1.1375rem;
@@ -502,12 +531,17 @@
   -webkit-box-orient: vertical;
 }
 
+.bangkok-bankm-card .carousel-dotted:is(.all-hero-banner-image-carousel)
+.carousel-subtitle p{
+   color: var(--bbl-color-white);
+}
+
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .button-container {
   margin-block: var(--bbl-space-300) var(--bbl-space-200);
 }
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-content.content .button-m.animated-text {
+.carousel-content.content .carousel-link-wrap.animated-text {
   transform: translateY(18.75rem);
   opacity: 0;
   transition: all 0.6s 0.6s;
@@ -516,7 +550,7 @@
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-item.is-active .carousel-title.animated-text :is(h1, h2, h3, h4, h5, h6),
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-item.is-active .button-m.animated-text {
+.carousel-item.is-active .carousel-link-wrap.animated-text {
   transform: translateY(0);
   opacity: 1;
 }
@@ -571,7 +605,7 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .sub-title-medium {
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
   font-size: 0.7rem;
   line-height: 0.98rem;
   font-weight: var(--bbl-font-weight-regular);
@@ -614,30 +648,55 @@
   margin-bottom: 1.875rem;
 }
 
-.carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
-  font-size: 0.875rem;
-  line-height: 1.125rem;
-  color: var(--bbl-color-grey-85);
-  margin: unset;
+.carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default.pad-bot {
+  margin-top: 0;
+  margin-bottom: 1rem;
 }
 
+.carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
+  font-size: 1rem;
+  line-height: 1.285rem;
+  margin: unset;
+  color: var(--bbl-color-grey-85);
+}
+
+/* title-3: use regular weight (matches live site inherited font) */
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 {
-  font-size: 1.3125rem;
-  line-height: 1.4219rem;
+  font-size: 1.3rem;
+  line-height: 1.428rem;
+  font-family: var(--bbl-font-family-primary);
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 p {
   margin: unset;
 }
 
+/* Step numbers: use Muli-Light to match live site */
 .carousel-dotted
 .carousel-dotted-item.with-default-image
 .caption.editor
-.text-large.text-light p {
-  font-size: 3rem;
-  line-height: 2.875rem;
-  font-weight: 300;
+.text-large.text-light p,
+.carousel-dotted
+.carousel-dotted-item.with-default-image
+.caption.editor
+p.text-large.text-light {
+  font-family: Muli-Light, sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.571rem;
   margin: 0;
+}
+
+/* Description padding — only when no step text is present in the wrapper */
+.carousel-dotted .carousel-dotted-item.with-default-image
+.caption.editor .text-default.pad-bot:not(:has(p.text-large)) p {
+  padding-top: 1.875rem;
+  padding-bottom: 1.875rem;
+}
+
+/* Bold inline text: use Muli-Bold to match live site */
+.carousel-dotted .carousel-dotted-item.with-default-image .caption.editor strong {
+  font-family: Muli-Bold, sans-serif;
 }
 
 @media (width > 47.5rem) {
@@ -662,7 +721,7 @@
     opacity: 1;
   }
 
-  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-track-wrapper {
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant) .carousel-track-wrapper {
     transition: transform 700ms cubic-bezier(0.4, 0, 0.4, 1);
   }
 
@@ -808,10 +867,11 @@
     padding: 0 1.875rem;
   }
 
+  /* title-3 desktop: regular weight to match live site */
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 {
     font-size: 1.5rem;
     line-height: 1.625rem;
-    font-family: var(--bbl-font-family-medium);
+    font-family: BangkokBank-Medium, sans-serif;
     font-weight: var(--bbl-font-weight-regular);
   }
 
@@ -833,6 +893,26 @@
     line-height: 1.625rem;
     font-family: var(--bbl-font-family-primary);
     font-weight: var(--bbl-font-weight-regular);
+  }
+
+  .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+
+  /* Step numbers desktop: Muli-Light + exact live sizes */
+  .carousel-dotted
+  .carousel-dotted-item.with-default-image
+  .caption.editor
+  .text-large.text-light p,
+  .carousel-dotted
+  .carousel-dotted-item.with-default-image
+  .caption.editor
+  p.text-large.text-light {
+    font-family: Muli-Light, sans-serif;
+    font-size: 3rem;
+    line-height: 2.875rem;
+    color: var(--bbl-color-grey-85);
   }
 }
 
@@ -909,6 +989,24 @@
     line-height: 2.875rem;
   }
 
+  :lang(th) {
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
+      line-height: 3.75rem;
+    }
+
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
+      line-height: 2.5rem;
+    }
+
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h4) {
+      line-height: 1.375rem;
+    }
+  }
+
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-subtitle p {
     font-size: 1.5rem;
     line-height: 1.625rem;
@@ -947,6 +1045,7 @@
     font-size: 0.8rem;
     line-height: 1.4;
     padding-right: 0.9375rem;
+    font-family: var(--bbl-font-family-looped);
   }
 }
- 
+

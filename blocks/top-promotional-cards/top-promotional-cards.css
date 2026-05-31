@@ -1,0 +1,63 @@
+@import url("../../styles/components/listing-card.css");
+
+.top-promo-view-all {
+    display: flex;
+    justify-content: center;
+    margin-block: 0;
+}
+
+.top-promo-view-all a {
+    min-width: 13.125rem;
+}
+
+.top-promo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.top-promo-grid:has(.top-promo-empty),
+.top-promo-grid:has(.listing-card-container:only-child) {
+    justify-content: center;
+}
+
+
+@keyframes top-promo-settle-up {
+    from {
+        transform: translateY(1.5rem);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes top-promo-settle-down {
+    from {
+        transform: translateY(-1.5rem);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.top-promo-grid.top-promo-enter-up {
+    animation: top-promo-settle-up 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.top-promo-grid.top-promo-enter-down {
+    animation: top-promo-settle-down 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (width > 64rem) {
+    .top-promo-grid {
+        margin-inline: -1.25rem;
+    }
+}
+
+

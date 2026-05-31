@@ -1,0 +1,388 @@
+/* Source rows hidden after decoration */
+.mf-results .mfr-source-row {
+  display: none;
+}
+
+/* ── Page wrapper ─────────────────────────────────────────────────────────── */
+
+.mfr-wrapper {
+  max-width: var(--bbl-layout-content-max-width-desktop, 77.5rem);
+  margin: 0 auto;
+  padding: var(--bbl-space-400) var(--bbl-space-200);
+  background: var(--bbl-color-white);
+  box-sizing: border-box;
+}
+
+/* ── Disclaimer ───────────────────────────────────────────────────────────── */
+
+.mfr-disclaimer {
+  border-top: 0.0625rem solid var(--bbl-color-grey-30);
+  padding-top: var(--bbl-space-layout-sm);
+  font-size: var(--bbl-font-size-b3, 0.8125rem);
+  color: var(--bbl-color-grey-70);
+  line-height: var(--bbl-line-height-body, 1.6);
+  text-align: center;
+}
+
+.mfr-disclaimer p {
+  margin: 0 0 var(--bbl-space-component-sm);
+}
+
+.mfr-disclaimer p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Fund card fields — scoped to card-list.mf-results ───────────────────── */
+
+.card-list.mf-results .mfr-card-field {
+  border-top: 0.0625rem solid var(--bbl-color-grey-150);
+  padding: var(--bbl-space-150) 0;
+}
+
+.card-list.mf-results .mfr-card-field:first-child {
+  border-top: none;
+  padding-top: var(--bbl-space-075);
+}
+
+.card-list.mf-results .mfr-card-field strong {
+  display: block;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1);
+  color: var(--bbl-color-black);
+}
+
+.card-list.mf-results .mfr-card-field p,
+.card-list.mf-results .mfr-card-field ul {
+  margin: var(--bbl-space-075) 0 0;
+  padding: 0;
+  font-size: var(--bbl-font-size-b1);
+  color: var(--bbl-color-grey-70);
+  line-height: 1.625;
+}
+
+.card-list.mf-results .mfr-card-field ul {
+  list-style: none;
+}
+
+/* ── Card list container ──────────────────────────────────────────────────── */
+
+.mfr-card-list-container {
+  margin-bottom: var(--bbl-space-layout-lg);
+}
+
+/* ── Hidden cards (beyond initial 6) ─────────────────────────────────────── */
+
+.mfr-hidden {
+  display: none;
+}
+
+/* ── Mobile: hide scrollbar — replaced by dots (matches credit-card) ─────── */
+
+.mfr-card-list-container .cards-list.scrollable {
+  scrollbar-width: none;
+}
+
+.mfr-card-list-container .cards-list.scrollable::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Scroll dots — mobile only (matches ccs-scroll-dots) ─────────────────── */
+
+.mfr-scroll-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--bbl-space-100);
+  margin-top: var(--bbl-space-150);
+}
+
+.mfr-scroll-dot {
+  appearance: none;
+  width: var(--bbl-space-100);
+  height: var(--bbl-space-100);
+  min-width: var(--bbl-space-100);
+  min-height: var(--bbl-space-100);
+  border-radius: var(--bbl-radius-full);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+  transition: all 180ms ease;
+}
+
+.mfr-scroll-dot.is-active {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+/* ── Row-2 peek: clips container with gradient fade ──────────────────────── */
+
+.mfr-card-list-container.mfr-peek {
+  overflow: hidden;
+  position: relative;
+}
+
+.mfr-card-list-container.mfr-peek::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8rem;
+  background: linear-gradient(to bottom, transparent, var(--bbl-color-white));
+  pointer-events: none;
+}
+
+/* ── See more / See less toggle ───────────────────────────────────────────── */
+
+.mfr-results-toggle {
+  display: none;
+  justify-content: center;
+  margin-top: var(--bbl-space-300);
+  margin-bottom: var(--bbl-space-layout-md);
+}
+
+.mfr-results-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bbl-space-075);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-medium);
+  padding: var(--bbl-space-100) var(--bbl-space-200);
+  border-radius: 0.4375rem;
+  transition: background-color 0.2s ease;
+}
+
+.mfr-results-toggle-btn:hover {
+  background-color: var(--bbl-color-blue-10);
+}
+
+.mfr-results-toggle-btn .icon-dropdown {
+  font-size: var(--bbl-font-size-b3);
+  color: var(--bbl-color-active-blue);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.mfr-results-toggle-btn[aria-expanded="true"] .icon-dropdown {
+  transform: rotate(180deg);
+}
+
+/* ── No results ───────────────────────────────────────────────────────────── */
+
+.mfr-no-results {
+  text-align: center;
+  padding: var(--bbl-space-layout-xl) var(--bbl-space-container-xs);
+  font-size: var(--bbl-font-size-b1, 1rem);
+  color: var(--bbl-color-grey-70);
+}
+
+/* ==========================================================================
+   card-list mf-results variation
+   Mirrors the credit-card scoped overrides so cards render identically.
+   ========================================================================== */
+
+/* ── Image area (image layout = "default") ───────────────────────────────── */
+
+.card-list.mf-results .cards-list-image {
+  height: 11rem;
+  overflow: hidden;
+}
+
+.card-list.mf-results .cards-list-image img {
+  width: 100%;
+  height: 100%;
+  min-width: unset;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Logo in remark area ─────────────────────────────────────────────────── */
+
+.card-list.mf-results .cards-list-remark img.mfr-logo {
+  height: 2.5rem;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  margin-top: var(--bbl-space-200);
+}
+
+/* ── Card title h3 ──────────────────────────────────────────────────────── */
+
+.card-list.mf-results .cards-list-title h3 {
+  font-size: 1.1375rem;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--bbl-color-black);
+  overflow-wrap: anywhere;
+}
+
+/* ── Button area: stack Read More above Compare ─────────────────────────── */
+
+.card-list.mf-results .cards-list-inner .cards-list-button {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+/* Read More — full-width solid blue (primary) */
+
+.card-list.mf-results .cards-list-button a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0 var(--bbl-space-200);
+  box-sizing: border-box;
+  border-radius: 0.4375rem;
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-medium);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.card-list.mf-results .cards-list-button a::before,
+.card-list.mf-results .cards-list-button a::after {
+  display: none;
+}
+
+.card-list.mf-results .cards-list-button a:hover {
+  background-color: var(--bbl-color-blue-90);
+  border: none;
+  text-decoration: none;
+}
+
+/* ── Compare button — sits inside .cards-list-button below Read More ────── */
+
+.card-list.mf-results .mfr-compare-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0 var(--bbl-space-200);
+  box-sizing: border-box;
+  border-radius: 0.4375rem;
+  background-color: transparent;
+  color: var(--bbl-color-active-blue);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-medium);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.card-list.mf-results .mfr-compare-btn:hover {
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+}
+
+.card-list.mf-results .mfr-compare-btn.is-comparing {
+  background-color: var(--bbl-color-grey-10);
+  border-color: var(--bbl-color-grey-60);
+  color: var(--bbl-color-grey-60);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ── Footer CTAs ──────────────────────────────────────────────────────────── */
+
+.mfr-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bbl-space-gap-md);
+  align-items: center;
+  margin-bottom: var(--bbl-space-layout-md);
+}
+
+.mfr-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  min-width: 11rem;
+  padding: var(--bbl-space-component-sm) var(--bbl-space-component-xl);
+  border-radius: var(--bbl-radius-button);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1, 1rem);
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s, color 0.2s;
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+  box-sizing: border-box;
+}
+
+.mfr-cta:hover {
+  background: var(--bbl-color-blue-10);
+}
+
+/* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
+
+@media (width > 47.5rem) {
+  .mfr-wrapper {
+    padding: var(--bbl-space-600);
+  }
+
+  .mfr-scroll-dots {
+    display: none;
+  }
+
+  .card-list.mf-results .cards-list.scrollable.cards-3 {
+    flex-flow: row wrap;
+    overflow: visible;
+    scroll-snap-type: none;
+    gap: 0 var(--bbl-space-250);
+  }
+
+  .card-list.mf-results .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-250)) / 3);
+    margin-bottom: var(--bbl-space-250);
+    scroll-snap-align: none;
+  }
+
+  .mfr-footer {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+/* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
+
+@media (width > 64rem) {
+  .mfr-wrapper {
+    padding: var(--bbl-space-600) var(--bbl-space-200);
+  }
+
+  .card-list.mf-results .cards-list.scrollable.cards-3 {
+    gap: 0 var(--bbl-space-500);
+    margin-right: calc(-1 * var(--bbl-space-250));
+    margin-left: calc(-1 * var(--bbl-space-250));
+  }
+
+  .card-list.mf-results .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 3);
+    margin-bottom: var(--bbl-space-500);
+  }
+}

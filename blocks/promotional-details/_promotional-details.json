@@ -1,0 +1,255 @@
+{
+  "definitions": [
+    {
+      "title": "Promotional Details",
+      "id": "promotional-details",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Promotional Details",
+              "model": "promotional-details"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "promotional-details",
+      "fields": [
+        {
+          "component": "select",
+          "name": "promotionType",
+          "label": "Promotion Type",
+          "valueType": "string",
+          "value": "credit-card",
+          "options": [
+            {
+              "name": "Credit Card",
+              "value": "credit-card"
+            },
+            {
+              "name": "Bangkok Bank M",
+              "value": "bangkok-bank-m"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "name": "promoId",
+          "label": "Promo ID",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "text",
+          "name": "title",
+          "label": "Title (appears on the promotional page)"
+        },
+        {
+          "component": "select",
+          "name": "titleType",
+          "label": "Title Type ",
+          "options": [
+            {
+              "name": "h1",
+              "value": "h1"
+            },
+            {
+              "name": "h2",
+              "value": "h2"
+            },
+            {
+              "name": "h3",
+              "value": "h3"
+            },
+            {
+              "name": "h4",
+              "value": "h4"
+            },
+            {
+              "name": "h5",
+              "value": "h5"
+            },
+            {
+              "name": "h6",
+              "value": "h6"
+            }
+          ]
+        },
+        {
+          "component": "reference",
+          "name": "cardImageUrl",
+          "label": "Card Image",
+          "valueType": "string",
+          "multi": false
+        },
+        {
+          "component": "reference",
+          "name": "detailImageUrl",
+          "label": "Detail Image (appears on the promotional page)",
+          "valueType": "string",
+          "multi": false
+        },
+        {
+          "component": "richtext",
+          "name": "cardShortDescription",
+          "label": "Card Short Description",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "detailDescription",
+          "label": "Detail Description (appears on the promotional page)",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-tag",
+          "name": "cardTypes",
+          "label": "Card Types",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-tag",
+          "name": "category",
+          "label": "Category",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-tag",
+          "name": "subcategory",
+          "label": "Subcategory",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-tag",
+          "name": "area",
+          "label": "Area",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "dateValidityLabel",
+          "label": "Date Validity Label",
+          "valueType": "string"
+        },
+        {
+          "component": "date-time",
+          "name": "promotionStartDate",
+          "label": "Promotion Validity Start Date(appears on the promotional page)",
+          "valueType": "string"
+        },
+        {
+          "component": "date-time",
+          "name": "promotionEndDate",
+          "label": "Promotion Expiry Date (appears on the promotional page)",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "ctaLabel",
+          "label": "Cta Label",
+          "value": "",
+          "required": true
+        },
+        {
+          "component": "aem-content",
+          "name": "ctaLink",
+          "label": "Cta Link",
+          "description": "Destination URL for the button"
+        },
+        {
+          "component": "container",
+          "name": "targetSettings",
+          "label": "Target settings",
+          "fields": [
+            {
+              "component": "boolean",
+              "name": "targetLink",
+              "label": "Open link in new tab",
+              "description": "Enable to open the button link in a new browser tab",
+              "valueType": "boolean",
+              "value": false
+            }
+          ]
+        },
+        {
+          "component": "boolean",
+          "name": "topCategory",
+          "label": "Top Category",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "component": "boolean",
+          "name": "topPromotion",
+          "label": "Top Promotion",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "component": "boolean",
+          "name": "responsibleLendingDisclaimerEnabled",
+          "label": "Responsible Lending Disclaimer (appears on the promotional page)",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "component": "richtext",
+          "name": "responsibleLendingDisclaimerText",
+          "label": "Disclaimer Text (appears on the promotional page)",
+          "valueType": "string",
+          "condition": { "!!": [{ "var": "responsibleLendingDisclaimerEnabled" }] }
+        },
+        {
+          "component": "select",
+          "name": "isRegister",
+          "label": "Is Register",
+          "valueType": "string",
+          "value": "N",
+          "options": [
+            {
+              "name": "No Registration",
+              "value": "N"
+            },
+            {
+              "name": "Register",
+              "value": "Y"
+            },
+            {
+              "name": "Register with Data",
+              "value": "D"
+            }
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "promotionType"
+              },
+              "bangkok-bank-m"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "isRegisterCtaLabel",
+          "label": "Register CTA Label",
+          "value": "",
+          "required": true,
+          "condition": {
+            "!==": [
+              {
+                "var": "isRegister"
+              },
+              "N"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

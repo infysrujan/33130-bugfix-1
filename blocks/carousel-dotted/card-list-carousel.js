@@ -5,21 +5,13 @@ const getFragmentPath = (cells) => cells.map((cell) => cell.querySelector('a')?.
   ?? cells.map((cell) => cell.textContent.trim()).find((text) => text.startsWith('/'))
   ?? '';
 
-const tabletMin = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim();
+export const tabletMin = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim();
 
 const getChunkSize = (cardList) => {
   const isNarrow = window.matchMedia(`(max-width: ${tabletMin})`).matches;
   const isMultiColumn = cardList.classList.contains('cards-3') || cardList.classList.contains('cards-4');
   return !isNarrow && isMultiColumn ? 3 : 1;
 };
-
-const chunkItems = (items, size) => Array.from(
-  { length: Math.ceil(items.length / size) },
-  (_, i) => items.slice(
-    i * size,
-    i * size + size,
-  ),
-);
 
 const createSlide = (row, index, doc) => {
   const slide = doc.createElement('div');
@@ -79,53 +71,80 @@ export const setCardListTrackPosition = (block, trackWrapper, slideEls, index) =
   trackWrapper.style.transform = `translate3d(${-targetOffset}px, 0px, 0px)`;
 };
 
-export const handleCardListLoopTransition = (
+export const isFragmentNoScroll = (slideEls) => slideEls.length === 1
+  && slideEls[0]?.classList.contains('no-scroll');
+
+export const updateFragmentTrack = (
   block,
   trackWrapper,
   slideEls,
-  isLoopingForward,
-  isLoopingBackward,
+  index,
+  prevIndex,
+  direction,
   shouldCloneFragmentSlide,
 ) => {
-  if (!(isLoopingForward || isLoopingBackward) || !shouldCloneFragmentSlide) {
-    return false;
+  const isLoopingForward = index === 0 && prevIndex === slideEls.length - 1;
+  const isLoopingBackward = index === slideEls.length - 1 && prevIndex === 0;
+  const fragIsLoopingForward = direction === 'forward' && isLoopingForward;
+  const fragIsLoopingBackward = direction === 'backward' && isLoopingBackward;
+
+  if ((fragIsLoopingForward || fragIsLoopingBackward) && shouldCloneFragmentSlide) {
+    const cloneSlide = fragIsLoopingForward
+      ? trackWrapper.lastElementChild
+      : trackWrapper.firstElementChild;
+    const cloneOffset = getCardListCarouselOffsetForSlide(block, trackWrapper, cloneSlide);
+    const resetOffset = fragIsLoopingForward
+      ? getCardListCarouselOffset(block, trackWrapper, slideEls, 0)
+      : getCardListCarouselOffset(block, trackWrapper, slideEls, slideEls.length - 1);
+
+    trackWrapper.style.transform = `translate3d(${-cloneOffset}px, 0px, 0px)`;
+    setTimeout(() => {
+      trackWrapper.style.transition = 'none';
+      trackWrapper.style.transform = `translate3d(${-resetOffset}px, 0px, 0px)`;
+      trackWrapper.getBoundingClientRect();
+      trackWrapper.style.transition = '';
+    }, 700);
+    return;
   }
 
-  const cloneSlide = isLoopingForward
-    ? trackWrapper.lastElementChild
-    : trackWrapper.firstElementChild;
-  const cloneOffset = getCardListCarouselOffsetForSlide(block, trackWrapper, cloneSlide);
-  const resetOffset = isLoopingForward
-    ? getCardListCarouselOffset(block, trackWrapper, slideEls, 0)
-    : getCardListCarouselOffset(block, trackWrapper, slideEls, slideEls.length - 1);
-
-  trackWrapper.style.transform = `translate3d(${-cloneOffset}px, 0px, 0px)`;
-  setTimeout(() => {
-    trackWrapper.style.transition = 'none';
-    trackWrapper.style.transform = `translate3d(${-resetOffset}px, 0px, 0px)`;
-    trackWrapper.getBoundingClientRect();
-    trackWrapper.style.transition = '';
-  }, 700);
-
-  return true;
+  setCardListTrackPosition(block, trackWrapper, slideEls, index);
 };
 
-export default async function buildCardListFragmentSlides(row, index) {
+export default function buildCardListFragmentSlides(row, index) {
   const doc = row.ownerDocument;
   const fragmentPath = getFragmentPath([...row.children]);
 
-  if (!fragmentPath) return [createErrorSlide(row, index, 'Missing fragment path', doc)];
+  if (!fragmentPath) return Promise.resolve([createErrorSlide(row, index, 'Missing fragment path', doc)]);
 
-  const fragment = await loadFragment(fragmentPath);
-  const section = fragment?.querySelector(':scope .section');
-  const cardList = section?.querySelector('.cards-list');
-  const items = cardList ? [...cardList.querySelectorAll(':scope > .cards-list-item')] : [];
+  return loadFragment(fragmentPath).then((fragment) => {
+    const section = fragment?.querySelector(':scope .section');
+    const cardList = section?.querySelector('.cards-list');
+    const items = cardList ? [...cardList.querySelectorAll(':scope > .cards-list-item')] : [];
 
-  if (!section || !cardList || !items.length) {
-    return [createErrorSlide(row, index, 'Fragment loaded without card-list content', doc)];
-  }
+    if (!section || !cardList || !items.length) {
+      return [createErrorSlide(row, index, 'Fragment loaded without card-list content', doc)];
+    }
 
-  return chunkItems(items, getChunkSize(cardList)).map(
-    (chunk, i) => createFragmentSlide(row, index + i, section, chunk, doc),
-  );
+    const chunkSize = getChunkSize(cardList);
+
+    if (items.length <= chunkSize) {
+      const slide = createFragmentSlide(row, index, section, items, doc);
+      slide.classList.add('no-scroll');
+      return [slide];
+    }
+
+    const chunks = [];
+    for (let i = 0; i < items.length; i += chunkSize) {
+      const chunk = items.slice(i, i + chunkSize);
+      if (chunk.length < chunkSize) {
+        chunks.push(items.slice(-chunkSize));
+        break;
+      }
+      chunks.push(chunk);
+    }
+
+    return chunks.map(
+      (chunk, i) => createFragmentSlide(row, index + i, section, chunk, doc),
+    );
+  });
 }

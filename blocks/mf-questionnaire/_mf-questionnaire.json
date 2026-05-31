@@ -1,0 +1,104 @@
+{
+  "definitions": [
+    {
+      "title": "MF Questionnaire",
+      "id": "mf-questionnaire",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "MF Questionnaire",
+              "model": "mf-questionnaire"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "mf-questionnaire",
+      "fields": [
+        {
+          "component": "text",
+          "name": "screen1Title",
+          "label": "Screen 1 – Question",
+          "required": true,
+          "value": "1. How would you rate the level of risk you are willing to accept from investing in mutual funds?"
+        },
+        {
+          "component": "richtext",
+          "name": "screen1FragmentPath",
+          "label": "Screen 1 – Risk Options",
+          "description": "Bullet points for risk option cards (Low, Medium to Low, etc.)",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "screen1Description",
+          "label": "Screen 1 – Description",
+          "description": "Bullet point descriptions shown below the risk option cards",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "screen2Title",
+          "label": "Screen 2 – Question",
+          "required": true,
+          "value": "2. Do you accept the exchange rate risk?"
+        },
+        {
+          "component": "text",
+          "name": "screen2YesLabel",
+          "label": "Screen 2 – Yes Label",
+          "required": true,
+          "value": "Yes"
+        },
+        {
+          "component": "text",
+          "name": "screen2NoLabel",
+          "label": "Screen 2 – No Label",
+          "required": true,
+          "value": "No"
+        },
+        {
+          "component": "text",
+          "name": "screen3Title",
+          "label": "Screen 3 – Question",
+          "required": true,
+          "value": "3. Do you want tax benefits from investing in mutual funds?"
+        },
+        {
+          "component": "text",
+          "name": "screen3YesLabel",
+          "label": "Screen 3 – Yes Label",
+          "required": true,
+          "value": "Yes"
+        },
+        {
+          "component": "text",
+          "name": "screen3NoLabel",
+          "label": "Screen 3 – No Label",
+          "required": true,
+          "value": "No"
+        },
+        {
+          "component": "richtext",
+          "name": "disclaimerText",
+          "label": "Disclaimer Text",
+          "description": "Shown at the bottom of all 3 screens",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-content",
+          "name": "resultsPageUrl",
+          "label": "Results Page URL",
+          "description": "User is redirected here after completing screen 3",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

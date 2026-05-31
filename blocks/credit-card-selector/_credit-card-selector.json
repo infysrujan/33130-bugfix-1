@@ -1,0 +1,146 @@
+{
+  "definitions": [
+    {
+      "title": "Credit Card Selector",
+      "id": "credit-card-selector",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Credit Card Selector",
+              "model": "credit-card-selector",
+              "filter": "credit-card-selector"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Credit Card Section",
+      "id": "credit-card-section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Credit Card Section",
+              "model": "credit-card-section"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "credit-card-selector",
+      "fields": [
+        {
+          "component": "text",
+          "name": "applyButtonText",
+          "label": "Apply Button Text",
+          "description": "Apply button label text (default: Apply)",
+          "required": true
+        },
+        {
+          "component": "text",
+          "name": "applyButtonTitle",
+          "label": "Apply Button Title",
+          "description": "Accessibility title attribute for Apply button (optional)"
+        },
+        {
+          "component": "select",
+          "name": "applyButtonType",
+          "label": "Apply Button Type",
+          "description": "Apply button style variant",
+          "valueType": "string",
+          "value": "primary",
+          "options": [
+            {
+              "name": "Primary",
+              "value": "primary"
+            },
+            {
+              "name": "Secondary",
+              "value": "secondary"
+            },
+            {
+              "name": "Tertiary",
+              "value": "tertiary"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "name": "startOverButtonText",
+          "label": "Start Over Button Text",
+          "description": "Start Over button label text (default: Start Over)",
+          "required": true
+        },
+        {
+          "component": "text",
+          "name": "startOverButtonTitle",
+          "label": "Start Over Button Title",
+          "description": "Accessibility title attribute for Start Over button (optional)"
+        },
+        {
+          "component": "select",
+          "name": "startOverButtonType",
+          "label": "Start Over Button Type",
+          "description": "Start Over button style variant",
+          "valueType": "string",
+          "value": "secondary",
+          "options": [
+            {
+              "name": "Primary",
+              "value": "primary"
+            },
+            {
+              "name": "Secondary",
+              "value": "secondary"
+            },
+            {
+              "name": "Tertiary",
+              "value": "tertiary"
+            }
+          ]
+        },
+        {
+          "component": "richtext",
+          "name": "disclaimerText",
+          "value": "",
+          "label": "Disclaimer Text",
+          "valueType": "string"
+        }
+      ]
+    },
+    {
+      "id": "credit-card-section",
+      "fields": [
+        {
+          "component": "text",
+          "name": "subSectionTitle",
+          "label": "Sub-section Title",
+          "description": "Title for the sub-section (e.g., Monthly Income, Lifestyles, Benefits)",
+          "required": true
+        },
+        {
+          "component": "richtext",
+          "name": "content",
+          "label": "Content",
+          "description": "Rich text content for the sub-section",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "credit-card-selector",
+      "components": [
+        "credit-card-section"
+      ]
+    }
+  ]
+}

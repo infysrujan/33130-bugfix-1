@@ -4,8 +4,10 @@
  * @param {Element} block The brand-logo block element
  */
 export default function decorate(block) {
-  // Extract the picture element (logo image)
-  const picture = block.querySelector('picture');
+  const rows = [...block.children];
+
+  // Extract the picture element (logo image) from first row
+  const picture = rows[0]?.querySelector('picture');
 
   // Extract the link (typically the home page URL)
   const anchor = block.querySelector('a');
@@ -13,6 +15,10 @@ export default function decorate(block) {
   // Extract alt text from the block data or image
   const img = block.querySelector('img');
   const altText = img?.alt || 'Brand Logo';
+
+  // Extract print logo picture from row 3 and its alt text from row 4 (optional fields)
+  const printLogoPicture = rows[3]?.querySelector('picture, img');
+  const printLogoAltText = rows[4]?.textContent?.trim() || '';
 
   // Clear the block content
   block.textContent = '';
@@ -50,4 +56,19 @@ export default function decorate(block) {
   }
 
   block.appendChild(logoContainer);
+
+  // Render print logo in <main> so it isn't hidden by print styles on the header.
+  // Guard against duplicate insertion when the header rebuilds on viewport change.
+  if (printLogoPicture) {
+    const printContainer = document.createElement('div');
+    printContainer.className = 'brand-logo-print-logo';
+    const clonedLogo = printLogoPicture.cloneNode(true);
+    const clonedImg = clonedLogo.tagName === 'IMG' ? clonedLogo : clonedLogo.querySelector('img');
+    if (clonedImg) {
+      clonedImg.loading = 'eager';
+      if (printLogoAltText) clonedImg.alt = printLogoAltText;
+    }
+    printContainer.appendChild(clonedLogo);
+    block.appendChild(printContainer);
+  }
 }

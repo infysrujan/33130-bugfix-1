@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://dev-aem.bangkokbank.com/en/sitemap.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>dev-aem.bangkokbank.com/th/sitemap.xml</loc>
+  </sitemap>
+  <!-- add custom sitemap entries here
+  <sitemap>
+    <loc>/custom-sitemap.xml</loc>
+  </sitemap>
+  -->
+</sitemapindex>

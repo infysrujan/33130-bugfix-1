@@ -15,7 +15,8 @@
 @import url('./background.css');
 @import url('./icomoon.css');
 @import url('./overlay.css');
-
+@import url('./calendar-picker.css');
+@import url('./error-page.css');
 
 :root {
     /* site-level sizing */
@@ -96,6 +97,10 @@ h6 {
     font-size: var(--bbl-text-body-small-size);
     line-height: var(--bbl-text-body-small-line-height);
     font-weight: var(--bbl-text-body-small-weight);
+}
+
+strong{
+  font-family: var(--bbl-font-family-medium);
 }
 
 p,
@@ -185,6 +190,11 @@ main img {
     flex-direction: column;
 }
 
+.section.columns-2-65 {
+    display: flex;
+    flex-direction: column;
+}
+
 @media (width > 47.5rem) {
     .section {
         padding-inline: var(--bbl-space-section-sm);
@@ -196,7 +206,7 @@ main img {
         padding-inline: var(--bbl-space-section-xl);
     }
 
-    .section.columns-3 {
+    .section.columns-3 { 
         flex-direction: row;
     }
 
@@ -210,17 +220,30 @@ main img {
     }
 
     .section.columns-2-50 > * {
-        padding-inline: 20px;
+        padding-inline: var(--bbl-space-250);
         flex: 1;
+    }
+
+    .section.columns-2-65 {
+        flex-direction: row;
     }
 
     .section.columns-2-75 {
         flex-direction: row;
     }
 
-    .section.columns-2-75 > * {
-        padding-inline: 20px;
+    .section.columns-2-65 > * {
+        padding-inline: var(--bbl-space-250);
         flex: 1;
+    }
+
+    .section.columns-2-75 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-65 > *:first-child {
+        flex: 0 0 65%;
     }
 
     .section.columns-2-75 > *:first-child {
@@ -294,23 +317,6 @@ main img {
     }
 }
 
-/* sections (central-aligned) */
-.section.central-aligned .block {
-    margin-inline: 1rem;
-}
-
-@media (width > 47.5rem) {
-    .section.central-aligned .block {
-        margin-inline: 3rem;
-    }
-}
-
-@media (width > 64rem) {
-    .section.central-aligned .block {
-        max-width: var(--bbl-layout-central-aligned-max-width);
-        margin: 0 auto;
-    }
-}
 
 
 /* =========================================================================
@@ -403,13 +409,44 @@ body.wealth main :is(.button-container .button, .button) {
     text-align: center;
 }
 
-.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+.section.center-image .section-image-item {
+    display: block;
+    text-align: center;
+}
+
+.section.center-image .default-content-wrapper > p {
+    text-align: center;
+}
+
+.section.center-image .default-content-wrapper > p > picture,
+.section.center-image .default-content-wrapper > p > img {
+    display: inline-block;
+    max-width: 100%;
+}
+
+.section.center-image .section-image-item :is(picture, img) {
+    display: block;
+    margin-inline: auto;
+    max-width: 100%;
+}
+
+.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
+.section.underline-image .section-image-item {
     position: relative;
     padding-bottom: var(--bbl-space-250);
     margin: 1.875rem 0;
 }
 
-.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+.section.underline-image .default-content-wrapper > p > picture,
+.section.underline-image .default-content-wrapper > p > img {
+    position: relative;
+    display: inline-block;
+    padding-bottom: var(--bbl-space-250);
+    max-width: 100%;
+}
+
+.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+.section.underline-image .section-image-item::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -419,13 +456,35 @@ body.wealth main :is(.button-container .button, .button) {
     background-color: var(--bbl-color-grey-150);
 }
 
-.section.underline-title.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+.section.underline-image .default-content-wrapper > p > picture::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: var(--bbl-space-1000);
+    height: 0.0625rem;
+    background-color: var(--bbl-color-grey-150);
+}
+
+.section.underline-title.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+.section.underline-image.center-image .section-image-item::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.section.underline-image.center-image .default-content-wrapper > p > picture::after {
     left: 50%;
     transform: translateX(-50%);
 }
 
 @media (width > 47.5rem) {
-    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
+    .section.underline-image .section-image-item {
+        padding-bottom: 1.875rem;
+    }
+
+    .section.underline-image .default-content-wrapper > p > picture,
+    .section.underline-image .default-content-wrapper > p > img {
         padding-bottom: 1.875rem;
     }
 }
@@ -513,6 +572,27 @@ body.bangkok-bankm-card main {
     color: var(--bbl-color-grey-85);
 }
 
+/* sections (central-aligned) */
+.section.central-aligned .block,
+.section.central-aligned .default-content-wrapper {
+    margin-inline: 1rem;
+}
+ 
+@media (width > 47.5rem) {
+    .section.central-aligned .block,
+    .section.central-aligned .default-content-wrapper {
+        margin-inline: 3rem;
+    }
+}
+ 
+@media (width > 64rem) {
+    .section.central-aligned .block,
+    .section.central-aligned .default-content-wrapper {
+        max-width: var(--bbl-layout-central-aligned-max-width);
+        margin: 0 auto;
+    }
+}
+
 @media (width > 47.5rem) {
     .section.background-wealth,
     .section.background-privatebanking {
@@ -547,4 +627,8 @@ body.bangkok-bankm-card main {
         font-weight: var(--bbl-font-weight-medium);
         line-height: 2.875rem;
     }
+}
+
+.hidden {
+    display: none;
 }

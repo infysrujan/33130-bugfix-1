@@ -125,6 +125,7 @@
           "options": [
             { "name": "Default", "value": "default" },
             { "name": "Download", "value": "download" },
+            { "name": "Multiple Download", "value": "multiple-download" },
             { "name": "Select Dropdown", "value": "select-dropdown" }
           ]
         },
@@ -322,6 +323,85 @@
               }
             ]
           }
+        },
+        {
+          "component": "richtext",
+          "name": "multipleDownloadLinks",
+          "value": "",
+          "label": "Multiple Download Links",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "buttonActionType"
+              },
+              "multiple-download"
+            ]
+          }
+        },
+        {
+          "component": "boolean",
+          "name": "isCardClickable",
+          "label": "Is Card Clickable",
+          "description": "Enable to make the entire card a clickable link",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "component": "aem-content",
+          "name": "cardLink",
+          "label": "Card Link",
+          "description": "Destination URL when the card is clicked",
+          "condition": {
+            "===": [
+              {
+                "var": "isCardClickable"
+              },
+              true
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "cardLinkTitle",
+          "label": "Card Link Title",
+          "description": "Accessibility title attribute for the clickable card (optional)",
+          "condition": {
+            "===": [
+              {
+                "var": "isCardClickable"
+              },
+              true
+            ]
+          }
+        },
+        {
+          "component": "boolean",
+          "name": "enableOverlayModal",
+          "label": "Enable Overlay Modal",
+          "description": "Open card link in a modal overlay instead of navigating",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "component": "aem-content",
+          "name": "overlayHref",
+          "label": "Overlay Fragment Path",
+          "description": "Path to the fragment shown in the modal overlay",
+          "condition": {
+            "===": [
+              {
+                "var": "enableOverlayModal"
+              },
+              true
+            ]
+          }
+        },
+        {
+          "component": "date-time",
+          "name": "financialDate",
+          "label": "Financial Date",
+          "valueType": "string"
         }
       ]
     }

@@ -1,0 +1,116 @@
+{
+  "definitions": [
+    {
+      "title": "Cookie Modal",
+      "id": "cookie-modal",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Cookie Modal",
+              "model": "cookie-modal",
+              "filter": "cookie-modal"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Cookie Modal Accordion Item",
+      "id": "cookie-modal-accordion-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Cookie Modal Accordion Item",
+              "model": "cookie-modal-accordion-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "cookie-modal",
+      "fields": [
+        {
+          "component": "text",
+          "name": "title",
+          "label": "Modal Title",
+          "description": "Title for the cookie settings modal",
+          "valueType": "string",
+          "value": "Cookie Setting"
+        },
+        {
+          "component": "richtext",
+          "name": "description",
+          "label": "Description Text",
+          "description": "Main description text about cookie usage",
+          "valueType": "string",
+          "value": "The Bank uses Strictly Necessary Cookies in order that you can access information and use the Bank's website safely, and uses Functional Cookies to facilitate you when you revisit the website. In addition, the Bank uses other type of Cookies, namely Analytic Cookies and Advertising Cookies, where disabling these Cookies may cause you inconvenience when using website as follows."
+        },
+        {
+          "component": "container",
+          "name": "ctaButton",
+          "label": "Call to Action Button",
+          "fields": [
+            {
+              "component": "text",
+              "name": "ctaText",
+              "label": "CTA Button Text",
+              "description": "Text for the save and close button",
+              "valueType": "string",
+              "value": "Save and Close"
+            },
+            {
+              "component": "text",
+              "name": "ctaTitle",
+              "label": "CTA Button Title",
+              "description": "Accessibility title attribute for the CTA button",
+              "valueType": "string",
+              "value": "Save cookie preferences and close modal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cookie-modal-accordion-item",
+      "fields": [
+        {
+          "component": "text",
+          "name": "cookieType",
+          "label": "Cookie Type",
+          "description": "Name of the cookie category (e.g., 'Analytic Cookies', 'Advertising Cookies')",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "description",
+          "label": "Cookie Description",
+          "description": "Detailed explanation for this cookie type",
+          "valueType": "string"
+        },
+        {
+          "component": "boolean",
+          "name": "defaultEnabled",
+          "label": "Default Enabled",
+          "description": "Whether this cookie category is enabled by default",
+          "valueType": "boolean",
+          "value": true
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "cookie-modal",
+      "components": [
+        "cookie-modal-accordion-item"
+      ]
+    }
+  ]
+}

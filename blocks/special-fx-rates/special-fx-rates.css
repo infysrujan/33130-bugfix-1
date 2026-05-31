@@ -1,0 +1,104 @@
+.section.central-aligned.special-fx-rates-container .block {
+    margin-inline: auto;
+}
+
+.special-fx-rates-container
+    .default-content-wrapper
+    > :is(h1, h2, h3, h4, h5, h6):first-child {
+    font-size: 1.4rem;
+    line-height: 1.3746rem;
+    font-weight: var(--bbl-font-weight-regular);
+    letter-spacing: -0.0125rem;
+}
+
+.special-fx-rates-disclaimer p {
+    margin-block: 0 1.0625rem;
+}
+
+.special-fx-rates-container .default-content-wrapper p {
+    line-height: 1.1244rem;
+    padding-bottom: 1.875rem;
+    font-weight: var(--bbl-font-weight-regular);
+}
+
+.special-fx-rates-table thead {
+    background-color: var(--bbl-color-blue-steel-light);
+}
+
+.special-fx-rates-content {
+    line-height: 1.2031rem;
+    color: var(--bbl-color-grey-85);
+    font-weight: var(--bbl-font-weight-regular);
+}
+
+.special-fx-rates-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 0.0625rem solid var(--bbl-color-black);
+}
+
+.special-fx-rates-table th {
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 0.0625rem solid var(--bbl-color-black);
+}
+
+.special-fx-rates-table td {
+    border: 0.0625rem solid var(--bbl-color-black);
+    padding: 0.3125rem 0.625rem;
+}
+
+.special-fx-rates-th-currency {
+    text-align: left;
+}
+
+.special-fx-rates-currency {
+    display: flex;
+    align-items: center;
+    gap: 0.9375rem;
+}
+
+.special-fx-rates-flag {
+    border-radius: 50%;
+    width: 1.1875rem;
+    height: 1.1875rem;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.special-fx-rates-rate {
+    text-align: center;
+}
+
+.special-fx-rates-timestamp {
+    margin-block: 1.0625rem;
+}
+
+@media (width > 47.5rem) {
+    .special-fx-rates-container .default-content-wrapper p {
+        font-size: var(--bbl-font-size-b2);
+    }
+
+    .special-fx-rates-content {
+        font-size: var(--bbl-font-size-b2);
+    }
+}
+
+@media (width > 64rem) {
+    .special-fx-rates-container
+        .default-content-wrapper
+        > :is(h1, h2, h3, h4, h5, h6):first-child {
+        font-size: var(--bbl-heading-h3-size);
+        line-height: 2.875rem;
+    }
+
+    .special-fx-rates-container .default-content-wrapper p {
+        font-size: var(--bbl-font-size-b1);
+        line-height: 1.375rem;
+    }
+
+    .special-fx-rates-content {
+        font-size: var(--bbl-font-size-b1);
+        line-height: 1.375rem;
+    }
+}

@@ -97,18 +97,21 @@ function createTableElement(columnNames, data, dataType, sourceElement) {
     let tbody = '<tbody>';
 
     if (dataType === 'exchange') {
-      tbody += data.map((item) => `
+      tbody += data.map((item) => {
+        const familyText = (item.Family || '').replace(/\d/g, '');
+        return `
         <tr>
           <td>
             <div class="country-select">
               <img src="/icons/${item.Family}.svg" alt="${item.Family}" loading="lazy">
-              <span>${item.Family}</span>
+              <span>${familyText}</span>
             </div>
           </td>
           <td>${item.BuyingRates?.trim() || '-'}</td>
           <td>${item.SellingRates?.trim() || '-'}</td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     } else if (dataType === 'deposit') {
       tbody += data.map((item) => `
         <tr>
@@ -353,11 +356,11 @@ export default async function decorate(block) {
   // Fetch configs for API URLs
   const configs = await fetchConfigs();
 
-  const exchangeRateAPI = configs?.getFxBanner || '';
-  const depositRateAPI = configs?.getDepositeRate || '';
-  const loanRateAPI = configs?.getLoanRate || '';
-  const bblFundAPI = configs?.getFundPriceService || '';
-  const bcapFundAPI = configs?.getFundBanner || '';
+  const exchangeRateAPI = configs?.rateCardGetFxBanner || '';
+  const depositRateAPI = configs?.rateCardGetDepositRate || '';
+  const loanRateAPI = configs?.rateCardGetLoanRate || '';
+  const bblFundAPI = configs?.rateCardGetFundPriceService || '';
+  const bcapFundAPI = configs?.rateCardGetFundBanner || '';
 
   // Parse block content
   const items = Array.from(block.children);

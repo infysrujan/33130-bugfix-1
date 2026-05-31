@@ -1,0 +1,54 @@
+{
+  "definitions": [
+    {
+      "title": "Fund Prices Table",
+      "id": "fund-prices-table",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Fund Prices Table",
+              "model": "fund-prices-table",
+              "filter": "fund-prices-table"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "fund-prices-table",
+      "fields": [
+        {
+          "component": "richtext",
+          "name": "tableContent",
+          "label": "Table Content",
+          "valueType": "string",
+          "value": "",
+          "rte": {
+            "toolbar": {
+              "insert": ["table"],
+              "editor": ["removeformat"],
+              "sections": ["insert", "editor"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "fund-prices-table",
+      "rte": {
+        "toolbar": {
+          "insert": ["table"],
+          "editor": ["removeformat"],
+          "sections": ["insert", "editor"]
+        }
+      },
+      "components": []
+    }
+  ]
+}

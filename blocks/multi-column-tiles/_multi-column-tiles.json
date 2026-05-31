@@ -1,0 +1,85 @@
+{
+  "definitions": [
+    {
+      "title": "Multi Column Tiles",
+      "id": "multi-column-tiles",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Multi Column Tiles",
+              "filter": "multi-column-tiles"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Multi Column Tiles Item",
+      "id": "multi-column-tiles-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Multi Column Tiles Item",
+              "model": "multi-column-tiles-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "multi-column-tiles-item",
+      "fields": [
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
+          "name": "image",
+          "label": "Image (Smart crop)",
+          "description": "Select or upload a DAM image for tile variants: 4-tile (Small), 3-tile (Medium), or 2-tile (Large)"
+      },
+      {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
+          "name": "imageMimeType"
+      },
+      {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerAltField",
+          "name": "imageAlt",
+          "label": "Image Alt Text"
+      },
+        {
+          "component": "aem-content",
+          "name": "imageLink",
+          "label": "Image Link",
+          "description": "Destination page when the image is clicked"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageLinkTitle",
+          "label": "Image Link Title",
+          "description": "Accessibility title attribute for the image link (optional)",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Title",
+          "description": "Tile title displayed below the image with a separator"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "multi-column-tiles",
+      "components": [
+        "multi-column-tiles-item"
+      ]
+    }
+  ]
+}

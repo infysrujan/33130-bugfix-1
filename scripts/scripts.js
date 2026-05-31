@@ -18,6 +18,8 @@ import {
   decorateTerritoryButtons,
   decorateButtonsV1,
   loadBreadcrumb,
+  loadWelcomeBanner,
+  buildCookieAlert,
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
@@ -123,6 +125,41 @@ export function decorateMain(main) {
 }
 
 /**
+ * Handles 'bbl:load-fragment' events so any module can load a fragment via
+ * dispatchEvent without importing fragment.js (which imports scripts.js,
+ * creating a cycle). Registering here ensures the listener is active on every
+ * page, even pages that contain no fragment blocks.
+ */
+document.addEventListener('bbl:load-fragment', async (e) => {
+  const { path, callback } = e.detail;
+  if (!path) return;
+
+  try {
+    const cleanPath = path.replace(/(\.plain)?\.html/, '');
+    const resp = await fetch(`${cleanPath}.plain.html`);
+    let fragment = null;
+    if (resp.ok) {
+      fragment = document.createElement('main');
+      fragment.innerHTML = await resp.text();
+      const resetBase = (tag, attr) => {
+        fragment.querySelectorAll(`${tag}[${attr}^="./media_"]`).forEach((el) => {
+          // eslint-disable-next-line no-param-reassign
+          el[attr] = new URL(el.getAttribute(attr), new URL(cleanPath, window.location)).href;
+        });
+      };
+      resetBase('img', 'src');
+      resetBase('source', 'srcset');
+      decorateMain(fragment);
+      await loadSections(fragment);
+    }
+    if (typeof callback === 'function') callback(fragment);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(`[bbl:load-fragment] Failed to load: ${path}`, err);
+  }
+});
+
+/**
  * Resolves html lang from URL path (locale segment after host, e.g. bangkokbank.com/en/...).
  * @param {string} pathname - `window.location.pathname`
  * @returns {'en'|'th'}
@@ -131,7 +168,73 @@ function getDocumentLangFromPath(pathname) {
   const first = pathname.split('/').filter(Boolean)[0];
   if (first === 'en') return 'en';
   if (first === 'th') return 'th';
+
+  // Check bblcorporate#lang cookie
+  const cookie = document.cookie
+    .split(';')
+    .map((c) => c.trim())
+    .find((c) => c.startsWith('bblcorporate#lang='));
+  if (cookie) {
+    return cookie.split('=')[1];
+  }
+
+  // Fallback to 'th'
   return 'th';
+}
+
+function decorateOgImage() {
+  const ogImagePath = getMetadata('ogImage') || getMetadata('ogimage');
+  if (!ogImagePath) return;
+
+  const url = ogImagePath.startsWith('http') ? ogImagePath : `${window.location.origin}${ogImagePath}`;
+
+  let meta = document.head.querySelector('meta[property="og:image"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.setAttribute('property', 'og:image');
+    document.head.append(meta);
+  }
+  meta.setAttribute('content', url);
+}
+
+/**
+ * Strip AEM image optimization query params from a URL.
+ * @param {string|null|undefined} url
+ * @returns {string|null|undefined}
+ */
+function stripImageOptimizationParams(url) {
+  if (typeof url !== 'string') return url;
+  const q = url.indexOf('?');
+  return q === -1 ? url : url.slice(0, q);
+}
+
+/**
+ * Strip AEM image optimization query params from a srcset value.
+ * @param {string|null|undefined} srcset
+ * @returns {string|null|undefined}
+ */
+function stripSrcsetOptimizationParams(srcset) {
+  if (typeof srcset !== 'string') return srcset;
+  return srcset.split(',').map((entry) => {
+    const parts = entry.trim().split(/\s+/);
+    parts[0] = stripImageOptimizationParams(parts[0]);
+    return parts.join(' ');
+  }).join(', ');
+}
+
+/**
+ * Remove optimization params from all picture source/img URLs in the document.
+ * @param {Document|Element} root
+ */
+export function removePictureOptimizationParams(root) {
+  root.querySelectorAll('picture').forEach((picture) => {
+    picture.querySelectorAll('source[srcset]').forEach((source) => {
+      source.setAttribute('srcset', stripSrcsetOptimizationParams(source.getAttribute('srcset')));
+    });
+    picture.querySelectorAll('img[src]').forEach((img) => {
+      img.setAttribute('src', stripImageOptimizationParams(img.getAttribute('src')));
+    });
+  });
 }
 
 /**
@@ -140,7 +243,9 @@ function getDocumentLangFromPath(pathname) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
+  removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
+  decorateOgImage();
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
@@ -164,7 +269,10 @@ async function loadEager(doc) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
+  await loadWelcomeBanner(doc);
   await loadSections(main);
+
+  await buildCookieAlert(main);
 
   // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
   decorateButtonsV1(main);
@@ -184,7 +292,7 @@ async function loadLazy(doc) {
   // Add link click handler for URL validation
   setTimeout(() => {
     document.dispatchEvent(new Event('lazy-phase'));
-    Window.LAZY_PHASE = true;
+    window.LAZY_PHASE = true;
   }, 150);
 }
 

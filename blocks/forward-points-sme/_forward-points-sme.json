@@ -1,0 +1,131 @@
+{
+	"definitions": [
+		{
+			"title": "Forward Points SME",
+			"id": "forward-points-sme",
+			"plugins": {
+				"xwalk": {
+					"page": {
+						"resourceType": "core/franklin/components/block/v1/block",
+						"template": {
+							"name": "Forward Points SME",
+							"model": "forward-points-sme"
+						}
+					}
+				}
+			}
+		}
+	],
+	"models": [
+		{
+			"id": "forward-points-sme",
+			"fields": [
+				{
+					"component": "text",
+					"name": "section1CalendarLabel",
+					"label": "Section 1 - Update Date Label",
+					"valueType": "string",
+					"required": true,
+					"value": "Update as of"
+				},
+				{
+					"component": "text",
+					"name": "section1GoCtaLabel",
+					"label": "Section 1 - GO CTA Label",
+					"valueType": "string",
+					"required": true,
+					"value": "GO"
+				},
+				{
+					"component": "richtext",
+					"name": "section1TableColumnHeadings",
+					"label": "Section 1 - Table Column Headings",
+					"valueType": "string",
+					"required": true,
+					"description": "List items: Currency | Sight Bill Buying Rates | TT Buying Rates | TT Selling Rates"
+				},
+				{
+					"component": "text",
+					"name": "section2UpdateDateLabel",
+					"label": "Section 2 - Update Date Label",
+					"valueType": "string",
+					"required": true,
+					"value": "Update as of"
+				},
+				{
+					"component": "text",
+					"name": "section2GoCtaLabel",
+					"label": "Section 2 - GO CTA Label",
+					"valueType": "string",
+					"required": true,
+					"value": "Go"
+				},
+				{
+					"component": "text",
+					"name": "printCtaLabel",
+					"label": "Print CTA Label",
+					"valueType": "string",
+					"required": true,
+					"value": "PRINT"
+				},
+				{
+					"component": "text",
+					"name": "section2ForwardPointsTableTitle",
+					"label": "Section 2 - Table Title",
+					"valueType": "string",
+					"required": true,
+					"value": "Indicative Forward Points (for Outright FX Forward Contract) for USD/THB"
+				},
+				{
+					"component": "text",
+					"name": "section2SmeLowRevenueSubTitle",
+					"label": "Section 2 - Table Sub-Title 1",
+					"valueType": "string",
+					"required": true,
+					"value": "(SMEs Company revenues THB 50 - 200 Million per year)"
+				},
+				{
+					"component": "text",
+					"name": "section2SmeMidRevenueSubTitle",
+					"label": "Section 2 - Table Sub-Title 2",
+					"valueType": "string",
+					"required": true,
+					"value": "(SMEs Company revenues THB 200 - 500 Million per year)"
+				},
+				{
+					"component": "richtext",
+					"name": "section2TableColumnHeadings",
+					"label": "Section 2 - Table Column Headings",
+					"valueType": "string",
+					"required": true,
+					"description": "List items: Period | Export (Buying) | Import (Selling)"
+				},
+				{
+					"component": "richtext",
+					"name": "section2TableRowHeadings",
+					"label": "Section 2 - Table Row Headings",
+					"valueType": "string",
+					"required": true,
+					"description": "List items: 1 Month | 3 Months | 6 Months"
+				},
+				{
+					"component": "text",
+					"name": "section2UnitLabel",
+					"label": "Section 2 - Unit Label",
+					"valueType": "string",
+					"required": true,
+					"value": "Unit: Satang"
+				},
+				{
+					"component": "richtext",
+					"name": "remarkDisclaimerText",
+					"label": "Remark Text",
+					"valueType": "string",
+					"required": true,
+					"description": "Bullet list of remark/disclaimer items shown below the tables"
+				}
+			]
+		}
+	],
+	"filters": []
+}

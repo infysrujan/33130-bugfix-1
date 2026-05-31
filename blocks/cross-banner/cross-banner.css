@@ -65,13 +65,6 @@
     margin: 0;
 }
 
-.cross-banner-button .button-container a {
-    min-width: 8.4375rem;
-    padding: 0 var(--bbl-space-250);
-    box-sizing: border-box;
-    border-radius: 0.4375rem;
-}
-
 .private .cross-banner-description {
     line-height: 1.1244rem;
 }

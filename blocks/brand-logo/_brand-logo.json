@@ -41,6 +41,14 @@
           "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
           "valueType": "string",
           "required": true
+        },
+        {
+          "component": "reference",
+          "name": "printLogo",
+          "label": "Print Logo",
+          "multi": false,
+          "required": false,
+          "description": "Logo image shown at the top of the print preview (hidden in normal view)"
         }
       ]
     }
