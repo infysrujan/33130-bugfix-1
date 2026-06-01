@@ -94,6 +94,16 @@
     font-weight: 400;
 }
 
+:lang(th) {
+  .external-redirect-popup-title :is(h1) {
+    line-height: 1.875rem;
+  }
+
+  .external-redirect-popup-title :is(h2) {
+    line-height: 1.5rem;
+  }
+}
+
 /* Description — mobile-first: smaller base, larger on tablet+ */
 .external-redirect-popup-description p {
   margin-block: 0.625rem 0;
