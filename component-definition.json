@@ -98,6 +98,36 @@
           }
         },
         {
+          "title": "Bbm Glow Card",
+          "id": "bbm-glow-card",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Bbm Glow Card",
+                  "filter": "bbm-glow-card"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Bbm Glow Card Item",
+          "id": "bbm-glow-card-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Bbm Glow Card Item",
+                  "model": "bbm-glow-card-item"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Bcap",
           "id": "bcap",
           "plugins": {

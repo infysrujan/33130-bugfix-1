@@ -399,6 +399,18 @@
     ]
   },
   {
+    "id": "bbm-glow-card-item",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "rawContent",
+        "label": "Html or Styles",
+        "description": "Add the HTML or Styles for the glow card item in seperate item",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "bcap",
     "fields": [
       {

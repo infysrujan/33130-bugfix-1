@@ -97,11 +97,11 @@
 
 :lang(th) {
   .floating-popup-title :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .floating-popup-title :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 }
 
@@ -157,19 +157,19 @@
 
   :lang(th) {
     .floating-popup-title :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .floating-popup-title :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .floating-popup-title :is(h3) {
       line-height: 3.75rem;
     }
 
-    .floating-popup-title :is(h4) {
+    .floating-popup-title :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .floating-popup-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .floating-popup-title :is(h4) {
+      line-height: 1.375rem;
     }
   }
 

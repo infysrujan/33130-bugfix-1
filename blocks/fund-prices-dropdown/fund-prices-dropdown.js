@@ -1,15 +1,10 @@
-import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
+import { attachCalendarPicker, formatCalendarDate, getCalendarLang } from '../../scripts/utils/calendar-picker.js';
 import { parseLocalDateFromYmd, getApiUrls } from '../fund-prices-table/fund-prices-table.js';
 
 export const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
 function pad2(n) {
   return String(n).padStart(2, '0');
-}
-
-const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-function fmtDisplay(d) {
-  return `${pad2(d.getDate())} ${MONTH_SHORT[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 function formatDMY(date) {
@@ -556,8 +551,9 @@ export default async function decorate(block) {
       const start = new Date(end.getFullYear(), end.getMonth() - 1, end.getDate());
       drFrom = start;
       drTo = end;
-      drFromInput.value = fmtDisplay(start);
-      drToInput.value = fmtDisplay(end);
+      const lang = getCalendarLang();
+      drFromInput.value = formatCalendarDate(start, lang);
+      drToInput.value = formatCalendarDate(end, lang);
       periodDateRangeEl.classList.remove('hidden');
     } else {
       periodDateRangeEl.classList.add('hidden');

@@ -7,19 +7,19 @@
 
 :lang(th) {
   .card-list-container .default-content-wrapper :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .card-list-container .default-content-wrapper :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 
   .cards-list-title :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .cards-list-title :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 }
 
@@ -334,7 +334,7 @@
   position: relative;
   padding-right: 0.9375rem;
   color: var(--bbl-color-active-blue);
-  font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-medium);
+  font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-looped);
 }
 
 .cards-list-button .button-tertiary:hover {
@@ -511,19 +511,19 @@
 
   :lang(th) {
     .cards-list-title :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .cards-list-title :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .cards-list-title :is(h3) {
       line-height: 3.75rem;
     }
 
-    .cards-list-title :is(h4) {
+    .cards-list-title :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .cards-list-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .cards-list-title :is(h4) {
+      line-height: 1.375rem;
     }
   }
 
@@ -554,35 +554,35 @@
 
   :lang(th) {
     .card-list-container .default-content-wrapper :is(h1) {
-      line-height: 5.5rem;
+      line-height: 3.75rem;
     }
 
     .card-list-container .default-content-wrapper :is(h2) {
-      line-height: 4.875rem;
+      line-height: 2.5rem;
     }
 
     .card-list-container .default-content-wrapper :is(h3) {
-      line-height: 3.75rem;
+      line-height: 2rem;
     }
 
     .card-list-container .default-content-wrapper :is(h4) {
-      line-height: 2.5rem;
+      line-height: 1.375rem;
     }
 
     .cards-list-title :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .cards-list-title :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .cards-list-title :is(h3) {
       line-height: 3.75rem;
     }
 
-    .cards-list-title :is(h4) {
+    .cards-list-title :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .cards-list-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .cards-list-title :is(h4) {
+      line-height: 1.375rem;
     }
   }
 

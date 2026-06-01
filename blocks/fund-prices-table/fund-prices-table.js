@@ -2,14 +2,12 @@ import { fetchConfigs } from '../../scripts/config.js';
 
 export async function getApiUrls() {
   const configs = await fetchConfigs();
-  const apiBase = configs.fundPricesApiUrl || '/api/fundpriceservice';
-  const namesBase = configs.fundPricesNamesApiUrl || apiBase;
   return {
-    apiBase,
-    ALL_FUND_NAMES_URL: `${namesBase}/AllFundsName`,
-    LATEST_DATE_URL: `${apiBase}/LatestDate`,
-    GET_UPDATE_IN_MONTH_BASE: `${apiBase}/GetUpdateInMonth`,
-    ALL_FUND_PRICES_BASE: `${apiBase}/AllFundPrices`,
+    apiBase: configs.fundPricesApiUrl || '',
+    ALL_FUND_NAMES_URL: configs.fundPricesAllFundsNameUrl || '',
+    LATEST_DATE_URL: configs.fundPricesLatestDateUrl || '',
+    GET_UPDATE_IN_MONTH_BASE: configs.fundPricesGetUpdateInMonthUrl || '',
+    ALL_FUND_PRICES_BASE: configs.fundPricesAllFundPricesUrl || '',
   };
 }
 

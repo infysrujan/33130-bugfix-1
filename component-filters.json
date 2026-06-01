@@ -80,6 +80,7 @@
       "news-media",
       "latest-news",
       "forward-points-sme",
+      "bbm-glow-card",
       "menu-list",
       "search-reports",
       "search-reports-results",
@@ -87,6 +88,12 @@
       "mf-comparator-results",
       "mf-comparator",
       "mf-questionnaire"
+    ]
+  },
+  {
+    "id": "bbm-glow-card",
+    "components": [
+      "bbm-glow-card-item"
     ]
   },
   {

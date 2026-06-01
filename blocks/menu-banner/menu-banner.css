@@ -166,7 +166,7 @@
 
 /* Card title */
 .menu-banner .sub-title-small {
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
   font-weight: var(--bbl-font-weight-regular);
   font-size: 0.7rem;
   line-height: normal;
