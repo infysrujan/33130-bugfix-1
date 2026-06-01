@@ -1,5 +1,10 @@
 import { getLang } from '../../scripts/scripts.js';
-import { decorateIcons } from '../../scripts/aem.js';
+import {
+  buildBlock,
+  decorateBlock,
+  decorateIcons,
+  loadBlock,
+} from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { createModalHeader } from '../../scripts/utils/modal.js';
@@ -155,6 +160,20 @@ function parseAuthoredOptions(rows) {
   return { typeOptions, yearOptions };
 }
 
+async function ensureResultsBlock(searchBlock) {
+  let resultsBlock = document.querySelector('.search-reports-results');
+
+  if (!resultsBlock) {
+    const resultsWrapper = document.createElement('div');
+    resultsBlock = buildBlock('search-reports-results', '');
+    resultsWrapper.append(resultsBlock);
+    searchBlock.parentElement.after(resultsWrapper);
+    decorateBlock(resultsBlock);
+  }
+
+  await loadBlock(resultsBlock);
+}
+
 export default async function decorate(block) {
   const rows = [...block.children];
   const lang = getLang();
@@ -223,11 +242,12 @@ export default async function decorate(block) {
     populateYears(yearOptions);
   });
 
-  searchBtn.addEventListener('click', (e) => {
+  searchBtn.addEventListener('click', async (e) => {
     e.stopPropagation();
     if (searchBtn.classList.contains('sr-search-btn-disabled')) return;
     const type = getType();
     const year = getYear();
+    await ensureResultsBlock(block);
     const params = new URLSearchParams({ type, year });
     window.history.pushState({}, '', `?${params.toString()}`);
     window.dispatchEvent(new CustomEvent('search-reports:submit', { detail: { type, year } }));
@@ -245,7 +265,11 @@ export default async function decorate(block) {
   });
 
   const initParams = new URLSearchParams(window.location.search);
-  if (!initParams.get('type') || !initParams.get('year')) openModal(overlay, null);
+  if (initParams.get('type') && initParams.get('year')) {
+    await ensureResultsBlock(block);
+  } else {
+    openModal(overlay, null);
+  }
   window.__previewReopenModal = () => openModal(overlay, null);
 
   window.addEventListener('popstate', () => {

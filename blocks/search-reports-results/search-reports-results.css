@@ -170,7 +170,6 @@
   color: var(--bbl-color-grey-85, #4e4e4e);
 }
 
-
 /* PDF Preview overlay */
 
 .srr-preview-open {
@@ -192,7 +191,6 @@
   opacity: 1;
 }
 
-/* Outer white card with drop shadow — mirrors .download-section pattern */
 .srr-preview-overlay .srr-preview-dialog {
   flex: 1;
   display: flex;
@@ -202,15 +200,11 @@
   overflow: hidden;
 }
 
-/* Blue header band */
 .srr-preview-overlay .srr-preview-header {
-  flex-shrink: 0;
-}
-
-.srr-preview-overlay .srr-preview-inner-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
   padding: 1rem 1.5rem;
   background: var(--bbl-color-truthful-blue, #002850);
 }
@@ -239,7 +233,6 @@
   border-color: var(--bbl-color-white, #fff);
 }
 
-/* Body */
 .srr-preview-overlay .srr-preview-body {
   flex: 1;
   overflow: hidden auto;
@@ -253,22 +246,21 @@
   width: 100%;
 }
 
-/* PDF embed area */
-.srr-preview-overlay .srr-custom-pdf {
+.srr-preview-overlay .srr-preview-embed {
   width: 65%;
   margin-inline: auto;
   margin-top: 6rem;
   height: calc(100vh - 4.5rem);
 }
 
-.srr-preview-overlay .srr-custom-pdf iframe {
+.srr-preview-overlay .srr-preview-embed iframe {
   display: block;
   width: 100%;
   height: 100%;
   border: none;
 }
 
-.srr-preview-overlay .srr-button-group {
+.srr-preview-overlay .srr-preview-button-group {
   width: 100%;
   max-width: 56rem;
   margin-inline: auto;
@@ -276,7 +268,7 @@
   text-align: center;
 }
 
-.srr-preview-overlay .srr-btn-primary {
+.srr-preview-overlay .srr-preview-download {
   display: inline-block;
   padding: 0.75rem 3rem;
   background: var(--bbl-color-active-blue);
@@ -288,7 +280,7 @@
   letter-spacing: 0.01em;
 }
 
-.srr-preview-overlay .srr-btn-primary:hover {
+.srr-preview-overlay .srr-preview-download:hover {
   background: var(--bbl-color-blue-90);
 }
 
