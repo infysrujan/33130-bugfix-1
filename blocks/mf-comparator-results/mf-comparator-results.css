@@ -1,0 +1,251 @@
+.mf-comparator-results .mfcr-notes {
+  padding: var(--bbl-space-layout-sm) var(--bbl-space-container-xs);
+  font-size: var(--bbl-font-size-b2, 0.875rem);
+  color: var(--bbl-color-grey-70);
+  line-height: var(--bbl-line-height-body, 1.6);
+}
+
+.mf-comparator-results .mfcr-notes p,
+.mf-comparator-results .mfcr-notes ul {
+  margin: 0 0 var(--bbl-space-component-sm);
+}
+
+.mf-comparator-results .mfcr-notes p:last-child,
+.mf-comparator-results .mfcr-notes ul:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Comparison grid — scrollable on mobile ───────────────────────────────── */
+
+.mf-comparator-results .mfcr-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--bbl-space-250);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: var(--bbl-space-100) var(--bbl-space-container-xs);
+}
+
+.mf-comparator-results .mfcr-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Card column ──────────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
+  border-radius: var(--bbl-radius-card);
+  overflow: hidden;
+  flex: 0 0 16.875rem;
+  scroll-snap-align: start;
+  box-sizing: border-box;
+}
+
+/* ── Image area ───────────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-inner {
+  min-height: 8.9375rem;
+  max-height: 10.9375rem;
+  height: calc(100vw * 0.12);
+  overflow: hidden;
+  padding: var(--bbl-space-250) var(--bbl-space-250) 0;
+}
+
+.mf-comparator-results .mfcr-thumb {
+  height: 100%;
+  border-radius: var(--bbl-radius-md);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--bbl-color-grey-10);
+}
+
+.mf-comparator-results .mfcr-img-print {
+  display: none;
+}
+
+@media print {
+  .mf-comparator-results .mfcr-img-print {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* ── Caption ──────────────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-caption {
+  padding: var(--bbl-space-250);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: var(--bbl-font-size-b1, 1rem);
+  line-height: var(--bbl-line-height-body, 1.6);
+  color: var(--bbl-color-grey-70);
+}
+
+/* Card name */
+.mf-comparator-results .mfcr-card-name {
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-h5, 1.125rem);
+  line-height: 1.4;
+  color: var(--bbl-color-black);
+  margin: 0 0 var(--bbl-space-200);
+  box-sizing: border-box;
+}
+
+/* ── Compare info rows ────────────────────────────────────────────────────── */
+
+.mf-comparator-results .compare-info dl {
+  border-top: 0.0625rem solid var(--bbl-color-grey-150);
+  padding: var(--bbl-space-300) 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.mf-comparator-results .compare-info dl:first-child {
+  border-top: none;
+  padding-top: var(--bbl-space-150);
+}
+
+.mf-comparator-results .mfcr-label {
+  font-size: var(--bbl-font-size-b1, 1rem);
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-color-black);
+  margin: 0;
+}
+
+.mf-comparator-results .mfcr-value {
+  line-height: 1.625;
+  padding: var(--bbl-space-100) 0 0;
+  margin: 0;
+  color: var(--bbl-color-grey-70);
+}
+
+/* ── Fund company logo ────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-logo {
+  margin-top: auto;
+  padding-top: var(--bbl-space-200);
+}
+
+.mf-comparator-results .mfcr-logo img {
+  max-height: 2.5rem;
+  max-width: 7.5rem;
+  object-fit: contain;
+  display: block;
+}
+
+/* ── Read more link ───────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-read-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 var(--bbl-space-250) var(--bbl-space-250);
+  min-height: 2.75rem;
+  padding: var(--bbl-space-075) 0;
+  box-sizing: border-box;
+  border-radius: var(--bbl-radius-button);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1, 1rem);
+  font-weight: var(--bbl-font-weight-regular);
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.mf-comparator-results .mfcr-read-more:hover {
+  background: var(--bbl-color-blue-90);
+  border-color: var(--bbl-color-blue-90);
+}
+
+/* ── No results ───────────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-no-results {
+  padding: var(--bbl-space-layout-md) var(--bbl-space-container-xs);
+  text-align: center;
+  color: var(--bbl-color-grey-70);
+}
+
+/* ── Scroll dots — mobile only ────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-scroll-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--bbl-space-100);
+  margin-top: var(--bbl-space-200);
+  padding: 0 var(--bbl-space-container-xs);
+}
+
+.mf-comparator-results .mfcr-scroll-dot {
+  appearance: none;
+  width: var(--bbl-space-100);
+  height: var(--bbl-space-100);
+  border-radius: var(--bbl-radius-full);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 0;
+  line-height: 0;
+  transition: all 180ms ease;
+}
+
+.mf-comparator-results .mfcr-scroll-dot.is-active {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+/* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
+
+@media (width > 47.5rem) {
+  .mf-comparator-results .mfcr-notes {
+    padding: var(--bbl-space-layout-sm) var(--bbl-space-container-md);
+  }
+
+  .mf-comparator-results .mfcr-grid {
+    overflow-x: visible;
+    scroll-snap-type: none;
+    justify-content: center;
+    gap: 0 var(--bbl-space-250);
+    padding: 0 var(--bbl-space-container-md);
+  }
+
+  .mf-comparator-results .mfcr-card {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
+    scroll-snap-align: none;
+  }
+
+  .mf-comparator-results .mfcr-scroll-dots {
+    display: none;
+  }
+}
+
+/* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
+
+@media (width > 64rem) {
+  .mf-comparator-results .mfcr-notes {
+    padding: var(--bbl-space-layout-sm) var(--bbl-space-container-xl);
+  }
+
+  .mf-comparator-results .mfcr-grid {
+    gap: 0 var(--bbl-space-500);
+    padding: 0 var(--bbl-space-container-xl);
+  }
+
+  .mf-comparator-results .mfcr-card {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+  }
+}

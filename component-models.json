@@ -196,6 +196,14 @@
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
             "value": false
+          },
+          {
+            "component": "boolean",
+            "name": "enableModal",
+            "label": "Open link in modal",
+            "description": "Enable this to open the button link in a modal overlay. Add the fragment path in the Link field above.",
+            "valueType": "boolean",
+            "value": false
           }
         ]
       }
@@ -387,6 +395,18 @@
           "rootPath": "/en/fragments/accordions",
           "allowFolders": false
         }
+      }
+    ]
+  },
+  {
+    "id": "bbm-glow-card-item",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "rawContent",
+        "label": "Html or Styles",
+        "description": "Add the HTML or Styles for the glow card item in seperate item",
+        "valueType": "string"
       }
     ]
   },
@@ -2015,6 +2035,10 @@
           {
             "name": "Card List Carousel",
             "value": "cardListCarousel"
+          },
+          {
+            "name": "MF Card list Carousel",
+            "value": "mfCardListCarousel"
           }
         ]
       },
@@ -2333,6 +2357,34 @@
             "cardListCarousel"
           ]
         }
+      },
+      {
+        "component": "richtext",
+        "name": "mfCardListDescription",
+        "label": "Description",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "mfCardListCarousel"
+          ]
+        }
+      },
+      {
+        "component": "aem-tag",
+        "name": "cardTypes",
+        "label": "Card Types",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "mfCardListCarousel"
+          ]
+        }
       }
     ]
   },
@@ -2569,6 +2621,119 @@
             "value": false
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "category-banner",
+    "fields": [
+      {
+        "component": "text",
+        "name": "fragmentId",
+        "label": "Fragment ID",
+        "description": "Unique identifier used to map this banner to a saving goal category (e.g. marriage, new-house, car)",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "image1Desktop",
+        "label": "Image 1 (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "image1DesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "image1Mobile",
+        "label": "Image 1 (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "image1MobileMimeType"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "image1Alt",
+        "label": "Image 1 Alt Text",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "image2Desktop",
+        "label": "Image 2 (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "image2DesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "image2Mobile",
+        "label": "Image 2 (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "image2MobileMimeType"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "image2Alt",
+        "label": "Image 2 Alt Text",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+      },
+      {
+        "component": "text",
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "description": "Hex color value e.g. #ede8f5",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "buttonLink",
+        "label": "Button Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "buttonText",
+        "label": "Button Text",
+        "description": "Label for the button",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "buttonTitle",
+        "label": "Button Title",
+        "description": "Accessibility title attribute (optional)",
+        "valueType": "string"
       }
     ]
   },
@@ -8547,6 +8712,273 @@
     ]
   },
   {
+    "id": "fund-prices-dropdown",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "title",
+        "value": "",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "print-label",
+        "value": "",
+        "label": "Print Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "back-label",
+        "value": "",
+        "label": "Back Button Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "stat-high-header",
+        "value": "",
+        "label": "Stat High Table Header",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "stat-low-header",
+        "value": "",
+        "label": "Stat Low Table Header",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "nav-col-header",
+        "value": "",
+        "label": "NAV Column Header",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "graph-tab-label",
+        "value": "",
+        "label": "Graph Tab Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "table-tab-label",
+        "value": "",
+        "label": "Table Tab Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "begin-nav-label",
+        "value": "",
+        "label": "Beginning NAV Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "end-nav-label",
+        "value": "",
+        "label": "Ending NAV Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "hist-date-header",
+        "value": "",
+        "label": "History Date Header",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "hist-sell-header",
+        "value": "",
+        "label": "History Selling Price Header",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "hist-redeem-header",
+        "value": "",
+        "label": "History Redemption Header",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "stat-row-selected",
+        "value": "",
+        "label": "Stat Row: Selected Period",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "stat-row-year",
+        "value": "",
+        "label": "Stat Row: Last 12 Months",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "stat-row-inception",
+        "value": "",
+        "label": "Stat Row: Since Inception",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "from-label",
+        "value": "",
+        "label": "Date Range From Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "to-label",
+        "value": "",
+        "label": "Date Range To Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "range-error",
+        "value": "",
+        "label": "Date Range Error Message",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "period-1w",
+        "value": "",
+        "label": "Period: 1 Week",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "period-1m",
+        "value": "",
+        "label": "Period: 1 Month",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "period-3m",
+        "value": "",
+        "label": "Period: 3 Months",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "period-6m",
+        "value": "",
+        "label": "Period: 6 Months",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "period-1y",
+        "value": "",
+        "label": "Period: 1 Year",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "period-3y",
+        "value": "",
+        "label": "Period: 3 Years",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "period-dr",
+        "value": "",
+        "label": "Period: Date Range",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "fund-prices-table",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "tableContent",
+        "label": "Table Content",
+        "valueType": "string",
+        "value": "",
+        "rte": {
+          "toolbar": {
+            "insert": [
+              "table"
+            ],
+            "editor": [
+              "removeformat"
+            ],
+            "sections": [
+              "insert",
+              "editor"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fund-prices",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "date-label",
+        "value": "",
+        "label": "Calander Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "print-label",
+        "value": "",
+        "label": "Print Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "error-message",
+        "value": "",
+        "label": "Error Message Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimer-text",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "search-label",
+        "value": "",
+        "label": "Search Fund Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "go-label",
+        "value": "",
+        "label": "GO Button Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "all-funds-label",
+        "value": "",
+        "label": "All Funds Label",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "header-section",
     "fields": [
       {
@@ -9644,6 +10076,202 @@
     ]
   },
   {
+    "id": "mf-comparator-results",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "notes",
+        "label": "Notes",
+        "description": "Notes text displayed below the MF comparison grid",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "mf-comparator",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Compare Results Page URL",
+        "description": "Destination URL for the Compare button — the MF comparator results page"
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Compare Button Text",
+        "description": "Label text for the Compare button",
+        "required": true,
+        "value": "Compare"
+      },
+      {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Compare Button Title",
+        "description": "Accessibility title attribute for the Compare button (optional)"
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Compare Button Type",
+        "description": "Compare button style variant",
+        "valueType": "string",
+        "value": "primary",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target Settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the Compare button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mf-questionnaire",
+    "fields": [
+      {
+        "component": "text",
+        "name": "screen1Title",
+        "label": "Screen 1 – Question",
+        "required": true,
+        "value": "1. How would you rate the level of risk you are willing to accept from investing in mutual funds?"
+      },
+      {
+        "component": "richtext",
+        "name": "screen1FragmentPath",
+        "label": "Screen 1 – Risk Options",
+        "description": "Bullet points for risk option cards (Low, Medium to Low, etc.)",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "screen1Description",
+        "label": "Screen 1 – Description",
+        "description": "Bullet point descriptions shown below the risk option cards",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "screen2Title",
+        "label": "Screen 2 – Question",
+        "required": true,
+        "value": "2. Do you accept the exchange rate risk?"
+      },
+      {
+        "component": "text",
+        "name": "screen2YesLabel",
+        "label": "Screen 2 – Yes Label",
+        "required": true,
+        "value": "Yes"
+      },
+      {
+        "component": "text",
+        "name": "screen2NoLabel",
+        "label": "Screen 2 – No Label",
+        "required": true,
+        "value": "No"
+      },
+      {
+        "component": "text",
+        "name": "screen3Title",
+        "label": "Screen 3 – Question",
+        "required": true,
+        "value": "3. Do you want tax benefits from investing in mutual funds?"
+      },
+      {
+        "component": "text",
+        "name": "screen3YesLabel",
+        "label": "Screen 3 – Yes Label",
+        "required": true,
+        "value": "Yes"
+      },
+      {
+        "component": "text",
+        "name": "screen3NoLabel",
+        "label": "Screen 3 – No Label",
+        "required": true,
+        "value": "No"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "description": "Shown at the bottom of all 3 screens",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "resultsPageUrl",
+        "label": "Results Page URL",
+        "description": "User is redirected here after completing screen 3",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "mf-results",
+    "fields": [
+      {
+        "component": "text",
+        "name": "viewAllLabel",
+        "label": "View All CTA Label",
+        "description": "Label for the View All Categories button",
+        "required": true,
+        "value": "View All Categories"
+      },
+      {
+        "component": "aem-content",
+        "name": "viewAllUrl",
+        "label": "View All CTA URL",
+        "description": "Destination URL for the View All Categories button (MF listing page)"
+      },
+      {
+        "component": "text",
+        "name": "startOverLabel",
+        "label": "Start Over CTA Label",
+        "description": "Label for the Start Over button",
+        "required": true,
+        "value": "Start Over"
+      },
+      {
+        "component": "aem-content",
+        "name": "startOverUrl",
+        "label": "Start Over Fallback URL",
+        "description": "Destination URL when Start Over is clicked and the MF questionnaire is not on the same page. Should point to the MF listing page — the questionnaire will auto-open via ?mf-start-over=1"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimer",
+        "label": "Disclaimer Text",
+        "description": "Legal / disclaimer text displayed at the bottom of the results page",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "multi-column-tiles-item",
     "fields": [
       {
@@ -10476,6 +11104,10 @@
   },
   {
     "id": "retirement-calculator",
+    "fields": []
+  },
+  {
+    "id": "saving-plan",
     "fields": []
   },
   {

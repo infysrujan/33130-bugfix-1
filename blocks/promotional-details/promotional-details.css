@@ -136,6 +136,36 @@ body.mobile-app-view main > div:first-child {
     color: var(--bbl-color-grey-85);
 }
 
+.custom-modal:has(.modal-body.promo-detail-image-modal) .modal-content {
+    padding: var(--bbl-space-800) var(--bbl-space-250) var(--bbl-space-250);
+    border-radius: var(--bbl-rounded-100);
+    overflow: auto;
+}
+
+.custom-modal:has(.modal-body.promo-detail-image-modal) .modal-overlay {
+    background: var(--bbl-color-white);
+}
+
+.modal-body.promo-detail-image-modal {
+    display: flex;
+    padding: var(--bbl-space-1000) var(--bbl-space-250);
+    margin: 3.125rem auto;
+    justify-content: center;
+}
+
+.modal-body.promo-detail-image-modal .promo-detail-image-modal-content img {
+    width: auto;
+    height: auto;
+    max-width: 80%;
+    margin: 0 auto;
+    display: block;
+    box-shadow: 0 0 0.625rem var(--bbl-color-black);
+}
+
+.promotional-details.has-preview > div[data-config-row] {
+    display: none;
+}
+
 @media (width > 47.5rem) {
     .promotional-details .promo-detail-row {
         flex-direction: row;
@@ -191,7 +221,3 @@ body.mobile-app-view main > div:first-child {
     }
 }
 
-/* Authoring preview: hide only promotion-type and promo-id config rows */
-.promotional-details.has-preview > div[data-config-row] {
-    display: none;
-}

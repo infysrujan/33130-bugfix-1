@@ -967,6 +967,10 @@
             {
               "name": "Card List Carousel",
               "value": "cardListCarousel"
+            },
+            {
+              "name": "MF Card list Carousel",
+              "value": "mfCardListCarousel"
             }
           ]
         },
@@ -1283,6 +1287,34 @@
               },
               "onlyImage",
               "cardListCarousel"
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "mfCardListDescription",
+          "label": "Description",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "mfCardListCarousel"
+            ]
+          }
+        },
+        {
+          "component": "aem-tag",
+          "name": "cardTypes",
+          "label": "Card Types",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "mfCardListCarousel"
             ]
           }
         }

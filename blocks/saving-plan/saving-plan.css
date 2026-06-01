@@ -1,0 +1,1160 @@
+.saving-plan-block {
+  --sp-blue: var(--bbl-color-active-blue);
+  --sp-blue-dark: var(--bbl-color-blue-90);
+  --sp-blue-soft: var(--bbl-bg-brand-light);
+  --sp-green: var(--bbl-color-green-10);
+  --sp-text: var(--bbl-text-primary);
+  --sp-text-muted: var(--bbl-color-gray-143);
+  --sp-border: var(--bbl-color-grey-30);
+  --sp-border-soft: var(--bbl-color-grey-18);
+  --sp-error: var(--bbl-color-red-130);
+  --sp-bg-soft: var(--bbl-bg-secondary);
+  --sp-radius: 0.5rem;
+  --sp-chart-result: var(--bbl-color-active-blue);
+  --sp-chart-result-dashed: var(--bbl-color-blue-40);
+  --sp-chart-new-plan: var(--bbl-color-blue-108);
+  --sp-chart-new-plan-dashed: var(--bbl-color-grey-23);
+  --sp-chart-axis: var(--bbl-color-grey-80);
+  --sp-chart-border: var(--bbl-color-grey-50);
+  --sp-chart-grid: var(--bbl-color-grey-40);
+  --sp-slider-track: var(--bbl-color-grey-27);
+
+  display: block;
+  width: 100%;
+  color: var(--sp-text);
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  background: var(--bbl-color-white);
+}
+
+
+.saving-plan-section {
+  padding-top: 1.5rem;
+  padding-bottom: 3rem;
+}
+
+.saving-plan-header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.saving-plan-header-title {
+  font: 2rem BangkokBank-Bold, Arial, sans-serif;
+  margin: 0 0 1rem;
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+
+.saving-plan-header-divider {
+  display: inline-block;
+  width: 4rem;
+  height: 0.125rem;
+  background: var(--sp-border);
+}
+
+.saving-plan-calculator {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (width > 64rem) {
+  .saving-plan-calculator {
+    grid-template-columns: minmax(0, 1fr) 22.5rem;
+    gap: 1.5rem;
+  }
+}
+
+.saving-plan-form-title,
+.saving-plan-result-title {
+  font: 1.125rem BangkokBank-Bold, Arial, sans-serif;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+}
+
+.saving-plan-additional-title {
+  font: 1.125rem BangkokBank-Bold, Arial, sans-serif;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+}
+
+.saving-plan-tweak-title {
+  font: 1.125rem BangkokBank-Bold, Arial, sans-serif;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.saving-plan-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (width > 47.5rem) {
+  .saving-plan-form-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+}
+
+
+.saving-plan-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.saving-plan-field-row {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  padding: 0 0.875rem;
+  background: var(--bbl-color-white);
+  min-height: 3.375rem;
+  transition: border-color 150ms ease;
+}
+
+.saving-plan-field-row:focus-within {
+  border-color: var(--sp-blue);
+}
+
+.saving-plan-field-error .saving-plan-field-row {
+  border-color: var(--sp-error);
+}
+
+.saving-plan-field-label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 1;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.saving-plan-field-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  flex-shrink: 0;
+  color: var(--sp-blue);
+}
+
+.saving-plan-field-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.saving-plan-field-text {
+  font-size: 0.8125rem;
+  color: var(--sp-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.saving-plan-field-input {
+  border: 0;
+  outline: none;
+  background: transparent;
+  text-align: right;
+  font: 0.875rem BangkokBank-Medium, Arial, sans-serif;
+  font-weight: 600;
+  color: var(--sp-text);
+  width: 6.25rem;
+  min-width: 5rem;
+  flex: 0 0 auto;
+  margin-left: 0.5rem;
+  padding: 0.375rem 0;
+}
+
+.saving-plan-field-input::placeholder {
+  color: var(--sp-text-muted);
+  font-weight: 400;
+}
+
+.saving-plan-field-error-message {
+  display: block;
+  margin-top: 0.25rem;
+  padding-left: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--sp-error);
+  line-height: 1.4;
+}
+
+.saving-plan-field-chevron {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--sp-blue);
+  border-bottom: 2px solid var(--sp-blue);
+  transform: rotate(45deg);
+  transition: transform 200ms ease;
+  margin-left: 0.5rem;
+  margin-top: -0.1875rem;
+}
+
+.saving-plan-field-dropdown {
+  position: relative;
+}
+
+.saving-plan-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  background: var(--bbl-color-white);
+  padding: 0 0.875rem;
+  min-height: 3.375rem;
+  cursor: pointer;
+  font: 0.875rem BangkokBank-Regular, Arial, sans-serif;
+  color: var(--sp-text);
+  text-align: left;
+  transition: border-color 150ms ease;
+}
+
+.saving-plan-dropdown-trigger:focus-visible,
+.saving-plan-field-dropdown.is-open .saving-plan-dropdown-trigger {
+  border-color: var(--sp-blue);
+  outline: none;
+}
+
+.saving-plan-dropdown-current {
+  flex: 1;
+  font-weight: 500;
+  color: var(--sp-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.saving-plan-field-dropdown.is-open .saving-plan-field-chevron {
+  transform: rotate(225deg);
+  margin-top: 0.1875rem;
+}
+
+.saving-plan-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0.375rem 0;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  box-shadow: 0 0.375rem 1.125rem var(--bbl-color-black-alpha-10);
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-0.375rem);
+  transition: max-height 220ms ease, opacity 160ms ease, transform 220ms ease;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.saving-plan-field-dropdown.is-open .saving-plan-dropdown-panel {
+  max-height: 17.5rem;
+  opacity: 1;
+  transform: translateY(0);
+  overflow: auto;
+  pointer-events: auto;
+}
+
+.saving-plan-dropdown-option {
+  padding: 0.625rem 0.875rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--sp-text);
+  transition: background-color 120ms ease;
+}
+
+.saving-plan-dropdown-option:hover {
+  background: var(--sp-blue-soft);
+}
+
+.saving-plan-dropdown-option.is-selected {
+  background: var(--sp-blue-soft);
+  color: var(--sp-blue);
+  font-weight: 600;
+}
+
+.saving-plan-form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.saving-plan-form-btn {
+  min-width: 8.75rem;
+  min-height: 2.625rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font: 0.875rem BangkokBank-Bold, Arial, sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--sp-border);
+  background: var(--bbl-color-white);
+  color: var(--sp-text-muted);
+  transition: opacity 150ms ease, background-color 150ms ease, border-color 150ms ease;
+}
+
+.saving-plan-form-btn-secondary {
+  background: var(--bbl-color-white);
+  color: var(--sp-blue);
+  border-color: var(--sp-blue);
+}
+
+.saving-plan-form-btn-primary {
+  background: var(--sp-blue);
+  color: var(--bbl-color-white);
+  border-color: var(--sp-blue);
+}
+
+.saving-plan-form-btn-primary:hover:not(:disabled) {
+  background: var(--sp-blue-dark);
+  border-color: var(--sp-blue-dark);
+}
+
+.saving-plan-form-btn:disabled {
+  background: var(--sp-bg-soft);
+  border-color: var(--sp-bg-soft);
+  color: var(--bbl-color-grey-50);
+  cursor: not-allowed;
+}
+
+.saving-plan-result-card {
+  background: var(--sp-blue);
+  color: var(--bbl-color-white);
+  border-radius: var(--sp-radius);
+  padding: 1.5rem 1.5rem 1.75rem;
+}
+
+.saving-plan-result-future {
+  font-size: 0.8125rem;
+  margin: 0 0 1.25rem;
+  font-weight: 400;
+}
+
+.saving-plan-result-future strong {
+  font-weight: 700;
+}
+
+.saving-plan-result-lead {
+  font: 1.5rem BangkokBank-Bold, Arial, sans-serif;
+  margin: 0 0 0.5rem;
+}
+
+.saving-plan-result-monthly {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  margin: 0;
+}
+
+.saving-plan-result-amount {
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.saving-plan-result-currency {
+  font-size: 0.8rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.saving-plan-result-footnote {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: var(--sp-text-muted);
+  line-height: 1.45;
+}
+
+.saving-plan-chart-row[hidden] {
+  display: none;
+}
+
+.saving-plan-chart-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  align-items: start;
+}
+
+@media (width > 64rem) {
+  .saving-plan-chart-row {
+    grid-template-columns: minmax(0, 1fr) 22.5rem;
+    align-items: stretch;
+  }
+}
+
+.saving-plan-info-card-slot {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.saving-plan-info-card-slot .category-banner,
+.saving-plan-info-card-slot .category-banner-card {
+  flex: 1;
+  height: 100%;
+}
+
+.saving-plan-chart-wrap {
+  position: relative;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-grey-40);
+  border-radius: 0.75rem;
+  padding: 1rem 1rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+}
+
+@media (width > 64rem) {
+  .saving-plan-chart-wrap {
+    height: auto;
+    align-self: stretch;
+  }
+}
+
+.saving-plan-chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+  margin-bottom: 0.25rem;
+}
+
+.saving-plan-chart-legend-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.5rem 1.25rem;
+  background: var(--bbl-color-blue-6);
+  border-radius: 0.5rem;
+}
+
+.saving-plan-chart-legend-row[hidden] {
+  display: none;
+}
+
+.saving-plan-chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  font: 0.8125rem BangkokBank-Medium, Arial, sans-serif;
+  font-weight: 600;
+  color: var(--sp-blue);
+}
+
+.saving-plan-chart-legend-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.saving-plan-chart-legend-icon {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  color: var(--sp-blue);
+  flex-shrink: 0;
+}
+
+.saving-plan-chart-legend-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+[data-newplan-row] .saving-plan-chart-legend-item {
+  color: var(--bbl-color-blue-108);
+}
+
+[data-newplan-row] .saving-plan-chart-legend-icon {
+  color: var(--bbl-color-blue-108);
+}
+
+.saving-plan-chart-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 22.5rem;
+  min-height: 22.5rem;
+  flex: 0 0 22.5rem;
+}
+
+@media (width > 47.5rem) {
+  .saving-plan-chart-canvas-wrap {
+    height: 18.75rem;
+    min-height: 18.75rem;
+    flex: 0 0 18.75rem;
+  }
+}
+
+.saving-plan-chart {
+  display: block;
+}
+
+.saving-plan-info-card {
+  position: relative;
+  background-color: var(--bbl-color-green-10);
+  border-radius: var(--sp-radius);
+  padding: 1.375rem 1.125rem 1.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+@media (width > 64rem) {
+  .saving-plan-info-card {
+    height: 22.5rem;
+  }
+}
+
+.saving-plan-info-card-title {
+  font: 1.25rem BangkokBank-Bold, Arial, sans-serif;
+  margin: 0;
+  line-height: 1.2;
+  max-width: 20rem;
+}
+
+.saving-plan-info-card-art {
+  flex: 1;
+  min-height: 8.75rem;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: min(85%, 17.5rem) auto;
+}
+
+.saving-plan-info-card-cta {
+  align-self: flex-start;
+  padding: 0.5rem 1.25rem;
+  border: 1.5px solid var(--sp-blue);
+  background: transparent;
+  color: var(--sp-blue);
+  border-radius: 999px;
+  font: 0.8125rem BangkokBank-Bold, Arial, sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.saving-plan-info-card-cta:hover {
+  background: var(--sp-blue);
+  color: var(--bbl-color-white);
+}
+
+.saving-plan-tweak {
+  margin-top: 2rem;
+}
+
+.saving-plan-tweak-header {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (width > 64rem) {
+  .saving-plan-tweak-header {
+    grid-template-columns: minmax(0, 1fr) 22.5rem;
+  }
+}
+
+.saving-plan-tweak-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (width > 64rem) {
+  .saving-plan-tweak-grid {
+    grid-template-columns: minmax(0, 1fr) 22.5rem;
+    gap: 1.25rem;
+  }
+}
+
+.saving-plan-tweak-sliders {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 0.5rem 1.25rem;
+  padding: 1rem;
+  background: var(--sp-bg-soft);
+  border-radius: var(--sp-radius);
+  align-items: start;
+  box-sizing: border-box;
+}
+
+.saving-plan-slider {
+  display: contents;
+}
+
+@media (760px <= width <= 1024px) {
+  .saving-plan-tweak-sliders {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-flow: column;
+    gap: 0.375rem 1rem;
+  }
+}
+
+@media (width > 64rem) {
+  .saving-plan-tweak-sliders {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-flow: column;
+    gap: 0.375rem 1rem;
+  }
+}
+
+.saving-plan-slider-label,
+.saving-plan-slider-input,
+.saving-plan-slider-range {
+  text-align: left;
+  width: 100%;
+}
+
+.saving-plan-slider-label {
+  font: 1rem BangkokBank-Medium, Arial, sans-serif;
+  font-weight: 700;
+  color: var(--sp-text);
+  margin-bottom: 0.125rem;
+  align-self: start;
+}
+
+.saving-plan-slider-input {
+  width: 100%;
+  cursor: pointer;
+  margin: 0.25rem 0;
+  appearance: none;
+  outline: none;
+  height: 0.375rem;
+  border-radius: 99px;
+  background: var(--sp-slider-track);
+}
+
+.saving-plan-slider-input::-webkit-slider-container {
+  overflow: visible;
+}
+
+.saving-plan-slider-input::-webkit-slider-runnable-track {
+  height: 0.375rem;
+  border-radius: 99px;
+}
+
+.saving-plan-slider-input::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--sp-blue);
+  cursor: pointer;
+  border: none;
+  box-shadow: none;
+  margin-top: -0.4375rem;
+}
+
+.saving-plan-slider-input::-moz-range-track {
+  height: 0.375rem;
+  border-radius: 99px;
+  background: var(--sp-slider-track);
+}
+
+.saving-plan-slider-input::-moz-range-progress {
+  height: 0.375rem;
+  border-radius: 99px;
+  background: var(--sp-blue);
+}
+
+.saving-plan-slider-input::-moz-range-thumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--sp-blue);
+  cursor: pointer;
+  border: none;
+  box-shadow: none;
+}
+
+.saving-plan-slider-range {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.saving-plan-slider-min {
+  color: var(--sp-blue);
+  font-weight: 700;
+}
+
+.saving-plan-slider-value {
+  font: 1rem BangkokBank-Medium, Arial, sans-serif;
+  font-weight: 700;
+  color: var(--sp-text);
+  background: var(--bbl-color-gray-122);
+  border: 0;
+  border-radius: 0.375rem;
+  padding: 0.125rem 0.5rem;
+  min-width: 3.25rem;
+  text-align: center;
+}
+
+.saving-plan-newplan-title {
+  font: 1.125rem BangkokBank-Bold, Arial, sans-serif;
+  margin: 0;
+}
+
+.saving-plan-newplan-card {
+  background: var(--bbl-color-white);
+  border: 1.5px solid var(--sp-blue);
+  border-radius: var(--sp-radius);
+  padding: 1.125rem 1.25rem 1.25rem;
+  color: var(--sp-text-muted);
+}
+
+.saving-plan-newplan-future {
+  font-size: 0.8125rem;
+  margin: 0 0 1.5rem;
+  color: var(--sp-text-muted);
+}
+
+.saving-plan-newplan-future strong {
+  font-weight: 700;
+  color: var(--bbl-color-grey-70);
+}
+
+.saving-plan-newplan-lead {
+  font: 1rem BangkokBank-Bold, Arial, sans-serif;
+  font-weight: 700;
+  margin: 0 0 0.375rem;
+  color: var(--bbl-color-active-blue);
+}
+
+.saving-plan-newplan-monthly {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  margin: 0;
+  color: var(--sp-blue);
+}
+
+.saving-plan-newplan-card.is-placeholder .saving-plan-newplan-monthly {
+  color: var(--sp-text-muted);
+}
+
+.saving-plan-newplan-amount {
+  font: 2.25rem BangkokBank-Bold, Arial, sans-serif;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--bbl-color-active-blue);
+}
+
+.saving-plan-newplan-currency {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--bbl-color-active-blue);
+}
+
+.saving-plan-newplan-footnote {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: var(--sp-text-muted);
+  line-height: 1.5;
+}
+
+.saving-plan-additional {
+  margin-top: 2.5rem;
+}
+
+.saving-plan-additional-list {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.saving-plan-additional-list li {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.saving-plan-additional-link {
+  color: var(--sp-text);
+  text-decoration: underline;
+}
+
+.saving-plan-additional-link:hover {
+  color: var(--sp-text);
+}
+
+.saving-plan-disclaimer {
+  margin-top: 1rem;
+}
+
+.saving-plan-disclaimer-title {
+  font: 1rem BangkokBank-Bold, Arial, sans-serif;
+  font-weight: 800;
+  margin: 0 0 1.25rem;
+}
+
+.saving-plan-disclaimer-text {
+  font-size: 0.9375rem;
+  color: var(--sp-text);
+  line-height: 1.65;
+}
+
+.saving-plan-disclaimer-text ul {
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+.saving-plan-disclaimer-text li {
+  margin-bottom: 1.75rem;
+}
+
+.saving-plan-products {
+  margin-top: 3.5rem;
+  text-align: center !important;
+}
+
+.saving-plan-products-title {
+  font: 1.125rem BangkokBank-Bold, Arial, sans-serif;
+  font-weight: 800;
+  margin: 0 0 0.625rem;
+  line-height: 1.3;
+  text-align: center !important;
+  width: 100%;
+}
+
+.saving-plan-products-divider {
+  display: none;
+}
+
+.saving-plan-products-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+@media (width > 47.5rem) {
+  .saving-plan-products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.saving-plan-product {
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bbl-color-white);
+}
+
+.saving-plan-product-image {
+  aspect-ratio: 4 / 3;
+  background-color: var(--sp-blue-soft);
+  background-size: cover;
+  background-position: center top;
+}
+
+.saving-plan-product-body {
+  padding: 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex-grow: 1;
+}
+
+.saving-plan-product-title {
+  font: 1.25rem BangkokBank-Bold, Arial, sans-serif;
+  font-weight: 800;
+  margin: 0;
+}
+
+.saving-plan-product-description {
+  font-size: 0.875rem;
+  color: var(--sp-text-muted);
+  margin: 0;
+  flex-grow: 1;
+  line-height: 1.6;
+}
+
+.saving-plan-product-cta {
+  display: block;
+  text-align: center;
+  padding: 0.625rem 1.25rem;
+  background: var(--sp-blue);
+  color: var(--bbl-color-white);
+  border: 0;
+  border-radius: 0.25rem;
+  font: 0.875rem BangkokBank-Bold, Arial, sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.saving-plan-product-cta:hover {
+  background: var(--sp-blue-dark);
+}
+
+/* ── Tablet shared (600px – 899px) ──────────────────────────────── */
+@media (760px <= width <= 1024px) {
+  .saving-plan-section {
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .saving-plan-header-title {
+    font-size: 1.75rem;
+  }
+
+  .saving-plan-result-card {
+    padding: 1.25rem 1.125rem 1.375rem;
+  }
+
+  .saving-plan-result-lead {
+    font-size: 1.25rem;
+  }
+
+  .saving-plan-result-amount {
+    font-size: 2.5rem;
+  }
+
+  .saving-plan-newplan-amount {
+    font-size: 2rem;
+  }
+
+  .saving-plan-tweak-sliders {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-flow: column;
+    gap: 0.375rem 1rem;
+    padding: 1.25rem;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .saving-plan-slider-label {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  .saving-plan-products-title {
+    font-size: 1.125rem;
+  }
+}
+
+/* ── Tablet 2-col (720px – 899px) ───────────────────────────────── */
+@media (760px <= width <= 1024px) {
+  .saving-plan-chart-row {
+    grid-template-columns: minmax(0, 1fr) 12.5rem;
+    align-items: stretch;
+  }
+
+  .saving-plan-chart-wrap {
+    height: auto;
+    align-self: stretch;
+    padding-bottom: 0;
+  }
+
+  .saving-plan-info-card-slot {
+    align-self: stretch;
+  }
+
+  .saving-plan-info-card {
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+    overflow: hidden;
+    align-self: stretch;
+    flex: 1;
+  }
+
+  .saving-plan-chart-canvas-wrap {
+    flex: 1 1 auto;
+    width: 100%;
+    height: auto;
+    min-height: 15rem;
+  }
+
+  .saving-plan-tweak-header {
+    grid-template-columns: minmax(0, 1fr) 12.5rem;
+  }
+
+  .saving-plan-tweak-grid {
+    grid-template-columns: minmax(0, 1fr) 12.5rem;
+  }
+}
+
+/* ── Mobile (≤ 599px) ───────────────────────────────────────────── */
+@media (width <= 759px) {
+  .saving-plan-section {
+    padding-top: 1.25rem;
+    padding-bottom: 2rem;
+  }
+
+  .saving-plan-header-title {
+    font-size: 1.5rem;
+  }
+
+  .saving-plan-result-card {
+    padding: 1.125rem 1rem 1.25rem;
+  }
+
+  .saving-plan-result-lead {
+    font-size: 1.125rem;
+  }
+
+  .saving-plan-result-amount {
+    font-size: 2.25rem;
+  }
+
+  .saving-plan-newplan-amount {
+    font-size: 1.875rem;
+  }
+
+  .saving-plan-form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .saving-plan-form-btn {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .saving-plan-products-title {
+    font-size: 1.125rem;
+  }
+
+  .saving-plan-tweak {
+    margin-top: 1.25rem;
+  }
+
+  .saving-plan-chart-legend-row {
+    gap: 0.75rem;
+    padding: 0.375rem 0.75rem;
+  }
+
+  .saving-plan-chart-legend-item {
+    font-size: 0.6875rem;
+  }
+
+  .saving-plan-slider-label {
+    font-size: 0.875rem;
+    min-height: 0;
+  }
+
+  .saving-plan-slider-min,
+  .saving-plan-slider-value {
+    font-size: 0.875rem;
+  }
+
+  .saving-plan-field-input {
+    width: 5rem;
+    min-width: 3.75rem;
+  }
+
+  .saving-plan-products {
+    margin-top: 2.25rem;
+  }
+}
+
+/* ── default-content-wrapper (Additional Information + Disclaimer) ── */
+.saving-plan-container .default-content-wrapper {
+  margin-top: 2.5rem;
+  font-size: 0.9375rem;
+  color: var(--sp-text);
+  line-height: 1.65;
+}
+
+/* ── saving-plan-container2 (adjacent product section) ────────────── */
+.saving-plan-container2 {
+  display: none;
+}
+
+.saving-plan-container2.is-visible {
+  display: revert;
+  max-width: 1752px;
+  margin-top: 3.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+}
+
+.saving-plan-container2.is-visible .default-content-wrapper,
+.saving-plan-container2.is-visible .card-list-wrapper {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+}
+
+.saving-plan-container2.is-visible .cards-list.scrollable.center.cards-3 {
+  margin: 0 -20px;
+  padding: 0;
+}
+
+.saving-plan-container2.is-visible .cards-list-image.cards-list-image-default {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 272 / 175;
+  max-width: 272px;
+  margin: 0;
+  padding: 0;
+}
+
+.saving-plan-container .default-content-wrapper p {
+  margin: 0 0 0.375rem;
+  font-size: 0.9375rem;
+}
+
+.saving-plan-container .default-content-wrapper p > strong {
+  font-family: BangkokBank-Bold, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.saving-plan-container .default-content-wrapper p ~ p {
+  margin-top: 1.75rem;
+}
+
+.saving-plan-container .default-content-wrapper ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.5rem;
+}
+
+.saving-plan-container .default-content-wrapper li {
+  margin-bottom: 0.875rem;
+  line-height: 1.65;
+}
+
+.saving-plan-container .default-content-wrapper li:last-child {
+  margin-bottom: 0;
+}
+
+.saving-plan-container .default-content-wrapper a {
+  color: var(--sp-text);
+  text-decoration: underline;
+  text-underline-offset: 0.125rem;
+}
+
+.saving-plan-container .default-content-wrapper a:hover {
+  color: var(--sp-blue);
+}

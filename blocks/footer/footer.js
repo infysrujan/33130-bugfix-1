@@ -144,12 +144,12 @@ function setupAccordion(block) {
  */
 export default async function decorate(block) {
   // load footer as fragment
-  const footerMeta = getMetadata('footer');
   let footerPath = '';
   if (document.querySelector('body.error-page')) {
     const lang = getLang();
     footerPath = `/${lang}/footer`;
   } else {
+    const footerMeta = getMetadata('footer');
     footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
   }
   const fragment = await loadFragment(footerPath);

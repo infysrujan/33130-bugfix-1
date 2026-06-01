@@ -179,6 +179,7 @@
   padding: var(--bbl-space-050) 0.4375rem;
   border-radius: var(--bbl-rounded-200);
   margin-bottom: 0.875rem;
+  font-family: var(--bbl-font-family-looped);
 }
 
 .carousel-dotted .carousel-dotted-description {
@@ -357,7 +358,7 @@
   font-size: 0.8rem;
   line-height: 1.12rem;
   margin-right: 0.9375rem;
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
 }
 
 /* Override button-tertiary's SVG arrow with icomoon icon font */
@@ -510,11 +511,11 @@
 
 :lang(th) {
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 }
 
@@ -604,7 +605,7 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .sub-title-medium {
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
   font-size: 0.7rem;
   line-height: 0.98rem;
   font-weight: var(--bbl-font-weight-regular);
@@ -990,19 +991,19 @@ p.text-large.text-light {
 
   :lang(th) {
     .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h3) {
       line-height: 3.75rem;
     }
 
-    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h4) {
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h4) {
+      line-height: 1.375rem;
     }
   }
 
@@ -1044,6 +1045,7 @@ p.text-large.text-light {
     font-size: 0.8rem;
     line-height: 1.4;
     padding-right: 0.9375rem;
+    font-family: var(--bbl-font-family-looped);
   }
 }
 

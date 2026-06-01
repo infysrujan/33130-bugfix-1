@@ -526,7 +526,10 @@ function validateCreditCardNumber(inputNum) {
 function getidAndDob(id, dob) {
   console.log('id', id);
   console.log('dob', dob);
-  return `${id}${dob.replaceAll('/', '').replaceAll('-', '')}`;
+  const parts = dob.split(/[-/]/);
+  // parts: [yyyy, mm, dd]  →  reorder to ddmmyyyy
+  const ddmmyyyy = `${parts[2]}${parts[1]}${parts[0]}`;
+  return `${id}${ddmmyyyy}`;
 }
 
 // eslint-disable-next-line import/prefer-default-export

@@ -53,6 +53,7 @@
 .rate-card .tab-header a:any-link {
   color: var(--bbl-color-gray-121);
   font-size: 0.7875rem;
+  font-family: var(--bbl-font-family-looped);
   padding: 0.5rem 0.625rem;
   font-weight: 400;
   text-align: center;
@@ -237,12 +238,13 @@
 .rate-card .text-x-small {
   font-size: 0.75rem;
   color: var(--bbl-color-grey-70);
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
 }
 
 .rate-card .date-update {
   color: var(--bbl-color-black);
   font-size: 0.75rem;
+  font-family: var(--bbl-font-family-looped);
   display: inline-flex;
   align-items: center;
   gap: 0.3125rem;

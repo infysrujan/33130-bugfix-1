@@ -211,6 +211,9 @@
         "table",
         "locate-us",
         "rate-card",
+        "fund-prices",
+        "fund-prices-table",
+        "fund-prices-dropdown",
         "accordion-block",
         "social-icons",
         "card-list",
@@ -235,6 +238,7 @@
         "promo-card-listing",
         "top-promotional-cards",
         "multi-column-tiles",
+        "fund-prices",
         "property-for-sale-details",
         "property-for-sale",
         "stock-ticker",
@@ -245,9 +249,14 @@
         "news-media",
         "latest-news",
         "forward-points-sme",
+        "bbm-glow-card",
         "menu-list",
         "search-reports",
-        "search-reports-results"
+        "search-reports-results",
+        "mf-results",
+        "mf-comparator-results",
+        "mf-comparator",
+        "mf-questionnaire"
       ]
     }
   ]

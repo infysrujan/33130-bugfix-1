@@ -1,21 +1,27 @@
 .carousel {
     margin-bottom: var(--bbl-space-300);
-    padding-left: 16px;
+    padding-left: 1rem;
 }
 
 .carousel-header {
-    margin: var(--bbl-space-300) 0 14px;
+    margin: var(--bbl-space-300) 0 0.875rem;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    padding-right: 16px;
+    padding-right: 1rem;
 }
 
 .carousel-header h2 {
     margin: 0;
-    font-size: 22.4px;
-    line-height: 21.994px;
+    font-size: 1.4rem;
+    line-height: 1.3746rem;
     color: var(--bbl-color-black);
+}
+
+:lang(th) {
+    .carousel-header h2 {
+            line-height: 1.5rem;
+    }
 }
 
 .carousel-header a {
@@ -24,20 +30,19 @@
     align-items: flex-end;
     justify-content: flex-end;
     font-weight: var(--bbl-font-weight-regular);
-    font-size: 11.2px;
-    line-height: 15.68px;
+    font-size: 0.7rem;
+    line-height: 0.98rem;
     color: var(--bbl-color-active-blue);
     text-decoration: none;
     position: relative;
-    padding-right: 15px;
-    font-family: var(--bbl-font-family-medium);
+    padding-right: 0.9375rem;
+    font-family: var(--bbl-font-family-looped);
 }
 
 .carousel-header a::after {
     content: "\e901";
-    font-family: icomoon, sans-serif;
     position: absolute;
-    font-size: 10px;
+    font-size: 0.625rem;
     top: 50%;
     transform: translateY(-50%);
     right: 0;
@@ -84,19 +89,19 @@
 
 .carousel-item {
     flex: 0 0 auto;
-    width: calc(((100vw - 35px) / 4) * 3);
+    width: calc(((100vw - 2.1875rem) / 4) * 3);
     max-width: 100%;
-    max-height: 490px;
+    max-height: 30.625rem;
     display: block;
-    border-radius: 7px;
+    border-radius: 0.4375rem;
     overflow: hidden;
-    border: 1px solid rgb(0 0 0 / 10%);
+    border: 0.0625rem solid var(--bbl-color-black-alpha-10);
     scroll-snap-align: start;
     background-color: var(--bbl-color-white);
 }
 
 .carousel-item:last-child {
-    margin-right: 100px;
+    margin-right: 6.25rem;
 }
 
 .carousel-item-link {
@@ -115,7 +120,7 @@
 .carousel-track .carousel-item .carousel-image-container .carousel-image-active {
     display: block;
     max-width: 100%;
-    height: 220px;
+    height: 13.75rem;
     width: 100%;
 }
 
@@ -139,9 +144,9 @@
 .carousel-content {
     position: relative;
     padding: var(--bbl-space-200);
-    max-height: 270px;
-    min-height: 270px;
-    max-width: 390px;
+    max-height: 16.875rem;
+    min-height: 16.875rem;
+    max-width: 24.375rem;
     color: var(--bbl-color-black);
     display: flex;
     flex-direction: column;
@@ -153,24 +158,24 @@
 }
 
 .carousel-eyebrow {
-    font-size: 12.6px;
-    line-height: 19.25px;
+    font-size: 0.7875rem;
+    line-height: 1.203rem;
     font-weight: var(--bbl-font-weight-medium);
-    background: #4890ff;
+    background: var(--bbl-color-blue-140);
     display: inline-block;
-    padding: 4px 7px;
-    margin-bottom: 13px;
+    padding: 0.25rem 0.4375rem;
+    margin-bottom: 0.8125rem;
     color: var(--bbl-color-white);
     border-radius: var(--bbl-rounded-200);
     width: fit-content;
-    font-family: var(--bbl-font-family-medium);
+    font-family: var(--bbl-font-family-looped);
     text-decoration: none;
 }
 
 .carousel-title {
     color: var(--bbl-color-black);
-    font-size: 18.2px;
-    line-height: 19.992px;
+    font-size: 1.1375rem;
+    line-height: 1.2495rem;
     margin: 0 0 var(--bbl-space-100);
     font-weight: var(--bbl-font-weight-regular);
     overflow: hidden;
@@ -182,8 +187,8 @@
 }
 
 .carousel-description {
-    font-size: 14px;
-    line-height: 19.25px;
+    font-size: 0.875rem;
+    line-height: 1.2031rem;
     color: var(--bbl-color-grey-70);
     margin: 0 0 var(--bbl-space-200);
     overflow: hidden;
@@ -209,16 +214,16 @@
 
 @media (width >= 761px) {
     .carousel {
-        padding-left: 48px;
+        padding-left: 3rem;
     }
 
     .carousel-header {
-        padding-right: 48px;
+        padding-right: 3rem;
     }
 
     .carousel-header h2 {
-        font-size: 42px;
-        line-height: 40.25px;
+        font-size: 2.625rem;
+        line-height: 2.5156rem;
     }
 
     .carousel-track { 
@@ -226,21 +231,22 @@
     }
 
     .carousel-item { 
-        width: calc((100vw - 128px) / 3);
+        width: calc((100vw - 8rem) / 3);
     }
 
     .carousel-item:last-child {
-        margin-right: 300px;
+        margin-right: 18.75rem;
     }
 
     .carousel-title { 
-        font-size: 21px;
-        line-height: 22.75px;
+        font-size: 1.3125rem;
+        line-height: 1.4219rem;
     }
 
     .carousel-description { 
-        font-size: 12.6px;
-        line-height: 19.25px;
+        font-size: 0.7875rem;
+        line-height: 1.2031rem;
+        font-family: var(--bbl-font-family-looped);
     }
 }
 
@@ -276,10 +282,17 @@
         line-height: 46px;
     }
 
+    :lang(th) {
+        .carousel-header h2 {
+                line-height: 2.5rem;
+        }
+    }
+
     .carousel-header a {
         font-size: 12.8px;
         line-height: 17.92px;
         margin-right: 15px;
+        font-family: var(--bbl-font-family-looped);
     }
 
     /* Disable native scrolling on desktop */
@@ -297,19 +310,19 @@
         top: 60%;
         transform: translateY(-50%);
         background: rgb(255 255 255 / 90%);
-        width: 66px;
-        height: 66px;
+        width: 4.125rem;
+        height: 4.125rem;
         border-radius: 50%;
         cursor: pointer;
         z-index: 10;
-        box-shadow: 0 0 1px 0 rgb(0 0 0 / 50%);
-        border: 1px solid rgb(158 158 158 / 70%);
+        box-shadow: 0 0 0.0625rem 0 rgb(0 0 0 / 50%);
+        border: 0.0625rem solid rgb(158 158 158 / 70%);
     }
 
     .carousel-nav::before {
         content: "\e901";
         font-family: icomoon, sans-serif;
-        font-size: 16px;
+        font-size: 1rem;
         line-height: 4;
         color: var(--bbl-color-active-blue);
     }
@@ -332,7 +345,7 @@
         display: none;
         opacity: 1;
         cursor: not-allowed;
-        background: rgb(255 255 255 / 50%);
+        background: var(--bbl-color-white-alpha-50);
     }
 
     .carousel-nav:disabled::before {
@@ -341,7 +354,7 @@
     }
 
     .carousel-prev {
-        left: 28px;
+        left: 1.75rem;
     }
 
     .carousel-prev::before {
@@ -356,12 +369,12 @@
 
     .carousel-item.active {
         display: flex;
-        width: calc(66.66vw - 132px);
-        min-width: calc(66.66vw - 132px);
+        width: calc(66.66vw - 8.25rem);
+        min-width: calc(66.66vw - 8.25rem);
     }
 
     .carousel-item.active > div {
-        max-width: calc(50% - 12px);
+        max-width: calc(50% - 0.75rem);
         height: 100%;
     }
 
@@ -379,7 +392,7 @@
     }
 
     .carousel-track .carousel-item .carousel-image-container .carousel-image-inactive img{
-        height: 490px;
+        height: 30.625rem;
         object-fit: cover;
     }
 
@@ -394,31 +407,31 @@
 
     .carousel-item.active .carousel-content {
        padding: var(--bbl-space-400);
-       max-height: 430px;
+         max-height: 26.875rem;
     }
 
     .carousel-eyebrow {
-        font-size: 14.4px;
-        line-height: 22px;
+        font-size: 0.9rem;
+        line-height: 1.375rem;
         font-weight: 500;
-        background: #4890ff;
+        background: var(--bbl-color-blue-140);
         display: inline-block;
-        padding: var(--bbl-space-050) 7px;
-        margin-bottom: 14px;
+        padding: var(--bbl-space-050) 0.4375rem;
+        margin-bottom: 0.875rem;
         color: var(--bbl-color-white);
         border-radius: var(--bbl-rounded-200);
     }
 
     .carousel-title {
-        font-size: 32px;
-        line-height: 32px;
+        font-size: 2rem;
+        line-height: 2rem;
         margin-bottom: var(--bbl-space-200);
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 4;
         line-clamp: 4;
-        max-width: 320px;
+        max-width: 20rem;
     }
 
     .carousel-description {
@@ -427,10 +440,10 @@
 
     .carousel-item.active .carousel-description,
     .carousel-item.active .carousel-description p {
-        font-size: 16px;
-        line-height: 22px;
+        font-size: 1rem;
+        line-height: 1.375rem;
         margin-bottom: var(--bbl-space-300);
-        color: #606060;
+        color: var(--bbl-color-gray-142);
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;

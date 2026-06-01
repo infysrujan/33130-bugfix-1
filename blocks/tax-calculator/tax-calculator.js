@@ -165,11 +165,11 @@ function getJourney2Groups(labels, apiResponse, config) {
         {
           id: 'Insure',
           label: getString(labels, 'stepsStep2LifeInsurancePremiumLabel', 'Life insurance premiums'),
-          placeholder: `0 - ${formatNumber(apiResponse.MaxInsure)}`,
+          placeholder: `0 - ${formatNumber(Math.round(apiResponse.MaxInsure))}`,
           defaultValue: 0,
           maxLength: 7,
           min: 0,
-          max: apiResponse.MaxInsure,
+          max: Math.round(apiResponse.MaxInsure),
           factor: 1,
           errorMsg: maxErrMsg,
           hint: insureHint,
@@ -178,11 +178,11 @@ function getJourney2Groups(labels, apiResponse, config) {
         {
           id: 'HealthInsure',
           label: getString(labels, 'stepsStep2HealthInsurancePremiumLabel', 'Health insurance premiums'),
-          placeholder: `0 - ${formatNumber(apiResponse.MaxHealthInsure)}`,
+          placeholder: `0 - ${formatNumber(Math.round(apiResponse.MaxHealthInsure))}`,
           defaultValue: 0,
           maxLength: 6,
           min: 0,
-          max: apiResponse.MaxHealthInsure,
+          max: Math.round(apiResponse.MaxHealthInsure),
           factor: 1,
           errorMsg: maxErrMsg,
           hint: healthHint,
@@ -191,11 +191,11 @@ function getJourney2Groups(labels, apiResponse, config) {
         {
           id: 'PensionInsure',
           label: getString(labels, 'stepsStep2LifePensionInsurancePremiumLabel', 'Pension insurance premiums'),
-          placeholder: `0 - ${formatNumber(apiResponse.MaxInsure60)}`,
+          placeholder: `0 - ${formatNumber(Math.round(apiResponse.MaxInsure60))}`,
           defaultValue: 0,
           maxLength: 7,
           min: 0,
-          max: apiResponse.MaxInsure60,
+          max: Math.round(apiResponse.MaxInsure60),
           factor: 1,
           errorMsg: maxErrMsg,
           hint: pensionHint,
@@ -222,11 +222,11 @@ function getJourney2Groups(labels, apiResponse, config) {
         {
           id: 'ReduceRMF',
           label: getString(labels, 'stepsStep2RmfSavingsLabel', 'RMF'),
-          placeholder: `0 - ${formatNumber(apiResponse.MaxRMF)}`,
+          placeholder: `0 - ${formatNumber(Math.round(apiResponse.MaxRMF))}`,
           defaultValue: 0,
           maxLength: 7,
           min: 0,
-          max: apiResponse.MaxRMF,
+          max: Math.round(apiResponse.MaxRMF),
           factor: 1,
           errorMsg: maxErrMsg,
           hint: rmfHint,
@@ -234,11 +234,11 @@ function getJourney2Groups(labels, apiResponse, config) {
         {
           id: 'ReduceESG',
           label: getString(labels, 'stepsStep2ThaiEsgSavingsLabel', 'Thai ESG'),
-          placeholder: `0 - ${formatNumber(apiResponse.MaxESG)}`,
+          placeholder: `0 - ${formatNumber(Math.round(apiResponse.MaxESG))}`,
           defaultValue: 0,
           maxLength: 7,
           min: 0,
-          max: apiResponse.MaxESG,
+          max: Math.round(apiResponse.MaxESG),
           factor: 1,
           errorMsg: maxErrMsg,
           hint: esgHint,
@@ -301,11 +301,11 @@ function getJourney3InvestFields(apiResult1, labels) {
     {
       id: 'InputRMF',
       label: getString(labels, 'resultsRmfLabel', 'RMF*'),
-      placeholder: `0 - ${formatNumber(apiResult1.MaxRMF)}`,
+      placeholder: `0 - ${formatNumber(Math.round(apiResult1.MaxRMF))}`,
       defaultValue: 0,
       maxLength: 7,
       min: 0,
-      max: apiResult1.MaxRMF,
+      max: Math.round(apiResult1.MaxRMF),
       factor: 1,
       errorMsg: maxErrMsg,
       hint: hintTemplate,
@@ -315,11 +315,11 @@ function getJourney3InvestFields(apiResult1, labels) {
     {
       id: 'InputESG',
       label: getString(labels, 'resultsThaiEsgLabel', 'Thai ESG***'),
-      placeholder: `0 - ${formatNumber(apiResult1.MaxESG)}`,
+      placeholder: `0 - ${formatNumber(Math.round(apiResult1.MaxESG))}`,
       defaultValue: 0,
       maxLength: 7,
       min: 0,
-      max: apiResult1.MaxESG,
+      max: Math.round(apiResult1.MaxESG),
       factor: 1,
       errorMsg: maxErrMsg,
       hint: hintTemplate,
@@ -329,11 +329,11 @@ function getJourney3InvestFields(apiResult1, labels) {
     {
       id: 'InputInsure',
       label: getString(labels, 'resultsLifeInsuranceLabel', 'Life insurance premiums**'),
-      placeholder: `0 - ${formatNumber(apiResult1.MaxInsure)}`,
+      placeholder: `0 - ${formatNumber(Math.round(apiResult1.MaxInsure))}`,
       defaultValue: 0,
       maxLength: 7,
       min: 0,
-      max: apiResult1.MaxInsure,
+      max: Math.round(apiResult1.MaxInsure),
       factor: 1,
       errorMsg: maxErrMsg,
       hint: hintTemplate,
@@ -343,11 +343,11 @@ function getJourney3InvestFields(apiResult1, labels) {
     {
       id: 'InputHealthInsure',
       label: getString(labels, 'resultsHealthInsuranceLabel', 'Health insurance premiums**'),
-      placeholder: `0 - ${formatNumber(apiResult1.MaxHealthInsure)}`,
+      placeholder: `0 - ${formatNumber(Math.round(apiResult1.MaxHealthInsure))}`,
       defaultValue: 0,
       maxLength: 6,
       min: 0,
-      max: apiResult1.MaxHealthInsure,
+      max: Math.round(apiResult1.MaxHealthInsure),
       factor: 1,
       errorMsg: maxErrMsg,
       hint: hintTemplate,
@@ -357,11 +357,11 @@ function getJourney3InvestFields(apiResult1, labels) {
     {
       id: 'InputInsure60',
       label: getString(labels, 'resultsPensionInsuranceLabel', 'Pension insurance premiums*'),
-      placeholder: `0 - ${formatNumber(apiResult1.MaxInsure60)}`,
+      placeholder: `0 - ${formatNumber(Math.round(apiResult1.MaxInsure60))}`,
       defaultValue: 0,
       maxLength: 7,
       min: 0,
-      max: apiResult1.MaxInsure60,
+      max: Math.round(apiResult1.MaxInsure60),
       factor: 1,
       errorMsg: maxErrMsg,
       hint: hintTemplate,
@@ -852,14 +852,16 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
   if (insureInput && healthInsureInput) {
     insureInput.addEventListener('input', () => {
       const val = parseFloat(stripCommas(insureInput.value)) || 0;
-      const newMax = Math.min(apiResponse.MaxHealthInsure, data.combinedInsuranceMax - val);
+      const maxHealthInsure = Math.round(apiResponse.MaxHealthInsure);
+      const newMax = Math.min(maxHealthInsure, data.combinedInsuranceMax - val);
       if (healthInsureField?.updateMax) healthInsureField.updateMax(Math.max(0, newMax));
       syncStep2ButtonState();
     });
 
     healthInsureInput.addEventListener('input', () => {
       const val = parseFloat(stripCommas(healthInsureInput.value)) || 0;
-      const newMax = Math.min(apiResponse.MaxInsure, data.combinedInsuranceMax - val);
+      const maxInsure = Math.round(apiResponse.MaxInsure);
+      const newMax = Math.min(maxInsure, data.combinedInsuranceMax - val);
       if (insureField?.updateMax) insureField.updateMax(Math.max(0, newMax));
       syncStep2ButtonState();
     });
@@ -918,8 +920,8 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
         // Step 1 values
         ...state.journey1,
         // Step 2 values (with correct API mapping)
-        ChildBornBefore61: values.NumberOfChildeBornBefore61 || 0,
-        ChildBorn61OnWards: values.NumberOfChildeBorn61OnWards || 0,
+        NumberOfChildeBornBefore61: values.NumberOfChildeBornBefore61 || 0,
+        NumberOfChildeBorn61OnWards: values.NumberOfChildeBorn61OnWards || 0,
         FatherMother: (values.FatherMother || []).filter(Boolean).length,
         HomeInterest: values.HomeInterest || 0,
         Insure: values.Insure || 0,
@@ -1077,14 +1079,15 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   `));
 
   // ── Invest table (only when tax is payable) ──
-  const rmfPensionMax = (apiResult1.MaxRMF || 0) + (apiResult1.MaxInsure60 || 0);
+  const rmfPensionMax = Math.round(apiResult1.MaxRMF || 0)
+    + Math.round(apiResult1.MaxInsure60 || 0);
   const notesElement = buildNotes(
     getString(labels, 'configNotesTitle', 'Notes'),
     [
       getString(labels, 'configNotesInvestmentCalculation', 'Calculate the maximum amount that you can invest according to the conditions of the Revenue Department.'),
       getString(labels, 'configNotesRmfAndPension', `* The combined amount of RMF and pension insurance premiums must not exceed ${formatNumber(rmfPensionMax)} baht`).replace('{combinedRMFPensionMax}', formatNumber(rmfPensionMax)),
       getString(labels, 'configNotesLifeAndHealthInsurance', `** The combined amount of life insurance premiums and health insurance premiums must not exceed ${formatNumber(data.combinedInsuranceMax)} baht`).replace('{combinedLifeHealthMax}', formatNumber(data.combinedInsuranceMax)),
-      getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(apiResult1.MaxESG)} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(apiResult1.MaxESG)),
+      getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(Math.round(apiResult1.MaxESG))} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(Math.round(apiResult1.MaxESG))),
     ],
   );
 
@@ -1194,12 +1197,12 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
     if (insureInput && healthInput) {
       const syncHealthMax = () => {
         const insureVal = parseFloat(stripCommas(insureInput.value)) || 0;
-        const cap = Math.min(apiResult1.MaxHealthInsure, remainingCombined - insureVal);
+        const cap = Math.min(Math.round(apiResult1.MaxHealthInsure), remainingCombined - insureVal);
         if (healthField?.updateMax) healthField.updateMax(Math.max(0, cap));
       };
       const syncInsureMax = () => {
         const healthVal = parseFloat(stripCommas(healthInput.value)) || 0;
-        const cap = Math.min(apiResult1.MaxInsure, remainingCombined - healthVal);
+        const cap = Math.min(Math.round(apiResult1.MaxInsure), remainingCombined - healthVal);
         if (insureField?.updateMax) insureField.updateMax(Math.max(0, cap));
       };
 

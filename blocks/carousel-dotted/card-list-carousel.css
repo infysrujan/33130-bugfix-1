@@ -81,7 +81,7 @@
 }
 
 .carousel-dotted.all-carousel-fragment.show-arrows-dots
-    .carousel-arrow-next:hover {
+    .carousel-arrow:hover {
     background-color: unset;
     transform: translateY(-50%) translateX(0.3rem);
 }

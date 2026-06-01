@@ -298,7 +298,9 @@ function setupPanel(
             cardData = { ...c, ctaLink: `${c.ctaLink}${separator}sc_lang=${queryLang}` };
           }
         }
-        return buildCardHtml(cardData, category, placeholders, buildCardOptions(cardData));
+        const cardOptions = buildCardOptions(cardData);
+        if (isBbmPanel) cardOptions.logoHtml = '';
+        return buildCardHtml(cardData, category, placeholders, cardOptions);
       }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 

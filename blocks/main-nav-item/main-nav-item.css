@@ -49,7 +49,7 @@
 
 .megamenu-home-link {
   padding: 1.5625rem 0;
-  border-bottom: 0.0625rem solid rgb(0 0 0 / 10%);
+  border-bottom: 0.0625rem solid var(--bbl-color-black-alpha-10);
 }
 
 .megamenu-home-link p {
@@ -157,7 +157,7 @@
 
 .megamenu-link-item {
   padding: 1.5625rem 0;
-  border-bottom: 0.0625rem solid rgb(0 0 0 / 10%);
+  border-bottom: 0.0625rem solid var(--bbl-color-black-alpha-10);
 }
 
 .megamenu-category-title {
