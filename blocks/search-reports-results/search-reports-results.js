@@ -116,11 +116,11 @@ async function fetchAndRender(block, type, year) {
       res = await fetch('/blocks/search-reports-results/results.mock.json');
     } else {
       res = await fetch(`${apiBase}/${lang}.reports.${type}.${year}.json`);
-      if (res.status === 204 && lang !== 'en') {
+      if (!res.ok && lang !== 'en') {
         res = await fetch(`${apiBase}/en.reports.${type}.${year}.json`);
       }
     }
-    if (res.status === 204) throw new Error('no content');
+    if (!res.ok || res.status === 204) throw new Error('no content');
     const data = await res.json();
 
     loading.remove();
