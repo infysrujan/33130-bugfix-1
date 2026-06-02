@@ -1,5 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { getLang } from '../../scripts/scripts.js';
 import {
   getLoginState,
   openPanel,
@@ -18,6 +19,42 @@ import {
 
 // media query match that indicates desktop width
 const isDesktop = window.matchMedia('(min-width: 1025px)');
+
+const LANG_COOKIE_NAME = 'bblcorporate#lang';
+const LANG_COOKIE_DAYS = 365;
+
+function setLangCookie(value) {
+  const expires = new Date(Date.now() + LANG_COOKIE_DAYS * 864e5).toUTCString();
+  document.cookie = `${LANG_COOKIE_NAME}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+}
+
+function getAnchorLangValue(anchor) {
+  try {
+    const { pathname } = new URL(anchor.href, document.baseURI || window.location.origin);
+    const segment = pathname.split('/')[1];
+    if (segment) return segment;
+  } catch {
+    // fall through
+  }
+  return anchor.href;
+}
+
+/**
+ * Persists language choice when a top-nav link-icon is clicked.
+ * Bound on the header (not the fragment block) so listeners survive fragment cloning.
+ * @param {Element|null} topNavBlock
+ */
+function setupTopNavLangCookieEvents(topNavBlock) {
+  if (!topNavBlock) return;
+  topNavBlock.addEventListener('click', (e) => {
+    const li = e.target.closest('li.top-nav-item.link-icon');
+    if (!li || !topNavBlock.contains(li)) return;
+    const a = li.querySelector('a[href]');
+    if (a) {
+      setLangCookie(getAnchorLangValue(a));
+    }
+  });
+}
 
 /**
  * Extracts nav blocks from the loaded fragment.
@@ -600,6 +637,7 @@ function applyLayout(header, fragmentTemplate, desktop) {
   } else {
     buildMobileLayout(header, blocks);
   }
+  setupTopNavLangCookieEvents(header.querySelector('.top-nav'));
 }
 
 /**
@@ -608,10 +646,15 @@ function applyLayout(header, fragmentTemplate, desktop) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+  let navPath = '';
+  if (document.querySelector('body.error-page')) {
+    const lang = getLang();
+    navPath = `/${lang}/nav`;
+  } else {
+    const navMeta = getMetadata('nav');
+    navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+  }
   const fragment = await loadFragment(navPath);
-
   if (!fragment) return;
 
   // Keep a persistent template so we can re-build layout on resize/orientation change

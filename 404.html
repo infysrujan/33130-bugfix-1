@@ -2,69 +2,97 @@
 <html>
 
 <head>
-  <meta
-    http-equiv="Content-Security-Policy"
-    content="script-src 'nonce-aem' 'strict-dynamic' 'unsafe-inline' http: https:; base-uri 'self'; object-src 'none';"
-    move-to-http-header="true"
-  >
-  <title>Page not found</title>
-  <script nonce="aem" type="text/javascript">
-    window.isErrorPage = true;
-    window.errorCode = '404';
-  </script>
+  <title>404 error</title>
+  <link rel="canonical" href="https://qa--site-qa--bangkok-bank.aem.page/404">
+  <meta name="description"
+    content="The page you are looking for doesn’t exist. Perhaps you can return to homepage and use the search bar or contact us if you think ...">
+  <meta property="og:title" content="404 error">
+  <meta property="og:description"
+    content="The page you are looking for doesn’t exist. Perhaps you can return to homepage and use the search bar or contact us if you think ...">
+  <meta property="og:url" content="https://qa--site-qa--bangkok-bank.aem.page/404">
+  <meta property="og:image"
+    content="https://qa--site-qa--bangkok-bank.aem.page/media_1ff166eed8f084a9a60c7784dc4f84ae14f26e492.svg?width=1200&#x26;format=pjpg&#x26;optimize=medium">
+  <meta property="og:image:secure_url"
+    content="https://qa--site-qa--bangkok-bank.aem.page/media_1ff166eed8f084a9a60c7784dc4f84ae14f26e492.svg?width=1200&#x26;format=pjpg&#x26;optimize=medium">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="404 error">
+  <meta name="twitter:description"
+    content="The page you are looking for doesn’t exist. Perhaps you can return to homepage and use the search bar or contact us if you think ...">
+  <meta name="twitter:image"
+    content="https://qa--site-qa--bangkok-bank.aem.page/media_1ff166eed8f084a9a60c7784dc4f84ae14f26e492.svg?width=1200&#x26;format=pjpg&#x26;optimize=medium">
+  <meta name="published-time" content="2026-05-22T06:59:02.276Z">
+  <meta name="breadcrumb" content="false">
+  <meta name="pagevariant" content="error-page">
+  <meta name="issubnav" content="false">
+  <meta name="modified-time" content="2026-05-22T05:43:47.097Z">
+  <meta name="content-page-ref" content="GUQwCivv512XlelJ9U5C-3-qn-1yAs_a3g_fP6RV2_gXcRbqtdJl2yGqrXuM4FJ9">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta property="og:title" content="Page not found">
-  <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
-  <script nonce="aem" type="module">
-    window.addEventListener('load', () => {
-      if (document.referrer) {
-        const { origin, pathname } = new URL(document.referrer);
-        if (origin === window.location.origin) {
-          const backBtn = document.createElement('a');
-          backBtn.classList.add('button', 'error-button-back');
-          backBtn.href = pathname;
-          backBtn.textContent = 'Go back';
-          backBtn.title = 'Go back';
-          const btnContainer = document.querySelector('.button-container');
-          btnContainer.append(backBtn);
-        }
-      }
-    });
-  </script>
-  <script nonce="aem" type="module">
-    import { sampleRUM } from '/scripts/aem.js';
-    sampleRUM('404', { source: document.referrer });
-  </script>
+  <script nonce="k3H0MystZzoi1pY/SSjki9Yz" src="/scripts/aem.js" type="module"></script>
+  <script nonce="k3H0MystZzoi1pY/SSjki9Yz" src="/scripts/scripts.js" type="module"></script>
   <link rel="stylesheet" href="/styles/styles.css">
-  <style>
-    main.error {
-      min-height: calc(100vh - var(--nav-height));
-      display: flex;
-      align-items: center;
-    }
-
-    main.error .error-number {
-      width: 100%;
-    }
-
-    main.error .error-number text {
-      font-family: monospace;
-    }
-  </style>
-  <link rel="stylesheet" href="/styles/lazy-styles.css">
 </head>
 
 <body>
   <header></header>
-  <main class="error">
-    <div class="section">
-      <svg viewBox="1 0 38 18" class="error-number">
-        <text x="0" y="17">404</text>
-      </svg>
-      <h2 class="error-message">Page Not Found</h2>
-      <p class="button-container">
-        <a href="/" class="button secondary error-button-home">Go home</a>
-      </p>
+  <main>
+    <div class="error-page-en section center-title underline-title center-content central-aligned">
+      <div class="default-content-wrapper">
+        <p>
+          <picture>
+            <source type="image/svg+xml" srcset="/icons/404-error.svg">
+            <img loading="eager" alt="" src="/icons/404-error.svg" width="345" height="209">
+          </picture>
+        </p>
+
+        <h2 id="page-not-found">Page not found</h2>
+
+        <p>The page you are looking for doesn’t exist. Perhaps you can return to homepage and use the search bar or
+          contact us if you think this is a server error.</p>
+      </div>
+
+      <div class="default-content-wrapper">
+        <p class="button-container">
+          <strong>
+            <a href="/en/contact-us" title="Contact Us" class="button-m primary" target="_self">Contact Us</a>
+          </strong>
+        </p>
+
+        <p class="button-container">
+          <em>
+            <a href="/en" title="Return to home" class="button-m secondary" target="_self">Return to home</a>
+          </em>
+        </p>
+      </div>
+    </div>
+
+    <div class="error-page-th section center-title underline-title center-content central-aligned">
+      <div class="default-content-wrapper">
+        <p>
+          <picture>
+            <source type="image/svg+xml" srcset="/icons/404-error.svg">
+            <img loading="eager" alt="" src="/icons/404-error.svg" width="345" height="209">
+          </picture>
+        </p>
+
+        <h2 id="page-not-found-th">ไม่พบหน้าที่คุณต้องการ</h2>
+
+        <p>ไม่พบหน้าที่คุณกำลังค้นหา คุณสามารถกลับไปยังหน้าแรก ใช้แถบค้นหา หรือติดต่อเราหากคิดว่าเกิดข้อผิดพลาดของระบบ
+        </p>
+      </div>
+
+      <div class="default-content-wrapper">
+        <p class="button-container">
+          <strong>
+            <a href="/th/contact-us" title="ติดต่อเรา" class="button-m primary" target="_self">ติดต่อเรา</a>
+          </strong>
+        </p>
+
+        <p class="button-container">
+          <em>
+            <a href="/th" title="กลับสู่หน้าแรก" class="button-m secondary" target="_self">กลับสู่หน้าแรก</a>
+          </em>
+        </p>
+      </div>
     </div>
   </main>
   <footer></footer>

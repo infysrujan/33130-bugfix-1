@@ -1,0 +1,734 @@
+/* ============================================================
+   forward-points-sme block — mobile first
+   ============================================================ */
+
+.forward-points-sme .fpsme-section-fwd {
+  margin-top: var(--bbl-space-500);
+}
+
+/* ── Controls row ─────────────────────────────────────────── */
+
+.forward-points-sme .fpsme-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.forward-points-sme .fpsme-update-label {
+  width: 100%;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bbl-color-grey-85);
+  margin-bottom: 0.625rem;
+}
+
+/* ── Date group (input + trigger + datepicker) ────────────── */
+
+.forward-points-sme .fpsme-date-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.forward-points-sme .fpsme-date-input {
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 2.5rem 0 1.25rem;
+  color: var(--bbl-color-gray-121);
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem;
+  outline: none;
+  box-sizing: border-box;
+  appearance: none;
+  font-size: 0.95rem;
+}
+
+.forward-points-sme .fpsme-date-input:focus {
+  border-color: var(--bbl-color-active-blue);
+}
+
+.forward-points-sme .fpsme-date-trigger {
+  position: absolute;
+  right: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bbl-color-gray-142);
+  font-size: 1.125rem;
+}
+
+/* ── Time dropdown ─────────────────────────────────────────── */
+
+.forward-points-sme .fpsme-time-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 50%;
+}
+
+.forward-points-sme .fpsme-time-dropdown {
+  position: relative;
+}
+
+.forward-points-sme .fpsme-time-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 1.875rem;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--bbl-color-grey-85);
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-23);
+  border-radius: 0.4375rem;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.forward-points-sme .fpsme-time-dropdown.is-open .fpsme-time-trigger {
+  border-color: var(--bbl-color-active-blue);
+}
+
+.forward-points-sme .fpsme-time-dropdown.is-disabled .fpsme-time-trigger {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.forward-points-sme .fpsme-time-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.forward-points-sme .fpsme-time-chevron {
+  font-size: 0.375rem;
+  color: var(--bbl-color-black);
+  flex-shrink: 0;
+  margin-left: var(--bbl-space-100);
+  pointer-events: none;
+}
+
+.forward-points-sme .fpsme-time-list {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  width: 100%;
+  max-height: 15rem;
+  overflow-y: auto;
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-22);
+  border-radius: var(--bbl-radius-input);
+  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 12%);
+  z-index: 400;
+  margin: 0;
+  padding: var(--bbl-space-100) 0;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+.forward-points-sme .fpsme-time-dropdown.is-open .fpsme-time-list {
+  display: block;
+}
+
+.forward-points-sme .fpsme-time-item {
+  padding: 0.625rem 1.875rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bbl-color-black);
+  cursor: pointer;
+}
+
+.forward-points-sme .fpsme-time-item:hover {
+  color: var(--bbl-color-active-blue);
+}
+
+.forward-points-sme .fpsme-time-item.is-active {
+  color: var(--bbl-color-active-blue);
+}
+
+.forward-points-sme .fpsme-time-list:hover .fpsme-time-item.is-active:not(:hover) {
+  color: var(--bbl-color-black);
+}
+
+/* ── GO button ─────────────────────────────────────────────── */
+
+.forward-points-sme .fpsme-go-btn {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  font-size: 0.95rem;
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-color-white);
+  background: var(--bbl-color-active-blue);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  border-radius: 0.4375rem;
+  cursor: pointer;
+  box-sizing: border-box;
+  min-width: 9.6875rem;
+}
+
+.forward-points-sme .fpsme-go-btn:hover {
+  background: var(--bbl-color-blue-90);
+  border-color: var(--bbl-color-blue-90);
+}
+
+.forward-points-sme .fpsme-go-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ── Datepicker ────────────────────────────────────────────── */
+
+.forward-points-sme .fpsme-datepicker {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  width: calc(100vw - 2rem);
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-22);
+  border-radius: var(--bbl-rounded-100);
+  box-shadow: 0 0.5rem 2rem var(--bbl-color-black-alpha-14);
+  z-index: 300;
+  padding: var(--bbl-space-200);
+  box-sizing: border-box;
+}
+
+.forward-points-sme .fpsme-dp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto 0.75rem;
+  width: 92%;
+}
+
+.forward-points-sme .fpsme-dp-title {
+  display: flex;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bbl-color-blue-105);
+}
+
+.forward-points-sme .fpsme-dp-nav {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0.0625rem solid var(--bbl-color-grey-22);
+  border-radius: var(--bbl-rounded-full);
+  color: var(--bbl-color-gray-142);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.forward-points-sme .fpsme-dp-nav .icon-arrow-left {
+  font-size: 0.75rem;
+}
+
+.forward-points-sme .fpsme-dp-prev .icon-arrow-left {
+  transform: rotate(180deg);
+  display: inline-block;
+}
+
+.forward-points-sme .fpsme-dp-nav.is-disabled,
+.forward-points-sme .fpsme-dp-nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.forward-points-sme .fpsme-dp-nav:not(:disabled, .is-disabled):hover {
+  background: var(--bbl-color-blue-80);
+  border-color: var(--bbl-color-blue-80);
+  color: var(--bbl-color-white);
+}
+
+.forward-points-sme .fpsme-dp-calendar {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.forward-points-sme .fpsme-dp-calendar thead th {
+  padding: 0.25rem 0 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--bbl-color-black);
+  text-align: center;
+}
+
+.forward-points-sme .fpsme-dp-calendar tbody td {
+  padding: 0.1875rem;
+  text-align: center;
+}
+
+.forward-points-sme .fpsme-dp-calendar tbody td.is-other-month {
+  visibility: hidden;
+}
+
+.forward-points-sme .fpsme-dp-day-btn,
+.forward-points-sme .fpsme-dp-day-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--bbl-rounded-full);
+  font-size: 0.8125rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--bbl-color-gray-121);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.forward-points-sme .fpsme-dp-day-btn:hover {
+  background: var(--bbl-color-blue-80);
+  color: var(--bbl-color-white);
+}
+
+.forward-points-sme .fpsme-dp-day-text {
+  color: var(--bbl-color-grey-45);
+  cursor: default;
+}
+
+.forward-points-sme .fpsme-dp-calendar td.is-weekend .fpsme-dp-day-text {
+  color: var(--bbl-color-grey-125);
+}
+
+.forward-points-sme .fpsme-dp-calendar td.is-current .fpsme-dp-day-btn {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  font-weight: 700;
+}
+
+.forward-points-sme .fpsme-dp-calendar td.is-current .fpsme-dp-day-btn:hover {
+  background: var(--bbl-color-blue-90);
+}
+
+.forward-points-sme .fpsme-dp-calendar td.is-today:not(.is-current) .fpsme-dp-day-btn {
+  outline: 0.125rem solid var(--bbl-color-active-blue);
+  outline-offset: -0.125rem;
+  color: var(--bbl-color-active-blue);
+  font-weight: 700;
+}
+
+/* ── Section 1 — Currency table ────────────────────────────── */
+
+.forward-points-sme .fpsme-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: var(--bbl-space-300);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.forward-points-sme .fpsme-table-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.forward-points-sme .fpsme-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  color: var(--bbl-color-gray-142);
+  border: 0.0625rem solid var(--bbl-color-grey-24);
+}
+
+.forward-points-sme .fpsme-table-currency {
+  min-width: 0;
+}
+
+.forward-points-sme .fpsme-table thead tr {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.forward-points-sme .fpsme-table thead th {
+  padding: 0.75rem 0.625rem;
+  font-size: 0.875rem;
+  font-family: Muli-Bold, sans-serif;
+  color: var(--bbl-color-gray-142);
+  text-align: center;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-24);
+  line-height: 1.4;
+}
+
+.forward-points-sme .fpsme-table tbody tr {
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-24);
+}
+
+.forward-points-sme .fpsme-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.forward-points-sme .fpsme-table tbody td {
+  padding: 0.75rem 0.625rem;
+  font-size: 1rem;
+  color: var(--bbl-color-gray-142);
+  vertical-align: middle;
+}
+
+.forward-points-sme .fpsme-td-right {
+  text-align: center;
+}
+
+.forward-points-sme .fpsme-currency-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.forward-points-sme .fpsme-flag {
+  width: 1.1875rem;
+  height: 1.1875rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ── Unit label ────────────────────────────────────────────── */
+
+.forward-points-sme .fpsme-unit {
+  font-size: 0.8rem;
+  color: var(--bbl-color-grey-70);
+  margin-top: 1rem;
+}
+
+.forward-points-sme .fpsme-unit-right {
+  text-align: right;
+}
+
+/* ── Section 1 bar ─────────────────────────────────────────── */
+
+.forward-points-sme .fpsme-section1-bar {
+  width: 100%;
+}
+
+/* Currency section: full width */
+.forward-points-sme .fpsme-section-currency {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Print button — sits inside .fpsme-controls (flex row), pushed to the right */
+.forward-points-sme .fpsme-print-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-70);
+  cursor: pointer;
+  padding: 0 var(--bbl-space-100);
+  height: 2.75rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+  text-decoration: none;
+  font-weight:700;
+}
+
+.forward-points-sme .fpsme-print-btn .icon-print {
+  font-size: 1rem;
+  color: var(--bbl-color-grey-70);
+}
+
+.forward-points-sme .fpsme-print-btn:hover,
+.forward-points-sme .fpsme-print-btn:hover .icon-print {
+  color: var(--bbl-color-grey-70);
+}
+
+/* ── Section 2 — Forward points ────────────────────────────── */
+
+/* ── Forward points body ───────────────────────────────────── */
+
+.forward-points-sme .fpsme-fwd-body {
+  margin-top: var(--bbl-space-400);
+}
+
+.forward-points-sme .fpsme-fwd-title {
+  font-size: 1.4rem;
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-color-black);
+  text-align: center;
+  line-height: 1.75rem;
+  margin-bottom: unset;
+}
+
+.forward-points-sme .fpsme-fwd-title p {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: inherit;
+  line-height: inherit;
+  text-align: center;
+  color: var(--bbl-color-grey-85);
+}
+
+.forward-points-sme .fpsme-fwd-tables {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bbl-space-400);
+}
+
+.forward-points-sme .fpsme-fwd-table-col {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.forward-points-sme .fpsme-fwd-subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--bbl-color-grey-70);
+  text-align: center;
+}
+
+/* ── Flex-based forward points table (matches prod Rtable layout) */
+
+.forward-points-sme .fpsme-rt {
+  display: flex;
+  flex-direction: column;
+  border: 0.0625rem solid var(--bbl-color-grey-24);
+  overflow: hidden;
+}
+
+.forward-points-sme .fpsme-rt-row {
+  display: flex;
+  width: 100%;
+}
+
+.forward-points-sme .fpsme-rt-cell {
+  flex: 1 1 33.33%;
+  width: 33.33%;
+  padding: 0.75rem 0.625rem;
+  font-size: 1rem;
+  color: var(--bbl-color-gray-142);
+  background: var(--bbl-color-white);
+  border-right: 0.0625rem solid var(--bbl-color-grey-24);
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-24);
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.4;
+}
+
+.forward-points-sme .fpsme-rt-cell-last {
+  border-right: none;
+}
+
+/* Muted background — all header cells + Period data cells */
+.forward-points-sme .fpsme-rt-cell-muted {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+/* Header row cells — match currency table <th> styling */
+.forward-points-sme .fpsme-rt-head {
+  font-size: 0.875rem;
+  font-family: Muli-Bold, sans-serif;
+  font-weight: 700;
+  color: var(--bbl-color-gray-142);
+  padding: 0.75rem 0.625rem;
+}
+
+/* Period data cells — same styling as header cells */
+.forward-points-sme .fpsme-rt-period {
+  font-size: 0.875rem;
+  font-family: Muli-Bold, sans-serif;
+  font-weight: 700;
+  color: var(--bbl-color-gray-142);
+}
+
+/* Value cells — center-aligned to match live site */
+.forward-points-sme .fpsme-rt-value {
+  color: var(--bbl-color-gray-142);
+}
+
+/* Remove bottom border from last row */
+.forward-points-sme .fpsme-rt-row:last-child .fpsme-rt-cell {
+  border-bottom: none;
+}
+
+/* ── Remark section ────────────────────────────────────────── */
+
+.forward-points-sme .fpsme-remark {
+  margin-top: var(--bbl-space-300);
+  font-size: 0.938rem;
+  color: var(--bbl-color-grey-150);
+  line-height: 1.6;
+}
+
+.forward-points-sme .fpsme-remark p {
+  margin: 0 0 var(--bbl-space-100);
+}
+
+.forward-points-sme .fpsme-remark p:last-child {
+  margin-bottom: 0;
+}
+
+.forward-points-sme .fpsme-remark ul {
+  margin: 0;
+  padding-left: var(--bbl-space-300);
+}
+
+.forward-points-sme .fpsme-remark li {
+  margin-bottom: var(--bbl-space-075);
+}
+
+@media (width > 47.5rem) {
+  .forward-points-sme .fpsme-update-label {
+    width: auto;
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+
+  /* Prevent controls from wrapping onto multiple lines at tablet+ */
+  .forward-points-sme .fpsme-controls {
+    flex-wrap: nowrap;
+  }
+
+  .forward-points-sme .fpsme-date-group {
+    flex: 0 0 10rem;
+    width: 10rem;
+  }
+
+  .forward-points-sme .fpsme-time-wrap {
+    flex: 0 0 9.375rem;
+    width: 9.375rem;
+    max-width: none;
+  }
+
+  .forward-points-sme .fpsme-go-btn {
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 9.6875rem;
+  }
+
+  .forward-points-sme .fpsme-datepicker {
+    max-width: 28.75rem;
+    width: 28.75rem;
+  }
+
+  .forward-points-sme .fpsme-dp-header {
+    width: 70%;
+    margin: 0 auto 0.75rem;
+  }
+
+  .forward-points-sme .fpsme-dp-title {
+    font-size: 1.1rem;
+  }
+
+  /* Forward tables side by side on tablet+ */
+  .forward-points-sme .fpsme-fwd-tables {
+    flex-direction: row;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+
+}
+
+@media (width > 64rem) {
+  /* Section 1 currency column: ~50% width matching live site col-md-6 layout */
+  .forward-points-sme .fpsme-section-currency {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .forward-points-sme .fpsme-section1-bar {
+    position: relative;
+  }
+
+  .forward-points-sme .fpsme-print-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-left: 0;
+    font-size: 1rem;
+  }
+
+  .forward-points-sme .fpsme-update-label {
+    font-size: 1rem;
+  }
+
+  .forward-points-sme .fpsme-date-input {
+    font-size: 1rem;
+  }
+
+  .forward-points-sme .fpsme-time-trigger {
+    font-size: 0.9375rem;
+  }
+
+  .forward-points-sme .fpsme-date-group {
+    flex: 0 0 10rem;
+    width: 10rem;
+  }
+
+  .forward-points-sme .fpsme-time-wrap {
+    flex: 0 0 8.5rem;
+    width: 8.5rem;
+  }
+
+  .forward-points-sme .fpsme-go-btn {
+    flex: 0 0 auto;
+    font-size: 1rem;
+  }
+
+  .forward-points-sme .fpsme-datepicker {
+    max-width: 33.75rem;
+    width: 33.75rem;
+  }
+
+  .forward-points-sme .fpsme-dp-title {
+    font-size: 1.3rem;
+  }
+
+  .forward-points-sme .fpsme-dp-day-btn,
+  .forward-points-sme .fpsme-dp-day-text {
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1rem;
+  }
+
+  .forward-points-sme .fpsme-dp-calendar thead th {
+    font-size: 1rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .forward-points-sme .fpsme-table thead th {
+    font-size: 1rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .forward-points-sme .fpsme-table tbody td {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+
+  .forward-points-sme .fpsme-time-item {
+    font-size: 1rem;
+  }
+}
+

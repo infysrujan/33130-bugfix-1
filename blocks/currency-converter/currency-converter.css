@@ -24,7 +24,7 @@
   margin-bottom: var(--bbl-space-300);
   margin-left: auto;
   margin-right: auto;
-  background-color: #233A58;
+  background-color: var(--bbl-color-truthful-dark-blue);
   height: 9.375rem;
 }
 

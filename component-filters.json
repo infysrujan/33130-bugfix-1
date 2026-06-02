@@ -42,6 +42,9 @@
       "table",
       "locate-us",
       "rate-card",
+      "fund-prices",
+      "fund-prices-table",
+      "fund-prices-dropdown",
       "accordion-block",
       "social-icons",
       "card-list",
@@ -54,14 +57,45 @@
       "video",
       "carousel-video",
       "forex-rates",
+      "market-report",
+      "sme-loan-calculator",
+      "dynamic-board",
+      "bcap",
+      "multi-column-tiles",
+      "retirement-calculator",
+      "tax-calculator",
       "special-fx-rates",
       "promotional-details",
       "promo-card-listing",
       "top-promotional-cards",
       "multi-column-tiles",
+      "fund-prices",
+      "property-for-sale-details",
+      "property-for-sale",
       "stock-ticker",
       "cookie-alert",
-      "cookie-modal"
+      "cookie-modal",
+      "welcome-banner",
+      "news-media-details",
+      "news-media",
+      "latest-news",
+      "forward-points-sme",
+      "savings-calculator",
+      "category-banner",
+      "bbm-glow-card",
+      "menu-list",
+      "search-reports",
+      "search-reports-results",
+      "mf-results",
+      "mf-comparator-results",
+      "mf-comparator",
+      "mf-questionnaire"
+    ]
+  },
+  {
+    "id": "bbm-glow-card",
+    "components": [
+      "bbm-glow-card-item"
     ]
   },
   {
@@ -176,6 +210,24 @@
     ]
   },
   {
+    "id": "fund-prices-table",
+    "rte": {
+      "toolbar": {
+        "insert": [
+          "table"
+        ],
+        "editor": [
+          "removeformat"
+        ],
+        "sections": [
+          "insert",
+          "editor"
+        ]
+      }
+    },
+    "components": []
+  },
+  {
     "id": "header-section",
     "components": [
       "top-nav",
@@ -239,6 +291,13 @@
     "maxItems": 6
   },
   {
+    "id": "menu-list",
+    "components": [
+      "menu-list-item"
+    ],
+    "maxItems": 5
+  },
+  {
     "id": "multi-column-tiles",
     "components": [
       "multi-column-tiles-item"
@@ -248,6 +307,12 @@
     "id": "rate-card",
     "components": [
       "rate-card-item"
+    ]
+  },
+  {
+    "id": "sme-loan-calculator",
+    "components": [
+      "sme-field"
     ]
   },
   {
@@ -329,9 +394,7 @@
         ]
       }
     },
-    "components": [
-      "nested-table"
-    ]
+    "components": []
   },
   {
     "id": "tab-section",
@@ -345,7 +408,6 @@
       "cards-product",
       "columns",
       "fragment",
-      "megamenu",
       "carousel",
       "story-card",
       "warning-card",
@@ -354,12 +416,13 @@
       "cross-banner",
       "form",
       "embed-adaptive-form",
-      "brand-logo",
-      "location",
-      "login",
-      "main-nav-item",
+      "download-file",
+      "table",
+      "accordion-block",
       "forex-rates",
-      "forex-graph"
+      "forex-graph",
+      "sme-loan-calculator",
+      "table"
     ]
   },
   {
@@ -378,6 +441,12 @@
     "id": "video",
     "components": [
       "video"
+    ]
+  },
+  {
+    "id": "welcome-banner",
+    "components": [
+      "button"
     ]
   }
 ]

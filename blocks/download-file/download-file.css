@@ -1,0 +1,7 @@
+.download-section {
+  text-align: left;
+  background: var(--bbl-color-white);
+  padding: 0.8125rem;
+  box-shadow: 0 0 1rem 0 rgb(0 0 0 / 10%);
+  margin-bottom: 1.875rem;
+}

@@ -1,0 +1,128 @@
+{
+	"definitions": [
+		{
+			"title": "SME Loan Calculator",
+			"id": "sme-loan-calculator",
+			"plugins": {
+				"xwalk": {
+					"page": {
+						"resourceType": "core/franklin/components/block/v1/block",
+						"template": {
+							"name": "SME Loan Calculator",
+							"model": "sme-loan-calculator",
+							"filter": "sme-loan-calculator"
+						}
+					}
+				}
+			}
+		},
+		{
+			"title": "SME Field",
+			"id": "sme-field",
+			"plugins": {
+				"xwalk": {
+					"page": {
+						"resourceType": "core/franklin/components/block/v1/block/item",
+						"template": {
+							"name": "SME Field",
+							"model": "sme-field"
+						}
+					}
+				}
+			}
+		}
+	],
+	"models": [
+		{
+			"id": "sme-loan-calculator",
+			"fields": [
+				{
+					"component": "text",
+					"name": "buttonName",
+					"label": "1st Button Name",
+					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "resultValue",
+					"label": "Default Result Value",
+					"description": "Default result text with a value (e.g., result value displayed as 0.00).",
+					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "description",
+					"label": "Description",
+					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "addToTableButtonName",
+					"label": "2nd Button Name",
+					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "resultText",
+					"label": "Result Text",
+					"description": "can add the result text",
+					"valueType": "string"
+				}
+			]
+		},
+		{
+			"id": "sme-field",
+			"fields": [
+				{
+					"component": "text",
+					"name": "id",
+					"label": "Id",
+					"valueType": "string",
+					"required": true
+				},
+				{
+					"component": "text",
+					"name": "label",
+					"label": "Label",
+					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "topText",
+					"label": "Group Title",
+					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "bottomText",
+					"label": "unit name",
+					"valueType": "string"
+				},
+				{
+					"component": "select",
+					"name": "valueType",
+					"label": "Value Type",
+					"valueType": "string",
+					"options": [
+						{
+							"name": "Integer",
+							"value": "integer"
+						},
+						{
+							"name": "Decimal",
+							"value": "decimal"
+						}
+					]
+				}
+			]
+		}
+	],
+	"filters": [
+		{
+			"id": "sme-loan-calculator",
+			"components": [
+				"sme-field"
+			]
+		}
+	]
+}

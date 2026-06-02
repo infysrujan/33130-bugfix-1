@@ -7,26 +7,45 @@
 
 :lang(th) {
   .card-list-container .default-content-wrapper :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .card-list-container .default-content-wrapper :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 
   .cards-list-title :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .cards-list-title :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 }
 
 .cards-list-remark p,
+.cards-list-subtitle p,
 .cards-list-description p {
   font-weight: var(--bbl-font-family-regular);
   color: var(--bbl-color-grey-70);
+}
+
+.cards-list-subtitle p {
+  line-height: 1.203rem;
+  margin-block: 0;
+  position: relative;
+  padding-bottom: 0.9375rem;
+  margin-bottom: 0.9375rem;
+}
+
+.cards-list-subtitle p::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 1.3125rem;
+  bottom: 0;
+  height: 0.0625rem;
+  background: var(--bbl-color-grey-60);
 }
 
 .cards-list-remark p {
@@ -163,6 +182,14 @@
   margin-inline: auto;
 }
 
+ .modal-body .default-content-wrapper.card-list-modal-content {
+    margin-inline: 0;
+}
+
+.modal-body .section.central-aligned {
+    padding-inline: 0;
+}
+
 .cards-list-image.cards-list-image-x-small img {
   height: 75%;
   min-width: 90%;
@@ -187,6 +214,8 @@
 
 .cards-list-image.cards-list-image-card {
   max-height: 10.3125rem;
+  border-top-left-radius: 0.4375rem;
+  border-top-right-radius: 0.4375rem;
 }
 
 .cards-list-image.cards-list-image-full {
@@ -237,6 +266,14 @@
   padding: 0 var(--bbl-space-250) var(--bbl-space-250);
 }
 
+.cards-list-downloads .download-button-wrapper.multiple-download-wrapper {
+  margin-top: 0.625rem;
+}
+
+.cards-list-downloads .download-button-wrapper:first-child {
+  margin-top: 0;
+}
+
 .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
   position: relative;
   color: var(--bbl-color-black);
@@ -274,7 +311,7 @@
 }
 
 .cards-list-title:not(.has-title-underline) :is(h1, h2, h3, h4, h5, h6) {
-  min-height: auto;
+  min-height: 4.4375rem;
   padding-bottom: 0;
   margin-bottom: 0;
 }
@@ -297,7 +334,7 @@
   position: relative;
   padding-right: 0.9375rem;
   color: var(--bbl-color-active-blue);
-  font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-medium);
+  font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-looped);
 }
 
 .cards-list-button .button-tertiary:hover {
@@ -388,8 +425,17 @@
   margin-inline: 0;
 }
 
+.cards-list-inner:has(.cards-list-downloads) {
+  flex: none;
+}
+
+.cards-list-inner:has(.cards-list-downloads) .cards-list-button {
+  margin-top: 0;
+}
+
 @media (width > 47.5rem) {
   .cards-list-remark p,
+  .cards-list-subtitle p,
   .cards-list-description p {
     font-size: var(--bbl-font-size-b2);
   }
@@ -465,19 +511,19 @@
 
   :lang(th) {
     .cards-list-title :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .cards-list-title :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .cards-list-title :is(h3) {
       line-height: 3.75rem;
     }
 
-    .cards-list-title :is(h4) {
+    .cards-list-title :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .cards-list-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .cards-list-title :is(h4) {
+      line-height: 1.375rem;
     }
   }
 
@@ -508,39 +554,40 @@
 
   :lang(th) {
     .card-list-container .default-content-wrapper :is(h1) {
-      line-height: 5.5rem;
+      line-height: 3.75rem;
     }
 
     .card-list-container .default-content-wrapper :is(h2) {
-      line-height: 4.875rem;
+      line-height: 2.5rem;
     }
 
     .card-list-container .default-content-wrapper :is(h3) {
-      line-height: 3.75rem;
+      line-height: 2rem;
     }
 
     .card-list-container .default-content-wrapper :is(h4) {
-      line-height: 2.5rem;
+      line-height: 1.375rem;
     }
 
     .cards-list-title :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .cards-list-title :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .cards-list-title :is(h3) {
       line-height: 3.75rem;
     }
 
-    .cards-list-title :is(h4) {
+    .cards-list-title :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .cards-list-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .cards-list-title :is(h4) {
+      line-height: 1.375rem;
     }
   }
 
   .cards-list-remark p,
+  .cards-list-subtitle p,
   .cards-list-description p {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.375rem;
@@ -662,6 +709,11 @@
   .card-list-modal-title+.card-list-modal-text {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.375rem;
+  }
+
+   .modal-body .default-content-wrapper.card-list-modal-content {
+    max-width: 56.25rem;
+    margin: 0 auto;
   }
 
   .card-list-modal-subtitle,

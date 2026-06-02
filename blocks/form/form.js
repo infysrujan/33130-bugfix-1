@@ -3,9 +3,8 @@ import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './co
 import { emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE } from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
-import { handleSubmit, setFormPlaceholders } from './submit.js';
+import { handleSubmit } from './submit.js';
 import DocBasedFormToAF from './transform.js';
-import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import {
   checkValidation,
   createButton,
@@ -292,6 +291,13 @@ export async function generateFormRendition(panel, container, formId, getItems =
     if (field.appliedCssClassNames) {
       element.className += ` ${field.appliedCssClassNames}`;
     }
+    // Apply customClassName authored via Universal Editor / Xwalk
+    const customClassName = field.properties?.customClassName || field.customClassName;
+    if (customClassName && typeof customClassName === 'string') {
+      customClassName.trim().split(/\s+/).filter(Boolean).forEach((cls) => {
+        element.classList.add(cls);
+      });
+    }
     colSpanDecorator(field, element);
     if (field?.fieldType === 'panel') {
       await generateFormRendition(field, element, formId, getItems);
@@ -361,7 +367,10 @@ export async function createForm(formDef, data, source = 'aem') {
     captcha.loadCaptcha(form);
   }
 
-  enableValidation(form);
+  // Only enable DOM validation for doc-based forms; edge forms use the model.
+  if (source === 'sheet') {
+    enableValidation(form);
+  }
   transferRepeatableDOM(form, formDef, form, formId);
 
   if (afModule && typeof Worker === 'undefined') {
@@ -371,7 +380,8 @@ export async function createForm(formDef, data, source = 'aem') {
   }
 
   form.addEventListener('reset', async () => {
-    const response = await createForm(formDef);
+    const currentSource = form.dataset.source || 'aem';
+    const response = await createForm(formDef, undefined, currentSource);
     if (response?.form) {
       document.querySelector(`[data-action="${form?.dataset?.action}"]`)?.replaceWith(response?.form);
     }
@@ -509,9 +519,6 @@ function loadFormCustomStyles(formDef) {
 }
 
 export default async function decorate(block) {
-  // Load placeholders early for form error messages
-  const placeholders = await fetchPlaceholders();
-  setFormPlaceholders(placeholders);
   let container = block.querySelector('a[href]');
   let formDef;
   let pathname;

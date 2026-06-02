@@ -13,17 +13,15 @@
 import { toCamelCase } from './aem.js';
 
 /**
- * Gets configs object from config.json.
+ * Gets configs object from configs.json.
  * @returns {Promise<object>} Window configs object
  */
 // eslint-disable-next-line import/prefer-default-export
 export async function fetchConfigs() {
-  const lang = document.documentElement.lang || 'en';
   window.configs = window.configs || {};
-  if (!window.configs[lang]) {
-    window.configs[lang] = new Promise((resolve) => {
-      // Check if config JSON exists in sessionStorage
-      const configKey = `config-${lang}`;
+  if (!window.configs.data) {
+    window.configs.data = new Promise((resolve) => {
+      const configKey = 'bbl-config';
       const cachedConfigJSON = window.sessionStorage.getItem(configKey);
 
       if (cachedConfigJSON) {
@@ -35,26 +33,22 @@ export async function fetchConfigs() {
             .forEach((config) => {
               configs[toCamelCase(config.Key)] = config.Value;
             });
-          window.configs[lang] = configs;
+          window.configs.data = configs;
           resolve(configs);
           return;
         } catch (e) {
-          // If parsing fails, continue to fetch
           // eslint-disable-next-line no-console
           console.warn('Failed to parse cached config, fetching fresh:', e);
         }
       }
 
-      // Fetch from config.json if not in sessionStorage
-      const configPath = `/${lang}/config.json`;
-      fetch(configPath)
+      fetch('/configs.json')
         .then((resp) => {
           if (resp.ok) {
             return resp.json();
           }
           return { data: [] };
         }).then((json) => {
-          // Store entire JSON in sessionStorage
           try {
             window.sessionStorage.setItem(configKey, JSON.stringify(json));
           } catch (e) {
@@ -69,14 +63,13 @@ export async function fetchConfigs() {
               configs[toCamelCase(config.Key)] = config.Value;
             });
 
-          window.configs[lang] = configs;
-          resolve(window.configs[lang]);
+          window.configs.data = configs;
+          resolve(window.configs.data);
         }).catch(() => {
-          // error loading configs
-          window.configs[lang] = {};
-          resolve(window.configs[lang]);
+          window.configs.data = {};
+          resolve(window.configs.data);
         });
     });
   }
-  return window.configs[lang];
+  return window.configs.data;
 }

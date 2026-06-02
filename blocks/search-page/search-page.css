@@ -108,19 +108,19 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
 
 :lang(th) {
   .search-modal-history-title :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .search-modal-history-title :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 
   .search-modal-panel-caption :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .search-modal-panel-caption :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 }
 
@@ -328,19 +328,19 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
 
   :lang(th) {
     .search-modal-panel-caption :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .search-modal-panel-caption :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .search-modal-panel-caption :is(h3) {
       line-height: 3.75rem;
     }
 
-    .search-modal-panel-caption :is(h4) {
+    .search-modal-panel-caption :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .search-modal-panel-caption :is(h3) {
+      line-height: 2rem;
+    }
+
+    .search-modal-panel-caption :is(h4) {
+      line-height: 1.375rem;
     }
   }
 

@@ -33,6 +33,7 @@
 .carousel-fragment .card-list-wrapper .card-list.block {
     display: flex;
     flex: 1;
+    margin-inline: 0;
 }
 
 .carousel-dotted.all-carousel-fragment .carousel-dotted-item.carousel-fragment {
@@ -66,6 +67,10 @@
     margin-bottom: 0;
 }
 
+.carousel-dotted.all-carousel-fragment .slick-dots li:only-child {
+    display: none;
+}
+
 .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
@@ -76,7 +81,8 @@
 }
 
 .carousel-dotted.all-carousel-fragment.show-arrows-dots
-    .carousel-arrow-next:hover {
+    .carousel-arrow:hover {
+    background-color: unset;
     transform: translateY(-50%) translateX(0.3rem);
 }
 
@@ -92,8 +98,8 @@
     }
 
     .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
-        width: calc(100% + (2 * var(--bbl-space-section-sm)));
-        margin-inline: calc(-1 * var(--bbl-space-section-sm));
+        width: 100%;
+        margin-inline: 0;
     }
 
     .carousel-dotted.all-carousel-fragment.show-arrows-dots {
@@ -115,8 +121,6 @@
     .carousel-dotted.all-carousel-fragment
         .carousel-dotted-item.carousel-fragment
         :is(.card-list-wrapper, .card-list.block, .cards-list) {
-        width: 100%;
-        max-width: 100%;
         justify-content: center;
     }
 
@@ -126,6 +130,12 @@
         flex: 1 1 0;
         min-width: 0;
         margin-bottom: 0;
+    }
+
+    .carousel-dotted.all-carousel-fragment
+        .carousel-dotted-item.no-scroll
+        .cards-list-item {
+        flex: 0 0 calc((100% - 2.5rem) / 3);
     }
 }
 
@@ -153,14 +163,6 @@
         gap: 0 var(--bbl-space-500);
     }
 
-    .carousel-dotted.all-carousel-fragment
-        .carousel-dotted-item.carousel-fragment
-        .cards-list-item {
-        flex: 1 1 0;
-        min-width: 0;
-        margin-bottom: 0;
-    }
-
     .carousel-dotted.all-carousel-fragment.show-arrows-dots
         .carousel-arrow-prev {
         left: -4.3125rem;
@@ -169,5 +171,11 @@
     .carousel-dotted.all-carousel-fragment.show-arrows-dots
         .carousel-arrow-next {
         right: -4.3125rem;
+    }
+
+    .carousel-dotted.all-carousel-fragment
+        .carousel-dotted-item.no-scroll
+        .cards-list-item {
+        flex: 0 0 30.22%;
     }
 }

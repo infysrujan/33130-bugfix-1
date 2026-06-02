@@ -216,6 +216,13 @@
               ]
             }
           ]
+        },
+        {
+          "component": "richtext",
+          "name": "exclusionUrls",
+          "label": "Exclusion URLs",
+          "description": "List of page URLs where the cookie alert should NOT appear. Enter each URL on a new line or as a bulleted list.",
+          "valueType": "string"
         }
       ]
     }

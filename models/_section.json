@@ -95,6 +95,10 @@
                 {
                   "name": "Grey 100",
                   "value": "bg-grey-100"
+                },
+                {
+                  "name": "Blue 01",
+                  "value": "bg-blue-01"
                 }
               ]
             },
@@ -125,6 +129,10 @@
                 {
                   "name":"Columns 2(50-50)",
                   "value": "columns-2-50"
+                },
+                {
+                  "name":"Columns 2(65-35)",
+                  "value": "columns-2-65"
                 }
               ]
             },
@@ -138,6 +146,14 @@
                 {
                   "name": "Center Title",
                   "value": "center-title"
+                },
+                {
+                  "name": "Center Image",
+                  "value": "center-image"
+                },
+                {
+                  "name": "Underline Image",
+                  "value": "underline-image"
                 },
                 {
                   "name": "Center Content",
@@ -199,6 +215,9 @@
         "table",
         "locate-us",
         "rate-card",
+        "fund-prices",
+        "fund-prices-table",
+        "fund-prices-dropdown",
         "accordion-block",
         "social-icons",
         "card-list",
@@ -211,14 +230,39 @@
         "video",
         "carousel-video",
         "forex-rates",
+        "market-report",
+        "sme-loan-calculator",
+        "dynamic-board",
+        "bcap",
+        "multi-column-tiles",
+        "retirement-calculator",
+        "tax-calculator",
         "special-fx-rates",
         "promotional-details",
         "promo-card-listing",
         "top-promotional-cards",
         "multi-column-tiles",
+        "fund-prices",
+        "property-for-sale-details",
+        "property-for-sale",
         "stock-ticker",
         "cookie-alert",
-        "cookie-modal"
+        "cookie-modal",
+        "welcome-banner",
+        "news-media-details",
+        "news-media",
+        "latest-news",
+        "forward-points-sme",
+        "savings-calculator",
+        "category-banner",      
+        "bbm-glow-card",
+        "menu-list",
+        "search-reports",
+        "search-reports-results",
+        "mf-results",
+        "mf-comparator-results",
+        "mf-comparator",
+        "mf-questionnaire"
       ]
     }
   ]

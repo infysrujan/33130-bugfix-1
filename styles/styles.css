@@ -15,7 +15,8 @@
 @import url('./background.css');
 @import url('./icomoon.css');
 @import url('./overlay.css');
-
+@import url('./calendar-picker.css');
+@import url('./error-page.css');
 
 :root {
     /* site-level sizing */
@@ -98,6 +99,10 @@ h6 {
     font-weight: var(--bbl-text-body-small-weight);
 }
 
+strong{
+  font-family: var(--bbl-font-family-medium);
+}
+
 p,
 dl,
 ol,
@@ -161,28 +166,14 @@ main img {
     width: 100%;
 }
 
-/* sections (default) */
+/* =========================================================================
+   SECTION-DEFAULT - Global Styles
+   ========================================================================= */
 .section {
     width: 100%;
     padding-inline: var(--bbl-space-section-xs);
     margin: 0 auto;
     box-sizing: border-box;
-}
-
-.section.columns-3 {
-    display: flex;
-    gap: var(--bbl-space-layout-sm);
-    flex-direction: column;
-}
-
-.section.columns-2-75 {
-    display: flex;
-    flex-direction: column;
-}
-
-.section.columns-2-50 {
-    display: flex;
-    flex-direction: column;
 }
 
 @media (width > 47.5rem) {
@@ -196,35 +187,8 @@ main img {
         padding-inline: var(--bbl-space-section-xl);
     }
 
-    .section.columns-3 {
-        flex-direction: row;
-    }
-
-    .section.columns-3  > * {
-        width: 33%;
-        flex: 1;
-    }
-
-    .section.columns-2-50 {
-        flex-direction: row;
-    }
-
-    .section.columns-2-50 > * {
-        padding-inline: 20px;
-        flex: 1;
-    }
-
-    .section.columns-2-75 {
-        flex-direction: row;
-    }
-
-    .section.columns-2-75 > * {
-        padding-inline: 20px;
-        flex: 1;
-    }
-
-    .section.columns-2-75 > *:first-child {
-        flex: 0 0 75%;
+    .section.columns-2-65 > *:first-child {
+        flex: 0 0 68%;
     }
 }
 
@@ -235,38 +199,156 @@ main img {
     }
 }
 
-/* sections (full-bleed-bg) */
+/* =========================================================================
+   SECTION-LEVEL  - Global Styles
+   ========================================================================= */
+
+.section > .default-content-wrapper {
+    display: flow-root;
+}
+
+.section.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    text-align: center;
+}
+
+.section.center-image .section-image-item {
+    display: block;
+    text-align: center;
+}
+
+.section.center-image .default-content-wrapper > p {
+    text-align: center;
+}
+
+.section.center-image .default-content-wrapper > p > picture,
+.section.center-image .default-content-wrapper > p > img {
+    display: inline-block;
+    max-width: 100%;
+}
+
+.section.center-image .section-image-item :is(picture, img) {
+    display: block;
+    margin-inline: auto;
+    max-width: 100%;
+}
+
+.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
+.section.underline-image .section-image-item {
+    position: relative;
+    padding-bottom: var(--bbl-space-250);
+    margin: 1.875rem 0;
+}
+
+.section.underline-image .default-content-wrapper > p > picture,
+.section.underline-image .default-content-wrapper > p > img {
+    position: relative;
+    display: inline-block;
+    padding-bottom: var(--bbl-space-250);
+    max-width: 100%;
+}
+
+.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+.section.underline-image .section-image-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: var(--bbl-space-1000);
+    height: 0.0625rem;
+    background-color: var(--bbl-color-grey-150);
+}
+
+.section.underline-image .default-content-wrapper > p > picture::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: var(--bbl-space-1000);
+    height: 0.0625rem;
+    background-color: var(--bbl-color-grey-150);
+}
+
+.section.underline-title.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+.section.underline-image.center-image .section-image-item::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.section.underline-image.center-image .default-content-wrapper > p > picture::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@media (width > 47.5rem) {
+    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
+    .section.underline-image .section-image-item {
+        padding-bottom: 1.875rem;
+    }
+
+    .section.underline-image .default-content-wrapper > p > picture,
+    .section.underline-image .default-content-wrapper > p > img {
+        padding-bottom: 1.875rem;
+    }
+}
+
+body.bangkok-bankm-card main {
+  background-color: maroon;
+}
+
+.section.bg-truthful-blue  *,
+.section.bg-truthful-dark-blue  *{
+    color: var(--bbl-color-white);
+}
+
+.section.center-content .default-content-wrapper * {
+    text-align: center;
+    margin: auto;
+}
+
+/* =========================================================================
+   SECTION-FULL-BLEED-BG - Global Styles
+   ========================================================================= */
 .section.full-bleed-bg {
     max-width: 100%;
     padding-inline: 0;
     margin: 0 auto;
 }
 
-.section.full-bleed-bg .content {
+/* Exclude bbm-glow-card-container from the padding */
+.section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+.section.full-bleed-bg .default-content-wrapper {
     padding-inline: var(--bbl-space-section-xs);
     margin: 0 auto;
 }
 
 @media (width > 47.5rem) {
-    .section.full-bleed-bg .content {
+    /* Exclude bbm-glow-card-container from the padding */
+    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .default-content-wrapper {
         padding-inline: var(--bbl-space-section-sm);
     }
 }
 
 @media (width > 64rem) {
-    .section.full-bleed-bg .content {
+    /* Exclude bbm-glow-card-container from the padding */
+    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .default-content-wrapper {
         padding-inline: var(--bbl-space-section-xl);
     }
 }
 
 @media (width > 120rem) {
-    .section.full-bleed-bg .content {
+    /* Exclude bbm-glow-card-container from the padding */
+    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .default-content-wrapper {
         max-width: var(--bbl-layout-content-max-width-1920);
         padding-inline: 0;
     }
 }
 
-/* sections (full-bleed-special) */
+/* =========================================================================
+   SECTION-FULL-BLEED-SPECIAL - Global Styles
+   ========================================================================= */
 .section.full-bleed-special {
     width: 100%;
     padding-inline: var(--bbl-space-section-xs);
@@ -294,6 +376,98 @@ main img {
     }
 }
 
+/* =========================================================================
+   SECTION-CENTRAL-ALIGNED - Global Styles
+   ========================================================================= */
+.section.central-aligned .block,
+.section.central-aligned .default-content-wrapper {
+    margin-inline: 1rem;
+}
+ 
+@media (width > 47.5rem) {
+    .section.central-aligned .block,
+    .section.central-aligned .default-content-wrapper {
+        margin-inline: 3rem;
+    }
+}
+ 
+@media (width > 64rem) {
+    .section.central-aligned .block,
+    .section.central-aligned .default-content-wrapper {
+        max-width: var(--bbl-layout-central-aligned-max-width);
+        margin: 0 auto;
+    }
+}
+
+/* =========================================================================
+   SECTION-COLUMNS - Global Styles
+   ========================================================================= */
+.section.columns-3 {
+    display: flex;
+    gap: var(--bbl-space-layout-sm);
+    flex-direction: column;
+}
+
+.section.columns-2-75 {
+    display: flex;
+    flex-direction: column;
+}
+
+.section.columns-2-50 {
+    display: flex;
+    flex-direction: column;
+}
+
+.section.columns-2-65 {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (width > 64rem) {
+    .section.columns-3 { 
+        flex-direction: row;
+    }
+
+    .section.columns-3  > * {
+        width: 33%;
+        flex: 1;
+    }
+
+    .section.columns-2-50 {
+        flex-direction: row;
+    }
+
+    .section.columns-2-50 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-65 {
+        flex-direction: row;
+    }
+
+    .section.columns-2-75 {
+        flex-direction: row;
+    }
+
+    .section.columns-2-65 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-75 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-65 > *:first-child {
+        flex: 0 0 65%;
+    }
+
+    .section.columns-2-75 > *:first-child {
+        flex: 0 0 75%;
+    }
+}
 
 
 /* =========================================================================
@@ -324,6 +498,18 @@ main img {
 .pad-container-xl {
     padding-inline: var(--bbl-space-container-xl);
     box-sizing: border-box;
+}
+
+/* =========================================================================
+   SECTION-LEVEL SPACING - Global Styles
+   ========================================================================= */
+
+.pad-top-30 {
+    padding-top: 1.875rem;
+}
+
+.pad-bot-30 {
+    padding-bottom: 1.875rem;
 }
 
 /* =========================================================================
@@ -363,70 +549,8 @@ body.wealth main :is(.button-container .button, .button) {
 }
 
 /* =========================================================================
-   SECTION-LEVEL SPACING - Global Styles
+   THEME BASED STYLES
    ========================================================================= */
-
-.pad-top-30 {
-    padding-top: 1.875rem;
-}
-
-.pad-bot-30 {
-    padding-bottom: 1.875rem;
-}
-
-/* =========================================================================
-   SECTION-LEVEL  - Global Styles
-   ========================================================================= */
-
-.section > .default-content-wrapper {
-    display: flow-root;
-}
-
-.section.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
-    text-align: center;
-}
-
-.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
-    position: relative;
-    padding-bottom: var(--bbl-space-250);
-    margin: 1.875rem 0;
-}
-
-.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: var(--bbl-space-1000);
-    height: 0.0625rem;
-    background-color: var(--bbl-color-grey-150);
-}
-
-.section.underline-title.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-@media (width > 47.5rem) {
-    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
-        padding-bottom: 1.875rem;
-    }
-}
-
-body.bangkok-bankm-card main {
-  background-color: maroon;
-}
-
-.section.bg-truthful-blue  *,
-.section.bg-truthful-dark-blue  *{
-    color: var(--bbl-color-white);
-}
-
-.section.center-content .default-content-wrapper * {
-    text-align: center;
-    margin: auto;
-}
-
 .section.background-wealth,
 .section.background-privatebanking {
     padding: 1.875rem 1rem;
@@ -496,27 +620,6 @@ body.bangkok-bankm-card main {
     color: var(--bbl-color-grey-85);
 }
 
-/* sections (central-aligned) */
-.section.central-aligned .block,
-.section.central-aligned .default-content-wrapper {
-    margin-inline: 1rem;
-}
- 
-@media (width > 47.5rem) {
-    .section.central-aligned .block,
-    .section.central-aligned .default-content-wrapper {
-        margin-inline: 3rem;
-    }
-}
- 
-@media (width > 64rem) {
-    .section.central-aligned .block,
-    .section.central-aligned .default-content-wrapper {
-        max-width: var(--bbl-layout-central-aligned-max-width);
-        margin: 0 auto;
-    }
-}
-
 @media (width > 47.5rem) {
     .section.background-wealth,
     .section.background-privatebanking {
@@ -551,4 +654,8 @@ body.bangkok-bankm-card main {
         font-weight: var(--bbl-font-weight-medium);
         line-height: 2.875rem;
     }
+}
+
+.hidden {
+    display: none;
 }

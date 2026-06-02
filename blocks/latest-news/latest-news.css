@@ -1,0 +1,35 @@
+
+.latest-news-container
+    .default-content-wrapper
+    > :is(h1, h2, h3, h4, h5, h6):first-child {
+    font-size: 1.4rem;
+    line-height: 1.3746rem;
+    font-weight: var(--bbl-font-weight-regular);
+    letter-spacing: -0.0125rem;
+}
+
+.latest-news-container .default-content-wrapper p {
+    line-height: 1.1244rem;
+    padding-bottom: 1.875rem;
+    font-weight: var(--bbl-font-weight-regular);
+}
+
+@media (width > 47.5rem) {
+    .latest-news-container .default-content-wrapper p {
+        font-size: var(--bbl-font-size-b2);
+    }
+}
+
+@media (width > 64rem) {
+    .latest-news-container
+        .default-content-wrapper
+        > :is(h1, h2, h3, h4, h5, h6):first-child {
+        font-size: var(--bbl-heading-h3-size);
+        line-height: 2.875rem;
+    }
+
+    .latest-news-container .default-content-wrapper p {
+        font-size: var(--bbl-font-size-b1);
+        line-height: 1.375rem;
+    }
+}
