@@ -66,10 +66,8 @@ function getAuthoringPreviewData(block) {
     detailDescription: config['detail-description'] || config.detaildescription || '',
     promotionStartDate: config['promotion-start-date'] || config.promotionstartdate || '',
     promotionEndDate: config['promotion-end-date'] || config.promotionenddate || '',
-    responsibleLendingDisclaimerEnabled: config['responsible-lending-disclaimer-enabled']
-      || config.responsiblelendingdisclaimerenabled,
-    responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text']
-      || config.responsiblelendingdisclaimertext || '',
+    responsibleLendingDisclaimerEnabled: config['responsible-lending-disclaimer-enabled'] || config.responsiblelendingdisclaimerenabled,
+    responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text'] || config.responsiblelendingdisclaimertext || '',
     isRegister: config['is-register'] || config.isregister || '',
     registerCtaLabel: config['register-cta-label'] || config.registerctalabel || '',
     ctaLabel: config['cta-label'] || config.ctalabel || '',
@@ -97,7 +95,7 @@ function buildRegisterCtaHtml(label, url) {
   if (!label || !url) return '';
   return `
     <div class="promo-detail-cta button-container">
-      <a class="button primary" href="${url}">${label}</a>
+        <a href="${url}" class="button primary promo-detail-register-btn">${label}</a>
     </div>`;
 }
 
@@ -122,11 +120,30 @@ function bindImageModal(container, imageUrl, altText) {
   });
 }
 
-function renderDetails(container, data, periodLabel, locale, clickToViewFull, registerCtaUrl) {
+function renderDetails(container, data, periodLabel, locale, viewFull, registerCtaUrl, baseUrl) {
   const title = data?.title
     ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
-  const imageUrl = data?.detailImageUrl || '';
+  let imageUrl = data?.detailImageUrl || '';
+  if (imageUrl) {
+    try {
+      let base = baseUrl;
+      if (data?.cardImageUrl) {
+        try {
+          // Validate if cardImageUrl is absolute using the native URL constructor
+          const dummyUrl = new URL(data.cardImageUrl);
+          if (dummyUrl) base = data.cardImageUrl;
+        } catch (err) {
+          // Relative URL or invalid; fallback to baseUrl
+        }
+      }
+      // Native URL parser handles both relative and absolute URLs automatically
+      imageUrl = new URL(imageUrl, base).toString();
+    } catch (e) {
+      // Keep original URL if parsing fails
+    }
+  }
+
   const cleanTitle = data?.title ? data.title.replace(/<[^>]*>/g, '').trim() : '';
   const imageHtml = imageUrl
     ? `<img src="${imageUrl}" alt="${cleanTitle}" loading="lazy">`
@@ -143,7 +160,7 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
           <div class="promo-detail-image">
-            <a class="promo-detail-image-link" href="${imageUrl}" title="${clickToViewFull}">
+            <a class="promo-detail-image-link" href="${imageUrl}" title="${viewFull}">
               ${imageHtml}
             </a>
           </div>` : '';
@@ -256,9 +273,18 @@ export default async function decorate(block) {
       locale,
       clickToViewFull,
       registerCtaUrl,
+      promotionApi?.baseUrl,
     );
     return;
   }
 
-  renderDetails(block, data, periodLabel, locale, clickToViewFull, registerCtaUrl);
+  renderDetails(
+    block,
+    data,
+    periodLabel,
+    locale,
+    clickToViewFull,
+    registerCtaUrl,
+    promotionApi?.baseUrl,
+  );
 }

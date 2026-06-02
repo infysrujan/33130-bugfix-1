@@ -223,7 +223,7 @@ function setupPanel(
   if (disableFilters) {
     panel.innerHTML = `
       <div class="promo-selector-content pad-top-30 pad-bot-30">
-        <div class="promo-selector-grid"></div>
+        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
         <div class="promo-selector-pagination"></div>
       </div>`;
   } else {
@@ -262,7 +262,7 @@ function setupPanel(
         </div>
       </div>
       <div class="promo-selector-content pad-top-30 pad-bot-30">
-        <div class="promo-selector-grid"></div>
+        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
         <div class="promo-selector-pagination"></div>
       </div>`;
   }
@@ -288,18 +288,17 @@ function setupPanel(
         let cardData = c;
         if (isBbmPanel && queryLang && c.ctaLink) {
           try {
-            const isInternal = c.ctaLink.startsWith('/')
-              || c.ctaLink.startsWith(window.location.origin);
             const url = new URL(c.ctaLink, window.location.origin);
             url.searchParams.set('sc_lang', queryLang);
+            const isInternal = url.origin === window.location.origin;
             const ctaPath = url.pathname + url.search + url.hash;
             cardData = { ...c, ctaLink: isInternal ? ctaPath : url.toString() };
           } catch {
-            const separator = c.ctaLink.includes('?') ? '&' : '?';
-            cardData = { ...c, ctaLink: `${c.ctaLink}${separator}sc_lang=${queryLang}` };
+            // Keep original ctaLink if URL parsing fails completely
           }
         }
         const cardOptions = buildCardOptions(cardData);
+        cardOptions.baseUrl = options.baseUrl;
         if (isBbmPanel) cardOptions.logoHtml = '';
         return buildCardHtml(cardData, category, placeholders, cardOptions);
       }).join('')
@@ -308,12 +307,6 @@ function setupPanel(
     paginationEl.innerHTML = hidePagination
       ? ''
       : buildPaginationHtml(state.page, Math.ceil(total / pageSize));
-
-    if (cards.length === 1 && isBbmPanel) {
-      gridEl.classList.add('has-single-card');
-    } else {
-      gridEl.classList.remove('has-single-card');
-    }
   }
 
   if (options.immediate) {
@@ -482,6 +475,7 @@ export default async function decorate(block) {
         isBbm,
         isHighlightsPanel,
         immediate: true,
+        baseUrl: promotionApi?.baseUrl,
       },
     );
     return;
@@ -545,6 +539,7 @@ export default async function decorate(block) {
         hidePagination: disableFilters && isBbm,
         isBbm,
         isHighlightsPanel,
+        baseUrl: promotionApi?.baseUrl,
       },
     );
   });
