@@ -27,7 +27,7 @@ function isRegisterEnabled(value) {
 
 function resolveCtaLabel(isRegister, data) {
   if (!isRegisterEnabled(isRegister)) return '';
-  return data?.isRegisterCtaLabel || '';
+  return data?.registerCtaLabel || '';
 }
 
 function resolveCtaUrl(isRegister, registerCtaUrl) {
@@ -71,7 +71,7 @@ function getAuthoringPreviewData(block) {
     responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text']
       || config.responsiblelendingdisclaimertext || '',
     isRegister: config['is-register'] || config.isregister || '',
-    isRegisterCtaLabel: config['is-register-cta-label'] || config.isregisterctalabel || '',
+    registerCtaLabel: config['register-cta-label'] || config.registerctalabel || '',
     ctaLabel: config['cta-label'] || config.ctalabel || '',
   };
 }

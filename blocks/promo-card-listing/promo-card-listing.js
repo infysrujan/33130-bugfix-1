@@ -14,7 +14,6 @@ import {
   getPromotionPathFlags,
   handleMobileAppView,
   mergeLocalConfig,
-  normalizeCardTypeValue,
   normalizePromotionType,
   normalizeQueryLang,
   resolvePromotionApi,
@@ -165,16 +164,18 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
 
   const matched = allCards.filter((card) => {
     if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
-    if (
-      !topPromotionOnly
-      && category
-      && card.category?.toLowerCase() !== category.toLowerCase()
-    ) return false;
+    if (!topPromotionOnly && category) {
+      const cardCats = normalizeList(card.category).map((c) => c.toLowerCase());
+      if (!cardCats.includes(category.toLowerCase())) return false;
+    }
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
-    if (subcategory && card.subcategory !== subcategory) return false;
+    if (subcategory) {
+      const cardSubCats = normalizeList(card.subcategory).map((c) => c.toLowerCase());
+      if (!cardSubCats.includes(subcategory.toLowerCase())) return false;
+    }
     if (cardType) {
-      const cardTypeNormalized = normalizeList(card.cardTypes).map(normalizeCardTypeValue);
-      if (!cardTypeNormalized.includes(normalizeCardTypeValue(cardType))) return false;
+      const cardTypesLower = normalizeList(card.cardTypes).map((t) => t.toLowerCase());
+      if (!cardTypesLower.includes(cardType.toLowerCase())) return false;
     }
     if (area) {
       const cardAreas = normalizeList(card.area);
