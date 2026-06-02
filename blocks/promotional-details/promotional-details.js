@@ -235,14 +235,6 @@ export default async function decorate(block) {
 
   const data = card || previewData;
 
-  // DEBUGGING: Log the data object so the user can inspect it in the browser console.
-  console.log('=== PROMOTIONAL DETAILS DEBUG ===');
-  console.log('1. Data source:', card ? 'API (card)' : 'DOM (previewData)');
-  console.log('2. Full data object:', data);
-  console.log('3. isRegister value:', data?.isRegister);
-  console.log('4. registerCtaLabel value:', data?.registerCtaLabel);
-  console.log('=================================');
-
   if (isAuthoringInstance(block)) {
     block.querySelectorAll(':scope > div').forEach((row) => {
       const key = row.children[0]?.textContent?.trim().toLowerCase().replace(/-/g, '');
