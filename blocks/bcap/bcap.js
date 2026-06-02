@@ -489,7 +489,7 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   const root = doc.createElement('div');
-  root.className = 'bcap-root';
+  root.className = 'bcap-root content';
 
   const dateLabel = doc.createElement('div');
   dateLabel.className = 'calendar-wrapper';

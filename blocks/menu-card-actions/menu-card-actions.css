@@ -80,6 +80,8 @@
   width: 100%;
   box-sizing: border-box;
   transition: border 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  overflow-wrap: break-word;
 }
 
 .menu-card-action-item-link .menu-card-action-inner {
@@ -131,18 +133,18 @@
   }
 }
 
-.menu-card-action-inner .button.primary {
-  border-radius: 0.4375rem;
-  box-sizing: border-box;
-  width: 100%;
-  padding: 0;
-  display: block;
-  text-align: center;
-  line-height: 2.75rem;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  margin-top: calc(var(--bbl-space-250) - 0.9375rem);
-  min-width: 100%;
+.menu-card-action-inner .button-container {
+    margin-block: 0;
+    width: 100%;
+}
+
+.menu-card-action-inner .button-m {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-top: calc(var(--bbl-space-250) - 0.9375rem);
 }
 
 .menu-card-action-inner .global-dropdown {
@@ -155,12 +157,10 @@
 
 .menu-card-action .menu-card-action-inner .button-tertiary {
   position: relative;
-  padding-right: 0.9375rem;
-  margin-top: var(--bbl-space-250);
-  font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-looped);
+  font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-medium);
 }
 
-.menu-card-action-inner .menu-card-action-description ~ :is(.button.primary, .global-dropdown) {
+.menu-card-action-inner .menu-card-action-description ~ :is(.button-m, .global-dropdown) {
     margin-top: var(--bbl-space-250);
     min-width: 100%;
 }
@@ -172,21 +172,20 @@
 
 .menu-card-action .menu-card-action-inner .button-tertiary:hover {
   color: var(--bbl-color-blue-90);
+  background: transparent;
   text-decoration: none;
 }
 
 .menu-card-action .menu-card-action-inner .button-tertiary::before {
   content: "\e901";
-  position: absolute;
-  right: 0.1875rem;
-  top: 52%;
-  transform: translateY(-50%);
+  order: 2; /* Robust flexbox alignment to place ::before after the text */
   font: 300 var(--bbl-font-size-b4) / 1 icomoon, sans-serif;
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
+  display: block;
 }
 
 .menu-card-action-inner .button-tertiary:hover::before {
-  transform: translateY(-50%) translateX(0.25rem);
+  transform: translateX(0.25rem);
 }
 
 .menu-card-action-description {
@@ -263,7 +262,7 @@
   margin-top: 1.875rem;
 }
 
-.menu-card-action-inner .download-button-wrapper + .download-button-wrapper {
+.menu-card-action-inner .download-button-wrapper+.download-button-wrapper {
   margin-top: 0;
 }
 
