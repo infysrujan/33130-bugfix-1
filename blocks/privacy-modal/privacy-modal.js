@@ -267,7 +267,7 @@ export default function decorate(block) {
     const pendingHref = window.pendingNavigationUrl;
     if (pendingHref) {
       window.pendingNavigationUrl = null;
-      window.open(pendingHref, '_blank', 'noopener,noreferrer');
+      window.location.href = pendingHref;
     }
   }
 
