@@ -166,33 +166,14 @@ main img {
     width: 100%;
 }
 
-/* sections (default) */
+/* =========================================================================
+   SECTION-DEFAULT - Global Styles
+   ========================================================================= */
 .section {
     width: 100%;
     padding-inline: var(--bbl-space-section-xs);
     margin: 0 auto;
     box-sizing: border-box;
-}
-
-.section.columns-3 {
-    display: flex;
-    gap: var(--bbl-space-layout-sm);
-    flex-direction: column;
-}
-
-.section.columns-2-75 {
-    display: flex;
-    flex-direction: column;
-}
-
-.section.columns-2-50 {
-    display: flex;
-    flex-direction: column;
-}
-
-.section.columns-2-65 {
-    display: flex;
-    flex-direction: column;
 }
 
 @media (width > 47.5rem) {
@@ -206,48 +187,8 @@ main img {
         padding-inline: var(--bbl-space-section-xl);
     }
 
-    .section.columns-3 { 
-        flex-direction: row;
-    }
-
-    .section.columns-3  > * {
-        width: 33%;
-        flex: 1;
-    }
-
-    .section.columns-2-50 {
-        flex-direction: row;
-    }
-
-    .section.columns-2-50 > * {
-        padding-inline: var(--bbl-space-250);
-        flex: 1;
-    }
-
-    .section.columns-2-65 {
-        flex-direction: row;
-    }
-
-    .section.columns-2-75 {
-        flex-direction: row;
-    }
-
-    .section.columns-2-65 > * {
-        padding-inline: var(--bbl-space-250);
-        flex: 1;
-    }
-
-    .section.columns-2-75 > * {
-        padding-inline: var(--bbl-space-250);
-        flex: 1;
-    }
-
     .section.columns-2-65 > *:first-child {
-        flex: 0 0 65%;
-    }
-
-    .section.columns-2-75 > *:first-child {
-        flex: 0 0 75%;
+        flex: 0 0 68%;
     }
 }
 
@@ -256,145 +197,6 @@ main img {
         max-width: var(--bbl-layout-content-max-width-desktop);
         padding-inline: 0;
     }
-}
-
-/* sections (full-bleed-bg) */
-.section.full-bleed-bg {
-    max-width: 100%;
-    padding-inline: 0;
-    margin: 0 auto;
-}
-
-.section.full-bleed-bg .content {
-    padding-inline: var(--bbl-space-section-xs);
-    margin: 0 auto;
-}
-
-@media (width > 47.5rem) {
-    .section.full-bleed-bg .content {
-        padding-inline: var(--bbl-space-section-sm);
-    }
-}
-
-@media (width > 64rem) {
-    .section.full-bleed-bg .content {
-        padding-inline: var(--bbl-space-section-xl);
-    }
-}
-
-@media (width > 120rem) {
-    .section.full-bleed-bg .content {
-        max-width: var(--bbl-layout-content-max-width-1920);
-        padding-inline: 0;
-    }
-}
-
-/* sections (full-bleed-special) */
-.section.full-bleed-special {
-    width: 100%;
-    padding-inline: var(--bbl-space-section-xs);
-    margin: 0 auto;
-    box-sizing: border-box;
-}
-
-@media (width > 47.5rem) {
-    .section.full-bleed-special {
-        padding-inline: var(--bbl-space-section-sm);
-    }
-}
-
-@media (width > 64rem) {
-    .section.full-bleed-special {
-        max-width: 100%;
-        padding-inline:  var(--bbl-space-section-xl);
-    }
-}
-
-@media (width > 120rem) {
-    .section.full-bleed-special {
-        max-width: var(--bbl-layout-content-max-width-1920);
-        padding-inline: 0;
-    }
-}
-
-
-
-/* =========================================================================
-   SPACING UTILITIES
-   These classes rely on the responsive tokens in `styles/tokens/spacing.css`.
-   ========================================================================= */
-
-.pad-container-xs {
-    padding-inline: var(--bbl-space-container-xs);
-    box-sizing: border-box;
-}
-
-.pad-container-sm {
-    padding-inline: var(--bbl-space-container-sm);
-    box-sizing: border-box;
-}
-
-.pad-container-md {
-    padding-inline: var(--bbl-space-container-md);
-    box-sizing: border-box;
-}
-
-.pad-container-lg {
-    padding-inline: var(--bbl-space-container-lg);
-    box-sizing: border-box;
-}
-
-.pad-container-xl {
-    padding-inline: var(--bbl-space-container-xl);
-    box-sizing: border-box;
-}
-
-/* =========================================================================
-   PAGE-LEVEL VARIANTS - Global Styles
-   ========================================================================= */
-
-body.private main :is(h1, h2, h3, h4, h5, h6, p) {
-    color: var(--bbl-color-white);
-}
-
-body.private main :is(.button-container .button, .button) {
-    background: var(--bbl-color-white);
-    color: var(--bbl-color-black);
-    border: 1px solid var(--bbl-color-white);
-
-    &:hover {
-        background: var(--bbl-color-active-blue);
-        border: 1px solid var(--bbl-color-active-blue);
-        color: var(--bbl-color-white);
-        box-shadow: none;
-    }
-}
-
-body.wealth main :is(h1, h2, h3, h4, h5, h6, p) {
-    color: var(--bbl-color-black);
-}
-
-body.wealth main :is(.button-container .button, .button) {
-    background: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
-    border: 1px solid var(--bbl-color-active-blue);
-
-    &:hover {
-        background: var(--bbl-color-blue-90);
-        border: 1px solid var(--bbl-color-blue-90);
-    }
-}
-
-/* =========================================================================
-   SECTION-LEVEL SPACING - Global Styles
-   ========================================================================= */
-
-.pad-top-30 {
-    padding-top: 1.875rem;
-}
-
-.pad-bot-30 {
-    padding-bottom: 1.875rem;
 }
 
 /* =========================================================================
@@ -503,6 +305,252 @@ body.bangkok-bankm-card main {
     margin: auto;
 }
 
+/* =========================================================================
+   SECTION-FULL-BLEED-BG - Global Styles
+   ========================================================================= */
+.section.full-bleed-bg {
+    max-width: 100%;
+    padding-inline: 0;
+    margin: 0 auto;
+}
+
+/* Exclude bbm-glow-card-container from the padding */
+.section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+.section.full-bleed-bg .default-content-wrapper {
+    padding-inline: var(--bbl-space-section-xs);
+    margin: 0 auto;
+}
+
+@media (width > 47.5rem) {
+    /* Exclude bbm-glow-card-container from the padding */
+    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .default-content-wrapper {
+        padding-inline: var(--bbl-space-section-sm);
+    }
+}
+
+@media (width > 64rem) {
+    /* Exclude bbm-glow-card-container from the padding */
+    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .default-content-wrapper {
+        padding-inline: var(--bbl-space-section-xl);
+    }
+}
+
+@media (width > 120rem) {
+    /* Exclude bbm-glow-card-container from the padding */
+    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .default-content-wrapper {
+        max-width: var(--bbl-layout-content-max-width-1920);
+        padding-inline: 0;
+    }
+}
+
+/* =========================================================================
+   SECTION-FULL-BLEED-SPECIAL - Global Styles
+   ========================================================================= */
+.section.full-bleed-special {
+    width: 100%;
+    padding-inline: var(--bbl-space-section-xs);
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+@media (width > 47.5rem) {
+    .section.full-bleed-special {
+        padding-inline: var(--bbl-space-section-sm);
+    }
+}
+
+@media (width > 64rem) {
+    .section.full-bleed-special {
+        max-width: 100%;
+        padding-inline:  var(--bbl-space-section-xl);
+    }
+}
+
+@media (width > 120rem) {
+    .section.full-bleed-special {
+        max-width: var(--bbl-layout-content-max-width-1920);
+        padding-inline: 0;
+    }
+}
+
+/* =========================================================================
+   SECTION-CENTRAL-ALIGNED - Global Styles
+   ========================================================================= */
+.section.central-aligned .block,
+.section.central-aligned .default-content-wrapper {
+    margin-inline: 1rem;
+}
+ 
+@media (width > 47.5rem) {
+    .section.central-aligned .block,
+    .section.central-aligned .default-content-wrapper {
+        margin-inline: 3rem;
+    }
+}
+ 
+@media (width > 64rem) {
+    .section.central-aligned .block,
+    .section.central-aligned .default-content-wrapper {
+        max-width: var(--bbl-layout-central-aligned-max-width);
+        margin: 0 auto;
+    }
+}
+
+/* =========================================================================
+   SECTION-COLUMNS - Global Styles
+   ========================================================================= */
+.section.columns-3 {
+    display: flex;
+    gap: var(--bbl-space-layout-sm);
+    flex-direction: column;
+}
+
+.section.columns-2-75 {
+    display: flex;
+    flex-direction: column;
+}
+
+.section.columns-2-50 {
+    display: flex;
+    flex-direction: column;
+}
+
+.section.columns-2-65 {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (width > 64rem) {
+    .section.columns-3 { 
+        flex-direction: row;
+    }
+
+    .section.columns-3  > * {
+        width: 33%;
+        flex: 1;
+    }
+
+    .section.columns-2-50 {
+        flex-direction: row;
+    }
+
+    .section.columns-2-50 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-65 {
+        flex-direction: row;
+    }
+
+    .section.columns-2-75 {
+        flex-direction: row;
+    }
+
+    .section.columns-2-65 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-75 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-65 > *:first-child {
+        flex: 0 0 65%;
+    }
+
+    .section.columns-2-75 > *:first-child {
+        flex: 0 0 75%;
+    }
+}
+
+
+/* =========================================================================
+   SPACING UTILITIES
+   These classes rely on the responsive tokens in `styles/tokens/spacing.css`.
+   ========================================================================= */
+
+.pad-container-xs {
+    padding-inline: var(--bbl-space-container-xs);
+    box-sizing: border-box;
+}
+
+.pad-container-sm {
+    padding-inline: var(--bbl-space-container-sm);
+    box-sizing: border-box;
+}
+
+.pad-container-md {
+    padding-inline: var(--bbl-space-container-md);
+    box-sizing: border-box;
+}
+
+.pad-container-lg {
+    padding-inline: var(--bbl-space-container-lg);
+    box-sizing: border-box;
+}
+
+.pad-container-xl {
+    padding-inline: var(--bbl-space-container-xl);
+    box-sizing: border-box;
+}
+
+/* =========================================================================
+   SECTION-LEVEL SPACING - Global Styles
+   ========================================================================= */
+
+.pad-top-30 {
+    padding-top: 1.875rem;
+}
+
+.pad-bot-30 {
+    padding-bottom: 1.875rem;
+}
+
+/* =========================================================================
+   PAGE-LEVEL VARIANTS - Global Styles
+   ========================================================================= */
+
+body.private main :is(h1, h2, h3, h4, h5, h6, p) {
+    color: var(--bbl-color-white);
+}
+
+body.private main :is(.button-container .button, .button) {
+    background: var(--bbl-color-white);
+    color: var(--bbl-color-black);
+    border: 1px solid var(--bbl-color-white);
+
+    &:hover {
+        background: var(--bbl-color-active-blue);
+        border: 1px solid var(--bbl-color-active-blue);
+        color: var(--bbl-color-white);
+        box-shadow: none;
+    }
+}
+
+body.wealth main :is(h1, h2, h3, h4, h5, h6, p) {
+    color: var(--bbl-color-black);
+}
+
+body.wealth main :is(.button-container .button, .button) {
+    background: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
+    border: 1px solid var(--bbl-color-active-blue);
+
+    &:hover {
+        background: var(--bbl-color-blue-90);
+        border: 1px solid var(--bbl-color-blue-90);
+    }
+}
+
+/* =========================================================================
+   THEME BASED STYLES
+   ========================================================================= */
 .section.background-wealth,
 .section.background-privatebanking {
     padding: 1.875rem 1rem;
@@ -570,27 +618,6 @@ body.bangkok-bankm-card main {
 
 .section.background-wealth a.button-tertiary {
     color: var(--bbl-color-grey-85);
-}
-
-/* sections (central-aligned) */
-.section.central-aligned .block,
-.section.central-aligned .default-content-wrapper {
-    margin-inline: 1rem;
-}
- 
-@media (width > 47.5rem) {
-    .section.central-aligned .block,
-    .section.central-aligned .default-content-wrapper {
-        margin-inline: 3rem;
-    }
-}
- 
-@media (width > 64rem) {
-    .section.central-aligned .block,
-    .section.central-aligned .default-content-wrapper {
-        max-width: var(--bbl-layout-central-aligned-max-width);
-        margin: 0 auto;
-    }
 }
 
 @media (width > 47.5rem) {

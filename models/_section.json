@@ -95,6 +95,10 @@
                 {
                   "name": "Grey 100",
                   "value": "bg-grey-100"
+                },
+                {
+                  "name": "Blue 01",
+                  "value": "bg-blue-01"
                 }
               ]
             },

@@ -288,6 +288,10 @@
               {
                 "name": "Grey 100",
                 "value": "bg-grey-100"
+              },
+              {
+                "name": "Blue 01",
+                "value": "bg-blue-01"
               }
             ]
           },
@@ -11539,6 +11543,10 @@
               {
                 "name": "Header Light Gray",
                 "value": "header-light-gray"
+              },
+              {
+                "name": "Header Pastel Blue",
+                "value": "header-pastel-blue"
               }
             ]
           },
@@ -11548,6 +11556,10 @@
               {
                 "name": "Zebra Light Gray",
                 "value": "zebra-light-gray"
+              },
+              {
+                "name": "Solid White",
+                "value": "solid-white"
               }
             ]
           },
