@@ -236,7 +236,8 @@
         {
           "component": "text",
           "name": "registerCtaLabel",
-          "label": "Register CTA Label",
+          "label": "Register Cta Label",
+          "valueType": "string",
           "value": "",
           "required": true,
           "condition": {
