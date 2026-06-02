@@ -5,7 +5,7 @@ import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { openModal } from '../../scripts/utils/modal.js';
 import {
-  buildPromotionDataUrl,
+  getPromotionDataUrl,
   fetchJson,
   getPromotionPathFlags,
   handleMobileAppView,
@@ -13,29 +13,29 @@ import {
   normalizePath,
   normalizePromotionType,
   normalizeQueryLang,
-  resolvePromotionApi,
-  resolvePromotionLang,
+  getPromotionApiConfig,
+  getPromotionLanguage,
 } from '../../scripts/utils/card-helpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 
 function isRegisterEnabled(value) {
   const normalized = String(value || '').trim().toUpperCase();
-  // CTA is shown ONLY when the API explicitly sets isRegister to 'N'
+  // CTA is not shown ONLY when the API explicitly sets isRegister to 'N'
   return normalized !== 'N';
 }
 
-function resolveCtaLabel(isRegister, data) {
+function getRegisterCtaLabel(isRegister, data) {
   if (!isRegisterEnabled(isRegister)) return '';
-  return data?.registerCtaLabel || '';
+  return data?.registerCtaLabel || data?.isRegisterCtaLabel || data?.ctaLabel || '';
 }
 
-function resolveCtaUrl(isRegister, registerCtaUrl) {
+function getRegisterCtaUrl(isRegister, registerCtaUrl) {
   if (!isRegisterEnabled(isRegister)) return '';
   return registerCtaUrl || '';
 }
 
-function getPromoBlockConfig(block) {
+function extractBlockConfig(block) {
   const firstRow = block.querySelector(':scope > div');
   const isKeyValueRows = firstRow && firstRow.children.length >= 2;
 
@@ -137,8 +137,8 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
   const isRegister = data?.isRegister || '';
-  const ctaLabel = resolveCtaLabel(isRegister, data);
-  const ctaUrl = resolveCtaUrl(isRegister, registerCtaUrl);
+  const ctaLabel = getRegisterCtaLabel(isRegister, data);
+  const ctaUrl = getRegisterCtaUrl(isRegister, registerCtaUrl);
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
@@ -169,7 +169,7 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   if (imageUrl) bindImageModal(container, imageUrl, cleanTitle);
 }
 
-async function fetchPromoData(url, promoId) {
+async function fetchPromotionalData(url, promoId) {
   if (!url) return null;
   const json = await fetchJson(url);
   if (!json) return null;
@@ -186,7 +186,7 @@ export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
   handleMobileAppView(searchParams);
 
-  const { promotionType: blockPromoType, promoId } = getPromoBlockConfig(block);
+  const { promotionType: blockPromoType, promoId } = extractBlockConfig(block);
   const { pathname } = window.location;
   const { isBbmPath, isCreditCardPath } = getPromotionPathFlags(pathname);
 
@@ -194,7 +194,7 @@ export default async function decorate(block) {
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
   const isBbmPreConfig = isBbmPath
     || (!isCreditCardPath && normalizePromotionType(blockPromoType) === 'bangkok-bank-m');
-  const lang = resolvePromotionLang(docLang, queryLang, isBbmPreConfig);
+  const lang = getPromotionLanguage(docLang, queryLang, isBbmPreConfig);
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
@@ -205,7 +205,7 @@ export default async function decorate(block) {
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
 
-  const promotionApi = resolvePromotionApi({
+  const promotionApi = getPromotionApiConfig({
     pathname,
     configuredPromoType: blockPromoType,
     bbmBaseUrl,
@@ -213,11 +213,11 @@ export default async function decorate(block) {
   });
 
   const locale = LOCALE_MAP[lang] || 'en-GB';
-  const promotionsUrl = buildPromotionDataUrl(promotionApi.baseUrl, lang);
+  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
 
   const [placeholders, card] = await Promise.all([
     fetchPlaceholders(),
-    fetchPromoData(promotionsUrl, promoId),
+    fetchPromotionalData(promotionsUrl, promoId),
   ]);
 
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';

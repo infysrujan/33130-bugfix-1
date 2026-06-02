@@ -9,15 +9,15 @@ import {
   buildCardHtml,
   buildCardOptions,
   buildPaginationHtml,
-  buildPromotionDataUrl,
+  getPromotionDataUrl,
   fetchJson,
   getPromotionPathFlags,
   handleMobileAppView,
   mergeLocalConfig,
   normalizePromotionType,
   normalizeQueryLang,
-  resolvePromotionApi,
-  resolvePromotionLang,
+  getPromotionApiConfig,
+  getPromotionLanguage,
   sortCards,
 } from '../../scripts/utils/card-helpers.js';
 
@@ -28,7 +28,7 @@ function isTopPromotionsLabel(value) {
   return TOP_PROMO_KEYS.some((k) => k.toLowerCase() === key);
 }
 
-function getPromoListingConfig(block) {
+function extractListingConfig(block) {
   const firstRow = block.querySelector(':scope > div');
   const isKeyValueRows = firstRow && firstRow.children.length >= 2;
   if (isKeyValueRows) {
@@ -40,7 +40,7 @@ function getPromoListingConfig(block) {
   return { promotionType };
 }
 
-async function fetchPromotions(url) {
+async function fetchPromotionalData(url) {
   return fetchJson(url);
 }
 
@@ -400,12 +400,12 @@ export default async function decorate(block) {
 
   const docLang = getLang();
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
-  const { promotionType: blockPromoType } = getPromoListingConfig(block);
+  const { promotionType: blockPromoType } = extractListingConfig(block);
   const datasetType = block.dataset.promotionType?.trim();
   const configuredPromoType = blockPromoType || datasetType;
   const isBbmPreConfig = isBbmPath
     || (!isCreditCardPath && normalizePromotionType(configuredPromoType) === 'bangkok-bank-m');
-  const lang = resolvePromotionLang(docLang, queryLang, isBbmPreConfig);
+  const lang = getPromotionLanguage(docLang, queryLang, isBbmPreConfig);
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
@@ -415,7 +415,7 @@ export default async function decorate(block) {
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
 
-  const promotionApi = resolvePromotionApi({
+  const promotionApi = getPromotionApiConfig({
     pathname,
     configuredPromoType,
     bbmBaseUrl,
@@ -426,9 +426,9 @@ export default async function decorate(block) {
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
 
-  const dataUrl = buildPromotionDataUrl(promotionApi.baseUrl, lang);
+  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
   const [activeData, cardRefConfig, placeholders] = await Promise.all([
-    fetchPromotions(dataUrl),
+    fetchPromotionalData(promotionsUrl),
     fetchJson(effectiveConfigs.bbmCardRef || ''),
     fetchPlaceholders(),
   ]);
