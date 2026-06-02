@@ -94,7 +94,7 @@
   font-size: 1.5rem;
   line-height: 1.625rem;
   color: var(--bbl-color-truthful-blue);
-  font-weight: 700;
+  font-weight: 400;
 }
 
 :lang(th) {
@@ -155,6 +155,8 @@
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-active-blue);
+  padding: 0;
+  margin: 1.875rem 0 0;
 }
 
 .external-redirect-popup-btn-accept:hover {
@@ -174,7 +176,8 @@
   background: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
   border: 0.0625rem solid var(--bbl-color-active-blue);
-  margin-left: 0.9375rem;
+  margin: 1.875rem 0 0 0.9375rem;
+  padding: 0;
 }
 
 .external-redirect-popup-btn-cancel:hover {
