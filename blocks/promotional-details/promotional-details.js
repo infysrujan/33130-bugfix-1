@@ -5,7 +5,7 @@ import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { openModal } from '../../scripts/utils/modal.js';
 import {
-  buildPromotionDataUrl,
+  getPromotionDataUrl,
   fetchJson,
   getPromotionPathFlags,
   handleMobileAppView,
@@ -13,29 +13,28 @@ import {
   normalizePath,
   normalizePromotionType,
   normalizeQueryLang,
-  resolvePromotionApi,
-  resolvePromotionLang,
+  getPromotionApiConfig,
+  getPromotionLanguage,
 } from '../../scripts/utils/card-helpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 
 function isRegisterEnabled(value) {
   const normalized = String(value || '').trim().toUpperCase();
-  // CTA is shown ONLY when the API explicitly sets isRegister to 'N'
-  return normalized !== 'N';
+  return normalized === 'Y' || normalized === 'D';
 }
 
-function resolveCtaLabel(isRegister, data) {
+function getRegisterCtaLabel(isRegister, data) {
   if (!isRegisterEnabled(isRegister)) return '';
-  return data?.isRegisterCtaLabel || '';
+  return data?.registerCtaLabel || '';
 }
 
-function resolveCtaUrl(isRegister, registerCtaUrl) {
+function getRegisterCtaUrl(isRegister, registerCtaUrl) {
   if (!isRegisterEnabled(isRegister)) return '';
   return registerCtaUrl || '';
 }
 
-function getPromoBlockConfig(block) {
+function extractBlockConfig(block) {
   const firstRow = block.querySelector(':scope > div');
   const isKeyValueRows = firstRow && firstRow.children.length >= 2;
 
@@ -66,12 +65,10 @@ function getAuthoringPreviewData(block) {
     detailDescription: config['detail-description'] || config.detaildescription || '',
     promotionStartDate: config['promotion-start-date'] || config.promotionstartdate || '',
     promotionEndDate: config['promotion-end-date'] || config.promotionenddate || '',
-    responsibleLendingDisclaimerEnabled: config['responsible-lending-disclaimer-enabled']
-      || config.responsiblelendingdisclaimerenabled,
-    responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text']
-      || config.responsiblelendingdisclaimertext || '',
+    responsibleLendingDisclaimerEnabled: config['responsible-lending-disclaimer-enabled'] || config.responsiblelendingdisclaimerenabled,
+    responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text'] || config.responsiblelendingdisclaimertext || '',
     isRegister: config['is-register'] || config.isregister || '',
-    isRegisterCtaLabel: config['is-register-cta-label'] || config.isregisterctalabel || '',
+    registerCtaLabel: config['register-cta-label'] || config.registerctalabel || '',
     ctaLabel: config['cta-label'] || config.ctalabel || '',
   };
 }
@@ -97,7 +94,7 @@ function buildRegisterCtaHtml(label, url) {
   if (!label || !url) return '';
   return `
     <div class="promo-detail-cta button-container">
-      <a class="button primary" href="${url}">${label}</a>
+        <a href="${url}" class="button primary promo-detail-register-btn">${label}</a>
     </div>`;
 }
 
@@ -122,11 +119,30 @@ function bindImageModal(container, imageUrl, altText) {
   });
 }
 
-function renderDetails(container, data, periodLabel, locale, clickToViewFull, registerCtaUrl) {
+function renderDetails(container, data, periodLabel, locale, viewFull, registerCtaUrl, baseUrl) {
   const title = data?.title
     ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
-  const imageUrl = data?.detailImageUrl || '';
+  let imageUrl = data?.detailImageUrl || '';
+  if (imageUrl) {
+    try {
+      let base = baseUrl;
+      if (data?.cardImageUrl) {
+        try {
+          // Validate if cardImageUrl is absolute using the native URL constructor
+          const dummyUrl = new URL(data.cardImageUrl);
+          if (dummyUrl) base = data.cardImageUrl;
+        } catch (err) {
+          // Relative URL or invalid; fallback to baseUrl
+        }
+      }
+      // Native URL parser handles both relative and absolute URLs automatically
+      imageUrl = new URL(imageUrl, base).toString();
+    } catch (e) {
+      // Keep original URL if parsing fails
+    }
+  }
+
   const cleanTitle = data?.title ? data.title.replace(/<[^>]*>/g, '').trim() : '';
   const imageHtml = imageUrl
     ? `<img src="${imageUrl}" alt="${cleanTitle}" loading="lazy">`
@@ -137,13 +153,13 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
   const isRegister = data?.isRegister || '';
-  const ctaLabel = resolveCtaLabel(isRegister, data);
-  const ctaUrl = resolveCtaUrl(isRegister, registerCtaUrl);
+  const ctaLabel = getRegisterCtaLabel(isRegister, data);
+  const ctaUrl = getRegisterCtaUrl(isRegister, registerCtaUrl);
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
           <div class="promo-detail-image">
-            <a class="promo-detail-image-link" href="${imageUrl}" title="${clickToViewFull}">
+            <a class="promo-detail-image-link" href="${imageUrl}" title="${viewFull}">
               ${imageHtml}
             </a>
           </div>` : '';
@@ -169,7 +185,7 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   if (imageUrl) bindImageModal(container, imageUrl, cleanTitle);
 }
 
-async function fetchPromoData(url, promoId) {
+async function fetchPromotionalData(url, promoId) {
   if (!url) return null;
   const json = await fetchJson(url);
   if (!json) return null;
@@ -186,7 +202,7 @@ export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
   handleMobileAppView(searchParams);
 
-  const { promotionType: blockPromoType, promoId } = getPromoBlockConfig(block);
+  const { promotionType: blockPromoType, promoId } = extractBlockConfig(block);
   const { pathname } = window.location;
   const { isBbmPath, isCreditCardPath } = getPromotionPathFlags(pathname);
 
@@ -194,7 +210,7 @@ export default async function decorate(block) {
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
   const isBbmPreConfig = isBbmPath
     || (!isCreditCardPath && normalizePromotionType(blockPromoType) === 'bangkok-bank-m');
-  const lang = resolvePromotionLang(docLang, queryLang, isBbmPreConfig);
+  const lang = getPromotionLanguage(docLang, queryLang, isBbmPreConfig);
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
@@ -205,7 +221,7 @@ export default async function decorate(block) {
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
 
-  const promotionApi = resolvePromotionApi({
+  const promotionApi = getPromotionApiConfig({
     pathname,
     configuredPromoType: blockPromoType,
     bbmBaseUrl,
@@ -213,11 +229,11 @@ export default async function decorate(block) {
   });
 
   const locale = LOCALE_MAP[lang] || 'en-GB';
-  const promotionsUrl = buildPromotionDataUrl(promotionApi.baseUrl, lang);
+  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
 
   const [placeholders, card] = await Promise.all([
     fetchPlaceholders(),
-    fetchPromoData(promotionsUrl, promoId),
+    fetchPromotionalData(promotionsUrl, promoId),
   ]);
 
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
@@ -256,9 +272,18 @@ export default async function decorate(block) {
       locale,
       clickToViewFull,
       registerCtaUrl,
+      promotionApi?.baseUrl,
     );
     return;
   }
 
-  renderDetails(block, data, periodLabel, locale, clickToViewFull, registerCtaUrl);
+  renderDetails(
+    block,
+    data,
+    periodLabel,
+    locale,
+    clickToViewFull,
+    registerCtaUrl,
+    promotionApi?.baseUrl,
+  );
 }
