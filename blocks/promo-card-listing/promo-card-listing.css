@@ -7,7 +7,7 @@
 }
 
 .promo-selector-grid:has(.promo-selector-empty),
-.promo-selector-grid:has(.listing-card-container:only-child) {
+.is-bbm .promo-selector-grid:has(.listing-card-container:only-child) {
     justify-content: center;
 }
 

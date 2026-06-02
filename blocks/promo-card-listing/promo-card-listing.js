@@ -422,6 +422,7 @@ export default async function decorate(block) {
     creditBaseUrl,
   });
   const { isBbm, promotionType } = promotionApi;
+  if (isBbm) block.classList.add('is-bbm');
 
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
