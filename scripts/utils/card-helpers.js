@@ -61,6 +61,16 @@ export async function mergeLocalConfig(pathname, lang, targetConfigs, keyNormali
   }
 }
 
+export function isTruthyFlag(value) {
+  if (value === true) return true;
+  if (value === false || value == null) return false;
+  const normalized = String(value).trim().toLowerCase();
+  return normalized === 'true'
+    || normalized === 'yes'
+    || normalized === 'y'
+    || normalized === '1';
+}
+
 export function normalizePromotionType(value) {
   return String(value || '').trim().toLowerCase();
 }
@@ -171,7 +181,7 @@ function formatDate(dateStr, locale = 'en-GB') {
   });
 }
 
-function buildDateLine(card, locale) {
+export function buildDateLine(card, locale) {
   const start = formatDate(card.promotionStartDate, locale);
   const end = formatDate(card.promotionEndDate, locale);
   const label = card.dateValidityLabel || 'until';

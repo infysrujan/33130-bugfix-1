@@ -15,13 +15,15 @@ import {
   normalizeQueryLang,
   resolvePromotionApi,
   resolvePromotionLang,
+  buildDateLine,
+  isTruthyFlag,
 } from '../../scripts/utils/card-helpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 
 function isRegisterEnabled(value) {
   const normalized = String(value || '').trim().toUpperCase();
-  // CTA is shown ONLY when the API explicitly sets isRegister to 'N'
+  // CTA is hidden when the API explicitly sets isRegister to 'N'
   return normalized !== 'N';
 }
 
@@ -76,18 +78,10 @@ function getAuthoringPreviewData(block) {
   };
 }
 
-function formatDate(dateStr, locale = 'en-GB') {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
-}
-
-function buildDateHtml(start, end, label, locale) {
-  if (!start && !end) return '';
-  const parts = [start && formatDate(start, locale), end && formatDate(end, locale)]
-    .filter(Boolean);
-  return `<p class="promo-detail-date">${label} ${parts.join(' – ')}</p>`;
+function buildDateHtml(card, label, locale) {
+  const dateLine = buildDateLine(card, locale);
+  if (!dateLine) return '';
+  return `<p class="promo-detail-date">${label} ${dateLine}</p>`;
 }
 
 function buildDisclaimerHtml(enabled, text) {
@@ -128,15 +122,13 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   const title = data?.title
     ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
-  const imageUrl = data?.detailImageUrl || '';
+  const imageUrl = data?.detailImageUrl || data?.cardImageUrl || '';
   const cleanTitle = data?.title ? data.title.replace(/<[^>]*>/g, '').trim() : '';
   const imageHtml = imageUrl
     ? `<img src="${imageUrl}" alt="${cleanTitle}" loading="lazy">`
     : '';
-  const description = data?.detailDescription || '';
-  const startDate = data?.promotionStartDate || '';
-  const endDate = data?.promotionEndDate || '';
-  const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
+  const description = data?.detailDescription || data?.cardShortDescription || '';
+  const disclaimerEnabled = isTruthyFlag(data?.responsibleLendingDisclaimerEnabled);
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
   const isRegister = data?.isRegister || '';
   const ctaLabel = getRegisterCtaLabelValue(isRegister, data);
@@ -160,7 +152,7 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
           ${imageColHtml}
           <div class="promo-detail-content">
             <div class="promo-detail-description">${description}</div>
-            ${buildDateHtml(startDate, endDate, periodLabel, locale)}
+            ${buildDateHtml(data, periodLabel, locale)}
             ${buildRegisterCtaHtml(ctaLabel, ctaUrl)}
             ${buildDisclaimerHtml(disclaimerEnabled, disclaimerText)}
           </div>

@@ -20,6 +20,7 @@ import {
   resolvePromotionApi,
   resolvePromotionLang,
   sortCards,
+  isTruthyFlag,
 } from '../../scripts/utils/card-helpers.js';
 
 const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
@@ -148,16 +149,6 @@ function buildSubOptions(items, defaultLabel) {
       return `<li class="promo-selector-option" data-value="${value}" role="option">${value}</li>`;
     })
     .join(''));
-}
-
-function isTruthyFlag(value) {
-  if (value === true) return true;
-  if (value === false || value == null) return false;
-  const normalized = String(value).trim().toLowerCase();
-  return normalized === 'true'
-    || normalized === 'yes'
-    || normalized === 'y'
-    || normalized === '1';
 }
 
 function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
