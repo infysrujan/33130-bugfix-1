@@ -1,19 +1,16 @@
+import { fetchConfigs } from '../../scripts/config.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
-const IS_LOCAL = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-const BBL_API_BASE = IS_LOCAL
-  ? 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService'
-  : '/api/fundpriceservice';
-const BBL_API_NAMES_BASE = IS_LOCAL
-  ? 'https://publish-p185039-e1938068.adobeaemcloud.com/api/FundPriceService'
-  : '/api/fundpriceservice';
-export const ALL_FUND_NAMES_URL = `${BBL_API_NAMES_BASE}/AllFundsName`;
-export const LATEST_DATE_URL = `${BBL_API_BASE}/LatestDate`;
-export const GET_UPDATE_IN_MONTH_BASE = `${BBL_API_BASE}/GetUpdateInMonth`;
-const MONTHS_SHORT = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-];
+export async function getApiUrls() {
+  const configs = await fetchConfigs();
+  return {
+    apiBase: configs.fundPricesApiUrl || '',
+    ALL_FUND_NAMES_URL: configs.fundPricesAllFundsNameUrl || '',
+    LATEST_DATE_URL: configs.fundPricesLatestDateUrl || '',
+    GET_UPDATE_IN_MONTH_BASE: configs.fundPricesGetUpdateInMonthUrl || '',
+    ALL_FUND_PRICES_BASE: configs.fundPricesAllFundPricesUrl || '',
+  };
+}
 
 let latestMdate = null;
 
@@ -30,14 +27,16 @@ export function parseLocalDateFromYmd(ymd) {
 function pad2(n) { return String(n).padStart(2, '0'); }
 
 async function fetchAllFundPrices(date) {
+  const { ALL_FUND_PRICES_BASE } = await getApiUrls();
   const dd = pad2(date.getDate());
   const mm = pad2(date.getMonth() + 1);
   const yyyy = date.getFullYear();
-  const data = await fetchGet(`${BBL_API_BASE}/AllFundPrices/${dd}/${mm}/${yyyy}`);
+  const data = await fetchGet(`${ALL_FUND_PRICES_BASE}/${dd}/${mm}/${yyyy}`);
   return Array.isArray(data) ? data : [];
 }
 
 export async function fetchNavEnabledDaysForMonth({ year, month }) {
+  const { GET_UPDATE_IN_MONTH_BASE } = await getApiUrls();
   const data = await fetchGet(`${GET_UPDATE_IN_MONTH_BASE}/${year}/${month + 1}/0`);
   if (!Array.isArray(data)) return [];
   return data.map((i) => (i?.Day != null ? Number(i.Day) : NaN)).filter((d) => !Number.isNaN(d));
@@ -94,9 +93,8 @@ function clearNonHeaderRows(tbody) {
 }
 
 function formatBackdate(iso) {
-  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
-  if (!m) return iso;
-  return `${m[3]} ${MONTHS_SHORT[Number(m[2]) - 1]} ${m[1]}`;
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
 function formatBodyCellText(normalizedKey, row, columnKey) {
@@ -234,19 +232,22 @@ export default async function decorate(block) {
     if (e.detail.latestDate) latestMdate = e.detail.latestDate;
     await refreshTableFromPrices(tableEl, cachedFunds, date);
   });
+  block.dataset.ready = 'true';
+  block.dispatchEvent(new CustomEvent('fund-prices-table:ready', { bubbles: true }));
 
   const section = block.closest('.section');
   const isControlled = !!section?.querySelector('.fund-prices');
   if (isControlled) return;
 
   try {
-    const [latestJson, namesData] = await Promise.all([
-      fetchGet(LATEST_DATE_URL, { throwOnError: false }),
+    const { ALL_FUND_NAMES_URL, LATEST_DATE_URL } = await getApiUrls();
+    const [namesData, latestData] = await Promise.all([
       fetchGet(ALL_FUND_NAMES_URL, { throwOnError: false }),
+      fetchGet(LATEST_DATE_URL, { throwOnError: false }),
     ]);
     let date = new Date();
-    if (latestJson) {
-      const rawDate = Array.isArray(latestJson) ? latestJson[0]?.mDate : latestJson?.mDate;
+    if (latestData) {
+      const rawDate = Array.isArray(latestData) ? latestData[0]?.mDate : latestData?.mDate;
       latestMdate = rawDate ? rawDate.split('T')[0] : null;
       const parsed = latestMdate ? parseLocalDateFromYmd(latestMdate) : null;
       if (parsed) date = parsed;

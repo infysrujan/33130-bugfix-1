@@ -1,23 +1,11 @@
-import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
-import { parseLocalDateFromYmd } from '../fund-prices-table/fund-prices-table.js';
+import { attachCalendarPicker, formatCalendarDate, getCalendarLang } from '../../scripts/utils/calendar-picker.js';
+import { parseLocalDateFromYmd, getApiUrls } from '../fund-prices-table/fund-prices-table.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
-
-const IS_LOCAL = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-const BBL_API_BASE = IS_LOCAL
-  ? 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService'
-  : '/api/fundpriceservice';
-const FUND_DETAIL_HISTORY_BASE = `${BBL_API_BASE}/FundPrice`;
-const FUND_DETAIL_STATS_BASE = `${BBL_API_BASE}/Fund_Nav`;
 
 export const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
 function pad2(n) {
   return String(n).padStart(2, '0');
-}
-
-const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-function fmtDisplay(d) {
-  return `${pad2(d.getDate())} ${MONTH_SHORT[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 function formatDMY(date) {
@@ -38,12 +26,14 @@ function isRangeExceedsLimit(fromDate, toDate) {
 }
 
 async function fetchFundDetailStats(fundId, fromDate, toDate) {
-  const data = await fetchGet(`${FUND_DETAIL_STATS_BASE}/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
+  const { apiBase } = await getApiUrls();
+  const data = await fetchGet(`${apiBase}/Fund_Nav/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
   return Array.isArray(data) ? data[0] : data;
 }
 
 async function fetchFundDetailHistory(fundId, fromDate, toDate) {
-  const data = await fetchGet(`${FUND_DETAIL_HISTORY_BASE}/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
+  const { apiBase } = await getApiUrls();
+  const data = await fetchGet(`${apiBase}/FundPrice/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
   return Array.isArray(data) ? data : [];
 }
 
@@ -558,8 +548,9 @@ export default async function decorate(block) {
       const start = new Date(end.getFullYear(), end.getMonth() - 1, end.getDate());
       drFrom = start;
       drTo = end;
-      drFromInput.value = fmtDisplay(start);
-      drToInput.value = fmtDisplay(end);
+      const lang = getCalendarLang();
+      drFromInput.value = formatCalendarDate(start, lang);
+      drToInput.value = formatCalendarDate(end, lang);
       periodDateRangeEl.classList.remove('hidden');
     } else {
       periodDateRangeEl.classList.add('hidden');

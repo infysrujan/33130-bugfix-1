@@ -1,9 +1,9 @@
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 import {
-  ALL_FUND_NAMES_URL,
-  LATEST_DATE_URL,
+  getApiUrls,
   fetchNavEnabledDaysForMonth,
   parseLocalDateFromYmd,
 } from '../fund-prices-table/fund-prices-table.js';
@@ -220,20 +220,19 @@ export default async function decorate(block) {
   let currentDate = calendarDate;
 
   try {
-    const [namesRes, latestRes] = await Promise.all([
-      fetch(ALL_FUND_NAMES_URL),
-      fetch(LATEST_DATE_URL),
+    const { ALL_FUND_NAMES_URL, LATEST_DATE_URL } = await getApiUrls();
+    const [namesData, latestData] = await Promise.all([
+      fetchGet(ALL_FUND_NAMES_URL, { throwOnError: false }),
+      fetchGet(LATEST_DATE_URL, { throwOnError: false }),
     ]);
-    if (latestRes.ok) {
-      const lj = await latestRes.json();
-      const rawDate = Array.isArray(lj) ? lj[0]?.mDate : lj?.mDate;
+    if (latestData) {
+      const rawDate = Array.isArray(latestData) ? latestData[0]?.mDate : latestData?.mDate;
       latestMdate = rawDate ? rawDate.split('T')[0] : null;
       const parsed = latestMdate ? parseLocalDateFromYmd(latestMdate) : null;
       if (parsed) { calendarDate = parsed; currentDate = parsed; }
     }
-    if (namesRes.ok) {
-      const data = await namesRes.json();
-      funds = Array.isArray(data) ? data : [];
+    if (namesData) {
+      funds = Array.isArray(namesData) ? namesData : [];
     }
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -318,7 +317,13 @@ export default async function decorate(block) {
 
   block.appendChild(root);
 
-  dispatchTableRefresh(calendarDate);
+  if (ftBlock) {
+    if (ftBlock.dataset.ready === 'true') {
+      dispatchTableRefresh(calendarDate);
+    } else {
+      ftBlock.addEventListener('fund-prices-table:ready', () => dispatchTableRefresh(calendarDate), { once: true });
+    }
+  }
 
   if (ftBlock) {
     ftBlock.after(disclaimer);
