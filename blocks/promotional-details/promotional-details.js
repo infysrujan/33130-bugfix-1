@@ -27,7 +27,7 @@ function isRegisterEnabled(value) {
 
 function getRegisterCtaLabel(isRegister, data) {
   if (!isRegisterEnabled(isRegister)) return '';
-  return data?.registerCtaLabel || data?.isRegisterCtaLabel || data?.ctaLabel || '';
+  return data?.registerCtaLabel || data?.ctaLabel || '';
 }
 
 function getRegisterCtaUrl(isRegister, registerCtaUrl) {
