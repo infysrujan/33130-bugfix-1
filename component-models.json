@@ -10877,7 +10877,7 @@
       },
       {
         "component": "text",
-        "name": "isRegisterCtaLabel",
+        "name": "registerCtaLabel",
         "label": "Register CTA Label",
         "value": "",
         "required": true,
