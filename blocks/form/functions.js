@@ -563,4 +563,5 @@ export {
   getBranchEnum,
   getBranchEnumNames,
   getidAndDob,
+  replaceOtherAndJoin,
 };
