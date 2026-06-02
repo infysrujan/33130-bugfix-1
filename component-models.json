@@ -10883,21 +10883,13 @@
         "value": "",
         "required": true,
         "condition": {
-          "or": [
+          "!": [
             {
               "===": [
                 {
                   "var": "isRegister"
                 },
-                "Y"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "D"
+                "N"
               ]
             }
           ]
