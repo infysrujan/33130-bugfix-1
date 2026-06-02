@@ -162,7 +162,9 @@ export function handleMobileAppView(searchParams) {
 
 function formatDate(dateStr, locale = 'en-GB') {
   if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString(locale, {
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString(locale, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -300,11 +302,16 @@ export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollT
 
 export function sortCards(cards) {
   return [...cards].sort((a, b) => {
-    const aStart = a.promotionStartDate ? new Date(a.promotionStartDate).getTime() : 0;
-    const bStart = b.promotionStartDate ? new Date(b.promotionStartDate).getTime() : 0;
+    let aStart = a.promotionStartDate ? new Date(a.promotionStartDate).getTime() : 0;
+    let bStart = b.promotionStartDate ? new Date(b.promotionStartDate).getTime() : 0;
+    if (Number.isNaN(aStart)) aStart = 0;
+    if (Number.isNaN(bStart)) bStart = 0;
     if (bStart !== aStart) return bStart - aStart;
-    const aEnd = a.promotionEndDate ? new Date(a.promotionEndDate).getTime() : Infinity;
-    const bEnd = b.promotionEndDate ? new Date(b.promotionEndDate).getTime() : Infinity;
+
+    let aEnd = a.promotionEndDate ? new Date(a.promotionEndDate).getTime() : Infinity;
+    let bEnd = b.promotionEndDate ? new Date(b.promotionEndDate).getTime() : Infinity;
+    if (Number.isNaN(aEnd)) aEnd = Infinity;
+    if (Number.isNaN(bEnd)) bEnd = Infinity;
     return aEnd - bEnd;
   });
 }

@@ -78,7 +78,9 @@ function getAuthoringPreviewData(block) {
 
 function formatDate(dateStr, locale = 'en-GB') {
   if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function buildDateHtml(start, end, label, locale) {
