@@ -21,8 +21,7 @@ const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 
 function isRegisterEnabled(value) {
   const normalized = String(value || '').trim().toUpperCase();
-  // CTA is not shown ONLY when the API explicitly sets isRegister to 'N'
-  return normalized !== 'N';
+  return normalized === 'Y' || normalized === 'D';
 }
 
 function getRegisterCtaLabel(isRegister, data) {
