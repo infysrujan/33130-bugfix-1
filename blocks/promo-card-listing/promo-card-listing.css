@@ -7,7 +7,7 @@
 }
 
 .promo-selector-grid:has(.promo-selector-empty),
-.is-bbm .promo-selector-grid:has(.listing-card-container:only-child) {
+.promo-selector-grid.has-single-card {
     justify-content: center;
 }
 
@@ -323,3 +323,4 @@ body.mobile-app-view main > div:first-child {
         padding-inline-end: 0;
     }
 }
+    

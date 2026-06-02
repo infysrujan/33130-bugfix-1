@@ -308,6 +308,12 @@ function setupPanel(
     paginationEl.innerHTML = hidePagination
       ? ''
       : buildPaginationHtml(state.page, Math.ceil(total / pageSize));
+
+    if (cards.length === 1 && isBbmPanel) {
+      gridEl.classList.add('has-single-card');
+    } else {
+      gridEl.classList.remove('has-single-card');
+    }
   }
 
   if (options.immediate) {
@@ -422,7 +428,6 @@ export default async function decorate(block) {
     creditBaseUrl,
   });
   const { isBbm, promotionType } = promotionApi;
-  if (isBbm) block.classList.add('is-bbm');
 
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
