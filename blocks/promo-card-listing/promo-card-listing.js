@@ -132,6 +132,9 @@ function toStringValue(item) {
 function normalizeList(value) {
   if (Array.isArray(value)) return value.map(toStringValue).filter(Boolean);
   if (value == null) return [];
+  if (typeof value === 'string') {
+    return value.split(',').map((v) => v.trim()).filter(Boolean);
+  }
   return [toStringValue(value)].filter(Boolean);
 }
 
@@ -165,13 +168,16 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
 
   const matched = allCards.filter((card) => {
     if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
-    if (
-      !topPromotionOnly
-      && category
-      && card.category?.toLowerCase() !== category.toLowerCase()
-    ) return false;
+    if (!topPromotionOnly && category) {
+      const cardCategories = normalizeList(card.category);
+      if (!cardCategories.some((c) => c.toLowerCase() === category.toLowerCase())) return false;
+    }
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
-    if (subcategory && card.subcategory !== subcategory) return false;
+    if (subcategory) {
+      const cardSubcategories = normalizeList(card.subcategory);
+      const subMatch = cardSubcategories.some((s) => s.toLowerCase() === subcategory.toLowerCase());
+      if (!subMatch) return false;
+    }
     if (cardType) {
       const cardTypeNormalized = normalizeList(card.cardTypes).map(normalizeCardTypeValue);
       if (!cardTypeNormalized.includes(normalizeCardTypeValue(cardType))) return false;
@@ -375,9 +381,12 @@ function setupPanel(
     state.area = '';
     state.page = 1;
     panel.querySelectorAll('.promo-selector-option').forEach((o) => o.classList.remove('is-active'));
-    panel.querySelector('[data-filter="subcategory"] .promo-selector-filter-label').textContent = labelCategory;
-    panel.querySelector('[data-filter="cardType"] .promo-selector-filter-label').textContent = labelCardType;
-    panel.querySelector('[data-filter="area"] .promo-selector-filter-label').textContent = labelArea;
+    const subLabel = panel.querySelector('[data-filter="subcategory"] .promo-selector-filter-label');
+    if (subLabel) subLabel.textContent = labelCategory;
+    const typeLabel = panel.querySelector('[data-filter="cardType"] .promo-selector-filter-label');
+    if (typeLabel) typeLabel.textContent = labelCardType;
+    const areaLabel = panel.querySelector('[data-filter="area"] .promo-selector-filter-label');
+    if (areaLabel) areaLabel.textContent = labelArea;
     render();
   }
 
@@ -504,7 +513,7 @@ export default async function decorate(block) {
     ? [...tabsContainer.querySelectorAll('.tabs-content .tab-panel')]
     : [...document.querySelectorAll('[role="tabpanel"]')];
 
-  tabPanels.forEach((panel, index) => {
+  tabPanels.forEach((panel) => {
     const tabBtnId = panel.getAttribute('aria-labelledby');
     if (panel.hidden) return;
     const tabBtn = tabBtnId
@@ -521,7 +530,7 @@ export default async function decorate(block) {
     const category = catMeta.label || tabText;
     const subcategories = catMeta.subcategories || [];
 
-    const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText));
+    const isHighlightsPanel = isBbm && isTopPromotionsLabel(tabText);
 
     setupPanel(
       panel,
