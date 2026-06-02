@@ -61,16 +61,6 @@ export async function mergeLocalConfig(pathname, lang, targetConfigs, keyNormali
   }
 }
 
-export function isTruthyFlag(value) {
-  if (value === true) return true;
-  if (value === false || value == null) return false;
-  const normalized = String(value).trim().toLowerCase();
-  return normalized === 'true'
-    || normalized === 'yes'
-    || normalized === 'y'
-    || normalized === '1';
-}
-
 export function normalizePromotionType(value) {
   return String(value || '').trim().toLowerCase();
 }
@@ -172,16 +162,14 @@ export function handleMobileAppView(searchParams) {
 
 function formatDate(dateStr, locale = 'en-GB') {
   if (!dateStr) return '';
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString(locale, {
+  return new Date(dateStr).toLocaleDateString(locale, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
   });
 }
 
-export function buildDateLine(card, locale) {
+function buildDateLine(card, locale) {
   const start = formatDate(card.promotionStartDate, locale);
   const end = formatDate(card.promotionEndDate, locale);
   const label = card.dateValidityLabel || 'until';
@@ -312,16 +300,11 @@ export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollT
 
 export function sortCards(cards) {
   return [...cards].sort((a, b) => {
-    let aStart = a.promotionStartDate ? new Date(a.promotionStartDate).getTime() : 0;
-    let bStart = b.promotionStartDate ? new Date(b.promotionStartDate).getTime() : 0;
-    if (Number.isNaN(aStart)) aStart = 0;
-    if (Number.isNaN(bStart)) bStart = 0;
+    const aStart = a.promotionStartDate ? new Date(a.promotionStartDate).getTime() : 0;
+    const bStart = b.promotionStartDate ? new Date(b.promotionStartDate).getTime() : 0;
     if (bStart !== aStart) return bStart - aStart;
-
-    let aEnd = a.promotionEndDate ? new Date(a.promotionEndDate).getTime() : Infinity;
-    let bEnd = b.promotionEndDate ? new Date(b.promotionEndDate).getTime() : Infinity;
-    if (Number.isNaN(aEnd)) aEnd = Infinity;
-    if (Number.isNaN(bEnd)) bEnd = Infinity;
+    const aEnd = a.promotionEndDate ? new Date(a.promotionEndDate).getTime() : Infinity;
+    const bEnd = b.promotionEndDate ? new Date(b.promotionEndDate).getTime() : Infinity;
     return aEnd - bEnd;
   });
 }

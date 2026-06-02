@@ -15,25 +15,23 @@ import {
   normalizeQueryLang,
   resolvePromotionApi,
   resolvePromotionLang,
-  buildDateLine,
-  isTruthyFlag,
 } from '../../scripts/utils/card-helpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 
 function isRegisterEnabled(value) {
   const normalized = String(value || '').trim().toUpperCase();
-  // CTA is hidden when the API explicitly sets isRegister to 'N'
+  // CTA is shown ONLY when the API explicitly sets isRegister to 'N'
   return normalized !== 'N';
 }
 
-function getRegisterCtaLabelValue(isRegister, data) {
-  if (!isRegister || !isRegisterEnabled(isRegister)) return '';
-  return data?.registerCtaLabel || data?.ctaLabel || '';
+function resolveCtaLabel(isRegister, data) {
+  if (!isRegisterEnabled(isRegister)) return '';
+  return data?.isRegisterCtaLabel || '';
 }
 
-function getRegisterCtaUrl(isRegister, registerCtaUrl) {
-  if (!isRegister || !isRegisterEnabled(isRegister)) return '';
+function resolveCtaUrl(isRegister, registerCtaUrl) {
+  if (!isRegisterEnabled(isRegister)) return '';
   return registerCtaUrl || '';
 }
 
@@ -73,15 +71,21 @@ function getAuthoringPreviewData(block) {
     responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text']
       || config.responsiblelendingdisclaimertext || '',
     isRegister: config['is-register'] || config.isregister || '',
-    registerCtaLabel: config['register-cta-label'] || config.registerctalabel || '',
+    isRegisterCtaLabel: config['is-register-cta-label'] || config.isregisterctalabel || '',
     ctaLabel: config['cta-label'] || config.ctalabel || '',
   };
 }
 
-function buildDateHtml(card, label, locale) {
-  const dateLine = buildDateLine(card, locale);
-  if (!dateLine) return '';
-  return `<p class="promo-detail-date">${label} ${dateLine}</p>`;
+function formatDate(dateStr, locale = 'en-GB') {
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function buildDateHtml(start, end, label, locale) {
+  if (!start && !end) return '';
+  const parts = [start && formatDate(start, locale), end && formatDate(end, locale)]
+    .filter(Boolean);
+  return `<p class="promo-detail-date">${label} ${parts.join(' – ')}</p>`;
 }
 
 function buildDisclaimerHtml(enabled, text) {
@@ -122,17 +126,19 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   const title = data?.title
     ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
-  const imageUrl = data?.detailImageUrl || data?.cardImageUrl || '';
+  const imageUrl = data?.detailImageUrl || '';
   const cleanTitle = data?.title ? data.title.replace(/<[^>]*>/g, '').trim() : '';
   const imageHtml = imageUrl
     ? `<img src="${imageUrl}" alt="${cleanTitle}" loading="lazy">`
     : '';
-  const description = data?.detailDescription || data?.cardShortDescription || '';
-  const disclaimerEnabled = isTruthyFlag(data?.responsibleLendingDisclaimerEnabled);
+  const description = data?.detailDescription || '';
+  const startDate = data?.promotionStartDate || '';
+  const endDate = data?.promotionEndDate || '';
+  const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
   const isRegister = data?.isRegister || '';
-  const ctaLabel = getRegisterCtaLabelValue(isRegister, data);
-  const ctaUrl = getRegisterCtaUrl(isRegister, registerCtaUrl);
+  const ctaLabel = resolveCtaLabel(isRegister, data);
+  const ctaUrl = resolveCtaUrl(isRegister, registerCtaUrl);
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
@@ -152,7 +158,7 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
           ${imageColHtml}
           <div class="promo-detail-content">
             <div class="promo-detail-description">${description}</div>
-            ${buildDateHtml(data, periodLabel, locale)}
+            ${buildDateHtml(startDate, endDate, periodLabel, locale)}
             ${buildRegisterCtaHtml(ctaLabel, ctaUrl)}
             ${buildDisclaimerHtml(disclaimerEnabled, disclaimerText)}
           </div>
