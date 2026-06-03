@@ -39,18 +39,8 @@ function richTextFromRow(row) {
   return (cell ?? row).innerHTML.trim();
 }
 
-function printContent(containerEl) {
-  if (!containerEl) return;
-  const clone = containerEl.cloneNode(true);
-  const printHideSelectors = '.fund-prices-print-label, .fund-prices-error-message, .fund-prices-search-bar';
-  clone.querySelectorAll(printHideSelectors).forEach((el) => el.remove());
-  const inp = clone.querySelector('.calendar-input input');
-  if (inp) inp.parentNode?.replaceChild(document.createTextNode(inp.value), inp);
-  const orig = document.body.innerHTML;
-  document.body.innerHTML = clone.outerHTML;
+function printContent() {
   window.print();
-  document.body.innerHTML = orig;
-  window.location.reload();
 }
 
 function isDateOlderThanFundHistoryLimit(date) {

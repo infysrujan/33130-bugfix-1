@@ -83,3 +83,34 @@ td.merged-fund-type {
 .fund-prices-table table tr.header-row {
   height: 4.375rem;
 }
+
+@media print {
+  .fund-prices-table {
+    overflow-x: visible;
+    margin: 0;
+  }
+
+  .fund-prices-table table {
+    min-width: unset;
+    width: 100%;
+    table-layout: auto;
+    font-size: 0.7rem;
+    border: none;
+  }
+
+  .fund-prices-table table tr:not(.header-row) td {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+
+  .fund-prices-table table tr.header-row td {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+
+  .fund-prices-table table tr.header-row {
+    height: auto;
+  }
+}
