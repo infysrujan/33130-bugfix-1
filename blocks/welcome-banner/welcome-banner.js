@@ -4,17 +4,18 @@ import { createModalShell, showModal, hideModal } from '../../scripts/utils/moda
 const BANNER_COOKIE = 'bbl-welcome-banner';
 const COOKIE_DURATION_MS = 20 * 60 * 1000;
 
-function setBannerDismissed() {
+function setBannerCookie() {
   const expires = new Date(Date.now() + COOKIE_DURATION_MS).toUTCString();
   document.cookie = `${encodeURIComponent(BANNER_COOKIE)}=${Date.now()}; expires=${expires}; path=/; SameSite=Lax`;
 }
 
 function getRemainingMs() {
-  const encoded = encodeURIComponent(BANNER_COOKIE);
-  const match = document.cookie.split('; ').find((r) => r.startsWith(`${encoded}=`));
+  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${encodeURIComponent(BANNER_COOKIE)}=([^;]*)`));
   if (!match) return 0;
-  const ts = Number(match.split('=')[1]);
-  if (!ts) return 0;
+
+  const ts = Number(match[1]);
+  if (!ts || Number.isNaN(ts)) return 0;
+
   const remaining = COOKIE_DURATION_MS - (Date.now() - ts);
   return remaining > 0 ? remaining : 0;
 }
@@ -87,7 +88,7 @@ export default function decorate(block) {
   });
 
   const dismiss = () => {
-    setBannerDismissed();
+    setBannerCookie();
     hideModal(overlay, 'welcome-banner-overlay-visible');
   };
 
@@ -115,7 +116,7 @@ export default function decorate(block) {
     if (ctaData.sourceAnchor) moveInstrumentation(ctaData.sourceAnchor, a);
     a.addEventListener('click', (e) => {
       e.preventDefault();
-      setBannerDismissed();
+      setBannerCookie();
       if (ctaData.href && ctaData.href !== '#') {
         window.location.href = ctaData.href;
       } else {
@@ -129,11 +130,13 @@ export default function decorate(block) {
   dialog.appendChild(media);
   dialog.appendChild(ctas);
 
-  const show = () => showModal(overlay, 'welcome-banner-overlay-visible');
+  const show = () => {
+    showModal(overlay, 'welcome-banner-overlay-visible');
+    setBannerCookie();
+  };
   const remainingMs = getRemainingMs();
   if (remainingMs > 0) {
-    setTimeout(show, remainingMs);
-  } else {
-    show();
+    return;
   }
+  show();
 }
