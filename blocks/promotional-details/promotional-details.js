@@ -107,6 +107,8 @@ function bindImageModal(container, imageUrl, altText) {
   const imageLink = container.querySelector('.promo-detail-image-link');
   imageLink?.addEventListener('click', (e) => {
     e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
 
     const doc = container.ownerDocument;
 
