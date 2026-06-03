@@ -3,7 +3,12 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
-import { openModal } from '../../scripts/utils/modal.js';
+import {
+  createModalShell,
+  showModal,
+  hideModal,
+  setupModalHandlers,
+} from '../../scripts/utils/modal.js';
 import {
   getPromotionDataUrl,
   fetchJson,
@@ -104,6 +109,43 @@ function bindImageModal(container, imageUrl, altText) {
     e.preventDefault();
 
     const doc = container.ownerDocument;
+
+    // Guard against rapid double-clicks opening multiple modals
+    if (doc.body.classList.contains('modal-open')) return;
+
+    const wrapper = doc.createElement('div');
+    wrapper.className = 'custom-modal';
+    wrapper.setAttribute('aria-hidden', 'true');
+
+    const backdrop = doc.createElement('div');
+    backdrop.className = 'modal-overlay';
+
+    const { overlay: content, dialog: body, closeBtn } = createModalShell({
+      overlayClass: 'modal-content',
+      dialogClass: 'modal-body promo-detail-image-modal',
+      closeBtnClass: 'modal-close',
+      closeBtnAriaLabel: 'Close modal',
+    });
+    content.insertBefore(closeBtn, body);
+
+    let closeModal;
+
+    const handleEscape = (evt) => {
+      if (evt.key === 'Escape' && closeModal) closeModal();
+    };
+
+    closeModal = () => {
+      doc.removeEventListener('keydown', handleEscape);
+      wrapper.setAttribute('aria-hidden', 'true');
+      hideModal(wrapper, 'active', () => doc.body.classList.remove('modal-open'));
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    // Explicitly disable escapeKey in setupModalHandlers to prevent listener leaks on the document
+    setupModalHandlers(wrapper, content, closeModal, { escapeKey: false, clickOutside: true });
+    doc.addEventListener('keydown', handleEscape);
+    wrapper.append(backdrop, content);
+
     const modalContent = doc.createElement('div');
     modalContent.className = 'promo-detail-image-modal-content';
 
@@ -112,10 +154,12 @@ function bindImageModal(container, imageUrl, altText) {
     modalImage.alt = altText;
     modalContent.appendChild(modalImage);
 
-    openModal(doc, {
-      content: modalContent,
-      dialogClass: 'promo-detail-image-modal',
-    });
+    body.replaceChildren(modalContent);
+    doc.body.appendChild(wrapper);
+
+    wrapper.setAttribute('aria-hidden', 'false');
+    doc.body.classList.add('modal-open');
+    showModal(wrapper, 'active');
   });
 }
 
@@ -129,9 +173,9 @@ function renderDetails(container, data, periodLabel, locale, viewFull, registerC
       let base = baseUrl;
       if (data?.cardImageUrl) {
         try {
-          // Validate if cardImageUrl is absolute using the native URL constructor
-          const dummyUrl = new URL(data.cardImageUrl);
-          if (dummyUrl) base = data.cardImageUrl;
+          // Validate if cardImageUrl is an absolute URL; throws if relative/invalid
+          const parsedUrl = new URL(data.cardImageUrl);
+          base = parsedUrl.href;
         } catch (err) {
           // Relative URL or invalid; fallback to baseUrl
         }
