@@ -80,7 +80,7 @@
       "news-media",
       "latest-news",
       "forward-points-sme",
-      "savings-calculator",
+      "saving-plan",
       "category-banner",
       "bbm-glow-card",
       "menu-list",
@@ -206,7 +206,8 @@
       "text-input",
       "tnc",
       "wizard",
-      "range"
+      "range",
+      "double-key-dropdown"
     ]
   },
   {

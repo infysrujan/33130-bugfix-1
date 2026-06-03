@@ -35,6 +35,9 @@
     },
     { 
       "...": "./components/wizard/_wizard.json#/definitions" 
+    },
+    {
+      "...": "./components/double-key-dropdown/_double-key-dropdown.json#/definitions"
     }
   ],
   "models": [
@@ -75,6 +78,9 @@
     },
     {
       "...": "./components/*/_*.json#/models"
+    },
+    {
+      "...": "./components/double-key-dropdown/_double-key-dropdown.json#/models"
     }
   ],
   "filters": [
@@ -105,7 +111,8 @@
         "text-input",
         "tnc",
         "wizard",
-        "range"
+        "range",
+        "double-key-dropdown"
       ]
     }
   ]
