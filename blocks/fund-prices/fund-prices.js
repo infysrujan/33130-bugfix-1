@@ -329,10 +329,17 @@ export default async function decorate(block) {
   });
 
   /* ── Dynamically build and load fund-prices-dropdown block ── */
-  const fddRawBlock = buildBlock('fund-prices-dropdown', []);
+  // Use an authored fund-prices-dropdown block from the section if present
+  // (needed for localised label authoring). Fall back to an empty dynamic block.
+  let fddRawBlock = section?.querySelector('.fund-prices-dropdown');
+  if (!fddRawBlock) {
+    fddRawBlock = buildBlock('fund-prices-dropdown', []);
+  }
   root.appendChild(fddRawBlock);
-  decorateBlock(fddRawBlock);
-  await loadBlock(fddRawBlock);
+  if (fddRawBlock.dataset.blockStatus !== 'loaded') {
+    decorateBlock(fddRawBlock);
+    await loadBlock(fddRawBlock);
+  }
 
   const fddBlock = root.querySelector('.fund-prices-dropdown');
 
