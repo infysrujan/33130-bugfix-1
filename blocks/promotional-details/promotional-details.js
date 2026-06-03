@@ -205,7 +205,7 @@ function renderDetails(container, data, periodLabel, locale, viewFull, registerC
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
           <div class="promo-detail-image">
-            <a class="promo-detail-image-link" href="${imageUrl}" title="${viewFull}">
+            <a class="promo-detail-image-link" href="#" title="${viewFull}">
               ${imageHtml}
             </a>
           </div>` : '';
