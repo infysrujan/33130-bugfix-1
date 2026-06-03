@@ -1,8 +1,4 @@
-import {
-  buildCardHtml,
-  buildCardOptions,
-  fetchJson, sortCards,
-} from '../../scripts/utils/card-helpers.js';
+import { buildCardHtml, fetchJson, sortCards } from '../promo-card-listing/promo-card-listing.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
@@ -22,6 +18,8 @@ function filterCards(activeCards, tabText) {
 }
 
 function setupPanel(panel, activeCards, placeholders) {
+  const viewAllHref = placeholders.promoViewAllHref || '#';
+  const viewAllText = placeholders.promoViewAll || 'View all promotions';
   const noResultsText = placeholders.promoNoResults || 'No results found.';
   const btnId = panel.getAttribute('aria-labelledby');
   const btn = btnId ? document.getElementById(btnId) : null;
@@ -49,22 +47,30 @@ function setupPanel(panel, activeCards, placeholders) {
   const grid = document.createElement('div');
   grid.className = 'promo-selector-grid top-promo-grid';
   grid.innerHTML = cards.length
-    ? cards.map((card) => buildCardHtml(card, card.category || tabText, placeholders, buildCardOptions(card))).join('')
+    ? cards.map((card) => buildCardHtml(card, card.category || tabText, placeholders)).join('')
     : `<p class="top-promo-empty">${noResultsText}</p>`;
 
-  panel.append(grid);
+  const footer = document.createElement('div');
+  footer.className = 'top-promo-footer pad-bot-30';
+  footer.innerHTML = `<span><a href="${viewAllHref}">${viewAllText}</a></span>`;
+  footer.querySelector('a').className = 'button secondary';
+
+  panel.append(footer, grid);
 }
 
 export default async function decorate(block) {
+  const blockHref = block.querySelector('a')?.href || '#';
   const lang = getLang();
   const configs = await fetchConfigs();
-  const baseUrl = configs?.promoCardListingCardSelector || '';
+  const baseUrl = configs?.promotionalCardSelector || '';
   const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 
   const [data, placeholders] = await Promise.all([
     fetchJson(promotionsUrl),
     fetchPlaceholders(),
   ]);
+
+  if (!placeholders.promoViewAllHref) placeholders.promoViewAllHref = blockHref;
 
   const allCards = data?.cards || [];
 
@@ -75,13 +81,6 @@ export default async function decorate(block) {
 
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
   tabPanels.forEach((panel) => setupPanel(panel, activeCards, placeholders));
-
-  const btnContainer = block.closest('.section')?.querySelector('.button-container');
-  const tabsContent = document.querySelector('.tabs-content');
-  if (btnContainer && tabsContent) {
-    btnContainer.classList.add('top-promo-view-all', 'pad-bot-30');
-    tabsContent.before(btnContainer);
-  }
 
   block.hidden = true;
 

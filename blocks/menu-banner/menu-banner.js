@@ -1,4 +1,4 @@
-import { createPictureWithoutOptimization } from '../../scripts/bbl-decorators.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 
 /**
@@ -35,7 +35,7 @@ function createMenuBannerCard(cardElement, doc) {
         '<span class="visual-img"></span>',
         doc,
       );
-      const optimizedPic = createPictureWithoutOptimization(
+      const optimizedPic = createOptimizedPicture(
         cardImg.src,
         altText || titleText || '',
         false,
@@ -65,7 +65,7 @@ function createMenuBannerCard(cardElement, doc) {
         '<span class="visual-img"></span>',
         doc,
       );
-      const optimizedPic = createPictureWithoutOptimization(
+      const optimizedPic = createOptimizedPicture(
         cardImg.src,
         altText || titleText || '',
         false,

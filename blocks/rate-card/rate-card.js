@@ -356,11 +356,11 @@ export default async function decorate(block) {
   // Fetch configs for API URLs
   const configs = await fetchConfigs();
 
-  const exchangeRateAPI = configs?.rateCardGetFxBanner || '';
-  const depositRateAPI = configs?.rateCardGetDepositRate || '';
-  const loanRateAPI = configs?.rateCardGetLoanRate || '';
-  const bblFundAPI = configs?.rateCardGetFundPriceService || '';
-  const bcapFundAPI = configs?.rateCardGetFundBanner || '';
+  const exchangeRateAPI = configs?.getFxBanner || '';
+  const depositRateAPI = configs?.getDepositeRate || '';
+  const loanRateAPI = configs?.getLoanRate || '';
+  const bblFundAPI = configs?.getFundPriceService || '';
+  const bcapFundAPI = configs?.getFundBanner || '';
 
   // Parse block content
   const items = Array.from(block.children);

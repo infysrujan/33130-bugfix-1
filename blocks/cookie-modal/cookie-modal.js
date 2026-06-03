@@ -4,7 +4,6 @@
  * Loaded as a fragment from /en/fragments/cookie-modal (or the TH equivalent).
  * Builds an accessible modal dialog with per-cookie-type toggles.
  */
-import { createModalShell, hideModal } from '../../scripts/utils/modal.js';
 
 const COOKIE_DURATION_DAYS = 30;
 const COOKIE_CONSENT = 'ConsentAlert';
@@ -177,12 +176,31 @@ function openModal(overlay, trigger) {
 
 function closeModal(overlay) {
   const restoreTarget = overlay[LAST_TRIGGER_KEY];
+  const prefersReducedMotion = typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   document.body.classList.remove('cookie-modal-open');
-  hideModal(overlay, 'cookie-modal-visible', () => {
+
+  let removed = false;
+  const finishClose = () => {
+    if (removed) return;
+    removed = true;
+    overlay.remove();
+
     if (restoreTarget && typeof restoreTarget.focus === 'function') {
       restoreTarget.focus();
     }
-  });
+  };
+
+  overlay.classList.remove('cookie-modal-visible');
+
+  if (prefersReducedMotion) {
+    finishClose();
+    return;
+  }
+
+  overlay.addEventListener('transitionend', finishClose, { once: true });
+  window.setTimeout(finishClose, 300);
 }
 
 function setupUEBlockRefresh(blockEl) {
@@ -271,15 +289,26 @@ export default function decorate(block) {
     };
   });
 
-  const { overlay, dialog, closeBtn } = createModalShell({
-    overlayClass: 'cookie-modal-overlay',
-    dialogClass: 'cookie-modal-dialog',
-    closeBtnClass: 'cookie-modal-close',
-    ariaLabelledBy: 'cookie-modal-title',
-    ariaDescribedBy: 'cookie-modal-description',
-    closeBtnAriaLabel: 'Close cookie settings',
-    closeBtnHTML: '',
-    tabindex: '-1',
+  const overlay = el('div', {
+    className: 'cookie-modal-overlay',
+    attrs: {
+      role: 'dialog',
+      'aria-modal': 'true',
+      'aria-labelledby': 'cookie-modal-title',
+      'aria-describedby': 'cookie-modal-description',
+      tabindex: '-1',
+    },
+  });
+
+  const dialog = el('div', {
+    className: 'cookie-modal-dialog',
+  });
+  const closeBtn = el('button', {
+    className: 'cookie-modal-close',
+    attrs: {
+      type: 'button',
+      'aria-label': 'Close cookie settings',
+    },
   });
   const closeBtnImg = el('img', {
     attrs: {
@@ -331,6 +360,7 @@ export default function decorate(block) {
   footer.append(saveBtn);
 
   dialog.append(closeBtn, header, body, footer);
+  overlay.append(dialog);
 
   closeBtn.addEventListener('click', () => closeModal(overlay));
 

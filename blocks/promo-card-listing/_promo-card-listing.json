@@ -20,23 +20,6 @@
     {
       "id": "promo-card-listing",
       "fields": [
-        {
-          "component": "select",
-          "name": "promotionType",
-          "label": "Promotion Type",
-          "valueType": "string",
-          "value": "credit-card",
-          "options": [
-            {
-              "name": "Credit Card",
-              "value": "credit-card"
-            },
-            {
-              "name": "Bangkok Bank M",
-              "value": "bangkok-bank-m"
-            }
-          ]
-        }
       ]
     }
   ],

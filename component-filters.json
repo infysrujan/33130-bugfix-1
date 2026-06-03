@@ -42,9 +42,6 @@
       "table",
       "locate-us",
       "rate-card",
-      "fund-prices",
-      "fund-prices-table",
-      "fund-prices-dropdown",
       "accordion-block",
       "social-icons",
       "card-list",
@@ -57,39 +54,14 @@
       "video",
       "carousel-video",
       "forex-rates",
-      "market-report",
-      "sme-loan-calculator",
-      "dynamic-board",
-      "bcap",
-      "multi-column-tiles",
-      "retirement-calculator",
-      "tax-calculator",
       "special-fx-rates",
       "promotional-details",
       "promo-card-listing",
       "top-promotional-cards",
       "multi-column-tiles",
-      "fund-prices",
-      "property-for-sale-details",
-      "property-for-sale",
       "stock-ticker",
       "cookie-alert",
-      "cookie-modal",
-      "welcome-banner",
-      "news-media-details",
-      "news-media",
-      "latest-news",
-      "forward-points-sme",
-      "savings-calculator",
-      "category-banner",
-      "bbm-glow-card",
-      "menu-list",
-      "search-reports",
-      "search-reports-results",
-      "mf-results",
-      "mf-comparator-results",
-      "mf-comparator",
-      "mf-questionnaire"
+      "cookie-modal"
     ]
   },
   {
@@ -394,7 +366,9 @@
         ]
       }
     },
-    "components": []
+    "components": [
+      "nested-table"
+    ]
   },
   {
     "id": "tab-section",
@@ -408,6 +382,7 @@
       "cards-product",
       "columns",
       "fragment",
+      "megamenu",
       "carousel",
       "story-card",
       "warning-card",
@@ -416,13 +391,12 @@
       "cross-banner",
       "form",
       "embed-adaptive-form",
-      "download-file",
-      "table",
-      "accordion-block",
+      "brand-logo",
+      "location",
+      "login",
+      "main-nav-item",
       "forex-rates",
-      "forex-graph",
-      "sme-loan-calculator",
-      "table"
+      "forex-graph"
     ]
   },
   {

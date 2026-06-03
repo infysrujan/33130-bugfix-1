@@ -24,10 +24,10 @@ function replaceTemplateTokens(url, values) {
 }
 
 export function createApiEndpoints(configs) {
-  const fxFamilyUrl = configs?.forexRatesGetFxrateFamily || '';
-  const dayInMonthTemplate = configs?.forexRatesGetDayInMonth || '';
-  const chartTemplate = configs?.forexGraphGetFxrateChart || '';
-  const downloadTemplate = configs?.forexRatesGetFxrateDownload || '';
+  const fxFamilyUrl = configs?.exchangeRateServiceGetFxrateFamily || '';
+  const dayInMonthTemplate = configs?.exchangeRateServiceGetDayInMonth || '';
+  const chartTemplate = configs?.exchangeRateServiceGetFxrateChart || '';
+  const downloadTemplate = configs?.exchangeRateServiceGetFxrateDownload || '';
 
   return {
     fxFamily: () => fxFamilyUrl,

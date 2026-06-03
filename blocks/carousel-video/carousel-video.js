@@ -20,9 +20,9 @@ export default async function decorate(block) {
 
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
 
-  const embedBaseUrl = configs.carouselVideoEmbedBaseUrl || 'https://www.youtube.com/embed/';
-  const thumbBaseUrl = configs.carouselVideoThumbnailBaseUrl || 'https://img.youtube.com/vi/';
-  const thumbQuality = configs.carouselVideoThumbnailQuality || 'hqdefault';
+  const embedBaseUrl = configs.youtubeEmbedBaseUrl || 'https://www.youtube.com/embed/';
+  const thumbBaseUrl = configs.youtubeThumbnailBaseUrl || 'https://img.youtube.com/vi/';
+  const thumbQuality = configs.youtubeThumbnailQuality || 'hqdefault';
 
   const playerTitle = placeholders.carouselVideoPlayerTitle || 'YouTube Video Player';
   const prevLabel = placeholders.carouselVideoPrevLabel || 'Previous';
@@ -48,8 +48,6 @@ export default async function decorate(block) {
 
   const items = allItems.filter((item) => item.id);
   const n = items.length;
-  // Extra trailing clones needed when n < VISIBLE so every scroll position shows a full row.
-  const extraCount = Math.max(0, VISIBLE - n);
 
   block.innerHTML = '';
 
@@ -132,14 +130,9 @@ export default async function decorate(block) {
   });
   // Trailing clones (set 2)
   const trailingClones = items.map(({ id, thumbSrc }, i) => createThumb(id, i, null, thumbSrc));
-  // Extra trailing clones to keep the visible window full when n < VISIBLE
-  const extraTrailingClones = Array.from({ length: extraCount }, (_, e) => {
-    const { id, thumbSrc } = items[e % n];
-    return createThumb(id, e % n, null, thumbSrc);
-  });
 
-  // All sets flattened; domI % n gives the real item index
-  const allThumbBtns = [...leadingClones, ...thumbEls, ...trailingClones, ...extraTrailingClones];
+  // All 3 sets flattened; domI % n gives the real item index
+  const allThumbBtns = [...leadingClones, ...thumbEls, ...trailingClones];
 
   trackWrap.appendChild(track);
   carouselSection.appendChild(prevBtn);
@@ -166,27 +159,22 @@ export default async function decorate(block) {
   // ── State helpers ─────────────────────────────────────────────────────────
   function setActive(index) {
     activeIndex = index;
-    mainPlayer.classList.remove('active');
-    setTimeout(() => {
-      iframe.src = `${embedBaseUrl}${items[index].id}`;
-      thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
-      dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
-      requestAnimationFrame(() => mainPlayer.classList.add('active'));
-    }, 0);
+    iframe.src = `${embedBaseUrl}${items[index].id}`;
+    // Mark all 3 instances (leading clone, original, trailing clone)
+    allThumbBtns.forEach((btn, domI) => btn.classList.toggle('active', domI % n === index));
+    dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
   }
 
   function getThumbWidth() {
-    const btn = allThumbBtns[0];
-    if (!btn) return 193;
-    if (btn.offsetWidth > 0) return btn.offsetWidth;
-    const computed = parseFloat(window.getComputedStyle(btn).width);
-    return computed > 0 ? Math.round(computed) : 193;
+    // Fall back to the CSS-declared width so the initial scroll is correct
+    // even before the first browser layout pass.
+    return allThumbBtns[0]?.offsetWidth || 185;
   }
 
   function scrollTrack(rawNew) {
-    rawScrollIndex = Math.max(0, Math.min(rawNew, 3 * n + extraCount - VISIBLE));
+    rawScrollIndex = Math.max(0, Math.min(rawNew, 3 * n - VISIBLE));
     const w = getThumbWidth();
-    track.style.transform = `translate3d(-${rawScrollIndex * (w + THUMB_GAP)}px, 0px, 0px)`;
+    track.style.transform = `translateX(-${rawScrollIndex * (w + THUMB_GAP)}px)`;
   }
 
   // Jump without triggering the CSS transition (used for seamless wrap resets).
@@ -194,34 +182,33 @@ export default async function decorate(block) {
     rawScrollIndex = rawNew;
     const w = getThumbWidth();
     track.style.transition = 'none';
-    track.style.transform = `translate3d(-${rawScrollIndex * (w + THUMB_GAP)}px, 0px, 0px)`;
+    track.style.transform = `translateX(-${rawScrollIndex * (w + THUMB_GAP)}px)`;
     track.getBoundingClientRect(); // force reflow so the transition suppression takes effect
     track.style.transition = '';
   }
 
-  // Scroll so the given index lands at the first (leftmost) visible slot.
-  // Always picks the next occurrence ahead of (>=) the current position so
-  // the track only ever moves rightward (clockwise).
-  function scrollToFirst(index) {
+  // Return the DOM position (across all 3 sets) for realIndex that is
+  // closest to the current rawScrollIndex — this drives infinite scrolling.
+  function nearestRawForIndex(index) {
     const candidates = [index, n + index, 2 * n + index];
-    const ahead = candidates.filter((c) => c >= rawScrollIndex);
-    const itemRaw = ahead.length > 0 ? Math.min(...ahead) : 2 * n + index;
+    return candidates.reduce((best, c) => (
+      Math.abs(c - rawScrollIndex) < Math.abs(best - rawScrollIndex) ? c : best));
+  }
+
+  function ensureVisible(index) {
+    const itemRaw = nearestRawForIndex(index);
+    if (itemRaw < rawScrollIndex) {
+      scrollTrack(itemRaw);
+    } else if (itemRaw >= rawScrollIndex + VISIBLE) {
+      scrollTrack(itemRaw - VISIBLE + 1);
+    }
+    // else item is already in the visible window — no scroll needed
+  }
+
+  // Scroll so the given index lands at the first (leftmost) visible slot.
+  function scrollToFirst(index) {
+    const itemRaw = nearestRawForIndex(index);
     scrollTrack(itemRaw);
-  }
-
-  // Always move right (next direction) to the nearest occurrence of index.
-  function scrollForward(index) {
-    let target = rawScrollIndex + 1;
-    while (target % n !== index) target += 1;
-    scrollTrack(target);
-  }
-
-  // Always move left (prev direction) to the nearest occurrence of index.
-  function scrollBackward(index) {
-    let target = rawScrollIndex - 1;
-    while (target >= 0 && target % n !== index) target -= 1;
-    if (target < 0) target = index;
-    scrollTrack(target);
   }
 
   // After each animated scroll, silently reset to the original zone so there
@@ -247,13 +234,13 @@ export default async function decorate(block) {
   prevBtn.addEventListener('click', () => {
     const newIndex = activeIndex === 0 ? n - 1 : activeIndex - 1;
     setActive(newIndex);
-    scrollBackward(newIndex);
+    ensureVisible(newIndex);
   });
 
   nextBtn.addEventListener('click', () => {
     const newIndex = activeIndex === n - 1 ? 0 : activeIndex + 1;
     setActive(newIndex);
-    scrollForward(newIndex);
+    scrollToFirst(newIndex);
   });
 
   dotEls.forEach((dot, i) => {
@@ -268,12 +255,7 @@ export default async function decorate(block) {
   nextBtn.disabled = n <= 1;
 
   // Place the track at the start of the original set without animation.
-  // Use rAF so offsetWidth reflects the actual rendered thumb size for the
-  // current breakpoint rather than falling back to the hardcoded default.
-  requestAnimationFrame(() => {
-    scrollTrackSilent(n);
-    mainPlayer.classList.add('active');
-  });
+  scrollTrackSilent(n);
 
   // Recalculate scroll offset on resize
   let resizeTimer;

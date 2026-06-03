@@ -2081,6 +2081,21 @@
           }
         },
         {
+          "title": "Nested Table",
+          "id": "nested-table",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Nested Table",
+                  "model": "nested-table"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Tab Section",
           "id": "tab-section",
           "plugins": {

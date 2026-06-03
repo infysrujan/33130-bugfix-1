@@ -1,6 +1,5 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { getLang } from '../../scripts/scripts.js';
 import {
   buildCalendarGrid,
   buildIntlDayLabels,
@@ -198,7 +197,7 @@ function renderBlock(
             <label class="forex-graph-date-label">${escapeHtml(placeholders.fromLabel || 'From')}</label>
             <div class="forex-graph-date-group forex-graph-from-group">
               <span class="forex-graph-date-display">${escapeHtml(fromDisplayDate)}</span>
-              <input type="text" class="forex-graph-date-input forex-graph-from-input" inputmode="text" value="${escapeHtml(state.from.typedDate)}" aria-label="From date" data-pick="from">
+              <input type="text" class="forex-graph-date-input forex-graph-from-input" inputmode="text" placeholder="DD MMM YYYY" value="${escapeHtml(state.from.typedDate)}" aria-label="From date" data-pick="from">
               <button type="button" class="forex-graph-date-trigger icon-calendar" aria-label="Open from calendar" data-pick="from"></button>
               ${renderDatepicker('from', state.from, monthLabels, dayLabels, buddhistYearOffset)}
             </div>
@@ -207,13 +206,13 @@ function renderBlock(
             <label class="forex-graph-date-label">${escapeHtml(placeholders.toLabel || 'To')}</label>
             <div class="forex-graph-date-group forex-graph-to-group">
               <span class="forex-graph-date-display">${escapeHtml(toDisplayDate)}</span>
-              <input type="text" class="forex-graph-date-input forex-graph-to-input" inputmode="text" value="${escapeHtml(state.to.typedDate)}" aria-label="To date" data-pick="to">
+              <input type="text" class="forex-graph-date-input forex-graph-to-input" inputmode="text" placeholder="DD MMM YYYY" value="${escapeHtml(state.to.typedDate)}" aria-label="To date" data-pick="to">
               <button type="button" class="forex-graph-date-trigger icon-calendar" aria-label="Open to calendar" data-pick="to"></button>
               ${renderDatepicker('to', state.to, monthLabels, dayLabels, buddhistYearOffset)}
             </div>
           </div>
         </div>
-        <button type="button" class="forex-graph-go-btn"${(state.loading || !state.from.selectedDate || !state.to.selectedDate) ? ' disabled' : ''}>${escapeHtml(authoring.goLabel)}</button>
+        <button type="button" class="forex-graph-go-btn"${state.loading ? ' disabled' : ''}>${escapeHtml(authoring.goLabel)}</button>
         <div class="forex-graph-actions">
           <button type="button" class="forex-graph-print-btn icon-print">${escapeHtml(authoring.printLabel)}</button>
           <button type="button" class="forex-graph-download-btn icon-download">${escapeHtml(authoring.downloadLabel)}</button>
@@ -240,10 +239,10 @@ function renderBlock(
 export default async function decorate(block) {
   const authoring = parseAuthoring(block);
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
-  const language = getLang();
-  const monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
-  const dayLabels = parseCsvConfigList(placeholders?.dayLabels, buildIntlDayLabels(language));
-  const buddhistYearOffset = getLang() === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
+  const language = document.documentElement.lang?.split('-')[0] || 'en';
+  const monthLabels = parseCsvConfigList(configs?.monthLabels, buildIntlMonthLabels(language));
+  const dayLabels = parseCsvConfigList(configs?.dayLabels, buildIntlDayLabels(language));
+  const buddhistYearOffset = Number(configs?.buddhistYearOffset) || 0;
   const endpoints = createApiEndpoints(configs);
 
   function createPickerState() {
@@ -531,15 +530,11 @@ export default async function decorate(block) {
           if (state[pick].calendarOpen) return;
           const parsed = parseTypedDate(state[pick].typedDate, buddhistYearOffset);
           if (!parsed) {
-            if (!state[pick].typedDate.trim()) {
-              state[pick].selectedDate = '';
-            } else {
-              state[pick].typedDate = formatDateInputValue(
-                state[pick].selectedDate,
-                monthLabels,
-                buddhistYearOffset,
-              );
-            }
+            state[pick].typedDate = formatDateInputValue(
+              state[pick].selectedDate,
+              monthLabels,
+              buddhistYearOffset,
+            );
             render();
             return;
           }

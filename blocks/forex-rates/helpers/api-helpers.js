@@ -24,10 +24,10 @@ function replaceTemplateTokens(url, values) {
 }
 
 export function createApiEndpoints(configs) {
-  const latestUrl = configs?.forexRatesGetLatestRates || '';
-  const dayInMonthTemplate = configs?.forexRatesGetDayInMonth || '';
-  const updateInDayTemplate = configs?.forexRatesGetUpdateInDay || '';
-  const fxRatesTemplate = configs?.forexRatesGetFxrates || '';
+  const latestUrl = configs?.exchangeRateServiceGetLatestRates || '';
+  const dayInMonthTemplate = configs?.exchangeRateServiceGetDayInMonth || '';
+  const updateInDayTemplate = configs?.exchangeRateServiceGetUpdateInDay || '';
+  const fxRatesTemplate = configs?.exchangeRateServiceGetFxrates || '';
 
   return {
     latestRates: () => latestUrl,

@@ -1,6 +1,5 @@
-import { createPictureWithoutOptimization } from '../../scripts/bbl-decorators.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { openModal } from '../../scripts/modal.js';
 
 /**
  * Helper to get text content from a row
@@ -45,7 +44,6 @@ function buildContent(
 ) {
   const content = doc.createElement('div');
   content.className = 'story-card-content';
-  let enableModal = false;
 
   // Eyebrow
   if (eyebrowText) {
@@ -83,18 +81,6 @@ function buildContent(
         // Only append if button has valid href and text
         if (anchor && anchor.href && anchor.textContent.trim()) {
           const clonedContainer = buttonContainer.cloneNode(true);
-
-          const isModalEnabled = [...buttonRow.children].some(
-            (cell) => !cell.contains(buttonContainer) && cell.textContent?.trim().toLowerCase() === 'true',
-          );
-
-          if (isModalEnabled) {
-            const clonedAnchor = clonedContainer.querySelector('a');
-            clonedAnchor.setAttribute('data-modal', clonedAnchor.getAttribute('href'));
-            clonedAnchor.removeAttribute('href');
-            enableModal = true;
-          }
-
           moveInstrumentation(buttonRow, clonedContainer);
           content.appendChild(clonedContainer);
         }
@@ -102,7 +88,7 @@ function buildContent(
     });
   }
 
-  return { content, enableModal };
+  return content;
 }
 
 /**
@@ -119,7 +105,7 @@ function buildThumb(img, imageAlt, imageRow, doc) {
 
   if (img) {
     // Create optimized picture element like carousel
-    const optimizedPicture = createPictureWithoutOptimization(
+    const optimizedPicture = createOptimizedPicture(
       img.src,
       imageAlt || img.alt || '',
       false,
@@ -220,7 +206,7 @@ export default function decorate(block) {
   const inner = doc.createElement('div');
   inner.className = 'inner';
 
-  const { content, enableModal } = buildContent(
+  const content = buildContent(
     eyebrowText,
     titleText,
     descriptionHTML,
@@ -252,15 +238,4 @@ export default function decorate(block) {
   // Replace block content
   block.textContent = '';
   block.appendChild(wrapper);
-
-  // Only attach the modal handler if at least one button has enableModal enabled.
-  if (enableModal) {
-    block.addEventListener('click', (event) => {
-      const trigger = event.target.closest('[data-modal]');
-      if (!trigger || !block.contains(trigger)) return;
-      event.preventDefault();
-      const fragmentPath = trigger.getAttribute('data-modal');
-      if (fragmentPath) openModal(doc, fragmentPath);
-    });
-  }
 }

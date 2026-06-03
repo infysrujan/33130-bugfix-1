@@ -1,4 +1,4 @@
-import { createPictureWithoutOptimization } from '../bbl-decorators.js';
+import { createOptimizedPicture } from '../aem.js';
 
 /** Min-width for desktop image source (px). */
 const DESKTOP_MEDIA_MIN = 761;
@@ -72,7 +72,7 @@ export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt
 
   const img = imgMobile || imgDesktop;
   if (!img) return null;
-  return createPictureWithoutOptimization(
+  return createOptimizedPicture(
     img.src,
     altText || '',
     false,

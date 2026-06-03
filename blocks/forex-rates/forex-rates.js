@@ -1,6 +1,5 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
-import { getLang } from '../../scripts/scripts.js';
 import {
   buildCalendarGrid,
   buildIntlDayLabels,
@@ -197,10 +196,10 @@ export default async function decorate(block) {
   authoring.prevMonthLabel = placeholders?.forexRatesPrevMonth || 'Previous month';
   authoring.nextMonthLabel = placeholders?.forexRatesNextMonth || 'Next month';
   authoring.openCalendarLabel = placeholders?.forexRatesOpenCalendar || 'Open calendar';
-  const language = getLang();
-  const monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
-  const dayLabels = parseCsvConfigList(placeholders?.dayLabels, buildIntlDayLabels(language));
-  const buddhistYearOffset = getLang() === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
+  const language = document.documentElement.lang?.split('-')[0] || 'en';
+  const monthLabels = parseCsvConfigList(configs?.monthLabels, buildIntlMonthLabels(language));
+  const dayLabels = parseCsvConfigList(configs?.dayLabels, buildIntlDayLabels(language));
+  const buddhistYearOffset = Number(configs?.buddhistYearOffset) || 0;
   const endpoints = createApiEndpoints(configs);
 
   const state = {

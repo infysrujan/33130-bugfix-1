@@ -295,7 +295,7 @@ export default async function decorate(block) {
   const configs = await fetchConfigs();
 
   const searchPlaceholder = placeholders?.searchInputPlaceholder || 'Type to Search...';
-  const apiBaseUrl = configs?.currencyConverterExchangeRateService || '';
+  const apiBaseUrl = configs?.exchangeRateService || '';
 
   if (!apiBaseUrl) {
     // eslint-disable-next-line no-console

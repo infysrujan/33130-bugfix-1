@@ -4,9 +4,8 @@ import {
   readPosition,
 } from '../../scripts/utils/carousel-helpers.js';
 import buildCardListFragmentSlides, {
-  updateFragmentTrack,
+  handleCardListLoopTransition,
   setCardListTrackPosition,
-  isFragmentNoScroll,
   tabletMin,
 } from './card-list-carousel.js';
 import buildContentCardsSlide from './build-content-cards-slide.js';
@@ -14,8 +13,6 @@ import buildImageSlide from './build-image-slide.js';
 import buildTextSlide from './build-text-slide.js';
 import buildHeroSlide from './build-hero-slide.js';
 import buildArrowsDotsSlide from './build-arrows-dots-slide.js';
-import buildMfCardListCarouselSlide from './build-mf-card-list-carousel-slide.js';
-import buildMfFundCardsSlide from './build-mf-fund-cards-slide.js';
 
 /**
  * Build a slide - determines which variation to use and delegates.
@@ -103,7 +100,7 @@ function initializeDragSwipe(
         } else {
           nextIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : currentIndex;
         }
-        if (nextIndex !== currentIndex) setActive(nextIndex, 'forward');
+        if (nextIndex !== currentIndex) setActive(nextIndex);
       } else if (deltaX > dragThreshold) {
         let prevIndex;
         if (enableLooping) {
@@ -111,7 +108,7 @@ function initializeDragSwipe(
         } else {
           prevIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex;
         }
-        if (prevIndex !== currentIndex) setActive(prevIndex, 'backward');
+        if (prevIndex !== currentIndex) setActive(prevIndex);
       }
     }
 
@@ -173,7 +170,7 @@ function initializeAutoScroll(
       const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
       let nextIdx = currentIndex + itemsPerScroll;
       if (nextIdx >= slideEls.length) nextIdx = 0;
-      setActive(nextIdx, 'forward');
+      setActive(nextIdx);
     }, delay);
   };
 
@@ -222,53 +219,10 @@ function initializeAutoScroll(
 }
 
 export default async function decorate(block) {
-  // UE deduplication guard: must run before the carouselInit check because UE may insert
-  // a copy of the already-decorated block (including data-carousel-init and the `content`
-  // class). When decorate() is called on that copy, we still need to clean up the stale
-  // original. The `content` class is always added during decoration, making it the
-  // reliable indicator of an already-decorated block.
-  const section = block.closest('.section') || block.parentElement;
-  section.querySelectorAll('.carousel-dotted.block').forEach((other) => {
-    if (other === block) return;
-    if (other.classList.contains('content')) other.remove();
-  });
-
-  // Prevent double-decoration of the same element (guards async re-entry)
-  if (block.dataset.carouselInit) return;
-  block.dataset.carouselInit = 'true';
-
-  const rows = [...block.children].filter((row) => !row.classList.contains('carousel-rendered'));
+  const rows = [...block.children];
   const hasAuthoringAttrs = rows.some((row) => [...row.attributes]
     .some(({ name }) => name.startsWith('data-aue-')));
   const isAuthoring = hasAuthoringAttrs && window.self !== window.top;
-  const sourceRows = rows;
-
-  const stripAuthoringAttrs = (root) => {
-    if (!root) return;
-    const all = [root, ...root.querySelectorAll('*')];
-    all.forEach((el) => {
-      [...el.attributes]
-        .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
-        .forEach(({ name }) => el.removeAttribute(name));
-    });
-  };
-
-  const ensureRenderHost = () => {
-    if (!isAuthoring) return block;
-    let host = block.querySelector(':scope > .carousel-rendered');
-    if (!host) {
-      host = document.createElement('div');
-      host.className = 'carousel-rendered';
-      block.append(host);
-    }
-    return host;
-  };
-
-  if (isAuthoring) {
-    sourceRows.forEach((row) => {
-      row.style.display = 'none';
-    });
-  }
 
   // Read configuration values from block rows
   const dotsAlignment = readDotsAlignment(rows[0]);
@@ -285,28 +239,20 @@ export default async function decorate(block) {
 
   const showDots = variant === 'showDots';
   const showArrows = variant === 'showArrowsDots';
-  const isMfCardListCarousel = variant === 'mf-card-list-carousel';
 
   const slides = rows.slice(nextIndex);
-  const renderSlides = isAuthoring
-    ? slides.map((row) => row.cloneNode(true))
-    : slides;
   block.classList.add('content');
 
   if (showDots) {
     block.classList.add(`dots-${dotsAlignment}-${dotsPosition}`);
-  } else if (showArrows || isMfCardListCarousel) {
+  } else if (showArrows) {
     block.classList.add('dots-center-outside-container');
   } else {
     block.classList.add('no-dots');
   }
 
-  if (showArrows || isMfCardListCarousel) {
+  if (showArrows) {
     block.classList.add('show-arrows-dots');
-  }
-
-  if (isMfCardListCarousel) {
-    block.classList.add('mf-card-list-carousel');
   }
 
   if (autoScroll) {
@@ -317,18 +263,10 @@ export default async function decorate(block) {
   block.setAttribute('role', 'region');
   block.setAttribute('aria-roledescription', 'carousel');
 
-  const slideEls = (await Promise.all(renderSlides.map((row, index) => {
-    const rowVariant = row.children[0]?.textContent.trim();
-    if (rowVariant === 'mf-card-list-carousel') {
-      return buildMfCardListCarouselSlide(row, index);
-    }
+  const slideEls = (await Promise.all(slides.map((row, index) => {
     const slideType = row.children[1]?.textContent.trim();
     if (slideType === 'cardListCarousel') {
       return buildCardListFragmentSlides(row, index);
-    }
-
-    if (slideType === 'mfCardListCarousel') {
-      return buildMfFundCardsSlide(row, index);
     }
 
     if (showArrows) {
@@ -349,7 +287,6 @@ export default async function decorate(block) {
   const slidesDefaultImage = slideEls.filter((s) => s.classList.contains('with-default-image')).length;
   const slidesFragment = slideEls.filter((s) => s.classList.contains('carousel-fragment')).length;
   const slidesContentCards = slideEls.filter((s) => s.classList.contains('content-cards')).length;
-  const slidesMfCardList = slideEls.filter((s) => s.classList.contains('mf-card-list-carousel-item')).length;
   const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
     && slidesWithImage === 0
     && slidesWithoutImage === 0;
@@ -399,14 +336,6 @@ export default async function decorate(block) {
     && slidesTextAnimation === 0
   ) {
     block.classList.add('all-content-cards');
-  } else if (
-    slidesMfCardList > 0
-    && slidesWithImage === 0
-    && slidesWithoutImage === 0
-    && slidesHeroBanner === 0
-    && slidesTextAnimation === 0
-  ) {
-    block.classList.add('all-mf-card-list-carousel');
   } else {
     block.classList.add('mixed-image-slides');
   }
@@ -437,8 +366,7 @@ export default async function decorate(block) {
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
   const arrowTrackVariant = circularOrDefaultImage || allFragmentTrack;
-  const isSimpleCarousel = slideEls.some((s) => s.classList.contains('simple-carousel'));
-  const shouldCloneFragmentSlide = allFragmentTrack && slideEls.length > 1 && !isAuthoring;
+  const shouldCloneFragmentSlide = allFragmentTrack && slideEls.length > 1;
 
   function triggerBgZoom(slideEl) {
     const bg = slideEl.querySelector('.carousel-bg');
@@ -462,7 +390,7 @@ export default async function decorate(block) {
 
   let isFirstLoad = true;
 
-  function setActive(index, direction = null) {
+  function setActive(index) {
     const prevIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
 
     const isHeroVariant = block.classList.contains('all-hero-banner-image-carousel')
@@ -476,6 +404,7 @@ export default async function decorate(block) {
       && slidesTextAnimation === 0;
 
     const isLoopingForward = index === 0 && prevIndex === slideEls.length - 1;
+    const isLoopingBackward = index === slideEls.length - 1 && prevIndex === 0;
 
     slideEls.forEach((slide, i) => {
       const active = i === index;
@@ -503,12 +432,6 @@ export default async function decorate(block) {
     if (showArrows && arrowTrackVariant) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
-    } else if (showArrows && isSimpleCarousel) {
-      prevArrow.disabled = false;
-      nextArrow.disabled = false;
-    } else if (isMfCardListCarousel) {
-      prevArrow.disabled = false;
-      nextArrow.disabled = false;
     } else {
       prevArrow.disabled = index === 0;
       nextArrow.disabled = index === slideEls.length - 1;
@@ -518,15 +441,17 @@ export default async function decorate(block) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       if (trackWrapper) {
         if (allFragmentTrack) {
-          updateFragmentTrack(
+          const handledLoop = handleCardListLoopTransition(
             block,
             trackWrapper,
             slideEls,
-            index,
-            prevIndex,
-            direction,
+            isLoopingForward,
+            isLoopingBackward,
             shouldCloneFragmentSlide,
           );
+          if (!handledLoop) {
+            setCardListTrackPosition(block, trackWrapper, slideEls, index);
+          }
         } else {
           const slideWidth = trackWrapper.offsetWidth;
 
@@ -558,11 +483,9 @@ export default async function decorate(block) {
     if (showArrows && arrowTrackVariant) {
       // Enable circular navigation for showArrowsDots variant
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
-      setActive(prevIndex, 'backward');
-    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel) {
-      setActive(currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1);
+      setActive(prevIndex);
     } else if (currentIndex > 0) {
-      setActive(currentIndex - 1, 'backward');
+      setActive(currentIndex - 1);
     }
   });
 
@@ -571,11 +494,9 @@ export default async function decorate(block) {
     if (showArrows && arrowTrackVariant) {
       // Enable circular navigation for showArrowsDots variant
       const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
-      setActive(nextSlideIndex, 'forward');
-    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel) {
-      setActive(currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0);
+      setActive(nextSlideIndex);
     } else if (currentIndex < slideEls.length - 1) {
-      setActive(currentIndex + 1, 'forward');
+      setActive(currentIndex + 1);
     }
   });
   dotButtons = slideEls.map((slide, index) => {
@@ -596,7 +517,6 @@ export default async function decorate(block) {
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
 
-  const renderHost = ensureRenderHost();
   if (allHeroBanner) {
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
@@ -607,13 +527,13 @@ export default async function decorate(block) {
     } else {
       trackWrapper.replaceChildren(...slideEls);
     }
-    renderHost.replaceChildren(trackWrapper);
+    block.replaceChildren(trackWrapper);
   } else if (allWithoutImage) {
     // Without-image variant uses track wrapper for sliding, but NO clone (looping is disabled)
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
     trackWrapper.replaceChildren(...slideEls);
-    renderHost.replaceChildren(trackWrapper);
+    block.replaceChildren(trackWrapper);
   } else if (arrowTrackVariant) {
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
@@ -636,31 +556,25 @@ export default async function decorate(block) {
         trackViewport.style.visibility = 'hidden';
       }
       trackViewport.append(trackWrapper);
-      renderHost.replaceChildren(trackViewport);
+      block.replaceChildren(trackViewport);
     } else {
-      renderHost.replaceChildren(trackWrapper);
+      block.replaceChildren(trackWrapper);
     }
   } else {
-    renderHost.replaceChildren(...slideEls);
+    block.replaceChildren(...slideEls);
   }
 
-  const noNav = allFragmentTrack && isFragmentNoScroll(slideEls);
-
-  if (showArrows || isMfCardListCarousel) {
-    if (showArrows && arrowTrackVariant) {
+  if (showArrows) {
+    if (arrowTrackVariant) {
       const trackContainer = allFragmentTrack
         ? block.querySelector('.carousel-track-viewport')
         : block.querySelector('.carousel-track-wrapper');
-      if (!noNav) {
-        renderHost.replaceChildren(prevArrow, trackContainer, nextArrow, dots);
-      }
+      block.replaceChildren(prevArrow, trackContainer, nextArrow, dots);
     } else {
-      renderHost.append(dots, prevArrow, nextArrow);
+      block.append(dots, prevArrow, nextArrow);
     }
   } else if (showDots || slidesContentCards > 0) {
-    if (!noNav) {
-      renderHost.append(dots);
-    }
+    block.append(dots);
   }
 
   if (seeMoreLink) {
@@ -672,11 +586,7 @@ export default async function decorate(block) {
     const linkWrap = document.createElement('span');
     linkWrap.append(seeMoreLink);
     moreWrap.append(linkWrap);
-    renderHost.append(moreWrap);
-  }
-
-  if (isAuthoring) {
-    stripAuthoringAttrs(renderHost);
+    block.append(moreWrap);
   }
 
   if (slideEls.length) {
@@ -715,8 +625,7 @@ export default async function decorate(block) {
     || slidesTextAnimation > 0
     || slidesCircularImage > 0
     || slidesDefaultImage > 0
-    || slidesFragment > 0
-    || (isMfCardListCarousel && slideEls.length > 1);
+    || slidesFragment > 0;
   initializeDragSwipe(block, slideEls, setActive, 50, enableLooping);
 
   if (allFragmentTrack) {

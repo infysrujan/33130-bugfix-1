@@ -32,7 +32,19 @@ function buildTile(row, doc) {
   imageWrapper.className = 'multi-column-tiles-image';
   imageWrapper.innerHTML = pictureHTML;
 
-  const titleEl = doc.createElement('h5');
+  if (linkHref) {
+    const anchor = doc.createElement('a');
+    anchor.href = linkHref;
+    anchor.className = 'multi-column-tiles-link';
+    if (title) anchor.setAttribute('title', title);
+    anchor.setAttribute('aria-label', title);
+    anchor.appendChild(imageWrapper);
+    tile.appendChild(anchor);
+  } else {
+    tile.appendChild(imageWrapper);
+  }
+
+  const titleEl = doc.createElement('h2');
   titleEl.className = 'multi-column-tiles-title';
   titleEl.textContent = title;
 
@@ -40,21 +52,7 @@ function buildTile(row, doc) {
   separatorEl.className = 'multi-column-tiles-separator';
   titleEl.appendChild(separatorEl);
 
-  if (linkHref) {
-    const anchor = doc.createElement('a');
-    anchor.href = linkHref;
-    anchor.className = 'multi-column-tiles-link';
-    anchor.target = '_blank';
-    anchor.rel = 'noopener noreferrer';
-    if (title) anchor.setAttribute('title', title);
-    anchor.setAttribute('aria-label', title);
-    anchor.appendChild(imageWrapper);
-    anchor.appendChild(titleEl);
-    tile.appendChild(anchor);
-  } else {
-    tile.appendChild(imageWrapper);
-    tile.appendChild(titleEl);
-  }
+  tile.appendChild(titleEl);
 
   return tile;
 }

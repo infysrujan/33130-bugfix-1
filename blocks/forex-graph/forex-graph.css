@@ -38,7 +38,7 @@
   cursor: pointer;
   box-sizing: border-box;
   text-align: left;
-  width: 100%;
+  width: max-content;
 }
 
 .forex-graph .forex-graph-dropdown.is-open .forex-graph-dropdown-trigger {
@@ -195,7 +195,6 @@
 .forex-graph .forex-graph-go-btn:disabled {
   opacity: 0.5;
   cursor: default;
-  pointer-events: none;
 }
 
 /* ── Actions (Print + Download) ───────────────────────────── */
@@ -236,6 +235,16 @@
   color: var(--bbl-color-grey-70);
 }
 
+.forex-graph .forex-graph-print-btn:hover,
+.forex-graph .forex-graph-download-btn:hover {
+  color: var(--bbl-color-gray-121);
+}
+
+.forex-graph .forex-graph-print-btn:hover::before,
+.forex-graph .forex-graph-download-btn:hover::before {
+  color: var(--bbl-color-gray-121);
+}
+
 /* ── Error message ─────────────────────────────────────────── */
 
 .forex-graph .forex-graph-error {
@@ -256,8 +265,7 @@
   margin-top: 1.875rem;
   border: 0.0625rem solid var(--bbl-color-grey-22);
   border-radius: 0.375rem;
-  padding: 1.875rem 0.9375rem 0;
-  margin-bottom: 1.875rem;
+  padding: 1.875rem 1rem 1rem;
   box-sizing: border-box;
 }
 
@@ -350,10 +358,6 @@
   justify-content: space-between;
   margin: 0 auto 0.75rem;
   width: 92%;
-}
-
-.forex-graph .forex-graph-download-btn.icon-download {
-  margin-right: 0.9375rem;
 }
 
 .forex-graph .forex-graph-datepicker-title {
@@ -530,11 +534,6 @@
     flex: 1;
   }
 
-  .forex-graph .forex-graph-chart-section {
-    padding: var(--bbl-space-500) var(--bbl-space-500) 1.25rem;
-    margin-bottom: 1.875rem;
-  }
-
   .forex-graph .forex-graph-legend {
     flex-shrink: 0;
     align-items: flex-end;
@@ -554,10 +553,6 @@
 
   .forex-graph .forex-graph-datepicker-title {
     font-size: 1.2775rem;
-  }
-
-  .forex-graph .forex-graph-dropdown-trigger {
-    width: max-content;
   }
 
   .forex-graph .forex-graph-datepicker-day-btn,
@@ -614,7 +609,7 @@
   .forex-graph .forex-graph-date-group {
     width: 10rem;
   }
-  
+
   .forex-graph .forex-graph-date-input {
     font-size: 1rem;
     max-width: fit-content;
@@ -628,6 +623,10 @@
   .forex-graph .forex-graph-print-btn,
   .forex-graph .forex-graph-download-btn {
     font-size: 1rem;
+  }
+
+  .forex-graph .forex-graph-chart-section {
+    padding: 2.5rem 2.5rem 1.25rem;
   }
 
   .forex-graph .forex-graph-chart-title {
