@@ -86,9 +86,9 @@
   line-clamp: 3;
   -webkit-box-orient: vertical;
   font-size: 0.8rem;
+  font-family: var(--bbl-font-family-looped);
   line-height: 1.375;
   margin: 0;
-  font-family: var(--bbl-font-family-medium);
 }
 
 /* ── Thumb ───────────────────────────────────────────────────────────────── */

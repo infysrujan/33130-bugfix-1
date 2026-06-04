@@ -526,7 +526,22 @@ function validateCreditCardNumber(inputNum) {
 function getidAndDob(id, dob) {
   console.log('id', id);
   console.log('dob', dob);
-  return `${id}${dob.replaceAll('/', '').replaceAll('-', '')}`;
+  const parts = dob.split(/[-/]/);
+  // parts: [yyyy, mm, dd]  →  reorder to ddmmyyyy
+  const ddmmyyyy = `${parts[2]}${parts[1]}${parts[0]}`;
+  return `${id}${ddmmyyyy}`;
+}
+
+function replaceOtherAndJoin(selectedValues, otherText) {
+  if (!selectedValues) {
+    return '';
+  }
+  const parsed = typeof selectedValues === 'string' ? JSON.parse(selectedValues) : selectedValues;
+  const values = parsed.filter((value) => value !== 'Other (please specify)');
+  if (otherText && otherText.trim()) {
+    values.push(otherText.trim());
+  }
+  return values.join(', ');
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -548,4 +563,5 @@ export {
   getBranchEnum,
   getBranchEnumNames,
   getidAndDob,
+  replaceOtherAndJoin,
 };

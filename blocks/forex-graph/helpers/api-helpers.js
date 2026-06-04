@@ -1,15 +1,9 @@
+import { fetchGet } from '../../../scripts/utils/fetchApi.js';
+
 export function trimValue(value) {
   if (value === null || value === undefined) return '-';
   const normalized = String(value).trim();
   return normalized || '-';
-}
-
-async function fetchJson(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
-  return response.json();
 }
 
 function replaceTemplateTokens(url, values) {
@@ -65,11 +59,11 @@ export function createApiEndpoints(configs) {
 }
 
 export async function getFxFamily(endpoints) {
-  return fetchJson(endpoints.fxFamily());
+  return fetchGet(endpoints.fxFamily());
 }
 
 export async function getEnabledDays(endpoints, year, month) {
-  const data = await fetchJson(endpoints.dayInMonth(Number(year), Number(month)));
+  const data = await fetchGet(endpoints.dayInMonth(Number(year), Number(month)));
   return (Array.isArray(data) ? data : [])
     .map((item) => String(item.Day || '').trim())
     .filter(Boolean)
@@ -80,7 +74,7 @@ export async function getChartRates(endpoints, sDay, sMon, sYear, eDay, eMon, eY
   const url = endpoints.chartRates(sDay, sMon, sYear, eDay, eMon, eYear, family, lang);
   if (!url) return [];
   try {
-    return await fetchJson(url);
+    return await fetchGet(url);
   } catch (e) {
     return [];
   }

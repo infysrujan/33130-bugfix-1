@@ -90,23 +90,23 @@
   font-size: 1.5rem;
   line-height: 1.625rem;
   color: var(--bbl-color-truthful-blue);
-  font-weight: 700;
+  font-weight: 400;
 }
 
 :lang(th) {
   .external-redirect-popup-title :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .external-redirect-popup-title :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 }
 
 /* Description — mobile-first: smaller base, larger on tablet+ */
 .external-redirect-popup-description p {
   margin-block: 0.625rem 0;
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-body-b1-size);
   line-height: 1.5rem;
   color: var(--bbl-color-truthful-blue);
@@ -137,7 +137,7 @@
   height: 2.75rem;
   padding: 0 var(--bbl-space-200);
   border-radius: 0.4375rem;
-  font-family: var(--bbl-font-family-primary);
+  font-family: var(--bbl-font-family-primary); 
   font-size: var(--bbl-font-size-b1);
   font-weight: var(--bbl-font-weight-regular);
   line-height: 1.375;
@@ -151,6 +151,8 @@
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-active-blue);
+  padding: 0;
+  margin: 1.875rem 0 0;
 }
 
 .external-redirect-popup-btn-accept:hover {
@@ -170,7 +172,8 @@
   background: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
   border: 0.0625rem solid var(--bbl-color-active-blue);
-  margin-left: 0.9375rem;
+  margin: 1.875rem 0 0 0.9375rem;
+  padding: 0;
 }
 
 .external-redirect-popup-btn-cancel:hover {
@@ -198,5 +201,23 @@
 @media (width > 64rem) {
   .external-redirect-popup-inner {
     width: 41.6667%;
+  }
+
+  :lang(th) {
+    .external-redirect-popup-title :is(h1) {
+      line-height: 3.75rem;
+    }
+
+    .external-redirect-popup-title :is(h2) {
+      line-height: 2.5rem;
+    }
+
+    .external-redirect-popup-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .external-redirect-popup-title :is(h4) {
+      line-height: 1.375rem;
+    }
   }
 }

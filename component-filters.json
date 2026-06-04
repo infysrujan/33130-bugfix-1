@@ -80,9 +80,22 @@
       "news-media",
       "latest-news",
       "forward-points-sme",
+      "saving-plan",
+      "category-banner",
+      "bbm-glow-card",
       "menu-list",
       "search-reports",
-      "search-reports-results"
+      "search-reports-results",
+      "mf-results",
+      "mf-comparator-results",
+      "mf-comparator",
+      "mf-questionnaire"
+    ]
+  },
+  {
+    "id": "bbm-glow-card",
+    "components": [
+      "bbm-glow-card-item"
     ]
   },
   {
@@ -193,7 +206,8 @@
       "text-input",
       "tnc",
       "wizard",
-      "range"
+      "range",
+      "double-key-dropdown"
     ]
   },
   {

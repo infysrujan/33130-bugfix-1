@@ -165,7 +165,15 @@ document.addEventListener('bbl:load-fragment', async (e) => {
  * @returns {'en'|'th'}
  */
 function getDocumentLangFromPath(pathname) {
-  const first = pathname.split('/').filter(Boolean)[0];
+  const segments = pathname.split('/').filter(Boolean);
+  const first = segments[0];
+
+  if (document.querySelector('[data-aue-resource]')) {
+    const lang = segments[2];
+    if (lang === 'en') return 'en';
+    if (lang === 'th') return 'th';
+  }
+
   if (first === 'en') return 'en';
   if (first === 'th') return 'th';
 
@@ -282,8 +290,19 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadHeader(doc.querySelector('header'));
-  loadFooter(doc.querySelector('footer'));
+  const disabledSections = new Set(
+    getMetadata('disable-sections', doc)
+      .split(',')
+      .map((section) => section.trim().toLowerCase())
+      .filter(Boolean),
+  );
+
+  if (!disabledSections.has('header')) {
+    loadHeader(doc.querySelector('header'));
+  }
+  if (!disabledSections.has('footer')) {
+    loadFooter(doc.querySelector('footer'));
+  }
 
   await loadBreadcrumb(doc);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);

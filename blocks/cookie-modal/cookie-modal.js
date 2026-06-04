@@ -5,6 +5,7 @@
  * Builds an accessible modal dialog with per-cookie-type toggles.
  */
 import { createModalShell, hideModal } from '../../scripts/utils/modal.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const COOKIE_DURATION_DAYS = 30;
 const COOKIE_CONSENT = 'ConsentAlert';
@@ -205,8 +206,8 @@ function setupUEBlockRefresh(blockEl) {
     // Block-level refresh: fetch the current page, extract only the updated
     // cookie-modal block, and swap it in atomically. No full page reload.
     try {
-      const res = await fetch(window.location.href);
-      const html = await res.text();
+      const html = await fetchGet(window.location.href, { throwOnError: false });
+      if (!html) throw new Error('page fetch failed');
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const newBlock = doc.querySelector('.cookie-modal');
       if (newBlock) {

@@ -1,6 +1,7 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import {
   buildCalendarGrid,
   buildIntlDayLabels,
@@ -695,9 +696,8 @@ export default async function decorate(block) {
         );
         if (!url) return;
         try {
-          const response = await fetch(url);
-          if (!response.ok) return;
-          const data = await response.json();
+          const data = await fetchGet(url, { throwOnError: false });
+          if (!data) return;
           const rows = Array.isArray(data) ? data : [];
           if (!rows.length) return;
           // Build CSV from all keys in the first row

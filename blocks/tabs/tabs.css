@@ -217,6 +217,10 @@
     border-color: var(--bbl-color-grey-150);
 }
 
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) :is(.tabs-nav-prev, .tabs-nav-next):active {
+    background: var(--bbl-color-gray-300);
+}
+
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) :is(.tabs-nav-prev, .tabs-nav-next).hidden {
     visibility: hidden;
     pointer-events: none;

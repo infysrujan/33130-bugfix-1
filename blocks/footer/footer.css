@@ -149,6 +149,7 @@
 
 .footer .footer-bottom p {
   font-size: 0.7875rem;
+  font-family: var(--bbl-font-family-looped);
   line-height: 1;
   margin-bottom: var(--bbl-space-200);
   color: var(--bbl-color-white-alpha-30);
@@ -191,6 +192,7 @@
 
   .footer .footer-bottom p {
     font-size: 0.8125rem;
+    font-family: var(--bbl-font-family-looped);
   }
 }
 

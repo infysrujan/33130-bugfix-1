@@ -1,5 +1,6 @@
 import { attachCalendarPicker, formatCalendarDate, getCalendarLang } from '../../scripts/utils/calendar-picker.js';
 import { parseLocalDateFromYmd, getApiUrls } from '../fund-prices-table/fund-prices-table.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 export const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
@@ -26,17 +27,13 @@ function isRangeExceedsLimit(fromDate, toDate) {
 
 async function fetchFundDetailStats(fundId, fromDate, toDate) {
   const { apiBase } = await getApiUrls();
-  const res = await fetch(`${apiBase}/Fund_Nav/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
-  if (!res.ok) throw new Error(`FundDetailStats ${res.status}`);
-  const data = await res.json();
+  const data = await fetchGet(`${apiBase}/Fund_Nav/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
   return Array.isArray(data) ? data[0] : data;
 }
 
 async function fetchFundDetailHistory(fundId, fromDate, toDate) {
   const { apiBase } = await getApiUrls();
-  const res = await fetch(`${apiBase}/FundPrice/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
-  if (!res.ok) throw new Error(`FundDetailHistory ${res.status}`);
-  const data = await res.json();
+  const data = await fetchGet(`${apiBase}/FundPrice/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
   return Array.isArray(data) ? data : [];
 }
 

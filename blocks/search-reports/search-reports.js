@@ -2,6 +2,7 @@ import { getLang } from '../../scripts/scripts.js';
 import { decorateIcons } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -125,12 +126,9 @@ function buildDropdown(placeholder, onChange) {
 }
 
 async function fetchSearchParams(searchParamsUrl) {
-  const url = searchParamsUrl;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`searchparams fetch failed: ${res.status}`);
-  const text = await res.text();
-  if (!text) throw new Error('searchparams response empty');
-  const parsed = JSON.parse(text);
+  const result = await fetchGet(searchParamsUrl);
+  const parsed = typeof result === 'string' ? JSON.parse(result) : result;
+  if (!parsed) throw new Error('searchparams response empty');
   return Array.isArray(parsed) ? parsed[0] : parsed;
 }
 

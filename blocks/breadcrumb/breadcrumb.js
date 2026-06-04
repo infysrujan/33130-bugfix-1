@@ -1,6 +1,7 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 /**
  * Fetches breadcrumb (parent page) data from the AEM pageinfo endpoint.
@@ -16,11 +17,7 @@ async function fetchBreadcrumbData() {
   try {
     const { pathname } = window.location;
     const apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}/content/bangkokbank${pathname}.pageinfo.parent.json`;
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      throw new Error(`API returned status ${response.status}`);
-    }
-    const data = await response.json();
+    const data = await fetchGet(apiUrl);
 
     // Build a path-to-title map from the returned parent pages
     const titleMap = {};

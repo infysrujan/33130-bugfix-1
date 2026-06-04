@@ -95,6 +95,10 @@
                 {
                   "name": "Grey 100",
                   "value": "bg-grey-100"
+                },
+                {
+                  "name": "Blue 01",
+                  "value": "bg-blue-01"
                 }
               ]
             },
@@ -249,9 +253,16 @@
         "news-media",
         "latest-news",
         "forward-points-sme",
+        "saving-plan",
+        "category-banner",      
+        "bbm-glow-card",
         "menu-list",
         "search-reports",
-        "search-reports-results"
+        "search-reports-results",
+        "mf-results",
+        "mf-comparator-results",
+        "mf-comparator",
+        "mf-questionnaire"
       ]
     }
   ]

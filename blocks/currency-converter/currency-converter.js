@@ -1,5 +1,6 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 /**
  * Format number with international comma system
@@ -266,13 +267,7 @@ async function convertCurrency(amount, fromCurrency, toCurrency, apiBaseUrl) {
     // API endpoint for currency conversion
     const apiUrl = `${apiBaseUrl}${amount}/${fromCurrency}/${toCurrency}`;
 
-    const response = await fetch(apiUrl);
-
-    if (!response.ok) {
-      throw new Error(`API returned status ${response.status}`);
-    }
-
-    const data = await response.json();
+    const data = await fetchGet(apiUrl);
 
     // The API should return the converted amount
     // Adjust this based on the actual API response structure

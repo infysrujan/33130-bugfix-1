@@ -17,27 +17,27 @@
 
 :lang(th) {
   .teaser-with-bg-image-container .default-content-wrapper :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .teaser-with-bg-image-container .default-content-wrapper :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 
   .teaser-bg-image-title :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .teaser-bg-image-title :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 
   .teaser-bg-image-card-title :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .teaser-bg-image-card-title :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 }
 
@@ -209,19 +209,19 @@
 
   :lang(th) {
     .teaser-bg-image-title :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .teaser-bg-image-title :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .teaser-bg-image-title :is(h3) {
       line-height: 3.75rem;
     }
 
-    .teaser-bg-image-title :is(h4) {
+    .teaser-bg-image-title :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .teaser-bg-image-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .teaser-bg-image-title :is(h4) {
+      line-height: 1.375rem;
     }
   }
 
@@ -270,51 +270,51 @@
 
   :lang(th) {
     .teaser-with-bg-image-container .default-content-wrapper :is(h1) {
-      line-height: 5.5rem;
+      line-height: 3.75rem;
     }
 
     .teaser-with-bg-image-container .default-content-wrapper :is(h2) {
-      line-height: 4.875rem;
+      line-height: 2.5rem;
     }
 
     .teaser-with-bg-image-container .default-content-wrapper :is(h3) {
-      line-height: 3.75rem;
+      line-height: 2rem;
     }
 
     .teaser-with-bg-image-container .default-content-wrapper :is(h4) {
-      line-height: 2.5rem;
+      line-height: 1.375rem;
     }
 
     .teaser-bg-image-title :is(h1) {
-      line-height: 5.5rem;
+      line-height: 3.75rem;
     }
 
     .teaser-bg-image-title :is(h2) {
-      line-height: 4.875rem;
+      line-height: 2.5rem;
     }
 
     .teaser-bg-image-title :is(h3) {
-      line-height: 3.75rem;
+      line-height: 2rem;
     }
 
     .teaser-bg-image-title :is(h4) {
-      line-height: 2.5rem;
+      line-height: 1.375rem;
     }
 
     .teaser-bg-image-card-title :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .teaser-bg-image-card-title :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .teaser-bg-image-card-title :is(h3) {
       line-height: 3.75rem;
     }
 
-    .teaser-bg-image-card-title :is(h4) {
+    .teaser-bg-image-card-title :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .teaser-bg-image-card-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .teaser-bg-image-card-title :is(h4) {
+      line-height: 1.375rem;
     }
   }
 

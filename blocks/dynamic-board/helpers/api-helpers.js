@@ -1,10 +1,5 @@
 import { pad2 } from './date-helpers.js';
-
-async function fetchJson(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`API ${res.status}: ${url}`);
-  return res.json();
-}
+import { fetchGet } from '../../../scripts/utils/fetchApi.js';
 
 function replaceTemplateTokens(url, values) {
   let output = url;
@@ -58,11 +53,11 @@ export default function createApiService(configs, boardType) {
   return {
     getLastUpdate: () => {
       if (!urls.lastUpdate) return Promise.resolve(null);
-      return fetchJson(urls.lastUpdate);
+      return fetchGet(urls.lastUpdate);
     },
     getLatestRates: () => {
       if (!urls.latestRates) return Promise.resolve(null);
-      return fetchJson(urls.latestRates);
+      return fetchGet(urls.latestRates);
     },
     getDayInMonth: (date) => {
       if (!urls.dayInMonth) return Promise.resolve([]);
@@ -70,7 +65,7 @@ export default function createApiService(configs, boardType) {
         YEAR: date.getFullYear(),
         MONTH: date.getMonth() + 1,
       });
-      return fetchJson(url);
+      return fetchGet(url);
     },
     getUpdatesInDay: (date) => {
       if (!urls.updateInDay) return Promise.resolve([]);
@@ -79,7 +74,7 @@ export default function createApiService(configs, boardType) {
         MONTH: pad2(date.getMonth() + 1),
         YEAR: date.getFullYear(),
       });
-      return fetchJson(url);
+      return fetchGet(url);
     },
     getRatesByDate: (date, update) => {
       if (!urls.ratesByDate) return Promise.resolve([]);
@@ -89,7 +84,7 @@ export default function createApiService(configs, boardType) {
         YEAR: date.getFullYear(),
         UPDATE: update,
       });
-      return fetchJson(url);
+      return fetchGet(url);
     },
     getRatesByDateWithFilter: (date, update, maturity, fromDate, toDate) => {
       const template = filterTemplates[maturity] || '';
@@ -102,7 +97,7 @@ export default function createApiService(configs, boardType) {
         FROM: fromDate,
         TO: toDate,
       });
-      return fetchJson(url);
+      return fetchGet(url);
     },
   };
 }
