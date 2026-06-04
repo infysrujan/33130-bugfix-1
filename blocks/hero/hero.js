@@ -270,7 +270,7 @@ function loadYTScript(src) {
 }
 
 let ytCounter = 0;
-function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
+function wireYouTubeControls(iframe, bar, overlay, bannerItem, ytSrc) {
   const playBtn = bar.querySelector('.hero-ctrl-play');
   const muteBtn = bar.querySelector('.hero-ctrl-mute');
   const volSlider = bar.querySelector('.hero-ctrl-volume');
@@ -322,6 +322,11 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
     iframe.ytPlayer = player; // expose for cross-slide pause coordination
 
     playBtn.addEventListener('click', () => {
+      if (player.getPlayerState() === window.YT.PlayerState.PLAYING) player.pauseVideo();
+      else player.playVideo();
+    });
+
+    overlay.addEventListener('click', () => {
       if (player.getPlayerState() === window.YT.PlayerState.PLAYING) player.pauseVideo();
       else player.playVideo();
     });
@@ -419,7 +424,7 @@ export default async function decorate(block) {
         const ytId = getYouTubeId(youtubeUrl);
         const iframe = document.createElement('iframe');
         if (isMobile) {
-          iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?mute=1&loop=1&playlist=${ytId}` : youtubeUrl;
+          iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?mute=1&loop=1&playlist=${ytId}&playsinline=1` : youtubeUrl;
         } else {
           iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&controls=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}` : youtubeUrl;
         }
@@ -429,8 +434,10 @@ export default async function decorate(block) {
         iframe.setAttribute('loading', 'lazy');
         bannerItem.append(iframe);
         if (!isMobile) {
+          const overlay = createElement('div', 'hero-banner-iframe-overlay');
+          bannerItem.append(overlay);
           const bar = buildControls(bannerItem);
-          wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc);
+          wireYouTubeControls(iframe, bar, overlay, bannerItem, ytApiSrc);
         }
       } else if (damVideoSrc) {
         const video = document.createElement('video');
