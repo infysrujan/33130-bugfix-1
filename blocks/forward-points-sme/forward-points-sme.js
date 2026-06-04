@@ -25,6 +25,65 @@ import {
 import parseAuthoring from './helpers/authoring-helpers.js';
 import { getLang } from '../../scripts/scripts.js';
 
+function printForwardPointsSme(block) {
+  // Guard: remove any leftover root from a previous print (e.g. afterprint didn't fire)
+  document.getElementById('fpsme-print-root')?.remove();
+  document.getElementById('fpsme-print-style')?.remove();
+
+  const content = block.cloneNode(true);
+
+  [
+    '.fpsme-print-btn',
+    '.fpsme-go-btn',
+    '.fpsme-datepicker',
+    '.fpsme-time-list',
+    '.fpsme-time-chevron',
+    '.fpsme-print-logo',
+  ].forEach((sel) => content.querySelectorAll(sel).forEach((el) => el.remove()));
+
+  content.querySelectorAll('.fpsme-date-input').forEach((input) => {
+    const span = document.createElement('span');
+    span.className = input.className;
+    span.textContent = input.value || input.placeholder;
+    input.parentNode.replaceChild(span, input);
+  });
+
+  // Logo — clone directly from the live page (images already loaded, no fetch needed)
+  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  const brandLogoHtml = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+
+  const printRoot = document.createElement('div');
+  printRoot.id = 'fpsme-print-root';
+  printRoot.innerHTML = `
+    <div class="brand-logo-container">${brandLogoHtml}</div>
+    <div class="section">${content.outerHTML}</div>
+  `;
+
+  // Inline <style> applies synchronously — no network delay unlike an external CSS file.
+  // This guarantees the page isolation rule is active before window.print() fires.
+  const printStyle = document.createElement('style');
+  printStyle.id = 'fpsme-print-style';
+  printStyle.textContent = `
+    @media print {
+      body > *:not(#fpsme-print-root) { display: none !important; }
+      #fpsme-print-root { display: block !important; }
+      #fpsme-print-root .brand-logo-container { display: block !important; }
+      #fpsme-print-root .brand-logo-container img { display: block !important; height: var(--bbl-space-400) !important; width: auto !important; max-width: none !important; }
+    }
+  `;
+
+  document.head.appendChild(printStyle);
+  document.body.appendChild(printRoot);
+
+  window.print();
+
+  window.addEventListener('afterprint', () => {
+    printRoot.remove();
+    printStyle.remove();
+  }, { once: true });
+}
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -240,6 +299,7 @@ function renderBlock(
   openCalendarLabel,
   selectTimeLabel,
 ) {
+  const printBtnHtml = `<button type="button" class="fpsme-print-btn">${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i></button>`;
   const s1Controls = renderControlsRow(
     s1State,
     '1',
@@ -252,6 +312,7 @@ function renderBlock(
     nextLabel,
     openCalendarLabel,
     selectTimeLabel,
+    printBtnHtml,
   );
   const s2Controls = renderControlsRow(
     s2State,
@@ -277,15 +338,11 @@ function renderBlock(
   const fwdRates = normalizeFwdRates(s2State.rates);
 
   block.innerHTML = `<div class="fpsme-wrapper">
-    <div class="fpsme-print-logo"></div>
     <div class="fpsme-section1-bar">
       <div class="fpsme-section fpsme-section-currency">
         ${s1Controls}
         ${renderCurrencyTable(fxRates, authoring)}
       </div>
-      <button type="button" class="fpsme-print-btn">
-        ${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i>
-      </button>
     </div>
 
     <div class="fpsme-section fpsme-section-fwd">
@@ -660,6 +717,15 @@ function setupUEBlockRefresh(blockEl) {
 // ─── Main decorate ─────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
+  // Preload print CSS so it is ready before the first print is triggered
+  const printCssHref = '/blocks/forward-points-sme/fpsme-print.css';
+  if (!document.querySelector(`link[href="${printCssHref}"]`)) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = printCssHref;
+    document.head.appendChild(link);
+  }
+
   const authoring = parseAuthoring(block);
   const [placeholders, configs] = await Promise.all([fetchPlaceholders(), fetchConfigs()]);
 
@@ -690,23 +756,6 @@ export default async function decorate(block) {
 
   const s1State = createSectionState();
   const s2State = createSectionState();
-
-  // Inject brand logo into the print-logo slot right before the browser
-  // renders the print layout — guaranteed to run after full page decoration.
-  // Store handler on block so it can be removed if block is ever re-decorated.
-  if (block.beforePrintHandler) window.removeEventListener('beforeprint', block.beforePrintHandler);
-  block.beforePrintHandler = () => {
-    const printLogoDiv = block.querySelector('.fpsme-print-logo');
-    if (!printLogoDiv) return;
-    printLogoDiv.innerHTML = '';
-    const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
-      || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
-    if (!logoEl) return;
-    const cloned = logoEl.cloneNode(true);
-    cloned.querySelectorAll('img').forEach((i) => { i.loading = 'eager'; });
-    printLogoDiv.appendChild(cloned);
-  };
-  window.addEventListener('beforeprint', block.beforePrintHandler);
 
   const render = () => {
     renderBlock(
@@ -750,7 +799,15 @@ export default async function decorate(block) {
     );
 
     const printBtn = block.querySelector('.fpsme-print-btn');
-    if (printBtn) printBtn.addEventListener('click', () => window.print());
+    if (printBtn) printBtn.addEventListener('click', () => printForwardPointsSme(block));
+
+    // Intercept Ctrl+P / Cmd+P so keyboard print uses the formatted popup, not the raw page
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'p' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        printForwardPointsSme(block);
+      }
+    });
   };
 
   // ── Init: load latest data for both sections ────────────────────────────────

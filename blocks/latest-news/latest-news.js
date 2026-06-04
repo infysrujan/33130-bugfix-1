@@ -3,13 +3,13 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { buildCardHtml } from '../../scripts/utils/card-helpers.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
 
 async function fetchJson(url) {
   try {
-    const resp = await fetch(url, { headers: { Accept: 'application/json' } });
-    return resp.ok && resp.status !== 204 ? resp.json() : null;
+    return await fetchGet(url, { headers: { Accept: 'application/json' }, throwOnError: false });
   } catch {
     return null;
   }

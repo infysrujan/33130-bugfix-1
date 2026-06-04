@@ -6,6 +6,7 @@ import {
   fetchNavEnabledDaysForMonth,
   parseLocalDateFromYmd,
 } from '../fund-prices-table/fund-prices-table.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { MAX_FUND_PRICE_HISTORY_YEARS } from '../fund-prices-dropdown/fund-prices-dropdown.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
@@ -220,20 +221,18 @@ export default async function decorate(block) {
 
   try {
     const { ALL_FUND_NAMES_URL, LATEST_DATE_URL } = await getApiUrls();
-    const [namesRes, latestRes] = await Promise.all([
-      fetch(ALL_FUND_NAMES_URL),
-      fetch(LATEST_DATE_URL),
+    const [latestJson, namesData] = await Promise.all([
+      fetchGet(LATEST_DATE_URL, { throwOnError: false }),
+      fetchGet(ALL_FUND_NAMES_URL, { throwOnError: false }),
     ]);
-    if (latestRes.ok) {
-      const lj = await latestRes.json();
-      const rawDate = Array.isArray(lj) ? lj[0]?.mDate : lj?.mDate;
+    if (latestJson) {
+      const rawDate = Array.isArray(latestJson) ? latestJson[0]?.mDate : latestJson?.mDate;
       latestMdate = rawDate ? rawDate.split('T')[0] : null;
       const parsed = latestMdate ? parseLocalDateFromYmd(latestMdate) : null;
       if (parsed) { calendarDate = parsed; currentDate = parsed; }
     }
-    if (namesRes.ok) {
-      const data = await namesRes.json();
-      funds = Array.isArray(data) ? data : [];
+    if (namesData) {
+      funds = Array.isArray(namesData) ? namesData : [];
     }
   } catch (e) {
     // eslint-disable-next-line no-console

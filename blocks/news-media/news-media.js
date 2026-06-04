@@ -2,6 +2,7 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { buildCardHtml, buildPaginationHtml, bindPaginationClick } from '../../scripts/utils/card-helpers.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
 
@@ -9,8 +10,7 @@ const fetchCache = {};
 
 async function fetchJson(url) {
   if (!fetchCache[url]) {
-    fetchCache[url] = fetch(url, { headers: { Accept: 'application/json' } })
-      .then((r) => (r.ok && r.status !== 204 ? r.json() : null))
+    fetchCache[url] = fetchGet(url, { headers: { Accept: 'application/json' }, throwOnError: false })
       .catch(() => null);
   }
   return fetchCache[url];

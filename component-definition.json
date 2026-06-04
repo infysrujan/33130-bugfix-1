@@ -1180,6 +1180,23 @@
           }
         },
         {
+          "title": "Double Key Dropdown",
+          "id": "double-key-dropdown",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/fd/components/form/dropdown/v1/dropdown",
+                "template": {
+                  "jcr:title": "Double Key Dropdown",
+                  "fieldType": "drop-down",
+                  "fd:viewType": "double-key-dropdown",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Forward Points SME",
           "id": "forward-points-sme",
           "plugins": {

@@ -1,5 +1,6 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 function getFileId() {
   return new URLSearchParams(window.location.search).get('FILE_ID') || '';
@@ -230,12 +231,11 @@ export default async function decorate(block) {
   const mapBaseUrl = configs?.propertyForSaleMapUrl || '';
 
   const [resp, configJson] = await Promise.all([
-    fetch(`${apiBase}/GetPropertyDetail/${fileId}`, { headers: { Accept: 'application/json' } })
-      .then((r) => (r.ok ? r.json() : null))
-      .catch(() => null),
-    fetch(pfsConfigUrl)
-      .then((r) => (r.ok ? r.json() : null))
-      .catch(() => null),
+    fetchGet(`${apiBase}/GetPropertyDetail/${fileId}`, {
+      headers: { Accept: 'application/json' },
+      throwOnError: false,
+    }).catch(() => null),
+    fetchGet(pfsConfigUrl, { throwOnError: false }).catch(() => null),
   ]);
 
   const detailRows = (configJson?.['detail-page-rows']?.data || []).filter((r) => r.Label && r.Field);

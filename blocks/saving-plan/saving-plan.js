@@ -3,6 +3,7 @@ import { getLang } from '../../scripts/bbl-decorators.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchJson } from '../../scripts/utils/card-helpers.js';
+import { fetchPost } from '../../scripts/utils/fetchApi.js';
 
 const INFLATION_RATE = 1.5;
 
@@ -308,22 +309,15 @@ async function fetchCalculation(inputs, calcUrl, apimKey) {
     const payload = buildCalculationPayload(inputs);
     // eslint-disable-next-line no-console
     console.log('[saving-plan] API request payload:', payload);
-    const response = await fetch(calcUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': apimKey,
-      },
-      body: JSON.stringify(payload),
+    const json = await fetchPost(calcUrl, payload, {
+      headers: { 'Ocp-Apim-Subscription-Key': apimKey },
+      throwOnError: false,
     });
-    // eslint-disable-next-line no-console
-    console.log('[saving-plan] API status:', response.status, response.ok);
-    if (!response.ok) {
+    if (!json) {
       // eslint-disable-next-line no-console
       console.warn('[saving-plan] API error — using fallback');
       return fallback;
     }
-    const json = await response.json();
     // eslint-disable-next-line no-console
     console.log('[saving-plan] API response:', json);
     return normalizeCalculationResponse(json, fallback);

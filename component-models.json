@@ -288,6 +288,10 @@
               {
                 "name": "Grey 100",
                 "value": "bg-grey-100"
+              },
+              {
+                "name": "Blue 01",
+                "value": "bg-blue-01"
               }
             ]
           },
@@ -3849,6 +3853,12 @@
           },
           {
             "component": "text",
+            "name": "customFunctionsPath",
+            "label": "Form Specific Custom Functions Path",
+            "valueType": "string"
+          },
+          {
+            "component": "text",
             "name": "style",
             "label": "Form Specific styles path",
             "valueType": "string"
@@ -7254,6 +7264,13 @@
         "valueType": "boolean"
       },
       {
+        "component": "text",
+        "name": "customClassName",
+        "label": "Custom CSS Class Name",
+        "description": "Enter one or more CSS class names (space-separated) to apply custom styling to this field wrapper.",
+        "valueType": "string"
+      },
+      {
         "component": "tab",
         "label": "Validation",
         "name": "validation"
@@ -7541,6 +7558,204 @@
             "value": "12"
           }
         ]
+      },
+      {
+        "component": "tab",
+        "label": "Help Content",
+        "name": "help"
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Help text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "tooltip",
+        "label": "Short description",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "double-key-dropdown",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Basic",
+        "name": "basic"
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Name",
+        "valueType": "string",
+        "required": true,
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^[^$].*",
+          "customErrorMsg": "Name cannot start with $"
+        }
+      },
+      {
+        "component": "text",
+        "name": "jcr:title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "hideTitle",
+        "label": "Hide title",
+        "valueType": "boolean"
+      },
+      {
+        "component": "datasource-bindref",
+        "name": "dataRef",
+        "label": "Bind reference",
+        "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "visible",
+        "label": "Show Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "boolean",
+        "name": "enabled",
+        "label": "Enable Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "boolean",
+        "name": "readOnly",
+        "label": "Read-only",
+        "valueType": "boolean"
+      },
+      {
+        "component": "select",
+        "name": "colspan",
+        "label": "Column Span",
+        "valueType": "string",
+        "value": "12",
+        "options": [
+          {
+            "name": "1 column",
+            "value": "1"
+          },
+          {
+            "name": "2 column",
+            "value": "2"
+          },
+          {
+            "name": "3 column",
+            "value": "3"
+          },
+          {
+            "name": "4 column",
+            "value": "4"
+          },
+          {
+            "name": "5 column",
+            "value": "5"
+          },
+          {
+            "name": "6 column",
+            "value": "6"
+          },
+          {
+            "name": "7 column",
+            "value": "7"
+          },
+          {
+            "name": "8 column",
+            "value": "8"
+          },
+          {
+            "name": "9 column",
+            "value": "9"
+          },
+          {
+            "name": "10 column",
+            "value": "10"
+          },
+          {
+            "name": "11 column",
+            "value": "11"
+          },
+          {
+            "name": "12 column",
+            "value": "12"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "placeholder",
+        "label": "Placeholder text",
+        "valueType": "string",
+        "description": "Text shown as the default disabled option (e.g. --Please select Educational Institution--)"
+      },
+      {
+        "component": "tab",
+        "label": "Countries & Universities",
+        "name": "countriesData"
+      },
+      {
+        "component": "text",
+        "name": "properties.countryCodes",
+        "label": "Country Codes (Data Values)",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "ISO or internal codes for each country, one per row (e.g. TH, SG, MY). Must match the order of Country Names and Universities."
+      },
+      {
+        "component": "text",
+        "name": "properties.countryNames",
+        "label": "Country Names (Display Labels)",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "Display name for each country, one per row (e.g. Thailand, Singapore). Must match the order of Country Codes."
+      },
+      {
+        "component": "text",
+        "name": "properties.universitiesData",
+        "label": "Universities per Country",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "Comma-separated list of universities for each country, one row per country (e.g. 'Assumption University,Bangkok University,Burapha University'). Row order must match Country Codes."
+      },
+      {
+        "component": "tab",
+        "label": "Validation",
+        "name": "validation"
+      },
+      {
+        "component": "boolean",
+        "name": "required",
+        "label": "Required",
+        "valueType": "boolean"
+      },
+      {
+        "component": "text",
+        "name": "mandatoryMessage",
+        "label": "Error message",
+        "valueType": "string",
+        "description": "Error message shown when required field is left empty."
+      },
+      {
+        "component": "text",
+        "name": "validateExpMessage",
+        "label": "Script validation message",
+        "valueType": "string",
+        "description": "Displayed when validation script fails."
       },
       {
         "component": "tab",
@@ -8572,6 +8787,204 @@
             "value": "12"
           }
         ]
+      },
+      {
+        "component": "tab",
+        "label": "Help Content",
+        "name": "help"
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Help text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "tooltip",
+        "label": "Short description",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "double-key-dropdown",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Basic",
+        "name": "basic"
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Name",
+        "valueType": "string",
+        "required": true,
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^[^$].*",
+          "customErrorMsg": "Name cannot start with $"
+        }
+      },
+      {
+        "component": "text",
+        "name": "jcr:title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "hideTitle",
+        "label": "Hide title",
+        "valueType": "boolean"
+      },
+      {
+        "component": "datasource-bindref",
+        "name": "dataRef",
+        "label": "Bind reference",
+        "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "visible",
+        "label": "Show Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "boolean",
+        "name": "enabled",
+        "label": "Enable Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "boolean",
+        "name": "readOnly",
+        "label": "Read-only",
+        "valueType": "boolean"
+      },
+      {
+        "component": "select",
+        "name": "colspan",
+        "label": "Column Span",
+        "valueType": "string",
+        "value": "12",
+        "options": [
+          {
+            "name": "1 column",
+            "value": "1"
+          },
+          {
+            "name": "2 column",
+            "value": "2"
+          },
+          {
+            "name": "3 column",
+            "value": "3"
+          },
+          {
+            "name": "4 column",
+            "value": "4"
+          },
+          {
+            "name": "5 column",
+            "value": "5"
+          },
+          {
+            "name": "6 column",
+            "value": "6"
+          },
+          {
+            "name": "7 column",
+            "value": "7"
+          },
+          {
+            "name": "8 column",
+            "value": "8"
+          },
+          {
+            "name": "9 column",
+            "value": "9"
+          },
+          {
+            "name": "10 column",
+            "value": "10"
+          },
+          {
+            "name": "11 column",
+            "value": "11"
+          },
+          {
+            "name": "12 column",
+            "value": "12"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "placeholder",
+        "label": "Placeholder text",
+        "valueType": "string",
+        "description": "Text shown as the default disabled option (e.g. --Please select Educational Institution--)"
+      },
+      {
+        "component": "tab",
+        "label": "Countries & Universities",
+        "name": "countriesData"
+      },
+      {
+        "component": "text",
+        "name": "properties.countryCodes",
+        "label": "Country Codes (Data Values)",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "ISO or internal codes for each country, one per row (e.g. TH, SG, MY). Must match the order of Country Names and Universities."
+      },
+      {
+        "component": "text",
+        "name": "properties.countryNames",
+        "label": "Country Names (Display Labels)",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "Display name for each country, one per row (e.g. Thailand, Singapore). Must match the order of Country Codes."
+      },
+      {
+        "component": "text",
+        "name": "properties.universitiesData",
+        "label": "Universities per Country",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "Comma-separated list of universities for each country, one row per country (e.g. 'Assumption University,Bangkok University,Burapha University'). Row order must match Country Codes."
+      },
+      {
+        "component": "tab",
+        "label": "Validation",
+        "name": "validation"
+      },
+      {
+        "component": "boolean",
+        "name": "required",
+        "label": "Required",
+        "valueType": "boolean"
+      },
+      {
+        "component": "text",
+        "name": "mandatoryMessage",
+        "label": "Error message",
+        "valueType": "string",
+        "description": "Error message shown when required field is left empty."
+      },
+      {
+        "component": "text",
+        "name": "validateExpMessage",
+        "label": "Script validation message",
+        "valueType": "string",
+        "description": "Displayed when validation script fails."
       },
       {
         "component": "tab",
@@ -9651,6 +10064,7 @@
         "component": "select",
         "name": "titleType",
         "label": "Title Type",
+        "value": "h3",
         "options": [
           {
             "name": "h1",
@@ -9786,12 +10200,12 @@
       },
       {
         "component": "container",
-        "name": "targetSettings",
+        "name": "defaultTargetLinkSettings",
         "label": "Target settings",
         "fields": [
           {
             "component": "boolean",
-            "name": "targetLink",
+            "name": "defaultTargetLink",
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
@@ -9852,12 +10266,12 @@
       },
       {
         "component": "container",
-        "name": "targetSettings",
+        "name": "defaultTargetLinkSettings",
         "label": "Target settings",
         "fields": [
           {
             "component": "boolean",
-            "name": "targetLink",
+            "name": "defaultTargetLink",
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
@@ -9924,36 +10338,34 @@
       {
         "component": "boolean",
         "name": "isCardClickable",
-        "label": "Is Card Clickable",
-        "description": "Enable to make the entire card a clickable link",
+        "label": "Full Card Clickable",
+        "description": "If enabled, the entire card will be clickable.",
         "valueType": "boolean",
         "value": false
       },
       {
         "component": "aem-content",
         "name": "cardLink",
-        "label": "Card Link",
-        "description": "Destination URL when the card is clicked",
+        "label": "Link",
+        "description": "Destination URL for the clickable card",
         "condition": {
-          "===": [
+          "!!": [
             {
               "var": "isCardClickable"
-            },
-            true
+            }
           ]
         }
       },
       {
         "component": "text",
         "name": "cardLinkTitle",
-        "label": "Card Link Title",
+        "label": "Link Title",
         "description": "Accessibility title attribute for the clickable card (optional)",
         "condition": {
-          "===": [
+          "!!": [
             {
               "var": "isCardClickable"
-            },
-            true
+            }
           ]
         }
       },
@@ -9961,21 +10373,20 @@
         "component": "boolean",
         "name": "enableOverlayModal",
         "label": "Enable Overlay Modal",
-        "description": "Open card link in a modal overlay instead of navigating",
+        "description": "If enabled, an overlay modal will be displayed.",
         "valueType": "boolean",
         "value": false
       },
       {
         "component": "aem-content",
-        "name": "overlayHref",
-        "label": "Overlay Fragment Path",
-        "description": "Path to the fragment shown in the modal overlay",
+        "name": "fragmentPath",
+        "label": "Fragment path",
+        "valueType": "string",
         "condition": {
-          "===": [
+          "!!": [
             {
               "var": "enableOverlayModal"
-            },
-            true
+            }
           ]
         }
       },
@@ -11551,6 +11962,10 @@
               {
                 "name": "Header Light Gray",
                 "value": "header-light-gray"
+              },
+              {
+                "name": "Header Pastel Blue",
+                "value": "header-pastel-blue"
               }
             ]
           },
@@ -11560,6 +11975,10 @@
               {
                 "name": "Zebra Light Gray",
                 "value": "zebra-light-gray"
+              },
+              {
+                "name": "Solid White",
+                "value": "solid-white"
               }
             ]
           },

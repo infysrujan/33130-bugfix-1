@@ -69,9 +69,9 @@
 
 .menu-list .menu-list-item-image img {
   width: var(--bbl-space-400);
-  max-width: none;
-  height: auto;
+  height: var(--bbl-space-400);
   display: block;
+  max-width: min-content;
 }
 
 /* ── Item content ──────────────────────────────────────────── */
@@ -120,6 +120,10 @@
 
   .menu-list .menu-list-title p {
     font-size: 1.12rem;
+  }
+
+  .menu-list .menu-list-title p::before {
+    left: unset;
   }
 
   .menu-list .menu-list-item { 

@@ -13,6 +13,7 @@ import {
 import {
   loadSections,
 } from '../../scripts/aem.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 /**
  * Loads a fragment.
@@ -23,10 +24,10 @@ export async function loadFragment(path) {
   if (path && path.startsWith('/')) {
     // eslint-disable-next-line no-param-reassign
     path = path.replace(/(\.plain)?\.html/, '');
-    const resp = await fetch(`${path}.plain.html`);
-    if (resp.ok) {
+    const html = await fetchGet(`${path}.plain.html`, { throwOnError: false });
+    if (html) {
       const main = document.createElement('main');
-      main.innerHTML = await resp.text();
+      main.innerHTML = html;
       removePictureOptimizationParams(main);
 
       // reset base path for media to fragment base

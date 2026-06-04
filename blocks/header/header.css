@@ -30,12 +30,18 @@
   z-index: 101;
 }
 
+.header .mobile-top-bar .login-button {
+  padding-left: 0.5rem;
+  width: auto;
+}
+
 .header .hamburger-icon {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   width: 1.5rem;
   height: 1.125rem;
+  padding-right: 1.375rem;
 }
 
 .header .hamburger-icon span {

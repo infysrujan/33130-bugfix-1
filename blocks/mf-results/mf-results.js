@@ -2,6 +2,7 @@ import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { openModal } from '../../scripts/modal.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -76,10 +77,8 @@ async function loadMatrix() {
     // eslint-disable-next-line no-console
     console.log('[mf-results] loadMatrix url:', url);
     if (!url) return [];
-    const resp = await fetch(url);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    return (json.data || []).map(normalizeRow);
+    const json = await fetchGet(url, { throwOnError: false });
+    return (json?.data || []).map(normalizeRow);
   } catch {
     return [];
   }
@@ -97,9 +96,8 @@ async function loadFundsData() {
     // eslint-disable-next-line no-console
     console.log('[mf-results] loadFundsData url:', url);
     if (!url) return [];
-    const resp = await fetch(url);
-    if (resp.ok) {
-      const json = await resp.json();
+    const json = await fetchGet(url, { throwOnError: false });
+    if (json) {
       const items = json.data?.mutualFundsList?.items || [];
       if (items.length) return items;
     }

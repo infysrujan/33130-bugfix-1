@@ -2,6 +2,7 @@ import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -56,16 +57,15 @@ async function loadFundsData() {
       console.warn('[mfCardListCarousel] mfFundsDataUrl is missing from config');
       return [];
     }
-    const resp = await fetch(url);
-    if (resp.ok) {
-      const json = await resp.json();
+    const json = await fetchGet(url, { throwOnError: false });
+    if (json) {
       const items = json.data?.mutualFundsList?.items || [];
       // eslint-disable-next-line no-console
       console.log('[mfCardListCarousel] raw fund items count:', items.length, '| sample:', items[0]);
       return items;
     }
     // eslint-disable-next-line no-console
-    console.warn('[mfCardListCarousel] fetch failed, status:', resp.status);
+    console.warn('[mfCardListCarousel] fetch failed');
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('[mfCardListCarousel] loadFundsData error:', err);
