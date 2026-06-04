@@ -1,5 +1,6 @@
 import fetchBlockConfig from '../../scripts/block-config.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchPost } from '../../scripts/utils/fetchApi.js';
 
 // ─── Utilities ─────────────────────────────────────────────────────────────────
 
@@ -775,13 +776,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
         Donate: 0,
         Other: 0,
       };
-      const response = await fetch(data.apiCalculateTax, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) throw new Error('API error');
-      const result = await response.json();
+      const result = await fetchPost(data.apiCalculateTax, payload);
       onNext(values, result);
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -935,21 +930,13 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
       };
 
       const promises = [
-        fetch(data.apiCalculateTax, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        }).then((r) => { if (!r.ok) throw new Error('Primary API error'); return r.json(); }),
+        fetchPost(data.apiCalculateTax, payload),
       ];
 
       // Second API is optional or might not be configured
       if (data.apiCalculateSaving) {
         promises.push(
-          fetch(data.apiCalculateSaving, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+          fetchPost(data.apiCalculateSaving, payload, { throwOnError: false }).catch(() => null),
         );
       }
 
@@ -1235,13 +1222,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
           InputHealthInsure: journey3Values.InputHealthInsure,
           InputInsure60: journey3Values.InputInsure60,
         };
-        const response = await fetch(data.apiCalculateSaving, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        if (!response.ok) throw new Error('API error');
-        const apiResult3Result = await response.json();
+        const apiResult3Result = await fetchPost(data.apiCalculateSaving, payload);
         onRecalculate(journey3Values, apiResult3Result);
       } catch (err) {
         // eslint-disable-next-line no-console

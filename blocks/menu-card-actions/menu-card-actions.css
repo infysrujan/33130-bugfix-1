@@ -290,6 +290,21 @@
   .menu-card-action-date p {
     font-size: var(--bbl-font-size-b2);
   }
+
+  /* Credit-card: left-align by default so row-2 leftovers stay left. */
+  .menu-card-action.credit-card {
+    justify-content: flex-start;
+  }
+
+  /* Override: exactly 1 card total → center it. */
+  .menu-card-action.credit-card[data-card-count="1"] {
+    justify-content: center;
+  }
+
+  .menu-card-action.credit-card[data-card-count="1"] .menu-card-action-item {
+    flex: 0 0 calc((100% - 3.75rem) / 4);
+    width: calc((100% - 3.75rem) / 4);
+  }
 }
 
 @media (width > 64rem) {
@@ -374,5 +389,20 @@
   .menu-card-action-date p {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.375rem;
+  }
+
+  /* Credit-card: left-align by default so row-2 leftovers stay left. */
+  .menu-card-action.credit-card {
+    justify-content: flex-start;
+  }
+
+  /* Override: exactly 1 card total → center it. */
+  .menu-card-action.credit-card[data-card-count="1"] {
+    justify-content: center;
+  }
+
+  .menu-card-action.credit-card[data-card-count="1"] .menu-card-action-item {
+    flex: 0 0 calc((100% - 7.5rem) / 4);
+    width: calc((100% - 7.5rem) / 4);
   }
 }

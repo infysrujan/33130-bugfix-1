@@ -314,32 +314,28 @@ body.bangkok-bankm-card main {
     margin: 0 auto;
 }
 
-/* Exclude bbm-glow-card-container from the padding */
-.section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+.section.full-bleed-bg .content,
 .section.full-bleed-bg .default-content-wrapper {
     padding-inline: var(--bbl-space-section-xs);
     margin: 0 auto;
 }
 
 @media (width > 47.5rem) {
-    /* Exclude bbm-glow-card-container from the padding */
-    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .content,
     .section.full-bleed-bg .default-content-wrapper {
         padding-inline: var(--bbl-space-section-sm);
     }
 }
 
 @media (width > 64rem) {
-    /* Exclude bbm-glow-card-container from the padding */
-    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .content,
     .section.full-bleed-bg .default-content-wrapper {
         padding-inline: var(--bbl-space-section-xl);
     }
 }
 
 @media (width > 120rem) {
-    /* Exclude bbm-glow-card-container from the padding */
-    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .content,
     .section.full-bleed-bg .default-content-wrapper {
         max-width: var(--bbl-layout-content-max-width-1920);
         padding-inline: 0;

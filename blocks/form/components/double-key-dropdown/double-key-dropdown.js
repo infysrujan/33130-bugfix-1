@@ -126,6 +126,17 @@ export default function decorate(fieldDiv, fd) {
   // Rebuild select as a grouped (optgroup) dropdown
   buildGroupedSelect(fd, select);
 
+  // Sync fd.enum with every generated option value so the AF rule engine does not
+  // reject custom "code::university" values as an enum mismatch. The rule engine
+  // initialises in a setTimeout(0) after decorate returns, so writing here is safe.
+  const generatedValues = Array.from(select.querySelectorAll('option'))
+    .map((opt) => opt.value)
+    .filter((v) => v !== '');
+  if (generatedValues.length) {
+    fd.enum = generatedValues;
+    fd.enumNames = generatedValues;
+  }
+
   // Mark field wrapper so CSS can scope styles precisely
   fieldDiv.classList.add('field-double-key-dropdown');
 
@@ -140,6 +151,8 @@ export default function decorate(fieldDiv, fd) {
 
   // --- Change event: expose split values as data attributes on the wrapper ---
   select.addEventListener('change', () => {
+    // Clear any custom validity the rule engine may have set for a previous enum mismatch
+    select.setCustomValidity('');
     const [countryCode, universityName] = (select.value || '::').split('::');
     fieldDiv.dataset.selectedCountry = countryCode || '';
     fieldDiv.dataset.selectedUniversity = universityName || '';

@@ -1,4 +1,5 @@
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const ALL_MAPPED_CODES = new Set([
   'RR',
@@ -82,11 +83,7 @@ export function buildMarketReportModel(payload) {
 }
 
 async function fetchMarketSummary(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`MarketService GetMarketsum failed: ${response.status}`);
-  }
-  return response.json();
+  return fetchGet(url);
 }
 
 /**
@@ -95,9 +92,7 @@ async function fetchMarketSummary(url) {
  */
 async function fetchInterestRateArray(url) {
   try {
-    const response = await fetch(url);
-    if (!response.ok) return null;
-    const data = await response.json();
+    const data = await fetchGet(url, { throwOnError: false });
     return Array.isArray(data) ? data : null;
   } catch {
     return null;

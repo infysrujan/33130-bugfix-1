@@ -1,5 +1,6 @@
 import { getLang } from '../../scripts/bbl-decorators.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
 
@@ -10,9 +11,8 @@ function formatDate(dateStr, locale = 'en-US') {
 
 async function fetchNewsCard(url, newsId) {
   try {
-    const resp = await fetch(url);
-    if (!resp.ok) return null;
-    const { news } = await resp.json();
+    const json = await fetchGet(url, { throwOnError: false });
+    const { news } = json || {};
     return news?.find((c) => c.aboutUsId === newsId) || null;
   } catch {
     return null;

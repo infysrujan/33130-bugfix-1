@@ -1,15 +1,9 @@
+import { fetchGet } from '../../../scripts/utils/fetchApi.js';
+
 export function trimValue(value) {
   if (value === null || value === undefined) return '-';
   const normalized = String(value).trim();
   return normalized || '-';
-}
-
-async function fetchJson(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
-  return response.json();
 }
 
 function replaceTemplateTokens(url, values) {
@@ -66,11 +60,11 @@ export function normalizeRates(list) {
 }
 
 export async function getLatestRates(endpoints) {
-  return fetchJson(endpoints.latestRates());
+  return fetchGet(endpoints.latestRates());
 }
 
 export async function getEnabledDays(endpoints, year, month) {
-  const data = await fetchJson(endpoints.dayInMonth(Number(year), Number(month)));
+  const data = await fetchGet(endpoints.dayInMonth(Number(year), Number(month)));
   return (Array.isArray(data) ? data : [])
     .map((item) => String(item.Day || '').trim())
     .filter(Boolean)
@@ -78,7 +72,7 @@ export async function getEnabledDays(endpoints, year, month) {
 }
 
 export async function getUpdatesInDay(endpoints, day, month, year) {
-  return fetchJson(endpoints.updateInDay(day, month, year));
+  return fetchGet(endpoints.updateInDay(day, month, year));
 }
 
 export async function getRates(endpoints, day, month, year, update, language) {
@@ -87,7 +81,7 @@ export async function getRates(endpoints, day, month, year, update, language) {
   if (!url) return [];
 
   try {
-    return await fetchJson(url);
+    return await fetchGet(url);
   } catch (e) {
     return [];
   }

@@ -289,6 +289,12 @@ export default function decorate(block) {
 
   block.appendChild(container);
 
+  // Stamp card count so CSS can apply layout rules without JS-in-CSS hacks.
+  // data-card-count="1"  → only 1 card total → center it
+  // data-card-count="2+" → multiple cards    → natural left-aligned grid flow
+  const cardCount = container.querySelectorAll('.menu-card-action-item').length;
+  container.dataset.cardCount = cardCount;
+
   block.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-modal]');
     if (!trigger || !block.contains(trigger)) return;

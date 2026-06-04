@@ -1,6 +1,7 @@
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 let getUpdateInMonthBase = '';
 let allFundPricesUrl = '';
@@ -43,11 +44,7 @@ function formatDateForFundPricesPath(date) {
 async function fetchAllFundPrices(date) {
   const path = formatDateForFundPricesPath(date);
   const url = `${allFundPricesUrl}${path}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`AllFundPrices API returned ${response.status}`);
-  }
-  const data = await response.json();
+  const data = await fetchGet(url);
   return Array.isArray(data) ? data : [];
 }
 
@@ -55,11 +52,7 @@ async function fetchAllFundPrices(date) {
 async function fetchNavEnabledDaysForMonth({ year, month }) {
   const apiMonth = month + 1;
   const url = `${getUpdateInMonthBase}/${year}/${apiMonth}/0`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`GetUpdateInMonth returned ${response.status}`);
-  }
-  const data = await response.json();
+  const data = await fetchGet(url);
   if (!Array.isArray(data)) return [];
   return data
     .map((item) => (item && item.day != null ? Number(item.day) : NaN))
@@ -521,24 +514,19 @@ export default async function decorate(block) {
     const latestDateUrl = configs?.bcapLatestDateUrl || '';
     getUpdateInMonthBase = configs?.bcapGetUpdateInMonthBase || '';
     allFundPricesUrl = configs?.bcapAllFundPricesUrl || '';
-    const [namesResponse, latestResponse] = await Promise.all([
-      fetch(allFundNamesUrl),
-      fetch(latestDateUrl),
+    const [latestJson, data] = await Promise.all([
+      fetchGet(latestDateUrl, { throwOnError: false }),
+      fetchGet(allFundNamesUrl),
     ]);
 
-    if (latestResponse.ok) {
-      const latestJson = await latestResponse.json();
+    if (latestJson) {
       latestMdate = latestJson?.mdate;
       const parsed = latestJson?.mdate ? parseLocalDateFromYmd(latestJson.mdate) : null;
       if (parsed) calendarDate = parsed;
     } else {
-      console.error(`bcap: LatestDate API returned ${latestResponse.status}`);
+      console.error('bcap: LatestDate API failed');
     }
 
-    if (!namesResponse.ok) {
-      throw new Error(`AllFundNames API returned ${namesResponse.status}`);
-    }
-    const data = await namesResponse.json();
     funds = Array.isArray(data) ? data : [];
   } catch (error) {
     console.error('bcap: failed to load fund list', error);
