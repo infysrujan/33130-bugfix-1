@@ -10,7 +10,8 @@
     justify-content: center;
 }
 
-.promo-selector-grid.is-bbm-grid:has(> .listing-card-container:only-child) {
+/* BBM grid: always center all rows, including partial ones. */
+.promo-selector-grid.is-bbm-grid {
     justify-content: center;
 }
 
@@ -210,9 +211,7 @@
         min-width: unset;
     }
 
-    .promo-selector-grid.is-bbm-grid .listing-card-container:last-child:nth-child(2n + 1) {
-        margin-inline: auto;
-    }
+
 }
 
 body.mobile-app-view {
@@ -282,8 +281,9 @@ body.mobile-app-view main>div:first-child {
         padding-inline: 0;
     }
 
+    /* Non-BBM grid: center a single lone card on desktop. */
     .promo-selector-grid:not(.is-bbm-grid):has(> .listing-card-container:only-child) {
-        justify-content: flex-start;
+        justify-content: center;
     }
 
     .promo-selector-empty {
@@ -338,11 +338,5 @@ body.mobile-app-view main>div:first-child {
         padding-inline-end: 0;
     }
 
-    .promo-selector-grid.is-bbm-grid .listing-card-container:last-child:nth-child(2n + 1) {
-        margin-inline: 0;
-    }
 
-    .promo-selector-grid.is-bbm-grid .listing-card-container:last-child:nth-child(4n + 1) {
-        margin-inline: auto;
-    }
 }
