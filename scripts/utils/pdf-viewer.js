@@ -68,22 +68,30 @@ export default async function openPdfViewer({
     .then((blob) => {
       blobUrl = URL.createObjectURL(blob);
       embedEl.src = blobUrl;
-      embedEl.addEventListener('load', () => {
-        URL.revokeObjectURL(blobUrl);
-        blobUrl = undefined;
-      }, { once: true });
     })
     .catch(() => {
       if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
     });
 
   const buttonGroup = el('div', { className: `${classPrefix}-button-group` });
-  const downloadLink = el('a', {
+  const downloadLink = el('button', {
     className: `${classPrefix}-download`,
     text: downloadLabel,
-    attrs: {
-      href: path, title: downloadLabel, target: '_blank', download: name,
-    },
+    attrs: { type: 'button', title: downloadLabel },
+  });
+  downloadLink.addEventListener('click', async () => {
+    try {
+      const downloadBlobUrl = blobUrl || URL.createObjectURL(await fetch(path).then((r) => r.blob()));
+      const a = document.createElement('a');
+      a.href = downloadBlobUrl;
+      a.download = name || 'download.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      if (!blobUrl) URL.revokeObjectURL(downloadBlobUrl);
+    } catch {
+      window.open(path, '_blank');
+    }
   });
   buttonGroup.append(downloadLink);
 
@@ -92,7 +100,7 @@ export default async function openPdfViewer({
   dialog.append(header, body);
 
   function close() {
-    if (blobUrl) URL.revokeObjectURL(blobUrl);
+    if (blobUrl) { URL.revokeObjectURL(blobUrl); blobUrl = undefined; }
     document.body.classList.remove(`${classPrefix}-open`);
     hideModal(overlay, `${classPrefix}-visible`);
   }
