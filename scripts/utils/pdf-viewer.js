@@ -86,9 +86,9 @@ export default async function openPdfViewer({
       const a = document.createElement('a');
       a.href = downloadBlobUrl;
       a.download = name || 'download.pdf';
-      document.body.appendChild(a);
+      dialog.appendChild(a);
       a.click();
-      document.body.removeChild(a);
+      dialog.removeChild(a);
       if (blob) URL.revokeObjectURL(downloadBlobUrl);
     } catch {
       window.open(path, '_blank');
