@@ -8,6 +8,7 @@ import {
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { createModalHeader } from '../../scripts/utils/modal.js';
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',

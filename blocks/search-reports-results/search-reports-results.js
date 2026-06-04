@@ -1,8 +1,8 @@
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { decorateIcons } from '../../scripts/aem.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import openPdfViewer from '../../scripts/utils/pdf-viewer.js';
 
 function el(tag, { className, text, attrs = {} } = {}) {
   const node = document.createElement(tag);
