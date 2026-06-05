@@ -1,10 +1,9 @@
-import { getLang } from '../../scripts/scripts.js';
+import { getLang, createTaggedElement } from '../../scripts/scripts.js';
 import { decorateIcons } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { createModalHeader, createModalShell } from '../../scripts/utils/modal.js';
-import createTaggedElement from '../../scripts/utils/dom-helpers.js';
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',

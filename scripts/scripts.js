@@ -79,6 +79,14 @@ export function createElementFromHTML(html, doc) {
   return template.content.firstElementChild;
 }
 
+export function createTaggedElement(tag, { className, text, attrs = {} } = {}) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+  return node;
+}
+
 /**
  * load fonts.css and set a session storage flag
  */

@@ -6,7 +6,7 @@ import {
   setupModalHandlers,
   showModal,
 } from './modal.js';
-import createTaggedElement from './dom-helpers.js';
+import { createTaggedElement } from '../scripts.js';
 
 /**
  * Opens a PDF preview modal with a download action.
