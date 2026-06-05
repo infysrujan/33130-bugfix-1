@@ -190,6 +190,144 @@ function renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYe
   });
 }
 
+function printForexRates(block) {
+  const content = block.querySelector('.forex-rates-content');
+  if (!content) return;
+
+  const cloned = content.cloneNode(true);
+
+  cloned.querySelectorAll(
+    '.forex-rates-print-btn, .forex-rates-go-btn, .forex-rates-datepicker, .forex-rates-time-list, .forex-rates-time-chevron',
+  ).forEach((el) => el.remove());
+
+  const dateInput = cloned.querySelector('.forex-rates-date-text-input');
+  if (dateInput) {
+    const span = block.ownerDocument.createElement('span');
+    span.className = 'forex-rates-date-text-input';
+    span.textContent = dateInput.value;
+    dateInput.replaceWith(span);
+  }
+
+  const doc = block.ownerDocument;
+  const logoEl = doc.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+
+  const pageTitle = doc.querySelector('h1')?.textContent?.trim() || 'Foreign Exchange Rates';
+
+  const printCss = `
+    @page { size: A4 portrait; margin: 10mm; }
+    body { font-family: sans-serif; margin: 0; padding: 0; }
+
+    /* Logo */
+    .print-logo { margin-bottom: var(--bbl-space-075); }
+    .print-logo img { height: 1.5rem; width: auto; }
+
+    /* Horizontal rule after logo */
+    .print-divider { border: none; border-top: 0.0625rem solid var(--bbl-color-grey-125); margin: var(--bbl-space-075) 0 var(--bbl-space-100); }
+
+    /* Page H1 title */
+    .print-title {
+      font-size: 1.25rem; font-weight: 700; color: var(--bbl-color-black);
+      margin: 0 0 var(--bbl-space-050); padding-bottom: var(--bbl-space-075); position: relative;
+    }
+    .print-title::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 2.25rem; height: var(--bbl-space-025); background: var(--bbl-color-blue-105);
+    }
+
+    /* Controls */
+    .forex-rates-control-row {
+      display: flex; flex-direction: column; align-items: flex-start;
+      gap: 0.15rem; padding: 0; margin: var(--bbl-space-100) 0 var(--bbl-space-075);
+    }
+    .forex-rates-calendar-label { font-size: 0.5625rem; font-weight: 900; line-height: normal; width: auto; }
+    .forex-rates-date-group { display: flex; align-items: center; gap: 0.2rem; }
+    .forex-rates-date-text-input { font-size: 0.5625rem; border: 0.0625rem solid var(--bbl-color-grey-125); padding: 0.1rem 0.3rem; border-radius: 0.2rem; }
+    .forex-rates-date-trigger { position: static; transform: none; font-size: var(--bbl-font-size-b3); background: none; border: none; padding: 0; }
+    .forex-rates-time-trigger {
+      display: flex; align-items: center; border: 0.0625rem solid var(--bbl-color-grey-125);
+      background: none; border-radius: 0.2rem;
+      padding: 0.1rem 0.3rem; font-size: 0.5625rem; font-weight: 700; height: auto;
+    }
+
+    /* Table */
+    .forex-rates-table-wrap { overflow: visible; margin-top: var(--bbl-space-050); }
+    .forex-rates-table {
+      min-width: 0; width: 100%; border-collapse: collapse;
+      border: 0.0625rem solid var(--bbl-color-black); font-size: 0.5rem; color: #555;
+    }
+    .forex-rates-table thead tr { height: auto; background: #dce6f1; }
+    .forex-rates-table thead th {
+      padding: var(--bbl-space-050) 0.4rem; font-size: 0.5rem; font-weight: 700;
+      white-space: normal; line-height: 1.2; color: var(--bbl-color-black);
+      border-bottom: 0.0625rem solid var(--bbl-color-black); border-right: 0.0625rem solid var(--bbl-color-black); text-align: left;
+    }
+    .forex-rates-table thead th:last-child { border-right: none; }
+    .forex-rates-table thead th:nth-child(n+3) { text-align: center; }
+    .forex-rates-table tbody tr { height: auto; }
+    .forex-rates-table tbody td {
+      padding: 0.15rem 0.4rem; font-size: 0.5rem; height: auto; vertical-align: middle;
+      border-bottom: 0.0625rem solid var(--bbl-color-black); border-right: 0.0625rem solid var(--bbl-color-black);
+    }
+    .forex-rates-table tbody td:last-child { border-right: none; }
+    .forex-rates-table tbody tr:last-child td { border-bottom: none; }
+    .forex-rates-table tbody td.is-right { text-align: right; }
+    .forex-rates-currency { display: flex; align-items: center; gap: var(--bbl-space-075); white-space: nowrap; }
+    .forex-rates-flag { width: var(--bbl-space-150); height: var(--bbl-space-150); object-fit: contain; }
+
+    /* Disclaimer */
+    .forex-rates-disclaimer { font-size: 0.5rem; line-height: 1.4; margin-top: var(--bbl-space-075); color: #555; }
+    .forex-rates-disclaimer p { margin: 0; }
+    .forex-rates-disclaimer p:first-child { font-weight: 700; color: var(--bbl-color-black); padding-bottom: 0.2rem; }
+
+    @media print {
+      .forex-rates-table thead { display: table-header-group; }
+      .forex-rates-table tbody { display: table-row-group; }
+      .forex-rates-table { break-inside: auto; }
+      .forex-rates-table tbody tr { break-inside: avoid; }
+    }
+  `;
+
+  const printHtml = `<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>${escapeHtml(pageTitle)}</title>
+      <link rel="stylesheet" href="/styles/tokens.css">
+      <link rel="stylesheet" href="/styles/fonts.css">
+      <style>${printCss}</style>
+    </head>
+    <body>
+      <div class="print-logo">${brandLogo}</div>
+      <hr class="print-divider">
+      <h1 class="print-title">${escapeHtml(pageTitle)}</h1>
+      <div class="forex-rates block" data-block-status="loaded">
+        ${cloned.outerHTML}
+      </div>
+    </body>
+  </html>`;
+
+  const iframe = doc.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;border:none;opacity:0;';
+  doc.body.appendChild(iframe);
+
+  iframe.onload = () => {
+    setTimeout(() => {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    }, 300);
+    window.addEventListener('afterprint', () => {
+      if (doc.body.contains(iframe)) doc.body.removeChild(iframe);
+    }, { once: true });
+  };
+
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write(printHtml);
+  iframeDoc.close();
+}
+
 export default async function decorate(block) {
   const authoring = parseAuthoring(block);
   const [placeholders, configs] = await Promise.all([fetchPlaceholders(), fetchConfigs()]);
@@ -611,7 +749,7 @@ export default async function decorate(block) {
 
     if (printButton) {
       printButton.addEventListener('click', () => {
-        window.print();
+        printForexRates(block);
       });
     }
 
@@ -667,11 +805,7 @@ export default async function decorate(block) {
       const normalizedUpdates = Array.isArray(updateOptions) ? updateOptions : [];
       state.updates = normalizedUpdates;
 
-      const preferredUpdate = trimValue(latest?.[0]?.Update);
-      const hasPreferred = normalizedUpdates
-        .some((item) => trimValue(item.Update) === preferredUpdate);
-      const fallback = trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
-      state.selectedUpdate = hasPreferred ? preferredUpdate : fallback;
+      state.selectedUpdate = trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
       state.typedDate = formatDateInputValue(
         state.selectedDate,
         monthLabels,

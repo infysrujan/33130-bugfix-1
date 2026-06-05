@@ -78,6 +78,10 @@
                   "value": "header-center-aligned"
                 },
                 {
+                  "name": "Right Aligned",
+                  "value": "header-right-aligned"
+                },
+                {
                   "name": "Header Blue",
                   "value": "header-blue"
                 },

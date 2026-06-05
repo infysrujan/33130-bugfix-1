@@ -19,6 +19,11 @@
   height: calc(100vw / 2);
 }
 
+.menu-banner .thumb-full:not([style*="background-image"]) {
+  height: auto;
+  min-height: 0;
+}
+
 .menu-banner .inner {
   width: 100%;
 }
@@ -26,7 +31,6 @@
 .menu-banner .desktop-tools {
   position: relative;
   z-index: 2;
-  max-width: 75rem;
   padding: var(--bbl-space-500) var(--bbl-space-container-xs);
 }
 
@@ -177,11 +181,6 @@
 
 /* Tablet: width > 760px */
 @media (width > 47.5rem) {
-  .menu-banner .desktop-tools,
-  .menu-banner .mobile-tools {
-    padding: var(--bbl-space-600);
-  }
-
   .menu-banner .desktop-tools .inner {
     display: block;
   }
@@ -229,7 +228,6 @@
 /* Desktop: width > 1024px */
 @media (width > 64rem) {
   .menu-banner .desktop-tools {
-    padding: 0 var(--bbl-space-1050) var(--bbl-space-250);
     display: flow-root;
   }
 

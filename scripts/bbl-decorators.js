@@ -507,6 +507,14 @@ function createPictureWithoutOptimization(
   return picture;
 }
 
+function applyLinkTarget(container, selector, targetValue) {
+  const anchor = container.querySelector(selector);
+  if (anchor) {
+    const openInNewTab = targetValue === true || targetValue?.toString().toLowerCase() === 'true';
+    anchor.target = openInNewTab ? '_blank' : '_self';
+  }
+}
+
 export {
   decorateTerritoryButtons,
   decorateButtonsV1,
@@ -517,4 +525,5 @@ export {
   buildCookieAlert,
   getLang,
   createPictureWithoutOptimization,
+  applyLinkTarget,
 };

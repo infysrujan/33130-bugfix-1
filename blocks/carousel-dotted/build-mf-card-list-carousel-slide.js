@@ -1,11 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { loadFragment } from '../fragment/fragment.js';
 
-/**
- * Resolve a fragment path from a cell that may contain an <a> element or plain text.
- * @param {HTMLElement|null} cell
- * @returns {string}
- */
 const resolveFragmentPath = (cell) => {
   if (!cell) return '';
   const href = cell.querySelector('a')?.getAttribute('href')?.trim();
@@ -14,18 +9,6 @@ const resolveFragmentPath = (cell) => {
   return text.startsWith('/') ? text : '';
 };
 
-/**
- * Build a slide element for the mf-card-list-carousel variation.
- *
- * Cell layout (mf-card-list-carousel model):
- *   cells[0] = variant (hidden, value: "mf-card-list-carousel")
- *   cells[1] = title   (text — optional section heading)
- *   cells[2] = fragmentPath (aem-content — path to fragment with card-list)
- *
- * @param {HTMLElement} row   - The authored block row
- * @param {number}      index - Slide index
- * @returns {Promise<HTMLElement>}
- */
 export default async function buildMfCardListCarouselSlide(row, index) {
   const doc = row.ownerDocument;
   const cells = [...row.children];

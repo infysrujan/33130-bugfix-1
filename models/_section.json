@@ -21,6 +21,12 @@
       "fields": [
         {
           "component": "text",
+          "name": "id",
+          "label": "Section ID",
+          "description": "Used for deep linking — e.g. /page#Howto scrolls to the section with id 'Howto'"
+        },
+        {
+          "component": "text",
           "name": "name",
           "label": "Section Name",
           "description": "The label shown for this section in the Content Tree"

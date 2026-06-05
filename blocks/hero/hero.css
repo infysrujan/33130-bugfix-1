@@ -65,26 +65,32 @@
 }
 
 .hero-banner-video {
-    width: 100%;
-    height: 100%;
-    display: block;
-    border: 0;
-    object-fit: cover;
-    object-position: center;
-}
-
-.hero-banner-hero-with-thumbnail-images .hero-banner-img {
-    aspect-ratio: 5/4;
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+  object-fit: cover;
+  object-position: center;
 }
 
 .hero-banner-hero-with-thumbnail-images .hero-banner-item {
+  height: 38rem;
   overflow: hidden;
 }
 
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-item {
+  max-height: 21.875rem;
+  height: calc((100vw - 2.5rem) / 1.3);
+}
+
+.hero-banner-private-wealth-banking .hero-banner-img {
+  height: 21.875rem;
+}
+
 .hero-banner-hero-with-thumbnail-images .hero-banner-video {
-    aspect-ratio: 5/4;
-    height: auto;
-    cursor: pointer;
+  aspect-ratio: 5/4;
+  height: auto;
+  cursor: pointer;
 }
 
 /* ── Custom video controls bar ─────────────────────────────────────────────── */
@@ -103,7 +109,6 @@
   color: var(--bbl-color-white);
   height: 6.25rem;
 }
-
 
 .hero-banner-video-wrapper:has(iframe.hero-banner-video) .hero-banner-video-controls,
 .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-video-controls {
@@ -342,10 +347,10 @@
 }
 
 .hero-banner-content-inner .button-container {
-    margin: 2.0625rem 0 0;
-    text-align: center;
-    display: flex;
-    justify-content: center;
+  margin: 2.0625rem 0 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .hero-banner-private-wealth-banking .button-container {
@@ -354,7 +359,9 @@
   text-align: left;
 }
 
-:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner .button-container {
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner)
+  .hero-banner-content-inner
+  .button-container {
   margin: 1.875rem 0 0;
   justify-content: flex-start;
   text-align: left;
@@ -393,11 +400,13 @@
   white-space: nowrap;
 }
 
-.hero-banner-content-group .hero-banner-private-wealth-banking .button-container .button-m {
-  max-width: 135px;
+.hero-banner-content-group
+  .hero-banner-private-wealth-banking
+  .button-container
+  .button-m {
+  max-width: 8.4375rem;
   width: 48%;
 }
- 
 
 .hero-banner-thumbnail-list {
   margin: 0;
@@ -426,7 +435,6 @@
   margin-right: 0;
   width: calc((((100vw - 2.8125rem) / 4) * 1.5));
 }
-
 
 .hero-banner-thumbnail-img {
   display: block;
@@ -470,14 +478,18 @@
   }
 }
 
-:is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content :is(h1, h2, h3, h4, h5, h6), .hero-banner-logo-wrapper) {
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner)
+  :is(.hero-banner-content
+    :is(h1, h2, h3, h4, h5, h6), .hero-banner-logo-wrapper) {
   position: relative;
   display: inline-block;
   padding-bottom: 0.9375rem;
   margin-bottom: 0.9375rem;
 }
 
-:is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content :is(h1, h2, h3, h4, h5, h6), .hero-banner-logo-wrapper)::before {
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner)
+  :is(.hero-banner-content
+    :is(h1, h2, h3, h4, h5, h6), .hero-banner-logo-wrapper)::before {
   content: "";
   position: absolute;
   left: 0;
@@ -487,13 +499,16 @@
   background: var(--bbl-color-black);
 }
 
-.section.full-bleed-bg :is(.hero-banner-simple, .hero-banner-private-wealth-banking, .hero-banner-simple-logo-banner) .hero-banner-content.content {
+.section.full-bleed-bg
+  :is(.hero-banner-simple, .hero-banner-private-wealth-banking, .hero-banner-simple-logo-banner)
+  .hero-banner-content.content {
   position: static;
   text-align: left;
   padding: var(--bbl-space-250) var(--bbl-space-200) 0;
 }
 
-:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text {
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner)
+  .hero-banner-content-inner-text {
   color: var(--bbl-color-black);
   line-height: 1.7875rem;
   margin: 0;
@@ -511,7 +526,9 @@
 }
 
 /* Mobile private-wealth-banking variant override */
-.section.full-bleed-bg .hero-banner-private-wealth-banking .hero-banner-content.content {
+.section.full-bleed-bg
+  .hero-banner-private-wealth-banking
+  .hero-banner-content.content {
   padding: 0 var(--bbl-space-200) 0;
 }
 
@@ -519,7 +536,9 @@
   margin: var(--bbl-space-600) 0 var(--bbl-space-300);
 }
 
-.hero-banner-private-wealth-banking .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
+.hero-banner-private-wealth-banking
+  .hero-banner-content
+  :is(h1, h2, h3, h4, h5, h6) {
   margin: 0;
   padding: 0;
   font-size: 1.4rem;
@@ -537,48 +556,98 @@
   margin-block: 0 var(--bbl-space-500);
 }
 
-.wealth .hero-banner-private-wealth-banking .hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) {
+.wealth
+  .hero-banner-private-wealth-banking
+  .hero-banner-content-group
+  :is(h1, h2, h3, h4, h5, h6) {
   color: var(--bbl-color-grey-60);
 }
 
-.private .hero-banner-private-wealth-banking .hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) {
+.private
+  .hero-banner-private-wealth-banking
+  .hero-banner-content-group
+  :is(h1, h2, h3, h4, h5, h6) {
   color: var(--bbl-color-grey-60);
-  background: linear-gradient(90deg,
-      var(--bbl-private-gold-50) 2.18%,
-      var(--bbl-private-gold-29) 29.13%,
-      var(--bbl-private-gold-68) 64.9%,
-      var(--bbl-private-gold-86) 81.82%);
+  background: linear-gradient(
+    90deg,
+    var(--bbl-private-gold-50) 2.18%,
+    var(--bbl-private-gold-29) 29.13%,
+    var(--bbl-private-gold-68) 64.9%,
+    var(--bbl-private-gold-86) 81.82%
+  );
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-
-
-.section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
+.section.full-bleed-bg
+  .hero-banner-hero-with-thumbnail-images
+  .hero-banner-content.content {
   position: static;
   color: var(--bbl-color-black);
-
 }
 
-.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
+.hero-banner-hero-with-thumbnail-images
+  .hero-banner-item:has(.hero-banner-video)
+  .hero-banner-content.content {
   position: static;
   color: var(--bbl-color-black);
   text-align: center;
   padding: 0 var(--bbl-space-200);
 }
 
-.section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-img) .hero-banner-content.content {
+.section.full-bleed-bg
+  .hero-banner-hero-with-thumbnail-images
+  .hero-banner-item:has(.hero-banner-img)
+  .hero-banner-content.content {
   position: absolute;
   left: 0;
   right: 0;
   color: var(--bbl-color-white);
-  
 }
 
- :is(.hero-banner-private-wealth-banking, .hero-banner-simple)
-.hero-banner-content-group .button-container .button-m {
-    min-width: 8.4375rem;
-    width: 48%;
+:is(.hero-banner-private-wealth-banking, .hero-banner-simple)
+  .hero-banner-content-group
+  .button-container
+  .button-m {
+  min-width: 8.4375rem;
+  width: 48%;
+}
+
+/* ─── Simple with App CTA variant ──────────────────────────────────────── */
+.hero-app-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bbl-space-200);
+  margin: 1.9375rem 0 var(--bbl-space-200);
+}
+
+.hero-app-cta-link {
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.hero-app-cta-link img {
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.hero-app-cta-mobile-fallback {
+  display: none;
+}
+
+.hero-banner-item.no-mobile-app-cta .hero-app-ctas {
+  display: none;
+}
+
+.hero-banner-item.no-mobile-app-cta .hero-app-cta-mobile-fallback {
+  display: block;
+}
+
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-app-cta-mobile-fallback .button-container {
+  margin: 0;
+  padding-bottom: 0.9375rem;
 }
 
 @media (width > 47.5rem) {
@@ -587,46 +656,17 @@
     margin-bottom: 0;
   }
 
-  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text {
-    color: var(--bbl-color-white);
-  }
-
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content :is(h1, h2, h3, h4, h5, h6),
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner-text {
-    display: none;
-  }
-
   .hero-banner::after {
     width: calc(100% - 6rem);
   }
 
-  
-
-  .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
+  .section.full-bleed-bg
+    .hero-banner-hero-with-thumbnail-images
+    .hero-banner-content.content {
     position: absolute;
     left: 0;
     right: 0;
     color: var(--bbl-color-white);
-
-  }
-
-  /* Simple variant override */
-  .section.full-bleed-bg :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content.content {
-    position: absolute;
-    padding: 0 var(--bbl-space-600) 0;
-    bottom: 1.875rem;
-  }
-
-  /* simple private wealth banking variant override */
-  .section.full-bleed-bg .hero-banner-private-wealth-banking .hero-banner-content.content {
-    padding: 0 var(--bbl-space-600) 0;
-  }
-
-  .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
-    position: absolute;
-    padding: 0;
-    color: var(--bbl-color-white);
-    text-align: center;
   }
 
   .hero-banner-thumbnail-outer {
@@ -638,6 +678,10 @@
     padding: 0.875rem 0 0;
   }
 
+  .hero-banner-private-wealth-banking .hero-banner-img {
+    height: 35.625rem;
+  }
+
   .hero-banner-thumbnail-item {
     min-height: 14.875rem;
     max-width: calc((((100vw - 9.5rem) / 12) * 8) / 3);
@@ -645,6 +689,7 @@
     height: auto;
   }
 
+  /* Simple variant override */
   .hero-banner-simple .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
     color: var(--bbl-color-white);
 
@@ -652,6 +697,19 @@
       background: var(--bbl-color-white);
       width: 2.5rem;
     }
+  }
+
+  .section.full-bleed-bg
+    :is(.hero-banner-simple, .hero-banner-simple-logo-banner)
+    .hero-banner-content.content {
+    position: absolute;
+    padding: 0 var(--bbl-space-600) 0;
+    bottom: 1.875rem;
+  }
+
+  :is(.hero-banner-simple, .hero-banner-simple-logo-banner)
+    .hero-banner-content-inner-text {
+    color: var(--bbl-color-white);
   }
 
   .wealth .hero-banner-simple .hero-banner-content-inner-text {
@@ -663,8 +721,17 @@
     color: var(--bbl-color-white);
   }
 
+  /* simple private wealth banking variant override */
+  .section.full-bleed-bg
+    .hero-banner-private-wealth-banking
+    .hero-banner-content.content {
+    padding: 0 var(--bbl-space-600) 0;
+  }
+
   /* simple with logo banner variant override */
-  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content :is(h1, h2, h3, h4, h5, h6), .hero-banner-logo-wrapper)::before {
+  :is(.hero-banner-simple, .hero-banner-simple-logo-banner)
+    :is(.hero-banner-content
+      :is(h1, h2, h3, h4, h5, h6), .hero-banner-logo-wrapper)::before {
     background: var(--bbl-color-white);
   }
 
@@ -674,13 +741,40 @@
   }
 
   :is(.hero-banner-private-wealth-banking, .hero-banner-simple)
-.hero-banner-content-group .button-container .button-m {
+    .hero-banner-content-group
+    .button-container
+    .button-m {
     min-width: 11.25rem;
-}
+  }
+
+  .hero-banner-item.no-mobile-app-cta .hero-app-ctas {
+    display: flex;
+  }
+
+  .hero-banner-item.no-mobile-app-cta .hero-app-cta-mobile-fallback {
+    display: none;
+  }
+
+  .hero-banner-item:has(.hero-banner-video) .hero-banner-content :is(h1, h2, h3, h4, h5, h6),
+  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner-text {
+    display: none;
+  }
+
+  .section.full-bleed-bg
+    .hero-banner-hero-with-thumbnail-images
+    .hero-banner-item:has(.hero-banner-video)
+    .hero-banner-content.content {
+    position: absolute;
+    padding: 0;
+    color: var(--bbl-color-white);
+    text-align: center;
+  }
 }
 
 @media (47.5rem < width <= 64rem) {
-  .section.full-bleed-bg .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
+  .section.full-bleed-bg
+    .hero-banner-item:has(.hero-banner-video)
+    .hero-banner-content.content {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -691,7 +785,9 @@
     color: var(--bbl-color-white);
   }
 
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner .button-container {
+  .hero-banner-item:has(.hero-banner-video)
+    .hero-banner-content-inner
+    .button-container {
     margin: 0;
     padding: 0.75rem 1rem;
     justify-content: flex-start;
@@ -700,8 +796,6 @@
   .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner .button-container .button-m {
     margin-bottom: 6.25rem;
   }
-
- 
 }
 
 @media (width > 64rem) {
@@ -799,7 +893,8 @@
     width: 66.6667%;
   }
 
-  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner {
+  :is(.hero-banner-simple, .hero-banner-simple-logo-banner)
+    .hero-banner-content-inner {
     width: 100%;
   }
 
@@ -808,10 +903,10 @@
     line-height: 1.725rem;
   }
 
-    .hero-banner-content-inner .button-container {
-        text-align: left;
-        justify-content: flex-start;
-    }
+  .hero-banner-content-inner .button-container {
+    text-align: left;
+    justify-content: flex-start;
+  }
 
   .hero-banner-thumbnail-outer {
     overflow: auto;
@@ -848,16 +943,20 @@
     height: 14.875rem;
   }
 
-    .hero-banner-hero-with-thumbnail-images .hero-banner-img {
-        aspect-ratio: 192 / 85;
-        height: 53.125rem;
-    }
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item {
+    height: 53.125rem;
+  }
 
-    .hero-banner-hero-with-thumbnail-images .hero-banner-video {
-        aspect-ratio: 192 / 85;
-        height: 53.125rem;
-    }
+  :is(.hero-banner-simple, .hero-banner-simple-logo-banner)
+    .hero-banner-item {
+    max-height: 33.125rem;
+    height: calc(100vw * 0.35);
+  }
 
+  .hero-banner-hero-with-thumbnail-images .hero-banner-video {
+    aspect-ratio: 192 / 85;
+    height: 53.125rem;
+  }
 
   .hero-banner-simple .hero-banner-content-inner-text {
     color: var(--bbl-color-white);
@@ -874,11 +973,15 @@
     line-height: 1.35rem;
   }
 
-  .section.full-bleed-bg :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content.content {
+  .section.full-bleed-bg
+    :is(.hero-banner-simple, .hero-banner-simple-logo-banner)
+    .hero-banner-content.content {
     padding: 0 var(--bbl-space-1050);
   }
 
-  .section.full-bleed-bg .hero-banner-private-wealth-banking .hero-banner-content.content {
+  .section.full-bleed-bg
+    .hero-banner-private-wealth-banking
+    .hero-banner-content.content {
     padding: 0 var(--bbl-space-1050) 0;
   }
 
@@ -901,7 +1004,9 @@
     margin: var(--bbl-space-600) 0 0;
   }
 
-  .hero-banner-private-wealth-banking .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
+  .hero-banner-private-wealth-banking
+    .hero-banner-content
+    :is(h1, h2, h3, h4, h5, h6) {
     font-size: var(--bbl-font-size-h3-desktop);
     line-height: 2.875rem;
     font-family: var(--bbl-font-family-primary);
@@ -921,14 +1026,20 @@
     margin-bottom: 0;
   }
 
-  
-
-  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container .button-m.primary {
+  .hero-banner-hero-with-thumbnail-images
+    .hero-banner-item:has(.hero-banner-video-wrapper video)
+    .hero-banner-content-inner
+    .button-container
+    .button-m.primary {
     margin-left: 2.9375rem;
     margin-bottom: 1.5625rem;
   }
 
-  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-content-inner .button-container .button-m.primary {
+  .hero-banner-hero-with-thumbnail-images
+    .hero-banner-item:has(iframe.hero-banner-video)
+    .hero-banner-content-inner
+    .button-container
+    .button-m.primary {
     margin-left: 1.5625rem;
     margin-bottom: 1.5625rem;
   }
