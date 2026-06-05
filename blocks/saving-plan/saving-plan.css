@@ -514,8 +514,8 @@
 
 .saving-plan-chart {
   display: block;
-  width: 100% !important;
-  height: 100% !important;
+  width: 100% ;
+  height: 100% ;
 }
 
 .saving-plan-info-card {
@@ -839,7 +839,7 @@
 
 .saving-plan-products {
   margin-top: 3.5rem;
-  text-align: center !important;
+  text-align: center ;
 }
 
 .saving-plan-products-title {
@@ -847,7 +847,7 @@
   font-weight: 800;
   margin: 0 0 0.625rem;
   line-height: 1.3;
-  text-align: center !important;
+  text-align: center ;
   width: 100%;
 }
 
