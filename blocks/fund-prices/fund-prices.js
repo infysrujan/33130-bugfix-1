@@ -11,6 +11,10 @@ import { MAX_FUND_PRICE_HISTORY_YEARS } from '../fund-prices-dropdown/fund-price
 import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
+function normalizeFundPricesTitle(title) {
+  return title.trim().replace(/\s+-\s+/, ' – ');
+}
+
 function moveSearchBarToHeader(el, doc) {
   const check = () => {
     const headerNav = doc.querySelector('.header-nav');
@@ -23,6 +27,7 @@ function moveSearchBarToHeader(el, doc) {
     const h1 = doc.querySelector('h1');
     if (h1) {
       h1.classList.add('fund-prices-page-title');
+      h1.textContent = normalizeFundPricesTitle(h1.textContent);
     }
     return true;
   };
@@ -41,7 +46,27 @@ function richTextFromRow(row) {
 }
 
 function printContent() {
+  const previousTitle = document.title;
+  const pageTitle = document.querySelector('.fund-prices-page-title')?.textContent;
+  if (pageTitle) document.title = normalizeFundPricesTitle(pageTitle);
+  window.addEventListener('afterprint', () => {
+    document.title = previousTitle;
+  }, { once: true });
   window.print();
+}
+
+function findPrintLogo(doc) {
+  return doc.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || doc.querySelector('.brand-logo-container picture, .brand-logo-container img')
+    || doc.querySelector('.brand-logo .brand-logo-link, .brand-logo .brand-logo-image');
+}
+
+function syncPrintLogo(doc, logoWrap) {
+  const logoEl = findPrintLogo(doc);
+  if (!logoEl) return false;
+  logoWrap.textContent = '';
+  logoWrap.appendChild(logoEl.cloneNode(true));
+  return true;
 }
 
 function isDateOlderThanFundHistoryLimit(date) {
@@ -239,6 +264,29 @@ export default async function decorate(block) {
   const root = doc.createElement('div');
   root.className = 'fund-prices-root';
 
+  /* ── Print-only header (logo + search label) ── */
+  const printHeader = doc.createElement('div');
+  printHeader.className = 'fp-print-header';
+  const logoWrap = doc.createElement('div');
+  logoWrap.className = 'fp-print-logo';
+  printHeader.appendChild(logoWrap);
+  if (!syncPrintLogo(doc, logoWrap)) {
+    const logoObserver = new MutationObserver(() => {
+      if (syncPrintLogo(doc, logoWrap)) logoObserver.disconnect();
+    });
+    logoObserver.observe(doc.documentElement, { childList: true, subtree: true });
+    setTimeout(() => logoObserver.disconnect(), 8000);
+  }
+  const printSearchLabel = doc.createElement('span');
+  printSearchLabel.className = 'fp-print-search-label';
+  printSearchLabel.textContent = searchLabel;
+  printHeader.appendChild(printSearchLabel);
+  if (section) {
+    section.insertBefore(printHeader, section.firstElementChild);
+  } else {
+    root.insertBefore(printHeader, root.firstChild);
+  }
+
   /* ── Fund selector bar ── */
   const fundSelector = buildFundSelectorBar(doc, funds, searchLabel, allFundsLabel, goLabel);
   root.appendChild(fundSelector.el);
@@ -278,7 +326,10 @@ export default async function decorate(block) {
   dateInput.name = 'date-to';
   calendarInput.classList.add('calendar-input', 'icon-calendar');
   calendarInput.appendChild(dateInput);
+  const printDate = doc.createElement('span');
+  printDate.className = 'calendar-print-date';
   calendarWrapper.appendChild(calendarInput);
+  calendarWrapper.appendChild(printDate);
 
   attachCalendarPicker({
     input: dateInput,
@@ -293,9 +344,13 @@ export default async function decorate(block) {
       errorMessage.classList.add('hidden');
       errorMessage.hidden = true;
       currentDate = selectedDate;
+      printDate.textContent = dateInput.value;
       dispatchTableRefresh(selectedDate);
     },
   });
+
+  dateInput.addEventListener('input', () => { printDate.textContent = dateInput.value; });
+  setTimeout(() => { printDate.textContent = dateInput.value; }, 500);
 
   const toolbar = doc.createElement('div');
   toolbar.className = 'fund-prices-toolbar';
@@ -324,6 +379,7 @@ export default async function decorate(block) {
   /* ── Print handler ── */
   printLabel.addEventListener('click', (e) => {
     e.preventDefault();
+    printDate.textContent = dateInput.value;
     printContent(section ?? root);
   });
 

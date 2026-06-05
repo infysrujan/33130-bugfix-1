@@ -65,6 +65,14 @@
   gap: 1.625rem;
 }
 
+.calendar-print-date {
+  display: none;
+}
+
+.fp-print-header {
+  display: none;
+}
+
 .fund-prices .calendar-wrapper {
   display: flex;
   flex-direction: column;
@@ -416,12 +424,94 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
 }
 
 @media print {
-  /* Hide interactive header elements, keep logo */
-  .header .mobile-top-bar > *:not(.mobile-brand-logo),
-  .header .header-nav,
-  .header .header-backdrop,
-  .header .mobile-nav-menu {
+  @page {
+    margin: 10mm;
+  }
+
+  body {
+    background: var(--bbl-color-white) !important;
+    color: var(--bbl-color-black) !important;
+    font-size: 10px !important;
+    line-height: 1.25 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide the real header; print header is rendered inside the block. */
+  header,
+  .header {
+    position: static !important;
+    height: auto !important;
+    min-height: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
     display: none !important;
+  }
+
+  /* Hide the brand-logo print logo injected into main (we use fp-print-header instead) */
+  .brand-logo-print-logo {
+    display: none !important;
+  }
+
+  /* Show print-only header row: logo left, Search Fund right */
+  .fp-print-header {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    min-height: 6.5rem !important;
+    padding: 0 0 1rem !important;
+    box-sizing: border-box !important;
+  }
+
+  .fp-print-logo,
+  .fp-print-logo picture,
+  .fp-print-logo a {
+    display: block !important;
+  }
+
+  .fp-print-logo {
+    flex: 0 0 8rem !important;
+    min-height: 1.5rem !important;
+  }
+
+  .fp-print-logo img {
+    display: block !important;
+    height: 1.5rem !important;
+    width: auto !important;
+  }
+
+  .fp-print-search-label {
+    margin-top: 4.875rem !important;
+    font-family: BangkokBank-Bold, var(--bbl-font-family-medium), Arial, sans-serif;
+    font-size: 0.6875rem !important;
+    line-height: 1.2 !important;
+    color: var(--bbl-color-black) !important;
+  }
+
+  main {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  main > div,
+  .section,
+  .fund-prices-container,
+  .fund-prices-wrapper,
+  .fund-prices-table-wrapper {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .section {
+    padding-inline: 0 !important;
+    max-width: none !important;
+  }
+
+  .section > .default-content-wrapper {
+    display: block !important;
+    margin: 0 !important;
   }
 
   /* Show page title which is hidden on-screen when search bar is in header */
@@ -429,13 +519,75 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
     display: block !important;
   }
 
-  /* Hide fund prices interactive controls */
-  .fund-prices-search-bar,
-  .fund-prices-print-label,
-  .fund-prices-error-message,
-  .calendar-input,
-  .bbl-cal-popup,
+  /* Title size and underline line */
+  .fund-prices-page-title {
+    margin: 0 0 0.75rem !important;
+    padding-bottom: 0.625rem !important;
+    font: 1.75rem/1.15 BangkokBank-Medium, var(--bbl-font-family-medium), Arial, sans-serif !important;
+    color: var(--bbl-color-black) !important;
+  }
+
+  .fund-prices-page-title::after {
+    display: block !important;
+    width: 2rem !important;
+    height: 0.0625rem !important;
+    background: var(--bbl-color-black) !important;
+  }
+
+  /* Show "As of:" label with date value; hide only the date picker input widget */
   .fund-prices-toolbar {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .fund-prices-toolbar .calendar-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--bbl-space-050) !important;
+  }
+
+  .fund-prices .calendar-wrapper p {
+    margin: 0 !important;
+    font-family: BangkokBank-Bold, var(--bbl-font-family-medium), Arial, sans-serif !important;
+    font-size: 0.625rem !important;
+    line-height: 1.2 !important;
+    color: var(--bbl-color-black) !important;
+  }
+
+  .calendar-input,
+  .bbl-cal-popup {
+    display: none !important;
+  }
+
+  /* Show the date value for print */
+  .calendar-print-date {
+    display: block !important;
+    font-family: var(--bbl-font-family-primary);
+    font-size: 0.6875rem !important;
+    line-height: 1.2 !important;
+    color: var(--bbl-color-black);
+  }
+
+  .fund-prices-print-label,
+  .fund-prices-error-message {
+    display: none !important;
+  }
+
+  .fund-prices-root,
+  .fund-prices-main-view {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .fund-prices .fund-prices-toolbar {
+    margin: 0 0 1.25rem !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+
+  .fund-prices-search-bar,
+  .fund-prices-dropdown {
     display: none !important;
   }
 
@@ -449,6 +601,7 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
 
   .fund-prices-disclaimer-text {
     font-size: 0.65rem;
+    display: none !important;
   }
 }
 

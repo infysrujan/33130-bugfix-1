@@ -178,7 +178,7 @@
   font-size: var(--bbl-font-size-b2);
   font-family: Muli-Bold, sans-serif;
   cursor: pointer;
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-black);
 }
 
 .fund-prices-dropdown .period-dropdown-list li:hover,
@@ -309,7 +309,7 @@
 
 .fund-prices-dropdown .detail-hist-table th:first-child,
 .fund-prices-dropdown .detail-hist-table td:first-child {
-  width: 8rem;
+  width: auto;
 }
 
 .fund-prices-dropdown .detail-hist-table td:first-child {
@@ -319,7 +319,7 @@
 
 .fund-prices-dropdown .detail-hist-table th:not(:first-child),
 .fund-prices-dropdown .detail-hist-table td:not(:first-child) {
-  width: 15%;
+  width: 12%;
   white-space: nowrap;
 }
 
@@ -441,7 +441,7 @@
 
 .fund-prices-dropdown .chart-nav-item {
   font-family: var(--bbl-font-family-medium);
-  font-size: 0.9375rem;
+  font-size: 0.775rem;
   color: #f60;
 }
 
@@ -471,14 +471,13 @@
   .fdd-period-bar .period-select-wrapper .period-select-btn {
     width: auto;
     min-width: fit-content;
-    margin-left: 0.9375rem;
   }
 
   .fund-prices-dropdown .period-select-wrapper {
-    display: inline-block;
+    display: block;
     width: auto;
     padding-left: 0;
-    margin-left: -0.9375rem;
+    margin-left: 0;
   }
 
   .fund-prices-dropdown .tab-switcher {
@@ -496,7 +495,7 @@
     background: none;
     padding: var(--bbl-space-100) 0 0.625rem;
     font-size: 0.9375rem;
-    color: var(--bbl-color-grey-70);
+    color: var(--bbl-color-black);
   }
 
   .fund-prices-dropdown .tab-btn::after {
@@ -512,7 +511,7 @@
   }
 
   .fund-prices-dropdown .tab-btn.active {
-    color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-black);
   }
 
   .fund-prices-dropdown .tab-btn.active::after {

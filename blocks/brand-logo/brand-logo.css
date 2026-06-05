@@ -7,3 +7,9 @@
   display: none;
 }
 
+@media print {
+  .brand-logo-print-logo {
+    display: block;
+  }
+}
+
