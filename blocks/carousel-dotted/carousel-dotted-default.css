@@ -141,6 +141,11 @@
   display: block;
 }
 
+.carousel-dotted .all-text-animation-variant .carousel-bg img {
+  min-height: 21.875rem;
+  height: calc((100vw - 2.5rem) / 1.3);
+}
+
 .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb img {
   max-width: 100%;
   height: auto;
@@ -719,6 +724,10 @@ p.text-large.text-light {
 
   .carousel-dotted .carousel-dotted-item.is-active {
     opacity: 1;
+  }
+
+  .carousel-dotted .all-text-animation-variant .carousel-bg img {
+    height: calc(100vw * .35);
   }
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant) .carousel-track-wrapper {

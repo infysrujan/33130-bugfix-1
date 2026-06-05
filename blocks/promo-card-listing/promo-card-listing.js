@@ -9,16 +9,15 @@ import {
   buildCardHtml,
   buildCardOptions,
   buildPaginationHtml,
-  buildPromotionDataUrl,
+  getPromotionDataUrl,
   fetchJson,
   getPromotionPathFlags,
   handleMobileAppView,
   mergeLocalConfig,
-  normalizeCardTypeValue,
   normalizePromotionType,
   normalizeQueryLang,
-  resolvePromotionApi,
-  resolvePromotionLang,
+  getPromotionApiConfig,
+  getPromotionLanguage,
   sortCards,
 } from '../../scripts/utils/card-helpers.js';
 
@@ -29,7 +28,7 @@ function isTopPromotionsLabel(value) {
   return TOP_PROMO_KEYS.some((k) => k.toLowerCase() === key);
 }
 
-function getPromoListingConfig(block) {
+function extractListingConfig(block) {
   const firstRow = block.querySelector(':scope > div');
   const isKeyValueRows = firstRow && firstRow.children.length >= 2;
   if (isKeyValueRows) {
@@ -41,11 +40,11 @@ function getPromoListingConfig(block) {
   return { promotionType };
 }
 
-async function fetchPromotions(url) {
+async function fetchPromotionalData(url) {
   return fetchJson(url);
 }
 
-function resolveCardTypeFromRef(mapping, cardRef) {
+function getCardTypeFromRef(mapping, cardRef) {
   if (!mapping || !cardRef) return '';
   if (typeof mapping === 'string') return '';
   if (mapping[cardRef]) return mapping[cardRef];
@@ -165,16 +164,18 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
 
   const matched = allCards.filter((card) => {
     if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
-    if (
-      !topPromotionOnly
-      && category
-      && card.category?.toLowerCase() !== category.toLowerCase()
-    ) return false;
+    if (!topPromotionOnly && category) {
+      const cardCats = normalizeList(card.category).map((c) => c.toLowerCase());
+      if (!cardCats.includes(category.toLowerCase())) return false;
+    }
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
-    if (subcategory && card.subcategory !== subcategory) return false;
+    if (subcategory) {
+      const cardSubCats = normalizeList(card.subcategory).map((c) => c.toLowerCase());
+      if (!cardSubCats.includes(subcategory.toLowerCase())) return false;
+    }
     if (cardType) {
-      const cardTypeNormalized = normalizeList(card.cardTypes).map(normalizeCardTypeValue);
-      if (!cardTypeNormalized.includes(normalizeCardTypeValue(cardType))) return false;
+      const cardTypesLower = normalizeList(card.cardTypes).map((t) => t.toLowerCase());
+      if (!cardTypesLower.includes(cardType.toLowerCase())) return false;
     }
     if (area) {
       const cardAreas = normalizeList(card.area);
@@ -222,7 +223,7 @@ function setupPanel(
   if (disableFilters) {
     panel.innerHTML = `
       <div class="promo-selector-content pad-top-30 pad-bot-30">
-        <div class="promo-selector-grid"></div>
+        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
         <div class="promo-selector-pagination"></div>
       </div>`;
   } else {
@@ -261,7 +262,7 @@ function setupPanel(
         </div>
       </div>
       <div class="promo-selector-content pad-top-30 pad-bot-30">
-        <div class="promo-selector-grid"></div>
+        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
         <div class="promo-selector-pagination"></div>
       </div>`;
   }
@@ -287,18 +288,17 @@ function setupPanel(
         let cardData = c;
         if (isBbmPanel && queryLang && c.ctaLink) {
           try {
-            const isInternal = c.ctaLink.startsWith('/')
-              || c.ctaLink.startsWith(window.location.origin);
             const url = new URL(c.ctaLink, window.location.origin);
             url.searchParams.set('sc_lang', queryLang);
+            const isInternal = url.origin === window.location.origin;
             const ctaPath = url.pathname + url.search + url.hash;
             cardData = { ...c, ctaLink: isInternal ? ctaPath : url.toString() };
           } catch {
-            const separator = c.ctaLink.includes('?') ? '&' : '?';
-            cardData = { ...c, ctaLink: `${c.ctaLink}${separator}sc_lang=${queryLang}` };
+            // Keep original ctaLink if URL parsing fails completely
           }
         }
         const cardOptions = buildCardOptions(cardData);
+        cardOptions.baseUrl = options.baseUrl;
         if (isBbmPanel) cardOptions.logoHtml = '';
         return buildCardHtml(cardData, category, placeholders, cardOptions);
       }).join('')
@@ -399,12 +399,12 @@ export default async function decorate(block) {
 
   const docLang = getLang();
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
-  const { promotionType: blockPromoType } = getPromoListingConfig(block);
+  const { promotionType: blockPromoType } = extractListingConfig(block);
   const datasetType = block.dataset.promotionType?.trim();
   const configuredPromoType = blockPromoType || datasetType;
   const isBbmPreConfig = isBbmPath
     || (!isCreditCardPath && normalizePromotionType(configuredPromoType) === 'bangkok-bank-m');
-  const lang = resolvePromotionLang(docLang, queryLang, isBbmPreConfig);
+  const lang = getPromotionLanguage(docLang, queryLang, isBbmPreConfig);
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
@@ -414,7 +414,7 @@ export default async function decorate(block) {
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
 
-  const promotionApi = resolvePromotionApi({
+  const promotionApi = getPromotionApiConfig({
     pathname,
     configuredPromoType,
     bbmBaseUrl,
@@ -425,9 +425,9 @@ export default async function decorate(block) {
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
 
-  const dataUrl = buildPromotionDataUrl(promotionApi.baseUrl, lang);
+  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
   const [activeData, cardRefConfig, placeholders] = await Promise.all([
-    fetchPromotions(dataUrl),
+    fetchPromotionalData(promotionsUrl),
     fetchJson(effectiveConfigs.bbmCardRef || ''),
     fetchPlaceholders(),
   ]);
@@ -437,7 +437,7 @@ export default async function decorate(block) {
   const activeAreas = activeData?.areas || [];
   const isBbmPage = isBbm;
   const cardRef = isBbmPage ? searchParams.get('card_ref') : '';
-  const forcedCardType = resolveCardTypeFromRef(cardRefConfig, cardRef);
+  const forcedCardType = getCardTypeFromRef(cardRefConfig, cardRef);
   const disableFilters = Boolean(forcedCardType);
   const activeCategories = activeData?.categories || [];
 
@@ -475,6 +475,7 @@ export default async function decorate(block) {
         isBbm,
         isHighlightsPanel,
         immediate: true,
+        baseUrl: promotionApi?.baseUrl,
       },
     );
     return;
@@ -538,6 +539,7 @@ export default async function decorate(block) {
         hidePagination: disableFilters && isBbm,
         isBbm,
         isHighlightsPanel,
+        baseUrl: promotionApi?.baseUrl,
       },
     );
   });

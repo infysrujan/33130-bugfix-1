@@ -578,3 +578,22 @@
     font-size: 1.46rem;
   }
 }
+
+@media print {
+  /* Repeat-header on multi-page print */
+  .forex-rates .forex-rates-table thead {
+    display: table-header-group;
+  }
+
+  .forex-rates .forex-rates-table tbody {
+    display: table-row-group;
+  }
+
+  .forex-rates .forex-rates-table {
+    break-inside: auto;
+  }
+
+  .forex-rates .forex-rates-table tbody tr {
+    break-inside: avoid;
+  }
+}

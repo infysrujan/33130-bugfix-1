@@ -3,9 +3,14 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
-import { openModal } from '../../scripts/utils/modal.js';
 import {
-  buildPromotionDataUrl,
+  createModalShell,
+  showModal,
+  hideModal,
+  setupModalHandlers,
+} from '../../scripts/utils/modal.js';
+import {
+  getPromotionDataUrl,
   fetchJson,
   getPromotionPathFlags,
   handleMobileAppView,
@@ -13,29 +18,28 @@ import {
   normalizePath,
   normalizePromotionType,
   normalizeQueryLang,
-  resolvePromotionApi,
-  resolvePromotionLang,
+  getPromotionApiConfig,
+  getPromotionLanguage,
 } from '../../scripts/utils/card-helpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 
 function isRegisterEnabled(value) {
   const normalized = String(value || '').trim().toUpperCase();
-  // CTA is shown ONLY when the API explicitly sets isRegister to 'N'
-  return normalized !== 'N';
+  return normalized === 'Y' || normalized === 'D';
 }
 
-function resolveCtaLabel(isRegister, data) {
+function getRegisterCtaLabel(isRegister, data) {
   if (!isRegisterEnabled(isRegister)) return '';
-  return data?.isRegisterCtaLabel || '';
+  return data?.registerCtaLabel || '';
 }
 
-function resolveCtaUrl(isRegister, registerCtaUrl) {
+function getRegisterCtaUrl(isRegister, registerCtaUrl) {
   if (!isRegisterEnabled(isRegister)) return '';
   return registerCtaUrl || '';
 }
 
-function getPromoBlockConfig(block) {
+function extractBlockConfig(block) {
   const firstRow = block.querySelector(':scope > div');
   const isKeyValueRows = firstRow && firstRow.children.length >= 2;
 
@@ -66,12 +70,10 @@ function getAuthoringPreviewData(block) {
     detailDescription: config['detail-description'] || config.detaildescription || '',
     promotionStartDate: config['promotion-start-date'] || config.promotionstartdate || '',
     promotionEndDate: config['promotion-end-date'] || config.promotionenddate || '',
-    responsibleLendingDisclaimerEnabled: config['responsible-lending-disclaimer-enabled']
-      || config.responsiblelendingdisclaimerenabled,
-    responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text']
-      || config.responsiblelendingdisclaimertext || '',
+    responsibleLendingDisclaimerEnabled: config['responsible-lending-disclaimer-enabled'] || config.responsiblelendingdisclaimerenabled,
+    responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text'] || config.responsiblelendingdisclaimertext || '',
     isRegister: config['is-register'] || config.isregister || '',
-    isRegisterCtaLabel: config['is-register-cta-label'] || config.isregisterctalabel || '',
+    registerCtaLabel: config['register-cta-label'] || config.registerctalabel || '',
     ctaLabel: config['cta-label'] || config.ctalabel || '',
   };
 }
@@ -97,7 +99,7 @@ function buildRegisterCtaHtml(label, url) {
   if (!label || !url) return '';
   return `
     <div class="promo-detail-cta button-container">
-      <a class="button primary" href="${url}">${label}</a>
+        <a href="${url}" class="button primary promo-detail-register-btn">${label}</a>
     </div>`;
 }
 
@@ -105,8 +107,46 @@ function bindImageModal(container, imageUrl, altText) {
   const imageLink = container.querySelector('.promo-detail-image-link');
   imageLink?.addEventListener('click', (e) => {
     e.preventDefault();
+    e.stopPropagation();
 
     const doc = container.ownerDocument;
+
+    // Guard against rapid double-clicks opening multiple modals
+    if (doc.body.classList.contains('modal-open')) return;
+
+    const wrapper = doc.createElement('div');
+    wrapper.className = 'custom-modal';
+    wrapper.setAttribute('aria-hidden', 'true');
+
+    const backdrop = doc.createElement('div');
+    backdrop.className = 'modal-overlay';
+
+    const { overlay: content, dialog: body, closeBtn } = createModalShell({
+      overlayClass: 'modal-content',
+      dialogClass: 'modal-body promo-detail-image-modal',
+      closeBtnClass: 'modal-close',
+      closeBtnAriaLabel: 'Close modal',
+    });
+    content.insertBefore(closeBtn, body);
+
+    let closeModal;
+
+    const handleEscape = (evt) => {
+      if (evt.key === 'Escape' && closeModal) closeModal();
+    };
+
+    closeModal = () => {
+      doc.removeEventListener('keydown', handleEscape);
+      wrapper.setAttribute('aria-hidden', 'true');
+      hideModal(wrapper, 'active', () => doc.body.classList.remove('modal-open'));
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    // Explicitly disable escapeKey in setupModalHandlers to prevent listener leaks on the document
+    setupModalHandlers(wrapper, content, closeModal, { escapeKey: false, clickOutside: true });
+    doc.addEventListener('keydown', handleEscape);
+    wrapper.append(backdrop, content);
+
     const modalContent = doc.createElement('div');
     modalContent.className = 'promo-detail-image-modal-content';
 
@@ -115,18 +155,21 @@ function bindImageModal(container, imageUrl, altText) {
     modalImage.alt = altText;
     modalContent.appendChild(modalImage);
 
-    openModal(doc, {
-      content: modalContent,
-      dialogClass: 'promo-detail-image-modal',
-    });
+    body.replaceChildren(modalContent);
+    doc.body.appendChild(wrapper);
+
+    wrapper.setAttribute('aria-hidden', 'false');
+    doc.body.classList.add('modal-open');
+    showModal(wrapper, 'active');
   });
 }
 
-function renderDetails(container, data, periodLabel, locale, clickToViewFull, registerCtaUrl) {
+function renderDetails(container, data, periodLabel, locale, viewFull, registerCtaUrl) {
   const title = data?.title
     ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
   const imageUrl = data?.detailImageUrl || '';
+
   const cleanTitle = data?.title ? data.title.replace(/<[^>]*>/g, '').trim() : '';
   const imageHtml = imageUrl
     ? `<img src="${imageUrl}" alt="${cleanTitle}" loading="lazy">`
@@ -137,13 +180,13 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
   const isRegister = data?.isRegister || '';
-  const ctaLabel = resolveCtaLabel(isRegister, data);
-  const ctaUrl = resolveCtaUrl(isRegister, registerCtaUrl);
+  const ctaLabel = getRegisterCtaLabel(isRegister, data);
+  const ctaUrl = getRegisterCtaUrl(isRegister, registerCtaUrl);
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
           <div class="promo-detail-image">
-            <a class="promo-detail-image-link" href="${imageUrl}" title="${clickToViewFull}">
+            <a class="promo-detail-image-link" href="#" title="${viewFull}">
               ${imageHtml}
             </a>
           </div>` : '';
@@ -169,7 +212,7 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   if (imageUrl) bindImageModal(container, imageUrl, cleanTitle);
 }
 
-async function fetchPromoData(url, promoId) {
+async function fetchPromotionalData(url, promoId) {
   if (!url) return null;
   const json = await fetchJson(url);
   if (!json) return null;
@@ -186,7 +229,7 @@ export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
   handleMobileAppView(searchParams);
 
-  const { promotionType: blockPromoType, promoId } = getPromoBlockConfig(block);
+  const { promotionType: blockPromoType, promoId } = extractBlockConfig(block);
   const { pathname } = window.location;
   const { isBbmPath, isCreditCardPath } = getPromotionPathFlags(pathname);
 
@@ -194,7 +237,7 @@ export default async function decorate(block) {
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
   const isBbmPreConfig = isBbmPath
     || (!isCreditCardPath && normalizePromotionType(blockPromoType) === 'bangkok-bank-m');
-  const lang = resolvePromotionLang(docLang, queryLang, isBbmPreConfig);
+  const lang = getPromotionLanguage(docLang, queryLang, isBbmPreConfig);
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
@@ -205,7 +248,7 @@ export default async function decorate(block) {
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
 
-  const promotionApi = resolvePromotionApi({
+  const promotionApi = getPromotionApiConfig({
     pathname,
     configuredPromoType: blockPromoType,
     bbmBaseUrl,
@@ -213,11 +256,11 @@ export default async function decorate(block) {
   });
 
   const locale = LOCALE_MAP[lang] || 'en-GB';
-  const promotionsUrl = buildPromotionDataUrl(promotionApi.baseUrl, lang);
+  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
 
   const [placeholders, card] = await Promise.all([
     fetchPlaceholders(),
-    fetchPromoData(promotionsUrl, promoId),
+    fetchPromotionalData(promotionsUrl, promoId),
   ]);
 
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
@@ -260,5 +303,12 @@ export default async function decorate(block) {
     return;
   }
 
-  renderDetails(block, data, periodLabel, locale, clickToViewFull, registerCtaUrl);
+  renderDetails(
+    block,
+    data,
+    periodLabel,
+    locale,
+    clickToViewFull,
+    registerCtaUrl,
+  );
 }

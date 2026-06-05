@@ -544,6 +544,13 @@ function replaceOtherAndJoin(selectedValues, otherText) {
   return values.join(', ');
 }
 
+function getSelectedLabelFromDropdown(dropdown) {
+  if (!dropdown || !dropdown.options) {
+    return '';
+  }
+  return dropdown.options[dropdown.selectedIndex].text.trim();
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -564,4 +571,5 @@ export {
   getBranchEnumNames,
   getidAndDob,
   replaceOtherAndJoin,
+  getSelectedLabelFromDropdown,
 };

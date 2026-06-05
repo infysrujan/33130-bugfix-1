@@ -214,6 +214,12 @@
     "fields": [
       {
         "component": "text",
+        "name": "id",
+        "label": "Section ID",
+        "description": "Used for deep linking — e.g. /page#Howto scrolls to the section with id 'Howto'"
+      },
+      {
+        "component": "text",
         "name": "name",
         "label": "Section Name",
         "description": "The label shown for this section in the Content Tree"
@@ -904,6 +910,14 @@
           {
             "name": "X-Small",
             "value": "x-small"
+          },
+          {
+            "name": "Logo",
+            "value": "logo"
+          },
+          {
+            "name": "Profile",
+            "value": "profile"
           }
         ]
       },
@@ -969,6 +983,12 @@
             }
           ]
         }
+      },
+      {
+        "component": "date-time",
+        "name": "financialDate",
+        "label": "Financial Date",
+        "valueType": "string"
       }
     ]
   },
@@ -1380,6 +1400,40 @@
             }
           ]
         }
+      },
+      {
+        "component": "container",
+        "name": "showLinksTargetSet",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "showLinksTargetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ],
+        "condition": {
+          "and": [
+            {
+              "===": [
+                {
+                  "var": "filter"
+                },
+                "showDots"
+              ]
+            },
+            {
+              "!!": [
+                {
+                  "var": "showLinks"
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   },
@@ -1585,6 +1639,29 @@
           {
             "name": "Tertiary",
             "value": "tertiary"
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withImage"
+          ]
+        }
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
           }
         ],
         "condition": {
@@ -1854,6 +1931,41 @@
         }
       },
       {
+        "component": "container",
+        "name": "heroLinkTargetSet",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "heroTargetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ],
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
+          ]
+        }
+      },
+      {
         "component": "text",
         "name": "promoTag",
         "label": "Promo Tag",
@@ -1984,12 +2096,12 @@
       },
       {
         "component": "container",
-        "name": "targetSettings",
+        "name": "contentInsertTargetSet",
         "label": "Target settings",
         "fields": [
           {
             "component": "boolean",
-            "name": "targetLink",
+            "name": "contentInsertTargetLink",
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
@@ -2204,6 +2316,29 @@
         }
       },
       {
+        "component": "container",
+        "name": "ctaLinkTargetSet",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "ctaTargetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
         "component": "reference",
         "name": "circularImage",
         "label": "Image",
@@ -2319,6 +2454,29 @@
         }
       },
       {
+        "component": "container",
+        "name": "linkTargetSettings",
+        "label": "Link Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "linkTargetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withCircularImage"
+          ]
+        }
+      },
+      {
         "component": "reference",
         "name": "onlyImage",
         "label": "Image",
@@ -2357,8 +2515,7 @@
             {
               "var": "slideType"
             },
-            "onlyImage",
-            "cardListCarousel"
+            "onlyImage"
           ]
         }
       },
@@ -7777,6 +7934,122 @@
     ]
   },
   {
+    "id": "forms-menu-card",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Basic",
+        "name": "basic"
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Name",
+        "valueType": "string",
+        "required": true,
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^[^$].*",
+          "customErrorMsg": "Name cannot start with $"
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "visible",
+        "label": "Show Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "select",
+        "name": "colspan",
+        "label": "Column Span",
+        "valueType": "string",
+        "value": "12",
+        "options": [
+          {
+            "name": "1 column",
+            "value": "1"
+          },
+          {
+            "name": "2 column",
+            "value": "2"
+          },
+          {
+            "name": "3 column",
+            "value": "3"
+          },
+          {
+            "name": "4 column",
+            "value": "4"
+          },
+          {
+            "name": "5 column",
+            "value": "5"
+          },
+          {
+            "name": "6 column",
+            "value": "6"
+          },
+          {
+            "name": "7 column",
+            "value": "7"
+          },
+          {
+            "name": "8 column",
+            "value": "8"
+          },
+          {
+            "name": "9 column",
+            "value": "9"
+          },
+          {
+            "name": "10 column",
+            "value": "10"
+          },
+          {
+            "name": "11 column",
+            "value": "11"
+          },
+          {
+            "name": "12 column",
+            "value": "12"
+          }
+        ]
+      },
+      {
+        "component": "tab",
+        "label": "Cards",
+        "name": "cards"
+      },
+      {
+        "component": "text",
+        "name": "properties.cardIcons",
+        "label": "Card Icon",
+        "valueType": "string",
+        "multi": true,
+        "description": "Asset path for each card icon, one per row (e.g. /content/dam/bbl/icons/calendar.svg). Order must match Card Titles."
+      },
+      {
+        "component": "text",
+        "name": "properties.cardTitles",
+        "label": "Card Title",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "Title for each card, one per row. Order must match Card Icons and Card Descriptions."
+      },
+      {
+        "component": "richtext",
+        "name": "properties.cardDescriptions",
+        "label": "Card Descriptions",
+        "valueType": "string",
+        "multi": true,
+        "description": "Description for each card, one per row. Supports inline HTML (e.g. asterisk footnotes). Order must match Card Titles."
+      }
+    ]
+  },
+  {
     "id": "modal",
     "fields": [
       {
@@ -9006,6 +9279,122 @@
     ]
   },
   {
+    "id": "forms-menu-card",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Basic",
+        "name": "basic"
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Name",
+        "valueType": "string",
+        "required": true,
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^[^$].*",
+          "customErrorMsg": "Name cannot start with $"
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "visible",
+        "label": "Show Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "select",
+        "name": "colspan",
+        "label": "Column Span",
+        "valueType": "string",
+        "value": "12",
+        "options": [
+          {
+            "name": "1 column",
+            "value": "1"
+          },
+          {
+            "name": "2 column",
+            "value": "2"
+          },
+          {
+            "name": "3 column",
+            "value": "3"
+          },
+          {
+            "name": "4 column",
+            "value": "4"
+          },
+          {
+            "name": "5 column",
+            "value": "5"
+          },
+          {
+            "name": "6 column",
+            "value": "6"
+          },
+          {
+            "name": "7 column",
+            "value": "7"
+          },
+          {
+            "name": "8 column",
+            "value": "8"
+          },
+          {
+            "name": "9 column",
+            "value": "9"
+          },
+          {
+            "name": "10 column",
+            "value": "10"
+          },
+          {
+            "name": "11 column",
+            "value": "11"
+          },
+          {
+            "name": "12 column",
+            "value": "12"
+          }
+        ]
+      },
+      {
+        "component": "tab",
+        "label": "Cards",
+        "name": "cards"
+      },
+      {
+        "component": "text",
+        "name": "properties.cardIcons",
+        "label": "Card Icon",
+        "valueType": "string",
+        "multi": true,
+        "description": "Asset path for each card icon, one per row (e.g. /content/dam/bbl/icons/calendar.svg). Order must match Card Titles."
+      },
+      {
+        "component": "text",
+        "name": "properties.cardTitles",
+        "label": "Card Title",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "Title for each card, one per row. Order must match Card Icons and Card Descriptions."
+      },
+      {
+        "component": "richtext",
+        "name": "properties.cardDescriptions",
+        "label": "Card Descriptions",
+        "valueType": "string",
+        "multi": true,
+        "description": "Description for each card, one per row. Supports inline HTML (e.g. asterisk footnotes). Order must match Card Titles."
+      }
+    ]
+  },
+  {
     "id": "forward-points-sme",
     "fields": [
       {
@@ -9427,6 +9816,10 @@
           {
             "name": "Simple with Logo Banner",
             "value": "simple-logo-banner"
+          },
+          {
+            "name": "Simple with App cta",
+            "value": "simple-app-cta"
           }
         ]
       }
@@ -9672,6 +10065,54 @@
             "value": false
           }
         ]
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "appStoreImage",
+        "label": "App Store Image",
+        "multi": false,
+        "description": "For 'Simple with App cta' variant - Upload and select an image for the app store badge (e.g. 'Download on the App Store' badge)"
+      },
+      {
+        "component": "aem-content",
+        "name": "appStoreLink",
+        "label": "App Store Link",
+        "description": "Destination URL for the app store button"
+      },
+      {
+        "component": "text",
+        "name": "appStoreLinkTitle",
+        "label": "App Store Link Title",
+        "description": "Accessibility title attribute (optional)"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "googlePlayImage",
+        "label": "Google Play Image",
+        "multi": false,
+        "description": "For 'Simple with App cta' variant - Upload and select an image for the Google Play badge (e.g. 'Get it on Google Play' badge)"
+      },
+      {
+        "component": "aem-content",
+        "name": "googlePlayLink",
+        "label": "Google Play Link",
+        "description": "Destination URL for the Google Play button"
+      },
+      {
+        "component": "text",
+        "name": "googlePlayLinkTitle",
+        "label": "Google Play Link Title",
+        "description": "Accessibility title attribute (optional)"
+      },
+      {
+        "component": "boolean",
+        "name": "enableAppCtaForMobile",
+        "label": "Enable App CTA for Mobile",
+        "description": "If enabled, the app call-to-action will be displayed on mobile devices.",
+        "valueType": "boolean",
+        "value": false
       }
     ]
   },
@@ -11288,16 +11729,21 @@
       },
       {
         "component": "text",
-        "name": "isRegisterCtaLabel",
-        "label": "Register CTA Label",
+        "name": "registerCtaLabel",
+        "label": "Register Cta Label",
+        "valueType": "string",
         "value": "",
         "required": true,
         "condition": {
-          "!==": [
+          "!": [
             {
-              "var": "isRegister"
-            },
-            "N"
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "N"
+              ]
+            }
           ]
         }
       }
@@ -11778,6 +12224,31 @@
     ]
   },
   {
+    "id": "social-icon",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "icon",
+        "label": "Social Icon",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "alt",
+        "label": "Alt Text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "url",
+        "label": "Link",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "story-card",
     "fields": [
       {
@@ -11946,6 +12417,10 @@
               {
                 "name": "Center Aligned",
                 "value": "header-center-aligned"
+              },
+              {
+                "name": "Right Aligned",
+                "value": "header-right-aligned"
               },
               {
                 "name": "Header Blue",

@@ -167,6 +167,12 @@
   background: var(--bbl-color-grey-19);
 }
 
+/* Header Right Aligned */
+.table table.header-right-aligned tr.header-row td {
+  text-align: right;
+  vertical-align: middle;
+}
+
 /* --------------------------------------------------------------------------
    CELL VARIANTS — center aligned (specificity 0,3,3)
    -------------------------------------------------------------------------- */

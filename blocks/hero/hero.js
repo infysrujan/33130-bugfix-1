@@ -1,5 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
+import { decorateButtonsV1, applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
@@ -408,6 +408,14 @@ export default async function decorate(block) {
     const headingCell = row.children[col]; col += 1;
     const textCell = row.children[col]; col += 1;
     const linkCell = row.children[col]; col += 1;
+    if (!row.children[col]?.querySelector('picture, a[href]')) col += 1;
+    const appStoreImageCell = row.children[col]; col += 1;
+    const appStoreLinkCell = row.children[col]; col += 1;
+    const googlePlayImageCell = row.children[col]; col += 1;
+    const googlePlayLinkCell = row.children[col]; col += 1;
+    const enableAppCtaMobileCell = row.children[col]; col += 1;
+    const targetCell = row.children[col];
+    const targetValue = targetCell?.textContent?.trim() || '';
 
     if (mediaType === 'bg-video') {
       const youtubeUrl = youtubeUrlCell?.querySelector('a')?.href
@@ -498,10 +506,41 @@ export default async function decorate(block) {
       if (preTitleEl.firstElementChild) preTitleEl.firstElementChild.classList.add('hero-banner-pre-title');
     }
     if (textCell?.firstElementChild) textCell.firstElementChild.classList.add('hero-banner-content-inner-text');
-    [preTitleCell, headingCell, textCell, linkCell].forEach((cell) => {
+    const isAppCta = variant === 'simple-app-cta';
+    [preTitleCell, headingCell, textCell, ...(isAppCta ? [] : [linkCell])].forEach((cell) => {
       if (cell) contentGroup.innerHTML += cell.innerHTML;
     });
     decorateButtonsV1(contentGroup);
+
+    if (isAppCta) {
+      const appCtasEl = createElement('div', 'hero-app-ctas');
+      [[appStoreImageCell, appStoreLinkCell], [googlePlayImageCell, googlePlayLinkCell]]
+        .forEach(([imgCell, linkCtaCell]) => {
+          const pic = imgCell?.querySelector('picture');
+          const anchor = linkCtaCell?.querySelector('a');
+          if (!pic || !anchor) return;
+          const ctaLink = document.createElement('a');
+          ctaLink.href = anchor.href;
+          ctaLink.target = '_blank';
+          ctaLink.rel = 'noopener noreferrer';
+          if (anchor.title) ctaLink.title = anchor.title;
+          ctaLink.classList.add('hero-app-cta-link');
+          ctaLink.append(pic.cloneNode(true));
+          appCtasEl.append(ctaLink);
+        });
+      if (appCtasEl.children.length) contentGroup.append(appCtasEl);
+
+      const enableAppCtaMobile = enableAppCtaMobileCell?.textContent?.trim() === 'true';
+      if (!enableAppCtaMobile) {
+        bannerItem.classList.add('no-mobile-app-cta');
+        if (linkCell?.innerHTML?.trim()) {
+          const fallback = createElement('div', 'hero-app-cta-mobile-fallback');
+          fallback.innerHTML = linkCell.innerHTML;
+          contentGroup.append(fallback);
+        }
+      }
+    }
+    applyLinkTarget(contentGroup, 'a.button', targetValue);
 
     contentInner.append(contentGroup);
     const content = createElement('div', 'hero-banner-content', 'content');
@@ -531,6 +570,7 @@ export default async function decorate(block) {
   mainImgContainer.append(bannerList);
 
   const wrapper = createElement('div', 'hero-banner', `hero-banner-${variant}`);
+  if (variant === 'simple-app-cta') wrapper.classList.add('hero-banner-simple');
   wrapper.append(mainImgContainer);
 
   if (variant === 'hero-with-thumbnail-images') {

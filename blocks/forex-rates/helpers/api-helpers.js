@@ -6,6 +6,16 @@ export function trimValue(value) {
   return normalized || '-';
 }
 
+// For rate table cells: '-' with trailing spaces = display dash; plain '-' = empty
+function trimRateValue(value) {
+  if (value === null || value === undefined) return '';
+  const raw = String(value);
+  const trimmed = raw.trim();
+  if (!trimmed) return '';
+  if (trimmed === '-') return raw !== trimmed ? '-' : '';
+  return trimmed;
+}
+
 function replaceTemplateTokens(url, values) {
   let output = url;
   Object.entries(values).forEach(([key, value]) => {
@@ -51,11 +61,11 @@ export function normalizeRates(list) {
   return (Array.isArray(list) ? list : []).map((item) => ({
     family: trimValue(item.Family),
     description: trimValue(item.Description),
-    buyingRates: trimValue(item.BuyingRates),
-    sellingRates: trimValue(item.SellingRates),
-    sightBill: trimValue(item.SightBill),
-    tt: trimValue(item.TT),
-    billDdTt: trimValue(item.Bill_DD_TT),
+    buyingRates: trimRateValue(item.BuyingRates),
+    sellingRates: trimRateValue(item.SellingRates),
+    sightBill: trimRateValue(item.SightBill),
+    tt: trimRateValue(item.TT),
+    billDdTt: trimRateValue(item.Bill_DD_TT),
   }));
 }
 

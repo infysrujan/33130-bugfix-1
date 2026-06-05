@@ -1,13 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
-/**
- * Build a slide WITH IMAGE variation
- * Structure: Badge Text | Image | Description | Link
- * Cell layout (carousel-dotted-slide, slideType = withImage):
- *   0: variant, 1: slideType, 2: badgeText, 3: image, 4: description,
- *   5: link, 6: linkText, 7: linkTitle, 8: linkType
- */
 export default function buildSlideWithImage(row, index, cells) {
   const slide = document.createElement('div');
   slide.className = 'carousel-dotted-item with-image';

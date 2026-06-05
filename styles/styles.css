@@ -24,6 +24,16 @@
     --bbl-layout-content-max-width-desktop: 1240px;
     --bbl-layout-content-max-width-1920: 1752px;
     --bbl-layout-central-aligned-max-width: 900px;
+    
+    /* header height used for scroll-margin-top offset (mobile-first) */
+    --header-scroll-offset: 5rem;
+}
+
+@media (width > 64rem) {
+    :root {
+        /* matches --header-d-height in header.css */
+        --header-scroll-offset: 7.8125rem;
+    }
 }
 
 body {
@@ -59,7 +69,7 @@ h6 {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
   font-family: var(--bbl-font-family-medium);
-  scroll-margin: 40px;
+  scroll-margin-top: var(--header-scroll-offset);
 }
 
 h1 {
@@ -174,6 +184,7 @@ main img {
     padding-inline: var(--bbl-space-section-xs);
     margin: 0 auto;
     box-sizing: border-box;
+    scroll-margin-top: var(--header-scroll-offset);
 }
 
 @media (width > 47.5rem) {
@@ -601,9 +612,14 @@ body.wealth main :is(.button-container .button, .button) {
     margin-top: 1rem;
 }
 
+.section.background-privatebanking .button-container a.button-m.primary,
+.section.background-wealth .button-container a.button-m.primary {
+    font-weight: 400;
+}
+
 .section.background-privatebanking a.button-tertiary,
 .section.background-wealth a.button-tertiary {
-    font-weight: 700;
+    font-weight: 400;
     text-decoration: underline;
 }
 

@@ -6,8 +6,12 @@
     justify-content: flex-start;
 }
 
-.promo-selector-grid:has(.promo-selector-empty),
-.promo-selector-grid:has(.listing-card-container:only-child) {
+.promo-selector-grid:has(.promo-selector-empty) {
+    justify-content: center;
+}
+
+/* BBM grid: always center all rows, including partial ones. */
+.promo-selector-grid.is-bbm-grid {
     justify-content: center;
 }
 
@@ -148,7 +152,7 @@
     width: 100%;
 }
 
-.promo-card-listing.has-preview > div[data-config-row] {
+.promo-card-listing.has-preview>div[data-config-row] {
     display: none;
 }
 
@@ -156,6 +160,10 @@
     .promo-selector-grid:has(.promo-selector-empty) {
         width: 50%;
         padding-inline: 0.625rem;
+    }
+
+    .promo-selector-grid:not(.is-bbm-grid):has(> .listing-card-container:only-child) {
+        justify-content: center;
     }
 
     .promo-selector-empty {
@@ -202,6 +210,8 @@
         box-sizing: border-box;
         min-width: unset;
     }
+
+
 }
 
 body.mobile-app-view {
@@ -214,11 +224,11 @@ body.mobile-app-view main {
     margin-top: 0;
 }
 
-body.mobile-app-view header.is-not-overlapped ~ main {
+body.mobile-app-view header.is-not-overlapped~main {
     padding-top: 0;
 }
 
-body.mobile-app-view main > div:first-child {
+body.mobile-app-view main>div:first-child {
     margin-top: 0;
 }
 
@@ -271,6 +281,11 @@ body.mobile-app-view main > div:first-child {
         padding-inline: 0;
     }
 
+    /* Non-BBM grid: center a single lone card on desktop. */
+    .promo-selector-grid:not(.is-bbm-grid):has(> .listing-card-container:only-child) {
+        justify-content: center;
+    }
+
     .promo-selector-empty {
         font-size: var(--bbl-font-size-b1);
         line-height: 1rem;
@@ -310,7 +325,7 @@ body.mobile-app-view main > div:first-child {
         right: var(--bbl-space-250);
     }
 
-    body.mobile-app-view header.is-not-overlapped ~ main {
+    body.mobile-app-view header.is-not-overlapped~main {
         padding-top: 0;
     }
 
@@ -322,4 +337,6 @@ body.mobile-app-view main > div:first-child {
     .promo-card-listing-section .tabs-nav {
         padding-inline-end: 0;
     }
+
+
 }

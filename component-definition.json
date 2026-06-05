@@ -1190,7 +1190,25 @@
                   "jcr:title": "Double Key Dropdown",
                   "fieldType": "drop-down",
                   "fd:viewType": "double-key-dropdown",
-                  "type": "string"
+                  "type": "string",
+                  "enforceEnum": false
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Forms Menu Card",
+          "id": "forms-menu-card",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/fd/components/form/text/v1/text",
+                "template": {
+                  "jcr:title": "Forms Menu Card",
+                  "fieldType": "plain-text",
+                  "fd:viewType": "forms-menu-card",
+                  "textIsRich": false
                 }
               }
             }
@@ -2061,6 +2079,21 @@
                   "name": "Story Card",
                   "model": "story-card",
                   "filter": "story-card"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Social Icon",
+          "id": "social-icon",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Social Icon",
+                  "model": "social-icon"
                 }
               }
             }

@@ -111,7 +111,7 @@
   line-height: 1.2031rem;
 }
 
-.floating-popup-inner .primary {
+.floating-popup-inner a {
   display: block;
   text-align: center;
   margin: 1.875rem auto 0;
