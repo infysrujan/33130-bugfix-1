@@ -77,10 +77,13 @@ function fileValidation(input, files) {
   const minItems = (parseInt(input.dataset.minItems, 10) || 1);
   const maxItems = (parseInt(input.dataset.maxItems, 10) || -1);
   const fileSize = `${input.dataset.maxFileSize || '2MB'}`;
+  const isRequired = input.hasAttribute('required') || input.closest('.field-wrapper')?.dataset?.required !== undefined;
   let constraint = '';
   let errorMessage = '';
   const wrapper = input.closest('.field-wrapper');
-  if (!checkAccept(acceptedFile, files)) {
+  if (isRequired && files.length === 0) {
+    constraint = 'required';
+  } else if (!checkAccept(acceptedFile, files)) {
     constraint = 'accept';
   } else if (!checkMaxFileSize(fileSize, files)) {
     constraint = 'maxFileSize';
@@ -181,7 +184,7 @@ function createFileHandler(allFiles, input) {
 
     attachFiles: (inputEl, files) => {
       const multiple = inputEl.hasAttribute('multiple');
-      let newFiles = Array.from(files);
+      let newFiles = Array.from(files || []);
       if (!multiple) {
         allFiles.splice(0, allFiles.length);
         newFiles = [newFiles[0]];

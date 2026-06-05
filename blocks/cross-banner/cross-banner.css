@@ -33,7 +33,6 @@
 .cross-banner-badge {
     font-family: var(--bbl-font-family-medium);
     color: var(--bbl-color-white);
-    display: inline-block;
     line-height: 1.203rem;
     font-size: 0.7875rem;
     font-weight: var(--bbl-font-weight-medium);
@@ -41,6 +40,10 @@
     background: var(--bbl-color-blue-140);
     padding: var(--bbl-space-050) 0.4375rem;
     border-radius: var(--bbl-rounded-200);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .cross-banner-title {
@@ -49,6 +52,10 @@
     line-height: 1.375rem;
     margin-bottom: 0.9375rem;
     font-family: var(--bbl-font-family-medium);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .cross-banner-description {

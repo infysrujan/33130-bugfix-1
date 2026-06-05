@@ -5,6 +5,7 @@ import {
   buildPaginationHtml,
   bindPaginationClick,
 } from '../../scripts/utils/card-helpers.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 function initFilterToggles(container) {
   container.querySelectorAll('[aria-haspopup="listbox"]').forEach((btn) => {
@@ -204,11 +205,13 @@ async function fetchJson(rawUrl, { useCache = true } = {}) {
   try {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
-    const resp = await fetch(url, { headers: { Accept: 'application/json' }, signal: ctrl.signal });
+    const data = await fetchGet(url, {
+      headers: { Accept: 'application/json' },
+      signal: ctrl.signal,
+      throwOnError: false,
+    });
     clearTimeout(timer);
-    if (!resp.ok) return null;
-    const data = await resp.json();
-    if (useCache) setCache(url, data);
+    if (useCache && data) setCache(url, data);
     return data;
   } catch {
     return null;

@@ -80,6 +80,8 @@
       "news-media",
       "latest-news",
       "forward-points-sme",
+      "saving-plan",
+      "category-banner",
       "bbm-glow-card",
       "menu-list",
       "search-reports",
@@ -206,7 +208,9 @@
       "text-input",
       "tnc",
       "wizard",
-      "range"
+      "range",
+      "double-key-dropdown",
+      "forms-menu-card"
     ]
   },
   {
@@ -325,7 +329,8 @@
   {
     "id": "story-card",
     "components": [
-      "button"
+      "button",
+      "social-icon"
     ]
   },
   {

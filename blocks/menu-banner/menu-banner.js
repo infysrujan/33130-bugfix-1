@@ -170,7 +170,7 @@ export default function decorate(block) {
     doc,
   );
 
-  // Create desktop version with background
+  // Create desktop version with background image as inline style (matches BBL reference)
   const desktopTools = createElementFromHTML(
     '<div class="thumb-full large"></div>',
     doc,
@@ -181,7 +181,7 @@ export default function decorate(block) {
   }
 
   const desktopContainer = createElementFromHTML(
-    '<div class="inner-container desktop-tools"></div>',
+    '<div class="inner-container content desktop-tools"></div>',
     doc,
   );
 

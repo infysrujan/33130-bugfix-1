@@ -1,6 +1,7 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const TABLET_MIN = getComputedStyle(document.documentElement)
   .getPropertyValue('--bbl-breakpoint-tablet-min')
@@ -48,9 +49,7 @@ async function loadAllCards() {
     // eslint-disable-next-line no-console
     console.log('[mf-comparator-results] loadAllCards url:', url);
     if (!url) throw new Error('no url');
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error('bad response');
-    const json = await resp.json();
+    const json = await fetchGet(url);
     const items = json.data?.mutualFundsList?.items
       || json.data?.fundsList?.items
       || json.data
@@ -78,9 +77,8 @@ async function loadSourcingOrder() {
     const configs = await fetchConfigs();
     const url = configs.mfFilteringMatrixUrl;
     if (!url) return null;
-    const resp = await fetch(url);
-    if (!resp.ok) return null;
-    const json = await resp.json();
+    const json = await fetchGet(url, { throwOnError: false });
+    if (!json) return null;
     const lang = getLang();
     const nameKey = lang === 'th' ? 'Fund Name (TH)' : 'Fund Name';
     const map = {};

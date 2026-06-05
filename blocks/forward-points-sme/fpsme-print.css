@@ -1,0 +1,292 @@
+@page {
+  size: a4 portrait;
+  margin: 1cm;
+}
+
+@media print {
+  /* Strip padding from the wrappers inside our print root */
+  #fpsme-print-root .section {
+    padding: 0 !important;
+    padding-block: 0 !important;
+    padding-inline: 0 !important;
+    margin: 0 !important;
+  }
+
+  #fpsme-print-root .forward-points-sme.block {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* ── Logo ── */
+
+  /* Use #fpsme-print-root prefix to override brand-logo.css which hides .brand-logo-container in print */
+  #fpsme-print-root .brand-logo-container {
+    display: block !important;
+    width: auto;
+    height: auto;
+    margin: 0 0 var(--bbl-space-200);
+  }
+
+  #fpsme-print-root .brand-logo-container img {
+    height: var(--bbl-space-400) !important;
+    width: auto !important;
+    max-width: none !important;
+    display: block !important;
+  }
+
+  /* ── Controls — stacked vertically, compact ── */
+  .forward-points-sme .fpsme-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--bbl-space-025);
+    margin-bottom: var(--bbl-space-100);
+  }
+
+  .forward-points-sme .fpsme-update-label {
+    font-size: 0.9375rem;
+    margin-bottom: 0;
+    width: auto;
+    flex-shrink: 0;
+    color: var(--bbl-color-black);
+  }
+
+  .forward-points-sme .fpsme-date-group {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    width: auto;
+  }
+
+  .forward-points-sme .fpsme-date-input {
+    border: none;
+    outline: none;
+    padding: 0;
+    background: none;
+    font-size: 0.9375rem;
+    width: auto;
+    min-width: 0;
+    max-width: fit-content;
+    height: auto;
+    line-height: 1.4;
+    color: var(--bbl-color-black);
+  }
+
+  .forward-points-sme .fpsme-date-trigger {
+    position: static;
+    transform: none;
+    background: none;
+    border: none;
+    padding: 0 0 0 var(--bbl-space-050);
+    pointer-events: none;
+    width: auto;
+    height: auto;
+    display: inline-flex;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: var(--bbl-color-black);
+  }
+
+  .forward-points-sme .fpsme-time-wrap {
+    flex: none;
+    width: auto;
+    max-width: none;
+  }
+
+  .forward-points-sme .fpsme-time-trigger {
+    border: none;
+    background: none;
+    padding: 0;
+    pointer-events: none;
+    height: auto;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .forward-points-sme .fpsme-time-label {
+    font-size: 0.9375rem;
+    color: var(--bbl-color-black);
+  }
+
+  /* ── Section layout: currency table wide enough for 2-line headers ── */
+  .forward-points-sme .fpsme-section-currency {
+    flex: none;
+    max-width: 65%;
+    width: 65%;
+  }
+
+  .forward-points-sme .fpsme-section-fwd {
+    margin-top: var(--bbl-space-200);
+  }
+
+  /* ── Strip all colored backgrounds ── */
+  .forward-points-sme .fpsme-table thead tr,
+  .forward-points-sme .fpsme-table thead th,
+  .forward-points-sme .fpsme-rt-cell,
+  .forward-points-sme .fpsme-rt-cell-muted {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  /* ── Currency table ── */
+  .forward-points-sme .fpsme-table {
+    border: 0.0625rem solid var(--bbl-color-grey-24) !important;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .forward-points-sme .fpsme-table thead th {
+    padding: var(--bbl-space-150) 0.3125rem;
+    font-size: 0.9375rem;
+    font-weight: bold;
+    font-family: var(--bbl-font-family-medium);
+    color: var(--bbl-color-black) !important;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 0.0625rem solid var(--bbl-color-grey-24) !important;
+    text-align: center;
+  }
+
+  .forward-points-sme .fpsme-table tbody td {
+    padding: var(--bbl-space-150) 0.625rem;
+    font-size: 0.9375rem;
+    color: var(--bbl-color-black) !important;
+    border: none !important;
+    border-bottom: 0.0625rem solid var(--bbl-color-grey-18) !important;
+    vertical-align: middle;
+  }
+
+  /* Fix first column width — placed after thead th / tbody td to respect specificity order */
+  .forward-points-sme .fpsme-table-currency th:first-child,
+  .forward-points-sme .fpsme-table-currency td:first-child {
+    width: 22%;
+  }
+
+  .forward-points-sme .fpsme-table tbody tr:last-child td {
+    border-bottom: none !important;
+  }
+
+  .forward-points-sme .fpsme-currency-cell {
+    gap: var(--bbl-space-050);
+    white-space: nowrap;
+  }
+
+  .forward-points-sme .fpsme-flag {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  /* ── Forward tables side by side ── */
+  .forward-points-sme .fpsme-fwd-tables {
+    flex-direction: row !important;
+    gap: var(--bbl-space-150);
+    align-items: flex-start;
+  }
+
+  /* ── Flex forward table (fpsme-rt) ── */
+  .forward-points-sme .fpsme-rt {
+    border: 0.0625rem solid var(--bbl-color-grey-24) !important;
+  }
+
+  .forward-points-sme .fpsme-rt-row {
+    border-bottom: 0.0625rem solid var(--bbl-color-grey-24);
+  }
+
+  .forward-points-sme .fpsme-rt-header {
+    border-bottom: 0.0625rem solid var(--bbl-color-grey-24) !important;
+  }
+
+  .forward-points-sme .fpsme-rt-row:last-child {
+    border-bottom: none;
+  }
+
+  .forward-points-sme .fpsme-rt-cell {
+    padding: 0.8125rem 0.625rem;
+    font-size: 0.9375rem;
+    color: var(--bbl-color-black) !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-right: 0.0625rem solid var(--bbl-color-grey-24) !important;
+    border-bottom: none !important;
+  }
+
+  .forward-points-sme .fpsme-rt-cell-last {
+    border-right: none !important;
+  }
+
+  .forward-points-sme .fpsme-rt-head {
+    font-size: 0.9375rem;
+    font-weight: bold;
+    font-family: var(--bbl-font-family-medium);
+    color: var(--bbl-color-black) !important;
+  }
+
+  .forward-points-sme .fpsme-rt-period {
+    font-size: 0.9375rem;
+    font-weight: bold;
+    font-family: var(--bbl-font-family-medium);
+    color: var(--bbl-color-black) !important;
+    justify-content: flex-start;
+  }
+
+  .forward-points-sme .fpsme-rt-value {
+    font-size: 0.9375rem;
+    color: var(--bbl-color-black) !important;
+    justify-content: center;
+  }
+
+  /* ── Spacing ── */
+  .forward-points-sme .fpsme-fwd-body {
+    margin-top: var(--bbl-space-200);
+  }
+
+  .forward-points-sme .fpsme-fwd-title {
+    margin-bottom: 0;
+    font-size: var(--bbl-font-size-b1);
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .forward-points-sme .fpsme-fwd-title p {
+    font-size: 0.9375rem;
+    text-align: center;
+  }
+
+  .forward-points-sme .fpsme-fwd-subtitle {
+    margin-top: var(--bbl-space-150);
+    margin-bottom: var(--bbl-space-150);
+    font-size: 0.9375rem;
+    text-align: center;
+  }
+
+  .forward-points-sme .fpsme-table-wrap {
+    margin-top: 0;
+    overflow: visible;
+  }
+
+  .forward-points-sme .fpsme-unit {
+    margin-top: var(--bbl-space-150);
+    font-size: var(--bbl-font-size-b3);
+    color: var(--bbl-color-black) !important;
+    text-align: right;
+  }
+
+  /* ── Remark ── */
+  .forward-points-sme .fpsme-remark {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    margin-top: var(--bbl-space-200);
+    color: var(--bbl-color-black) !important;
+  }
+
+  .forward-points-sme .fpsme-remark p {
+    margin: 0;
+  }
+
+  .forward-points-sme .fpsme-remark li {
+    margin-bottom: 0;
+  }
+}

@@ -532,6 +532,25 @@ function getidAndDob(id, dob) {
   return `${id}${ddmmyyyy}`;
 }
 
+function replaceOtherAndJoin(selectedValues, otherText) {
+  if (!selectedValues) {
+    return '';
+  }
+  const parsed = typeof selectedValues === 'string' ? JSON.parse(selectedValues) : selectedValues;
+  const values = parsed.filter((value) => value !== 'Other (please specify)');
+  if (otherText && otherText.trim()) {
+    values.push(otherText.trim());
+  }
+  return values.join(', ');
+}
+
+function getSelectedLabelFromDropdown(dropdown) {
+  if (!dropdown || !dropdown.options) {
+    return '';
+  }
+  return dropdown.options[dropdown.selectedIndex].text.trim();
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -551,4 +570,6 @@ export {
   getBranchEnum,
   getBranchEnumNames,
   getidAndDob,
+  replaceOtherAndJoin,
+  getSelectedLabelFromDropdown,
 };

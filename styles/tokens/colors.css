@@ -215,6 +215,8 @@
   --bbl-color-black-alpha-33: rgb(0 0 0 / 33%);
   --bbl-color-black-alpha-40: rgba(0, 0, 0, 0.40);
   --bbl-color-black-alpha-60: rgba(0, 0, 0, 0.60);
+  --bbl-color-black-alpha-75: rgba(0, 0, 0, 0.75);
+  --bbl-color-black-alpha-80: rgba(0, 0, 0, 0.80);
   --bbl-color-black-alpha-17: rgba(0, 100, 255, 0.17);
   --bbl-color-blue-105-alpha-17: rgb(0 51 153 / 17%);
 
@@ -223,6 +225,7 @@
   --bbl-color-white-alpha-10: rgba(255, 255, 255, 0.10);
   --bbl-color-white-alpha-20: rgba(255, 255, 255, 0.20);
   --bbl-color-white-alpha-30: rgba(255, 255, 255, 0.30);
+  --bbl-color-white-alpha-35: rgba(255, 255, 255, 0.35);
   --bbl-color-white-alpha-40: rgba(255, 255, 255, 0.40);
   --bbl-color-white-alpha-60: rgba(255, 255, 255, 0.60);
   --bbl-color-white-alpha-50: rgba(255, 255, 255, 0.5);

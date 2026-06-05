@@ -2,6 +2,12 @@
     margin-inline: auto;
 }
 
+.carousel-dotted-container:has(.all-carousel-fragment)
+    .carousel-dotted-wrapper {
+    overflow: hidden;
+    margin-inline: -0.625rem;
+}
+
 .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
     position: relative;
     display: flex;
@@ -80,13 +86,18 @@
     transform: translateY(-50%) translateX(-0.3rem);
 }
 
-.carousel-dotted.all-carousel-fragment.show-arrows-dots
-    .carousel-arrow:hover {
+.carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow:hover {
     background-color: unset;
     transform: translateY(-50%) translateX(0.3rem);
 }
 
 @media (width > 47.5rem) {
+    .carousel-dotted-container:has(.all-carousel-fragment)
+        .carousel-dotted-wrapper {
+        overflow: unset;
+        margin-inline: 0;
+    }
+
     .section.central-aligned .block.all-carousel-fragment {
         margin-inline: 0;
     }
