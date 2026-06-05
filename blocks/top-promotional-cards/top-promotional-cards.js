@@ -7,8 +7,8 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
-function filterCards(activeCards, tabText) {
-  if (tabText.toLowerCase().replace(/\s+/g, '') === 'toppromotions') {
+function filterCards(activeCards, tabText, isFirst) {
+  if (isFirst) {
     return activeCards.filter((card) => card.topPromotion === true);
   }
   const topCards = activeCards.filter(
@@ -21,15 +21,14 @@ function filterCards(activeCards, tabText) {
   );
 }
 
-function setupPanel(panel, activeCards, placeholders) {
+function setupPanel(panel, activeCards, placeholders, isFirst) {
   const noResultsText = placeholders.promoNoResults || 'No results found.';
   const btnId = panel.getAttribute('aria-labelledby');
   const btn = btnId ? document.getElementById(btnId) : null;
   const tabText = btn?.textContent?.trim() || '';
 
-  const isTopPromo = tabText.toLowerCase().replace(/\s+/g, '') === 'toppromotions';
-  let cards = sortCards(filterCards(activeCards, tabText));
-  if (isTopPromo) {
+  let cards = sortCards(filterCards(activeCards, tabText, isFirst));
+  if (isFirst) {
     if (!cards.length) {
       panel.hidden = true;
       if (btn) {
@@ -74,7 +73,7 @@ export default async function decorate(block) {
   );
 
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
-  tabPanels.forEach((panel) => setupPanel(panel, activeCards, placeholders));
+  tabPanels.forEach((panel, index) => setupPanel(panel, activeCards, placeholders, index === 0));
 
   const btnContainer = block.closest('.section')?.querySelector('.button-container');
   const tabsContent = document.querySelector('.tabs-content');
