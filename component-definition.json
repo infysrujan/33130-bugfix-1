@@ -1198,6 +1198,23 @@
           }
         },
         {
+          "title": "Forms Menu Card",
+          "id": "forms-menu-card",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/fd/components/form/text/v1/text",
+                "template": {
+                  "jcr:title": "Forms Menu Card",
+                  "fieldType": "plain-text",
+                  "fd:viewType": "forms-menu-card",
+                  "textIsRich": false
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Forward Points SME",
           "id": "forward-points-sme",
           "plugins": {

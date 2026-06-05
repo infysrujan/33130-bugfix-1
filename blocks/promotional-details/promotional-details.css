@@ -18,16 +18,16 @@ body.mobile-app-view main {
     margin-top: 0;
 }
 
-body.mobile-app-view header.is-not-overlapped ~ main {
+body.mobile-app-view header.is-not-overlapped~main {
     padding-top: 0;
 }
 
-body.mobile-app-view main > div:first-child {
+body.mobile-app-view main>div:first-child {
     margin-top: 0;
 }
 
 @media (width > 64rem) {
-    body.mobile-app-view header.is-not-overlapped ~ main {
+    body.mobile-app-view header.is-not-overlapped~main {
         padding-top: 0;
     }
 }
@@ -73,8 +73,7 @@ body.mobile-app-view main > div:first-child {
     width: 100%;
     height: auto;
     border: 0.3125rem solid var(--bbl-color-white);
-    box-shadow: 0 var(--bbl-space-025) var(--bbl-space-100) 0
-        var(--bbl-color-grey-152);
+    box-shadow: 0 var(--bbl-space-025) var(--bbl-space-100) 0 var(--bbl-color-grey-152);
 }
 
 .promotional-details .promo-detail-content {
@@ -89,7 +88,7 @@ body.mobile-app-view main > div:first-child {
 }
 
 .promotional-details .promo-detail-row-no-image .promo-detail-description {
-    text-align: center;
+    text-align: left;
 }
 
 .promotional-details .promo-detail-date {
@@ -162,7 +161,7 @@ body.mobile-app-view main > div:first-child {
     box-shadow: 0 0 0.625rem var(--bbl-color-black);
 }
 
-.promotional-details.has-preview > div[data-config-row] {
+.promotional-details.has-preview>div[data-config-row] {
     display: none;
 }
 
@@ -215,9 +214,8 @@ body.mobile-app-view main > div:first-child {
         line-height: 2.875rem;
     }
 
-     .promotional-details .promo-detail-date {
+    .promotional-details .promo-detail-date {
         font-size: var(--bbl-font-size-b1);
         line-height: 1.375rem;
     }
 }
-

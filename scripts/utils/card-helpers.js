@@ -73,7 +73,7 @@ export function getPromotionPathFlags(pathname) {
   };
 }
 
-export function resolvePromotionApi({
+export function getPromotionApiConfig({
   pathname,
   configuredPromoType = '',
   bbmBaseUrl = '',
@@ -107,11 +107,11 @@ export function resolvePromotionApi({
   return { isBbm: true, promotionType: 'bangkok-bank-m', baseUrl: bbmBaseUrl };
 }
 
-export function resolvePromotionLang(docLang, queryLang, isBbm) {
+export function getPromotionLanguage(docLang, queryLang, isBbm) {
   return isBbm && queryLang ? queryLang : docLang;
 }
 
-export function buildPromotionDataUrl(baseUrl, lang) {
+export function getPromotionDataUrl(baseUrl, lang) {
   if (!baseUrl) return '';
 
   const [urlWithoutHash, ...hashParts] = baseUrl.split('#');

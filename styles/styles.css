@@ -612,8 +612,8 @@ body.wealth main :is(.button-container .button, .button) {
     margin-top: 1rem;
 }
 
-.section.background-privatebanking a.button,
-.section.background-wealth a.button {
+.section.background-privatebanking .button-container a.button-m.primary,
+.section.background-wealth .button-container a.button-m.primary {
     font-weight: 400;
 }
 

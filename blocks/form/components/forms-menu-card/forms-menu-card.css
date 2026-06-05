@@ -1,0 +1,131 @@
+/* ============================================================
+   Forms Menu Card — design tokens
+   ============================================================ */
+:root {
+  --forms-menu-card-border-color: #e0e0e0;
+  --forms-menu-card-border-radius: 8px;
+  --forms-menu-card-padding: 24px;
+  --forms-menu-card-icon-size: 48px;
+  --forms-menu-card-accent: #1473e6;
+  --forms-menu-card-title-color: #2c2c2c;
+  --forms-menu-card-title-size: 18px;
+  --forms-menu-card-divider-width: 32px;
+  --forms-menu-card-divider-height: 2px;
+  --forms-menu-card-divider-gap: 12px;
+  --forms-menu-card-desc-color: #6e6e6e;
+  --forms-menu-card-desc-size: 14px;
+  --forms-menu-card-desc-line-height: 1.6;
+  --forms-menu-card-gap: 16px;
+}
+
+/* ============================================================
+   Field wrapper reset — strip plain-text default chrome
+   ============================================================ */
+.field-forms-menu-card {
+  width: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.field-forms-menu-card > label,
+.field-forms-menu-card > .field-label,
+.field-forms-menu-card > .field-description {
+  display: none;
+}
+
+/* ============================================================
+   Card grid
+   ============================================================ */
+.forms-menu-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--forms-menu-card-gap);
+  width: 100%;
+}
+
+/* ============================================================
+   Individual card
+   ============================================================ */
+.forms-menu-card-item {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--forms-menu-card-border-color);
+  border-radius: var(--forms-menu-card-border-radius);
+  padding: var(--forms-menu-card-padding);
+}
+
+/* Icon */
+.forms-menu-card-icon {
+  width: var(--forms-menu-card-icon-size);
+  height: var(--forms-menu-card-icon-size);
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.forms-menu-card-icon img,
+.forms-menu-card-icon svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  color: var(--forms-menu-card-accent);
+}
+
+/* SVG stroke colour for inline SVGs using currentColor */
+.forms-menu-card-icon svg path,
+.forms-menu-card-icon svg circle,
+.forms-menu-card-icon svg rect,
+.forms-menu-card-icon svg polyline,
+.forms-menu-card-icon svg line {
+  stroke: var(--forms-menu-card-accent);
+}
+
+/* Title */
+.forms-menu-card-title {
+  font-size: var(--forms-menu-card-title-size);
+  font-weight: 700;
+  color: var(--forms-menu-card-title-color);
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* Divider */
+.forms-menu-card-divider {
+  width: var(--forms-menu-card-divider-width);
+  height: var(--forms-menu-card-divider-height);
+  background-color: var(--forms-menu-card-accent);
+  border: none;
+  margin: var(--forms-menu-card-divider-gap) 0;
+  flex-shrink: 0;
+}
+
+/* Description */
+.forms-menu-card-description {
+  font-size: var(--forms-menu-card-desc-size);
+  color: var(--forms-menu-card-desc-color);
+  line-height: var(--forms-menu-card-desc-line-height);
+  margin: 0;
+}
+
+.forms-menu-card-description p {
+  margin: 0;
+}
+
+/* ============================================================
+   Responsive — tablet (2 columns)
+   ============================================================ */
+@media (width <= 1023px) {
+  .forms-menu-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ============================================================
+   Responsive — mobile (1 column)
+   ============================================================ */
+@media (width <= 767px) {
+  .forms-menu-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
