@@ -1,14 +1,10 @@
 import { getLang } from '../../scripts/scripts.js';
-import {
-  buildBlock,
-  decorateBlock,
-  decorateIcons,
-  loadBlock,
-} from '../../scripts/aem.js';
+import { decorateIcons } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
-import { createModalHeader } from '../../scripts/utils/modal.js';
+import { createModalHeader, createModalShell } from '../../scripts/utils/modal.js';
+import createTaggedElement from '../../scripts/utils/dom-helpers.js';
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -16,14 +12,6 @@ const FOCUSABLE_SELECTOR = [
   'input:not([disabled])',
   '[tabindex]:not([tabindex="-1"])',
 ].join(',');
-
-function el(tag, { className, text, attrs = {} } = {}) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
-  return node;
-}
 
 function getFocusableElements(element) {
   return [...element.querySelectorAll(FOCUSABLE_SELECTOR)].filter((n) => !n.hasAttribute('disabled'));
@@ -68,18 +56,18 @@ function closeModal(overlay) {
 }
 
 function buildDropdown(placeholder, onChange) {
-  const wrapper = el('div', { className: 'sr-dropdown' });
-  const selected = el('div', {
+  const wrapper = createTaggedElement('div', { className: 'sr-dropdown' });
+  const selected = createTaggedElement('div', {
     className: 'sr-dropdown-selected',
     attrs: {
       tabindex: '0', role: 'combobox', 'aria-expanded': 'false', 'aria-haspopup': 'listbox',
     },
   });
-  const selectedText = el('span', { className: 'sr-dropdown-text', text: placeholder });
-  const chevron = el('span', { className: 'sr-dropdown-chevron', attrs: { 'aria-hidden': 'true' } });
+  const selectedText = createTaggedElement('span', { className: 'sr-dropdown-text', text: placeholder });
+  const chevron = createTaggedElement('span', { className: 'sr-dropdown-chevron', attrs: { 'aria-hidden': 'true' } });
   selected.append(selectedText, chevron);
 
-  const list = el('ul', { className: 'sr-dropdown-list', attrs: { role: 'listbox' } });
+  const list = createTaggedElement('ul', { className: 'sr-dropdown-list', attrs: { role: 'listbox' } });
   wrapper.append(selected, list);
 
   let currentValue = '';
@@ -91,14 +79,14 @@ function buildDropdown(placeholder, onChange) {
 
   function populateOptions(options) {
     list.innerHTML = '';
-    const placeholderItem = el('li', {
+    const placeholderItem = createTaggedElement('li', {
       className: 'sr-dropdown-option sr-dropdown-placeholder',
       text: placeholder,
       attrs: { role: 'option', 'aria-selected': 'true', 'data-value': '' },
     });
     list.append(placeholderItem);
     options.forEach(({ label, value }) => {
-      const item = el('li', {
+      const item = createTaggedElement('li', {
         className: 'sr-dropdown-option',
         text: label,
         attrs: { role: 'option', 'aria-selected': 'false', 'data-value': value },
@@ -158,20 +146,6 @@ function parseAuthoredOptions(rows) {
   return { typeOptions, yearOptions };
 }
 
-async function ensureResultsBlock(searchBlock) {
-  let resultsBlock = document.querySelector('.search-reports-results');
-
-  if (!resultsBlock) {
-    const resultsWrapper = document.createElement('div');
-    resultsBlock = buildBlock('search-reports-results', '');
-    resultsWrapper.append(resultsBlock);
-    searchBlock.parentElement.after(resultsWrapper);
-    decorateBlock(resultsBlock);
-  }
-
-  await loadBlock(resultsBlock);
-}
-
 export default async function decorate(block) {
   const rows = [...block.children];
   const lang = getLang();
@@ -188,28 +162,26 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   // Build modal overlay
-  const overlay = el('div', {
-    className: 'search-reports-overlay',
-    attrs: {
-      role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'sr-modal-title', tabindex: '-1',
-    },
+  const { overlay, dialog, closeBtn } = createModalShell({
+    overlayClass: 'search-reports-overlay',
+    dialogClass: 'sr-dialog',
+    closeBtnClass: 'sr-close-btn',
+    ariaLabelledBy: 'sr-modal-title',
+    closeBtnAriaLabel: 'Close search modal',
+    closeBtnHTML: '<span class="icon icon-close"></span>',
+    tabindex: '-1',
   });
-  const dialog = el('div', { className: 'sr-dialog' });
-
-  // Header
-  const closeBtn = el('button', { className: 'sr-close-btn', attrs: { type: 'button', 'aria-label': 'Close search modal' } });
-  closeBtn.innerHTML = '<span class="icon icon-close"></span>';
   decorateIcons(closeBtn);
   const header = createModalHeader(lang, closeBtn, { headerClass: 'sr-header', logoLinkClass: 'sr-logo-link' });
 
   // Body
-  const body = el('div', { className: 'sr-body' });
-  const titleEl = el('h2', { className: 'sr-title', text: modalTitle, attrs: { id: 'sr-modal-title' } });
-  const titleDivider = el('div', { className: 'sr-title-divider' });
-  const descEl = el('div', { className: 'sr-desc' });
+  const body = createTaggedElement('div', { className: 'sr-body' });
+  const titleEl = createTaggedElement('h2', { className: 'sr-title', text: modalTitle, attrs: { id: 'sr-modal-title' } });
+  const titleDivider = createTaggedElement('div', { className: 'sr-title-divider' });
+  const descEl = createTaggedElement('div', { className: 'sr-desc' });
   descEl.innerHTML = modalDesc;
 
-  const searchBtn = el('button', {
+  const searchBtn = createTaggedElement('button', {
     className: 'sr-search-btn sr-search-btn-disabled',
     text: ctaLabel === 'Search for Reports' ? 'Search' : ctaLabel,
     attrs: { type: 'button' },
@@ -245,7 +217,6 @@ export default async function decorate(block) {
     if (searchBtn.classList.contains('sr-search-btn-disabled')) return;
     const type = getType();
     const year = getYear();
-    await ensureResultsBlock(block);
     const params = new URLSearchParams({ type, year });
     window.history.pushState({}, '', `?${params.toString()}`);
     window.dispatchEvent(new CustomEvent('search-reports:submit', { detail: { type, year } }));
@@ -263,11 +234,7 @@ export default async function decorate(block) {
   });
 
   const initParams = new URLSearchParams(window.location.search);
-  if (initParams.get('type') && initParams.get('year')) {
-    await ensureResultsBlock(block);
-  } else {
-    openModal(overlay, null);
-  }
+  if (!initParams.get('type') || !initParams.get('year')) openModal(overlay, null);
   window.__previewReopenModal = () => openModal(overlay, null);
 
   window.addEventListener('popstate', () => {

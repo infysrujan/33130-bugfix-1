@@ -6,14 +6,7 @@ import {
   setupModalHandlers,
   showModal,
 } from './modal.js';
-
-function el(tag, { className, text, attrs = {} } = {}) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
-  return node;
-}
+import createTaggedElement from './dom-helpers.js';
 
 /**
  * Opens a PDF preview modal with a download action.
@@ -49,10 +42,10 @@ export default async function openPdfViewer({
     headerClass: `${classPrefix}-header`,
     logoLinkClass: `${classPrefix}-logo`,
   });
-  const body = el('div', { className: `${classPrefix}-body` });
-  const centerContent = el('div', { className: `${classPrefix}-center-content` });
-  const pdfEmbed = el('div', { className: `${classPrefix}-embed` });
-  const embedEl = el('iframe', {
+  const body = createTaggedElement('div', { className: `${classPrefix}-body` });
+  const centerContent = createTaggedElement('div', { className: `${classPrefix}-center-content` });
+  const pdfEmbed = createTaggedElement('div', { className: `${classPrefix}-embed` });
+  const embedEl = createTaggedElement('iframe', {
     attrs: {
       width: '100%', height: '100%', frameborder: '0', title: name || 'PDF Preview',
     },
@@ -73,8 +66,8 @@ export default async function openPdfViewer({
       if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
     });
 
-  const buttonGroup = el('div', { className: `${classPrefix}-button-group` });
-  const downloadLink = el('button', {
+  const buttonGroup = createTaggedElement('div', { className: `${classPrefix}-button-group` });
+  const downloadLink = createTaggedElement('button', {
     className: `${classPrefix}-download`,
     text: downloadLabel,
     attrs: { type: 'button', title: downloadLabel },
