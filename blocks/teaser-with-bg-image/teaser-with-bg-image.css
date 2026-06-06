@@ -154,11 +154,7 @@
   box-sizing: border-box;
 }
 
-.teaser-bg-image-cta .button-container{
-  margin-block: 0;
-}
-
-.teaser-bg-image-cta .button-container a {
+.teaser-bg-image-cta a {
   min-width: 8.75rem;
   max-width: none;
   display: flex;
@@ -259,7 +255,7 @@
     width: 100%;
   }
 
-  .teaser-bg-image-cta .button-container a{
+  .teaser-bg-image-cta a {
     display: inline-block;
     width: auto;
     justify-content: initial;

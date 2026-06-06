@@ -70,15 +70,16 @@ button,
 .button-m {
   max-height: 2.75rem;
   min-width: 7.5rem;
-  padding: var(--bbl-space-100) var(--bbl-space-200);
-  font-size: var(--bbl-body-b1-medium-size);
+  padding: 1rem 0.5rem;
+  font-size: 1rem;
   text-align: center;
-  line-height: var(--bbl-body-b1-line-height);
-  border-radius: var(--bbl-rounded-100);
-  font-weight: var(--bbl-body-b1-medium-weight);
+  line-height: 1.375rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
   display: block;
   font-family: var(--bbl-font-family-medium);
   max-width: fit-content;
+  font-style: normal;
 }
 
 /* --- Large (Hero Banner) - 52px height --- */

@@ -107,14 +107,6 @@
   margin: 0.3125rem 0.9375rem 0.3125rem 0;
 }
 
-.story-card .story-card-social-icons {
-  margin-bottom: 1rem;
-}
-
-.story-card .story-card-social-icons a:hover {
-  text-decoration: none;
-}
-
 /* ========================================================================
    Responsive Overrides
    ======================================================================== */
@@ -162,7 +154,7 @@
 }
 
 /* Desktop */
-@media (width > 64rem) {
+@media (width >= 64.0625rem) {
   .story-card .outer {
     max-width: 100%;
   }

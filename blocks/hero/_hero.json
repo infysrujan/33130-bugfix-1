@@ -60,10 +60,6 @@
             {
               "name": "Simple with Logo Banner",
               "value": "simple-logo-banner"
-            },
-            {
-              "name": "Simple with App cta",
-              "value": "simple-app-cta"
             }
           ]
         }
@@ -187,54 +183,6 @@
         },
         {
           "...": "../../models/elements/_button-fields.json"
-        },
-        {
-          "component": "reference",
-          "valueType": "string",
-          "name": "appStoreImage",
-          "label": "App Store Image",
-          "multi": false,
-          "description": "For 'Simple with App cta' variant - Upload and select an image for the app store badge (e.g. 'Download on the App Store' badge)"
-        },
-        {
-          "component": "aem-content",
-          "name": "appStoreLink",
-          "label": "App Store Link",
-          "description": "Destination URL for the app store button"
-        },
-        {
-          "component": "text",
-          "name": "appStoreLinkTitle",
-          "label": "App Store Link Title",
-          "description": "Accessibility title attribute (optional)"
-        },
-        {
-          "component": "reference",
-          "valueType": "string",
-          "name": "googlePlayImage",
-          "label": "Google Play Image",
-          "multi": false,
-          "description": "For 'Simple with App cta' variant - Upload and select an image for the Google Play badge (e.g. 'Get it on Google Play' badge)"
-        },
-        {
-          "component": "aem-content",
-          "name": "googlePlayLink",
-          "label": "Google Play Link",
-          "description": "Destination URL for the Google Play button"
-        },
-        {
-          "component": "text",
-          "name": "googlePlayLinkTitle",
-          "label": "Google Play Link Title",
-          "description": "Accessibility title attribute (optional)"
-        },
-        {
-          "component": "boolean",
-          "name": "enableAppCtaForMobile",
-          "label": "Enable App CTA for Mobile",
-          "description": "If enabled, the app call-to-action will be displayed on mobile devices.",
-          "valueType": "boolean",
-          "value": false
         }
       ]
     }

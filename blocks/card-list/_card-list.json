@@ -318,17 +318,9 @@
               "name": "Card",
               "value": "card"
             },
-             {
+            {
               "name": "X-Small",
               "value": "x-small"
-            },
-            {
-              "name": "Logo",
-              "value": "logo"
-            },
-            {
-              "name": "Profile",
-              "value": "profile"
             }
           ]
         },
@@ -394,12 +386,6 @@
               }
             ]
           }
-        },
-        {
-          "component": "date-time",
-          "name": "financialDate",
-          "label": "Financial Date",
-          "valueType": "string"
         }
       ]
     }

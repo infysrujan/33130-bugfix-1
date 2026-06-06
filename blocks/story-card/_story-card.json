@@ -15,49 +15,9 @@
 					}
 				}
 			}
-		},
-		{
-			"title": "Social Icon",
-			"id": "social-icon",
-			"plugins": {
-				"xwalk": {
-					"page": {
-						"resourceType": "core/franklin/components/block/v1/block/item",
-						"template": {
-							"name": "Social Icon",
-							"model": "social-icon"
-						}
-					}
-				}
-			}
 		}
 	],
 	"models": [
-		{
-			"id": "social-icon",
-			"fields": [
-				{
-					"component": "reference",
-					"name": "icon",
-					"label": "Social Icon",
-					"valueType": "string",
-					"required": true
-				},
-				{
-					"component": "text",
-					"name": "alt",
-					"label": "Alt Text",
-					"valueType": "string"
-				},
-				{
-					"component": "text",
-					"name": "url",
-					"label": "Link",
-					"valueType": "string",
-					"required": true
-				}
-			]
-		},
 		{
 			"id": "story-card",
 			"fields": [
@@ -116,8 +76,7 @@
 		{
 			"id": "story-card",
 			"components": [
-				"button",
-				"social-icon"
+				"button"
 			]
 		}
 	]

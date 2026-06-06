@@ -1,3 +1,4 @@
+import decorateCardList from '../card-list/card-list.js';
 import { loadCSS } from '../../scripts/aem.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
@@ -85,13 +86,10 @@ async function loadSheetData() {
 async function loadCardData() {
   try {
     const configs = await fetchConfigs();
-    const baseUrl = configs.creditCardSelectorSuggesterData;
-    if (!baseUrl) return [];
-    const lang = getLang();
-    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${lang}`);
+    const url = configs.creditCardSelectorSuggesterData;
+    if (!url) return [];
     const json = await fetchGet(url, { throwOnError: false });
-    const items = json?.data?.creditCardsList?.items || json?.data || json?.items || [];
-    return items;
+    return json?.data?.creditCardsList?.items || json?.data || json?.items || [];
   } catch {
     return [];
   }
@@ -166,20 +164,28 @@ async function resolveFilteredCards(sheetCards, filterState) {
 
 // ── card-list block DOM builder ────────────────────────────────────────────────
 
-/**
- * Build the card list HTML directly, producing the same class structure
- * as card-list.js so that card-list.css applies without running card-list.js.
- */
+function createBlockRow(doc, ...cells) {
+  const row = doc.createElement('div');
+  cells.forEach((content) => {
+    const cell = doc.createElement('div');
+    if (content instanceof Node) cell.appendChild(content);
+    else if (content !== null && content !== undefined) cell.textContent = String(content);
+    row.appendChild(cell);
+  });
+  return row;
+}
+
 function buildCardBlock(cards, doc, lang, labels) {
   const block = doc.createElement('div');
   // 'credit-card' is the EDS variation class — sits alongside 'card-list block'
   block.className = 'card-list credit-card block';
   block.dataset.blockName = 'card-list';
 
-  const list = doc.createElement('div');
-  list.className = 'cards-list scrollable center cards-3';
+  block.appendChild(createBlockRow(doc, 'scrollable')); // layout
+  block.appendChild(createBlockRow(doc, 'center')); // alignment
+  block.appendChild(createBlockRow(doc, 'cards-3')); // cards per row
 
-  cards.forEach((card, idx) => {
+  cards.forEach((card) => {
     const nameEN = getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName');
     const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
     const description = getCardField(card, 'cardDescription', 'description');
@@ -192,77 +198,61 @@ function buildCardBlock(cards, doc, lang, labels) {
     const primaryName = isTH && nameTH ? nameTH : nameEN;
     const secondaryName = isTH && nameTH ? nameEN : nameTH;
 
-    if (idx === 0) {
-      // eslint-disable-next-line no-console
-      console.log('[credit-card-results] buildCardBlock | lang:', lang, '| isTH:', isTH, '| card keys:', Object.keys(card), '| nameEN:', nameEN, '| nameTH:', nameTH, '| primaryName:', primaryName);
-    }
-
-    const cardEl = doc.createElement('div');
-    cardEl.className = 'cards-list-item';
-
-    const inner = doc.createElement('div');
-    inner.className = 'cards-list-inner';
-
-    // Image
+    // Image cell
+    const imgCell = doc.createElement('div');
     if (imgSrc) {
-      const imageWrapper = doc.createElement('div');
-      imageWrapper.className = 'cards-list-image cards-list-image-x-small';
       const img = doc.createElement('img');
       img.src = imgSrc;
       img.alt = primaryName;
       img.loading = 'lazy';
-      imageWrapper.appendChild(img);
-      inner.appendChild(imageWrapper);
+      imgCell.appendChild(img);
     }
 
-    // Content
-    const content = doc.createElement('div');
-    content.className = 'cards-list-content';
-
-    // Secondary name (sub-label above title)
+    // Title cell: primary name as heading, secondary name as sub-label
+    const titleCell = doc.createElement('div');
     if (secondaryName) {
       const sub = doc.createElement('p');
       sub.className = 'ccs-name-th';
       sub.textContent = secondaryName;
-      content.appendChild(sub);
+      titleCell.appendChild(sub);
     }
-
-    // Title
-    const titleEl = doc.createElement('div');
-    titleEl.className = 'cards-list-title';
     const h3 = doc.createElement('h3');
     h3.textContent = primaryName;
     h3.dataset.cardId = card.cardId || card.id || '';
-    titleEl.appendChild(h3);
-    content.appendChild(titleEl);
+    titleCell.appendChild(h3);
 
-    // Description
+    // Description cell
+    const descCell = doc.createElement('div');
     if (description && typeof description === 'string') {
-      titleEl.classList.add('has-description');
-      const descEl = doc.createElement('div');
-      descEl.className = 'cards-list-description';
       const p = doc.createElement('p');
       p.textContent = description;
-      descEl.appendChild(p);
-      content.appendChild(descEl);
+      descCell.appendChild(p);
     }
 
-    inner.appendChild(content);
-
-    // Button — Learn more link
-    const buttonWrapper = doc.createElement('div');
-    buttonWrapper.className = 'cards-list-button';
+    // Button cell — Learn more link
+    const btnCell = doc.createElement('div');
     const link = doc.createElement('a');
     link.href = learnHref;
     link.textContent = labels.learnMore;
-    buttonWrapper.appendChild(link);
-    inner.appendChild(buttonWrapper);
+    btnCell.appendChild(link);
 
-    cardEl.appendChild(inner);
-    list.appendChild(cardEl);
+    block.appendChild(createBlockRow(
+      doc,
+      imgCell,
+      null,
+      titleCell,
+      descCell,
+      null,
+      btnCell,
+      'x-small',
+      'true',
+      'false',
+      null,
+      null,
+      'false',
+    ));
   });
 
-  block.appendChild(list);
   return block;
 }
 
@@ -507,6 +497,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
 
     const blockEl = buildCardBlock(cards, doc, lang, labels);
     cardListContainer.appendChild(blockEl);
+    decorateCardList(blockEl);
     addCompareButtons(blockEl, doc, labels);
     restoreCompareState(cardListContainer);
 

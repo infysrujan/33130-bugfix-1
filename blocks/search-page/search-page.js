@@ -52,39 +52,11 @@ function escapeHtml(value = '') {
   return div.innerHTML;
 }
 
-function isThaiText(term) {
-  return /[\u0E00-\u0E7F]/.test(term);
-}
-
-function getHighlightTokens(term) {
-  const normalized = term.trim().toLowerCase();
-
-  if (isThaiText(normalized)) {
-    try {
-      const segmenter = new Intl.Segmenter('th', { granularity: 'word' });
-      const segments = [...segmenter.segment(normalized)]
-        .filter((s) => s.isWordLike)
-        .map((s) => s.segment.trim())
-        .filter((s) => s.length > 0);
-      return [...new Set([...segments, normalized])];
-    } catch {
-      return [normalized];
-    }
-  }
-
-  return normalized.split(' ').filter(Boolean);
-}
-
 function highlightTerm(text = '', term = '') {
   if (!term || !text) return escapeHtml(text);
   const escaped = escapeHtml(text);
-
-  const tokens = getHighlightTokens(term);
-
-  return tokens.reduce((result, token) => {
-    const escapedToken = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return result.replace(new RegExp(`(${escapedToken})`, 'gi'), '<b>$1</b>');
-  }, escaped);
+  const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return escaped.replace(new RegExp(`(${escapedTerm})`, 'gi'), '<b>$1</b>');
 }
 
 function getBlockConfig(rows) {
@@ -343,7 +315,6 @@ export default async function decorate(block) {
       searchResult.style.display = 'block';
       divLoadMore.style.display = 'none';
       showMessage(messagePlaceholders.somethingWrong);
-      // eslint-disable-next-line no-console
       console.error(error);
     } finally {
       setLoading(false);

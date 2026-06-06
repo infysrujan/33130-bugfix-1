@@ -41,38 +41,11 @@ function buildSearchBlob(record) {
     .toLowerCase();
 }
 
-function getThaiSegments(term) {
-  try {
-    const segmenter = new Intl.Segmenter('th', { granularity: 'word' });
-    return [...segmenter.segment(term)]
-      .filter((s) => s.isWordLike)
-      .map((s) => s.segment.trim())
-      .filter((s) => s.length > 0);
-  } catch {
-    return [term];
-  }
-}
-
-function isThaiText(term) {
-  return /[\u0E00-\u0E7F]/.test(term);
-}
-
-function getSearchTokens(keywords) {
-  const normalized = normalizeSearchTerm(keywords).toLowerCase();
-
-  if (isThaiText(normalized)) {
-    const thaiSegments = getThaiSegments(normalized);
-    return [...new Set([...thaiSegments, normalized])];
-  }
-
-  return normalized.split(' ').filter(Boolean);
-}
-
 function filterQueryIndex(records, keywords) {
-  const tokens = getSearchTokens(keywords);
+  const tokens = normalizeSearchTerm(keywords).toLowerCase().split(' ').filter(Boolean);
   return records.filter((r) => {
     const searchBlob = buildSearchBlob(r);
-    return tokens.some((t) => searchBlob.includes(t));
+    return tokens.every((t) => searchBlob.includes(t));
   });
 }
 

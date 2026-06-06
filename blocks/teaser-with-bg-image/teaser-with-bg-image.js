@@ -1,5 +1,4 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
-import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 function createTeaserCard(cardRow, doc) {
   const cols = [...cardRow.children];
@@ -49,13 +48,11 @@ export default function decorate(block) {
     teaserTitleRow,
     teaserDescRow,
     teaserButtonRow,
-    teaserTargetRow,
     ...teaserRows
   ] = [...block.children];
 
   const teaserBgPicture = teaserBgImgRow?.querySelector('img');
   const teaserButton = teaserButtonRow?.querySelector('a');
-  const targetValue = teaserTargetRow?.textContent?.trim() || '';
 
   const wrapper = createElementFromHTML(
     '<div class="teaser-bg-image-wrapper"></div>',
@@ -111,14 +108,13 @@ export default function decorate(block) {
   }
 
   if (teaserButton) {
-    const ctaWrapper = createElementFromHTML(
-      '<div class="teaser-bg-image-cta"></div>',
-      doc,
+    teaserButton.classList.add('button-m');
+    contentContainer.appendChild(
+      createElementFromHTML(
+        `<div class="teaser-bg-image-cta">${teaserButton.outerHTML}</div>`,
+        doc,
+      ),
     );
-    const buttonCell = teaserButtonRow.firstElementChild;
-    while (buttonCell?.firstChild) ctaWrapper.appendChild(buttonCell.firstChild);
-    applyLinkTarget(ctaWrapper, 'a', targetValue);
-    contentContainer.appendChild(ctaWrapper);
   }
 
   wrapper.appendChild(contentContainer);

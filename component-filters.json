@@ -327,8 +327,7 @@
   {
     "id": "story-card",
     "components": [
-      "button",
-      "social-icon"
+      "button"
     ]
   },
   {

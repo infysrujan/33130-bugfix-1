@@ -13,94 +13,71 @@
 import { toCamelCase } from './aem.js';
 import { getLang } from './scripts.js';
 
-function getPageLanguage() {
-  return document.querySelector('meta[name="language"]')?.content || null;
-}
-
-function parseEntries(json, valueKey) {
-  const result = {};
-  json.data
-    ?.filter((item) => item.Key)
-    .forEach((item) => {
-      result[toCamelCase(item.Key)] = item[valueKey];
-    });
-  return result;
-}
-
-async function safeFetchJson(url) {
-  try {
-    const resp = await fetch(url);
-    if (resp.ok) return resp.json();
-  } catch (e) { /* ignore */ }
-  return { data: [] };
-}
-
 /**
  * Gets placeholders object.
- * If the page has a <meta name="language"> tag, merges default lang placeholders
- * with language-specific ones (/placeholders-{language}.json), giving precedence
- * to the language-specific values.
- * @returns {Promise<object>} Window placeholders object
+ * @returns {object} Window placeholders object
  */
 // eslint-disable-next-line import/prefer-default-export
 export async function fetchPlaceholders() {
   const lang = getLang();
-  const pageLanguage = getPageLanguage();
-  const cacheKey = pageLanguage ? `${lang}-${pageLanguage}` : lang;
-
   window.placeholders = window.placeholders || {};
-  if (!window.placeholders[cacheKey]) {
-    window.placeholders[cacheKey] = new Promise((resolve) => {
-      const storageKey = `placeholders-${cacheKey}`;
-      const cachedStr = window.sessionStorage.getItem(storageKey);
+  if (!window.placeholders[lang]) {
+    window.placeholders[lang] = new Promise((resolve) => {
+      // Check if placeholders JSON exists in sessionStorage
+      const placeholderKey = `placeholders-${lang}`;
+      const cachedPlaceholdersJSON = window.sessionStorage.getItem(placeholderKey);
 
-      if (cachedStr) {
+      if (cachedPlaceholdersJSON) {
         try {
-          const placeholders = JSON.parse(cachedStr);
-          window.placeholders[cacheKey] = placeholders;
+          const json = JSON.parse(cachedPlaceholdersJSON);
+          const placeholders = {};
+          json.data
+            ?.filter((placeholder) => placeholder.Key)
+            .forEach((placeholder) => {
+              placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
+            });
+          window.placeholders[lang] = placeholders;
           resolve(placeholders);
           return;
         } catch (e) {
+          // If parsing fails, continue to fetch
           // eslint-disable-next-line no-console
           console.warn('Failed to parse cached placeholders, fetching fresh:', e);
         }
       }
 
-      const fetchDefault = fetch(`/${lang}/placeholders.json`)
-        .then((r) => (r.ok ? r.json() : { data: [] }))
-        .catch(() => ({ data: [] }));
+      // Fetch from placeholders.json if not in sessionStorage
+      const placeholdersPath = `/${lang}/placeholders.json`;
+      fetch(placeholdersPath)
+        .then((resp) => {
+          if (resp.ok) {
+            return resp.json();
+          }
+          return {};
+        }).then((json) => {
+          // Store entire JSON in sessionStorage
+          try {
+            window.sessionStorage.setItem(placeholderKey, JSON.stringify(json));
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.warn('Failed to store placeholders in sessionStorage:', e);
+          }
 
-      const fetchLang = pageLanguage
-        ? safeFetchJson(`/placeholders-${pageLanguage}.json`)
-        : Promise.resolve({ data: [] });
+          const placeholders = {};
+          json.data
+            ?.filter((placeholder) => placeholder.Key)
+            .forEach((placeholder) => {
+              placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
+            });
 
-      Promise.all([fetchDefault, fetchLang]).then(([defaultJson, langJson]) => {
-        const defaultPlaceholders = parseEntries(defaultJson, 'Text');
-        const langPlaceholders = parseEntries(langJson, 'Text');
-        // eslint-disable-next-line no-console
-        console.log(`[placeholders] default (${lang}):`, defaultPlaceholders);
-        // eslint-disable-next-line no-console
-        console.log(`[placeholders] language (${pageLanguage || 'none'}):`, langPlaceholders);
-
-        const placeholders = {
-          ...defaultPlaceholders,
-          ...langPlaceholders,
-        };
-        // eslint-disable-next-line no-console
-        console.log('[placeholders] combined (lang overrides default):', placeholders);
-
-        try {
-          const toStore = placeholders;
-          window.sessionStorage.setItem(storageKey, JSON.stringify(toStore));
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.warn('Failed to store placeholders in sessionStorage:', e);
-        }
-
-        window.placeholders[cacheKey] = placeholders;
-        resolve(placeholders);
-      });
+          window.placeholders[lang] = placeholders;
+          resolve(window.placeholders[lang]);
+        }).catch(() => {
+          // error loading placeholders
+          window.placeholders[lang] = {};
+          resolve(window.placeholders[lang]);
+        });
     });
   }
-  return window.placeholders[cacheKey];
+  return window.placeholders[lang];
 }

@@ -1,6 +1,5 @@
 import { createElementFromHTML } from '../../scripts/scripts.js';
 import { showModal, hideModal } from '../../scripts/utils/modal.js';
-import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 const STORAGE_KEY_PREFIX = 'floatingCardPopupDismissed:';
 
@@ -51,10 +50,7 @@ function buildPopupElement(config, doc) {
   inner.appendChild(cardBody);
 
   if (config.linkElement) {
-    const linkWrapper = createElementFromHTML('<div class="floating-popup-link"></div>', doc);
-    linkWrapper.appendChild(config.linkElement);
-    applyLinkTarget(linkWrapper, 'a', config.targetLink);
-    inner.appendChild(linkWrapper);
+    inner.appendChild(config.linkElement);
   }
 
   wrapper.appendChild(inner);

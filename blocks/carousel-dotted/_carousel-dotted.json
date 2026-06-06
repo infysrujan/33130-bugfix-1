@@ -323,41 +323,7 @@
               }
             ]
           }
-        },
-        {
-        "component": "container",
-        "name": "showLinksTargetSet",
-        "label": "Target settings",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "showLinksTargetLink",
-            "label": "Open link in new tab",
-            "description": "Enable to open the button link in a new browser tab",
-            "valueType": "boolean",
-            "value": false
-          }
-        ],
-        "condition": {
-          "and": [
-            {
-              "===": [
-                { 
-                  "var": "filter" 
-                },
-                "showDots"
-              ]
-            },
-            {
-              "!!": [
-                { 
-                  "var": "showLinks" 
-                }
-              ]
-            }
-          ]
         }
-      }
       ]
     },
     {
@@ -547,29 +513,6 @@
             {
               "name": "Tertiary",
               "value": "tertiary"
-            }
-          ],
-          "condition": {
-            "===": [
-              {
-                "var": "slideType"
-              },
-              "withImage"
-            ]
-          }
-        },
-        {
-          "component": "container",
-          "name": "targetSettings",
-          "label": "Target settings",
-          "fields": [
-            {
-              "component": "boolean",
-              "name": "targetLink",
-              "label": "Open link in new tab",
-              "description": "Enable to open the button link in a new browser tab",
-              "valueType": "boolean",
-              "value": false
             }
           ],
           "condition": {
@@ -839,41 +782,6 @@
           }
         },
         {
-          "component": "container",
-          "name": "heroLinkTargetSet",
-          "label": "Target settings",
-          "fields": [
-            {
-              "component": "boolean",
-              "name": "heroTargetLink",
-              "label": "Open link in new tab",
-              "description": "Enable to open the button link in a new browser tab",
-              "valueType": "boolean",
-              "value": false
-            }
-          ],
-          "condition": {
-            "or": [
-              {
-                "===": [
-                  {
-                    "var": "slideType"
-                  },
-                  "heroBannerImageCarousel"
-                ]
-              },
-              {
-                "===": [
-                  {
-                    "var": "slideType"
-                  },
-                  "textAnimationVariant"
-                ]
-              }
-            ]
-          }
-        },
-        {
           "component": "text",
           "name": "promoTag",
           "label": "Promo Tag",
@@ -1004,12 +912,12 @@
         },
         {
           "component": "container",
-          "name": "contentInsertTargetSet",
+          "name": "targetSettings",
           "label": "Target settings",
           "fields": [
             {
               "component": "boolean",
-              "name": "contentInsertTargetLink",
+              "name": "targetLink",
               "label": "Open link in new tab",
               "description": "Enable to open the button link in a new browser tab",
               "valueType": "boolean",
@@ -1224,29 +1132,6 @@
           }
         },
         {
-          "component": "container",
-          "name": "ctaLinkTargetSet",
-          "label": "Target settings",
-          "fields": [
-            {
-              "component": "boolean",
-              "name": "ctaTargetLink",
-              "label": "Open link in new tab",
-              "description": "Enable to open the button link in a new browser tab",
-              "valueType": "boolean",
-              "value": false
-            }
-          ],
-          "condition": {
-            "===": [
-              {
-                "var": "slideType"
-              },
-              "withDefaultImage"
-            ]
-          }
-        },
-        {
           "component": "reference",
           "name": "circularImage",
           "label": "Image",
@@ -1362,29 +1247,6 @@
           }
         },
         {
-          "component": "container",
-          "name": "linkTargetSettings",
-          "label": "Link Target settings",
-          "fields": [
-            {
-              "component": "boolean",
-              "name": "linkTargetLink",
-              "label": "Open link in new tab",
-              "description": "Enable to open the button link in a new browser tab",
-              "valueType": "boolean",
-              "value": false
-            }
-          ],
-          "condition": {
-            "===": [
-              {
-                "var": "slideType"
-              },
-              "withCircularImage"
-            ]
-          }
-        },
-        {
           "component": "reference",
           "name": "onlyImage",
           "label": "Image",
@@ -1423,7 +1285,8 @@
               {
                 "var": "slideType"
               },
-              "onlyImage"
+              "onlyImage",
+              "cardListCarousel"
             ]
           }
         },

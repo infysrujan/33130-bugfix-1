@@ -49,10 +49,10 @@ async function loadIconSvg(name) {
 async function loadAllCards() {
   try {
     const configs = await fetchConfigs();
-    const baseUrl = configs.creditCardSelectorSuggesterData;
-    if (!baseUrl) return [];
-    const lang = getLang();
-    const cardSuggesterData = baseUrl.replace(/;language=[^;?&]*/i, `;language=${lang}`);//
+    const cardSuggesterData = configs.creditCardSelectorSuggesterData;
+    if (!cardSuggesterData) {
+      return [];
+    }
     const json = await fetchGet(cardSuggesterData, { throwOnError: false });
     const cards = json?.data?.creditCardsList?.items || json?.data || json?.items || [];
     return cards;

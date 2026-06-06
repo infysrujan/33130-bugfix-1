@@ -88,6 +88,12 @@
     min-width: 13.125rem;
 }
 
+.latest-news-container .button-container .button-m.secondary {
+    border: 0.0625rem solid var(--bbl-color-active-blue);
+    font-weight: var(--bbl-font-weight-regular);
+    font-family: var(--bbl-font-family-regular);
+}
+
 @media (width > 47.5rem) {
     .news-media-tabs .tabs-nav-wrapper .tabs-nav button {
         height: unset;
