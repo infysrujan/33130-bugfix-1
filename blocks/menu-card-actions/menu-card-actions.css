@@ -157,7 +157,12 @@
 
 .menu-card-action .menu-card-action-inner .button-tertiary {
   position: relative;
-  font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-medium);
+  padding-right: 0.9375rem;
+  margin-top: var(--bbl-space-250);
+  font-weight: var(--bbl-text-link-primary-weight);
+  font-size: var(--bbl-text-link-primary-size);
+  line-height: var(--bbl-text-link-primary-line-height);
+  font-family: var(--bbl-font-family-looped);
 }
 
 .menu-card-action-inner .menu-card-action-description ~ :is(.button-m, .global-dropdown) {
@@ -364,11 +369,6 @@
 
   .menu-card-action-description p {
     font: var(--bbl-font-weight-regular) var(--bbl-font-size-base) / 1.375rem var(--bbl-font-family-regular);
-  }
-
-  .menu-card-action .menu-card-action-inner .button-tertiary {
-    font-size: 0.8rem;
-    line-height: 1.12rem;
   }
 
   .menu-card-action-date p {

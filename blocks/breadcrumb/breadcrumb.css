@@ -20,8 +20,10 @@
 
 .breadcrumb ol>li {
   display: inline-block;
-  font: 0.8rem/1.3 Muli-Bold, sans-serif;
-  font-weight: 700;
+  font-size: var(--bbl-text-breadcrumb-size);
+  line-height: var(--bbl-text-breadcrumb-line-height);
+  font-weight: var(--bbl-text-breadcrumb-weight);
+  font-family: var(--bbl-font-family-looped);
   color: var(--bbl-text-link);
   padding-right: var(--bbl-space-075);
   position: relative;

@@ -48,9 +48,9 @@
 
 /* Eyebrow text */
 .menu-banner .sub-title-medium {
-  font-weight: var(--bbl-font-weight-regular);
-  font-size: 0.875rem;
-  line-height: normal;
+  font-weight: var(--bbl-text-sub-title-weight);
+  font-size: var(--bbl-text-sub-title-size);
+  line-height: var(--bbl-text-sub-title-line-height);
   color: var(--bbl-color-black);
   margin-top: 1.875rem;
   padding-bottom: 0.9375rem;
@@ -235,11 +235,6 @@
     height: auto;
     min-height: 0;
     max-height: none;
-  }
-
-  .menu-banner .sub-title-medium {
-    font-size: 1rem;
-    line-height: normal;
   }
 
   .menu-banner .title-1 > * {

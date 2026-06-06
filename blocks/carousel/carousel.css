@@ -13,8 +13,9 @@
 
 .carousel-header h2 {
     margin: 0;
-    font-size: 1.4rem;
-    line-height: 1.3746rem;
+    font-size: var(--bbl-text-section-title-size);
+    line-height: var(--bbl-text-section-title-line-height);
+    font-weight: var(--bbl-text-section-title-weight);
     color: var(--bbl-color-black);
 }
 
@@ -158,9 +159,9 @@
 }
 
 .carousel-eyebrow {
-    font-size: 0.7875rem;
-    line-height: 1.203rem;
-    font-weight: var(--bbl-font-weight-medium);
+    font-size: var(--bbl-text-label-tag-size);
+    line-height: var(--bbl-text-label-tag-line-height);
+    font-weight: var(--bbl-text-label-tag-weight);
     background: var(--bbl-color-blue-140);
     display: inline-block;
     padding: 0.25rem 0.4375rem;
@@ -174,10 +175,10 @@
 
 .carousel-title {
     color: var(--bbl-color-black);
-    font-size: 1.1375rem;
-    line-height: 1.2495rem;
+    font-size: var(--bbl-text-article-card-title-size);
+    line-height: var(--bbl-text-article-card-title-line-height);
     margin: 0 0 var(--bbl-space-100);
-    font-weight: var(--bbl-font-weight-regular);
+    font-weight: var(--bbl-text-article-card-title-weight);
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -201,6 +202,9 @@
 
 .carousel-description p {
     margin: 0;
+    font-size: var(--bbl-text-default-size);
+    font-weight: var(--bbl-text-default-weight);
+    line-height: var(--bbl-text-default-line-height);
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -275,11 +279,6 @@
 
     .carousel-wrapper:has(.carousel-prev:enabled) .carousel-header {
         padding-left: 84px;
-    }
-
-    .carousel-header h2 {
-        font-size: 48px;
-        line-height: 46px;
     }
 
     :lang(th) {
@@ -411,9 +410,6 @@
     }
 
     .carousel-eyebrow {
-        font-size: 0.9rem;
-        line-height: 1.375rem;
-        font-weight: 500;
         background: var(--bbl-color-blue-140);
         display: inline-block;
         padding: var(--bbl-space-050) 0.4375rem;
@@ -423,8 +419,6 @@
     }
 
     .carousel-title {
-        font-size: 2rem;
-        line-height: 2rem;
         margin-bottom: var(--bbl-space-200);
         overflow: hidden;
         display: -webkit-box;
@@ -438,8 +432,7 @@
         display: none
     }
 
-    .carousel-item.active .carousel-description,
-    .carousel-item.active .carousel-description p {
+    .carousel-item.active .carousel-description{
         font-size: 1rem;
         line-height: 1.375rem;
         margin-bottom: var(--bbl-space-300);

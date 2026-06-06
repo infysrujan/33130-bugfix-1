@@ -80,9 +80,9 @@
 .footer .footer-title {
   margin: 0;
   padding: var(--bbl-space-250) 0;
-  font-size: 0.9625rem;
-  font-weight: var(--bbl-font-weight-regular);
-  line-height: normal;
+  font-size: var(--bbl-text-footer-head-size);
+  font-weight: var(--bbl-text-footer-head-weight);
+  line-height: var(--bbl-text-footer-head-line-height);
   cursor: pointer;
   user-select: none;
   position: relative;
@@ -138,8 +138,9 @@
 }
 
 .footer .footer-links li {
-  font-size: var(--bbl-font-size-b2);
-  line-height: normal;
+  font-size: var(--bbl-text-footer-size);
+  line-height: var(--bbl-text-footer-line-height);
+  font-weight: var(--bbl-text-footer-weight);
 }
 
 /* Bottom bar (copyright, legal links) */
@@ -225,7 +226,6 @@
   .footer .footer-title {
     padding: var(--bbl-space-250) 0;
     cursor: default;
-    font-size: 1.1rem;
     border: 0;
   }
 
@@ -244,10 +244,6 @@
 
   .footer .footer-group.active .footer-links {
     padding-bottom: 0;
-  }
-
-  .footer .footer-links li {
-    font-size: var(--bbl-font-size-b1);
   }
 
   .footer .footer-bottom {

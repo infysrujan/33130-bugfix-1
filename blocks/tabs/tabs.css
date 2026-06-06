@@ -102,8 +102,8 @@
     position: relative;
     appearance: none;
     font-family: var(--bbl-font-family-medium);
-    font-size: var(--bbl-font-size-b1);
-    line-height: 2.9375rem;
+    font-size: var(--bbl-text-tab-header-size);
+    line-height: var(--bbl-text-tab-header-line-height);
     cursor: pointer;
 }
 
