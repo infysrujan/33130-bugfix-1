@@ -254,7 +254,8 @@ main img {
 .section.underline-image .default-content-wrapper > p > img {
     position: relative;
     display: inline-block;
-    padding-bottom: var(--bbl-space-250);
+    padding-bottom: 1.875rem;
+    margin-bottom: 1.875rem;
     max-width: 100%;
 }
 
@@ -296,6 +297,13 @@ main img {
         padding-bottom: 1.875rem;
     }
 
+    .section.underline-image .default-content-wrapper > p > picture,
+    .section.underline-image .default-content-wrapper > p > img {
+        padding-bottom: var(--bbl-space-500);
+    }
+}
+
+@media (width > 64rem) {
     .section.underline-image .default-content-wrapper > p > picture,
     .section.underline-image .default-content-wrapper > p > img {
         padding-bottom: 1.875rem;
