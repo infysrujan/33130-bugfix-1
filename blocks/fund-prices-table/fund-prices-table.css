@@ -42,7 +42,7 @@ td.merged-fund-type {
 .fund-prices-table table tr:not(.header-row) td {
   color: var(--bbl-color-grey-70);
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-body-b1-size);
+  font-size: 0.9375rem;
   font-weight: var(--bbl-font-weight-regular);
   background: var(--bbl-color-white);
   padding: var(--bbl-space-300) 1.125rem;
@@ -52,8 +52,8 @@ td.merged-fund-type {
 
 .fund-prices-table table tr:not(.header-row) td span {
   font-style: italic;
-  font-size: var(--bbl-body-b3-size);
-  line-height: var(--bbl-line-height-body);
+  font-size: 0.6875rem;
+  line-height: 1.63;
   letter-spacing: -0.0063rem;
   padding-left: 0.3125rem;
 }
@@ -71,10 +71,7 @@ td.merged-fund-type {
 }
 
 .fund-prices-table table tr.header-row td {
-  font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-medium);
-  font-size: var(--bbl-body-b1-size);
-  line-height: var(--bbl-line-height-body);
+  font: 0.9375rem/1.35 BangkokBank-Bold, Arial, sans-serif;
   color: var(--bbl-color-black);
   background: var(--bbl-color-grey-10);
   padding: 0 var(--bbl-space-250);
