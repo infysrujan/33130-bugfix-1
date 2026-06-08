@@ -1,8 +1,9 @@
 /* Card List Wealth Block */
 
 /* ── Common / Mobile-first base ────────────────────────── */
-.card-list-wealth {
+.card-list-wealth .content {
   display: flex;
+  justify-content: center;
   gap: 1rem;
   margin: 0;
   padding: 0 1.25rem;
@@ -135,7 +136,7 @@
 
 /* ── Tablet: > 760px ───────────────────────────────────── */
 @media (width > 47.5rem) {
-  .card-list-wealth {
+  .card-list-wealth .content {
     gap: 1.5rem;
     padding: 0 2.5rem;
   }
@@ -157,13 +158,14 @@
 
 /* ── Desktop: > 1024px ─────────────────────────────────── */
 @media (width > 64rem) {
-  .card-list-wealth {
+  .card-list-wealth .content {
     gap: 2.1875rem;
     overflow-x: unset;
   }
 
   .card-list-wealth-card {
-    flex: 1 1 33.333%;
+    /* flex: 1 1 33.333%; */
+    flex-basis: 25%; 
     min-width: 17.5rem;
   }
 
@@ -176,4 +178,3 @@
     font-size: 1rem;
   }
 }
-
