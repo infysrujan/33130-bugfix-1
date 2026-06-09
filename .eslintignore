@@ -12,3 +12,4 @@ scripts/vendor/
 
 *.min.js
 plugins/gtm-martech/*
+plugins/martech/*
