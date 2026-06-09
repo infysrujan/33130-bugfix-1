@@ -15,6 +15,25 @@
   visibility: hidden;
 }
 
+.market-report-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.market-report-col-left,
+.market-report-col-right {
+  flex: 2 1 0;
+}
+
+.market-report-page-content > .market-report-col .market-report-col-left {
+  flex: 4 1 0;
+}
+
+.market-report-page-content > .market-report-col .market-report-col-right {
+  flex: 1 1 0;
+}
+
 .market-report-col-left :is(h1, h2, h3, h4, h5, h6),
 .market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
   font-size: 1rem;
@@ -109,4 +128,10 @@
   height: 0.0625rem;
   overflow: hidden;
   box-sizing: border-box;
+}
+
+@media (width > 64rem) {
+  .market-report-col {
+    flex-direction: row;
+  }
 }

@@ -1,0 +1,83 @@
+{
+  "definitions": [
+    {
+      "title": "Forms Card List Item",
+      "id": "forms-card-list-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/fd/components/form/image/v1/image",
+            "template": {
+              "jcr:title": "Forms Card List Item",
+              "fieldType": "image",
+              "fd:viewType": "forms-card-list-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "forms-card-list-item",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Basic",
+          "name": "basic"
+        },
+        {
+          "component": "text",
+          "name": "name",
+          "label": "Name",
+          "valueType": "string",
+          "required": true,
+          "valueFormat": "regexp",
+          "validation": {
+            "regExp": "^[^$].*",
+            "customErrorMsg": "Name cannot start with $"
+          }
+        },
+        {
+          "component": "boolean",
+          "name": "visible",
+          "label": "Show Component",
+          "valueType": "boolean",
+          "value": true
+        },
+        {
+          "component": "tab",
+          "label": "Card",
+          "name": "card"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "properties.icon",
+          "label": "Icon",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "properties.iconAlt",
+          "label": "Icon Alt Text",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "name": "title",
+          "label": "Card Title",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "properties.cardDescription",
+          "label": "Card Description",
+          "valueType": "string",
+          "value": ""
+        }
+      ]
+    }
+  ]
+}

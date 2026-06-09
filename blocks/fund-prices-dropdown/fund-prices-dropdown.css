@@ -21,9 +21,9 @@
   border-radius: 0.375rem;
   background: var(--bbl-color-white);
   color: var(--bbl-color-grey-85);
-  font-family: Muli-Bold, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   line-height: 2.75rem;
-  font-size: 0.8313rem;
+  font-size: var(--bbl-text-body-small-size);
   cursor: pointer;
   min-width: 8rem;
   justify-content: space-between;
@@ -54,9 +54,9 @@
 }
 
 .fund-prices-dropdown .fdd-title {
-  font-family: BangkokBank-Bold, Arial, sans-serif;
-  font-size: 2.5rem;
-  font-weight: var(--bbl-font-weight-regular);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-page-title-size);
+  font-weight: var(--bbl-text-page-title-weight);
   color: var(--bbl-color-black);
   margin-bottom: var(--bbl-space-100);
   display: none;
@@ -75,8 +75,8 @@
 }
 
 .fund-prices-dropdown .fdd-fund-label {
-  font-family: BangkokBank-Medium, sans-serif;
-  font-size: 0.7rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-body-b4-size);
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
 }
@@ -110,14 +110,14 @@
   display: flex;
   align-items: center;
   gap: var(--bbl-space-200);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   padding: 0 0 1.875rem;
 }
 
 .fund-prices-dropdown .period-select-wrapper {
   position: relative;
-  display: block;
-  width: 100%;
+  display: inline-block;
+  width: auto;
   box-sizing: border-box;
   padding-left: 0.625rem;
 }
@@ -175,8 +175,8 @@
 
 .fund-prices-dropdown .period-dropdown-list li {
   padding: 0.625rem 1.875rem;
-  font-size: var(--bbl-font-size-b2);
-  font-family: Muli-Bold, sans-serif;
+  font-size: var(--bbl-text-body-small-size);
+  font-family: var(--bbl-font-family-medium);
   cursor: pointer;
   color: var(--bbl-color-grey-85);
 }
@@ -190,7 +190,7 @@
   display: flex;
   align-items: center;
   gap: var(--bbl-space-150);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .fund-prices-dropdown .period-date-range.hidden {
@@ -217,6 +217,7 @@
 }
 
 .fund-prices-dropdown .stat-tables-print-row {
+  display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2.125rem;
@@ -225,6 +226,17 @@
 .fund-prices-dropdown .fund-prices-print-label {
   width: fit-content;
   padding-left: 0.625rem;
+  padding-right: 3rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.fund-prices-dropdown .fund-prices-print-label::before {
+  position: absolute;
+  right: 1.625rem;
+  top: 38%;
 }
 
 .fund-prices-dropdown .stat-table-card {
@@ -244,8 +256,8 @@
 .fund-prices-dropdown .stat-table th {
   background: var(--bbl-color-grey-10);
   color: var(--bbl-color-black);
-  font-size: var(--bbl-font-size-b2);
-  font-family: Muli-Bold, sans-serif;
+  font-size: var(--bbl-text-body-small-size);
+  font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
   text-align: left;
   height: 4.375rem;
@@ -284,13 +296,13 @@
   min-width: 48rem;
   border-collapse: collapse;
   font-family: var(--bbl-font-family-primary);
-  font-size: 0.9375rem;
+  font-size: var(--bbl-text-body-size);
   table-layout: fixed;
 }
 
 .fund-prices-dropdown .detail-hist-table th {
   background: var(--bbl-color-grey-10);
-  font-family: Muli-Bold, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
   white-space: nowrap;
   color: var(--bbl-color-black);
@@ -309,7 +321,7 @@
 
 .fund-prices-dropdown .detail-hist-table th:first-child,
 .fund-prices-dropdown .detail-hist-table td:first-child {
-  width: 8rem;
+  width: auto;
 }
 
 .fund-prices-dropdown .detail-hist-table td:first-child {
@@ -319,7 +331,7 @@
 
 .fund-prices-dropdown .detail-hist-table th:not(:first-child),
 .fund-prices-dropdown .detail-hist-table td:not(:first-child) {
-  width: 15%;
+  width: 8rem;
   white-space: nowrap;
 }
 
@@ -441,13 +453,18 @@
 
 .fund-prices-dropdown .chart-nav-item {
   font-family: var(--bbl-font-family-medium);
-  font-size: 0.9375rem;
+  font-size: var(--bbl-text-body-size);
   color: #f60;
 }
 
 .fund-prices-dropdown .detail-chart-svg {
   display: block;
   width: 100%;
+}
+
+.fund-prices-dropdown .fdd-print-masthead,
+.fund-prices-dropdown .fdd-print-date-range {
+  display: none;
 }
 
 @media (width > 47.5rem) {
@@ -496,7 +513,7 @@
     background: none;
     padding: var(--bbl-space-100) 0 0.625rem;
     font-size: 0.9375rem;
-    color: var(--bbl-color-grey-70);
+    color: var(--bbl-color-black);
   }
 
   .fund-prices-dropdown .tab-btn::after {
@@ -548,11 +565,17 @@
     margin-bottom: 0.625rem;
   }
 
+  .fund-prices-dropdown .fdd-period-bar .period-select-wrapper {
+    display: inline-block;
+    width: auto;
+    margin-bottom: 0;
+  }
+
   .fund-prices-dropdown .period-select-btn {
     width: 100%;
     height: 2.75rem;
-    font-family: Muli-Bold, sans-serif;
-    font-size: 0.8313rem;
+    font-family: var(--bbl-font-family-medium);
+    font-size: var(--bbl-text-body-small-size);
     border-radius: 0.4375rem;
     border: solid 0.0625rem var(--bbl-color-grey-25);
   }
@@ -566,8 +589,8 @@
   }
 
   .fund-prices-dropdown .stat-tables-print-row {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: var(--bbl-space-100);
   }
 
@@ -577,12 +600,260 @@
   }
 
   .fund-prices-dropdown .fdd-fund-label {
-    font-family: BangkokBank-Medium, sans-serif;
-    font-size: 0.7rem;
+    font-family: var(--bbl-font-family-medium);
+    font-size: var(--bbl-body-b4-size);
     font-weight: var(--bbl-font-weight-regular);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
+  }
+}
+
+@media print {
+  @page {
+    size: a4 portrait;
+    margin: 5mm;
+  }
+
+  body.fdd-printing {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  body.fdd-printing > *:not(#fdd-print-root) {
+    display: none !important;
+  }
+
+  body.fdd-printing #fdd-print-root {
+    display: block !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+    min-height: 276mm !important;
+    overflow: visible !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 11px !important;
+    padding: 0 !important;
+    position: relative !important;
+  }
+
+  #fdd-print-root .fdd-print-masthead {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr;
+    row-gap: 11px;
+    align-items: start;
+    margin-bottom: 47px;
+    font: 10px/1.2 Arial, sans-serif;
+  }
+
+  #fdd-print-root .fdd-print-page-title {
+    text-align: center;
+    font-weight: 700;
+  }
+
+  #fdd-print-root .fdd-print-logo img {
+    display: block;
+    width: 124px;
+    height: auto;
+    filter: invert(1);
+  }
+
+  #fdd-print-root .fdd-print-search {
+    grid-column: 3;
+    justify-self: start;
+    margin-top: 34px;
+    margin-left: 76px;
+    font-weight: 700;
+  }
+
+  #fdd-print-root .fdd-title {
+    display: block !important;
+    font: 700 36px/1.05 Arial, sans-serif !important;
+    margin: 0 0 7px !important;
+    color: #000 !important;
+  }
+
+  #fdd-print-root .fdd-title-rule {
+    display: block !important;
+    border: none;
+    border-top: 2px solid #000;
+    margin: 0 0 8px;
+    width: 27px;
+  }
+
+  #fdd-print-root .fdd-period-bar {
+    display: none !important;
+  }
+
+  #fdd-print-root .fdd-print-date-range {
+    display: block !important;
+    margin-bottom: 39px;
+    font: 12px/1.35 Arial, sans-serif;
+  }
+
+  #fdd-print-root .fdd-print-date-range div {
+    margin-bottom: 17px;
+  }
+
+  #fdd-print-root .fdd-print-date-range span,
+  #fdd-print-root .fdd-print-date-range strong {
+    display: block;
+    font-weight: 400;
+  }
+
+  #fdd-print-root .fdd-print-date-range strong {
+    margin: 13px 0 0 13px;
+  }
+
+  #fdd-print-root .fdd-print-date-range strong::after {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-left: 7px;
+    border: 1px solid #8aa;
+    box-sizing: border-box;
+    vertical-align: -1px;
+  }
+
+  #fdd-print-root .stat-tables-print-row {
+    display: block !important;
+    margin: 0 0 13px !important;
+  }
+
+  #fdd-print-root .fdd-fund-label {
+    padding: 0 !important;
+    font: 700 10px/1.25 Arial, sans-serif !important;
+    color: #000 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+
+  #fdd-print-root .stat-tables-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 38px;
+    margin-bottom: 12px;
+  }
+
+  #fdd-print-root .stat-table-card {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  #fdd-print-root .stat-table {
+    font: 10px/1.2 Arial, sans-serif !important;
+    border-collapse: collapse !important;
+  }
+
+  #fdd-print-root .stat-table th {
+    height: auto !important;
+    padding: 2px 5px 1px !important;
+    background: #fff !important;
+    border-top: 1px solid #000 !important;
+    border-bottom: 1px solid #000 !important;
+    font: 700 10px/1.2 Arial, sans-serif !important;
+  }
+
+  #fdd-print-root .stat-table td {
+    height: auto !important;
+    padding: 2px 5px 1px !important;
+    border-bottom: 1px solid #cfcfcf !important;
+    color: #000 !important;
+    font: 10px/1.2 Arial, sans-serif !important;
+  }
+
+  #fdd-print-root .tab-switcher {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 31px !important;
+    min-width: 0 !important;
+    width: auto !important;
+    margin: 0 0 14px !important;
+  }
+
+  #fdd-print-root .tab-btn {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    border: none !important;
+    padding: 0 !important;
+    background: none !important;
+    color: #000 !important;
+    font: 700 10px/1.2 Arial, sans-serif !important;
+  }
+
+  #fdd-print-root .tab-btn::before,
+  #fdd-print-root .tab-btn::after {
+    display: none !important;
+  }
+
+  #fdd-print-root .chart-wrap {
+    display: block !important;
+    border: 1px solid #cfcfcf !important;
+    border-radius: 0 !important;
+    padding: 24px 30px 10px !important;
+    margin: 0 0 35px !important;
+    overflow: visible !important;
+    break-inside: avoid;
+  }
+
+  #fdd-print-root .fdd-table-panel {
+    display: none !important;
+  }
+
+  #fdd-print-root .chart-header {
+    margin-bottom: 10px !important;
+    gap: 8px !important;
+  }
+
+  #fdd-print-root .chart-subtitle {
+    font: 700 10px/1.2 Arial, sans-serif !important;
+    color: #000 !important;
+  }
+
+  #fdd-print-root .chart-nav-labels {
+    gap: 19px !important;
+  }
+
+  #fdd-print-root .chart-nav-item {
+    font: 700 10px/1.2 Arial, sans-serif !important;
+    color: #f60 !important;
+  }
+
+  #fdd-print-root .detail-chart-svg {
+    width: 100% !important;
+    height: 245px !important;
+  }
+
+  #fdd-print-root .fund-prices-print-label,
+  #fdd-print-root .fdd-back-btn,
+  #fdd-print-root .period-select-wrapper {
+    display: none !important;
+  }
+
+  #fdd-print-root .fund-prices-disclaimer-text {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 22px !important;
+  }
+
+  #fdd-print-root .fund-prices-disclaimer-text p,
+  #fdd-print-root .fund-prices-disclaimer-text li {
+    color: #000 !important;
+    font: 11px/1.38 Arial, sans-serif !important;
+    margin: 0 0 11px !important;
+  }
+
+  #fdd-print-root .fdd-print-footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    position: absolute !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    font: 10px/1 Arial, sans-serif !important;
+    color: #000 !important;
   }
 }

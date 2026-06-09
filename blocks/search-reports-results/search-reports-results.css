@@ -1,7 +1,7 @@
 @import url('../download-file/download-file.css');
 
 .search-reports-results .srr-results-wrapper {
-  background: var(--bbl-color-white, #fff);
+  background: var(--bbl-color-white);
   min-height: 100vh;
   padding-bottom: 3rem;
 }
@@ -9,12 +9,12 @@
 /* Results header band */
 
 .search-reports-results .srr-header {
-  background: var(--bbl-color-truthful-blue, #002850);
+  background: var(--bbl-color-truthful-blue);
   display: flex;
   align-items: center;
   padding: 1rem 2rem 1rem 4rem;
   flex-shrink: 0;
-  box-shadow: 0 0 0 100vmax var(--bbl-color-truthful-blue, #002850);
+  box-shadow: 0 0 0 100vmax var(--bbl-color-truthful-blue);
   clip-path: inset(0 -100vmax);
 }
 
@@ -29,30 +29,32 @@
   border: 0.0938rem solid var(--bbl-color-white-alpha-60);
   background: transparent;
   cursor: pointer;
-  color: var(--bbl-color-white, #fff);
+  color: var(--bbl-color-white);
   font-size: 1.25rem;
   line-height: 1;
   padding: 0;
 }
 
 .search-reports-results .srr-back-btn:hover {
-  border-color: var(--bbl-color-white, #fff);
+  border-color: var(--bbl-color-white);
 }
 
 /* Page title */
 
 .search-reports-results .srr-page-title {
-  font-size: 2rem;
-  font-weight: 700;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-page-title-size);
+  font-weight: var(--bbl-text-page-title-weight);
+  line-height: var(--bbl-text-page-title-line-height);
   text-align: center;
   margin: 2rem 0 1rem;
-  color: var(--bbl-color-gray-121, #171717);
+  color: var(--bbl-color-gray-121);
 }
 
 .search-reports-results .srr-title-divider {
   width: 3rem;
   height: 0.0625rem;
-  background: var(--bbl-color-grey-40, #c8c8cc);
+  background: var(--bbl-color-grey-40);
   margin: 0 auto 2rem;
 }
 
@@ -63,33 +65,43 @@
   flex-direction: column;
   gap: 1rem;
   padding: 0;
-  margin-inline: -0.5rem;
-  width: calc(100% + 1rem);
+  margin-inline: 0;
+  width: 100%;
   box-sizing: border-box;
 }
 
 /* Card — outer white box reuses .download-section from download-file.css */
+
+.search-reports-results .download-section {
+  padding: 30px;
+  box-shadow: rgb(0 0 0 / 10%) 0 0 16px 0;
+  margin-bottom: 0;
+  max-width: 1096.67px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-inline: auto;
+}
 
 /* Title area reuses .default-content-wrapper from accordion-block */
 
 /* File row reuses .download-file-wrapper from accordion-block */
 
 .search-reports-results .srr-card-title {
-  font-size: 1.125rem;
-  font-weight: 400;
-  margin: 0;
-  line-height: 1.4;
-  color: var(--bbl-color-gray-121, #171717);
-  text-transform: capitalize;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-card-title-size);
+  font-weight: var(--bbl-text-card-title-weight);
+  line-height: var(--bbl-text-card-title-line-height);
+  margin: 0 0 15px;
+  padding-bottom: 15px;
+  color: var(--bbl-color-gray-121);
 }
 
 .search-reports-results .srr-card-divider {
   height: 0.0625rem;
   width: 1.5rem;
-  background: var(--bbl-color-grey-40, #c8c8cc);
+  background: var(--bbl-color-grey-40);
   margin: 0.75rem 0 0;
 }
-
 
 .search-reports-results .srr-card-file-row {
   margin-top: 1rem;
@@ -103,19 +115,22 @@
   justify-content: space-between;
   background: var(--bbl-color-ice-blue, #e6eef4);
   border: none;
-  box-shadow: none;
-  padding: 0 0.75rem 0 1rem;
+  box-shadow: rgb(221 221 221 / 50%) 0 2px 8px 0;
+  padding: 0 10px 0 30px;
   border-radius: 0;
-  min-height: 2.75rem;
+  height: 44px;
+  box-sizing: border-box;
+  margin-bottom: 7px;
 }
 
 .search-reports-results .srr-card-file-row .srr-file-label {
   flex: 1;
   min-width: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--bbl-color-gray-121, #171717);
-  line-height: 1;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-text-body-size);
+  font-weight: var(--bbl-text-body-weight);
+  line-height: 44px;
+  color: var(--bbl-color-grey-85);
 }
 
 
@@ -139,7 +154,7 @@
   height: 2rem;
   flex-shrink: 0;
   flex-grow: 0;
-  color: var(--bbl-color-grey-85, #4e4e4e);
+  color: var(--bbl-color-grey-85);
   text-decoration: none;
 }
 
@@ -147,7 +162,7 @@
   opacity: 1;
   font-size: 1.75rem;
   display: block;
-  color: var(--bbl-color-gray-121, #171717);
+  color: var(--bbl-color-gray-121);
   transition: transform 0.2s ease;
 }
 
@@ -166,8 +181,8 @@
 .search-reports-results .srr-loading {
   text-align: center;
   padding: 3rem 1.5rem;
-  font-size: 1rem;
-  color: var(--bbl-color-grey-85, #4e4e4e);
+  font-size: var(--bbl-text-body-size);
+  color: var(--bbl-color-grey-85);
 }
 
 
@@ -197,22 +212,19 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: var(--bbl-color-white, #fff);
+  background: var(--bbl-color-white);
   box-shadow: 0 0 1rem 0 var(--bbl-color-black-alpha-10);
   overflow: hidden;
 }
 
 /* Blue header band */
 .srr-preview-overlay .srr-preview-header {
-  flex-shrink: 0;
-}
-
-.srr-preview-overlay .srr-preview-inner-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  background: var(--bbl-color-truthful-blue, #002850);
+  background: var(--bbl-color-truthful-blue);
+  flex-shrink: 0;
 }
 
 .srr-preview-overlay .srr-preview-logo img {
@@ -232,18 +244,18 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  color: var(--bbl-color-white, #fff);
+  color: var(--bbl-color-white);
 }
 
 .srr-preview-overlay .srr-preview-close:hover {
-  border-color: var(--bbl-color-white, #fff);
+  border-color: var(--bbl-color-white);
 }
 
 /* Body */
 .srr-preview-overlay .srr-preview-body {
   flex: 1;
   overflow: hidden auto;
-  background: var(--bbl-color-white, #fff);
+  background: var(--bbl-color-white);
 }
 
 .srr-preview-overlay .srr-preview-center-content {
@@ -254,21 +266,21 @@
 }
 
 /* PDF embed area */
-.srr-preview-overlay .srr-custom-pdf {
+.srr-preview-overlay .srr-preview-embed {
   width: 65%;
   margin-inline: auto;
   margin-top: 6rem;
   height: calc(100vh - 4.5rem);
 }
 
-.srr-preview-overlay .srr-custom-pdf iframe {
+.srr-preview-overlay .srr-preview-embed iframe {
   display: block;
   width: 100%;
   height: 100%;
   border: none;
 }
 
-.srr-preview-overlay .srr-button-group {
+.srr-preview-overlay .srr-preview-button-group {
   width: 100%;
   max-width: 56rem;
   margin-inline: auto;
@@ -276,36 +288,36 @@
   text-align: center;
 }
 
-.srr-preview-overlay .srr-btn-primary {
+.srr-preview-overlay .srr-preview-download {
   display: inline-block;
   padding: 0.75rem 3rem;
   background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white, #fff);
+  color: var(--bbl-color-white);
   border-radius: 0.4375rem;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--bbl-text-button-size);
+  font-weight: var(--bbl-text-button-weight);
   text-decoration: none;
   letter-spacing: 0.01em;
 }
 
-.srr-preview-overlay .srr-btn-primary:hover {
+.srr-preview-overlay .srr-preview-download:hover {
   background: var(--bbl-color-blue-90);
 }
 
 @media (width > 47.5rem) {
   .search-reports-results .srr-page-title {
-    font-size: 2.5rem;
+    font-size: var(--bbl-text-page-title-size);
   }
 
   .search-reports-results .srr-list {
-    margin-inline: -1rem;
-    width: calc(100% + 2rem);
+    margin-inline: 0;
+    width: 100%;
   }
 }
 
 @media (width > 64rem) {
   .search-reports-results .srr-list {
-    margin-inline: -1.5rem;
-    width: calc(100% + 3rem);
+    margin-inline: 0;
+    width: 100%;
   }
 }

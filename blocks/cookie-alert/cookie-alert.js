@@ -10,6 +10,7 @@
 import { loadFragment } from '../fragment/fragment.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { getCookie, setCookie } from '../../scripts/utils/cookies.js';
 
 const COOKIE_DURATION_DAYS = 30;
 const COOKIE_CONSENT = 'ConsentAlert';
@@ -18,17 +19,6 @@ const COOKIE_ADVERTISING = 'AdvertisingCookie';
 const CONSENT_SAVED_EVENT = 'cookie:consent-saved';
 const MODAL_PROMISE_KEY = 'cookieModalLoadPromise';
 const MODAL_PATH_KEY = 'cookieModalPath';
-
-function setCookie(name, value, days) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
-}
-
-function getCookie(name) {
-  const encoded = encodeURIComponent(name);
-  const match = document.cookie.split('; ').find((row) => row.startsWith(`${encoded}=`));
-  return match ? decodeURIComponent(match.split('=')[1]) : null;
-}
 
 function copyAnchorAttributes(anchor, element) {
   ['title', 'aria-label'].forEach((attribute) => {

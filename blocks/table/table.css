@@ -237,6 +237,10 @@
   background-color: var(--bbl-color-grey-10);
 }
 
+.table table.solid-white {
+  background-color: var(--bbl-color-white);
+}
+
 /* --------------------------------------------------------------------------
    NESTED TABLES
    -------------------------------------------------------------------------- */

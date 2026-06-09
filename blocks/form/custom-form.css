@@ -1,10 +1,21 @@
-/* customized form styling */
-.drop-down-wrapper {
-  text-align: center;
+/* Bangkok Bank lead-form overrides — matched to live Sitecore WFFM forms */
+
+/* Layout */
+
+main .section.form-container {
+  margin: var(--bbl-space-500) auto 0;
+  max-width: 46.25rem;
+  padding: 0;
+}
+
+main .section.form-container.central-aligned :is(.form-wrapper, .form.block) {
+  max-width: 46.25rem;
+  margin-inline: auto;
 }
 
 main div.form-wrapper {
   padding: 0;
+  border-radius: unset;
   box-shadow: none;
 }
 
@@ -12,191 +23,408 @@ main div.default-content-wrapper {
   box-shadow: none;
 }
 
-main h3 {
+.default-content-wrapper > :is(h1, h2, h3, h4, h5, h6)::after {
+  left: 50%;
+  width: 80px;
+  content: '';
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  height: 1px;
+  background: var(--bbl-color-grey-150);
+}
+
+.default-content-wrapper h2 {
+  font-size: 35px;
+  font-family: Muli-Bold, sans-serif;
+  color: var(--bbl-color-grey-140);
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+.drop-down-wrapper {
+  text-align: center;
+}
+
+main .form form {
+  gap: 3px;
+  max-width: 46.25rem;
+  width: 100%;
+  margin: 0 auto;
+  color: var(--bbl-color-grey-85);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
+  line-height: 1.3;
+}
+
+main .form form :is(p, .repeat-wrapper, .field-wrapper) {
+  margin: 0;
+}
+
+/* Title */
+main :is(h3, .form form .field-title h2, .form form .field-title .page-header) {
   position: relative;
-  margin: 2.5rem 0 1.875rem;
+  margin: var(--bbl-space-500) 0 var(--bbl-space-300);
   padding: 0 0 2.1875rem;
   color: var(--bbl-color-grey-140);
   font-family: Muli-Bold, Tahoma, Helvetica, Arial, sans-serif;
-  font-size: 2.2rem;
+  font-size: var(--bbl-font-size-h1-mobile);
   font-weight: 700;
   line-height: normal;
   letter-spacing: -0.0125rem;
   text-align: center;
 }
 
-main h3::before {
+main :is(h3, .form form .field-title h2, .form form .field-title .page-header)::before {
   content: '';
   position: absolute;
   bottom: 0;
   left: 50%;
-  width: 5rem;
-  height: 0.0625rem;
-  margin-left: -2.5rem;
+  width: var(--bbl-space-1000);
+  height: 1px;
+  margin-left: calc(var(--bbl-space-1000) / -2);
   background: var(--bbl-color-grey-150);
 }
 
-/*
-.form input,
-.form select,
-.form textarea {
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
-  height: 2.75rem;
-  max-width: unset;
+main .form form .field-title {
   margin: 0;
-  padding: 0 1.25rem;
-  color: var(--bbl-color-black);
-  border: 0.0625rem solid var(--bbl-color-grey-150);
-  border-radius: 0.4375rem;
-  background-color: var(--bbl-color-white);
-  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 400;
-  line-height: 2.75rem;
-} */
-
-.form textarea {
-  height: auto;
-  min-height: 6.25rem;
-  padding: 0.625rem 1.25rem;
-  line-height: 1.5;
+  padding: 0;
 }
 
-.form select {
-  padding-top: 0;
-  padding-right: 2.5rem;
-  padding-bottom: 0;
-  cursor: pointer;
-  appearance: none;
-  background-image: url("../../icons/Chevron-down.svg");
-  background-repeat: no-repeat;
-  background-position: right 0.875rem center;
-  background-size: 1.25rem 1.25rem;
+/* Body copy */
+main .form form .field-infotext {
+  margin: var(--bbl-space-500) 0 var(--bbl-space-250);
+  margin: 10px 0 var(--bbl-space-250) 0;
 }
 
-.form select option {
-  color: var(--bbl-color-black);
-  background-color: var(--bbl-color-white);
-  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 400;
-}
-
-.form select option[value=""] {
-  color: var(--bbl-color-black);
-  font-weight: 400;
-}
-
-.field-invalid input {
-  border: 0.0625rem solid var(--bbl-color-orange-130);
-}
-
-.text-wrapper.field-wrapper input,
-.number-wrapper.field-wrapper input,
-.email-wrapper.field-wrapper input {
-  width: 100%;
-  height: 2.75rem;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding: 0 1.25rem 0 2.5rem;
-  border: 0.0625rem solid var(--bbl-color-grey-150);
-  border-radius: 0.4375rem;
-  line-height: 2.75rem;
-}
-
-.text-wrapper.field-name input {
-  margin: 0;
-  padding: 0 1.25rem 0 2.5rem;
-}
-
-.number-wrapper.field-invalid input,
-.email-wrapper.field-invalid input,
-.text-wrapper.field-invalid input,
-.field-invalid select,
-.field-invalid textarea {
-  border: 0.0625rem solid var(--bbl-color-orange-130);
-}
-
-main .form input:hover,
-main .form input:focus,
-main .form select:hover,
-main .form select:focus,
-main .form textarea:hover,
-main .form textarea:focus {
-  color: var(--bbl-color-black);
-  border-color: var(--bbl-color-blue-90);
-  outline: none;
-}
-
-main .form form input:invalid,
-main .form form select:invalid {
-  box-shadow: none;
-}
-
- .form form .field-wrapper.field-invalid .field-validation-error,
- .form form .field-invalid .field-description,
- .form form .field-wrapper.field-invalid .field-description {
-  position: relative;
-  display: block;
-  clear: both;
-  padding: 0.375rem 0 0.75rem 1.25rem;
-  color: var(--bbl-color-orange-130);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  font-size: 0.875rem;
-  font-weight: 400;
-}
-
-main .form form .field-wrapper.col-12 {
-  margin-bottom: 0.3125rem;
-  gap: unset;
+main .form form :is(.field-infotext p, .plain-text-wrapper p) {
+  /* margin: 0 0 var(--bbl-space-100); */
+  color: var(--bbl-color-grey-85);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
 }
 
 main .form form p {
-  margin-bottom: 1.25rem;
+  margin-bottom: 0;
   padding: 0;
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 1.5;
 }
 
-.radio-group-wrapper legend.field-label {
-  display: block;
-  width: 100%;
-  margin-bottom: 0.5rem;
-  padding: 0;
-  font-size: 1.0625rem;
-  font-weight: 700;
+main .form form .plain-text-wrapper p:last-child {
+  margin-bottom: 0;
 }
 
-.form form .field-wrapper label,
-.form form .field-wrapper .field-label,
-.form form fieldset legend.field-label {
+main .form form .plain-text-wrapper :is(a, .custom-wffm-form) {
+  color: var(--bbl-color-grey-85);
+}
+
+main .form form .plain-text-wrapper a {
+  text-decoration: underline;
+}
+
+main .form form .plain-text-wrapper .custom-wffm-form {
+  padding: 0 var(--bbl-space-100);
+  margin-bottom: var(--bbl-space-075);
+}
+
+/* Labels */
+main .form form .field-label[data-visible='false']:not(:is([class*=' icon-'], [class^='icon-'])) {
+  display: none;
+}
+
+main .form form :is(.field-wrapper:has(select), .drop-down-wrapper) > .field-label {
+  display: block;
+  width: 100%;
+  margin: 0 0 var(--bbl-space-050);
+
+  /* padding: var(--bbl-space-300) 0; */
+  padding: 30px 0;
+  text-align: center;
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-grey-85);
+}
+
+main .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
   color: var(--bbl-color-grey-85);
   font-size: 1.0625rem;
   font-weight: 700;
   cursor: default;
 }
 
-main .form .field-submitcta .button,
-main .form .field-submitcta .button:disabled {
+main .form form .field-prefix-dropdown.field-wrapper .field-label,
+main .form form .field-province.field-wrapper .field-label {
+  padding: 0;
+  text-align: left;
+}
+
+/* Inputs */
+main .form :is(
+  :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input,
+  select,
+  textarea
+) {
+  width: 100%;
+  height: 2.75rem;
+  margin: 0 0 var(--bbl-font-size-b2);
+  color: var(--bbl-color-black);
+  border: 1px solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem;
+  font-size: var(--bbl-font-size-b1);
+  line-height: 2.75rem;
+}
+
+main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input {
+  padding: 0 var(--bbl-space-250);
+  font-family: var(--bbl-font-family-primary);
+}
+
+main .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].text-wrapper).field-wrapper input {
+  padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
+}
+
+main .form textarea {
+  height: auto;
+  min-height: 6.25rem;
+  padding: var(--bbl-space-100) var(--bbl-space-250);
+  line-height: 1.5;
+}
+
+main .form select {
+  padding: 0 var(--bbl-space-300) 0 var(--bbl-space-250);
+  border-color: var(--bbl-color-grey-23);
+  cursor: pointer;
+  appearance: none;
+  background: var(--bbl-color-white) url('../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
+  font-family: var(--bbl-font-family-medium);
+}
+
+main .form select option {
+  color: var(--bbl-color-black);
+  background-color: var(--bbl-color-white);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+main .form :is(input, textarea)::placeholder {
+  opacity: 1;
+  color: var(--bbl-color-grey-85);
+}
+
+main .form :is(input, select, textarea):is(:hover, :focus) {
+  color: var(--bbl-color-black);
+  border-color: var(--bbl-color-blue-90);
+  outline: none;
+}
+
+main .form form :is(input, select):invalid {
+  box-shadow: none;
+}
+
+main .form form .field-invalid :is(input, select, textarea) {
+  border-color: var(--bbl-color-orange-130);
+}
+
+main .form form .field-invalid :is(.field-validation-error, .field-description) {
+  position: relative;
+  text-align: left;
+  display: block;
+  clear: both;
+  padding: var(--bbl-space-075) 0 var(--bbl-space-150) var(--bbl-space-250);
+  color: var(--bbl-color-orange-130);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b2);
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+main .form form .field-wrapper.col-12 {
+  gap: unset;
+}
+
+.form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
+.form-wrapper .form .drop-down-wrapper.field-invalid select {
+  border-color: var(--bbl-color-red-130);
+  outline: 1px solid transparent;
+  margin: 0;
+}
+
+main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper) {
+  position: relative;
+  clear: both;
+  margin-bottom: 0;
+}
+
+/* Icon fields — icomoon label or field-class fallback */
+main .form form label:is([class*=' icon-'], [class^='icon-']) {
+  position: relative;
+  display: block;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+main .form form label:is([class*=' icon-'], [class^='icon-'])::before {
+  font-family: icomoon, sans-serif;
+  position: absolute;
+  top: 1.375rem;
+  left: 0.9375rem;
+  z-index: 1;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+  color: var(--bbl-color-grey-150);
+  pointer-events: none;
+}
+
+main .form form label:is([class*=' icon-'], [class^='icon-']):empty::before {
+  display: flex;
+}
+
+main .form form label:is([class*=' icon-'], [class^='icon-']) + :is(input, select) {
+  padding-left: var(--bbl-space-500);
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
+  [class*='field-firstname'],
+  [class*='field-lastname'],
+  [class*='field-name'],
+  [class*='field-phonenumber'],
+  [class*='field-mobilenumber'],
+  [class*='field-companyname'],
+  [class*='field-company'],
+  [class*='field-juristicpersonregistrationnumber']
+) {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 2.75rem auto;
+  margin-bottom: var(--bbl-font-size-b2);
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
+  [class*='field-firstname'],
+  [class*='field-lastname'],
+  [class*='field-name'],
+  [class*='field-phonenumber'],
+  [class*='field-mobilenumber'],
+  [class*='field-companyname'],
+  [class*='field-company'],
+  [class*='field-juristicpersonregistrationnumber']
+):has(> .field-label:not([data-visible='false'])) > .field-label {
+  grid-row: 1;
+  display: block;
+  margin-bottom: var(--bbl-space-100);
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
+  [class*='field-firstname'],
+  [class*='field-lastname'],
+  [class*='field-name'],
+  [class*='field-phonenumber'],
+  [class*='field-mobilenumber'],
+  [class*='field-companyname'],
+  [class*='field-company'],
+  [class*='field-juristicpersonregistrationnumber']
+)::before {
+  content: '';
+  font-family: icomoon, sans-serif;
+  grid-row: 2;
+  grid-column: 1;
+  place-self: stretch start;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: fit-content;
+  width: var(--bbl-space-250);
+  margin-left: 0.9375rem;
+  line-height: 1;
+  color: var(--bbl-color-grey-150);
+  pointer-events: none;
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'])::before {
+  content: '\e906';
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-phonenumber'], [class*='field-mobilenumber'])::before {
+  content: '\e909';
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-'])))[class*='field-email']::before {
+  content: '\e919';
+  font-size: 0.6875rem;
+  width: var(--bbl-space-200);
+  height: var(--bbl-space-200);
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-companyname'], [class*='field-company'], [class*='field-juristicpersonregistrationnumber'])::before {
+  content: '\e911';
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
+  [class*='field-firstname'],
+  [class*='field-lastname'],
+  [class*='field-name'],
+  [class*='field-phonenumber'],
+  [class*='field-mobilenumber'],
+  [class*='field-companyname'],
+  [class*='field-company'],
+  [class*='field-juristicpersonregistrationnumber']
+) > :is(input, select) {
+  grid-row: 2;
+  grid-column: 1;
+  margin-bottom: 0;
+  padding-left: var(--bbl-space-500);
+}
+
+main .form form .radio-group-wrapper > .field-description {
+  flex: 0 0 100%;
+  width: 100%;
+  margin-top: 0;
+  order: 2;
+  clear: none;
+}
+
+main .form form .radio-group-wrapper.field-invalid > .field-description {
+  height: auto;
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
+  [class*='field-firstname'],
+  [class*='field-lastname'],
+  [class*='field-name'],
+  [class*='field-phonenumber'],
+  [class*='field-mobilenumber'],
+  [class*='field-companyname'],
+  [class*='field-company'],
+  [class*='field-juristicpersonregistrationnumber']
+) > .field-description {
+  grid-row: 3;
+  grid-column: 1;
+}
+
+/* Submit */
+main .form :is(.field-submitcta .button, .field-submitcta .button:disabled, form .submit-wrapper button, form button[type='submit']) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 9.6875rem;
   min-width: 9.6875rem;
   height: 2.75rem;
-  margin: 1.875rem auto;
-  padding: 0 1.25rem;
+  margin: var(--bbl-space-300) auto;
+  padding: 0 var(--bbl-space-250);
   color: var(--bbl-color-active-blue);
-  border: 0.0625rem solid var(--bbl-color-active-blue);
+  border: 1px solid var(--bbl-color-active-blue);
   border-radius: 0.4375rem;
   background: var(--bbl-color-white);
   box-shadow: none;
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  font-size: 1rem;
-  line-height: normal;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
+  line-height: 2.75rem;
   letter-spacing: 0.05rem;
   text-align: center;
   cursor: pointer;
@@ -205,216 +433,239 @@ main .form .field-submitcta .button:disabled {
   transform: none;
 }
 
-main .form .field-submitcta .button:hover,
-main .form .field-submitcta .button:disabled:hover {
+main .form :is(.field-submitcta .button, form .submit-wrapper button, form button[type='submit']):is(:hover, :disabled:hover) {
   color: var(--bbl-color-white);
-  border-color: var(--bbl-color-active-blue);
   background: var(--bbl-color-active-blue);
-  box-shadow: none;
-  transform: none;
+  border-color: var(--bbl-color-active-blue);
 }
 
- .form form .field-privacyconsent,
- .form form .field-privacyconsent .field-wrapper {
+/* Privacy consent / TnC panel */
+main .form form :is(.field-privacyconsent, fieldset.panel-wrapper.field-wrapper) {
   gap: 0;
   margin: 0;
 }
 
-form fieldset.panel-wrapper.field-wrapper {
+main .form form fieldset.panel-wrapper.field-wrapper {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
   grid-column: span 12;
-  flex-direction: row;
-  align-items: flex-start;
-  padding-bottom: 1.875rem;
+  width: 100%;
+  max-width: 46.25rem;
+  padding: 0 0 0 2.1875rem;
 }
 
-form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper {
-  flex-shrink: 0;
-  order: 1;
-  margin-right: 0.625rem;
-  padding-top: 0.125rem;
+main .form form fieldset.panel-wrapper.field-wrapper > legend {
+  display: none;
 }
 
-form fieldset.panel-wrapper.field-wrapper .plain-text-wrapper {
-  flex: 1;
-  min-width: 0;
-  order: 2;
+main .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
+  grid-column: 1;
+  width: auto;
 }
 
-form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper .field-description {
+main .form form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper {
+  display: contents;
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox'],
+input[name='BBLAdvancedCheckbox'] {
   position: absolute;
-  top: 9.375rem;
-  bottom: 0;
+  top: 0;
   left: 0;
-  padding: 1.375rem 1.25rem 0.75rem 3.125rem;
-  color: var(--bbl-color-orange-130);
-  font-size: 0.875rem;
+  z-index: 1;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+  margin: 3px var(--bbl-space-050) var(--bbl-font-size-b2) var(--bbl-space-050);
+  flex: none;
 }
 
-.checkbox-wrapper.field-approvalcheckbox.field-wrapper input[type="checkbox"]:hover {
-  border: 0.0625rem solid var(--bbl-color-grey-125);
+main .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:hover,
+input[name='BBLAdvancedCheckbox']:hover {
+  border: 1px solid var(--bbl-color-grey-125);
 }
 
-form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper input[type="checkbox"]:invalid {
+main .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:invalid,
+input[name='BBLAdvancedCheckbox']:invalid {
   box-shadow: none;
   outline: none;
 }
 
-form fieldset.panel-wrapper.field-wrapper.field-invalid .plain-text-wrapper.field-tnctext,
-form fieldset.panel-wrapper.field-wrapper:has(input[name="approvalcheckbox"]:user-invalid) .plain-text-wrapper.tnc-text-decoration {
-  border: 0.0625rem solid var(--bbl-color-orange-130);
+main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
+  grid-row: 1;
+  grid-column: 1;
+  border: 1px solid var(--bbl-color-grey-150);
+  border-radius: var(--bbl-radius-none);
+  max-height: 15rem;
+  margin: 3px var(--bbl-space-100) 0.9375rem 0;
+  padding: 0.9375rem;
+  font-size: var(--bbl-font-size-b1);
+  overflow: auto;
+  scrollbar-color: var(--bbl-color-grey-153) var(--bbl-color-grey-10);
+  scrollbar-width: thin;
 }
 
-form .text-wrapper {
-  position: relative;
-  clear: both;
-  margin-bottom: 0.375rem;
+main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar {
+  width: var(--bbl-space-100);
 }
 
-form .number-wrapper,
-form .email-wrapper {
-  position: relative;
-  clear: both;
-  margin-bottom: 1.25rem;
+main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar-track {
+  background: var(--bbl-color-grey-10);
 }
 
-.text-wrapper.field-wrapper::before,
-.number-wrapper.field-juristicpersonregistrationnumber::before,
-.email-wrapper.field-email::before{
-  position: absolute;
-  left: 0.9375rem;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--bbl-color-grey-150);
-  font-family: icomoon, sans-serif;
-  transform: translateY(-50%);
+main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar-thumb {
+  background: var(--bbl-color-grey-153);
+  border-radius: var(--bbl-rounded-050);
 }
 
-.text-wrapper.field-firstname::before {
-  content: "\e906";
-  top: 3rem;
+main .form form fieldset.panel-wrapper.field-wrapper:is(
+  :has(.checkbox-wrapper.field-invalid),
+  :has(input[name='approvalcheckbox']:user-invalid),
+  .field-invalid
+) .tnc-text-decoration {
+  border-color: var(--bbl-color-orange-130);
 }
 
-.text-wrapper.field-firstname.field-wrapper.col-6::before {
-  content: "\e906";
-  top: 1.4375rem;
-}
-
-.text-wrapper.field-lastname::before {
-  content: "\e906";
-  top: 1.4375rem;
-}
-
-.text-wrapper.field-companyname::before,
-.number-wrapper.field-juristicpersonregistrationnumber::before {
-  content: "\e911";
-  top: 1.375rem;
-}
-
-.email-wrapper.field-email::before {
-  content: "\e919";
-  top: 1.375rem;
-  font-size: 0.6875rem;
-}
-
-.text-wrapper.field-phonenumber::before {
-  content: "\e909";
-  top: 1.375rem;
-}
-
-.text-wrapper.field-name::before {
-  content: "\e906";
-  position: absolute;
-  top: 50%;
-  left: 0.9375rem;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--bbl-color-grey-150);
-  font-family: icomoon, sans-serif;
-  pointer-events: none;
-  transform: translateY(-50%);
-}
-
-.radio-group-wrapper {
+main .form form fieldset.panel-wrapper.field-wrapper :is(> .field-description, .checkbox-wrapper .field-description) {
+  grid-row: 2;
+  grid-column: 1;
+  position: static;
   display: block;
+  width: 100%;
+  margin: 0;
+  padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
+  font-size: 0.9375rem;
+  clear: both;
+}
+
+/* Radio group — segmented time slot */
+main .form form .radio-group-wrapper {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0;
   box-sizing: border-box;
   width: 100%;
-  margin: 0.25rem 0 1.25rem;
+  max-width: 46.25rem;
+
+  /* margin: 0 0 var(--bbl-font-size-b2); */
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
   border: none;
 }
 
-.radio-wrapper:last-child,
-.radio-wrapper:last-of-type,
-.field-invalid .radio-wrapper:last-child,
-.field-invalid .radio-wrapper:nth-last-child(2) {
-  border-top-right-radius: 0.625rem;
-  border-bottom-right-radius: 0.625rem;
+main .form form .radio-group-wrapper.horizontal {
+  flex-flow: row wrap;
+  gap: 0;
 }
 
-.radio-group-wrapper.field-wrapper .radio-wrapper {
+main .form form .radio-group-wrapper legend.field-label {
+  display: block;
+  flex: 0 0 100%;
+  width: 100%;
+  margin: 0 0 var(--bbl-space-100);
+  padding: 0;
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: default;
+}
+
+main .form form .radio-group-wrapper > .radio-wrapper {
+  position: relative;
   display: flex;
-  float: left;
-  box-sizing: border-box;
+  flex: 1 0 25%;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  width: 25%;
-  height: 3.5rem;
-  margin: 0;
+  min-width: 0;
+  height: var(--bbl-space-1000);
+  margin: 0 0 8px;
+  margin-left: 0;
   padding: 0;
   overflow: hidden;
-  border: 0.0625rem solid var(--bbl-color-grey-125);
-  border-left: none;
-  gap:0;
+  border: none;
+  gap: 0;
 }
 
-.radio-group-wrapper .radio-wrapper:first-of-type {
-  border-left: 0.0625rem solid var(--bbl-color-grey-125);
-  border-top-left-radius: 0.625rem;
-  border-bottom-left-radius: 0.625rem;
-}
-
-.radio-group-wrapper.field-convenienttime::after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-.radio-group-wrapper .radio-wrapper input[type="radio"] {
-  display: none;
-}
-
-.radio-group-wrapper .radio-wrapper label.field-label {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
+main .form form .radio-group-wrapper > .radio-wrapper input[type='radio'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
   width: 100%;
-  height: 3.5rem;
+  height: 100%;
   margin: 0;
-  padding: 0 0.625rem;
-  color: var(--bbl-color-grey-85);
-  font-size: 1rem;
-  font-weight: 500;
-  text-align: center;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-grey-150);
+  border-left: none;
+  border-radius: 0;
+  appearance: none;
   cursor: pointer;
 }
 
-.radio-group-wrapper .radio-wrapper input[type="radio"]:checked + label.field-label {
-  color: var(--bbl-color-grey-85);
+main .form form .radio-group-wrapper > .radio-wrapper input[type='radio']:checked {
   background-color: var(--bbl-color-blue-145);
 }
 
-.radio-group-wrapper.field-convenienttime.field-invalid .radio-wrapper {
+main .form form .radio-group-wrapper > .radio-wrapper:first-of-type input[type='radio'] {
+  border-left: 1px solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem 0 0 0.4375rem;
+}
+
+main .form form .radio-group-wrapper > .radio-wrapper:last-of-type input[type='radio'] {
+  border-radius: 0 0.4375rem 0.4375rem 0;
+}
+
+main .form form .radio-group-wrapper > .radio-wrapper label.field-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-basis: auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 var(--bbl-space-100);
+  color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-medium);
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+}
+
+main .form form .radio-group-wrapper.field-invalid .radio-wrapper input[type='radio'] {
   border-color: var(--bbl-color-orange-130);
+}
+
+main .form form .radio-group-wrapper + fieldset.panel-wrapper.field-wrapper {
+  margin-top: 0.9375rem;
+}
+
+/* Wrapper icon fields — customClassName on field-wrapper (icon-money, icon-email, etc.) */
+main .form form .field-wrapper[class*='icon-']::before {
+  position: absolute;
+  top: 1.375rem;
+  left: 0.9375rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+  color: var(--bbl-color-grey-150);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Compact glyphs — money & email */
+main .form form :is(
+  .field-wrapper:is(.icon-money, .icon-email),
+  label:is(.icon-money, .icon-email)
+)::before {
+  font-size: 0.6875rem;
+  width: var(--bbl-space-200);
+  height: var(--bbl-space-200);
+  line-height: var(--bbl-space-200);
 }

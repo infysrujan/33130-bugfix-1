@@ -6,6 +6,7 @@ import {
   bindPaginationClick,
 } from '../../scripts/utils/card-helpers.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 function initFilterToggles(container) {
   container.querySelectorAll('[aria-haspopup="listbox"]').forEach((btn) => {
@@ -124,7 +125,7 @@ function buildFilterHtml(p, propertyTypes, priceRanges) {
         <ul class="pfs-filter-dropdown" role="listbox">${priceOpts}</ul>
       </div>
       <div class="pfs-search-btn-wrap">
-        <button class="pfs-btn-search button primary" type="button" disabled>${p.propertyForSaleSearch || 'ค้นหา'}</button>
+        <button class="pfs-btn-search button-m primary" type="button" disabled>${p.propertyForSaleSearch || 'ค้นหา'}</button>
       </div>
     </div>`;
 }
@@ -154,11 +155,11 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData) {
     cardShortDescription: descParts,
     ctaLink: `${detailPath}?FILE_ID=${encodeURIComponent(item.FILE_ID || '')}`,
     ctaLabel: p.propertyForSaleDetails || 'รายละเอียด',
-    targetLink: 'false',
+    targetLink: p.propertyForSaleDetailsNewTab || 'true',
   };
 
   const footerExtra = mapUrl
-    ? `<a href="${mapUrl}" target="_blank" class="listing-card-cta button secondary pfs-map-btn">${p.propertyForSaleMapLocation || 'ตำแหน่งที่ตั้ง'}</a>`
+    ? `<a href="${mapUrl}" class="listing-card-cta button-m secondary pfs-map-btn">${p.propertyForSaleMapLocation || 'ตำแหน่งที่ตั้ง'}</a>`
     : '';
 
   return buildCardHtml(card, tag, p, { footerExtra });
@@ -279,6 +280,11 @@ function setupPanel(panel, state, config) {
     gridEl.innerHTML = pageItems.length
       ? pageItems.map((item) => buildPropCardHtml(item, detailPath, placeholders, category, pfsData)).join('')
       : `<p class="listing-card-empty">${placeholders.propertyForSaleNotFound || 'ขออภัย ไม่พบข้อมูลตามที่ท่านระบุ'}</p>`;
+
+    const newTab = (placeholders.propertyForSaleDetailsNewTab || 'true') === 'true';
+    gridEl.querySelectorAll('.listing-card-footer').forEach((footer) => {
+      applyLinkTarget(footer, '.pfs-map-btn', newTab);
+    });
 
     const totalPages = Math.max(1, Math.ceil(allItems.length / pageSize));
     paginationEl.innerHTML = buildPaginationHtml(pageRef.page, totalPages);

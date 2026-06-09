@@ -32,7 +32,6 @@ function formatNumber(value) {
 
 function formatDecimal(value) {
   if (!Number.isFinite(value)) return '0';
-  // Show up to 2 decimal places, strip trailing zeros for clean display.
   return Number(value.toFixed(2)).toLocaleString('en-US', { maximumFractionDigits: 2 });
 }
 
@@ -838,7 +837,7 @@ function resetCalculator(state, data) {
   state.calculatedInputs = null;
   state.calculatedCalculation = null;
   if (state.chartInstance) {
-    state.chartInstance.destroy();
+    try { state.chartInstance.destroy(); } catch (_) { /* ignore */ }
     state.chartInstance = null;
   }
   if (state.chartResizeObserver) {

@@ -84,7 +84,7 @@ export default function decorate(block) {
   const reopenOnRevisitDiv = configRows[configRowsLength - 1];
   const delaySecondsDiv = configRows[configRowsLength - 2];
   const targetSettingsDiv = configRowsLength > 2 ? configRows[configRowsLength - 3] : null;
-  const linkElement = linkDiv?.querySelector('a') || null;
+  const linkElement = linkDiv?.querySelector('p') || null;
 
   const config = {
     image: imageDiv?.querySelector('img'),

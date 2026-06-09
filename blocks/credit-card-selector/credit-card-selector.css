@@ -13,15 +13,7 @@
 }
 
 .credit-card-selector::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  height: 1.875rem;
-  width: 100vw;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: var(--bbl-color-white);
-  z-index: -1;
+  display: none;
 }
 
 /* ==========================================================================
@@ -52,6 +44,7 @@
   gap: 0;
   max-height: 75rem;
   opacity: 1;
+  overflow: hidden;
   padding-bottom: 1.875rem;
   transition:
     max-height 0.5s ease,
@@ -367,11 +360,11 @@
    Collapsible — wrapper, content transition, toggle button
    ========================================================================== */
 
-/* Outer wrapper: clips vertically so content folds away cleanly.
+/* Outer wrapper: overflow visible so chevron can float on the boundary.
    position: relative establishes the containing block for the absolutely
    positioned collapse toggle button. */
 .credit-card-selector .card-selector-collapsible {
-  overflow-y: hidden;
+  overflow: visible;
   position: relative;
 }
 
@@ -383,63 +376,58 @@
   padding-bottom: 0;
 }
 
-/* Toggle bar: short white strip (30 px) — matches live site's .collapse-container.
-   The button is taller and anchored to bottom: 0, so it bleeds 20 px UP into the
-   gray section above (invisible there, #f5f5f5 on #f5f5f5) and 30 px down into
-   the white strip (visible as a gray teardrop tab). */
+/* Toggle bar: zero-height positioning container.
+   The chevron button is absolutely positioned and uses translateY(50%)
+   to float on the boundary between sections. */
 .credit-card-selector .collapse-toggle-bar {
-  height: 1.875rem;
-  background-color: var(--bbl-color-white);
+  position: relative;
+  height: 0;
+  background: transparent;
 }
 
-/* Toggle button: 50 px tall, anchored to the collapsible's bottom edge.
-   Top 20 px overlap the gray section — transparent so it blends with any
-   section background without needing a colour match.
-   Bottom 30 px sit in the white toggle bar and show the gray teardrop box
-   (drawn by ::before, only covering those bottom 30 px).
-   overflow-y: hidden on the collapsible clips it to 30 px when collapsed. */
+/* Toggle button: floating chevron that sits on the boundary between
+   the selector section and the next section, matching the production site.
+   Only the button itself has border, rounded corners and subtle shadow.
+   translateY(100%) places the top edge at the section boundary so the
+   button hangs downward, aligned to the divider line. */
 .credit-card-selector .collapse-toggle-button {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  background: transparent;
-  border: none;
+  bottom: 0.125rem;
+  right: var(--bbl-space-300);
+  transform: translateY(100%);
+  background: var(--bbl-color-grey-10);
   cursor: pointer;
   padding: 0;
-  width: var(--bbl-space-600);
-  height: 3.125rem;
+  width: 2.75rem;
+  height: 1.75rem;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding-bottom: var(--bbl-space-075);
+  z-index: 2;
 }
 
-/* Gray rounded box — only the bottom 30 px (the visible teardrop portion) */
+/* No grey box behind the chevron — production has none */
 .credit-card-selector .collapse-toggle-button::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1.875rem;
-  background: var(--bbl-color-grey-10);
-  z-index: 0;
+  display: none;
 }
 
-/* Chevron icon — sits above the ::before box */
+/* Chevron icon — icomoon icon-dropdown (\e902), same as filter-options-mobile */
 .credit-card-selector .collapse-toggle-button::after {
-  content: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19 14.5L12 7.5L5 14.5' stroke='%230064FF' stroke-width='2' stroke-miterlimit='10'/%3E%3C/svg%3E");
+  content: "\e902";
+  font-family: icomoon, sans-serif;
+  font-size: 0.8rem;
+  color: var(--bbl-color-active-blue);
   display: block;
-  width: var(--bbl-space-300);
-  height: var(--bbl-space-300);
   position: relative;
   z-index: 1;
+  line-height: 1;
+  transform: rotate(180deg);
   transition: transform 0.3s ease;
 }
 
 /* Rotate chevron to point down when collapsed */
 .credit-card-selector .card-selector-collapsible.is-collapsed .collapse-toggle-button::after {
-  transform: rotate(180deg);
+  transform: rotate(0deg);
 }
 
 /* ==========================================================================
@@ -654,7 +642,7 @@
 /* ── Hidden cards (beyond initial 6 in unfiltered state) ────────────────────── */
 
 .ccs-hidden {
-  display: none !important;
+  display: none;
 }
 
 /* ── Row-2 peek: clips container to show cards 4–6 at 50% height on desktop ─── */
@@ -793,9 +781,9 @@
     justify-content: flex-end;
   }
 
-  /* Rotate chevron when collapsed */
+  /* Rotate chevron to point down when collapsed */
   .credit-card-selector .card-selector-collapsible.is-collapsed .collapse-toggle-button::after {
-    transform: rotate(180deg);
+    transform: rotate(0deg);
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 {

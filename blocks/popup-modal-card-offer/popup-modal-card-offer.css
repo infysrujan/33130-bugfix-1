@@ -114,10 +114,16 @@
 .floating-popup-inner a {
   display: block;
   text-align: center;
-  margin: 1.875rem auto 0;
+  margin: 1.875rem 0 0;
   min-width: 8.625rem;
   max-width: 8.625rem;
   width: 100%;
+}
+
+.floating-popup-inner .button-container {
+  margin-block: 0;
+  display: flex;
+  justify-content: center;
 }
 
 @media (width > 47.5rem) {

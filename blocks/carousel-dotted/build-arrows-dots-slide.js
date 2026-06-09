@@ -59,16 +59,13 @@ export default function buildSlideArrowsandDots(row, index) {
     }
 
     if (linkCell && linkCell.textContent.trim()) {
-      const linkWrap = document.createElement('div');
-      linkWrap.className = 'button-group';
-      const a = linkCell.querySelector('a');
-      if (a) {
-        a.className = 'sub-title-medium link-primary';
-        linkWrap.append(a);
+      const buttonContainer = linkCell.querySelector('.button-container');
+      if (buttonContainer) {
+        content.append(buttonContainer);
       } else {
-        while (linkCell.firstChild) linkWrap.append(linkCell.firstChild);
+        const a = linkCell.querySelector('a');
+        if (a) content.append(a);
       }
-      content.append(linkWrap);
     }
 
     slide.append(content);
@@ -170,13 +167,12 @@ export default function buildSlideArrowsandDots(row, index) {
     }
 
     if (ctaLinkCell && ctaLinkCell.textContent.trim()) {
-      const a = ctaLinkCell.querySelector('a');
-      if (a) {
-        const linkWrap = document.createElement('div');
-        linkWrap.className = 'button-container';
-        a.className = 'sub-title-medium button primary';
-        linkWrap.append(a);
-        content.append(linkWrap);
+      const buttonContainer = ctaLinkCell.querySelector('.button-container');
+      if (buttonContainer) {
+        content.append(buttonContainer);
+      } else {
+        const a = ctaLinkCell.querySelector('a');
+        if (a) content.append(a);
       }
     }
 

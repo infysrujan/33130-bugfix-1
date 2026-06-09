@@ -71,30 +71,108 @@ function createLoginButton(buttonText) {
 }
 
 /**
+ * @returns {'ios'|'android'|null}
+ */
+function getMobileOS() {
+  const ua = navigator.userAgent || '';
+  if (/android/i.test(ua)) return 'android';
+  if (/iPad|iPhone|iPod/i.test(ua)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+    return 'ios';
+  }
+  return null;
+}
+
+/**
+ * @param {HTMLLIElement} li
+ * @returns {'ios'|'android'|null}
+ */
+function getOsTagFromLi(li) {
+  const text = li.textContent?.toLowerCase() || '';
+  if (/#ios\b/.test(text)) return 'ios';
+  if (/#android\b/.test(text)) return 'android';
+  return null;
+}
+
+/**
+ * Label text for a list item, excluding nested list content.
+ * @param {HTMLLIElement} li
+ * @returns {string}
+ */
+function getLiLabelText(li) {
+  const clone = li.cloneNode(true);
+  clone.querySelector('ul, ol')?.remove();
+  return clone.textContent?.trim() || '';
+}
+
+/**
+ * @param {HTMLAnchorElement} anchor
+ * @param {string} [labelText]
+ * @returns {HTMLLIElement}
+ */
+function createLinkItemFromAnchor(anchor, labelText) {
+  const linkItem = document.createElement('li');
+  linkItem.className = 'login-link-item';
+
+  const link = document.createElement('a');
+  link.href = anchor.href;
+  link.className = 'login-link';
+  link.textContent = labelText || anchor.textContent?.trim() || '';
+  if (anchor.title) link.title = anchor.title;
+  linkItem.appendChild(link);
+
+  return linkItem;
+}
+
+/**
  * Builds a single link list element from a list of list items.
  * @param {HTMLUListElement|HTMLOListElement} listEl Source list element
  * @param {string} [listClassName] Optional extra class (e.g. for standalone lists, desktop/mobile)
+ * @param {{ filterOsLinks?: boolean }} [options]
  * @returns {HTMLUListElement}
  */
-function buildLinkList(listEl, listClassName = '') {
+function buildLinkList(listEl, listClassName = '', { filterOsLinks = false } = {}) {
   const linkList = document.createElement('ul');
   linkList.className = `login-link-list${listClassName ? ` ${listClassName}` : ''}`;
 
+  const mobileOS = filterOsLinks ? getMobileOS() : null;
+
   [...listEl.children].forEach((li) => {
-    const linkItem = document.createElement('li');
-    linkItem.className = 'login-link-item';
+    if (li.tagName !== 'LI') return;
+
+    const nestedList = li.querySelector(':scope > ul, :scope > ol');
+    if (nestedList) {
+      const childItems = [...nestedList.children].filter((child) => child.tagName === 'LI');
+      const hasOsTags = filterOsLinks && childItems.some((child) => getOsTagFromLi(child));
+
+      if (hasOsTags) {
+        if (!mobileOS) return;
+
+        const matchingChild = childItems.find((child) => getOsTagFromLi(child) === mobileOS);
+        const anchor = matchingChild?.querySelector('a');
+        if (!anchor) return;
+
+        const labelText = getLiLabelText(li) || anchor.textContent?.trim() || '';
+        linkList.appendChild(createLinkItemFromAnchor(anchor, labelText));
+        return;
+      }
+
+      childItems.forEach((child) => {
+        const anchor = child.querySelector('a');
+        if (anchor) linkList.appendChild(createLinkItemFromAnchor(anchor));
+      });
+      return;
+    }
 
     const anchor = li.querySelector('a');
     if (anchor) {
-      const link = document.createElement('a');
-      link.href = anchor.href;
-      link.className = 'login-link';
-      link.textContent = anchor.textContent;
-      linkItem.appendChild(link);
-    } else {
-      linkItem.textContent = li.textContent;
+      linkList.appendChild(createLinkItemFromAnchor(anchor));
+      return;
     }
 
+    const linkItem = document.createElement('li');
+    linkItem.className = 'login-link-item';
+    linkItem.textContent = li.textContent?.trim() || '';
     linkList.appendChild(linkItem);
   });
 
@@ -105,13 +183,14 @@ function buildLinkList(listEl, listClassName = '') {
  * Builds a link list from a cell that may contain ul/ol (richtext).
  * @param {Element} [cell] Cell element (e.g. desktopPanelLinks or mobilePanelLinks)
  * @param {string} [listClassName] Optional extra class
+ * @param {{ filterOsLinks?: boolean }} [options]
  * @returns {HTMLUListElement|null} Link list or null if no list in cell
  */
-function buildLinkListFromCell(cell, listClassName = '') {
+function buildLinkListFromCell(cell, listClassName = '', options = {}) {
   if (!cell) return null;
   const listEl = cell.querySelector('ul, ol');
   if (!listEl) return null;
-  return buildLinkList(listEl, listClassName);
+  return buildLinkList(listEl, listClassName, options);
 }
 
 /**
@@ -159,7 +238,11 @@ function createLoginPanel(loginPanelTitle, sections) {
     const desktopList = buildLinkListFromCell(desktopLinksCell, 'login-link-list-desktop');
     if (desktopList) wrapper.appendChild(desktopList);
 
-    const mobileList = buildLinkListFromCell(mobileLinksCell, 'login-link-list-mobile');
+    const mobileList = buildLinkListFromCell(
+      mobileLinksCell,
+      'login-link-list-mobile',
+      { filterOsLinks: true },
+    );
     if (mobileList) wrapper.appendChild(mobileList);
 
     // wrapper.appendChild(sectionGroup);

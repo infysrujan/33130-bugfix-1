@@ -57,8 +57,22 @@ const localizedHeaderMap = {
   totalnetassets: 'mfr_sAUM',
 };
 
+const thaiHeaderKeyMap = {
+  ประเภทกองทุน: 'fundtype',
+  กองทุนเปิด: 'openendfund',
+  กองทุน: 'openendfund',
+  มูลค่าหน่วยลงทุน: 'nav',
+  nav: 'nav',
+  ราคาขาย: 'sellingprice',
+  ราคารับซื้อคืน: 'redemptionprice',
+  มูลค่าทรัพย์สินสุทธิรวม: 'totalnetassets',
+  มูลค่าทรัพย์สินสุทธิ: 'totalnetassets',
+};
+
 function normalizeHeaderKey(header) {
-  return header.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const trimmed = header.trim();
+  if (thaiHeaderKeyMap[trimmed]) return thaiHeaderKeyMap[trimmed];
+  return trimmed.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
 function resolveColumnKey(normalizedKey, lang) {

@@ -323,7 +323,7 @@ function printElement() {
     .brand-logo-container {
       width: 12.5rem;
       height: 3.125rem;
-      margin-block: 4rem;
+      margin-block: 3rem 1rem;
     }
 
     h2 {

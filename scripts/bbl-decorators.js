@@ -358,7 +358,7 @@ function decorateButtonsV1(element) {
   });
 }
 
-function decorateTerritoryButtons(main) {
+function decorateTertiaryButtons(main) {
   // Find anchors that are "button" only (no variants like primary/secondary)
   // and convert them to "button territory".
   main.querySelectorAll('a.button:not([class*=" "])').forEach((a) => {
@@ -516,7 +516,7 @@ function applyLinkTarget(container, selector, targetValue) {
 }
 
 export {
-  decorateTerritoryButtons,
+  decorateTertiaryButtons,
   decorateButtonsV1,
   decorateSvgWithAltText,
   loadBreadcrumb,

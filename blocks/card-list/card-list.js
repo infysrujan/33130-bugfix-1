@@ -1,7 +1,7 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
-import { applyLinkTarget, getLang } from '../../scripts/bbl-decorators.js';
+import { applyLinkTarget, getLang, isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
 function getTextValue(value) {
   return value?.toString().trim() || '';
@@ -159,12 +159,6 @@ function createCardListItem(cardElement, doc) {
     );
   }
 
-  if (financialDate) {
-    content.appendChild(
-      createElementFromHTML(`<div class="cards-list-date"><p>${financialDate}</p></div>`, doc),
-    );
-  }
-
   if (content.children.length) {
     inner.appendChild(content);
   }
@@ -207,6 +201,12 @@ function createCardListItem(cardElement, doc) {
     }
   }
 
+  if (financialDate) {
+    inner.appendChild(
+      createElementFromHTML(`<div class="cards-list-date">${financialDate}</div>`, doc),
+    );
+  }
+
   if (isCardClickable && cardLinkHref) {
     const wrapper = createElementFromHTML('<a class="cards-list-item-link"></a>', doc);
 
@@ -232,12 +232,62 @@ function createCardListItem(cardElement, doc) {
   return card;
 }
 
+function stripAuthoringInstrumentation(root) {
+  if (!root) return;
+  [root, ...root.querySelectorAll('*')].forEach((el) => {
+    [...el.attributes]
+      .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
+      .forEach(({ name }) => el.removeAttribute(name));
+  });
+}
+
+function removeDuplicateAuthoringBlocks(block) {
+  const blockResource = block.dataset.aueResource;
+  if (!blockResource) return;
+
+  block.ownerDocument.querySelectorAll('.card-list.block').forEach((other) => {
+    if (other === block) return;
+    if (other.dataset.aueResource !== blockResource) return;
+    if (!other.querySelector(':scope > .cards-list')) return;
+    other.remove();
+  });
+}
+
+function getSourceRows(block) {
+  return [...block.children].filter((row) => !row.classList.contains('cards-list'));
+}
+
+function bindModalHandler(block, doc) {
+  if (block.dataset.cardListModalBound) return;
+  block.dataset.cardListModalBound = 'true';
+
+  block.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-modal]');
+    if (!trigger || !block.contains(trigger)) return;
+    event.preventDefault();
+    const fragmentPath = trigger.getAttribute('data-modal');
+    if (fragmentPath) openModal(doc, { fragmentPath, dialogClass: 'card-list-modal-body' });
+  });
+}
+
 export default function decorate(block) {
-  if (block.dataset.decorated) return;
+  const isAuthoring = isAuthoringInstance(block);
+  if (block.dataset.decorated && !isAuthoring) return;
   block.dataset.decorated = 'true';
 
   const doc = block.ownerDocument;
-  const [LayoutRow, Alignment, cardsPerRowEl, ...cardRows] = [...block.children];
+
+  if (isAuthoring) {
+    removeDuplicateAuthoringBlocks(block);
+    block.querySelectorAll(':scope > .cards-list').forEach((container) => container.remove());
+  }
+
+  const sourceRows = getSourceRows(block);
+  if (isAuthoring) {
+    sourceRows.forEach((row) => { row.style.display = 'none'; });
+  }
+
+  const [LayoutRow, Alignment, cardsPerRowEl, ...cardRows] = sourceRows;
   const cardListLayout = LayoutRow?.textContent?.trim();
   const cardListAlignment = Alignment?.textContent?.trim();
   const cardsPerRow = cardsPerRowEl?.textContent?.trim();
@@ -252,18 +302,20 @@ export default function decorate(block) {
 
   cardRows.forEach((row) => {
     const card = createCardListItem(row, doc);
-    moveInstrumentation(row, card);
+    if (!isAuthoring) {
+      moveInstrumentation(row, card);
+    }
     container.appendChild(card);
-    row.remove();
+    if (!isAuthoring) {
+      row.remove();
+    }
   });
 
   block.appendChild(container);
 
-  block.addEventListener('click', (event) => {
-    const trigger = event.target.closest('[data-modal]');
-    if (!trigger || !block.contains(trigger)) return;
-    event.preventDefault();
-    const fragmentPath = trigger.getAttribute('data-modal');
-    if (fragmentPath) openModal(doc, { fragmentPath, dialogClass: 'card-list-modal-body' });
-  });
+  if (isAuthoring) {
+    stripAuthoringInstrumentation(container);
+  }
+
+  bindModalHandler(block, doc);
 }

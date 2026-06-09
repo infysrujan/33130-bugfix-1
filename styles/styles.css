@@ -17,6 +17,7 @@
 @import url('./overlay.css');
 @import url('./calendar-picker.css');
 @import url('./error-page.css');
+@import url('./rte.css');
 
 :root {
     /* site-level sizing */
@@ -159,6 +160,10 @@ a:hover {
     text-decoration: underline;
 }
 
+.default-content-wrapper > :not(.button-container) p a:any-link {
+    color: inherit;
+}
+
 main img {
     max-width: 100%;
     width: auto;
@@ -254,7 +259,8 @@ main img {
 .section.underline-image .default-content-wrapper > p > img {
     position: relative;
     display: inline-block;
-    padding-bottom: var(--bbl-space-250);
+    padding-bottom: 1.875rem;
+    margin-bottom: 1.875rem;
     max-width: 100%;
 }
 
@@ -296,6 +302,13 @@ main img {
         padding-bottom: 1.875rem;
     }
 
+    .section.underline-image .default-content-wrapper > p > picture,
+    .section.underline-image .default-content-wrapper > p > img {
+        padding-bottom: var(--bbl-space-500);
+    }
+}
+
+@media (width > 64rem) {
     .section.underline-image .default-content-wrapper > p > picture,
     .section.underline-image .default-content-wrapper > p > img {
         padding-bottom: 1.875rem;
@@ -386,21 +399,19 @@ body.bangkok-bankm-card main {
 /* =========================================================================
    SECTION-CENTRAL-ALIGNED - Global Styles
    ========================================================================= */
-.section.central-aligned .block,
-.section.central-aligned .default-content-wrapper {
+.section.central-aligned > .default-content-wrapper {
     margin-inline: 1rem;
 }
  
 @media (width > 47.5rem) {
-    .section.central-aligned .block,
-    .section.central-aligned .default-content-wrapper {
+    .section.central-aligned > .default-content-wrapper {
         margin-inline: 3rem;
     }
 }
  
 @media (width > 64rem) {
     .section.central-aligned .block,
-    .section.central-aligned .default-content-wrapper {
+    .section.central-aligned > .default-content-wrapper {
         max-width: var(--bbl-layout-central-aligned-max-width);
         margin: 0 auto;
     }
@@ -670,4 +681,11 @@ body.wealth main :is(.button-container .button, .button) {
 
 .hidden {
     display: none;
+}
+
+.rte-anchor {
+    display: block;
+    height: 0;
+    overflow: hidden;
+    scroll-margin-top: var(--header-scroll-offset);
 }

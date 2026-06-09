@@ -266,9 +266,27 @@ function buildAccordionPrintDocument(block) {
   const container = wrapper?.parentElement?.classList.contains('accordion-block-container')
     ? wrapper.parentElement
     : null;
-  const wrapperIsDirectChild = Boolean(
-    container && [...container.children].includes(wrapper),
-  );
+  let wrapperIsDirectChild = false;
+  /** @type {string|null} */
+  let prependHtml = null;
+  if (container) {
+    // includes title / text within the same section of the accordion block
+    wrapperIsDirectChild = Boolean(
+      container && [...container.children].includes(wrapper),
+    );
+  } else {
+    // includes title, text from the previous section if the accordion block is within tab section
+    const section = block.closest('.section');
+    if (section?.classList.contains('tabs-container')) {
+      const prevSection = section.previousElementSibling;
+      if (prevSection?.classList.contains('section')) {
+        const contentWrapper = prevSection.querySelector(':scope > .default-content-wrapper:first-child');
+        if (contentWrapper) {
+          prependHtml = contentWrapper.cloneNode(true).outerHTML;
+        }
+      }
+    }
+  }
 
   let bodyHtml;
   if (wrapperIsDirectChild) {
@@ -281,6 +299,8 @@ function buildAccordionPrintDocument(block) {
       }
     });
     bodyHtml = shell.innerHTML;
+  } else if (prependHtml) {
+    bodyHtml = `${prependHtml}${clone.outerHTML}`;
   } else {
     bodyHtml = clone.outerHTML;
   }
@@ -294,53 +314,106 @@ function buildAccordionPrintDocument(block) {
     panel.hidden = s.hidden;
   });
 
+  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+
   const docTitle = block.querySelector('.accordion-block-title')?.textContent?.trim()
     || document.querySelector('title')?.textContent
     || placeholders.printLabel;
 
   const printCss = `
-    body { font-family: system-ui, -apple-system, sans-serif; padding: 1.5rem; color: #111; }
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+
+    .header {
+      position: unset;
+    }
+
+    .brand-logo-container {
+      width: 12.5rem;
+      height: 3.125rem;
+      margin-block: 3rem 1rem;
+    }
+
     .accordion { border: 0; }
     .accordion-block-intro { padding: 0 0 1rem; }
     .accordion-block-title { font-size: 1.5rem; margin: 0 0 0.5rem; }
-    .accordion-item { border-bottom: 1px solid #ddd; padding-bottom: 1rem; margin-bottom: 1rem; }
-    .accordion-print-heading { font-size: 1.125rem; margin: 0 0 0.5rem; }
+    .accordion-item { border-bottom: 0; padding-bottom: 1rem; margin-bottom: 1rem; }
+    .accordion-print-heading { font-size: 1rem; margin: 0 0 0.5rem; border-block: 1px solid var(--bbl-color-gray-146); padding-block: 10px; }
     .accordion-panel { display: block !important; padding: 0; }
     .accordion-header { display: none; }
     .accordion-heading { display: none; }
+    .accordion-block-toolbar { display: none; }
+    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: center; margin: 0 auto; }
+    .accordion-block-container > .default-content-wrapper { margin-bottom: 1.875rem; }
+    .download-section .default-content-wrapper { text-align:center;}
+    .download-section .default-content-wrapper h4 { font-size: 1.125rem;}
+    .download-button-wrapper .download-files { background: none; box-shadow: none; padding: 0; margin: 0; }
   `;
 
-  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>${escapeHtml(docTitle)}</title><style>${printCss}</style></head><body>${bodyHtml}</body></html>`;
+  return `
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>${escapeHtml(docTitle)}</title>
+      <link rel="stylesheet" href="/styles/styles.css">
+      <link rel="stylesheet" href="/styles/fonts.css">
+      <link rel="stylesheet" href="/blocks/header/header.css">
+      <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
+      <link rel="stylesheet" href="/blocks/accordion-block/accordion-block.css">
+      <style>${printCss}</style>
+    </head>
+    <body class="appear">
+      <header class="header-wrapper">
+        <div class="header block" data-block-status="loaded">
+          <div class="header-content">
+            <div class="main-nav-desktop">
+              <div class="brand-logo block">
+                <div class="brand-logo-container">
+                  ${brandLogo}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main>
+        <div class="section accordion-block-container">
+          ${bodyHtml}
+        </div>
+      </main>
+    </body>
+  </html>
+  `;
 }
 
 /**
  * @param {Element} block
  */
 function openAccordionPrintWindow(block) {
-  const html = buildAccordionPrintDocument(block);
-  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  // Do not use noopener: many browsers return null from window.open, so the tab stays blank.
-  const win = window.open(url, '_blank');
-  if (!win) {
-    URL.revokeObjectURL(url);
-    return;
-  }
-
-  const revokeSoon = () => URL.revokeObjectURL(url);
-  win.addEventListener('afterprint', revokeSoon, { once: true });
-  setTimeout(revokeSoon, 120_000);
+  const printHtml = buildAccordionPrintDocument(block);
+  const printWindow = window.open('', '', 'height=500,width=800');
+  if (!printWindow) return;
 
   const runPrint = () => {
-    win.focus();
-    win.print();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 100);
   };
-
-  if (win.document.readyState === 'complete') {
+  if (printWindow.document.readyState === 'complete') {
     requestAnimationFrame(runPrint);
   } else {
-    win.addEventListener('load', runPrint);
+    printWindow.addEventListener('load', runPrint);
   }
+
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
 }
 
 /**
@@ -531,15 +604,14 @@ function createAccordionItemElements(baseId, itemIndex, titleText, fallbackTitle
   };
 }
 
-/* Group the download-file-wrapper nodes after each default-content-wrapper heading */
+/* Group the download-file-wrapper nodes after each default-content-wrapper */
 /**
  * @param {Node} node
  * @returns {boolean}
  */
-function isDefaultContentHeaderWrapper(node) {
+function isDefaultContentWrapper(node) {
   return node.nodeType === Node.ELEMENT_NODE
-    && /** @type {Element} */ (node).classList.contains('default-content-wrapper')
-    && /** @type {Element} */ (node).querySelector('h1, h2, h3, h4, h5, h6') !== null;
+    && /** @type {Element} */ (node).classList.contains('default-content-wrapper');
 }
 
 /* Check if the node is a download-file-wrapper */
@@ -553,8 +625,8 @@ function isDownloadFileWrapper(node) {
 }
 
 /**
- * Wraps each default-content-wrapper heading and its consecutive download-file-wrapper
- * siblings in a download-section container (heading first).
+ * Wraps each default-content-wrapper and its consecutive download-file-wrapper
+ * siblings in a download-section container.
  * @param {DocumentFragment} contentFrag
  */
 function groupDownloadSections(contentFrag) {
@@ -566,22 +638,29 @@ function groupDownloadSections(contentFrag) {
   let i = 0;
   while (i < nodes.length) {
     const node = nodes[i];
-    if (isDefaultContentHeaderWrapper(node)) {
-      const section = document.createElement('div');
-      section.classList.add('download-section');
-      section.appendChild(node);
-      i += 1;
-
-      while (i < nodes.length && isDownloadFileWrapper(nodes[i])) {
-        section.appendChild(nodes[i]);
-        i += 1;
+    if (isDefaultContentWrapper(node)) {
+      let j = i + 1;
+      while (j < nodes.length && isDownloadFileWrapper(nodes[j])) {
+        j += 1;
       }
 
-      contentFrag.appendChild(section);
+      if (j > i + 1) {
+        const section = document.createElement('div');
+        section.classList.add('download-section');
+        section.appendChild(node);
+        for (let k = i + 1; k < j; k += 1) {
+          section.appendChild(nodes[k]);
+        }
+        contentFrag.appendChild(section);
+        i = j;
+      } else {
+        contentFrag.appendChild(node);
+        i += 1;
+      }
+    } else {
+      contentFrag.appendChild(node);
+      i += 1;
     }
-
-    contentFrag.appendChild(node);
-    i += 1;
   }
 }
 
@@ -715,7 +794,10 @@ export default async function decorate(block) {
 
   const fragmentSection = fragment.querySelector(':scope .section');
   if (fragmentSection) {
-    panel.append(...fragmentSection.childNodes);
+    const contentFrag = document.createDocumentFragment();
+    contentFrag.append(...fragmentSection.childNodes);
+    groupDownloadSections(contentFrag);
+    panel.appendChild(contentFrag);
   } else {
     const { titleText, contentFrag } = extractTitleAndBody(fragment);
     if (titleText) {
