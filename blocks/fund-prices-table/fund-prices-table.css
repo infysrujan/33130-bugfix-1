@@ -42,7 +42,7 @@ td.merged-fund-type {
 .fund-prices-table table tr:not(.header-row) td {
   color: var(--bbl-color-grey-70);
   font-family: var(--bbl-font-family-primary);
-  font-size: 1rem;
+  font-size: var(--bbl-text-body-size);
   font-weight: var(--bbl-font-weight-regular);
   background: var(--bbl-color-white);
   padding: var(--bbl-space-300) 1.125rem;
@@ -52,7 +52,7 @@ td.merged-fund-type {
 
 .fund-prices-table table tr:not(.header-row) td span {
   font-style: italic;
-  font-size: 0.6875rem;
+  font-size: var(--bbl-text-body-small-size);
   line-height: 1.63;
   letter-spacing: -0.0063rem;
   padding-left: 0.3125rem;
@@ -71,87 +71,23 @@ td.merged-fund-type {
 }
 
 .fund-prices-table table tr.header-row td {
-  font: 1rem/1.35 BangkokBank-Bold, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-body-size);
+  font-weight: var(--bbl-font-weight-medium);
+  line-height: var(--bbl-line-height-body);
   color: var(--bbl-color-black);
   background: var(--bbl-color-grey-10);
-  padding: 0 var(--bbl-space-250);
+  padding: 0 1.125rem;
   vertical-align: middle;
   border-color: var(--bbl-color-grey-18);
   text-align: right;
 }
 
-.fund-prices-table table tr.header-row td:nth-child(1),
+.fund-prices-table table tr.header-row td:first-child,
 .fund-prices-table table tr.header-row td:nth-child(2) {
   text-align: left;
 }
 
 .fund-prices-table table tr.header-row {
-  height: 4.375rem;
-}
-
-@media print {
-  .fund-prices-table {
-    overflow-x: visible;
-    margin: 0;
-  }
-
-  .fund-prices-table table {
-    min-width: unset;
-    width: 100%;
-    table-layout: fixed;
-    font-size: 0.625rem;
-    border: 0;
-    border-collapse: collapse;
-    background: var(--bbl-color-white);
-  }
-
-  .fund-prices-table table td {
-    border-bottom: 0.0625rem solid var(--bbl-color-grey-25, #d9d9d9);
-  }
-
-  .fund-prices-table table tr td:first-child {
-    width: 15%;
-  }
-
-  .fund-prices-table table tr td:nth-child(2) {
-    width: 38%;
-  }
-
-  .fund-prices-table table tr td:nth-child(3),
-  .fund-prices-table table tr td:nth-child(4),
-  .fund-prices-table table tr td:nth-child(5) {
-    width: 11%;
-  }
-
-  .fund-prices-table table tr td:nth-child(6) {
-    width: 14%;
-  }
-
-  .fund-prices-table table tr:not(.header-row) td {
-    padding: 0.3125rem 0.5rem;
-    font-size: 0.625rem;
-    line-height: 1.25;
-    white-space: normal;
-    vertical-align: top;
-    color: var(--bbl-color-black);
-  }
-
-  .fund-prices-table table tr.header-row td {
-    padding: 0.5rem 0.5rem 0.4375rem;
-    font: 0.625rem/1.15 BangkokBank-Bold, Arial, sans-serif;
-    white-space: normal;
-    color: var(--bbl-color-black);
-    background: var(--bbl-color-white);
-    border-top: 0.125rem solid var(--bbl-color-grey-100, #666);
-    border-bottom: 0.125rem solid var(--bbl-color-grey-100, #666);
-  }
-
-  .fund-prices-table table tr.header-row {
-    height: auto;
-  }
-
-  .fund-prices-table table tr:not(.header-row) td span {
-    font-size: 0.5625rem;
-    line-height: 1.2;
-  }
+  height: 2.5rem;
 }

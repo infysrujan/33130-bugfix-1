@@ -71,7 +71,7 @@ function buildFilterGroup(group, groupIndex) {
   const groupHeader = document.createElement('div');
   groupHeader.className = 'filter-group-header';
 
-  const groupTitle = document.createElement('h3');
+  const groupTitle = document.createElement('h2');
   groupTitle.className = 'filter-group-title';
   groupTitle.textContent = group.displayTitle;
   groupHeader.appendChild(groupTitle);
@@ -302,8 +302,8 @@ export default function decorate(block) {
       .replace(/\s*\([^)]+\)\s*$/, '') // strip parenthetical
       .replace(/ Selection$/i, '')
       .trim();
-    // [1] = capture group text only (without surrounding parentheses)
-    const sectionHint = parenMatch?.[1]?.trim() ?? '';
+    // [0] = full match including surrounding parentheses — matches live site
+    const sectionHint = parenMatch?.[0]?.trim() ?? '';
 
     const listItems = [...(cells[1]?.querySelectorAll('li') ?? [])];
     const isLifestyle = rawTitle.toLowerCase().includes('lifestyle');

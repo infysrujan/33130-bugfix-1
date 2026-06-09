@@ -7,8 +7,8 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
-function filterCards(activeCards, tabText) {
-  if (tabText.toLowerCase().replace(/\s+/g, '') === 'toppromotions') {
+function filterCards(activeCards, tabText, isTopPromo) {
+  if (isTopPromo) {
     return activeCards.filter((card) => card.topPromotion === true);
   }
   const topCards = activeCards.filter(
@@ -27,8 +27,10 @@ function setupPanel(panel, activeCards, placeholders) {
   const btn = btnId ? document.getElementById(btnId) : null;
   const tabText = btn?.textContent?.trim() || '';
 
-  const isTopPromo = tabText.toLowerCase().replace(/\s+/g, '') === 'toppromotions';
-  let cards = sortCards(filterCards(activeCards, tabText));
+  const topPromoTabLabel = (placeholders.topPromotionsTabLabel || 'toppromotions').toLowerCase().replace(/\s+/g, '');
+  const isTopPromo = tabText.toLowerCase().replace(/\s+/g, '') === topPromoTabLabel;
+
+  let cards = sortCards(filterCards(activeCards, tabText, isTopPromo));
   if (isTopPromo) {
     if (!cards.length) {
       panel.hidden = true;

@@ -1,0 +1,44 @@
+{
+  "definitions": [
+    {
+      "title": "Forms Card List",
+      "id": "forms-card-list",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/fd/components/form/panelcontainer/v1/panelcontainer",
+            "template": {
+              "jcr:title": "Forms Card List",
+              "fieldType": "panel",
+              "fd:viewType": "forms-card-list",
+              "filter": "forms-card-list"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "forms-card-list",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Basic",
+          "name": "basic"
+        },
+        {
+          "...": "../../models/form-common/_basic-input-fields.json#/fields"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "forms-card-list",
+      "components": [
+        "forms-card-list-item"
+      ]
+    }
+  ]
+}

@@ -59,10 +59,13 @@ const localizedHeaderMap = {
 
 const thaiHeaderKeyMap = {
   ประเภทกองทุน: 'fundtype',
+  กองทุนเปิด: 'openendfund',
   กองทุน: 'openendfund',
   มูลค่าหน่วยลงทุน: 'nav',
+  nav: 'nav',
   ราคาขาย: 'sellingprice',
   ราคารับซื้อคืน: 'redemptionprice',
+  มูลค่าทรัพย์สินสุทธิรวม: 'totalnetassets',
   มูลค่าทรัพย์สินสุทธิ: 'totalnetassets',
 };
 

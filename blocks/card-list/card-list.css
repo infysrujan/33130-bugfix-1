@@ -477,7 +477,7 @@
 
 .cards-list-date {
   margin-top: auto;
-  padding-top: var(--bbl-space-250);
+  padding: var(--bbl-space-250);
 }
 
 @media (width > 47.5rem) {

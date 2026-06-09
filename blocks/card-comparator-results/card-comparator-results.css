@@ -1,5 +1,11 @@
 .card-comparator-results .ccr-description {
   text-align: center;
+  padding-bottom: 1.875rem;
+}
+
+.card-comparator-results .ccr-description :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--bbl-color-black);
+  line-height: 2.875rem;
 }
 
 /* ── Comparison grid — scrollable on mobile (matches card-list scrollable) ── */
@@ -122,7 +128,7 @@
   min-height: 2.75rem;
   padding: 0.3125rem 0;
   box-sizing: border-box;
-  border-radius: var(--bbl-radius-md);
+  border-radius: 0.4375rem;
   border: 0.0625rem solid var(--bbl-color-active-blue);
   background: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);

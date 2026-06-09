@@ -45,28 +45,63 @@ function richTextFromRow(row) {
   return (cell ?? row).innerHTML.trim();
 }
 
-function printContent() {
-  const previousTitle = document.title;
-  const pageTitle = document.querySelector('.fund-prices-page-title')?.textContent;
-  if (pageTitle) document.title = normalizeFundPricesTitle(pageTitle);
-  window.addEventListener('afterprint', () => {
-    document.title = previousTitle;
-  }, { once: true });
+function formatPrintDate(date = new Date()) {
+  return `${date.getMonth() + 1}/${date.getDate()}/${String(date.getFullYear()).slice(-2)}`;
+}
+
+function formatPrintTime(date = new Date()) {
+  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+
+function printContent(containerEl) {
+  if (!containerEl) return;
+  const doc = containerEl.ownerDocument;
+  const clone = containerEl.cloneNode(true);
+  const printHideSelectors = '.fund-prices-print-label, .fund-prices-error-message, .fund-prices-search-bar';
+  clone.querySelectorAll(printHideSelectors).forEach((el) => el.remove());
+  const inp = clone.querySelector('.calendar-input input');
+  const selectedDate = inp?.value || '';
+  if (inp) inp.parentNode?.replaceChild(doc.createTextNode(selectedDate), inp);
+
+  const now = new Date();
+  const printRoot = doc.createElement('div');
+  printRoot.id = 'fund-prices-print-root';
+  printRoot.innerHTML = `
+    <div class="fund-prices-print-masthead">
+      <div class="fund-prices-print-datetime">${formatPrintDate(now)}, ${formatPrintTime(now)}</div>
+      <div class="fund-prices-print-page-title">Fund Prices - BBL Asset Management</div>
+      <div></div>
+      <div class="fund-prices-print-logo"><img src="/icons/logo.svg" alt="Bangkok Bank" /></div>
+      <div></div>
+      <div class="fund-prices-print-search">Search Fund</div>
+    </div>
+    <h1 class="fund-prices-print-title">Fund Prices - BBL Asset Management</h1>
+    <div class="fund-prices-print-rule"></div>
+    <div class="fund-prices-print-date">
+      <strong>As of :</strong>
+      <span>${selectedDate}</span>
+    </div>
+    <div class="fund-prices-print-table-wrap"></div>
+    <div class="fund-prices-print-footer">
+      <span>https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/Fund-Prices</span>
+      <span>1/5</span>
+    </div>
+  `;
+
+  const table = clone.querySelector('.fund-prices-table');
+  if (table) {
+    table.querySelectorAll('td.merged-fund-type').forEach((td) => {
+      if (td.textContent.trim() === 'FIF') {
+        td.closest('tr').classList.add('print-page-break');
+      }
+    });
+    printRoot.querySelector('.fund-prices-print-table-wrap').appendChild(table);
+  }
+  const orig = doc.body.innerHTML;
+  doc.body.innerHTML = printRoot.outerHTML;
   window.print();
-}
-
-function findPrintLogo(doc) {
-  return doc.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
-    || doc.querySelector('.brand-logo-container picture, .brand-logo-container img')
-    || doc.querySelector('.brand-logo .brand-logo-link, .brand-logo .brand-logo-image');
-}
-
-function syncPrintLogo(doc, logoWrap) {
-  const logoEl = findPrintLogo(doc);
-  if (!logoEl) return false;
-  logoWrap.textContent = '';
-  logoWrap.appendChild(logoEl.cloneNode(true));
-  return true;
+  doc.body.innerHTML = orig;
+  window.location.reload();
 }
 
 function isDateOlderThanFundHistoryLimit(date) {

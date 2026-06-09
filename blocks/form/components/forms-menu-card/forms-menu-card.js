@@ -125,6 +125,8 @@ function buildCard(iconPath, title, description, index) {
  * @returns {HTMLElement}
  */
 export default function decorate(fieldDiv, fd) {
+  fieldDiv.classList.add('field-forms-menu-card');
+
   const icons = toArray(getProp(fd, 'cardIcons'));
   const titles = toArray(getProp(fd, 'cardTitles'));
   const descriptions = toArray(getProp(fd, 'cardDescriptions'));
@@ -140,7 +142,6 @@ export default function decorate(fieldDiv, fd) {
   }
 
   fieldDiv.innerHTML = '';
-  fieldDiv.classList.add('field-forms-menu-card');
   fieldDiv.appendChild(grid);
 
   return fieldDiv;

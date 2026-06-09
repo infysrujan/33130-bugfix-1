@@ -68,17 +68,18 @@ button,
 
 /* --- Medium (Desktop) - 44px height --- */
 .button-m {
-  max-height: 2.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: fit-content;
+  height: 2.75rem;
   min-width: 7.5rem;
-  padding: var(--bbl-space-100) var(--bbl-space-200);
+  padding: 0 1rem;
+  font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-body-b1-medium-size);
-  text-align: center;
+  font-weight: var(--bbl-body-b1-medium-weight);
   line-height: var(--bbl-body-b1-line-height);
   border-radius: var(--bbl-rounded-100);
-  font-weight: var(--bbl-body-b1-medium-weight);
-  display: block;
-  font-family: var(--bbl-font-family-medium);
-  max-width: fit-content;
 }
 
 /* --- Large (Hero Banner) - 52px height --- */
@@ -197,6 +198,7 @@ button.secondary,
   background: transparent;
   color: var(--bbl-color-active-blue);
   border: 2px solid var(--bbl-color-active-blue);
+  font-style: normal;
 }
 
 /* Hover */
@@ -249,9 +251,9 @@ button.secondary,
    TERTIARY BUTTONS (Text/Link Style)
    Text-only buttons with optional arrow
    ========================================================================= */
-
+.adobe-ue-edit .button-container > a.button,/* Authoring support: added class for better button visibility in Adobe UE */
 .button-tertiary,
-button.tertiary {
+button.tertiary { 
   background: transparent;
   color: var(--bbl-color-active-blue);
   border: none;
@@ -264,7 +266,8 @@ button.tertiary {
   align-items: center;
 }
 
-/* Arrow icon (using CSS) */
+/* Arrow icon */
+.adobe-ue-edit .button-container > a.button::after,/* Authoring support: added class for better button visibility in Adobe UE */
 .button-tertiary::after {
   content: '';
   display: inline-block;

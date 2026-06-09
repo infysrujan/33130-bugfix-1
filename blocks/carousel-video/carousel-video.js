@@ -75,13 +75,19 @@ export default async function decorate(block) {
   const mainPlayer = document.createElement('div');
   mainPlayer.className = 'cv-main-player';
 
-  const iframe = document.createElement('iframe');
-  iframe.src = `${embedBaseUrl}${items[0].id}`;
-  iframe.title = playerTitle;
-  iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
-  iframe.setAttribute('allowfullscreen', '');
-  iframe.setAttribute('loading', 'lazy');
-  mainPlayer.appendChild(iframe);
+  // All iframes are created upfront so they load immediately.
+  // Visibility is controlled by the .active class on each iframe.
+  const iframeEls = items.map(({ id }, i) => {
+    const iframeEl = document.createElement('iframe');
+    iframeEl.src = `${embedBaseUrl}${id}`;
+    iframeEl.title = playerTitle;
+    iframeEl.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+    iframeEl.setAttribute('allowfullscreen', '');
+    iframeEl.setAttribute('loading', 'lazy');
+    if (i === 0) iframeEl.classList.add('active');
+    mainPlayer.appendChild(iframeEl);
+    return iframeEl;
+  });
   block.appendChild(mainPlayer);
 
   // ── Thumbnail carousel ────────────────────────────────────────────────────
@@ -166,13 +172,9 @@ export default async function decorate(block) {
   // ── State helpers ─────────────────────────────────────────────────────────
   function setActive(index) {
     activeIndex = index;
-    mainPlayer.classList.remove('active');
-    setTimeout(() => {
-      iframe.src = `${embedBaseUrl}${items[index].id}`;
-      thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
-      dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
-      requestAnimationFrame(() => mainPlayer.classList.add('active'));
-    }, 0);
+    iframeEls.forEach((f, i) => f.classList.toggle('active', i === index));
+    thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
+    dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
   }
 
   function getThumbWidth() {
@@ -258,8 +260,14 @@ export default async function decorate(block) {
 
   dotEls.forEach((dot, i) => {
     dot.addEventListener('click', () => {
+      if (i === activeIndex) return;
+      const goForward = i > activeIndex;
       setActive(i);
-      scrollToFirst(i);
+      if (goForward) {
+        scrollForward(i);
+      } else {
+        scrollBackward(i);
+      }
     });
   });
 

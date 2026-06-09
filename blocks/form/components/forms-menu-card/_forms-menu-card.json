@@ -6,12 +6,11 @@
       "plugins": {
         "xwalk": {
           "page": {
-            "resourceType": "core/fd/components/form/text/v1/text",
+            "resourceType": "core/fd/components/form/image/v1/image",
             "template": {
               "jcr:title": "Forms Menu Card",
-              "fieldType": "plain-text",
-              "fd:viewType": "forms-menu-card",
-              "textIsRich": false
+              "fieldType": "image",
+              "fd:viewType": "forms-menu-card"
             }
           }
         }
