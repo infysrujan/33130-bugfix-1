@@ -137,8 +137,7 @@ main .section.form-container {
     display: block;
     width: 100%;
     margin: 0 0 var(--bbl-space-050);
-  
-    /* padding: var(--bbl-space-300) 0; */
+    padding: var(--bbl-space-300) 0;
     padding: 30px 0;
     text-align: center;
     font-size: var(--bbl-font-size-b1);
@@ -148,8 +147,8 @@ main .section.form-container {
   
   main .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
     color: var(--bbl-color-grey-85);
-    font-size: 1.0625rem;
-    font-weight: 700;
+     font-size: 16px;
+  font-weight: 400;
     cursor: default;
   }
   
@@ -174,12 +173,21 @@ main .section.form-container {
     font-size: var(--bbl-font-size-b1);
     line-height: 2.75rem;
   }
+
+  main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):has([aria-live="polite"]) input {
+  margin: 0;
+}
   
   main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input {
     padding: 0 var(--bbl-space-250);
     font-family: var(--bbl-font-family-primary);
   }
   
+  main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper [aria-live="polite"] {
+  text-align: right;
+  margin-bottom: 10px;
+}
+
   main .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].text-wrapper).field-wrapper input {
     padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
   }
@@ -210,7 +218,10 @@ main .section.form-container {
   
   main .form :is(input, textarea)::placeholder {
     opacity: 1;
-    color: var(--bbl-color-grey-85);
+    color: #9e9e9e;
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  line-height: 44px;
   }
   
   main .form :is(input, select, textarea):is(:hover, :focus) {
@@ -347,6 +358,14 @@ main .section.form-container {
   }
   
   main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'])::before {
+    content: '';
+}
+
+main .form form .no-icon::before {
+  content: '';
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'])::before {
     content: '\e906';
   }
   
@@ -359,6 +378,14 @@ main .section.form-container {
     font-size: 0.6875rem;
     width: var(--bbl-space-200);
     height: var(--bbl-space-200);
+      position: absolute;
+  top: 1.375rem;
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-'])))[class*='field-email']>input {
+  padding-left: var(--bbl-space-500);
   }
   
   main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-companyname'], [class*='field-company'], [class*='field-juristicpersonregistrationnumber'])::before {
@@ -408,7 +435,7 @@ main .section.form-container {
   }
   
   /* Submit */
-  main .form :is(.field-submitcta .button, .field-submitcta .button:disabled, form .submit-wrapper button, form button[type='submit']) {
+  main .form :is(.field-submitcta .button, .field-submitcta .button:disabled, .field-cancel .button, .field-Cancel .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -433,17 +460,66 @@ main .section.form-container {
     transform: none;
   }
   
-  main .form :is(.field-submitcta .button, form .submit-wrapper button, form button[type='submit']):is(:hover, :disabled:hover) {
+  main .form :is(.field-submitcta .button, .field-cancel .button, .field-Cancel .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button):is(:hover, :disabled:hover) {
     color: var(--bbl-color-white);
     background: var(--bbl-color-active-blue);
     border-color: var(--bbl-color-active-blue);
   }
   
+  main .form .col-6:is(.field-submitcta, .submit-wrapper) :is(.button, button) {
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+/* Convert the 1-column parent grid to flexbox to natively allow side-by-side items */
+main .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Force all form fields in the panel to take 100% width (stack vertically like a 1-column grid) */
+main .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel>.field-wrapper {
+  width: 100%;
+}
+
+/* Allow the buttons to shrink to their intrinsic width, so they naturally sit side-by-side on the same row */
+main .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-submitcta.col-12,
+main .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-reset.col-6 {
+  width: auto;
+}
+
+/* Center the pair of buttons perfectly in the available space by using auto margins on the outsides, and a clean gap in the middle */
+main .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-submitcta.col-12 {
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+main .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-reset.col-6 {
+  margin-left: 0.5rem;
+  margin-right: auto;
+}
+
+/* Center solitary .col-12 buttons on the SME Form */
+main .section:has(.field-business-information-main, .field-loan-details-main) .form .col-12:is(.field-submitcta, .submit-wrapper, .reset-wrapper, .field-cancel) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main .form .col-6:is(.field-cancel, .field-Cancel, .field-reset) :is(.button, button) {
+  margin-left: 1rem;
+  margin-right: auto;
+}
+
   /* Privacy consent / TnC panel */
   main .form form :is(.field-privacyconsent, fieldset.panel-wrapper.field-wrapper) {
     gap: 0;
     margin: 0;
   }
+
+  main .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
+  padding: 0 0 0 2.1875rem;
+}
   
   main .form form fieldset.panel-wrapper.field-wrapper {
     position: relative;
@@ -540,7 +616,23 @@ main .section.form-container {
   }
   
   /* Radio group — segmented time slot */
-  main .form form .radio-group-wrapper {
+  main .form form .radio-group-wrapper.horizontal {
+  justify-content: center;
+  margin-bottom: 10px;
+  gap: 30px;
+}
+
+main .form form .radio-group-wrapper.horizontal .radio-wrapper {
+  flex-wrap: nowrap;
+  min-width: 140px;
+}
+
+main .form form .radio-group-wrapper.horizontal input[type='radio'] {
+  width: 20px;
+  height: 20px;
+}
+
+main .form form .radio-group-wrapper.cards-radio {
     display: flex;
     flex-flow: row wrap;
     gap: 0;
@@ -554,12 +646,12 @@ main .section.form-container {
     border: none;
   }
   
-  main .form form .radio-group-wrapper.horizontal {
+  main .form form .radio-group-wrapper.cards-radio.horizontal {
     flex-flow: row wrap;
     gap: 0;
   }
   
-  main .form form .radio-group-wrapper legend.field-label {
+  main .form form .radio-group-wrapper.cards-radio legend.field-label {
     display: block;
     flex: 0 0 100%;
     width: 100%;
@@ -569,7 +661,7 @@ main .section.form-container {
     cursor: default;
   }
   
-  main .form form .radio-group-wrapper > .radio-wrapper {
+  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper {
     position: relative;
     display: flex;
     flex: 1 0 25%;
@@ -586,7 +678,7 @@ main .section.form-container {
     gap: 0;
   }
   
-  main .form form .radio-group-wrapper > .radio-wrapper input[type='radio'] {
+  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper input[type='radio'] {
     position: absolute;
     top: 0;
     left: 0;
@@ -602,20 +694,20 @@ main .section.form-container {
     cursor: pointer;
   }
   
-  main .form form .radio-group-wrapper > .radio-wrapper input[type='radio']:checked {
+  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper input[type='radio']:checked {
     background-color: var(--bbl-color-blue-145);
   }
   
-  main .form form .radio-group-wrapper > .radio-wrapper:first-of-type input[type='radio'] {
+  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper:first-of-type input[type='radio'] {
     border-left: 1px solid var(--bbl-color-grey-150);
     border-radius: 0.4375rem 0 0 0.4375rem;
   }
   
-  main .form form .radio-group-wrapper > .radio-wrapper:last-of-type input[type='radio'] {
+  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper:last-of-type input[type='radio'] {
     border-radius: 0 0.4375rem 0.4375rem 0;
   }
   
-  main .form form .radio-group-wrapper > .radio-wrapper label.field-label {
+  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper label.field-label {
     position: relative;
     z-index: 1;
     display: flex;
@@ -635,11 +727,11 @@ main .section.form-container {
     background: transparent;
   }
   
-  main .form form .radio-group-wrapper.field-invalid .radio-wrapper input[type='radio'] {
+  main .form form .radio-group-wrapper.cards-radio.field-invalid .radio-wrapper input[type='radio'] {
     border-color: var(--bbl-color-orange-130);
   }
   
-  main .form form .radio-group-wrapper + fieldset.panel-wrapper.field-wrapper {
+  main .form form .radio-group-wrapper.cards-radio+fieldset.panel-wrapper.field-wrapper {
     margin-top: 0.9375rem;
   }
   
@@ -670,3 +762,49 @@ main .section.form-container {
     line-height: var(--bbl-space-200);
   }
   
+  /* Checkbox group panels — bordered box */
+main .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
+  .field-other-required-product-panel) {
+  border: 1px solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem;
+  padding: var(--bbl-space-300) var(--bbl-space-500);
+  padding: 10px 10px 10px 0;
+  margin-bottom: 10px;
+}
+
+main .form form :is(.field-type-of-loan, .field-other-required-products) legend.field-label {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--bbl-space-200);
+  text-align: center;
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper .checkbox-group-wrapper .checkbox-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+main .form form .checkbox-group-wrapper .checkbox-wrapper input[type='checkbox'] {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  margin: 3px 8px 3px 4px;
+}
+
+main .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
+  flex-basis: auto;
+  flex-shrink: 1;
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: pointer;
+  line-height: 25px;
+}
+
+main .form form :is(.field-type-of-loan-panel .field-please-specify-type-of-loan,
+  .field-other-required-product-panel .field-please-specify-other-product) {
+  width: 100%;
+}

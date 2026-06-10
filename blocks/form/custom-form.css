@@ -1,3 +1,36 @@
-main .section.form-container.custom-forms {
-/* Styles for sections using the custom-forms section class. */
+/* main .section.form-container.custom-forms {
+  Styles for sections using the custom-forms section class.
+} */
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
+  display: block;
+  margin: 20px 0 10px;
+  padding: 3px 0 3px 20px;
+  text-align: left;
+  background-color: #f7f7f7;
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper {
+  grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
+  grid-column: span 12;
+}
+
+main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper {
+  margin-left: 25%;
+}
+
+main .section.form-container.custom-forms .form form .radio-group-wrapper:not(.horizontal) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper {
+  padding: 0;
 }
