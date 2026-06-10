@@ -454,7 +454,7 @@ main .form :is(.field-submitcta .button, .field-submitcta .button:disabled, .fie
   transform: none;
 }
 
-main .form :is(.field-submitcta .button, .field-cancel .button, [class~="field-Cancel"] .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button):is(:hover, :disabled:hover) {
+main .form :is(.field-submitcta .button, .field-cancel .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button):is(:hover, :disabled:hover) {
   color: var(--bbl-color-white);
   background: var(--bbl-color-active-blue);
   border-color: var(--bbl-color-active-blue);
@@ -500,7 +500,7 @@ main .section:has(.field-business-information-main, .field-loan-details-main) .f
   align-items: center;
 }
 
-main .form .col-6:is(.field-cancel, .field-reset, [class~="field-Cancel"]) :is(.button, button) {
+main .form .col-6:is(.field-cancel, .field-reset) :is(.button, button) {
   margin-left: 1rem;
   margin-right: auto;
 }
@@ -511,6 +511,7 @@ main .form form :is(.field-privacyconsent, fieldset.panel-wrapper.field-wrapper)
   margin: 0;
 }
 
+
 main .form form fieldset.panel-wrapper.field-wrapper {
   position: relative;
   display: grid;
@@ -519,7 +520,7 @@ main .form form fieldset.panel-wrapper.field-wrapper {
   grid-column: span 12;
   width: 100%;
   max-width: 46.25rem;
-  padding: 0 0 0 2.1875rem;
+  padding: 0;
 }
 
 main .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
