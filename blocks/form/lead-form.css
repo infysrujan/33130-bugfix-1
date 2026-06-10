@@ -3,319 +3,315 @@
 /* Layout */
 
 main .section.form-container {
-    margin: var(--bbl-space-500) auto 0;
-    max-width: 46.25rem;
-    padding: 0;
-  }
-  
-  main .section.form-container.central-aligned :is(.form-wrapper, .form.block) {
-    max-width: 46.25rem;
-    margin-inline: auto;
-  }
-  
-  main div.form-wrapper {
-    padding: 0;
-    border-radius: unset;
-    box-shadow: none;
-  }
-  
-  main div.default-content-wrapper {
-    box-shadow: none;
-  }
-  
-  .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6)::after {
-    left: 50%;
-    width: 80px;
-    content: '';
-    position: absolute;
-    top: auto;
-    bottom: 0;
-    height: 1px;
-    background: var(--bbl-color-grey-150);
-  }
-  
-  .default-content-wrapper h2 {
-    font-size: 35px;
-    font-family: Muli-Bold, sans-serif;
-    color: var(--bbl-color-grey-140);
-    font-weight: var(--bbl-font-weight-regular);
-  }
-  
-  .drop-down-wrapper {
-    text-align: center;
-  }
-  
-  main .form form {
-    gap: 3px;
-    max-width: 46.25rem;
-    width: 100%;
-    margin: 0 auto;
-    color: var(--bbl-color-grey-85);
-    font-family: var(--bbl-font-family-primary);
-    font-size: var(--bbl-font-size-b1);
-    line-height: 1.3;
-  }
-  
-  main .form form :is(p, .repeat-wrapper, .field-wrapper) {
-    margin: 0;
-  }
-  
-  /* Title */
-  main :is(h3, .form form .field-title h2, .form form .field-title .page-header) {
-    position: relative;
-    margin: var(--bbl-space-500) 0 var(--bbl-space-300);
-    padding: 0 0 2.1875rem;
-    color: var(--bbl-color-grey-140);
-    font-family: Muli-Bold, Tahoma, Helvetica, Arial, sans-serif;
-    font-size: var(--bbl-font-size-h1-mobile);
-    font-weight: 700;
-    line-height: normal;
-    letter-spacing: -0.0125rem;
-    text-align: center;
-  }
-  
-  main :is(h3, .form form .field-title h2, .form form .field-title .page-header)::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: var(--bbl-space-1000);
-    height: 1px;
-    margin-left: calc(var(--bbl-space-1000) / -2);
-    background: var(--bbl-color-grey-150);
-  }
-  
-  main .form form .field-title {
-    margin: 0;
-    padding: 0;
-  }
-  
-  /* Body copy */
-  main .form form .field-infotext {
-    margin: var(--bbl-space-500) 0 var(--bbl-space-250);
-    margin: 10px 0 var(--bbl-space-250) 0;
-  }
-  
-  main .form form :is(.field-infotext p, .plain-text-wrapper p) {
-    /* margin: 0 0 var(--bbl-space-100); */
-    color: var(--bbl-color-grey-85);
-    font-family: var(--bbl-font-family-primary);
-    font-size: var(--bbl-font-size-b1);
-  }
-  
-  main .form form p {
-    margin-bottom: 0;
-    padding: 0;
-    font-size: var(--bbl-font-size-b1);
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 1.5;
-  }
-  
-  main .form form .plain-text-wrapper p:last-child {
-    margin-bottom: 0;
-  }
-  
-  main .form form .plain-text-wrapper :is(a, .custom-wffm-form) {
-    color: var(--bbl-color-grey-85);
-  }
-  
-  main .form form .plain-text-wrapper a {
-    text-decoration: underline;
-  }
-  
-  main .form form .plain-text-wrapper .custom-wffm-form {
-    padding: 0 var(--bbl-space-100);
-    margin-bottom: var(--bbl-space-075);
-  }
-  
-  /* Labels */
-  main .form form .field-label[data-visible='false']:not(:is([class*=' icon-'], [class^='icon-'])) {
-    display: none;
-  }
-  
-  main .form form :is(.field-wrapper:has(select), .drop-down-wrapper) > .field-label {
-    display: block;
-    width: 100%;
-    margin: 0 0 var(--bbl-space-050);
-    padding: var(--bbl-space-300) 0;
-    padding: 30px 0;
-    text-align: center;
-    font-size: var(--bbl-font-size-b1);
-    font-weight: var(--bbl-font-weight-regular);
-    color: var(--bbl-color-grey-85);
-  }
-  
-  main .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
-    color: var(--bbl-color-grey-85);
-     font-size: 16px;
-  font-weight: 400;
-    cursor: default;
-  }
-  
-  main .form form .field-prefix-dropdown.field-wrapper .field-label,
-  main .form form .field-province.field-wrapper .field-label {
-    padding: 0;
-    text-align: left;
-  }
-  
-  /* Inputs */
-  main .form :is(
-    :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input,
-    select,
-    textarea
-  ) {
-    width: 100%;
-    height: 2.75rem;
-    margin: 0 0 var(--bbl-font-size-b2);
-    color: var(--bbl-color-black);
-    border: 1px solid var(--bbl-color-grey-150);
-    border-radius: 0.4375rem;
-    font-size: var(--bbl-font-size-b1);
-    line-height: 2.75rem;
-  }
+  margin: var(--bbl-space-500) auto 0;
+  max-width: 46.25rem;
+  padding: 0;
+}
 
-  main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input {
-    padding: 0 var(--bbl-space-250);
-    font-family: var(--bbl-font-family-primary);
-  }
+main .section.form-container.central-aligned :is(.form-wrapper, .form.block) {
+  max-width: 46.25rem;
+  margin-inline: auto;
+}
 
-  main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):has([aria-live="polite"]) input {
+main div.form-wrapper {
+  padding: 0;
+  border-radius: unset;
+  box-shadow: none;
+}
+
+main div.default-content-wrapper {
+  box-shadow: none;
+}
+
+.default-content-wrapper> :is(h1, h2, h3, h4, h5, h6)::after {
+  left: 50%;
+  width: 80px;
+  content: '';
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  height: 1px;
+  background: var(--bbl-color-grey-150);
+}
+
+.default-content-wrapper h2 {
+  font-size: 35px;
+  font-family: Muli-Bold, sans-serif;
+  color: var(--bbl-color-grey-140);
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+.drop-down-wrapper {
+  text-align: center;
+}
+
+main .form form {
+  gap: 3px;
+  max-width: 46.25rem;
+  width: 100%;
+  margin: 0 auto;
+  color: var(--bbl-color-grey-85);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
+  line-height: 1.3;
+}
+
+main .form form :is(p, .repeat-wrapper, .field-wrapper) {
   margin: 0;
 }
-  
-  main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper [aria-live="polite"] {
+
+/* Title */
+main :is(h3, .form form .field-title h2, .form form .field-title .page-header) {
+  position: relative;
+  margin: var(--bbl-space-500) 0 var(--bbl-space-300);
+  padding: 0 0 2.1875rem;
+  color: var(--bbl-color-grey-140);
+  font-family: Muli-Bold, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: var(--bbl-font-size-h1-mobile);
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -0.0125rem;
+  text-align: center;
+}
+
+main :is(h3, .form form .field-title h2, .form form .field-title .page-header)::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: var(--bbl-space-1000);
+  height: 1px;
+  margin-left: calc(var(--bbl-space-1000) / -2);
+  background: var(--bbl-color-grey-150);
+}
+
+main .form form .field-title {
+  margin: 0;
+  padding: 0;
+}
+
+/* Body copy */
+main .form form .field-infotext {
+  margin: var(--bbl-space-500) 0 var(--bbl-space-250);
+  margin: 10px 0 var(--bbl-space-250) 0;
+}
+
+main .form form :is(.field-infotext p, .plain-text-wrapper p) {
+  /* margin: 0 0 var(--bbl-space-100); */
+  color: var(--bbl-color-grey-85);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
+}
+
+main .form form p {
+  margin-bottom: 0;
+  padding: 0;
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.5;
+}
+
+main .form form .plain-text-wrapper p:last-child {
+  margin-bottom: 0;
+}
+
+main .form form .plain-text-wrapper :is(a, .custom-wffm-form) {
+  color: var(--bbl-color-grey-85);
+}
+
+main .form form .plain-text-wrapper a {
+  text-decoration: underline;
+}
+
+main .form form .plain-text-wrapper .custom-wffm-form {
+  padding: 0 var(--bbl-space-100);
+  margin-bottom: var(--bbl-space-075);
+}
+
+/* Labels */
+main .form form .field-label[data-visible='false']:not(:is([class*=' icon-'], [class^='icon-'])) {
+  display: none;
+}
+
+main .form form :is(.field-wrapper:has(select), .drop-down-wrapper)>.field-label {
+  display: block;
+  width: 100%;
+  margin: 0 0 var(--bbl-space-050);
+  padding: var(--bbl-space-300) 0;
+  padding: 30px 0;
+  text-align: center;
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-grey-85);
+}
+
+main .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
+  color: var(--bbl-color-grey-85);
+  font-size: 16px;
+  font-weight: 400;
+  cursor: default;
+}
+
+main .form form .field-prefix-dropdown.field-wrapper .field-label,
+main .form form .field-province.field-wrapper .field-label {
+  padding: 0;
+  text-align: left;
+}
+
+/* Inputs */
+main .form :is( :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input,
+  select,
+  textarea) {
+  width: 100%;
+  height: 2.75rem;
+  margin: 0 0 var(--bbl-font-size-b2);
+  color: var(--bbl-color-black);
+  border: 1px solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem;
+  font-size: var(--bbl-font-size-b1);
+  line-height: 2.75rem;
+}
+
+main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input {
+  padding: 0 var(--bbl-space-250);
+  font-family: var(--bbl-font-family-primary);
+}
+
+main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):has([aria-live="polite"]) input {
+  margin: 0;
+}
+
+main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper [aria-live="polite"] {
   text-align: right;
   margin-bottom: 10px;
 }
 
-  main .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].text-wrapper).field-wrapper input {
-    padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
-  }
-  
-  main .form textarea {
-    height: auto;
-    min-height: 6.25rem;
-    padding: var(--bbl-space-100) var(--bbl-space-250);
-    line-height: 1.5;
-  }
-  
-  main .form select {
-    padding: 0 var(--bbl-space-300) 0 var(--bbl-space-250);
-    border-color: var(--bbl-color-grey-23);
-    cursor: pointer;
-    appearance: none;
-    background: var(--bbl-color-white) url('../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
-    font-family: var(--bbl-font-family-medium);
-  }
-  
-  main .form select option {
-    color: var(--bbl-color-black);
-    background-color: var(--bbl-color-white);
-    font-family: var(--bbl-font-family-medium);
-    font-size: var(--bbl-font-size-b1);
-    font-weight: var(--bbl-font-weight-regular);
-  }
-  
-  main .form :is(input, textarea)::placeholder {
-    opacity: 1;
-    color: #9e9e9e;
+main .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].text-wrapper).field-wrapper input {
+  padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
+}
+
+main .form textarea {
+  height: auto;
+  min-height: 6.25rem;
+  padding: var(--bbl-space-100) var(--bbl-space-250);
+  line-height: 1.5;
+}
+
+main .form select {
+  padding: 0 var(--bbl-space-300) 0 var(--bbl-space-250);
+  border-color: var(--bbl-color-grey-23);
+  cursor: pointer;
+  appearance: none;
+  background: var(--bbl-color-white) url('../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
+  font-family: var(--bbl-font-family-medium);
+}
+
+main .form select option {
+  color: var(--bbl-color-black);
+  background-color: var(--bbl-color-white);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+main .form :is(input, textarea)::placeholder {
+  opacity: 1;
+  color: #9e9e9e;
   font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   font-weight: 400;
   line-height: 44px;
-  }
-  
-  main .form :is(input, select, textarea):is(:hover, :focus) {
-    color: var(--bbl-color-black);
-    border-color: var(--bbl-color-blue-90);
-    outline: none;
-  }
-  
-  main .form form :is(input, select):invalid {
-    box-shadow: none;
-  }
-  
-  main .form form .field-invalid :is(input, select, textarea) {
-    border-color: var(--bbl-color-orange-130);
-  }
-  
-  main .form form .field-invalid :is(.field-validation-error, .field-description) {
-    position: relative;
-    text-align: left;
-    display: block;
-    clear: both;
-    padding: var(--bbl-space-075) 0 var(--bbl-space-150) var(--bbl-space-250);
-    color: var(--bbl-color-orange-130);
-    font-family: var(--bbl-font-family-primary);
-    font-size: var(--bbl-font-size-b2);
-    font-weight: var(--bbl-font-weight-regular);
-  }
-  
-  main .form form .field-wrapper.col-12 {
-    gap: unset;
-  }
-  
-  .form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
-  .form-wrapper .form .drop-down-wrapper.field-invalid select {
-    border-color: var(--bbl-color-red-130);
-    outline: 1px solid transparent;
-    margin: 0;
-  }
-  
-  main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper) {
-    position: relative;
-    clear: both;
-    margin-bottom: 0;
-  }
-  
-  /* Icon fields — icomoon label or field-class fallback */
-  main .form form label:is([class*=' icon-'], [class^='icon-']) {
-    position: relative;
-    display: block;
-    height: 0;
-    margin: 0;
-    padding: 0;
-    overflow: visible;
-  }
-  
-  main .form form label:is([class*=' icon-'], [class^='icon-'])::before {
-    font-family: icomoon, sans-serif;
-    position: absolute;
-    top: 1.375rem;
-    left: 0.9375rem;
-    z-index: 1;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: var(--bbl-space-250);
-    height: var(--bbl-space-250);
-    color: var(--bbl-color-grey-150);
-    pointer-events: none;
-  }
-  
-  main .form form label:is([class*=' icon-'], [class^='icon-']):empty::before {
-    display: flex;
-  }
-  
-  main .form form label:is([class*=' icon-'], [class^='icon-']) + :is(input, select) {
-    padding-left: var(--bbl-space-500);
-  }
-  
-  main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
-    [class*='field-firstname'],
-    [class*='field-lastname'],
-    [class*='field-name'],
-    [class*='field-phonenumber'],
-    [class*='field-mobilenumber'],
-    [class*='field-companyname'],
-    [class*='field-company'],
-    [class*='field-juristicpersonregistrationnumber']
-  ) {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 2.75rem auto;
-    margin-bottom: var(--bbl-font-size-b2);
-  }
-  
+}
+
+main .form :is(input, select, textarea):is(:hover, :focus) {
+  color: var(--bbl-color-black);
+  border-color: var(--bbl-color-blue-90);
+  outline: none;
+}
+
+main .form form :is(input, select):invalid {
+  box-shadow: none;
+}
+
+main .form form .field-invalid :is(input, select, textarea) {
+  border-color: var(--bbl-color-orange-130);
+}
+
+main .form form .field-invalid :is(.field-validation-error, .field-description) {
+  position: relative;
+  text-align: left;
+  display: block;
+  clear: both;
+  padding: var(--bbl-space-075) 0 var(--bbl-space-150) var(--bbl-space-250);
+  color: var(--bbl-color-orange-130);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b2);
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+main .form form .field-wrapper.col-12 {
+  gap: unset;
+}
+
+.form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
+.form-wrapper .form .drop-down-wrapper.field-invalid select {
+  border-color: var(--bbl-color-red-130);
+  outline: 1px solid transparent;
+  margin: 0;
+}
+
+main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper) {
+  position: relative;
+  clear: both;
+  margin-bottom: 0;
+}
+
+/* Icon fields — icomoon label or field-class fallback */
+main .form form label:is([class*=' icon-'], [class^='icon-']) {
+  position: relative;
+  display: block;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+main .form form label:is([class*=' icon-'], [class^='icon-'])::before {
+  font-family: icomoon, sans-serif;
+  position: absolute;
+  top: 1.375rem;
+  left: 0.9375rem;
+  z-index: 1;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+  color: var(--bbl-color-grey-150);
+  pointer-events: none;
+}
+
+main .form form label:is([class*=' icon-'], [class^='icon-']):empty::before {
+  display: flex;
+}
+
+main .form form label:is([class*=' icon-'], [class^='icon-'])+ :is(input, select) {
+  padding-left: var(--bbl-space-500);
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'],
+  [class*='field-lastname'],
+  [class*='field-name'],
+  [class*='field-phonenumber'],
+  [class*='field-mobilenumber'],
+  [class*='field-companyname'],
+  [class*='field-company'],
+  [class*='field-juristicpersonregistrationnumber']) {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 2.75rem auto;
+  margin-bottom: var(--bbl-font-size-b2);
+}
+
 main .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
   flex-basis: auto;
   flex-shrink: 1;
@@ -324,65 +320,63 @@ main .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
   line-height: 25px;
 }
 
-  main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
-    [class*='field-firstname'],
-    [class*='field-lastname'],
-    [class*='field-name'],
-    [class*='field-phonenumber'],
-    [class*='field-mobilenumber'],
-    [class*='field-companyname'],
-    [class*='field-company'],
-    [class*='field-juristicpersonregistrationnumber']
-  ):has(> .field-label:not([data-visible='false'])) > .field-label {
-    grid-row: 1;
-    display: block;
-    margin-bottom: var(--bbl-space-100);
-  }
-  
-  main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
-    [class*='field-firstname'],
-    [class*='field-lastname'],
-    [class*='field-name'],
-    [class*='field-phonenumber'],
-    [class*='field-mobilenumber'],
-    [class*='field-companyname'],
-    [class*='field-company'],
-    [class*='field-juristicpersonregistrationnumber']
-  )::before {
-    content: '';
-    font-family: icomoon, sans-serif;
-    grid-row: 2;
-    grid-column: 1;
-    place-self: stretch start;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--bbl-space-250);
-    margin-left: 0.9375rem;
-    line-height: 1;
-    color: var(--bbl-color-grey-150);
-    pointer-events: none;
-  }
-  
-  main .form form .no-icon::before {
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'],
+  [class*='field-lastname'],
+  [class*='field-name'],
+  [class*='field-phonenumber'],
+  [class*='field-mobilenumber'],
+  [class*='field-email'],
+  [class*='field-companyname'],
+  [class*='field-company'],
+  [class*='field-juristicpersonregistrationnumber']):has(> .field-label:not([data-visible='false']))>.field-label {
+  grid-row: 1;
+  display: block;
+  margin-bottom: var(--bbl-space-100);
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'],
+  [class*='field-lastname'],
+  [class*='field-name'],
+  [class*='field-phonenumber'],
+  [class*='field-mobilenumber'],
+  [class*='field-companyname'],
+  [class*='field-company'],
+  [class*='field-email'],
+  [class*='field-juristicpersonregistrationnumber'])::before {
+  content: '';
+  font-family: icomoon, sans-serif;
+  grid-row: 2;
+  grid-column: 1;
+  place-self: stretch start;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bbl-space-250);
+  margin-left: 0.9375rem;
+  line-height: 1;
+  color: var(--bbl-color-grey-150);
+  pointer-events: none;
+}
+
+main .form form .no-icon::before {
   content: '';
 }
 
 main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'])::before {
-    content: '\e906';
-  }
-  
-  main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-phonenumber'], [class*='field-mobilenumber'])::before {
-    content: '\e909';
-  }
-  
-  main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-'])))[class*='field-email']::before {
-    content: '\e919';
-    font-size: 0.6875rem;
-    width: var(--bbl-space-200);
-    height: var(--bbl-space-200);
-      position: absolute;
+  content: '\e906';
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-phonenumber'], [class*='field-mobilenumber'])::before {
+  content: '\e909';
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-'])))[class*='field-email']::before {
+  content: '\e919';
+  font-size: 0.6875rem;
+  width: var(--bbl-space-200);
+  height: var(--bbl-space-200);
+  position: absolute;
   top: 1.375rem;
   z-index: 1;
   transform: translateY(-50%);
@@ -390,87 +384,83 @@ main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='ico
 
 main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-'])))[class*='field-email']>input {
   padding-left: var(--bbl-space-500);
-  }
-  
-  main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-companyname'], [class*='field-company'], [class*='field-juristicpersonregistrationnumber'])::before {
-    content: '\e911';
-  }
-  
-  main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
-    [class*='field-firstname'],
-    [class*='field-lastname'],
-    [class*='field-name'],
-    [class*='field-phonenumber'],
-    [class*='field-mobilenumber'],
-    [class*='field-companyname'],
-    [class*='field-company'],
-    [class*='field-juristicpersonregistrationnumber']
-  ) > :is(input, select) {
-    grid-row: 2;
-    grid-column: 1;
-    margin-bottom: 0;
-    padding-left: var(--bbl-space-500);
-  }
-  
-  main .form form .radio-group-wrapper > .field-description {
-    flex: 0 0 100%;
-    width: 100%;
-    margin-top: 0;
-    order: 2;
-    clear: none;
-  }
-  
-  main .form form .radio-group-wrapper.field-invalid > .field-description {
-    height: auto;
-  }
-  
-  main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
-    [class*='field-firstname'],
-    [class*='field-lastname'],
-    [class*='field-name'],
-    [class*='field-phonenumber'],
-    [class*='field-mobilenumber'],
-    [class*='field-companyname'],
-    [class*='field-company'],
-    [class*='field-juristicpersonregistrationnumber']
-  ) > .field-description {
-    grid-row: 3;
-    grid-column: 1;
-  }
-  
-  /* Submit */
-  main .form :is(.field-submitcta .button, .field-submitcta .button:disabled, .field-cancel .button, [class~="field-Cancel"] .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 9.6875rem;
-    min-width: 9.6875rem;
-    height: 2.75rem;
-    margin: var(--bbl-space-300) auto;
-    padding: 0 var(--bbl-space-250);
-    color: var(--bbl-color-active-blue);
-    border: 1px solid var(--bbl-color-active-blue);
-    border-radius: 0.4375rem;
-    background: var(--bbl-color-white);
-    box-shadow: none;
-    font-family: var(--bbl-font-family-primary);
-    font-size: var(--bbl-font-size-b1);
-    line-height: 2.75rem;
-    letter-spacing: 0.05rem;
-    text-align: center;
-    cursor: pointer;
-    appearance: none;
-    pointer-events: all;
-    transform: none;
-  }
-  
-  main .form :is(.field-submitcta .button, .field-cancel .button, [class~="field-Cancel"] .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button):is(:hover, :disabled:hover) {
-    color: var(--bbl-color-white);
-    background: var(--bbl-color-active-blue);
-    border-color: var(--bbl-color-active-blue);
-  }
-  
-  main .form .col-6:is(.field-submitcta, .submit-wrapper) :is(.button, button) {
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-companyname'], [class*='field-company'], [class*='field-juristicpersonregistrationnumber'])::before {
+  content: '\e911';
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'],
+  [class*='field-lastname'],
+  [class*='field-name'],
+  [class*='field-phonenumber'],
+  [class*='field-mobilenumber'],
+  [class*='field-companyname'],
+  [class*='field-company'],
+  [class*='field-juristicpersonregistrationnumber'])> :is(input, select) {
+  grid-row: 2;
+  grid-column: 1;
+  margin-bottom: 0;
+  padding-left: var(--bbl-space-500);
+}
+
+main .form form .radio-group-wrapper>.field-description {
+  flex: 0 0 100%;
+  width: 100%;
+  margin-top: 0;
+  order: 2;
+  clear: none;
+}
+
+main .form form .radio-group-wrapper.field-invalid>.field-description {
+  height: auto;
+}
+
+main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'],
+  [class*='field-lastname'],
+  [class*='field-name'],
+  [class*='field-phonenumber'],
+  [class*='field-mobilenumber'],
+  [class*='field-companyname'],
+  [class*='field-company'],
+  [class*='field-juristicpersonregistrationnumber'])>.field-description {
+  grid-row: 3;
+  grid-column: 1;
+}
+
+/* Submit */
+main .form :is(.field-submitcta .button, .field-submitcta .button:disabled, .field-cancel .button, [class~="field-Cancel"] .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 9.6875rem;
+  min-width: 9.6875rem;
+  height: 2.75rem;
+  margin: var(--bbl-space-300) auto;
+  padding: 0 var(--bbl-space-250);
+  color: var(--bbl-color-active-blue);
+  border: 1px solid var(--bbl-color-active-blue);
+  border-radius: 0.4375rem;
+  background: var(--bbl-color-white);
+  box-shadow: none;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
+  line-height: 2.75rem;
+  letter-spacing: 0.05rem;
+  text-align: center;
+  cursor: pointer;
+  appearance: none;
+  pointer-events: all;
+  transform: none;
+}
+
+main .form :is(.field-submitcta .button, .field-cancel .button, [class~="field-Cancel"] .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button):is(:hover, :disabled:hover) {
+  color: var(--bbl-color-white);
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+main .form .col-6:is(.field-submitcta, .submit-wrapper) :is(.button, button) {
   margin-left: auto;
   margin-right: 1rem;
 }
@@ -515,112 +505,110 @@ main .form .col-6:is(.field-cancel, .field-reset, [class~="field-Cancel"]) :is(.
   margin-right: auto;
 }
 
-  /* Privacy consent / TnC panel */
-  main .form form :is(.field-privacyconsent, fieldset.panel-wrapper.field-wrapper) {
-    gap: 0;
-    margin: 0;
-  }
+/* Privacy consent / TnC panel */
+main .form form :is(.field-privacyconsent, fieldset.panel-wrapper.field-wrapper) {
+  gap: 0;
+  margin: 0;
+}
 
-  main .form form fieldset.panel-wrapper.field-wrapper {
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    grid-column: span 12;
-    width: 100%;
-    max-width: 46.25rem;
-    padding: 0 0 0 2.1875rem;
-  }
-
-  main .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
+main .form form fieldset.panel-wrapper.field-wrapper {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  grid-column: span 12;
+  width: 100%;
+  max-width: 46.25rem;
   padding: 0 0 0 2.1875rem;
 }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper > legend {
-    display: none;
-  }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
-    grid-column: 1;
-    width: auto;
-  }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper {
-    display: contents;
-  }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox'],
-  input[name='BBLAdvancedCheckbox'] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    width: var(--bbl-space-250);
-    height: var(--bbl-space-250);
-    margin: 3px var(--bbl-space-050) var(--bbl-font-size-b2) var(--bbl-space-050);
-    flex: none;
-  }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:hover,
-  input[name='BBLAdvancedCheckbox']:hover {
-    border: 1px solid var(--bbl-color-grey-125);
-  }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:invalid,
-  input[name='BBLAdvancedCheckbox']:invalid {
-    box-shadow: none;
-    outline: none;
-  }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
-    grid-row: 1;
-    grid-column: 1;
-    border: 1px solid var(--bbl-color-grey-150);
-    border-radius: var(--bbl-radius-none);
-    max-height: 15rem;
-    margin: 3px var(--bbl-space-100) 0.9375rem 0;
-    padding: 0.9375rem;
-    font-size: var(--bbl-font-size-b1);
-    overflow: auto;
-    scrollbar-color: var(--bbl-color-grey-153) var(--bbl-color-grey-10);
-    scrollbar-width: thin;
-  }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar {
-    width: var(--bbl-space-100);
-  }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar-track {
-    background: var(--bbl-color-grey-10);
-  }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar-thumb {
-    background: var(--bbl-color-grey-153);
-    border-radius: var(--bbl-rounded-050);
-  }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper:is(
-    :has(.checkbox-wrapper.field-invalid),
-    :has(input[name='approvalcheckbox']:user-invalid),
-    .field-invalid
-  ) .tnc-text-decoration {
-    border-color: var(--bbl-color-orange-130);
-  }
-  
-  main .form form fieldset.panel-wrapper.field-wrapper :is(> .field-description, .checkbox-wrapper .field-description) {
-    grid-row: 2;
-    grid-column: 1;
-    position: static;
-    display: block;
-    width: 100%;
-    margin: 0;
-    padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
-    font-size: 0.9375rem;
-    clear: both;
-  }
-  
-  /* Radio group — segmented time slot */
-  main .form form .radio-group-wrapper.horizontal {
+
+main .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
+  padding: 0 0 0 2.1875rem;
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper>legend {
+  display: none;
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
+  grid-column: 1;
+  width: auto;
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper {
+  display: contents;
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox'],
+input[name='BBLAdvancedCheckbox'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+  margin: 3px var(--bbl-space-050) var(--bbl-font-size-b2) var(--bbl-space-050);
+  flex: none;
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:hover,
+input[name='BBLAdvancedCheckbox']:hover {
+  border: 1px solid var(--bbl-color-grey-125);
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:invalid,
+input[name='BBLAdvancedCheckbox']:invalid {
+  box-shadow: none;
+  outline: none;
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
+  grid-row: 1;
+  grid-column: 1;
+  border: 1px solid var(--bbl-color-grey-150);
+  border-radius: var(--bbl-radius-none);
+  max-height: 15rem;
+  margin: 3px var(--bbl-space-100) 0.9375rem 0;
+  padding: 0.9375rem;
+  font-size: var(--bbl-font-size-b1);
+  overflow: auto;
+  scrollbar-color: var(--bbl-color-grey-153) var(--bbl-color-grey-10);
+  scrollbar-width: thin;
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar {
+  width: var(--bbl-space-100);
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar-track {
+  background: var(--bbl-color-grey-10);
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar-thumb {
+  background: var(--bbl-color-grey-153);
+  border-radius: var(--bbl-rounded-050);
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper:is( :has(.checkbox-wrapper.field-invalid),
+  :has(input[name='approvalcheckbox']:user-invalid),
+  .field-invalid) .tnc-text-decoration {
+  border-color: var(--bbl-color-orange-130);
+}
+
+main .form form fieldset.panel-wrapper.field-wrapper :is(> .field-description, .checkbox-wrapper .field-description) {
+  grid-row: 2;
+  grid-column: 1;
+  position: static;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
+  font-size: 0.9375rem;
+  clear: both;
+}
+
+/* Radio group — segmented time slot */
+main .form form .radio-group-wrapper.horizontal {
   justify-content: center;
   margin-bottom: 10px;
   gap: 30px;
@@ -637,24 +625,24 @@ main .form form .radio-group-wrapper.horizontal input[type='radio'] {
 }
 
 main .form form .radio-group-wrapper.cards-radio {
-    display: flex;
-    flex-flow: row wrap;
-    gap: 0;
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 46.25rem;
-  
-    /* margin: 0 0 var(--bbl-font-size-b2); */
-    padding: 0;
-    overflow: visible;
-    border: none;
-  }
-  
-  main .form form .radio-group-wrapper.cards-radio.horizontal {
-    flex-flow: row wrap;
-    gap: 0;
-  }
-  
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 46.25rem;
+
+  /* margin: 0 0 var(--bbl-font-size-b2); */
+  padding: 0;
+  overflow: visible;
+  border: none;
+}
+
+main .form form .radio-group-wrapper.cards-radio.horizontal {
+  flex-flow: row wrap;
+  gap: 0;
+}
+
 main .form form :is(.field-type-of-loan, .field-other-required-products) legend.field-label {
   display: block;
   width: 100%;
@@ -662,87 +650,87 @@ main .form form :is(.field-type-of-loan, .field-other-required-products) legend.
   text-align: center;
 }
 
-  main .form form .radio-group-wrapper.cards-radio legend.field-label {
-    display: block;
-    flex: 0 0 100%;
-    width: 100%;
-    margin: 0 0 var(--bbl-space-100);
-    padding: 0;
-    font-weight: var(--bbl-font-weight-regular);
-    cursor: default;
-  }
-  
-  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper {
-    position: relative;
-    display: flex;
-    flex: 1 0 25%;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: center;
-    min-width: 0;
-    height: var(--bbl-space-1000);
-    margin: 0 0 8px;
-    margin-left: 0;
-    padding: 0;
-    overflow: hidden;
-    border: none;
-    gap: 0;
-  }
-  
-  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper input[type='radio'] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    background: var(--bbl-color-white);
-    border: 1px solid var(--bbl-color-grey-150);
-    border-left: none;
-    border-radius: 0;
-    appearance: none;
-    cursor: pointer;
-  }
-  
-  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper input[type='radio']:checked {
-    background-color: var(--bbl-color-blue-145);
-  }
-  
-  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper:first-of-type input[type='radio'] {
-    border-left: 1px solid var(--bbl-color-grey-150);
-    border-radius: 0.4375rem 0 0 0.4375rem;
-  }
-  
-  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper:last-of-type input[type='radio'] {
-    border-radius: 0 0.4375rem 0.4375rem 0;
-  }
-  
-  main .form form .radio-group-wrapper.cards-radio>.radio-wrapper label.field-label {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex: 1;
-    flex-basis: auto;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0 var(--bbl-space-100);
-    color: var(--bbl-color-grey-85);
-    font-size: var(--bbl-font-size-b1);
-    font-weight: var(--bbl-font-weight-medium);
-    text-align: center;
-    cursor: pointer;
-    background: transparent;
-  }
-  
-  main .form form .radio-group-wrapper.cards-radio.field-invalid .radio-wrapper input[type='radio'] {
-    border-color: var(--bbl-color-orange-130);
-  }
-  
-  /* Checkbox group panels — bordered box */
+main .form form .radio-group-wrapper.cards-radio legend.field-label {
+  display: block;
+  flex: 0 0 100%;
+  width: 100%;
+  margin: 0 0 var(--bbl-space-100);
+  padding: 0;
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: default;
+}
+
+main .form form .radio-group-wrapper.cards-radio>.radio-wrapper {
+  position: relative;
+  display: flex;
+  flex: 1 0 25%;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: var(--bbl-space-1000);
+  margin: 0 0 8px;
+  margin-left: 0;
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  gap: 0;
+}
+
+main .form form .radio-group-wrapper.cards-radio>.radio-wrapper input[type='radio'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-grey-150);
+  border-left: none;
+  border-radius: 0;
+  appearance: none;
+  cursor: pointer;
+}
+
+main .form form .radio-group-wrapper.cards-radio>.radio-wrapper input[type='radio']:checked {
+  background-color: var(--bbl-color-blue-145);
+}
+
+main .form form .radio-group-wrapper.cards-radio>.radio-wrapper:first-of-type input[type='radio'] {
+  border-left: 1px solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem 0 0 0.4375rem;
+}
+
+main .form form .radio-group-wrapper.cards-radio>.radio-wrapper:last-of-type input[type='radio'] {
+  border-radius: 0 0.4375rem 0.4375rem 0;
+}
+
+main .form form .radio-group-wrapper.cards-radio>.radio-wrapper label.field-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-basis: auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 var(--bbl-space-100);
+  color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-medium);
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+}
+
+main .form form .radio-group-wrapper.cards-radio.field-invalid .radio-wrapper input[type='radio'] {
+  border-color: var(--bbl-color-orange-130);
+}
+
+/* Checkbox group panels — bordered box */
 main .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
   .field-other-required-product-panel) {
   border: 1px solid var(--bbl-color-grey-150);
@@ -752,37 +740,35 @@ main .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-pane
   margin-bottom: 10px;
 }
 
-  main .form form .radio-group-wrapper.cards-radio+fieldset.panel-wrapper.field-wrapper {
-    margin-top: 0.9375rem;
-  }
-  
-  /* Wrapper icon fields — customClassName on field-wrapper (icon-money, icon-email, etc.) */
-  main .form form .field-wrapper[class*='icon-']::before {
-    position: absolute;
-    top: 1.375rem;
-    left: 0.9375rem;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--bbl-space-250);
-    height: var(--bbl-space-250);
-    color: var(--bbl-color-grey-150);
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
-  
-  /* Compact glyphs — money & email */
-  main .form form :is(
-    .field-wrapper:is(.icon-money, .icon-email),
-    label:is(.icon-money, .icon-email)
-  )::before {
-    font-size: 0.6875rem;
-    width: var(--bbl-space-200);
-    height: var(--bbl-space-200);
-    line-height: var(--bbl-space-200);
-  }
-  
+main .form form .radio-group-wrapper.cards-radio+fieldset.panel-wrapper.field-wrapper {
+  margin-top: 0.9375rem;
+}
+
+/* Wrapper icon fields — customClassName on field-wrapper (icon-money, icon-email, etc.) */
+main .form form .field-wrapper[class*='icon-']::before {
+  position: absolute;
+  top: 1.375rem;
+  left: 0.9375rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+  color: var(--bbl-color-grey-150);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Compact glyphs — money & email */
+main .form form :is(.field-wrapper:is(.icon-money, .icon-email),
+  label:is(.icon-money, .icon-email))::before {
+  font-size: 0.6875rem;
+  width: var(--bbl-space-200);
+  height: var(--bbl-space-200);
+  line-height: var(--bbl-space-200);
+}
+
 main .form form fieldset.panel-wrapper.field-wrapper .checkbox-group-wrapper .checkbox-wrapper {
   display: flex;
   flex-flow: row nowrap;
