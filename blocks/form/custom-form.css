@@ -31,3 +31,12 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper:not(.h
   text-align: center;
   margin: 20px 0;
 }
+
+main .section.form-container.custom-forms .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'], [class*='field-phonenumber'], [class*='field-mobilenumber'], [class*='field-companyname'], [class*='field-company'], [class*='field-email'], [class*='field-juristicpersonregistrationnumber'])::before{
+  content: '';
+}
+
+main .section.form-container.custom-forms .form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
+main .section.form-container.custom-forms .form-wrapper .form .drop-down-wrapper.field-invalid select {
+  padding: 0 20px;
+}
