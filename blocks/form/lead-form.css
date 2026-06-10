@@ -174,14 +174,14 @@ main .section.form-container {
     line-height: 2.75rem;
   }
 
-  main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):has([aria-live="polite"]) input {
-  margin: 0;
-}
-  
   main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input {
     padding: 0 var(--bbl-space-250);
     font-family: var(--bbl-font-family-primary);
   }
+
+  main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):has([aria-live="polite"]) input {
+  margin: 0;
+}
   
   main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper [aria-live="polite"] {
   text-align: right;
@@ -316,6 +316,14 @@ main .section.form-container {
     margin-bottom: var(--bbl-font-size-b2);
   }
   
+main .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
+  flex-basis: auto;
+  flex-shrink: 1;
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: pointer;
+  line-height: 25px;
+}
+
   main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
     [class*='field-firstname'],
     [class*='field-lastname'],
@@ -357,11 +365,7 @@ main .section.form-container {
     pointer-events: none;
   }
   
-  main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'])::before {
-    content: '';
-}
-
-main .form form .no-icon::before {
+  main .form form .no-icon::before {
   content: '';
 }
 
@@ -435,7 +439,7 @@ main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='ico
   }
   
   /* Submit */
-  main .form :is(.field-submitcta .button, .field-submitcta .button:disabled, .field-cancel .button, .field-Cancel .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button) {
+  main .form :is(.field-submitcta .button, .field-submitcta .button:disabled, .field-cancel .button, [class~="field-Cancel"] .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -460,7 +464,7 @@ main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='ico
     transform: none;
   }
   
-  main .form :is(.field-submitcta .button, .field-cancel .button, .field-Cancel .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button):is(:hover, :disabled:hover) {
+  main .form :is(.field-submitcta .button, .field-cancel .button, [class~="field-Cancel"] .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button):is(:hover, :disabled:hover) {
     color: var(--bbl-color-white);
     background: var(--bbl-color-active-blue);
     border-color: var(--bbl-color-active-blue);
@@ -506,7 +510,7 @@ main .section:has(.field-business-information-main, .field-loan-details-main) .f
   align-items: center;
 }
 
-main .form .col-6:is(.field-cancel, .field-Cancel, .field-reset) :is(.button, button) {
+main .form .col-6:is(.field-cancel, .field-reset, [class~="field-Cancel"]) :is(.button, button) {
   margin-left: 1rem;
   margin-right: auto;
 }
@@ -517,10 +521,6 @@ main .form .col-6:is(.field-cancel, .field-Cancel, .field-reset) :is(.button, bu
     margin: 0;
   }
 
-  main .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
-  padding: 0 0 0 2.1875rem;
-}
-  
   main .form form fieldset.panel-wrapper.field-wrapper {
     position: relative;
     display: grid;
@@ -531,6 +531,10 @@ main .form .col-6:is(.field-cancel, .field-Cancel, .field-reset) :is(.button, bu
     max-width: 46.25rem;
     padding: 0 0 0 2.1875rem;
   }
+
+  main .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
+  padding: 0 0 0 2.1875rem;
+}
   
   main .form form fieldset.panel-wrapper.field-wrapper > legend {
     display: none;
@@ -651,6 +655,13 @@ main .form form .radio-group-wrapper.cards-radio {
     gap: 0;
   }
   
+main .form form :is(.field-type-of-loan, .field-other-required-products) legend.field-label {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--bbl-space-200);
+  text-align: center;
+}
+
   main .form form .radio-group-wrapper.cards-radio legend.field-label {
     display: block;
     flex: 0 0 100%;
@@ -731,6 +742,16 @@ main .form form .radio-group-wrapper.cards-radio {
     border-color: var(--bbl-color-orange-130);
   }
   
+  /* Checkbox group panels — bordered box */
+main .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
+  .field-other-required-product-panel) {
+  border: 1px solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem;
+  padding: var(--bbl-space-300) var(--bbl-space-500);
+  padding: 10px 10px 10px 0;
+  margin-bottom: 10px;
+}
+
   main .form form .radio-group-wrapper.cards-radio+fieldset.panel-wrapper.field-wrapper {
     margin-top: 0.9375rem;
   }
@@ -762,27 +783,9 @@ main .form form .radio-group-wrapper.cards-radio {
     line-height: var(--bbl-space-200);
   }
   
-  /* Checkbox group panels — bordered box */
-main .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
-  .field-other-required-product-panel) {
-  border: 1px solid var(--bbl-color-grey-150);
-  border-radius: 0.4375rem;
-  padding: var(--bbl-space-300) var(--bbl-space-500);
-  padding: 10px 10px 10px 0;
-  margin-bottom: 10px;
-}
-
-main .form form :is(.field-type-of-loan, .field-other-required-products) legend.field-label {
-  display: block;
-  width: 100%;
-  margin-bottom: var(--bbl-space-200);
-  text-align: center;
-}
-
 main .form form fieldset.panel-wrapper.field-wrapper .checkbox-group-wrapper .checkbox-wrapper {
   display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
+  flex-flow: row nowrap;
   align-items: center;
   gap: 8px;
 }
@@ -791,17 +794,8 @@ main .form form .checkbox-group-wrapper .checkbox-wrapper input[type='checkbox']
   flex-shrink: 0;
   width: 16px;
   height: 16px;
-  margin: 0;
   cursor: pointer;
   margin: 3px 8px 3px 4px;
-}
-
-main .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
-  flex-basis: auto;
-  flex-shrink: 1;
-  font-weight: var(--bbl-font-weight-regular);
-  cursor: pointer;
-  line-height: 25px;
 }
 
 main .form form :is(.field-type-of-loan-panel .field-please-specify-type-of-loan,
