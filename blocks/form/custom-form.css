@@ -40,3 +40,18 @@ main .section.form-container.custom-forms .form-wrapper .form :is(.text-wrapper,
 main .section.form-container.custom-forms .form-wrapper .form .drop-down-wrapper.field-invalid select {
   padding: 0 20px;
 }
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy){
+    padding: 0 0 0 2.1875rem;
+}
+
+main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper .field-description{
+  position:absolute;
+  z-index:1;
+  bottom:0;
+  left:0; 
+}
+
+main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper > .field-description) {
+  padding-bottom: 20px;
+}

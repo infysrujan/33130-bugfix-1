@@ -182,7 +182,7 @@ main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-w
 }
 
 main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper [aria-live="polite"] {
-  text-align: right;
+  text-align: left;
   margin-bottom: 10px;
 }
 
