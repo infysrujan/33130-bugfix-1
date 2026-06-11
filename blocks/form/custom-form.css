@@ -69,3 +69,9 @@ main .section.form-container.custom-forms .form form .field-wrapper:has(> .check
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
 border:none;
 }
+
+main .section.form-container.custom-forms .form :is(.field-submitcta form button[type='submit'], form .submit-wrapper button){
+  background:#0064ff;
+  color:#fff;
+  border:none;
+}
