@@ -2,6 +2,11 @@
   Styles for sections using the custom-forms section class.
 } */
 
+main .section.form-container.custom-forms .section.central-aligned .block, .section.central-aligned > .default-content-wrapper{
+  max-width:unset;
+  margin-top:30px;
+}
+
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
   display: block;
   margin: 20px 0 10px;
@@ -64,6 +69,10 @@ main .section.form-container.custom-forms .form form .field-wrapper:has(> .check
 
 main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper > .field-description) {
   padding-bottom: 20px;
+}
+
+main .section.form-container.custom-forms .form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
+  max-height: 150px;
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
