@@ -7,6 +7,10 @@ main .section.form-container.custom-forms .section.central-aligned .block, .sect
   margin-top:30px;
 }
 
+main .section.form-container.custom-forms .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'], [class*='field-phonenumber'], [class*='field-mobilenumber'], [class*='field-companyname'], [class*='field-company'], [class*='field-property-dropdown'], [class*='field-juristicpersonregistrationnumber'])> :is(input, select){
+  padding-left:20px;
+}
+
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
   display: block;
   margin: 20px 0 10px;

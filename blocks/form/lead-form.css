@@ -45,6 +45,10 @@ main div.default-content-wrapper {
   text-align: center;
 }
 
+main .form form .field-wrapper.drop-down-wrapper[class*='icon-']::before {
+  top:24px;
+}
+
 main .form form {
   gap: 3px;
   max-width: 46.25rem;
@@ -211,7 +215,7 @@ main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrappe
   /* margin-bottom: 10px; */
 }
 
-main .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].text-wrapper).field-wrapper input {
+main .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].text-wrapper).field-wrapper :is(input, select) {
   padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
 }
 
@@ -386,14 +390,17 @@ main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='ico
   width: var(--bbl-space-200);
   height: var(--bbl-space-200);
   position: absolute;
-  top: 1.375rem;
+  top: 28px;
   z-index: 1;
   transform: translateY(-50%);
+  margin: 0;
 }
 
 main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-companyname'], [class*='field-company'], [class*='field-juristicpersonregistrationnumber'])::before {
   content: '\e911';
 }
+
+
 
 main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'],
   [class*='field-lastname'],
@@ -402,10 +409,12 @@ main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='ico
   [class*='field-mobilenumber'],
   [class*='field-companyname'],
   [class*='field-company'],
+  [class*='field-property-dropdown'],
   [class*='field-juristicpersonregistrationnumber'])> :is(input, select) {
   grid-row: 2;
   grid-column: 1;
-  margin-bottom: 0;
+  margin: 0;
+  padding-left: var(--bbl-space-500);
 }
 
 main .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper):has(.field-description).field-wrapper :is(input, textarea, select){
@@ -769,7 +778,7 @@ main .form form .radio-group-wrapper.cards-radio+fieldset.panel-wrapper.field-wr
 /* Wrapper icon fields — customClassName on field-wrapper (icon-money, icon-email, etc.) */
 main .form form .field-wrapper[class*='icon-']::before {
   position: absolute;
-  top: 1.375rem;
+  top: 28px;
   left: 0.9375rem;
   z-index: 1;
   display: flex;
@@ -782,6 +791,7 @@ main .form form .field-wrapper[class*='icon-']::before {
   pointer-events: none;
 }
 
+
 /* Compact glyphs — money & email */
 main .form form :is(.field-wrapper:is(.icon-money, .icon-email),
   label:is(.icon-money, .icon-email))::before {
@@ -789,6 +799,7 @@ main .form form :is(.field-wrapper:is(.icon-money, .icon-email),
   width: var(--bbl-space-200);
   height: var(--bbl-space-200);
   line-height: var(--bbl-space-200);
+  top: 28px;
 }
 
 main .form form fieldset.panel-wrapper.field-wrapper .checkbox-group-wrapper .checkbox-wrapper {
@@ -810,3 +821,4 @@ main .form form :is(.field-type-of-loan-panel .field-please-specify-type-of-loan
   .field-other-required-product-panel .field-please-specify-other-product) {
   width: 100%;
 }
+ 
