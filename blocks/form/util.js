@@ -346,11 +346,13 @@ export function createRadioOrCheckboxUsingEnum(fd, wrapper) {
       required: fd.required,
     });
     const { variant, 'afs:layout': layout } = fd.properties;
-    if (variant === 'cards') {
-      wrapper.classList.add(variant);
-    } else {
-      wrapper.classList.remove('cards');
-    }
+    // if (variant === 'cards' || variant === 'radio-tabs') {
+    //   wrapper.classList.add(variant);
+    // } else {
+    //   wrapper.classList.remove('cards');
+    //   wrapper.classList.remove('radio-tabs');
+    // }
+    wrapper.classList.add(variant);
     if (layout?.orientation === 'horizontal') {
       wrapper.classList.add('horizontal');
     }

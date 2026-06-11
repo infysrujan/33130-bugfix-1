@@ -348,7 +348,7 @@ function renderBlock(
     <div class="fpsme-section fpsme-section-fwd">
       ${s2Controls}
       <div class="fpsme-fwd-body">
-        <h3 class="fpsme-fwd-title">${authoring.section2TableTitle}</h3>
+        <h2 class="fpsme-fwd-title">${authoring.section2TableTitle}</h2>
         <div class="fpsme-fwd-tables">
           <div class="fpsme-fwd-table-col">
             <p class="fpsme-fwd-subtitle">${escapeHtml(authoring.section2SubTitle1)}</p>

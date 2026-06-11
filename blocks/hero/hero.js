@@ -479,6 +479,13 @@ export default async function decorate(block) {
         // Start paused on mobile
           video.pause();
 
+          // Reset play button to play state since video starts paused on mobile
+          const playBtn = bar.querySelector('.hero-ctrl-play');
+          if (playBtn) {
+            playBtn.innerHTML = VI.play;
+            playBtn.setAttribute('aria-label', 'Play');
+          }
+
           // Ensure center play button is visible initially
           const centerBtn = videoWrapper.querySelector(
             '.hero-banner-center-play',

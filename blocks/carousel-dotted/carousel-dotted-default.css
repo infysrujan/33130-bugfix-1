@@ -227,16 +227,20 @@
 .carousel-dotted .slick-dots {
   position: absolute;
   bottom: var(--bbl-space-250);
-  right: var(--bbl-space-300);
+  left: var(--bbl-space-300);
+  right: auto;
   display: flex;
   gap: var(--bbl-space-100);
   list-style: none;
   padding: var(--bbl-space-000);
   margin: var(--bbl-space-000);
   z-index: 2;
-  width: 0.6875rem;
-  height: 0.6875rem;
+  width: auto;
+  height: auto;
+  max-width: calc(100% - 2 * var(--bbl-space-300));
   align-items: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 
 .carousel-dotted.all-text-animation-variant .slick-dots {
@@ -366,25 +370,28 @@
   font-family: var(--bbl-font-family-looped);
 }
 
-/* Override button-tertiary's SVG arrow with icomoon icon font */
-.carousel-dotted .button-tertiary.icon-arrow-left::before {
-  background-color: transparent;
-  mask: none;
-  font-size: 0.85em;
-  position: relative;
-  top: 0.0625rem;
-  left: 4.6875rem;
-  transition: left 0.3s ease;
-}
-
-/* Remove the ::after pseudo-element from button-tertiary */
+/* Remove the default SVG ::after arrow from button-tertiary */
 .carousel-dotted .button-tertiary::after {
   display: none;
 }
 
+/* Re-enable ::after with icomoon arrow for with-image and without-image slides only */
+.carousel-dotted .carousel-dotted-item.with-image .button-tertiary::after,
+.carousel-dotted .carousel-dotted-item.without-image .button-tertiary::after,
+.carousel-dotted.all-with-image .carousel-dotted-more .button-tertiary::after,
+.carousel-dotted.all-without-image .carousel-dotted-more .button-tertiary::after {
+  display: inline-block;
+  content: "\e901";
+  font-family: icomoon, sans-serif;
+  background-color: transparent;
+  mask: none;
+  font-size: 0.625rem;
+  margin-left: 1rem;
+  transition: margin-left 0.3s ease;
+}
+
 .carousel-dotted .button-tertiary {
   transition: color 0.3s ease;
-  padding-right: 1.5rem;
 }
 
 .carousel-dotted .button-tertiary:hover {
@@ -392,8 +399,11 @@
   color: var(--bbl-color-blue-90);
 }
 
-.carousel-dotted .button-tertiary.icon-arrow-left:hover::before {
-  left: 5rem;
+.carousel-dotted .carousel-dotted-item.with-image .button-tertiary:hover::after,
+.carousel-dotted .carousel-dotted-item.without-image .button-tertiary:hover::after,
+.carousel-dotted.all-with-image .carousel-dotted-more .button-tertiary:hover::after,
+.carousel-dotted.all-without-image .carousel-dotted-more .button-tertiary:hover::after {
+  margin-left: 1.25rem;
 }
 
 .carousel-item.slick-active:not(.is-active)
@@ -778,9 +788,9 @@ p.text-large.text-light {
   /* Dot positioning variants */
   .carousel-dotted.all-with-image .slick-dots,
   .carousel-dotted.all-without-image .slick-dots {
-    left: 7.5rem;
+    left: var(--bbl-space-300);
     right: auto;
-    justify-content: flex-end;
+    justify-content: flex-start;
     top: unset;
     bottom: var(--bbl-space-250);
   }
@@ -942,9 +952,9 @@ p.text-large.text-light {
   /* Dot positioning variants */
   .carousel-dotted.all-with-image .slick-dots,
   .carousel-dotted.all-without-image .slick-dots {
-    left: 7.5rem;
+    left: var(--bbl-space-300);
     right: auto;
-    justify-content: flex-end;
+    justify-content: flex-start;
     bottom: var(--bbl-space-250);
   }
 

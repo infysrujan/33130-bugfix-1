@@ -4,10 +4,7 @@ import {
   getMetadata,
   buildBlock,
   decorateBlock,
-  decorateBlocks,
-  decorateSections,
   loadBlock,
-  loadSections,
 } from './aem.js';
 
 /**
@@ -232,44 +229,24 @@ function isHomepage() {
 }
 
 async function loadWelcomeBanner(doc) {
-  doc.querySelectorAll('.welcome-banner-wrapper').forEach((wrapper) => {
-    const section = wrapper.closest('.section');
-    if (section) section.remove();
-    else wrapper.remove();
-  });
-
   if (!isHomepage()) return;
 
   const lang = doc.documentElement.lang || 'en';
   const path = `/${lang}/fragments/welcome-banner/welcome-banner`;
 
-  let resp;
-  try {
-    resp = await fetch(`${path}.plain.html`);
-  } catch {
-    return;
-  }
-  if (!resp.ok) return;
-
-  const main = document.createElement('main');
-  main.innerHTML = await resp.text();
-
-  main.querySelectorAll('img[src^="./media_"]').forEach((el) => {
-    el.src = new URL(el.getAttribute('src'), new URL(path, window.location)).href;
-  });
-  main.querySelectorAll('source[srcset^="./media_"]').forEach((el) => {
-    el.srcset = new URL(el.getAttribute('srcset'), new URL(path, window.location)).href;
-  });
-
-  // Attach to document.body so showModal can access document.body during decorate()
-  main.style.display = 'none';
-  document.body.appendChild(main);
-
-  decorateSections(main);
-  decorateBlocks(main);
-  await loadSections(main);
-
-  main.remove();
+  document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
+    detail: {
+      path,
+      callback: (fragment) => {
+        if (!fragment) {
+          console.error('[Welcome Banner] Fragment not found at', path);
+          return;
+        }
+        const main = doc.querySelector('main');
+        [...fragment.querySelectorAll(':scope > .section')].forEach((s) => main.append(s));
+      },
+    },
+  }));
 }
 
 async function loadBreadcrumb(doc) {
@@ -453,8 +430,7 @@ async function buildCookieAlert(main) {
         path: fragmentPath,
         callback: (fragment) => {
           if (!fragment) {
-            // eslint-disable-next-line no-console
-            console.warn('[cookie-alert] Fragment not found at', fragmentPath);
+            console.error('[cookie-alert] Fragment not found at', fragmentPath);
             return;
           }
           // Move the decorated sections directly (preserves event listeners).

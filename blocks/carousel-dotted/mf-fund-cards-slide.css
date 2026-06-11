@@ -39,18 +39,37 @@
 /* ── Description (notes/disclaimer below carousel) ───────────────────────── */
 
 .mf-fund-cards-description {
-  padding: var(--bbl-space-200) var(--bbl-space-container-xs);
-  font-size: var(--bbl-font-size-b2, 0.875rem);
-  line-height: 1.5;
-  color: var(--bbl-color-grey-70);
+  margin: var(--bbl-space-500) auto;
+  max-width: 56.25rem; /* 900px */
+  padding: 0 var(--bbl-space-300);
+  font-family: var(--bbl-font-family-primary);
+  font-size: 1rem;
+  line-height: 1.375;
+  color: var(--bbl-color-grey-85);
+  text-align: left;
 }
 
 .mf-fund-cards-description p {
-  margin: 0 0 0.5em;
+  margin: 0 0 10px;
+  font-family: var(--bbl-font-family-primary);
+  font-size: 1rem;
+  line-height: 1.375;
+  color: var(--bbl-color-grey-85);
 }
 
-.mf-fund-cards-description p:last-child {
-  margin-bottom: 0;
+.mf-fund-cards-description ul {
+  list-style: disc;
+  padding-left: 0;
+  margin-bottom: 15px;
+}
+
+.mf-fund-cards-description li {
+  margin-bottom: 10px ;
+  font-family: var(--bbl-font-family-primary);
+  font-size: 1rem;
+  line-height: 1.375;
+  color: var(--bbl-color-grey-85);
+  margin-left: 20px;
 }
 
 /* ── Mobile: hide scrollbar on the cards-list ─────────────────────────────── */
@@ -66,7 +85,7 @@
 /* ── Image area (image layout = "default") ────────────────────────────────── */
 
 .card-list.mf-card-list .cards-list-image {
-  height: 11rem;
+  max-height: 8.4375rem;
   overflow: hidden;
 }
 
@@ -81,22 +100,56 @@
 /* ── Logo in remark area ──────────────────────────────────────────────────── */
 
 .card-list.mf-card-list .cards-list-remark img.mfr-logo {
-  height: 2.5rem;
-  width: auto;
-  max-width: 100%;
-  object-fit: contain;
-  display: block;
-  margin-top: var(--bbl-space-200);
+  max-width: 8.875rem;
+  margin-bottom: 1.4375rem;
 }
 
 /* ── Card title h3 ────────────────────────────────────────────────────────── */
 
 .card-list.mf-card-list .cards-list-title h3 {
-  font-size: 1.1375rem;
-  line-height: 1.3;
-  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.625rem;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
+  min-height: 4.4375rem;
   overflow-wrap: anywhere;
+  position: relative;
+  padding-bottom: 0.9375rem;
+  margin-bottom: 0.9375rem;
+  font-family: var(--bbl-font-family-medium);
+}
+
+/* Underline decoration (matches live .line::before) */
+.card-list.mf-card-list .cards-list-title h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1.3125rem;
+  height: 0.0625rem;
+  background: var(--bbl-color-grey-60);
+}
+
+/* ── Card description ─────────────────────────────────────────────────────── */
+
+.card-list.mf-card-list .cards-list-description p {
+  font-size: 1rem;
+  line-height: 1.375;
+  color: var(--bbl-color-grey-70);
+  margin: 0 0 0.625rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 10;
+  line-clamp: 10;
+  -webkit-box-orient: vertical;
+  font-family: var(--bbl-font-family-primary);
+}
+
+/* ── Card content area ────────────────────────────────────────────────────── */
+
+.card-list.mf-card-list .cards-list-content {
+  padding: 1.25rem;
+  flex-grow: 1;
 }
 
 /* ── Button area: stack Read More above Compare ───────────────────────────── */
@@ -104,27 +157,29 @@
 .card-list.mf-card-list .cards-list-inner .cards-list-button {
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  padding: 0 1.25rem 1.25rem;
 }
 
 /* Read More — full-width solid blue (primary) */
 
 .card-list.mf-card-list .cards-list-button a {
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: center;
   width: 100%;
   min-height: 2.75rem;
-  padding: 0 var(--bbl-space-200);
+  height: auto;
+  padding: 0.3125rem 0;
   box-sizing: border-box;
   border-radius: 0.4375rem;
   background-color: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-medium);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1, 1rem);
+  line-height: 1.375rem;
+  text-align: center;
   text-decoration: none;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s;
 }
 
 .card-list.mf-card-list .cards-list-button a::before,
@@ -134,33 +189,38 @@
 
 .card-list.mf-card-list .cards-list-button a:hover {
   background-color: var(--bbl-color-blue-90);
-  border: none;
+  border-color: var(--bbl-color-blue-90);
+  color: var(--bbl-color-white);
   text-decoration: none;
 }
 
 /* ── Compare button — sits inside .cards-list-button below Read More ──────── */
 
 .card-list.mf-card-list .mfr-compare-btn {
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: center;
   width: 100%;
   min-height: 2.75rem;
-  padding: 0 var(--bbl-space-200);
+  height: auto;
+  padding: 0.3125rem 0;
   box-sizing: border-box;
   border-radius: 0.4375rem;
   background-color: transparent;
   color: var(--bbl-color-active-blue);
   border: 0.0625rem solid var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-medium);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1, 1rem);
+  line-height: 1.375rem;
+  text-align: center;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  margin-top: 0.625rem;
+  margin-left: 0;
+  transition: all 0.3s;
 }
 
 .card-list.mf-card-list .mfr-compare-btn:hover {
   background-color: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
 }
 
@@ -186,6 +246,7 @@
     flex: 0 0 calc((100% - 3 * var(--bbl-space-250)) / 3);
     margin-bottom: var(--bbl-space-250);
     scroll-snap-align: none;
+    max-width: 17.1875rem;
   }
 }
 
@@ -199,5 +260,52 @@
   .card-list.mf-card-list .cards-list.scrollable.cards-3 .cards-list-item {
     flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 3);
     margin-bottom: var(--bbl-space-500);
+    max-width: 17.1875rem;
+  }
+}
+
+/* ── Single Card alignment overrides ─────────────────────────────────────── */
+
+.card-list.mf-card-list .cards-list.single-card {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.card-list.mf-card-list .cards-list.single-card .cards-list-item {
+  flex: 0 0 100%;
+  width: 100%;
+  max-width: 16.875rem;
+  margin: 0 auto var(--bbl-space-250) auto;
+}
+
+@media (width > 47.5rem) {
+  .card-list.mf-card-list .cards-list.scrollable.cards-3.single-card .cards-list-item {
+    margin-bottom: var(--bbl-space-250);
+  }
+}
+
+@media (width > 64rem) {
+  .card-list.mf-card-list .cards-list.scrollable.cards-3.single-card .cards-list-item {
+    margin-bottom: var(--bbl-space-500);
+  }
+}
+
+/* ── Carousel Grid and Flex positioning overrides ────────────────────────── */
+
+@media (width > 47.5rem) {
+  /* Place the slide in Column 2 of the carousel grid */
+  .carousel-dotted.show-arrows-dots .carousel-dotted-item.mf-fund-cards-item {
+    grid-column: 2;
+  }
+
+  /* If there are no navigation arrows (only one slide), let it span the full grid */
+  .carousel-dotted.show-arrows-dots:not(:has(.carousel-arrow)) .carousel-dotted-item.mf-fund-cards-item {
+    grid-column: 1 / -1;
+  }
+
+  /* Ensure the card list block inside the flex-row slide spans 100% width */
+  .carousel-dotted.show-arrows-dots .carousel-dotted-item.mf-fund-cards-item .card-list {
+    width: 100%;
   }
 }

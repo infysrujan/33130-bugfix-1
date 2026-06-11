@@ -1,3 +1,55 @@
+const ICON_MARKER_RE = /#icon(\d*)(?:-(inline|block))?/i;
+const DCW = '.default-content-wrapper';
+
+export function decorateRteInlineImages(main) {
+  main.querySelectorAll(`${DCW} p, ${DCW} li, ${DCW} td`).forEach((el) => {
+    if (!el.innerHTML.includes('&amp;nbsp;')) return;
+    el.innerHTML = el.innerHTML.replace(/&amp;nbsp;/g, '&nbsp;');
+  });
+
+  main.querySelectorAll(`${DCW} p picture, ${DCW} li picture`)
+    .forEach((pic) => pic.classList.add('rte-inline-image'));
+
+  main.querySelectorAll(`${DCW} p`).forEach((markerP) => {
+    const match = ICON_MARKER_RE.exec(markerP.textContent);
+    if (!match) return;
+
+    const [fullMatch, size] = match;
+    const px = `${parseInt(size, 10) || 40}px`;
+
+    const prev = markerP.previousElementSibling;
+    const next = markerP.nextElementSibling;
+    const picture = prev?.querySelector('picture.rte-inline-image')
+      ?? next?.querySelector('picture.rte-inline-image')
+      ?? markerP.querySelector('picture.rte-inline-image');
+
+    if (picture) {
+      picture.style.width = px;
+      picture.style.height = px;
+
+      const segments = markerP.innerHTML.split(/<br\s*\/?>/i);
+      const markerOnNewLine = segments.length > 1
+        && ICON_MARKER_RE.test(segments[segments.length - 1]);
+      const restText = markerP.textContent.replace(fullMatch, '').trim();
+
+      if (restText && !markerOnNewLine) {
+        markerP.innerHTML = markerP.innerHTML.replace(fullMatch, '').trimEnd();
+        const picP = picture.closest('p');
+        if (picP && picP !== markerP) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'has-inline-icon';
+          markerP.parentNode.insertBefore(wrapper, markerP);
+          wrapper.append(markerP, picP);
+        }
+      } else if (markerOnNewLine) {
+        markerP.innerHTML = segments.slice(0, -1).join('<br>').trimEnd();
+      } else {
+        markerP.remove();
+      }
+    }
+  });
+}
+
 /**
  * Finds [#x.x] markers anywhere in RTE text, replaces them with an invisible
  * anchor <span> and removes the marker from visible content.

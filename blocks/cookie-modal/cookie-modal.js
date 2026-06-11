@@ -7,6 +7,8 @@
 import { createModalShell, hideModal } from '../../scripts/utils/modal.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
+import { getCookie, setCookie } from '../../scripts/utils/cookies.js';
+
 const COOKIE_DURATION_DAYS = 30;
 const COOKIE_CONSENT = 'ConsentAlert';
 const CONSENT_SAVED_EVENT = 'cookie:consent-saved';
@@ -29,18 +31,6 @@ const COOKIE_VALUE_MAP = {
   AnalysisCookie: 'Analysis',
   AdvertisingCookie: 'Advertising',
 };
-
-function setCookie(name, value, days) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; `
-    + `expires=${expires}; path=/; SameSite=Lax`;
-}
-
-function getCookie(name) {
-  const encoded = encodeURIComponent(name);
-  const match = document.cookie.split('; ').find((row) => row.startsWith(`${encoded}=`));
-  return match ? decodeURIComponent(match.split('=')[1]) : null;
-}
 
 function el(tag, { className, text, attrs = {} } = {}) {
   const node = document.createElement(tag);

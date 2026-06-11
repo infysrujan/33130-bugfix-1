@@ -1,0 +1,19 @@
+/* =========================================================================
+   PAGE-LEVEL VARIANTS - for Bangkok BankM Card Page
+   ========================================================================= */
+
+body.bangkok-bankm-card main {
+    background-color: maroon;
+}
+
+body.bangkok-bankm-card .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--bbl-color-white);
+}
+
+body.bangkok-bankm-card .tabs-nav-wrapper .tabs-nav button {
+    color: var(--bbl-color-white);
+}
+
+body.bangkok-bankm-card .content { /* In bbm-glow-card vendor css is being appiled to .content class */
+    text-align: unset;
+}

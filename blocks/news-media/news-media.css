@@ -86,6 +86,7 @@
 
 .latest-news-container .button-container .button-m {
   min-width: 13.125rem;
+  display: inline-flex;
 }
 
 @media (width > 47.5rem) {

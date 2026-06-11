@@ -42,25 +42,33 @@ td.merged-fund-type {
 .fund-prices-table table tr:not(.header-row) td {
   color: var(--bbl-color-grey-70);
   font-family: var(--bbl-font-family-primary);
-  font-size: 0.9375rem;
+  font-size: var(--bbl-text-body-size);
   font-weight: var(--bbl-font-weight-regular);
   background: var(--bbl-color-white);
-  padding: var(--bbl-space-300) 1.125rem;
+  padding: var(--bbl-space-150) 1.125rem;
   text-align: right;
   vertical-align: middle;
+  height: var(--bbl-space-100);
 }
 
 .fund-prices-table table tr:not(.header-row) td span {
+  display: block;
   font-style: italic;
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-medium);
   font-size: 0.6875rem;
   line-height: 1.63;
   letter-spacing: -0.0063rem;
-  padding-left: 0.3125rem;
+  padding-left: 0;
 }
 
-.fund-prices-table table tr:not(.header-row) td.merged-fund-type,
+.fund-prices-table table tr:not(.header-row) td.merged-fund-type {
+  text-align: left;
+}
+
 .fund-prices-table table tr:not(.header-row) td.col-openendfund {
   text-align: left;
+  white-space: nowrap;
 }
 
 .fund-prices-table table tr:not(.header-row) td.col-nav,
@@ -68,16 +76,53 @@ td.merged-fund-type {
 .fund-prices-table table tr:not(.header-row) td.col-redemptionprice,
 .fund-prices-table table tr:not(.header-row) td.col-totalnetassets {
   text-align: right;
+  padding-right: 0;
+}
+
+.fund-prices-table table tr:not(.header-row) td.col-sellingprice {
+  padding-right: 0.625rem;
+}
+
+.fund-prices-table table tr:not(.header-row) td.col-totalnetassets {
+  padding-right: 1.125rem;
 }
 
 .fund-prices-table table tr.header-row td {
-  font: 0.9375rem/1.35 BangkokBank-Bold, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-body-size);
+  font-weight: var(--bbl-font-weight-medium);
+  line-height: var(--bbl-line-height-body);
   color: var(--bbl-color-black);
   background: var(--bbl-color-grey-10);
-  padding: 0 var(--bbl-space-250);
+  padding: 0;
   vertical-align: middle;
   border-color: var(--bbl-color-grey-18);
-  text-align: center;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.fund-prices-table table tr.header-row td:first-child,
+.fund-prices-table table tr.header-row td:nth-child(2) {
+  text-align: left;
+}
+
+.fund-prices-table table tr.header-row td:first-child {
+  width: 12%;
+  padding-left: 1.125rem;
+}
+
+.fund-prices-table table tr.header-row td:nth-child(2) {
+  width: 26%;
+  padding-left: 1.0625rem;
+}
+
+.fund-prices-table table tr.header-row td:nth-child(4) {
+  padding-right: 0.625rem;
+}
+
+.fund-prices-table table tr.header-row td:last-child {
+  width: 16%;
+  padding-right: 1.25rem;
 }
 
 .fund-prices-table table tr.header-row {

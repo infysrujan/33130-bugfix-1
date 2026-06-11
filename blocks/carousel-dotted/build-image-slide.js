@@ -44,9 +44,12 @@ export default function buildSlideWithImage(row, index, cells) {
   }
 
   // Link/Button (cell 7)
-  const link = cells[7]?.querySelector('a');
-  if (link) {
-    content.append(link);
+  const buttonContainer = cells[7]?.querySelector('.button-container');
+  if (buttonContainer) {
+    content.append(buttonContainer);
+  } else {
+    const link = cells[7]?.querySelector('a');
+    if (link) content.append(link);
   }
 
   slide.append(content);

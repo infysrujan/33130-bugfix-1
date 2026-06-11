@@ -56,12 +56,11 @@ function readBlockConfig(block) {
 
 // ── DOM builders ───────────────────────────────────────────────────────────────
 
-// Create the hidden warning banner shown when the card-selection limit is reached
+// Create the warning banner shown when the card-selection limit is reached
 function buildErrorDiv(warningText) {
   const el = document.createElement('div');
   el.className = 'compare-error';
   el.textContent = warningText;
-  el.hidden = true;
   return el;
 }
 
@@ -173,13 +172,9 @@ export default async function decorate(block) {
   } = buildComparatorDOM(block, warningText, linkText, linkType);
   if (linkTitle) ctaBtn.title = linkTitle;
 
-  let warningTimer = null;
-
-  // Show the max-limit warning banner and auto-dismiss it after 4 seconds
+  // Show the max-limit warning banner — stays visible until a card is removed
   function showWarning() {
-    clearTimeout(warningTimer);
-    errorDiv.hidden = false;
-    warningTimer = setTimeout(() => { errorDiv.hidden = true; }, 4000);
+    errorDiv.classList.add('is-visible');
   }
 
   // Sync the bar, button state, cookie, and sessionStorage whenever the card selection changes
@@ -188,8 +183,7 @@ export default async function decorate(block) {
     block.classList.toggle('active', count > 0);
     ctaBtn.disabled = count < MIN_COMPARE;
     if (count < MAX_COMPARE) {
-      clearTimeout(warningTimer);
-      errorDiv.hidden = true;
+      errorDiv.classList.remove('is-visible');
     }
     saveComparatorCookie(selectedCards);
     // Persist to sessionStorage so the bar survives a same-tab page refresh

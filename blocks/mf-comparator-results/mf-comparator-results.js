@@ -45,10 +45,9 @@ function resolveCardPageUrl(card) {
 async function loadAllCards() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfFundsDataUrl;
-    // eslint-disable-next-line no-console
-    console.log('[mf-comparator-results] loadAllCards url:', url);
-    if (!url) throw new Error('no url');
+    const baseUrl = configs.mfFundsDataUrl;
+    if (!baseUrl) throw new Error('no url');
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
     const json = await fetchGet(url);
     const items = json.data?.mutualFundsList?.items
       || json.data?.fundsList?.items
@@ -365,6 +364,7 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
     msg.className = 'mfcr-no-results';
     msg.textContent = labels.noResults;
     container.appendChild(msg);
+    container.classList.remove('single-card', 'two-cards');
     return;
   }
 
@@ -374,6 +374,9 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
   const displayCards = sorted.length > 0
     ? sorted
     : cards.map(({ name, image }) => ({ name, image }));
+
+  container.classList.toggle('single-card', displayCards.length === 1);
+  container.classList.toggle('two-cards', displayCards.length === 2);
 
   displayCards.forEach((card) => {
     container.appendChild(buildCompareCard(card, doc, labels));

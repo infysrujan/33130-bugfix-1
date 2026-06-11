@@ -184,7 +184,7 @@ stages:
         set -e
 
         lhci collect \
-          --url="$(TEST_URL)" \
+          --url="$(TEST_URL)?martech=off" \
           --numberOfRuns=2 \
           --settings.chromeFlags="--headless --no-sandbox --disable-dev-shm-usage --disable-gpu"
 

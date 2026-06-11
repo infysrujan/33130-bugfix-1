@@ -1,0 +1,28 @@
+/* =========================================================================
+   PAGE-LEVEL VARIANTS - for Private Banking Page
+   ========================================================================= */
+body.private main :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--bbl-color-white);
+}
+
+body.private main :is(.button-container .button, .button) {
+    background: var(--bbl-color-white);
+    color: var(--bbl-color-black);
+    border: 1px solid var(--bbl-color-white);
+
+    &:hover {
+        background: var(--bbl-color-active-blue);
+        border: 1px solid var(--bbl-color-active-blue);
+        color: var(--bbl-color-white);
+        box-shadow: none;
+    }
+}
+
+body.private .default-content-wrapper p {
+    color: var(--bbl-color-grey-85);
+}
+
+body.private .bg-truthful-blue p,
+body.private .bg-truthful-dark-blue p {
+    color: var(--bbl-color-white);
+}

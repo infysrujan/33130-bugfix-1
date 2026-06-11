@@ -7,14 +7,15 @@ export const CARDS_PER_PAGE = 12;
 export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = false) {
   const address = [loc.Address1, loc.Address2, loc.Address3, loc.Province, loc.Postcode]
     .filter((v) => hasValue(v)).join(' ');
-  const nearestLabel = placeholders?.nearestLocationTag || 'Nearest';
+  const nearestLabel = placeholders?.nearestLocationTag || 'nearest';
   const getDirectionText = placeholders?.getDirectionText || 'Get Direction';
   const statusLabel = placeholders?.statusLabel || 'Status:';
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
 
+  const hasCoords = !!(loc.Lat && loc.Lng);
   const dirTemplate = configs?.locateUsGoogleMapsDirectionsUrl;
-  const directionsUrl = (dirTemplate && loc.Lat && loc.Lng)
+  const directionsUrl = (dirTemplate && hasCoords)
     ? buildUrl(dirTemplate, { LAT: loc.Lat, LNG: loc.Lng })
     : '';
 
@@ -79,6 +80,7 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
     dirEl.href = directionsUrl;
     dirEl.textContent = getDirectionText;
   }
+  if (!hasCoords) card.dataset.noLocation = 'true';
 
   return card;
 }
@@ -270,13 +272,14 @@ export function renderCards(
     const header = card.querySelector('.locate-us-card-header');
     const body = card.querySelector('.locate-us-card-body');
 
+    const hasCoords = !!(loc.Lat && loc.Lng);
+
     card.addEventListener('click', (e) => {
       if (window.matchMedia('(width > 47.5rem)').matches) {
         if (e.target.closest('a')) return;
         collapseAll();
         header.setAttribute('aria-expanded', 'true');
-        onSelect(loc);
-        scrollToMap();
+        if (hasCoords) { onSelect(loc); scrollToMap(); }
         return;
       }
       if (!e.target.closest('.locate-us-card-header')) return;
@@ -286,15 +289,14 @@ export function renderCards(
         body.hidden = false;
         header.setAttribute('aria-expanded', 'true');
         restoreOrder(card);
-        onSelect(loc);
-        scrollToMap();
+        if (hasCoords) { onSelect(loc); scrollToMap(); }
       }
     });
 
     if (idx === 0) {
       body.hidden = false;
       header.setAttribute('aria-expanded', 'true');
-      if (autoSelect) onSelect(loc);
+      if (autoSelect && hasCoords) onSelect(loc);
     }
 
     cardsContainer.appendChild(card);

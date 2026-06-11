@@ -1,83 +1,193 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
+import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
-const BANNER_COOKIE = 'bbl-welcome-banner';
-const COOKIE_DURATION_MS = 20 * 60 * 1000;
+// ─── Constants ───────────────────────────────────────────────────────────────
 
-function setBannerDismissed() {
-  const expires = new Date(Date.now() + COOKIE_DURATION_MS).toUTCString();
-  document.cookie = `${encodeURIComponent(BANNER_COOKIE)}=${Date.now()}; expires=${expires}; path=/; SameSite=Lax`;
+const BANNER_STORAGE_KEY = 'bbl-welcome-banner';
+const SUPPRESSION_DURATION_MS = 20 * 60 * 1000; // 20 minutes
+
+// ─── Storage helpers (sessionStorage only — cleared when the tab closes) ──────
+
+/**
+ * Reads the suppression timestamp from sessionStorage.
+ * Silently returns 0 on any SecurityError (strict privacy modes / Incognito).
+ * @returns {number} Unix timestamp in ms, or 0 if not found.
+ */
+function readTimestamp() {
+  try {
+    return Number(sessionStorage.getItem(BANNER_STORAGE_KEY)) || 0;
+  } catch (error) {
+    console.error(error);
+  }
+
+  return 0;
 }
 
+/**
+ * Persists the current timestamp to sessionStorage when the user clicks a CTA.
+ * Silently ignores write failures in restrictive environments.
+ */
+function writeTimestamp() {
+  try {
+    sessionStorage.setItem(BANNER_STORAGE_KEY, String(Date.now()));
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+/**
+ * Returns the remaining milliseconds within the suppression window, or 0 if expired / unset.
+ * @returns {number}
+ */
 function getRemainingMs() {
-  const encoded = encodeURIComponent(BANNER_COOKIE);
-  const match = document.cookie.split('; ').find((r) => r.startsWith(`${encoded}=`));
-  if (!match) return 0;
-  const ts = Number(match.split('=')[1]);
+  const ts = readTimestamp();
   if (!ts) return 0;
-  const remaining = COOKIE_DURATION_MS - (Date.now() - ts);
-  return remaining > 0 ? remaining : 0;
+  return Math.max(0, SUPPRESSION_DURATION_MS - (Date.now() - ts));
 }
 
+// ─── Date-validity guard ──────────────────────────────────────────────────────
+
+/**
+ * Returns true if the current date falls within [startStr, endStr].
+ * Boundaries are inclusive; a missing boundary is treated as open.
+ * @param {string|undefined} startStr
+ * @param {string|undefined} endStr
+ * @returns {boolean}
+ */
 function isDateActive(startStr, endStr) {
-  const now = new Date();
+  const now = Date.now();
   if (startStr) {
-    const start = new Date(startStr);
-    if (!Number.isNaN(start.getTime()) && now < start) return false;
+    const start = Date.parse(startStr);
+    if (!Number.isNaN(start) && now < start) return false;
   }
   if (endStr) {
-    const end = new Date(endStr);
-    if (!Number.isNaN(end.getTime()) && now > end) return false;
+    const end = Date.parse(endStr);
+    if (!Number.isNaN(end) && now > end) return false;
   }
   return true;
 }
 
+// ─── CTA extraction ───────────────────────────────────────────────────────────
+
+/**
+ * Maps a single anchor element to a plain CTA descriptor object.
+ * @param {HTMLAnchorElement} a
+ * @returns {{ href: string, label: string, target: string, sourceAnchor: HTMLAnchorElement }}
+ */
+function anchorToCtaData(a) {
+  return {
+    href: a.getAttribute('href') || '#',
+    label: a.textContent.trim(),
+    target: a.getAttribute('target') || '',
+    sourceAnchor: a,
+  };
+}
+
+/**
+ * Extracts CTA data from the block's button rows.
+ * Falls back to sibling `.default-content-wrapper` links when no rows contain anchors.
+ * @param {Element[]} buttonRows
+ * @param {Element}   placeholder
+ * @returns {Array}
+ */
+function extractCtas(buttonRows, placeholder) {
+  const fromRows = buttonRows
+    .map((row) => row?.querySelector('a'))
+    .filter(Boolean)
+    .map(anchorToCtaData);
+
+  if (fromRows.length) return fromRows;
+
+  const fallbackAnchors = [
+    ...placeholder.closest('.section')?.querySelectorAll('.default-content-wrapper a') ?? [],
+  ];
+  return fallbackAnchors.map(anchorToCtaData);
+}
+
+// ─── DOM builders ─────────────────────────────────────────────────────────────
+
+/**
+ * Builds a single CTA anchor with navigation and dismiss logic.
+ * @param {Document} doc
+ * @param {object}   ctaData
+ * @param {Function} dismissAndSuppress
+ * @returns {HTMLAnchorElement}
+ */
+function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
+  const a = doc.createElement('a');
+  a.className = 'welcome-banner-cta';
+  a.href = ctaData.href;
+  a.textContent = ctaData.label;
+
+  if (ctaData.target) a.setAttribute('target', ctaData.target);
+  if (ctaData.sourceAnchor) moveInstrumentation(ctaData.sourceAnchor, a);
+
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const { href, target } = ctaData;
+    dismissAndSuppress();
+    if (!href || href === '#') return;
+    if (target === '_blank') {
+      window.open(href, '_blank', 'noopener,noreferrer');
+    } else {
+      window.location.href = href;
+    }
+  });
+
+  return a;
+}
+
+/**
+ * Builds the CTA container with all action anchors.
+ * @param {Document} doc
+ * @param {Array}    ctaList
+ * @param {Function} dismissAndSuppress
+ * @returns {HTMLElement}
+ */
+function buildCtas(doc, ctaList, dismissAndSuppress) {
+  const el = doc.createElement('div');
+  el.className = 'welcome-banner-ctas';
+  ctaList.forEach((ctaData) => el.appendChild(buildCtaAnchor(doc, ctaData, dismissAndSuppress)));
+  return el;
+}
+
+// ─── Block entry point ────────────────────────────────────────────────────────
+
 export default function decorate(block) {
-  const rows = [...block.children];
   const [
     desktopImgRow, mobileImgRow, isActiveRow, publishDateRow, unpublishDateRow, ...buttonRows
-  ] = rows;
+  ] = [...block.children];
 
   const doc = block.ownerDocument;
+
+  // Replace the block with an invisible placeholder immediately so AEM
+  // instrumentation is preserved and the section layout is unaffected.
   const placeholder = doc.createElement('div');
   placeholder.className = 'welcome-banner-placeholder';
   moveInstrumentation(block, placeholder);
   block.replaceWith(placeholder);
 
-  const isActiveVal = isActiveRow?.textContent?.trim().toLowerCase();
-  if (isActiveVal === 'false') return;
-
+  // ── Activation guards ──────────────────────────────────────────────────────
+  if (isActiveRow?.textContent?.trim().toLowerCase() === 'false') return;
   const publishDate = publishDateRow?.textContent?.trim();
   const unpublishDate = unpublishDateRow?.textContent?.trim();
   if (!isDateActive(publishDate, unpublishDate)) return;
+  if (getRemainingMs() > 0) return;
 
-  const desktopPic = desktopImgRow?.querySelector('picture')?.cloneNode(true) ?? null;
-  if (desktopImgRow && desktopPic) moveInstrumentation(desktopImgRow, desktopPic);
+  // ── Build image ────────────────────────────────────────────────────────────
+  const pictureDesktop = desktopImgRow?.querySelector('picture');
+  const pictureMobile = mobileImgRow?.querySelector('picture');
 
-  const mobilePic = mobileImgRow?.querySelector('picture')?.cloneNode(true) ?? null;
-  if (mobileImgRow && mobilePic) moveInstrumentation(mobileImgRow, mobilePic);
+  const media = doc.createElement('div');
+  media.className = 'welcome-banner-media';
 
-  const ctaLinks = buttonRows.map((row) => {
-    const a = row?.querySelector('a');
-    if (!a) return null;
-    return {
-      href: a.getAttribute('href') || '#',
-      label: a.textContent.trim(),
-      target: a.getAttribute('target') || '',
-      sourceAnchor: a,
-    };
-  }).filter(Boolean);
-  if (ctaLinks.length === 0) {
-    placeholder.closest('.section')?.querySelectorAll('.default-content-wrapper a').forEach((a) => {
-      ctaLinks.push({
-        href: a.getAttribute('href') || '#',
-        label: a.textContent.trim(),
-        target: a.getAttribute('target') || '',
-        sourceAnchor: a,
-      });
-    });
+  if (pictureDesktop || pictureMobile) {
+    const picture = createSmartImage(desktopImgRow, mobileImgRow);
+    if (picture) media.append(picture);
   }
 
+  // ── Build modal shell ──────────────────────────────────────────────────────
   const { overlay, dialog, closeBtn } = createModalShell({
     overlayClass: 'welcome-banner-overlay',
     dialogClass: 'welcome-banner-dialog',
@@ -86,54 +196,27 @@ export default function decorate(block) {
     closeBtnAriaLabel: 'Close welcome banner',
   });
 
-  const dismiss = () => {
-    setBannerDismissed();
-    hideModal(overlay, 'welcome-banner-overlay-visible');
+  const hideBanner = () => {
+    hideModal(overlay, 'welcome-banner-overlay-visible', () => {
+      doc.body.classList.remove('modal-open');
+    });
   };
 
-  closeBtn.addEventListener('click', dismiss);
+  const dismissAndSuppress = () => {
+    writeTimestamp();
+    hideBanner();
+  };
 
-  const media = doc.createElement('div');
-  media.className = 'welcome-banner-media';
-  if (desktopPic) {
-    desktopPic.classList.add('welcome-banner-desktop-img');
-    media.appendChild(desktopPic);
-  }
-  if (mobilePic) {
-    mobilePic.classList.add('welcome-banner-mobile-img');
-    media.appendChild(mobilePic);
-  }
+  closeBtn.addEventListener('click', hideBanner);
 
-  const ctas = doc.createElement('div');
-  ctas.className = 'welcome-banner-ctas';
-  ctaLinks.forEach((ctaData) => {
-    const a = doc.createElement('a');
-    a.className = 'welcome-banner-cta';
-    a.href = ctaData.href;
-    a.textContent = ctaData.label;
-    if (ctaData.target) a.setAttribute('target', ctaData.target);
-    if (ctaData.sourceAnchor) moveInstrumentation(ctaData.sourceAnchor, a);
-    a.addEventListener('click', (e) => {
-      e.preventDefault();
-      setBannerDismissed();
-      if (ctaData.href && ctaData.href !== '#') {
-        window.location.href = ctaData.href;
-      } else {
-        dismiss();
-      }
-    });
-    ctas.appendChild(a);
-  });
+  // ── Assemble dialog ────────────────────────────────────────────────────────
+  dialog.append(
+    closeBtn,
+    media,
+    buildCtas(doc, extractCtas(buttonRows, placeholder), dismissAndSuppress),
+  );
 
-  dialog.appendChild(closeBtn);
-  dialog.appendChild(media);
-  dialog.appendChild(ctas);
-
-  const show = () => showModal(overlay, 'welcome-banner-overlay-visible');
-  const remainingMs = getRemainingMs();
-  if (remainingMs > 0) {
-    setTimeout(show, remainingMs);
-  } else {
-    show();
-  }
+  // ── Show banner ────────────────────────────────────────────────────────────
+  doc.body.classList.add('modal-open');
+  showModal(overlay, 'welcome-banner-overlay-visible');
 }

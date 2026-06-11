@@ -22,9 +22,9 @@
   display: block;
   width: 100%;
   color: var(--sp-text);
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.875rem;
-  line-height: 1.4;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-text-body-size);
+  line-height: var(--bbl-line-height-body);
   background: var(--bbl-color-white);
 }
 
@@ -42,7 +42,7 @@
   font: 1.5rem BangkokBank-Bold, Arial, sans-serif;
   margin: 0 0 1rem;
   letter-spacing: 0;
-  line-height: 1.15;
+  line-height: var(--bbl-heading-h3-line-height);
 }
 
 .saving-plan-header-divider {
@@ -61,21 +61,27 @@
 
 .saving-plan-form-title,
 .saving-plan-result-title {
-  font: 1.125rem BangkokBank-Bold, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-thumbnail-title-size);
+  font-weight: var(--bbl-text-thumbnail-title-weight);
   margin: 0 0 1rem;
-  line-height: 1.2;
+  line-height: var(--bbl-heading-h5-line-height);
 }
 
 .saving-plan-additional-title {
-  font: 1.125rem BangkokBank-Bold, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-thumbnail-title-size);
+  font-weight: var(--bbl-text-thumbnail-title-weight);
   margin: 0 0 1rem;
-  line-height: 1.2;
+  line-height: var(--bbl-heading-h5-line-height);
 }
 
 .saving-plan-tweak-title {
-  font: 1.125rem BangkokBank-Bold, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-thumbnail-title-size);
+  font-weight: var(--bbl-text-thumbnail-title-weight);
   margin: 0;
-  line-height: 1.2;
+  line-height: var(--bbl-heading-h5-line-height);
 }
 
 .saving-plan-form-grid {
@@ -134,7 +140,7 @@
 }
 
 .saving-plan-field-text {
-  font-size: 0.8125rem;
+  font-size: var(--bbl-text-body-small-size);
   color: var(--sp-text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -146,8 +152,9 @@
   outline: none;
   background: transparent;
   text-align: right;
-  font: 0.875rem BangkokBank-Medium, Arial, sans-serif;
-  font-weight: 600;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-body-size);
+  font-weight: var(--bbl-font-weight-medium);
   color: var(--sp-text);
   width: 5rem;
   min-width: 3.75rem;
@@ -165,7 +172,7 @@
   display: block;
   margin-top: 0.25rem;
   padding-left: 0.25rem;
-  font-size: 0.75rem;
+  font-size: var(--bbl-text-caption-size);
   color: var(--sp-error);
   line-height: 1.4;
 }
@@ -196,7 +203,8 @@
   padding: 0 0.875rem;
   min-height: 3.375rem;
   cursor: pointer;
-  font: 0.875rem BangkokBank-Regular, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-text-body-size);
   color: var(--sp-text);
   text-align: left;
   transition: border-color 150ms ease;
@@ -254,7 +262,7 @@
 .saving-plan-dropdown-option {
   padding: 0.625rem 0.875rem;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: var(--bbl-text-body-size);
   color: var(--sp-text);
   transition: background-color 120ms ease;
 }
@@ -284,8 +292,9 @@
   min-height: 2.625rem;
   padding: 0.5rem 1.25rem;
   border-radius: 0.5rem;
-  font: 0.875rem BangkokBank-Bold, Arial, sans-serif;
-  font-weight: 700;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-button-size);
+  font-weight: var(--bbl-font-weight-medium);
   cursor: pointer;
   border: 0.0625rem solid var(--sp-border);
   background: var(--bbl-color-white);
@@ -325,9 +334,9 @@
 }
 
 .saving-plan-result-future {
-  font-size: 0.8125rem;
+  font-size: var(--bbl-text-body-small-size);
   margin: 0 0 1.25rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 .saving-plan-result-future strong {
@@ -353,14 +362,14 @@
 }
 
 .saving-plan-result-currency {
-  font-size: 0.8rem;
-  font-weight: 400;
+  font-size: var(--bbl-text-body-small-size);
+  font-weight: var(--bbl-font-weight-regular);
   opacity: 0.9;
 }
 
 .saving-plan-result-footnote {
   margin: 0.5rem 0 0;
-  font-size: 0.75rem;
+  font-size: var(--bbl-text-caption-size);
   color: var(--sp-text-muted);
   line-height: 1.45;
 }
@@ -394,11 +403,12 @@
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-40);
   border-radius: 0.75rem;
-  padding: 1rem 1rem 0.5rem;
+  padding: 1rem 1rem 0;
   display: flex;
   flex-direction: column;
   gap: 0;
   min-height: 0;
+  box-sizing: border-box;
 }
 
 .saving-plan-chart-legend {
@@ -470,6 +480,8 @@
 
 .saving-plan-chart {
   display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .saving-plan-info-card {
@@ -486,9 +498,11 @@
 }
 
 .saving-plan-info-card-title {
-  font: 1.25rem BangkokBank-Bold, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-card-title-size);
+  font-weight: var(--bbl-text-card-title-weight);
   margin: 0;
-  line-height: 1.2;
+  line-height: var(--bbl-heading-h4-line-height);
   max-width: 20rem;
 }
 
@@ -647,7 +661,9 @@
 }
 
 .saving-plan-newplan-title {
-  font: 1.125rem BangkokBank-Bold, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-thumbnail-title-size);
+  font-weight: var(--bbl-text-thumbnail-title-weight);
   margin: 0;
 }
 
@@ -660,7 +676,7 @@
 }
 
 .saving-plan-newplan-future {
-  font-size: 0.8125rem;
+  font-size: var(--bbl-text-body-small-size);
   margin: 0 0 1.5rem;
   color: var(--sp-text-muted);
 }
@@ -671,8 +687,9 @@
 }
 
 .saving-plan-newplan-lead {
-  font: 1rem BangkokBank-Bold, Arial, sans-serif;
-  font-weight: 700;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-body-size);
+  font-weight: var(--bbl-font-weight-medium);
   margin: 0 0 0.375rem;
   color: var(--bbl-color-active-blue);
 }
@@ -697,14 +714,14 @@
 }
 
 .saving-plan-newplan-currency {
-  font-size: 0.8125rem;
-  font-weight: 400;
+  font-size: var(--bbl-text-body-small-size);
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-active-blue);
 }
 
 .saving-plan-newplan-footnote {
   margin: 0.5rem 0 0;
-  font-size: 0.75rem;
+  font-size: var(--bbl-text-caption-size);
   color: var(--sp-text-muted);
   line-height: 1.5;
 }
@@ -720,7 +737,7 @@
 
 .saving-plan-additional-list li {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: var(--bbl-text-body-size);
 }
 
 .saving-plan-additional-link {
@@ -737,13 +754,14 @@
 }
 
 .saving-plan-disclaimer-title {
-  font: 1rem BangkokBank-Bold, Arial, sans-serif;
-  font-weight: 800;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-body-size);
+  font-weight: var(--bbl-font-weight-medium);
   margin: 0 0 1.25rem;
 }
 
 .saving-plan-disclaimer-text {
-  font-size: 0.9375rem;
+  font-size: var(--bbl-text-body-size);
   color: var(--sp-text);
   line-height: 1.65;
 }
@@ -763,8 +781,9 @@
 }
 
 .saving-plan-products-title {
-  font: 1.125rem BangkokBank-Bold, Arial, sans-serif;
-  font-weight: 800;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-thumbnail-title-size);
+  font-weight: var(--bbl-font-weight-medium);
   margin: 0 0 0.625rem;
   line-height: 1.3;
   text-align: center;
@@ -807,13 +826,14 @@
 }
 
 .saving-plan-product-title {
-  font: 1.25rem BangkokBank-Bold, Arial, sans-serif;
-  font-weight: 800;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-card-title-size);
+  font-weight: var(--bbl-text-card-title-weight);
   margin: 0;
 }
 
 .saving-plan-product-description {
-  font-size: 0.875rem;
+  font-size: var(--bbl-text-body-size);
   color: var(--sp-text-muted);
   margin: 0;
   flex-grow: 1;
@@ -828,8 +848,9 @@
   color: var(--bbl-color-white);
   border: 0;
   border-radius: 0.25rem;
-  font: 0.875rem BangkokBank-Bold, Arial, sans-serif;
-  font-weight: 700;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-button-size);
+  font-weight: var(--bbl-font-weight-medium);
   text-decoration: none;
   cursor: pointer;
 }
@@ -846,7 +867,7 @@
   }
 
   .saving-plan-header-title {
-    font-size: 1.75rem;
+    font-size: var(--bbl-heading-h2-mobile);
   }
 
   .saving-plan-form-grid {
@@ -873,15 +894,15 @@
   }
 
   .saving-plan-result-lead {
-    font-size: 1.25rem;
+    font-size: var(--bbl-font-size-h5-mobile);
   }
 
   .saving-plan-result-amount {
-    font-size: 2.5rem;
+    font-size: var(--bbl-font-size-h3-mobile);
   }
 
   .saving-plan-newplan-amount {
-    font-size: 2rem;
+    font-size: var(--bbl-font-size-h4-mobile);
   }
 
   .saving-plan-chart-row {
@@ -1079,7 +1100,7 @@
 
 .saving-plan-container .default-content-wrapper p {
   margin: 0 0 0.375rem;
-  font-size: 0.9375rem;
+  font-size: var(--bbl-text-body-size);
 }
 
 .saving-plan-container .default-content-wrapper p > strong {

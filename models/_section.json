@@ -179,6 +179,19 @@
                   "value": "background-privatebanking"
                 }
               ]
+            },
+            {
+              "name": "Forms Theme",
+              "children": [
+                {
+                  "name": "Custom Forms",
+                  "value": "custom-forms"
+                },
+                {
+                  "name": "Lead Forms",
+                  "value": "lead-forms"
+                }
+              ]
             }
           ]
         }
