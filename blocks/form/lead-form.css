@@ -147,7 +147,7 @@ main .form form :is(.field-wrapper:has(select), .drop-down-wrapper)>.field-label
 
 main .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
   color: var(--bbl-color-grey-85);
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
   cursor: default;
 }
@@ -573,7 +573,7 @@ main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
   padding: 0.9375rem;
   font-size: var(--bbl-font-size-b1);
   overflow: auto;
-  scrollbar-color: var(--bbl-color-grey-153) var(--bbl-color-grey-10);
+  scrollbar-color: #0064ff var(--bbl-color-grey-10);
   scrollbar-width: thin;
 }
 
