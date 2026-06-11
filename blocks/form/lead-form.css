@@ -36,8 +36,8 @@ main div.default-content-wrapper {
 
 .default-content-wrapper h2 {
   font-size: 24px;
-  font-family: Muli-Bold, sans-serif;
-  color: var(--bbl-color-grey-140);
+  font-family: BangkokBank-Medium, sans-serif;
+  color: #000;
   font-weight: var(--bbl-font-weight-regular);
 }
 
@@ -97,10 +97,10 @@ main .form form .field-infotext {
 }
 
 main .form form :is(.field-infotext p, .plain-text-wrapper p) {
-  /* margin: 0 0 var(--bbl-space-100); */
   color: var(--bbl-color-grey-85);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 25px;
 }
 
 main .form form p {
@@ -147,7 +147,7 @@ main .form form :is(.field-wrapper:has(select), .drop-down-wrapper)>.field-label
 
 main .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
   color: var(--bbl-color-grey-85);
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 400;
   cursor: default;
 }
@@ -158,17 +158,41 @@ main .form form .field-province.field-wrapper .field-label {
   text-align: left;
 }
 
-/* Inputs */
-main .form :is( :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input,
-  select,
-  textarea) {
+main .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
   width: 100%;
   height: 2.75rem;
   margin: 0 0 var(--bbl-font-size-b2);
   color: var(--bbl-color-black);
   border: 1px solid var(--bbl-color-grey-150);
   border-radius: 0.4375rem;
-  font-size: var(--bbl-font-size-b1);
+  font-size: 16px;
+  line-height: 2.75rem;
+}
+
+main .form select {
+  padding: 0 var(--bbl-space-300) 0 var(--bbl-space-250);
+  border-color: var(--bbl-color-grey-23);
+  cursor: pointer;
+  appearance: none;
+  background: var(--bbl-color-white) url('../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
+  font-family: var(--bbl-font-family-medium);
+}
+
+.form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
+.form-wrapper .form .drop-down-wrapper.field-invalid select {
+  border-color: var(--bbl-color-red-130);
+  outline: 1px solid transparent;
+  margin: 0;
+}
+
+main .section.form-container.custom-forms .drop-down-wrapper.field-wrapper select {
+  width: 100%;
+  height: 2.75rem;
+  margin: 0 0 var(--bbl-font-size-b2);
+  color: var(--bbl-color-black);
+  border: 1px solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem;
+  font-size: 14px;
   line-height: 2.75rem;
 }
 
@@ -195,15 +219,6 @@ main .form textarea {
   min-height: 6.25rem;
   padding: var(--bbl-space-100) var(--bbl-space-250);
   line-height: 1.5;
-}
-
-main .form select {
-  padding: 0 var(--bbl-space-300) 0 var(--bbl-space-250);
-  border-color: var(--bbl-color-grey-23);
-  cursor: pointer;
-  appearance: none;
-  background: var(--bbl-color-white) url('../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
-  font-family: var(--bbl-font-family-medium);
 }
 
 main .form select option {
@@ -250,13 +265,6 @@ main .form form .field-invalid :is(.field-validation-error, .field-description) 
 
 main .form form .field-wrapper.col-12 {
   gap: unset;
-}
-
-.form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
-.form-wrapper .form .drop-down-wrapper.field-invalid select {
-  border-color: var(--bbl-color-red-130);
-  outline: 1px solid transparent;
-  margin: 0;
 }
 
 main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper) {
@@ -397,7 +405,10 @@ main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='ico
   grid-row: 2;
   grid-column: 1;
   margin-bottom: 0;
-  padding-left: var(--bbl-space-500);
+}
+
+main .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper):has(.field-description).field-wrapper :is(input, textarea, select){
+  margin-bottom:0;
 }
 
 main .form form .radio-group-wrapper>.field-description {
@@ -519,6 +530,21 @@ main .form form fieldset.panel-wrapper.field-wrapper {
   padding: 0;
 }
 
+/* Button panel — side-by-side Submit / Reset (must come after the grid rule above to override display) */
+main .form form fieldset.panel-wrapper.field-button-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+main .form form fieldset.panel-wrapper.field-button-panel .field-submitcta,
+main .form form fieldset.panel-wrapper.field-button-panel .field-reset {
+  width: auto;
+  margin: 0;
+}
+
 main .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
   padding: 0 0 0 2.1875rem;
 }
@@ -566,7 +592,7 @@ main .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
   border-radius: var(--bbl-radius-none);
   max-height: 15rem;
   margin: 3px var(--bbl-space-100) 0.9375rem 0;
-  padding: 0.9375rem;
+  padding-left: 0;
   font-size: var(--bbl-font-size-b1);
   overflow: auto;
   scrollbar-color: #0064ff var(--bbl-color-grey-10);
@@ -593,8 +619,6 @@ main .form form fieldset.panel-wrapper.field-wrapper:is( :has(.checkbox-wrapper.
 }
 
 main .form form fieldset.panel-wrapper.field-wrapper :is(> .field-description, .checkbox-wrapper .field-description) {
-  grid-row: 2;
-  grid-column: 1;
   position: static;
   display: block;
   width: 100%;
