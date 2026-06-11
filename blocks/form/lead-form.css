@@ -207,7 +207,8 @@ main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-w
 
 main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper [aria-live="polite"] {
   text-align: left;
-  margin-bottom: 10px;
+
+  /* margin-bottom: 10px; */
 }
 
 main .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].text-wrapper).field-wrapper input {
@@ -255,11 +256,11 @@ main .form form .field-invalid :is(.field-validation-error, .field-description) 
   position: relative;
   text-align: left;
   display: block;
+  margin: 5px 0 0 20px;
   clear: both;
-  padding: var(--bbl-space-075) 0 var(--bbl-space-150) var(--bbl-space-250);
   color: var(--bbl-color-orange-130);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b2);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 16px;
   font-weight: var(--bbl-font-weight-regular);
 }
 
@@ -267,10 +268,10 @@ main .form form .field-wrapper.col-12 {
   gap: unset;
 }
 
-main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper) {
+main .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper) {
   position: relative;
   clear: both;
-  margin-bottom: 0;
+  margin-bottom: 10px;
 }
 
 /* Icon fields — icomoon label or field-class fallback */
