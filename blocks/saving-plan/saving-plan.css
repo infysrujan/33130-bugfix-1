@@ -102,7 +102,7 @@
 .saving-plan-field-row {
   display: flex;
   align-items: center;
-  border: 1px solid var(--sp-border);
+  border: 0.0625rem solid var(--sp-border);
   border-radius: var(--sp-radius);
   padding: 0 0.875rem;
   background: var(--bbl-color-white);
@@ -183,8 +183,8 @@
 .saving-plan-field-chevron {
   width: 0.5rem;
   height: 0.5rem;
-  border-right: 2px solid var(--sp-blue);
-  border-bottom: 2px solid var(--sp-blue);
+  border-right: 0.125rem solid var(--sp-blue);
+  border-bottom: 0.125rem solid var(--sp-blue);
   transform: rotate(45deg);
   transition: transform 200ms ease;
   margin-left: 0.5rem;
@@ -200,7 +200,7 @@
   align-items: center;
   gap: 0.625rem;
   width: 100%;
-  border: 1px solid var(--sp-border);
+  border: 0.0625rem solid var(--sp-border);
   border-radius: var(--sp-radius);
   background: var(--bbl-color-white);
   padding: 0 0.875rem;
@@ -242,7 +242,7 @@
   margin: 0;
   padding: 0.375rem 0;
   background: var(--bbl-color-white);
-  border: 1px solid var(--sp-border);
+  border: 0.0625rem solid var(--sp-border);
   border-radius: var(--sp-radius);
   box-shadow: 0 0.375rem 1.125rem var(--bbl-color-black-alpha-10);
   max-height: 0;
@@ -299,7 +299,7 @@
   font-size: var(--bbl-text-button-size);
   font-weight: var(--bbl-font-weight-medium);
   cursor: pointer;
-  border: 1px solid var(--sp-border);
+  border: 0.0625rem solid var(--sp-border);
   background: var(--bbl-color-white);
   color: var(--sp-text-muted);
   transition: opacity 150ms ease, background-color 150ms ease, border-color 150ms ease;
@@ -308,14 +308,14 @@
 .saving-plan-form-btn-secondary {
   background: var(--bbl-color-white);
   color: var(--sp-blue);
-  border: 2px solid var(--sp-blue);
+  border: 0.125rem solid var(--sp-blue);
   border-radius: 0.375rem;
 }
 
 .saving-plan-form-btn.saving-plan-form-btn-secondary:not(:disabled) {
   background: var(--bbl-color-white);
   color: var(--sp-blue);
-  border: 2px solid var(--sp-blue);
+  border: 0.125rem solid var(--sp-blue);
   border-radius: 0.375rem;
 }
 
@@ -418,7 +418,7 @@
 .saving-plan-chart-wrap {
   position: relative;
   background: var(--bbl-color-white);
-  border: 1px solid var(--bbl-color-grey-40);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
   border-radius: 0.75rem;
   padding: 1rem 1rem 0;
   display: flex;
@@ -535,10 +535,10 @@
 .saving-plan-info-card-cta {
   align-self: flex-start;
   padding: 0.5rem 1.25rem;
-  border: 1.5px solid var(--sp-blue);
+  border: 0.0938rem solid var(--sp-blue);
   background: transparent;
   color: var(--sp-blue);
-  border-radius: 999px;
+  border-radius: 62.4375rem;
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-text-button-small-size);
   font-weight: var(--bbl-font-weight-medium);
@@ -608,7 +608,7 @@
   appearance: none;
   outline: none;
   height: 0.375rem;
-  border-radius: 99px;
+  border-radius: 6.1875rem;
   background: var(--sp-slider-track);
 }
 
@@ -618,7 +618,7 @@
 
 .saving-plan-slider-input::-webkit-slider-runnable-track {
   height: 0.375rem;
-  border-radius: 99px;
+  border-radius: 6.1875rem;
 }
 
 .saving-plan-slider-input::-webkit-slider-thumb {
@@ -635,13 +635,13 @@
 
 .saving-plan-slider-input::-moz-range-track {
   height: 0.375rem;
-  border-radius: 99px;
+  border-radius: 6.1875rem;
   background: var(--sp-slider-track);
 }
 
 .saving-plan-slider-input::-moz-range-progress {
   height: 0.375rem;
-  border-radius: 99px;
+  border-radius: 6.1875rem;
   background: var(--sp-blue);
 }
 
@@ -690,7 +690,7 @@
 
 .saving-plan-newplan-card {
   background: var(--bbl-color-white);
-  border: 1.5px solid var(--sp-blue);
+  border: 0.0938rem solid var(--sp-blue);
   border-radius: var(--sp-radius);
   padding: 1.125rem 1.25rem 1.25rem;
   color: var(--sp-text-muted);
