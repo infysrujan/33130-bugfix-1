@@ -1036,7 +1036,7 @@
 /* ── default-content-wrapper (Additional Information + Disclaimer) ── */
 .saving-plan-container .default-content-wrapper {
   margin-top: 2.5rem;
-  font-size: 0.9375rem;
+  font-size: var(--bbl-font-size-b1);
   color: var(--sp-text);
   line-height: 1.65;
 }
@@ -1083,9 +1083,9 @@
 }
 
 .saving-plan-container .default-content-wrapper p > strong {
-  font-family: BangkokBank-Bold, Arial, sans-serif;
+  font-family: var(--bbl-font-family-bold);
   font-size: 1rem;
-  font-weight: 800;
+  color: var(--bbl-color-black);
 }
 
 .saving-plan-container .default-content-wrapper p ~ p {
@@ -1094,16 +1094,22 @@
 
 .saving-plan-container .default-content-wrapper ul {
   margin: 0.5rem 0 0;
-  padding-left: 1.5rem;
+  padding: 0.625rem 1.25rem;
+  font-family: var(--bbl-font-family-primary);
+  color: var(--bbl-color-grey-100);
 }
 
 .saving-plan-container .default-content-wrapper li {
-  margin-bottom: 0.875rem;
-  line-height: 1.65;
+  margin-bottom: 0.625rem;
+  margin-left: 1.25rem;
+  font-size: var(--bbl-font-size-b1);
+  line-height: 1.375rem;
+  font-family: var(--bbl-font-family-primary);
+  color: var(--bbl-color-black);
 }
 
 .saving-plan-container .default-content-wrapper li:last-child {
-  margin-bottom: 0;
+  margin-bottom: 0.625rem;
 }
 
 .saving-plan-container .default-content-wrapper a {
