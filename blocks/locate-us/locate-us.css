@@ -73,7 +73,7 @@
   border: 0.0625rem solid var(--bbl-color-gray-300);
   border-radius: var(--bbl-radius-md);
   background-color: var(--bbl-color-gray-144);
-  font-size: 1.125rem;
+  font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-150);
   cursor: pointer;
   display: flex;
@@ -177,7 +177,7 @@
   flex: 1;
   border: none;
   outline: none;
-  font-size: 1.125rem;
+  font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-150);
   background: transparent;
   font-family: var(--bbl-font-family-primary);
@@ -292,7 +292,7 @@
 
 .locate-us .locate-us-province-input {
   flex: 1;
-  font-size: 1.125rem;
+  font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-gray-142);
   font-family: var(--bbl-font-family-primary);
   overflow: hidden;
@@ -336,6 +336,8 @@
 .locate-us .locate-us-no-results {
   color: var(--bbl-color-grey-85);
   text-align: center;
+  width: 100%;
+  padding-top: 1.875rem;
 }
 
 .locate-us .locate-us-map {
@@ -347,7 +349,7 @@
 
 .locate-us .locate-us-map-sidebar {
   padding: var(--bbl-space-250);
-  font-size: 0.9375rem;
+  font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
 }
@@ -358,7 +360,7 @@
 
 .locate-us .locate-us-map-remark {
   margin: var(--bbl-space-000);
-  font-size: 0.9375rem;
+  font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
 }
@@ -371,21 +373,25 @@
   padding: 0;
   margin: 1.875rem auto;
   grid-template-columns: 1fr;
-  gap: 0;
+  gap: 1.6rem 0.9375rem;
 }
 
 .locate-us .locate-us-card {
-  display: flex;
-  flex-direction: column;
-  border: none;
-  border-top: 0.0625rem solid var(--bbl-color-gray-122);
-  border-radius: 0;
-  padding: 0 var(--bbl-space-250);
-  box-sizing: border-box;
-  box-shadow: 0 var(--bbl-space-025) 1.125rem rgb(0 0 0 / 8%);
-  background-color: var(--bbl-color-white);
-  cursor: pointer;
+  display: block;
   position: relative;
+  border: none;
+  padding: var(--bbl-space-250);
+  margin-bottom: 0;
+  box-sizing: border-box;
+  box-shadow: 0 0 var(--bbl-space-200) 0 var(--bbl-color-black-alpha-10);
+  background-color: var(--bbl-color-white);
+  font-family: var(--bbl-font-family-primary);
+  font-size: 1rem;
+  font-weight: var(--bbl-font-weight-regular);
+  text-align: start;
+  color: var(--bbl-color-grey-85);
+  cursor: pointer;
+  transition: all;
 }
 
 /* Mobile: overseas cards are an accordion list — no box-shadow */
@@ -393,9 +399,7 @@
   box-shadow: none;
 }
 
-.locate-us .locate-us-cards .locate-us-card:last-child {
-  border-bottom: 0.0625rem solid var(--bbl-color-gray-122);
-}
+/* border is now applied to all sides per-card — no extra last-child rule needed */
 
 .locate-us .locate-us-card-header {
   width: 100%;
@@ -414,11 +418,11 @@
 .locate-us .locate-us-card-name {
   flex: 1;
   min-width: 0;
-  font-size: 1.1375rem;
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: 1.4375rem;
+  font-weight: 700;
   line-height: 1.2495rem;
   color: var(--bbl-color-gray-121);
-  font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   margin: 0;
   overflow-wrap: break-word;
 }
@@ -442,24 +446,22 @@
 
 .locate-us .locate-us-card-detail {
   padding-bottom: var(--bbl-space-200);
+  padding-right: 1.875rem;
   font-family: var(--bbl-font-family-primary);
-  position: relative;
 }
 
-/* nearest tag — right-aligned badge, positioned from card-detail top */
+/* nearest tag — absolute badge in top-right of card detail */
 .locate-us .locate-us-card-nearest-tag {
-  display: block;
-  align-self: flex-end;
-  margin-bottom: var(--bbl-space-100);
+  position: absolute;
+  right: 0;
+  top: var(--bbl-space-1000);
+  transform: translateY(-50%);
   background-color: var(--bbl-color-blue-222);
   border-radius: var(--bbl-rounded-050) 0 0 var(--bbl-rounded-050);
   color: var(--bbl-color-blue-105);
   padding: 0 0.3125rem;
   font-size: var(--bbl-body-b3-size);
-  right: 0;
-  top: var(--bbl-space-025);
   white-space: nowrap;
-  position: absolute;
   line-height: 1.375rem;
 }
 
@@ -476,7 +478,7 @@
 
 .locate-us .locate-us-card-label {
   min-width: 3.75rem;
-  font-size: 1.125rem;
+  font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-gray-142);
   font-family: var(--bbl-font-family-primary);
   flex-shrink: 0;
@@ -494,7 +496,7 @@
 
 .locate-us .locate-us-card-status {
   color: var(--bbl-color-status-other);
-  font-size: 1.125rem;
+  font-size: var(--bbl-font-size-b1);
   font-family: var(--bbl-font-family-primary);
   line-height: 1.375rem;
 }
@@ -504,7 +506,7 @@
 }
 
 .locate-us .locate-us-card-hours {
-  font-size: 1.125rem;
+  font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   overflow-wrap: break-word;
@@ -625,7 +627,7 @@
 
 /* Ellipsis — clickable, shows input on click */
 .locate-us .locate-us-page-ellipsis {
-  font-size: 0.9375rem;
+  font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-gray-142);
   font-family: var(--bbl-font-family-primary);
   padding: var(--bbl-space-050);
@@ -670,7 +672,7 @@
   padding: 0 1.875rem 0 var(--bbl-space-250);
   border: 0.0625rem solid var(--bbl-color-gray-300);
   border-radius: var(--bbl-radius-md);
-  font-size: 1.125rem;
+  font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-150);
   cursor: pointer;
   display: flex;
@@ -753,12 +755,12 @@
   border: 0.0625rem solid var(--bbl-color-gray-300);
   border-radius: var(--bbl-radius-md);
   background-color: var(--bbl-color-white);
-  font-size: 1.125rem;
+  font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-gray-142);
   font-family: var(--bbl-font-family-primary);
   appearance: none;
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23606060' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("../../icons/icon_chevron_down.svg");
   background-repeat: no-repeat;
   background-position: right var(--bbl-space-200) center;
 }
@@ -815,7 +817,7 @@
 }
 
 .locate-us-toast-message {
-  font-size: 0.9375rem;
+  font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-primary);
   flex: 1;
@@ -845,7 +847,7 @@
   align-items: center;
   gap: var(--bbl-space-075);
   color: var(--bbl-color-blue-90);
-  font-size: 0.9375rem;
+  font-size: var(--bbl-font-size-b2);
   text-decoration: none;
   font-family: var(--bbl-font-family-primary);
   margin-top: var(--bbl-space-075);
@@ -1028,7 +1030,7 @@
     flex-direction: row;
     align-items: stretch;
     height: 36.6875rem;
-    padding: 0 3rem 1.875rem;
+    padding: 0 var(--bbl-space-600) 1.875rem;
     background-color: unset;
   }
 
@@ -1062,9 +1064,9 @@
 
   .locate-us .locate-us-cards {
     display: grid;
-    padding: 0 var(--bbl-space-1050) 1.875rem;
+    padding: 0 2.8125rem 1.875rem;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.875rem var(--bbl-space-250);
+    gap: 1.125rem 2.5rem;
     margin-top: 0;
     align-items: stretch;
   }
@@ -1080,6 +1082,12 @@
     grid-template-rows: subgrid;
     grid-row: span 2;
     min-width: 0;
+    height: 13.125rem;
+    border-top-width: 0;
+    padding-left: var(--bbl-space-250);
+    padding-right: 0.625rem;
+    margin-right: 0;
+    margin-bottom: 0;
   }
 
   /* 3 cards per row on tablet: use subgrid so all headers in a row share the same height */
@@ -1094,9 +1102,7 @@
     border: none;
   }
 
-  .locate-us .locate-us-cards .locate-us-card:last-child {
-    border-bottom: 0.0625rem solid var(--bbl-color-gray-122);
-  }
+  /* border already applied to all sides per-card on all viewports */
 
   .locate-us .locate-us-card-header {
     padding: 0;
@@ -1112,7 +1118,9 @@
     width: var(--bbl-space-300);
     height: var(--bbl-space-300);
     flex-shrink: 0;
-    margin-top: var(--bbl-space-025);
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
     background-image: url('../../icons/icon_nearme_disable.svg');
     background-size: contain;
     background-repeat: no-repeat;
@@ -1137,12 +1145,14 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    padding-top: 0;
   }
 
   .locate-us .locate-us-card-detail {
     display: flex;
     flex-direction: column;
     flex: 1;
+    padding-right: 1.25rem;
     padding-bottom: 0;
   }
 
@@ -1153,7 +1163,8 @@
 
   .locate-us .locate-us-card-hr {
     margin-top: 0;
-    margin-bottom: 0.875rem;
+    margin-bottom: 0;
+    padding-bottom: var(--bbl-space-000);
     width: var(--bbl-space-800);
     height: 0.0625rem;
     background: var(--bbl-color-grey-150);
@@ -1178,10 +1189,11 @@
     margin: 0 0 var(--bbl-space-150);
   }
 
-  .locate-us .locate-us-card-nearest-tag {
-    position: absolute;
-    top: 0;
-    right: -1.25rem;
+  /* ── Inactive map pin when card has no coordinates ── */
+  .locate-us .locate-us-card[data-no-location="true"] .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
+    background-image: url('../../icons/icon_nearme_disable.svg');
+    opacity: 0.4;
+    cursor: default;
   }
 
   /* ── Single card: center in middle column of 3-col grid ── */
@@ -1237,6 +1249,12 @@
 
 }
 
+@media (47.5rem < width <= 64rem) {
+  .locate-us .locate-us-card-detail {
+    padding-right: 0;
+  }
+}
+
 @media (width > 64rem) {
   .locate-us .locate-us-map-row {
     padding: 0 var(--bbl-space-1050) 1.875rem;
@@ -1244,7 +1262,8 @@
 
   .locate-us .locate-us-cards {
     grid-template-columns: repeat(4, 1fr);
-    gap: 1.875rem var(--bbl-space-500);
+    gap: 1.125rem 2.5rem;
+    padding-inline: var(--bbl-space-1050);
   }
 
   .locate-us .locate-us-map {
@@ -1340,10 +1359,14 @@
     font-size: var(--bbl-font-size-h5-desktop);
   }
 
+  .locate-us .section.underline-title .default-content-wrapper {
+    padding-top: 1.875rem;
+  }
+
   .locate-us .cards-list-title h3{
     height: 100%;
     margin-bottom: 1.875rem;
-    font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
+    font-family: var(--bbl-font-family-primary);
   }
 
   .locate-us .cards-list-title :is(h1, h2, h3, h4, h5, h6) {

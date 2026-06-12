@@ -13,7 +13,10 @@ export default function buildSlideWithImage(row, index, cells) {
   const imgAlt = cells[5];
 
   if (pictureDesktop || pictureMobile) {
-    const picture = createSmartImage(pictureDesktop, pictureMobile, imgAlt);
+    // The `index === 0` argument is used to indicate that the first slide (index 0)
+    // should load its image eagerly (for improved LCP and performance),
+    // while subsequent slides can be loaded lazily.
+    const picture = createSmartImage(pictureDesktop, pictureMobile, imgAlt, index === 0);
     if (picture) {
       const media = document.createElement('div');
       media.className = 'carousel-bg';

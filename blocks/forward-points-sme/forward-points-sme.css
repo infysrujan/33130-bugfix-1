@@ -2,25 +2,25 @@
    forward-points-sme block — mobile first
    ============================================================ */
 
-.forward-points-sme .fpsme-section-fwd {
-  margin-top: var(--bbl-space-500);
-}
-
-/* ── Controls row ─────────────────────────────────────────── */
-
 .forward-points-sme .fpsme-controls {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.625rem;
+  row-gap: 0.625rem;
+  padding-inline: 0.625rem;
 }
 
 .forward-points-sme .fpsme-update-label {
   width: 100%;
   font-size: 0.875rem;
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: 700;
   color: var(--bbl-color-grey-85);
   margin-bottom: 0.625rem;
+  margin-right: 0.625rem;
+  font-family: var(--bbl-font-family-medium);
+  line-height: 2.75rem;
+  flex-shrink: 0;
 }
 
 /* ── Date group (input + trigger + datepicker) ────────────── */
@@ -29,8 +29,10 @@
   position: relative;
   display: flex;
   align-items: center;
-  flex: 1 1 0;
-  min-width: 0;
+
+  /* Mobile: ~50% minus half the gap */
+  flex: 1 1 calc(50% - 0.3125rem);
+  max-width: calc(50% - 0.3125rem);
 }
 
 .forward-points-sme .fpsme-date-input {
@@ -39,7 +41,7 @@
   padding: 0 2.5rem 0 1.25rem;
   color: var(--bbl-color-gray-121);
   background: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-grey-23);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: 0.4375rem;
   outline: none;
   box-sizing: border-box;
@@ -73,9 +75,10 @@
 /* ── Time dropdown ─────────────────────────────────────────── */
 
 .forward-points-sme .fpsme-time-wrap {
-  flex: 1 1 0;
+  /* Mobile: ~50% minus half the gap */
+  flex: 1 1 calc(50% - 0.3125rem);
+  max-width: calc(50% - 0.3125rem);
   min-width: 0;
-  max-width: 50%;
 }
 
 .forward-points-sme .fpsme-time-dropdown {
@@ -88,7 +91,7 @@
   justify-content: space-between;
   width: 100%;
   height: 2.75rem;
-  padding: 0 0.75rem 0 1.25rem;
+  padding: 0 1.875rem 0 1.25rem;
   font-size: 0.95rem;
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-medium);
@@ -108,13 +111,6 @@
 .forward-points-sme .fpsme-time-dropdown.is-disabled .fpsme-time-trigger {
   opacity: 0.5;
   cursor: default;
-}
-
-.forward-points-sme .fpsme-time-label {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .forward-points-sme .fpsme-time-chevron {
@@ -146,6 +142,7 @@
 
 .forward-points-sme .fpsme-time-dropdown.is-open .fpsme-time-list {
   display: block;
+  width: 7.44rem;
 }
 
 .forward-points-sme .fpsme-time-item {
@@ -171,19 +168,20 @@
 /* ── GO button ─────────────────────────────────────────────── */
 
 .forward-points-sme .fpsme-go-btn {
-  flex: 0 0 100%;
+  /* Mobile: full width below date+time pair */
+  flex: 1 1 100%;
   width: 100%;
   height: 2.75rem;
-  padding: 0 1.25rem;
+  padding: 0 1.75rem;
   font-size: 0.95rem;
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-primary);
+  min-width: 9.6875rem;
   color: var(--bbl-color-white);
   background: var(--bbl-color-active-blue);
   border: 0.0625rem solid var(--bbl-color-active-blue);
   border-radius: 0.4375rem;
   cursor: pointer;
   box-sizing: border-box;
-  min-width: 9.6875rem;
   letter-spacing: 0.05rem;
 }
 
@@ -343,6 +341,7 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  padding-inline: 0.625rem;
 }
 
 .forward-points-sme .fpsme-table-wrap::-webkit-scrollbar {
@@ -370,7 +369,7 @@
   padding: 0.75rem 0.625rem;
   font-size: 0.875rem;
   font-family: var(--bbl-font-family-medium);
-  color: var(--bbl-color-gray-142);
+  color: var(--bbl-color-grey-85);
   text-align: center;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-24);
   line-height: 1.4;
@@ -414,7 +413,7 @@
 .forward-points-sme .fpsme-unit {
   font-size: 0.8rem;
   color: var(--bbl-color-grey-70);
-  margin-top: 1rem;
+  margin-top: 0.3125rem;
 }
 
 .forward-points-sme .fpsme-unit-right {
@@ -450,7 +449,7 @@
   flex-shrink: 0;
   margin-left: auto;
   text-decoration: none;
-  font-weight:700;
+  font-weight: 700;
 }
 
 .forward-points-sme .fpsme-print-btn .icon-print {
@@ -479,13 +478,14 @@
   text-align: center;
   line-height: 1.75rem;
   margin-bottom: unset;
+  margin-top: 1.88rem;
 }
 
 .forward-points-sme .fpsme-fwd-title p {
   margin: 0;
   font-size: 1.375rem;
-  font-weight: inherit;
-  line-height: inherit;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.3;
   text-align: center;
   color: var(--bbl-color-grey-85);
 }
@@ -493,7 +493,7 @@
 .forward-points-sme .fpsme-fwd-tables {
   display: flex;
   flex-direction: column;
-  gap: var(--bbl-space-400);
+  gap: var(--bbl-space-500);
 }
 
 .forward-points-sme .fpsme-fwd-table-col {
@@ -503,9 +503,11 @@
 
 .forward-points-sme .fpsme-fwd-subtitle {
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-70);
   text-align: center;
+  margin-top: 0.9375rem;
+  margin-bottom: 0.9375rem;
 }
 
 /* ── Flex-based forward points table (matches prod Rtable layout) */
@@ -525,7 +527,7 @@
 .forward-points-sme .fpsme-rt-cell {
   flex: 1 1 33.33%;
   width: 33.33%;
-  padding: 0.75rem 0.625rem;
+  padding: 1.05rem;
   font-size: 1rem;
   color: var(--bbl-color-gray-142);
   background: var(--bbl-color-white);
@@ -552,16 +554,21 @@
 .forward-points-sme .fpsme-rt-head {
   font-size: var(--bbl-font-size-b1);
   font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: 700;
   color: var(--bbl-color-gray-142);
-  padding: 1.2rem;
+  padding: 1.2rem 0.625rem;
 }
 
-/* Period data cells — same styling as header cells */
+/* Period header cell — matches live site line-height: 250% */
+.forward-points-sme .fpsme-rt-period-head {
+  line-height: 250%;
+}
+
+/* Period data cells — bold to match live site */
 .forward-points-sme .fpsme-rt-period {
   font-size: var(--bbl-font-size-b1);
   font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: 700;
   color: var(--bbl-color-gray-142);
 }
 
@@ -581,7 +588,8 @@
   margin-top: var(--bbl-space-300);
   font-size: 0.938rem;
   color: var(--bbl-color-grey-150);
-  line-height: 1.6;
+  line-height: 1.63;
+  letter-spacing: -0.0063rem;
 }
 
 .forward-points-sme .fpsme-remark p {
@@ -592,20 +600,19 @@
   margin-bottom: 0;
 }
 
-.forward-points-sme .fpsme-remark ul {
-  margin: 0;
-  padding-left: var(--bbl-space-300);
-}
-
-.forward-points-sme .fpsme-remark li {
-  margin-bottom: var(--bbl-space-075);
-}
-
 @media (width > 47.5rem) {
+  .forward-points-sme .fpsme-rt-cell {
+    padding: 1.2rem;
+  }
+
+  .forward-points-sme .fpsme-table-wrap,
+  .forward-points-sme .fpsme-controls {
+    padding-inline: 0.625rem;
+  }
+
   .forward-points-sme .fpsme-update-label {
     width: auto;
     flex-shrink: 0;
-    margin-bottom: 0;
   }
 
   /* Prevent controls from wrapping onto multiple lines at tablet+ */
@@ -614,20 +621,22 @@
   }
 
   .forward-points-sme .fpsme-date-group {
-    flex: 0 0 8.5rem;
-    width: 8.5rem;
+    flex: 0 0 10rem;
+    width: 10rem;
+    max-width: none;
   }
 
   .forward-points-sme .fpsme-time-wrap {
-    flex: 0 0 7rem;
-    width: 7rem;
+    flex: 0 0 6.8125rem;
+    width: 6.8125rem;
     max-width: none;
   }
 
   .forward-points-sme .fpsme-go-btn {
-    width: auto;
     flex: 0 0 auto;
-    min-width: 9.6875rem;
+    width: auto;
+    min-width: 8.438rem;
+    padding: 0 1.75rem;
   }
 
   .forward-points-sme .fpsme-datepicker {
@@ -644,20 +653,27 @@
     font-size: 1.1rem;
   }
 
-  /* Forward tables side by side on tablet+ */
-  .forward-points-sme .fpsme-fwd-tables {
-    flex-direction: row;
-    gap: 1.25rem;
-    align-items: flex-start;
-  }
-
 }
 
 @media (width > 64rem) {
-  /* Section 1 currency column: ~50% width matching live site col-md-6 layout */
+  .forward-points-sme .fpsme-table-wrap,
+  .forward-points-sme .fpsme-controls {
+    padding-inline: var(--bbl-space-250);
+  }
+
+  /* Forward tables remain stacked on desktop */
+  .forward-points-sme .fpsme-fwd-tables {
+    flex-direction: row;
+  }
+
+  .forward-points-sme .fpsme-section-fwd {
+    margin-top: unset;
+  }
+
+  /* Section 1 currency column: 58.33% matching live site col-md-7 layout */
   .forward-points-sme .fpsme-section-currency {
-    flex: 0 0 32rem;
-    max-width: 32rem;
+    flex: 0 0 58.33%;
+    max-width: 50%;
   }
 
   .forward-points-sme .fpsme-section1-bar {
@@ -674,6 +690,7 @@
 
   .forward-points-sme .fpsme-update-label {
     font-size: 1rem;
+    font-weight: 700;
   }
 
   .forward-points-sme .fpsme-date-input {
@@ -685,18 +702,20 @@
   }
 
   .forward-points-sme .fpsme-date-group {
-    flex: 0 0 9.5rem;
-    width: 9.5rem;
+    flex: 0 0 10rem;
+    width: 10rem;
   }
 
   .forward-points-sme .fpsme-time-wrap {
-    flex: 0 0 7rem;
-    width: 7rem;
+    flex: 0 0 7.125rem;
+    width: 7.125rem;
   }
 
   .forward-points-sme .fpsme-go-btn {
     flex: 0 0 auto;
     font-size: 1rem;
+    min-width: 9.6875rem;
+    padding: 0 1.75rem;
   }
 
   .forward-points-sme .fpsme-datepicker {
@@ -735,4 +754,3 @@
     font-size: 1rem;
   }
 }
-

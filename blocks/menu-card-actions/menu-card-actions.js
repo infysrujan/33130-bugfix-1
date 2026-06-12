@@ -1,5 +1,5 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
-import { getLang, isAuthoringInstance } from '../../scripts/bbl-decorators.js';
+import { getLang, isAuthoringInstance, applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
@@ -202,8 +202,14 @@ function createCardItem(cardRow, doc) {
   };
 
   if (actionType === 'download' && actionCells.length > 0) {
-    const dlAnchor = actionCells.find((c) => !c.querySelector('ul'))?.querySelector('a')
-      || actionCells[0].querySelector('a');
+    const dlCell = actionCells[actionCells.length - 1];
+    const { enabled: openInNewTab, toggleCell: dlToggleCell } = extractToggledLink(
+      remaining,
+      (c) => c === dlCell,
+    );
+    if (dlToggleCell) remaining = remaining.filter((c) => c !== dlToggleCell);
+    const dlAnchor = dlCell.querySelector('a');
+    if (dlToggleCell) applyLinkTarget(dlCell, 'a', openInNewTab);
     appendDownloadLink(dlAnchor);
   } else if (actionType === 'multiple-download' && actionCells.length > 0) {
     const multipleCell = actionCells[actionCells.length - 1];

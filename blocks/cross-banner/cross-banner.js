@@ -19,7 +19,7 @@ export default function decorate(block) {
   let pictureHTML = '';
 
   if (pictureDesktop || pictureMobile) {
-    const picture = createSmartImage(imgElDesktop, imgElMobile, imgAlt);
+    const picture = createSmartImage(imgElDesktop, imgElMobile, imgAlt, false);
     pictureHTML = picture?.outerHTML || '';
   }
   const budgeText = budgeTextEl?.textContent?.trim() || '';

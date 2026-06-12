@@ -183,7 +183,7 @@ export default function decorate(block) {
   media.className = 'welcome-banner-media';
 
   if (pictureDesktop || pictureMobile) {
-    const picture = createSmartImage(desktopImgRow, mobileImgRow);
+    const picture = createSmartImage(desktopImgRow, mobileImgRow, null, true);
     if (picture) media.append(picture);
   }
 

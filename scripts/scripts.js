@@ -195,7 +195,7 @@ export function decorateMain(main) {
  * page, even pages that contain no fragment blocks.
  */
 document.addEventListener('bbl:load-fragment', async (e) => {
-  const { path, callback } = e.detail;
+  const { path, callback, onHtmlParsed } = e.detail;
   if (!path) return;
 
   try {
@@ -213,10 +213,11 @@ document.addEventListener('bbl:load-fragment', async (e) => {
       };
       resetBase('img', 'src');
       resetBase('source', 'srcset');
+      if (typeof onHtmlParsed === 'function') onHtmlParsed(fragment, cleanPath);
       decorateMain(fragment);
       await loadSections(fragment);
     }
-    if (typeof callback === 'function') callback(fragment);
+    if (typeof callback === 'function') await callback(fragment);
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error(`[bbl:load-fragment] Failed to load: ${path}`, err);
@@ -369,6 +370,7 @@ async function loadEager(doc) {
       // Load the gtm-martech library in the eager phase.
       gtmMartech.eager(),
       loadSection(main.querySelector('.section'), waitForFirstImage),
+      loadWelcomeBanner(doc),
     ]);
   }
 
@@ -388,7 +390,6 @@ async function loadEager(doc) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
-  await loadWelcomeBanner(doc);
   await loadSections(main);
 
   // Load the gtm-martech library in the lazy phase.

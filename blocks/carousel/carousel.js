@@ -58,6 +58,7 @@ function createCarouselCard(cardElement, doc) {
       nonActivePictureDesktop,
       nonActivePictureMobile,
       nonActiveImageAlt,
+      false,
     );
     if (picture) {
       inactiveWrapper.appendChild(picture);
@@ -67,7 +68,12 @@ function createCarouselCard(cardElement, doc) {
 
   if (activePictureDesktop || activeImageMobileDiv) {
     const activeWrapper = createElementFromHTML('<div class="carousel-image-active"></div>', doc);
-    const picture = createSmartImage(activePictureDesktop, activePictureMobile, activeImageAlt);
+    const picture = createSmartImage(
+      activePictureDesktop,
+      activePictureMobile,
+      activeImageAlt,
+      false,
+    );
     if (picture) {
       activeWrapper.appendChild(picture);
     }

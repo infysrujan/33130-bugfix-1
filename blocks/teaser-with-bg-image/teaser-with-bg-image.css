@@ -159,13 +159,9 @@
 }
 
 .teaser-bg-image-cta .button-container a {
-  min-width: 8.75rem;
-  max-width: none;
-  display: flex;
+  min-width: 100%;
   box-sizing: border-box;
-  width: 100%;
-  text-align: center;
-  justify-content: center;
+ 
 }
 
 @media (width > 47.5rem) {
@@ -260,9 +256,7 @@
   }
 
   .teaser-bg-image-cta .button-container a{
-    display: inline-block;
-    width: auto;
-    justify-content: initial;
+     min-width: 8.75rem;
   }
 }
 

@@ -14,7 +14,13 @@ function buildTile(row, doc) {
 
   let pictureHTML = '';
   if (pictureDesktop) {
-    const picture = createSmartImage(imgElDesktop, null, { textContent: existingAlt }, blockName);
+    const picture = createSmartImage(
+      imgElDesktop,
+      null,
+      { textContent: existingAlt },
+      false,
+      blockName,
+    );
     pictureHTML = picture?.outerHTML || '';
   }
 
