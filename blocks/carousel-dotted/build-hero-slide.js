@@ -14,7 +14,12 @@ export default function buildSlideHeroVariant(row, index, cells, variant) {
 
   const picture = heroImageCell?.querySelector('picture');
   if (picture) {
-    if (imageAlt) picture.querySelector('img')?.setAttribute('alt', imageAlt);
+    const img = picture.querySelector('img');
+    if (imageAlt && img) img.setAttribute('alt', imageAlt);
+    if (img && index === 0) {
+      img.setAttribute('loading', 'eager');
+      img.setAttribute('fetchpriority', 'high');
+    }
     const media = document.createElement('div');
     media.className = 'carousel-bg';
     media.append(picture);

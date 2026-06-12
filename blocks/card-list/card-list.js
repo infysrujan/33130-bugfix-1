@@ -1,5 +1,6 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
+import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
 import { applyLinkTarget, getLang, isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
@@ -177,6 +178,15 @@ function createCardListItem(cardElement, doc) {
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
     buttonWrapper.appendChild(buttonLink);
     applyLinkTarget(buttonWrapper, 'a', openInNewTab);
+    inner.appendChild(buttonWrapper);
+  }
+
+  if (actionTypeText === 'select-dropdown') {
+    // dropdown fields: cells.length-3 = label, cells.length-2 = links (before financialDate)
+    const label = cells[cells.length - 3]?.textContent?.trim() || 'Select';
+    const linksHTML = cells[cells.length - 2]?.innerHTML || '';
+    const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
+    buttonWrapper.appendChild(createGlobalDropdown(label, linksHTML, doc));
     inner.appendChild(buttonWrapper);
   }
 

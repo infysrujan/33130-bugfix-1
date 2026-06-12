@@ -192,6 +192,10 @@
             {
               "name": "Multiple Download",
               "value": "multiple-download"
+            },
+            {
+              "name": "Select Dropdown",
+              "value": "select-dropdown"
             }
           ]
         },
@@ -391,6 +395,39 @@
             "!!": [
               {
                 "var": "enableOverlayModal"
+              }
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "dropdownLable",
+          "label": "Dropdown Lable",
+          "description": "Dropdown lable text for dropdown links",
+          "condition": {
+            "===": [
+              {
+                "var": "buttonActionType"
+              },
+              "select-dropdown"
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "drop-links",
+          "value": "",
+          "label": "Dropdown Links",
+          "valueType": "string",
+          "condition": {
+            "and": [
+              {
+                "===": [
+                  {
+                    "var": "buttonActionType"
+                  },
+                  "select-dropdown"
+                ]
               }
             ]
           }

@@ -119,6 +119,13 @@ function buildDataFromConfig(json, lang, placeholders) {
         annualReturn: L['inputs-expectedReturnRate'] || '',
         annualIncrease: L['inputs-annualSavingIncreaseRate'] || '',
       },
+      fieldPlaceholders: {
+        balance: placeholders.savingPlanPlaceholderBalance,
+        goalAmount: placeholders.savingPlanPlaceholderGoalAmount,
+        annualReturn: placeholders.savingPlanPlaceholderAnnualReturn,
+        goalPeriod: placeholders.savingPlanPlaceholderGoalPeriod,
+        annualIncrease: placeholders.savingPlanPlaceholderAnnualIncrease,
+      },
       buttons: {
         clear: L['common-clearButton'] || '',
         calculate: L['common-calculateButtonText'] || '',
@@ -393,19 +400,19 @@ function buildShellMarkup(data) {
     name: 'goal', label: labels.fields.goal, value: '', options: goals, icon: getIcon('goal'),
   })}
             ${buildField({
-    name: 'balance', label: labels.fields.balance, value: defaults.balance, icon: getIcon('balance'),
+    name: 'balance', label: labels.fields.balance, value: defaults.balance, icon: getIcon('balance'), placeholder: labels.fieldPlaceholders.balance,
   })}
             ${buildField({
-    name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount, icon: getIcon('goal-amount'),
+    name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount, icon: getIcon('goal-amount'), placeholder: labels.fieldPlaceholders.goalAmount,
   })}
             ${buildField({
-    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || '', decimal: true, icon: getIcon('annual-return'), placeholder: '0.5-40',
+    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || '', decimal: true, icon: getIcon('annual-return'), placeholder: labels.fieldPlaceholders.annualReturn,
   })}
             ${buildField({
-    name: 'goalPeriod', label: labels.fields.goalPeriod, value: defaults.goalPeriod, icon: getIcon('goal-period'),
+    name: 'goalPeriod', label: labels.fields.goalPeriod, value: defaults.goalPeriod, icon: getIcon('goal-period'), placeholder: labels.fieldPlaceholders.goalPeriod,
   })}
             ${buildField({
-    name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, decimal: true, icon: getIcon('annual-increase'),
+    name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, decimal: true, icon: getIcon('annual-increase'), placeholder: labels.fieldPlaceholders.annualIncrease,
   })}
           </div>
           <div class="saving-plan-form-actions">

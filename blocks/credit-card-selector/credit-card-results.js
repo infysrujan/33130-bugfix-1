@@ -69,6 +69,25 @@ function sortBySourcing(cards) {
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
 
+async function loadCardData() {
+  try {
+    const configs = await fetchConfigs();
+    const baseUrl = configs.creditCardSelectorSuggesterData;
+    if (!baseUrl) return [];
+    const lang = getLang();
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${lang}`);
+    const cacheKey = `bbl-credit-cards-${lang}`;
+    if (!window[cacheKey]) {
+      window[cacheKey] = fetchGet(url, { throwOnError: false })
+        .then((json) => json?.data?.creditCardsList?.items || json?.data || json?.items || [])
+        .catch(() => []);
+    }
+    return window[cacheKey];
+  } catch {
+    return [];
+  }
+}
+
 async function loadSheetData() {
   try {
     const configs = await fetchConfigs();
@@ -77,21 +96,6 @@ async function loadSheetData() {
     const json = await fetchGet(url, { throwOnError: false });
     const rows = (json?.data || []).map(normalizeRow);
     return rows;
-  } catch {
-    return [];
-  }
-}
-
-async function loadCardData() {
-  try {
-    const configs = await fetchConfigs();
-    const baseUrl = configs.creditCardSelectorSuggesterData;
-    if (!baseUrl) return [];
-    const lang = getLang();
-    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${lang}`);
-    const json = await fetchGet(url, { throwOnError: false });
-    const items = json?.data?.creditCardsList?.items || json?.data || json?.items || [];
-    return items;
   } catch {
     return [];
   }

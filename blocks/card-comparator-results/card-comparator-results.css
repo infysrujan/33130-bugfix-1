@@ -148,7 +148,18 @@
 /* ── Apply area ───────────────────────────────────────────────────────────── */
 
 .card-comparator-results .ccr-apply-area {
-  margin-bottom: var(--bbl-space-200);
+  padding: var(--bbl-space-300) 0;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-150);
+  box-sizing: border-box;
+}
+
+.card-comparator-results .ccr-apply-area:empty {
+  padding: 0;
+  border-bottom: none;
+}
+
+.card-comparator-results .ccr-apply-area:empty.ccr-apply-lined {
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-150);
 }
 
 .card-comparator-results .ccr-apply-btn {

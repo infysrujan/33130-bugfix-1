@@ -269,9 +269,17 @@
   margin-top: 0;
 }
 
+.menu-card-action-item:has(.global-dropdown.is-open) {
+  z-index: 10;
+}
+
+.menu-card-action.scrollable:has(.global-dropdown.is-open) {
+  overflow: visible;
+}
+
 .menu-card-action-inner .download-button-wrapper .download-files {
   padding: 0 var(--bbl-space-500) 0 var(--bbl-space-250);
-}   
+}
 
 @media (width > 47.5rem) {
   .menu-card-action.stacked {

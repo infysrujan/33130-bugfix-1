@@ -480,6 +480,23 @@
   padding: var(--bbl-space-250);
 }
 
+.cards-list-button + .cards-list-date {
+  padding-top: 0.625rem;
+}
+
+.cards-list-button .global-dropdown {
+  width: 100%;
+  margin-top: var(--bbl-space-250);
+}
+
+.cards-list-item:has(.global-dropdown.is-open) {
+  z-index: 10;
+}
+
+.cards-list:is(.scrollable, .carousel):has(.global-dropdown.is-open) {
+  overflow: visible;
+}
+
 @media (width > 47.5rem) {
   .cards-list-remark p,
   .cards-list-subtitle p,
@@ -596,6 +613,10 @@
 
   .card-list-modal-last-title+.card-list-modal-text {
     font-size: var(--bbl-font-size-b2);
+  }
+
+  .cards-list-button .global-dropdown.is-open .global-dropdown-panel {
+    width: max-content;
   }
 }
 

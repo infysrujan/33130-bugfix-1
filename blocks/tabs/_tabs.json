@@ -313,7 +313,9 @@
         "forex-rates",
         "forex-graph",
         "sme-loan-calculator",
-        "table"
+        "table",
+        "card-list",
+        "menu-card-actions"
       ]
     }
   ]

@@ -534,8 +534,30 @@ let ccLastResult = null;
  */
 function CcApplicationStatus(idAndDob) {
   ccLastResult = null;
-  const configs = fetchConfigs();
-  const baseUrl = configs['cc-apply-status'];
+
+  // fetchConfigs() is async and accesses document/window — both unavailable
+  // in the AEM Forms Rule Engine Web Worker. Read configs.json directly via
+  // synchronous XHR instead (sync XHR is permitted in workers).
+  let baseUrl = '';
+  const cfgXhr = new XMLHttpRequest();
+  cfgXhr.open('GET', '/configs.json', false);
+  cfgXhr.send(null);
+  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
+    try {
+      const entry = JSON.parse(cfgXhr.responseText)
+        .data?.find((c) => c.Key === 'cc-apply-status');
+      baseUrl = entry?.Value || '';
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('CcApplicationStatus: failed to read configs.json', e);
+    }
+  }
+
+  if (!baseUrl) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus: cc-apply-status missing in configs.json');
+    return '';
+  }
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', `${baseUrl}?idAndDob=${encodeURIComponent(idAndDob)}`, false);
@@ -615,47 +637,49 @@ function getSelectedLabelFromDropdown(dropdown) {
 }
 
 /**
- * Formats date and time into "D Month YYYY HH:mm:00" format.
+ * Formats date and time inputs into a single datetime string.
+ * Accepts date in "yyyy-mm-dd" or "dd/mm/yyyy" format, and hour/minute as separate inputs.
+ * Returns formatted string like "5 January 2024 14:30:00".
  *
  * @name formatDateTime
- * @param {string} date - Date string in "dd/MM/yyyy" format
- * @param {string} hour - Hour string (e.g., "14")
- * @param {string} minute - Minute string (e.g., "30")
- * @returns {string} Formatted date-time string
+ * @param {string} date - Date string in "yyyy-mm-dd" or "dd/mm/yyyy" format
+ * @param {string|number} hour - Hour component (0-23)
+ * @param {string|number} minute - Minute component (0-59)
+ * @returns {string} Formatted datetime string or empty string if inputs are invalid
  *
  * @example
- * formatDateTime("25/12/2024", "14", "30") // returns "25 December 2024 14:30:00"
+ * formatDateTime("2024-01-05", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("05/01/2024", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("invalid", "14", "30") // returns ""
+ * formatDateTime("2024-01-05", "", "30") // returns ""
  */
 function formatDateTime(date, hour, minute) {
-  const [day, month, year] = date.split('/');
+  if (!date || !hour || !minute) return '';
+  let day;
+  let month;
+  let year;
 
+  if (String(date).includes('-')) {
+    [year, month, day] = String(date).split('-');
+  } else {
+    [day, month, year] = String(date).split('/');
+  }
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December',
   ];
 
-  return `${Number(day)} ${months[Number(month) - 1]} ${year} ${hour}:${minute}:00`;
+  return `${Number(day)} ${months[Number(month) - 1]} ${year} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
 }
 
 /**
- * Returns a "current/max" character-count string for display in a form field.
- * Bind the return value to the label or value of a text component via a form rule.
- *
- * @name updateTextCount
- * @param {string} fieldValue - The current value of the text field
- * @param {number|string} maxCount - The maximum allowed character count (e.g. 100)
- * @returns {string} Formatted count string (e.g. "5/100")
- *
- * @example
- * updateTextCount("Hello", 100) // returns "5/100"
- */
-function updateTextCount(field, textCountComponent) {
-  const count = (field.value || '').length;
-  const maxCount = field.maxLength || 4;
-  const text = `${count}/${maxCount}`;
-  // For plain text components
-  textCountComponent.innerHTML = `<p>${text}</p>`;
-  return text;
+* @name updateTextCount
+* @param {object} passportNumber - Passport Number field object
+* @returns {string} Character count in format x/4
+*/
+function updateTextCount(passportNumber) {
+  const count = String(passportNumber?.$value || '').length;
+  return `${count}/4`;
 }
 
 // eslint-disable-next-line import/prefer-default-export
