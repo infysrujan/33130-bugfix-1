@@ -12,6 +12,14 @@ function formatDMY(date) {
   return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
 }
 
+function formatPrintDate(date = new Date()) {
+  return `${date.getMonth() + 1}/${date.getDate()}/${String(date.getFullYear()).slice(-2)}`;
+}
+
+function formatPrintTime(date = new Date()) {
+  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+
 function formatDatePath(date) {
   return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
 }
@@ -338,6 +346,14 @@ export default async function decorate(block) {
   ];
 
   block.innerHTML = `
+    <div class="fdd-print-masthead" aria-hidden="true">
+      <div class="fdd-print-datetime"></div>
+      <div class="fdd-print-page-title">Fund Prices - BBL Asset Management</div>
+      <div></div>
+      <div class="fdd-print-logo"><img src="/icons/logo.svg" alt="Bangkok Bank" /></div>
+      <div></div>
+      <div class="fdd-print-search">${labels.backLabel === 'Fund Prices' ? 'Search Fund' : labels.backLabel}</div>
+    </div>
     <div class="fdd-header">
       <div class="fdd-header-top">
         <button class="fdd-back-btn" aria-label="Back to ${labels.backLabel}">&#8249; ${labels.backLabel}</button>
@@ -363,6 +379,17 @@ export default async function decorate(block) {
         <div class="calendar-input icon-calendar"><input type="text" id="fdd-dr-to" /></div>
       </div>
       <div class="fdd-range-error hidden" role="alert"></div>
+    </div>
+
+    <div class="fdd-print-date-range" aria-hidden="true">
+      <div>
+        <span>${labels.fromLabel}</span>
+        <strong class="fdd-print-from"></strong>
+      </div>
+      <div>
+        <span>${labels.toLabel}</span>
+        <strong class="fdd-print-to"></strong>
+      </div>
     </div>
 
     <div class="stat-tables-print-row">
@@ -434,6 +461,9 @@ export default async function decorate(block) {
   const chartSubtitle = block.querySelector('.chart-subtitle');
   const chartBeginNav = block.querySelector('.chart-begin-nav');
   const chartEndNav = block.querySelector('.chart-end-nav');
+  const printDateTime = block.querySelector('.fdd-print-datetime');
+  const printFrom = block.querySelector('.fdd-print-from');
+  const printTo = block.querySelector('.fdd-print-to');
   const chartPanel = block.querySelector('.fdd-chart-panel');
   const tablePanel = block.querySelector('.fdd-table-panel');
   const histTbody = block.querySelector('.detail-hist-table tbody');
@@ -470,6 +500,10 @@ export default async function decorate(block) {
   async function renderDetail(fromDate, toDate) {
     const subtitle = buildSubtitle(fromDate, toDate);
     fundLabel.textContent = subtitle;
+    printFrom.textContent = formatCalendarDate(fromDate, getCalendarLang());
+    printTo.textContent = formatCalendarDate(toDate, getCalendarLang());
+    const now = new Date();
+    printDateTime.textContent = `${formatPrintDate(now)}, ${formatPrintTime(now)}`;
 
     const [statsResult, historyResult] = await Promise.allSettled([
       fetchFundDetailStats(currentFund.id, fromDate, toDate),
@@ -587,13 +621,30 @@ export default async function decorate(block) {
   /* Print */
   printBtn?.addEventListener('click', (e) => {
     e.preventDefault();
-    const clone = block.cloneNode(true);
-    clone.querySelectorAll('.fund-prices-print-label, .fdd-back-btn').forEach((el) => el.remove());
-    const orig = block.ownerDocument.body.innerHTML;
-    block.ownerDocument.body.innerHTML = clone.outerHTML;
+    const { body, defaultView } = block.ownerDocument;
+    const printRoot = block.cloneNode(true);
+    const disclaimer = block.closest('.section')?.querySelector('.fund-prices-disclaimer-text')?.cloneNode(true);
+    const printFooter = block.ownerDocument.createElement('div');
+    printRoot.id = 'fdd-print-root';
+    printRoot.classList.remove('hidden');
+    printRoot.hidden = false;
+    printRoot.querySelectorAll('.fund-prices-print-label, .fdd-back-btn').forEach((el) => el.remove());
+    if (disclaimer) printRoot.appendChild(disclaimer);
+    printFooter.className = 'fdd-print-footer';
+    printFooter.innerHTML = '<span>https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/Fund-Prices</span><span>1/2</span>';
+    printRoot.appendChild(printFooter);
+
+    const cleanupPrint = () => {
+      body.classList.remove('fdd-printing');
+      printRoot.remove();
+      defaultView?.removeEventListener('afterprint', cleanupPrint);
+    };
+
+    body.classList.add('fdd-printing');
+    body.appendChild(printRoot);
+    defaultView?.addEventListener('afterprint', cleanupPrint, { once: true });
     window.print();
-    block.ownerDocument.body.innerHTML = orig;
-    window.location.reload();
+    setTimeout(cleanupPrint, 1000);
   });
 
   /* Back button */
@@ -620,11 +671,13 @@ export default async function decorate(block) {
 
     block.classList.remove('hidden');
     block.hidden = false;
+    block.ownerDocument.body.classList.add('fund-prices-detail-active');
     validateAndRenderDetail();
   });
 
   block.addEventListener('fund-prices-dropdown:hide', () => {
     block.classList.add('hidden');
     block.hidden = true;
+    block.ownerDocument.body.classList.remove('fund-prices-detail-active');
   });
 }

@@ -34,9 +34,30 @@ function getRegisterCtaLabel(isRegister, data) {
   return data?.registerCtaLabel || '';
 }
 
-function getRegisterCtaUrl(isRegister, registerCtaUrl) {
-  if (!isRegisterEnabled(isRegister)) return '';
-  return registerCtaUrl || '';
+function formatPromoDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return dateStr;
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${mm}/${dd}/${d.getFullYear()}`;
+}
+
+function getRegisterCtaUrl(isRegister, registerCtaUrl, data, promoId) {
+  if (!isRegisterEnabled(isRegister) || !registerCtaUrl) return '';
+
+  const tokenMap = {
+    'PROMO-ID': data?.id || promoId || '',
+    'PROMO-TITLE': (data?.title || '').replace(/<[^>]*>/g, '').trim(),
+    'PROMO-START-DATE': formatPromoDate(data?.promotionStartDate),
+    'PROMO-END-DATE': formatPromoDate(data?.promotionEndDate),
+    'PROMO-FLAG': isRegister,
+  };
+
+  return registerCtaUrl.replace(
+    /\{\{\s*([\w-]+)\s*\}\}/g,
+    (_, key) => encodeURIComponent(tokenMap[key.trim()] ?? ''),
+  );
 }
 
 function extractBlockConfig(block) {
@@ -164,7 +185,7 @@ function bindImageModal(container, imageUrl, altText) {
   });
 }
 
-function renderDetails(container, data, periodLabel, locale, viewFull, registerCtaUrl) {
+function renderDetails(container, data, periodLabel, locale, viewFull, registerCtaUrl, promoId) {
   const title = data?.title
     ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
@@ -181,7 +202,7 @@ function renderDetails(container, data, periodLabel, locale, viewFull, registerC
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
   const isRegister = data?.isRegister || '';
   const ctaLabel = getRegisterCtaLabel(isRegister, data);
-  const ctaUrl = getRegisterCtaUrl(isRegister, registerCtaUrl);
+  const ctaUrl = getRegisterCtaUrl(isRegister, registerCtaUrl, data, promoId);
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
@@ -299,6 +320,7 @@ export default async function decorate(block) {
       locale,
       clickToViewFull,
       registerCtaUrl,
+      promoId,
     );
     return;
   }
@@ -310,5 +332,6 @@ export default async function decorate(block) {
     locale,
     clickToViewFull,
     registerCtaUrl,
+    promoId,
   );
 }

@@ -523,6 +523,69 @@ function validateCreditCardNumber(inputNum) {
   return sum % 10 === 0;
 }
 
+// Module-level cache — set by CcApplicationStatus, read by getCcField
+let ccLastResult = null;
+
+/**
+ * Fetches CC application status, picks the latest record when multiple are
+ * returned, caches the full result, and returns NEW_TRANSAC_RESULT directly.
+ * @param {string} idAndDob
+ * @return {string}
+ */
+function CcApplicationStatus(idAndDob) {
+  ccLastResult = null;
+  const configs = fetchConfigs();
+  const baseUrl = configs['cc-apply-status'];
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `${baseUrl}?idAndDob=${encodeURIComponent(idAndDob)}`, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus API error:', xhr.status, xhr.statusText);
+    return '';
+  }
+
+  let data;
+  try {
+    data = JSON.parse(xhr.responseText);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus JSON parse error:', e);
+    return '';
+  }
+
+  if (!Array.isArray(data) || data.length === 0) return '';
+
+  let result;
+  if (data.length === 1) {
+    [result] = data;
+  } else {
+    const parseDate = (dateStr) => {
+      if (!dateStr || dateStr.length !== 8) return new Date(0);
+      return new Date(`${dateStr.substring(4, 8)}-${dateStr.substring(2, 4)}-${dateStr.substring(0, 2)}`);
+    };
+    result = data.reduce((best, current) => (
+      parseDate(current.TRANSAC_DECISION_DATE) > parseDate(best.TRANSAC_DECISION_DATE)
+        ? current : best
+    ));
+  }
+
+  ccLastResult = result;
+  return result.NEW_TRANSAC_RESULT ?? '';
+}
+
+/**
+ * Returns a named field from the last CcApplicationStatus call.
+ * @param {string} fieldName
+ * @return {string}
+ */
+function getCcField(fieldName) {
+  return ccLastResult?.[fieldName] ?? '';
+}
+
 function getidAndDob(id, dob) {
   console.log('id', id);
   console.log('dob', dob);
@@ -551,6 +614,50 @@ function getSelectedLabelFromDropdown(dropdown) {
   return dropdown.options[dropdown.selectedIndex].text.trim();
 }
 
+/**
+ * Formats date and time into "D Month YYYY HH:mm:00" format.
+ *
+ * @name formatDateTime
+ * @param {string} date - Date string in "dd/MM/yyyy" format
+ * @param {string} hour - Hour string (e.g., "14")
+ * @param {string} minute - Minute string (e.g., "30")
+ * @returns {string} Formatted date-time string
+ *
+ * @example
+ * formatDateTime("25/12/2024", "14", "30") // returns "25 December 2024 14:30:00"
+ */
+function formatDateTime(date, hour, minute) {
+  const [day, month, year] = date.split('/');
+
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+
+  return `${Number(day)} ${months[Number(month) - 1]} ${year} ${hour}:${minute}:00`;
+}
+
+/**
+ * Returns a "current/max" character-count string for display in a form field.
+ * Bind the return value to the label or value of a text component via a form rule.
+ *
+ * @name updateTextCount
+ * @param {string} fieldValue - The current value of the text field
+ * @param {number|string} maxCount - The maximum allowed character count (e.g. 100)
+ * @returns {string} Formatted count string (e.g. "5/100")
+ *
+ * @example
+ * updateTextCount("Hello", 100) // returns "5/100"
+ */
+function updateTextCount(field, textCountComponent) {
+  const count = (field.value || '').length;
+  const maxCount = field.maxLength || 4;
+  const text = `${count}/${maxCount}`;
+  // For plain text components
+  textCountComponent.innerHTML = `<p>${text}</p>`;
+  return text;
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -572,4 +679,8 @@ export {
   getidAndDob,
   replaceOtherAndJoin,
   getSelectedLabelFromDropdown,
+  CcApplicationStatus,
+  getCcField,
+  formatDateTime,
+  updateTextCount,
 };

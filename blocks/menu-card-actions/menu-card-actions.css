@@ -144,6 +144,9 @@
     max-width: 100%;
     text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    line-height: 2.75rem;
     margin-top: calc(var(--bbl-space-250) - 0.9375rem);
 }
 
@@ -265,6 +268,10 @@
 .menu-card-action-inner .download-button-wrapper+.download-button-wrapper {
   margin-top: 0;
 }
+
+.menu-card-action-inner .download-button-wrapper .download-files {
+  padding: 0 var(--bbl-space-500) 0 var(--bbl-space-250);
+}   
 
 @media (width > 47.5rem) {
   .menu-card-action.stacked {

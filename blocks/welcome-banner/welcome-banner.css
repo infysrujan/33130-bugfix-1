@@ -8,9 +8,7 @@
   z-index: 10000;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--bbl-color-white, #fff);
+  background: var(--bbl-color-white);
   opacity: 0;
   transition: opacity 0.3s ease;
   overflow: hidden auto;
@@ -22,23 +20,24 @@
   opacity: 1;
 }
 
-.welcome-banner-dialog {
+.welcome-banner-overlay .welcome-banner-dialog {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 22rem;
   box-sizing: border-box;
   position: relative;
+  margin: 0 auto;
+  flex-shrink: 0;
 }
 
-.welcome-banner-close {
+.welcome-banner-overlay .welcome-banner-close {
   position: absolute;
   top: -2.5rem;
   right: 0;
   background: transparent;
   border: none;
-  color: var(--bbl-color-white, #fff);
+  color: var(--bbl-color-white);
   font-size: 2rem;
   line-height: 1;
   cursor: pointer;
@@ -46,50 +45,47 @@
   z-index: 1;
 }
 
-.welcome-banner-media {
+.welcome-banner-overlay .welcome-banner-media {
   width: 100%;
   line-height: 0;
+  position: relative;
 }
 
-.welcome-banner-desktop-img {
-  display: none;
-  width: 100%;
-}
-
-.welcome-banner-mobile-img {
+.welcome-banner-overlay .welcome-banner-media picture,
+.welcome-banner-overlay .welcome-banner-media img {
   display: block;
   width: 100%;
-}
-
-.welcome-banner-desktop-img img,
-.welcome-banner-mobile-img img {
-  display: block;
-  width: 100%;
+  max-width: 100%;
   height: auto;
   object-fit: cover;
 }
 
-.welcome-banner-ctas {
+/* Mobile-first: show mobile image, hide desktop */
+.welcome-banner-overlay .welcome-banner-media .welcome-banner-img-desktop {
+  display: none;
+}
+
+.welcome-banner-overlay .welcome-banner-ctas {
+  position: absolute;
+  bottom: 5%;
+  left: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--bbl-space-100);
-  width: 100%;
   padding: var(--bbl-space-150);
   box-sizing: border-box;
   background: transparent;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
 }
 
-.welcome-banner-cta {
+.welcome-banner-overlay .welcome-banner-cta {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 13.125rem;
-  height: 2.75rem;
+  width: 100%;
+  max-width: 13.125rem;
+  min-height: 2.75rem;
   padding: var(--bbl-space-000) var(--bbl-space-250);
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
@@ -98,38 +94,46 @@
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-medium);
   font-size: 0.9375rem;
-  line-height: 1;
+  line-height: 1.2;
   text-align: center;
   cursor: pointer;
   box-sizing: border-box;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: break-word;
   flex-shrink: 0;
 }
 
-.welcome-banner-ctas .welcome-banner-cta {
-  color: var(--bbl-color-white);
-}
-
-.welcome-banner-cta:hover,
-.welcome-banner-cta:active {
+.welcome-banner-overlay .welcome-banner-cta:hover,
+.welcome-banner-overlay .welcome-banner-cta:active {
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
   text-decoration: none;
 }
 
-@media (width > 47.5rem) {
-  .welcome-banner-dialog {
-    max-width: 26rem;
+@media (width > 47.5625rem) {
+  .welcome-banner-overlay .welcome-banner-dialog {
+    max-width: 60rem;
   }
 
-  .welcome-banner-ctas {
+  /* Desktop: swap image visibility */
+  .welcome-banner-overlay .welcome-banner-media .welcome-banner-img-desktop {
+    display: block;
+  }
+
+  .welcome-banner-overlay .welcome-banner-media .welcome-banner-img-mobile {
+    display: none;
+  }
+
+  .welcome-banner-overlay .welcome-banner-ctas {
+    position: static;
+    background: var(--bbl-color-white);
     flex-direction: row;
     justify-content: center;
     gap: var(--bbl-space-200);
     padding: var(--bbl-space-250) var(--bbl-space-200);
   }
 
-  .welcome-banner-cta {
+  .welcome-banner-overlay .welcome-banner-cta {
     flex: 1;
     width: auto;
     max-width: 13.125rem;
@@ -141,30 +145,18 @@
     overflow: hidden;
   }
 
-  .welcome-banner-dialog {
+  .welcome-banner-overlay .welcome-banner-dialog {
     max-width: 60rem;
   }
 
-  .welcome-banner-desktop-img {
-    display: block;
-  }
-
-  .welcome-banner-mobile-img {
-    display: none;
-  }
-
-  .welcome-banner-ctas {
-    position: static;
-    flex-direction: row;
-    justify-content: center;
-    gap: var(--bbl-space-300);
+  .welcome-banner-overlay .welcome-banner-ctas {
+    gap: var(--bbl-space-075);
     padding: var(--bbl-space-300) var(--bbl-space-000);
-    background: var(--bbl-color-white, #fff);
   }
 
-  .welcome-banner-cta {
+  .welcome-banner-overlay .welcome-banner-cta {
     width: 15rem;
-    height: 2.75rem;
+    max-width: 15rem;
     font-size: var(--bbl-font-size-b1);
   }
 }

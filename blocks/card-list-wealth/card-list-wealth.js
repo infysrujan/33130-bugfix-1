@@ -8,6 +8,9 @@ export default function decorate(block) {
   const rows = [...block.children];
   block.innerHTML = '';
 
+  const content = document.createElement('div');
+  content.className = 'content';
+
   rows.forEach((row) => {
     const cols = [...row.children];
     const logo = cols[0]?.querySelector('picture');
@@ -81,6 +84,8 @@ export default function decorate(block) {
     }
 
     moveInstrumentation(row, card);
-    block.append(card);
+    content.append(card);
   });
+
+  block.append(content);
 }

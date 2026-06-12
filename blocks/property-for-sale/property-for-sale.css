@@ -357,12 +357,16 @@ body:has(.property-for-sale-container) .header-wrapper {
   z-index: 101;
 }
 
-body:has(.property-for-sale-container) .section.center-image img {
-  height: 8.125rem;
+body:has(.property-for-sale-container) .default-content-wrapper img {
+  height: 6.5625rem;
   width: auto;
 }
 
 @media (width > 47.5rem) {
+  body:has(.property-for-sale-container) .default-content-wrapper img {
+    height: 8.125rem;
+  }
+
   .pfs-search-btn-wrap .pfs-btn-search {
     min-width: 100%;
     width: 100%;

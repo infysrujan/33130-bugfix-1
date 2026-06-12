@@ -3,6 +3,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { openModal } from '../../scripts/modal.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { getLang } from '../../scripts/scripts.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -73,9 +74,9 @@ function readUrl(row) {
 async function loadMatrix() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfSuggestorData;
-    // eslint-disable-next-line no-console
-    console.log('[mf-results] loadMatrix url:', url);
+    const lang = getLang();
+    const langKey = `mfSuggestorData${lang.charAt(0).toUpperCase() + lang.slice(1)}`;
+    const url = configs[langKey] || configs.mfSuggestorDataEn;
     if (!url) return [];
     const json = await fetchGet(url, { throwOnError: false });
     return (json?.data || []).map(normalizeRow);
@@ -92,10 +93,9 @@ async function loadMatrix() {
 async function loadFundsData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfFundsDataUrl;
-    // eslint-disable-next-line no-console
-    console.log('[mf-results] loadFundsData url:', url);
-    if (!url) return [];
+    const baseUrl = configs.mfFundsDataUrl;
+    if (!baseUrl) return [];
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
     const json = await fetchGet(url, { throwOnError: false });
     if (json) {
       const items = json.data?.mutualFundsList?.items || [];
@@ -240,7 +240,7 @@ function buildCardBlock(funds, doc, labels) {
   const getImgUrl = (val) => val?._publishUrl || (typeof val === 'string' ? val : '');
 
   const list = doc.createElement('div');
-  list.className = 'cards-list scrollable center cards-3';
+  list.className = `cards-list scrollable center cards-3${funds.length === 1 ? ' single-card' : ''}`;
 
   funds.forEach((fund) => {
     const name = fund.FundName || '';
@@ -251,7 +251,7 @@ function buildCardBlock(funds, doc, labels) {
 
     const fundImageSrc = getImgUrl(fund.FundImage);
     const logoSrc = getImgUrl(fund.LogoImage) || getImgUrl(fund.ManagementCompanyLogo);
-    const imgSrc = fundImageSrc || logoSrc;
+    const imgSrc = fundImageSrc;
 
     const card = doc.createElement('div');
     card.className = 'cards-list-item';
@@ -527,64 +527,15 @@ export default async function decorate(block) {
     }
 
     refreshToggle(funds.length);
-
-    // ── Mobile scroll dots ─────────────────────────────────────────────────
-    const cardsList = blockEl.querySelector('.cards-list');
-    if (cardsList) {
-      const dotsEl = doc.createElement('div');
-      dotsEl.className = 'mfr-scroll-dots';
-      cardListContainer.appendChild(dotsEl);
-
-      const buildDots = () => {
-        dotsEl.innerHTML = '';
-        const items = [...blockEl.querySelectorAll('.cards-list-item:not(.mfr-hidden)')];
-        if (items.length <= 1) return;
-        items.forEach((item, i) => {
-          const dot = doc.createElement('button');
-          dot.type = 'button';
-          dot.className = `mfr-scroll-dot${i === 0 ? ' is-active' : ''}`;
-          dot.setAttribute('aria-label', `Go to card ${i + 1}`);
-          dot.addEventListener('click', () => {
-            const offset = item.getBoundingClientRect().left
-              - cardsList.getBoundingClientRect().left
-              + cardsList.scrollLeft;
-            cardsList.scrollTo({ left: offset, behavior: 'smooth' });
-          });
-          dotsEl.appendChild(dot);
-        });
-      };
-
-      buildDots();
-
-      cardsList.addEventListener('scroll', () => {
-        const dots = [...dotsEl.querySelectorAll('.mfr-scroll-dot')];
-        const items = [...blockEl.querySelectorAll('.cards-list-item:not(.mfr-hidden)')];
-        if (!items.length || !dots.length) return;
-        const containerLeft = cardsList.getBoundingClientRect().left;
-        let activeIndex = 0;
-        let minDist = Infinity;
-        items.forEach((item, i) => {
-          const dist = Math.abs(item.getBoundingClientRect().left - containerLeft);
-          if (dist < minDist) { minDist = dist; activeIndex = i; }
-        });
-        dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
-      }, { passive: true });
-    }
   }
 
   // ── Apply filter and render ────────────────────────────────────────────────
-  // eslint-disable-next-line no-console
-  console.log('[mf-results] answers:', answers, '| matrix rows:', matrix.length, '| funds:', allFunds.length);
-  // eslint-disable-next-line no-console
-  if (matrix.length) console.log('[mf-results] matrix sample row:', matrix[0]);
   const hasAnswers = answers.riskLevel || answers.fxRisk || answers.taxBenefit;
   if (!hasAnswers) {
     renderCards([]);
   } else {
     const matchedNames = getMatchedFundNames(matrix, answers);
     const filteredFunds = filterFundsByMatrix(allFunds, matchedNames);
-    // eslint-disable-next-line no-console
-    console.log('[mf-results] matchedNames:', matchedNames.length, matchedNames, '| filteredFunds:', filteredFunds.length, '| fund names:', filteredFunds.map((f) => f.FundName));
     renderCards(filteredFunds);
   }
 

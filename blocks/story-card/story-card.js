@@ -176,6 +176,7 @@ function buildSocialIcons(socialIconRows, doc) {
     anchor.target = '_blank';
     anchor.rel = 'noopener noreferrer';
     anchor.appendChild(picture);
+    moveInstrumentation(row, anchor);
 
     container.appendChild(anchor);
   });

@@ -12,3 +12,5 @@ helix-importer-ui
 AGENTS.md
 CLAUDE.md
 .yml
+.cursor/*
+docs/*

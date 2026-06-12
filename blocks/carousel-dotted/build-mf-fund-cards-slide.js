@@ -1,7 +1,7 @@
 import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -49,14 +49,13 @@ function matchesCategory(fundCategory, pageCategory) {
 async function loadFundsData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfFundsDataUrl;
-    // eslint-disable-next-line no-console
-    console.log('[mfCardListCarousel] loadFundsData url:', url);
-    if (!url) {
+    const baseUrl = configs.mfFundsDataUrl;
+    if (!baseUrl) {
       // eslint-disable-next-line no-console
       console.warn('[mfCardListCarousel] mfFundsDataUrl is missing from config');
       return [];
     }
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
     const json = await fetchGet(url, { throwOnError: false });
     if (json) {
       const items = json.data?.mutualFundsList?.items || [];
@@ -90,7 +89,7 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
   const getImgUrl = (val) => val?._publishUrl || (typeof val === 'string' ? val : '');
 
   const list = doc.createElement('div');
-  list.className = 'cards-list scrollable center cards-3';
+  list.className = `cards-list scrollable center cards-3${funds.length === 1 ? ' single-card' : ''}`;
 
   funds.forEach((fund) => {
     const name = fund.FundName || '';
@@ -101,7 +100,10 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
 
     const fundImgSrc = getImgUrl(fund.FundImage);
     const logoSrc = getImgUrl(fund.LogoImage) || getImgUrl(fund.ManagementCompanyLogo);
-    const imgSrc = fundImgSrc || logoSrc;
+    const imgSrc = fundImgSrc;
+
+    // eslint-disable-next-line no-console
+    console.log(`[mfFundCards] fund="${name}" | FundImage raw:`, fund.FundImage, '| LogoImage raw:', fund.LogoImage, '| ManagementCompanyLogo raw:', fund.ManagementCompanyLogo, '| resolved fundImgSrc:', fundImgSrc, '| resolved logoSrc:', logoSrc);
 
     const card = doc.createElement('div');
     card.className = 'cards-list-item';
@@ -127,7 +129,7 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
 
     // Title
     const titleEl = doc.createElement('div');
-    titleEl.className = 'cards-list-title';
+    titleEl.className = 'cards-list-title has-title-underline';
     const h3 = doc.createElement('h3');
     h3.textContent = name;
     h3.dataset.cardId = productId;
@@ -186,13 +188,10 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
  *
  * Used by carousel-dotted.js when slideType === 'mfCardListCarousel'.
  */
+const CARDS_PER_SLIDE = 3;
+
 export default async function buildMfFundCardsSlide(row, index) {
   const doc = row.ownerDocument;
-
-  const slide = doc.createElement('div');
-  slide.className = 'carousel-dotted-item mf-fund-cards-item';
-  slide.dataset.index = index;
-  moveInstrumentation(row, slide);
 
   const cells = [...row.children];
   // cells[17] = mfCardListDescription (richtext), cells[18] = cardTypes (aem-tag)
@@ -224,7 +223,12 @@ export default async function buildMfFundCardsSlide(row, index) {
   // eslint-disable-next-line no-console
   if (filteredFunds.length) console.log('[mfCardListCarousel] matched fund names:', filteredFunds.map((f) => f.FundName));
 
+  // ── No results ───────────────────────────────────────────────────────────────
   if (!filteredFunds.length) {
+    const slide = doc.createElement('div');
+    slide.className = 'carousel-dotted-item mf-fund-cards-item';
+    slide.dataset.index = index;
+    moveInstrumentation(row, slide);
     slide.classList.add('has-no-results');
     const msg = doc.createElement('p');
     msg.className = 'mfr-no-results';
@@ -242,61 +246,84 @@ export default async function buildMfFundCardsSlide(row, index) {
     return slide;
   }
 
-  const blockEl = buildFundCardsBlock(filteredFunds, doc, readMoreLabel);
-  slide.appendChild(blockEl);
+  // ── Split funds into pages — sliding-window for incomplete last chunk ─────────
+  // Mirrors card-list-carousel.js: if the last chunk is smaller than CARDS_PER_SLIDE,
+  // backfill from the end so every slide shows exactly CARDS_PER_SLIDE cards.
+  // e.g. 4 funds → slide 1: [0,1,2]  slide 2: [1,2,3]
+  const pages = [];
+  for (let i = 0; i < filteredFunds.length; i += CARDS_PER_SLIDE) {
+    const chunk = filteredFunds.slice(i, i + CARDS_PER_SLIDE);
+    if (chunk.length < CARDS_PER_SLIDE) {
+      pages.push(filteredFunds.slice(-CARDS_PER_SLIDE));
+      break;
+    }
+    pages.push(chunk);
+  }
 
-  // Inject compare buttons (mirrors addCompareButtons in mf-results.js)
-  blockEl.querySelectorAll('.cards-list-button').forEach((wrapper) => {
-    const item = wrapper.closest('.cards-list-item');
-    const h3 = item?.querySelector('h3');
-    if (h3?.dataset?.compareEnabled === 'false') return;
-    const btn = doc.createElement('button');
-    btn.type = 'button';
-    btn.className = 'mfr-compare-btn';
-    btn.textContent = compareLabel;
-    btn.dataset.cardName = h3?.textContent?.trim() ?? '';
-    btn.dataset.cardId = h3?.dataset?.cardId ?? '';
-    btn.dataset.cardImage = item?.querySelector('img')?.src ?? '';
-    wrapper.appendChild(btn);
+  const slides = pages.map((pageFunds, pageIndex) => {
+    const slide = doc.createElement('div');
+    slide.className = 'carousel-dotted-item mf-fund-cards-item';
+    // Only move instrumentation onto the first slide
+    if (pageIndex === 0) moveInstrumentation(row, slide);
+
+    const blockEl = buildFundCardsBlock(pageFunds, doc, readMoreLabel);
+    slide.appendChild(blockEl);
+
+    // Inject compare buttons
+    blockEl.querySelectorAll('.cards-list-button').forEach((wrapper) => {
+      const item = wrapper.closest('.cards-list-item');
+      const h3 = item?.querySelector('h3');
+      if (h3?.dataset?.compareEnabled === 'false') return;
+      const btn = doc.createElement('button');
+      btn.type = 'button';
+      btn.className = 'mfr-compare-btn';
+      btn.textContent = compareLabel;
+      btn.dataset.cardName = h3?.textContent?.trim() ?? '';
+      btn.dataset.cardId = h3?.dataset?.cardId ?? '';
+      btn.dataset.cardImage = item?.querySelector('img')?.src ?? '';
+      wrapper.appendChild(btn);
+    });
+
+    return slide;
   });
 
-  // Sync compare button visual states with window.mfsSelectedCards
+  // ── Shared compare state (spans all slides) ──────────────────────────────────
   function restoreCompareState() {
     const selected = window.mfsSelectedCards || [];
-    blockEl.querySelectorAll('.mfr-compare-btn').forEach((btn) => {
-      btn.classList.toggle('is-comparing', selected.some((c) => c.name === btn.dataset.cardName));
+    slides.forEach((s) => {
+      s.querySelectorAll('.mfr-compare-btn').forEach((btn) => {
+        btn.classList.toggle('is-comparing', selected.some((c) => c.name === btn.dataset.cardName));
+      });
     });
   }
 
-  // Handle compare button clicks — same contract as mf-results.js
-  blockEl.addEventListener('click', (e) => {
-    const btn = e.target.closest('.mfr-compare-btn');
-    if (!btn) return;
+  slides.forEach((slide) => {
+    slide.addEventListener('click', (e) => {
+      const btn = e.target.closest('.mfr-compare-btn');
+      if (!btn) return;
 
-    window.mfsSelectedCards = window.mfsSelectedCards || [];
-    const { cardName, cardId, cardImage } = btn.dataset;
+      window.mfsSelectedCards = window.mfsSelectedCards || [];
+      const { cardName, cardId, cardImage } = btn.dataset;
 
-    if (btn.classList.contains('is-comparing')) return;
+      if (btn.classList.contains('is-comparing')) return;
 
-    if (window.mfsSelectedCards.length >= MAX_COMPARE) {
-      doc.dispatchEvent(new CustomEvent('mf-compare-limit-reached'));
-      return;
-    }
+      if (window.mfsSelectedCards.length >= MAX_COMPARE) {
+        doc.dispatchEvent(new CustomEvent('mf-compare-limit-reached'));
+        return;
+      }
 
-    window.mfsSelectedCards.push({ id: cardId, name: cardName, image: cardImage });
-    restoreCompareState();
-    doc.dispatchEvent(new CustomEvent('mf-compare-updated', {
-      detail: { cards: window.mfsSelectedCards },
-    }));
+      window.mfsSelectedCards.push({ id: cardId, name: cardName, image: cardImage });
+      restoreCompareState();
+      doc.dispatchEvent(new CustomEvent('mf-compare-updated', {
+        detail: { cards: window.mfsSelectedCards },
+      }));
+    });
   });
 
-  // Sync visual state when mf-comparator bar removes a card
   doc.addEventListener('mf-compare-updated', restoreCompareState);
-
-  // Restore any pre-existing selection (e.g. page reload with sessionStorage)
   restoreCompareState();
 
-  // Render description below the entire carousel block (not inside the slide)
+  // ── Description below carousel (rendered once, from first page) ───────────────
   if (descriptionHTML) {
     const carouselBlock = row.parentElement;
     if (carouselBlock && !carouselBlock.nextElementSibling?.classList.contains('mf-fund-cards-description')) {
@@ -307,5 +334,6 @@ export default async function buildMfFundCardsSlide(row, index) {
     }
   }
 
-  return slide;
+  // Return array — carousel-dotted.js uses .flat() so multiple slides are handled correctly
+  return slides;
 }
