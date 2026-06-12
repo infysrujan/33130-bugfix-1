@@ -1,4 +1,4 @@
-/* Bangkok Bank lead-form overrides — matched to live Sitecore WFFM forms */
+﻿/* Bangkok Bank lead-form overrides — matched to live Sitecore WFFM forms */
 
 /* Layout */
 
@@ -43,10 +43,6 @@ main div.default-content-wrapper {
 
 .drop-down-wrapper {
   text-align: center;
-}
-
-main .form form .field-wrapper.drop-down-wrapper[class*='icon-']::before {
-  top:24px;
 }
 
 main .form form {
@@ -215,7 +211,7 @@ main .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrappe
   /* margin-bottom: 10px; */
 }
 
-main .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].text-wrapper).field-wrapper :is(input, select) {
+main .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].drop-down-wrapper).field-wrapper :is(input, select) {
   padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
 }
 
@@ -288,18 +284,41 @@ main .form form label:is([class*=' icon-'], [class^='icon-']) {
   overflow: visible;
 }
 
-main .form form label:is([class*=' icon-'], [class^='icon-'])::before {
+
+main .form form .email-wrapper {
   font-family: icomoon, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+main .form form .email-wrapper.field-wrapper input {
+  padding-left: 40px;
+}
+
+main .form form .email-wrapper::before {
+  content: "\e919";
+  font-size:14px;
+}
+
+main .form form .field-wrapper[class*='icon-']::before,
+main .form form .email-wrapper::before {
   position: absolute;
-  top: 1.375rem;
+  top: 28px;
   left: 0.9375rem;
   z-index: 1;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: var(--bbl-space-250);
   height: var(--bbl-space-250);
   color: var(--bbl-color-grey-150);
+  transform: translateY(-50%);
   pointer-events: none;
 }
 
@@ -311,20 +330,6 @@ main .form form label:is([class*=' icon-'], [class^='icon-'])+ :is(input, select
   padding-left: var(--bbl-space-500);
 }
 
-main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'],
-  [class*='field-lastname'],
-  [class*='field-name'],
-  [class*='field-phonenumber'],
-  [class*='field-mobilenumber'],
-  [class*='field-companyname'],
-  [class*='field-company'],
-  [class*='field-juristicpersonregistrationnumber']) {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 2.75rem auto;
-  margin-bottom: var(--bbl-font-size-b2);
-}
-
 main .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
   flex-basis: auto;
   flex-shrink: 1;
@@ -333,89 +338,7 @@ main .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
   line-height: 25px;
 }
 
-main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'],
-  [class*='field-lastname'],
-  [class*='field-name'],
-  [class*='field-phonenumber'],
-  [class*='field-mobilenumber'],
-  [class*='field-email'],
-  [class*='field-companyname'],
-  [class*='field-company'],
-  [class*='field-juristicpersonregistrationnumber']):has(> .field-label:not([data-visible='false']))>.field-label {
-  grid-row: 1;
-  display: block;
-  margin-bottom: var(--bbl-space-100);
-}
 
-main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'],
-  [class*='field-lastname'],
-  [class*='field-name'],
-  [class*='field-phonenumber'],
-  [class*='field-mobilenumber'],
-  [class*='field-companyname'],
-  [class*='field-company'],
-  [class*='field-email'],
-  [class*='field-juristicpersonregistrationnumber'])::before {
-  content: '';
-  font-family: icomoon, sans-serif;
-  grid-row: 2;
-  grid-column: 1;
-  place-self: stretch start;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--bbl-space-250);
-  margin-left: 0.9375rem;
-  line-height: 1;
-  color: var(--bbl-color-grey-150);
-  pointer-events: none;
-}
-
-main .form form .no-icon::before {
-  content: '';
-}
-
-main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'])::before {
-  content: '\e906';
-}
-
-main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-phonenumber'], [class*='field-mobilenumber'])::before {
-  content: '\e909';
-}
-
-main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-'])))[class*='field-email']::before {
-  content: '\e919';
-  font-size: 0.6875rem;
-  width: var(--bbl-space-200);
-  height: var(--bbl-space-200);
-  position: absolute;
-  top: 28px;
-  z-index: 1;
-  transform: translateY(-50%);
-  margin: 0;
-}
-
-main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-companyname'], [class*='field-company'], [class*='field-juristicpersonregistrationnumber'])::before {
-  content: '\e911';
-}
-
-
-
-main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'],
-  [class*='field-lastname'],
-  [class*='field-name'],
-  [class*='field-phonenumber'],
-  [class*='field-mobilenumber'],
-  [class*='field-companyname'],
-  [class*='field-company'],
-  [class*='field-property-dropdown'],
-  [class*='field-juristicpersonregistrationnumber'])> :is(input, select) {
-  grid-row: 2;
-  grid-column: 1;
-  margin: 0;
-  padding-left: var(--bbl-space-500);
-}
 
 main .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper):has(.field-description).field-wrapper :is(input, textarea, select){
   margin-bottom:0;
@@ -431,18 +354,6 @@ main .form form .radio-group-wrapper>.field-description {
 
 main .form form .radio-group-wrapper.field-invalid>.field-description {
   height: auto;
-}
-
-main .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'],
-  [class*='field-lastname'],
-  [class*='field-name'],
-  [class*='field-phonenumber'],
-  [class*='field-mobilenumber'],
-  [class*='field-companyname'],
-  [class*='field-company'],
-  [class*='field-juristicpersonregistrationnumber'])>.field-description {
-  grid-row: 3;
-  grid-column: 1;
 }
 
 /* Submit */
@@ -655,7 +566,7 @@ main .form form .radio-group-wrapper.horizontal input[type='radio'] {
   height: 20px;
 }
 
-main .form form .radio-group-wrapper.cards-radio {
+main .form form .radio-group-wrapper.radio-tabs {
   display: flex;
   flex-flow: row wrap;
   gap: 0;
@@ -669,7 +580,7 @@ main .form form .radio-group-wrapper.cards-radio {
   border: none;
 }
 
-main .form form .radio-group-wrapper.cards-radio.horizontal {
+main .form form .radio-group-wrapper.radio-tabs.horizontal {
   flex-flow: row wrap;
   gap: 0;
 }
@@ -681,7 +592,7 @@ main .form form :is(.field-type-of-loan, .field-other-required-products) legend.
   text-align: center;
 }
 
-main .form form .radio-group-wrapper.cards-radio legend.field-label {
+main .form form .radio-group-wrapper.radio-tabs legend.field-label {
   display: block;
   flex: 0 0 100%;
   width: 100%;
@@ -691,7 +602,7 @@ main .form form .radio-group-wrapper.cards-radio legend.field-label {
   cursor: default;
 }
 
-main .form form .radio-group-wrapper.cards-radio>.radio-wrapper {
+main .form form .radio-group-wrapper.radio-tabs>.radio-wrapper {
   position: relative;
   display: flex;
   flex: 1 0 25%;
@@ -708,7 +619,7 @@ main .form form .radio-group-wrapper.cards-radio>.radio-wrapper {
   gap: 0;
 }
 
-main .form form .radio-group-wrapper.cards-radio>.radio-wrapper input[type='radio'] {
+main .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input[type='radio'] {
   position: absolute;
   top: 0;
   left: 0;
@@ -724,20 +635,20 @@ main .form form .radio-group-wrapper.cards-radio>.radio-wrapper input[type='radi
   cursor: pointer;
 }
 
-main .form form .radio-group-wrapper.cards-radio>.radio-wrapper input[type='radio']:checked {
+main .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input[type='radio']:checked {
   background-color: var(--bbl-color-blue-145);
 }
 
-main .form form .radio-group-wrapper.cards-radio>.radio-wrapper:first-of-type input[type='radio'] {
+main .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:first-of-type input[type='radio'] {
   border-left: 1px solid var(--bbl-color-grey-150);
   border-radius: 0.4375rem 0 0 0.4375rem;
 }
 
-main .form form .radio-group-wrapper.cards-radio>.radio-wrapper:last-of-type input[type='radio'] {
+main .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:last-of-type input[type='radio'] {
   border-radius: 0 0.4375rem 0.4375rem 0;
 }
 
-main .form form .radio-group-wrapper.cards-radio>.radio-wrapper label.field-label {
+main .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
   position: relative;
   z-index: 1;
   display: flex;
@@ -757,7 +668,7 @@ main .form form .radio-group-wrapper.cards-radio>.radio-wrapper label.field-labe
   background: transparent;
 }
 
-main .form form .radio-group-wrapper.cards-radio.field-invalid .radio-wrapper input[type='radio'] {
+main .form form .radio-group-wrapper.radio-tabs.field-invalid .radio-wrapper input[type='radio'] {
   border-color: var(--bbl-color-orange-130);
 }
 
@@ -771,25 +682,10 @@ main .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-pane
   margin-bottom: 10px;
 }
 
-main .form form .radio-group-wrapper.cards-radio+fieldset.panel-wrapper.field-wrapper {
+main .form form .radio-group-wrapper.radio-tabs+fieldset.panel-wrapper.field-wrapper {
   margin-top: 0.9375rem;
 }
 
-/* Wrapper icon fields — customClassName on field-wrapper (icon-money, icon-email, etc.) */
-main .form form .field-wrapper[class*='icon-']::before {
-  position: absolute;
-  top: 28px;
-  left: 0.9375rem;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--bbl-space-250);
-  height: var(--bbl-space-250);
-  color: var(--bbl-color-grey-150);
-  transform: translateY(-50%);
-  pointer-events: none;
-}
 
 
 /* Compact glyphs — money & email */
