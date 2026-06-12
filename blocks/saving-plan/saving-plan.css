@@ -40,7 +40,8 @@
 }
 
 .saving-plan-header-title {
-  font: 2rem BangkokBank-Bold, Arial, sans-serif;
+  font-size: var(--bbl-heading-h4-size);
+  font-family: var(--bbl-font-family-bold);
   margin: 0 0 1rem;
   letter-spacing: 0;
   line-height: 1.15;
@@ -348,7 +349,8 @@
 }
 
 .saving-plan-result-lead {
-  font: 1.5rem BangkokBank-Bold, Arial, sans-serif;
+  font-size: var(--bbl-heading-h5-size);
+  font-family: var(--bbl-font-family-bold);
   margin: 0 0 0.5rem;
 }
 
@@ -361,7 +363,7 @@
 
 .saving-plan-result-amount {
   font-size: 3rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 1;
 }
 
@@ -453,7 +455,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4375rem;
-  font: 0.8125rem BangkokBank-Medium, Arial, sans-serif;
+  font-size: 0.8125rem;
+  font-family: var(--bbl-font-family-medium);
   font-weight: 600;
   color: var(--sp-blue);
 }
