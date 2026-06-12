@@ -293,7 +293,7 @@
   min-width: 7.1875rem;
   width: auto;
   height: auto;
-  padding: 0 1.25rem;
+  padding: var(--bbl-space-100) var(--bbl-space-200);
   border-radius: 0.5rem;
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-text-button-size);
@@ -1001,10 +1001,6 @@
     gap: 1.5rem;
   }
 
-  .saving-plan-form-btn {
-    height: 2.5rem;
-    padding: 0 1.25rem;
-  }
 
   .saving-plan-result-card {
     padding: 1.5rem 1.5rem 1.75rem;
