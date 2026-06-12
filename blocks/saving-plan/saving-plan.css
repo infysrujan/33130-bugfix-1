@@ -292,7 +292,7 @@
 .saving-plan-form-btn {
   min-width: 7.1875rem;
   width: auto;
-  height: 2.1875rem;
+  min-height: 2.1875rem;
   padding: 0 1.25rem;
   border-radius: 0.5rem;
   font-family: var(--bbl-font-family-medium);
