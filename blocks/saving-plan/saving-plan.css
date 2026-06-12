@@ -39,12 +39,8 @@
 }
 
 .saving-plan-header-title {
-<<<<<<< HEAD
   font-size: var(--bbl-heading-h4-size);
   font-family: var(--bbl-font-family-bold);
-=======
-  font: 1.5rem BangkokBank-Bold, Arial, sans-serif;
->>>>>>> 3eed6382e71664806136d75b75be03fcfbb7157a
   margin: 0 0 1rem;
   letter-spacing: 0;
   line-height: var(--bbl-heading-h3-line-height);
