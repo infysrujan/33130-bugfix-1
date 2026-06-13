@@ -104,6 +104,21 @@ main .section.form-container.custom-forms .panel-wrapper > legend.field-label {
   cursor: default;
 }
 
+main .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
+  width: 100%;
+  height: 2.75rem;
+  margin: 0 0 var(--bbl-font-size-b2);
+  color: var(--bbl-color-black);
+  border: 1px solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem;
+  font-size: 16px;
+  line-height: 2.75rem;
+}
+
+main .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper):has(.field-description).field-wrapper :is(input, textarea, select){
+  margin-bottom:0;
+}
+
 main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
     color: var(--bbl-color-grey-85);
     font-size: 20px;
