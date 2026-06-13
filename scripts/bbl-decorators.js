@@ -321,14 +321,6 @@ async function loadBreadcrumb(doc) {
   }
 }
 
-function applyLinkTarget(container, selector, targetValue) {
-  const anchor = container.querySelector(selector);
-  if (anchor) {
-    const openInNewTab = targetValue === true || targetValue?.toString().toLowerCase() === 'true';
-    anchor.target = openInNewTab ? '_blank' : '_self';
-  }
-}
-
 function decorateButtonsV1(element) {
   element.querySelectorAll('a').forEach((a) => {
     a.title = a.title || a.textContent;
@@ -364,24 +356,30 @@ function decorateButtonsV1(element) {
       }
 
       // Check for target link setting in adjacent element
-      const checkTargetEl = (el) => {
-        if (!el) return false;
-        const text = el.textContent.trim().toLowerCase();
-        if (text === 'true') { el.remove(); return true; }
-        if (el.tagName === 'DIV') {
-          const childDiv = el.querySelector(':scope > div');
+      const hasTargetTrue = (linkParent) => {
+        const nextSibling = linkParent?.nextElementSibling;
+        if (nextSibling && nextSibling.tagName === 'DIV') {
+          const text = nextSibling.textContent.trim().toLowerCase();
+          if (text === 'true') {
+            nextSibling.remove();
+            return true;
+          }
+          // Check for nested div with "true"
+          const childDiv = nextSibling.querySelector(':scope > div');
           if (childDiv && childDiv.textContent.trim().toLowerCase() === 'true') {
-            el.remove(); return true;
+            nextSibling.remove();
+            return true;
           }
         }
         return false;
       };
-      const hasTargetTrue = (linkParent) => checkTargetEl(linkParent?.nextElementSibling)
-        || checkTargetEl(linkParent?.parentElement?.nextElementSibling);
 
-      if ([...a.classList].some((cls) => cls.startsWith('button'))) {
-        const openInNewTab = hasTargetTrue(twoup) || hasTargetTrue(up) || a.target === '_blank';
-        applyLinkTarget(twoup, 'a', openInNewTab);
+      if (a.classList.contains('button')) {
+        if (hasTargetTrue(twoup) || hasTargetTrue(up) || a.target === '_blank') {
+          a.target = '_blank';
+        } else {
+          a.target = '_self';
+        }
       }
     }
   });
@@ -534,6 +532,14 @@ function createPictureWithoutOptimization(
   });
 
   return picture;
+}
+
+function applyLinkTarget(container, selector, targetValue) {
+  const anchor = container.querySelector(selector);
+  if (anchor) {
+    const openInNewTab = targetValue === true || targetValue?.toString().toLowerCase() === 'true';
+    anchor.target = openInNewTab ? '_blank' : '_self';
+  }
 }
 
 export {

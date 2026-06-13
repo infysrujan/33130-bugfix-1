@@ -10,7 +10,6 @@ import {
 } from './aem.js';
 import { decorateRichtext } from './editor-support-rte.js';
 import { decorateMain } from './scripts.js';
-import { decorateButtonsV1 } from './bbl-decorators.js';
 
 async function applyChanges(event) {
   // redecorate default content and blocks on patches (in the properties rail)
@@ -40,7 +39,6 @@ async function applyChanges(event) {
       decorateMain(newMain);
       decorateRichtext(newMain);
       await loadSections(newMain);
-      decorateButtonsV1(newMain);
       element.remove();
       newMain.style.display = null;
       // eslint-disable-next-line no-use-before-define
@@ -54,12 +52,10 @@ async function applyChanges(event) {
       const newBlock = parsedUpdate.querySelector(`[data-aue-resource="${blockResource}"]`);
       if (block.dataset.aueModel === 'form') {
         return true;
-      }
-      if (newBlock) {
+      } else if (newBlock) {
         newBlock.style.display = 'none';
         block.insertAdjacentElement('afterend', newBlock);
         decorateButtons(newBlock);
-        decorateButtonsV1(newBlock);
         decorateIcons(newBlock);
         decorateBlock(newBlock);
         decorateRichtext(newBlock);
@@ -78,7 +74,6 @@ async function applyChanges(event) {
           newSection.style.display = 'none';
           element.insertAdjacentElement('afterend', newSection);
           decorateButtons(newSection);
-          decorateButtonsV1(newSection);
           decorateIcons(newSection);
           decorateRichtext(newSection);
           decorateSections(parentElement);
@@ -89,7 +84,6 @@ async function applyChanges(event) {
         } else {
           element.replaceWith(...newElements);
           decorateButtons(parentElement);
-          decorateButtonsV1(parentElement);
           decorateIcons(parentElement);
           decorateRichtext(parentElement);
         }
