@@ -7,9 +7,36 @@ main .section.form-container.custom-forms .section.central-aligned .block, .sect
   margin-top:30px;
 }
 
+main .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper):has(.field-description).field-wrapper :is(input, textarea, select){
+  margin-bottom:0;
+}
+
 main .section.form-container.custom-forms .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'], [class*='field-phonenumber'], [class*='field-mobilenumber'], [class*='field-companyname'], [class*='field-company'], [class*='field-property-dropdown'], [class*='field-juristicpersonregistrationnumber'])> :is(input, select){
   padding-left:20px;
 }
+
+main .section.form-container.custom-forms .drop-down-wrapper.field-wrapper select {
+  width: 100%;
+  height: 2.75rem;
+  margin: 0 0 var(--bbl-font-size-b2);
+  color: var(--bbl-color-black);
+  border: 1px solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem;
+  font-size: 14px;
+  line-height: 2.75rem;
+}
+
+main .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
+  width: 100%;
+  height: 2.75rem;
+  margin: 0 0 var(--bbl-font-size-b2);
+  color: var(--bbl-color-black);
+  border: 1px solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem;
+  font-size: 16px;
+  line-height: 2.75rem;
+}
+
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
   display: block;
