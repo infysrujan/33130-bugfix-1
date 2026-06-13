@@ -374,6 +374,15 @@
     ]
   },
   {
+    "id": "placeholder",
+    "components": [
+      "button",
+      "image",
+      "text",
+      "title"
+    ]
+  },
+  {
     "id": "rate-card",
     "components": [
       "rate-card-item"
