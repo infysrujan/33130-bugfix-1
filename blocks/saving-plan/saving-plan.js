@@ -333,7 +333,7 @@ function buildDropdownField({
     <div class="saving-plan-field saving-plan-field-dropdown" data-field="${name}" data-value="${selected?.key || ''}">
       <button type="button" class="saving-plan-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
         <span class="saving-plan-dropdown-current">${selected?.label || label}</span>
-        <span class="saving-plan-field-chevron" aria-hidden="true"></span>
+        <div class="saving-plan-chevron-wrapper" aria-hidden="true"><svg class="saving-plan-field-chevron" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="#0064FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </button>
       <ul class="saving-plan-dropdown-panel" role="listbox" tabindex="-1">
         ${optionsMarkup}
