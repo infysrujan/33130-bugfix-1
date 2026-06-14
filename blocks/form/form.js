@@ -5,6 +5,7 @@ import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit } from './submit.js';
 import DocBasedFormToAF from './transform.js';
+import decorateSipForm from './form-custom/sip-form.js';
 import {
   checkValidation,
   createButton,
@@ -344,6 +345,7 @@ async function createFormForAuthoring(formDef) {
     }
     return [];
   });
+  decorateSipForm(form);
   return form;
 }
 
@@ -398,6 +400,7 @@ export async function createForm(formDef, data, source = 'aem') {
     handleSubmit(e, form, captcha);
   });
 
+  decorateSipForm(form);
   return {
     form,
     captcha,
