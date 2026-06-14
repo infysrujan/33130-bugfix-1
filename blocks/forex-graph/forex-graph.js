@@ -179,73 +179,142 @@ function renderBlock(
     state.to.selectedDate,
   );
 
-  const errorStyle = state.error ? '' : ' style="display:none"';
   const dropdownOpen = state.dropdownOpen ? ' is-open' : '';
 
-  block.innerHTML = `<section class="forex-graph-content">
-    <div class="forex-graph-controls">
-      <div class="forex-graph-control-row">
-        <div class="forex-graph-currency-wrap">
-          <div class="forex-graph-dropdown${dropdownOpen}" role="combobox" aria-expanded="${state.dropdownOpen}" aria-haspopup="listbox">
-            <button type="button" class="forex-graph-dropdown-trigger" aria-label="Select currency">
-              <span class="forex-graph-dropdown-label">${escapeHtml(selectedLabel)}</span>
-              <i class="icon-dropdown forex-graph-dropdown-chevron" aria-hidden="true"></i>
-            </button>
-            <ul class="forex-graph-dropdown-list" role="listbox">${familyItems}</ul>
-          </div>
-        </div>
-        <div class="forex-graph-date-fields">
-          <div class="forex-graph-date-field">
-            <label class="forex-graph-date-label">${escapeHtml(placeholders.fromLabel || 'From')}</label>
-            <div class="forex-graph-date-group forex-graph-from-group">
-              <span class="forex-graph-date-display">${escapeHtml(fromDisplayDate)}</span>
-              <input type="text" class="forex-graph-date-input forex-graph-from-input" inputmode="text" value="${escapeHtml(state.from.typedDate)}" aria-label="From date" data-pick="from">
-              <button type="button" class="forex-graph-date-trigger icon-calendar" aria-label="Open from calendar" data-pick="from"></button>
-              ${renderDatepicker('from', state.from, monthLabels, dayLabels, buddhistYearOffset)}
+  let contentSec = block.querySelector('.forex-graph-content');
+  if (!contentSec) {
+    block.innerHTML = `<section class="forex-graph-content">
+      <div class="forex-graph-controls">
+        <div class="forex-graph-control-row">
+          <div class="forex-graph-currency-wrap">
+            <div class="forex-graph-dropdown" role="combobox" aria-expanded="false" aria-haspopup="listbox">
+              <button type="button" class="forex-graph-dropdown-trigger" aria-label="Select currency">
+                <span class="forex-graph-dropdown-label"></span>
+                <i class="icon-dropdown forex-graph-dropdown-chevron" aria-hidden="true"></i>
+              </button>
+              <ul class="forex-graph-dropdown-list" role="listbox"></ul>
             </div>
           </div>
-          <div class="forex-graph-date-field">
-            <label class="forex-graph-date-label">${escapeHtml(placeholders.toLabel || 'To')}</label>
-            <div class="forex-graph-date-group forex-graph-to-group">
-              <span class="forex-graph-date-display">${escapeHtml(toDisplayDate)}</span>
-              <input type="text" class="forex-graph-date-input forex-graph-to-input" inputmode="text" value="${escapeHtml(state.to.typedDate)}" aria-label="To date" data-pick="to">
-              <button type="button" class="forex-graph-date-trigger icon-calendar" aria-label="Open to calendar" data-pick="to"></button>
-              ${renderDatepicker('to', state.to, monthLabels, dayLabels, buddhistYearOffset)}
+          <div class="forex-graph-date-fields">
+            <div class="forex-graph-date-field">
+              <label class="forex-graph-date-label">${escapeHtml(placeholders.fromLabel || 'From')}</label>
+              <div class="forex-graph-date-group forex-graph-from-group">
+                <span class="forex-graph-date-display"></span>
+                <input type="text" class="forex-graph-date-input forex-graph-from-input" inputmode="text" aria-label="From date" data-pick="from">
+                <button type="button" class="forex-graph-date-trigger icon-calendar" aria-label="Open from calendar" data-pick="from"></button>
+                <div class="forex-graph-datepicker-container" data-pick="from"></div>
+              </div>
+            </div>
+            <div class="forex-graph-date-field">
+              <label class="forex-graph-date-label">${escapeHtml(placeholders.toLabel || 'To')}</label>
+              <div class="forex-graph-date-group forex-graph-to-group">
+                <span class="forex-graph-date-display"></span>
+                <input type="text" class="forex-graph-date-input forex-graph-to-input" inputmode="text" aria-label="To date" data-pick="to">
+                <button type="button" class="forex-graph-date-trigger icon-calendar" aria-label="Open to calendar" data-pick="to"></button>
+                <div class="forex-graph-datepicker-container" data-pick="to"></div>
+              </div>
             </div>
           </div>
-        </div>
-        <button type="button" class="forex-graph-go-btn"${(state.loading || !state.from.selectedDate || !state.to.selectedDate) ? ' disabled' : ''}>${escapeHtml(authoring.goLabel)}</button>
-        <div class="forex-graph-actions">
-          <button type="button" class="forex-graph-print-btn icon-print">${escapeHtml(authoring.printLabel)}</button>
-          <button type="button" class="forex-graph-download-btn icon-download">${escapeHtml(authoring.downloadLabel)}</button>
-        </div>
-      </div>
-    </div>
-    <div class="forex-graph-error"${errorStyle}><p class="forex-graph-error-text">${escapeHtml(state.error)}</p></div>
-    <div class="forex-graph-chart-section">
-      <div class="forex-graph-chart-header">
-        <h5 class="forex-graph-chart-title">${escapeHtml(graphTitle)}</h5>
-        <div class="forex-graph-legend">
-          <span class="forex-graph-legend-buying">${escapeHtml(placeholders.buyingLabel || 'Buying')}</span>
-          <span class="forex-graph-legend-selling">${escapeHtml(placeholders.sellingLabel || 'Selling')}</span>
+          <button type="button" class="forex-graph-go-btn"></button>
+          <div class="forex-graph-actions">
+            <button type="button" class="forex-graph-print-btn icon-print"></button>
+            <button type="button" class="forex-graph-download-btn icon-download"></button>
+          </div>
         </div>
       </div>
-      <div class="forex-graph-canvas-wrap">
-        <canvas class="forex-graph-canvas" id="forex-graph-canvas"></canvas>
+      <div class="forex-graph-error"><p class="forex-graph-error-text"></p></div>
+      <div class="forex-graph-chart-section">
+        <div class="forex-graph-chart-header">
+          <h5 class="forex-graph-chart-title"></h5>
+          <div class="forex-graph-legend">
+            <span class="forex-graph-legend-buying">${escapeHtml(placeholders.buyingLabel || 'Buying')}</span>
+            <span class="forex-graph-legend-selling">${escapeHtml(placeholders.sellingLabel || 'Selling')}</span>
+          </div>
+        </div>
+        <div class="forex-graph-canvas-wrap">
+          <canvas class="forex-graph-canvas" id="forex-graph-canvas"></canvas>
+        </div>
       </div>
-    </div>
-    <div class="forex-graph-disclaimer">${authoring.disclaimerHtml}</div>
-  </section>`;
+      <div class="forex-graph-disclaimer">${authoring.disclaimerHtml}</div>
+    </section>`;
+    contentSec = block.querySelector('.forex-graph-content');
+  }
+
+  // 1. Update dropdown
+  const dropdown = contentSec.querySelector('.forex-graph-dropdown');
+  if (dropdown) {
+    dropdown.className = `forex-graph-dropdown${dropdownOpen}`;
+    dropdown.setAttribute('aria-expanded', state.dropdownOpen);
+    const label = dropdown.querySelector('.forex-graph-dropdown-label');
+    if (label) label.textContent = selectedLabel;
+    const list = dropdown.querySelector('.forex-graph-dropdown-list');
+    if (list) list.innerHTML = familyItems;
+  }
+
+  // 2. Update inputs (when not active element)
+  const fromInput = contentSec.querySelector('.forex-graph-from-input');
+  if (fromInput) {
+    if (document.activeElement !== fromInput && fromInput.value !== state.from.typedDate) {
+      fromInput.value = state.from.typedDate;
+    }
+    fromInput.setAttribute('value', state.from.typedDate);
+  }
+  const toInput = contentSec.querySelector('.forex-graph-to-input');
+  if (toInput) {
+    if (document.activeElement !== toInput && toInput.value !== state.to.typedDate) {
+      toInput.value = state.to.typedDate;
+    }
+    toInput.setAttribute('value', state.to.typedDate);
+  }
+
+  // 3. Update displays
+  const fromDisplay = contentSec.querySelector('.forex-graph-from-group .forex-graph-date-display');
+  if (fromDisplay) fromDisplay.textContent = fromDisplayDate;
+  const toDisplay = contentSec.querySelector('.forex-graph-to-group .forex-graph-date-display');
+  if (toDisplay) toDisplay.textContent = toDisplayDate;
+
+  // 4. Update datepicker containers
+  const fromContainer = contentSec.querySelector('.forex-graph-datepicker-container[data-pick="from"]');
+  if (fromContainer) {
+    fromContainer.innerHTML = renderDatepicker('from', state.from, monthLabels, dayLabels, buddhistYearOffset);
+  }
+  const toContainer = contentSec.querySelector('.forex-graph-datepicker-container[data-pick="to"]');
+  if (toContainer) {
+    toContainer.innerHTML = renderDatepicker('to', state.to, monthLabels, dayLabels, buddhistYearOffset);
+  }
+
+  // 5. Update buttons
+  const goBtn = contentSec.querySelector('.forex-graph-go-btn');
+  if (goBtn) {
+    goBtn.disabled = state.loading || !state.from.selectedDate || !state.to.selectedDate;
+    goBtn.textContent = authoring.goLabel;
+  }
+  const printBtn = contentSec.querySelector('.forex-graph-print-btn');
+  if (printBtn) printBtn.textContent = authoring.printLabel;
+  const downloadBtn = contentSec.querySelector('.forex-graph-download-btn');
+  if (downloadBtn) downloadBtn.textContent = authoring.downloadLabel;
+
+  // 6. Update error message
+  const errorDiv = contentSec.querySelector('.forex-graph-error');
+  if (errorDiv) {
+    errorDiv.style.display = state.error ? '' : 'none';
+    const errorText = errorDiv.querySelector('.forex-graph-error-text');
+    if (errorText) errorText.textContent = state.error;
+  }
+
+  // 7. Update chart title
+  const chartTitle = contentSec.querySelector('.forex-graph-chart-title');
+  if (chartTitle) chartTitle.textContent = graphTitle;
 }
 
 export default async function decorate(block) {
-  const authoring = parseAuthoring(block);
-  const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
-  const language = getLang();
-  const monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
-  const dayLabels = parseCsvConfigList(placeholders?.dayLabels, buildIntlDayLabels(language));
-  const buddhistYearOffset = getLang() === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
-  const endpoints = createApiEndpoints(configs);
+  const allBlocks = Array.from(document.querySelectorAll('.forex-graph'));
+  const blockIndex = allBlocks.indexOf(block) >= 0 ? allBlocks.indexOf(block) : 0;
+
+  window.forexGraphStatesList = window.forexGraphStatesList || [];
+  let state = window.forexGraphStatesList[blockIndex];
+  let blockId;
+  let isNewState = false;
 
   function createPickerState() {
     const now = new Date();
@@ -259,19 +328,44 @@ export default async function decorate(block) {
     };
   }
 
-  const state = {
-    families: [],
-    selectedFamily: 'USD1',
-    dropdownOpen: false,
-    from: createPickerState(),
-    to: createPickerState(),
-    chartData: [],
-    loading: false,
-    error: '',
-    chartInstance: null,
-  };
+  if (!state) {
+    isNewState = true;
+    blockId = block.dataset.forexId || `fg-${Math.random().toString(36).slice(2, 9)}`;
+    state = {
+      blockId,
+      blockIndex,
+      families: [],
+      selectedFamily: 'USD1',
+      dropdownOpen: false,
+      from: createPickerState(),
+      to: createPickerState(),
+      chartData: [],
+      loading: false,
+      error: '',
+      chartInstance: null,
+      listenersAdded: false,
+    };
+    window.forexGraphStatesList[blockIndex] = state;
+  } else {
+    blockId = state.blockId;
+  }
 
-  let outsideClickHandlers = {};
+  block.setAttribute('data-forex-id', blockId);
+
+  const getLiveBlock = () => document.querySelector(`.forex-graph[data-forex-id="${blockId}"]`) || block;
+
+  const authoring = parseAuthoring(block);
+  const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
+  const language = getLang();
+  const monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
+  const dayLabels = parseCsvConfigList(placeholders?.dayLabels, buildIntlDayLabels(language));
+  const buddhistYearOffset = getLang() === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
+  const endpoints = createApiEndpoints(configs);
+
+  window.forexGraphState = state;
+  window.forexGraphStates = window.forexGraphStates || new Map();
+  window.forexGraphStates.set(blockId, state);
+
   let rendering = false;
 
   async function fetchAndRenderChart() {
@@ -307,7 +401,8 @@ export default async function decorate(block) {
   }
 
   async function drawChart() {
-    const canvas = block.querySelector('.forex-graph-canvas');
+    const liveBlock = getLiveBlock();
+    const canvas = liveBlock.querySelector('.forex-graph-canvas');
     if (!canvas || !state.chartData.length) return;
 
     const Chart = await loadChartJs();
@@ -454,13 +549,11 @@ export default async function decorate(block) {
   const render = () => {
     if (rendering) return;
     rendering = true;
-    if (state.chartInstance) {
-      state.chartInstance.destroy();
-      state.chartInstance = null;
-    }
+
+    const liveBlock = getLiveBlock();
 
     renderBlock(
-      block,
+      liveBlock,
       state,
       authoring,
       monthLabels,
@@ -469,145 +562,104 @@ export default async function decorate(block) {
       placeholders,
     );
 
-    const dropdownEl = block.querySelector('.forex-graph-dropdown');
-    const dropdownTrigger = block.querySelector('.forex-graph-dropdown-trigger');
-    const goButton = block.querySelector('.forex-graph-go-btn');
-    const printButton = block.querySelector('.forex-graph-print-btn');
-    const downloadButton = block.querySelector('.forex-graph-download-btn');
+    // Draw chart after DOM is updated
+    rendering = false;
+    drawChart();
+  };
+  state.render = render;
 
-    // ── Custom currency dropdown ─────────────────────────────────────────────
-    const toggleDropdown = (open) => {
-      state.dropdownOpen = open;
-      if (dropdownEl) dropdownEl.classList.toggle('is-open', open);
-    };
-
-    if (dropdownTrigger) {
-      dropdownTrigger.addEventListener('click', () => {
-        const next = !state.dropdownOpen;
-        toggleDropdown(next);
-        if (next) {
-          document.addEventListener('mousedown', function closeDropdown(e) {
-            if (!dropdownEl || !dropdownEl.contains(e.target)) {
-              toggleDropdown(false);
-            }
-            document.removeEventListener('mousedown', closeDropdown);
-          });
-        }
-      });
+  // -- Calendar helper --
+  const openCalendar = (pick) => {
+    const pickerState = state[pick];
+    const parsed = parseIsoDate(pickerState.selectedDate);
+    if (parsed) {
+      pickerState.viewYear = Number(parsed.year);
+      pickerState.viewMonth = Number(parsed.month);
     }
+    pickerState.calendarOpen = true;
+    render();
 
-    block.querySelectorAll('.forex-graph-dropdown-item').forEach((item) => {
-      item.addEventListener('click', () => {
-        const prev = state.selectedFamily;
-        state.selectedFamily = item.dataset.value;
-        toggleDropdown(false);
-        // only re-render controls (label update), not the chart
-        if (prev !== state.selectedFamily) {
-          const labelEl = block.querySelector('.forex-graph-dropdown-label');
-          const selectedObj = state.families.find((f) => f.Family === state.selectedFamily);
-          if (labelEl) labelEl.textContent = selectedObj?.Description || state.selectedFamily;
-          block.querySelectorAll('.forex-graph-dropdown-item').forEach((li) => {
-            li.classList.toggle('is-active', li.dataset.value === state.selectedFamily);
-            li.setAttribute('aria-selected', li.dataset.value === state.selectedFamily);
+    const liveBlock = getLiveBlock();
+    const inputEl = liveBlock.querySelector(`.forex-graph-${pick}-input`);
+    if (inputEl) inputEl.focus();
+
+    if (parsed) {
+      const monthKey = getMonthKey(parsed.year, parsed.month);
+      if (!pickerState.enabledDaysByMonth[monthKey]) {
+        getEnabledDays(endpoints, parsed.year, parsed.month)
+          .then((days) => {
+            pickerState.enabledDaysByMonth[monthKey] = days;
+            if (pickerState.calendarOpen) render();
+          })
+          .catch(() => {
+            pickerState.enabledDaysByMonth[monthKey] = [];
           });
-        }
-      });
-    });
-
-    // ── Date inputs ──────────────────────────────────────────────────────────
-    block.querySelectorAll('.forex-graph-date-input').forEach((input) => {
-      const { pick } = input.dataset;
-
-      input.addEventListener('input', (e) => {
-        state[pick].typedDate = e.target.value;
-      });
-
-      input.addEventListener('blur', () => {
-        // Defer so any pending click events (e.g. GO button) fire before render
-        // replaces the DOM — otherwise the clicked element gets detached first.
-        setTimeout(() => {
-          // Skip blur handling while calendar is open — mousedown on a day button
-          // triggers blur before the click fires, and re-rendering here detaches
-          // the day button so its click handler never runs.
-          if (state[pick].calendarOpen) return;
-          const parsed = parseTypedDate(state[pick].typedDate, buddhistYearOffset);
-          if (!parsed) {
-            if (!state[pick].typedDate.trim()) {
-              state[pick].selectedDate = '';
-            } else {
-              state[pick].typedDate = formatDateInputValue(
-                state[pick].selectedDate,
-                monthLabels,
-                buddhistYearOffset,
-              );
-            }
-            render();
-            return;
-          }
-          if (parsed.iso !== state[pick].selectedDate) {
-            state[pick].selectedDate = parsed.iso;
-            state[pick].typedDate = formatDateInputValue(
-              parsed.iso,
-              monthLabels,
-              buddhistYearOffset,
-            );
-            state[pick].viewYear = Number(parsed.year);
-            state[pick].viewMonth = Number(parsed.month);
-            render();
-          }
-        }, 0);
-      });
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key !== 'Enter') return;
-        e.preventDefault();
-        input.blur();
-      });
-    });
-
-    // ── Calendar triggers ────────────────────────────────────────────────────
-    const openCalendar = (pick) => {
-      const pickerState = state[pick];
-      const parsed = parseIsoDate(pickerState.selectedDate);
-      if (parsed) {
-        pickerState.viewYear = Number(parsed.year);
-        pickerState.viewMonth = Number(parsed.month);
       }
-      pickerState.calendarOpen = true;
-      render();
+    }
+  };
 
-      const inputEl = block.querySelector(`.forex-graph-${pick}-input`);
-      if (inputEl) inputEl.focus();
+  let blurTimeoutId = null;
 
-      if (parsed) {
-        const monthKey = getMonthKey(parsed.year, parsed.month);
-        if (!pickerState.enabledDaysByMonth[monthKey]) {
-          getEnabledDays(endpoints, parsed.year, parsed.month)
-            .then((days) => {
-              pickerState.enabledDaysByMonth[monthKey] = days;
-              if (pickerState.calendarOpen) render();
-            })
-            .catch(() => {
-              pickerState.enabledDaysByMonth[monthKey] = [];
-            });
-        }
+  const clearBlurTimeout = () => {
+    if (blurTimeoutId) {
+      clearTimeout(blurTimeoutId);
+      blurTimeoutId = null;
+    }
+  };
+
+  // -- Event delegation on document (survives block cloning/replacements) --
+
+  if (!state.listenersAdded) {
+    state.listenersAdded = true;
+
+    // Click delegation
+    document.addEventListener('click', (e) => {
+      const targetBlock = e.target.closest('.forex-graph');
+      if (!targetBlock || targetBlock.getAttribute('data-forex-id') !== blockId) return;
+
+      // 1. Currency dropdown trigger
+      if (e.target.closest('.forex-graph-dropdown-trigger')) {
+        clearBlurTimeout();
+        state.dropdownOpen = !state.dropdownOpen;
+        render();
+        return;
       }
-    };
 
-    block.querySelectorAll('.forex-graph-date-trigger').forEach((trigger) => {
-      trigger.addEventListener('click', () => openCalendar(trigger.dataset.pick));
-    });
+      // 2. Currency dropdown item selection
+      const dropdownItem = e.target.closest('.forex-graph-dropdown-item');
+      if (dropdownItem) {
+        clearBlurTimeout();
+        const prev = state.selectedFamily;
+        state.selectedFamily = dropdownItem.dataset.value;
+        state.dropdownOpen = false;
+        if (prev !== state.selectedFamily) {
+          (async () => {
+            await fetchAndRenderChart();
+            render();
+          })();
+        }
+        return;
+      }
 
-    block.querySelectorAll('.forex-graph-date-input').forEach((input) => {
-      input.addEventListener('focus', () => {
-        if (!state[input.dataset.pick].calendarOpen) openCalendar(input.dataset.pick);
-      });
-    });
+      // 3. Calendar day selection
+      const dayBtn = e.target.closest('.forex-graph-datepicker-day-btn');
+      if (dayBtn) {
+        clearBlurTimeout();
+        const { pick, day } = dayBtn.dataset;
+        const ps = state[pick];
+        const iso = `${ps.viewYear}-${String(ps.viewMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        ps.selectedDate = iso;
+        ps.typedDate = formatDateInputValue(iso, monthLabels, buddhistYearOffset);
+        ps.calendarOpen = false;
+        render();
+        return;
+      }
 
-    // ── Calendar nav (prev/next month) ───────────────────────────────────────
-    block.querySelectorAll('.forex-graph-datepicker-prev').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const { pick } = btn.dataset;
+      // 4. Previous month navigation
+      const prevBtn = e.target.closest('.forex-graph-datepicker-prev');
+      if (prevBtn) {
+        clearBlurTimeout();
+        const { pick } = prevBtn.dataset;
         const ps = state[pick];
         const month = ps.viewMonth === 1 ? 12 : ps.viewMonth - 1;
         const year = ps.viewMonth === 1 ? ps.viewYear - 1 : ps.viewYear;
@@ -616,70 +668,95 @@ export default async function decorate(block) {
 
         const monthKey = getMonthKey(year, month);
         if (!ps.enabledDaysByMonth[monthKey]) {
-          try {
-            ps.enabledDaysByMonth[monthKey] = await getEnabledDays(endpoints, year, month);
-          } catch (e) {
-            ps.enabledDaysByMonth[monthKey] = [];
-          }
+          getEnabledDays(endpoints, year, month)
+            .then((days) => {
+              ps.enabledDaysByMonth[monthKey] = days;
+              render();
+            })
+            .catch(() => {
+              ps.enabledDaysByMonth[monthKey] = [];
+              render();
+            });
+        } else {
+          render();
         }
-        render();
-      });
-    });
+        return;
+      }
 
-    block.querySelectorAll('.forex-graph-datepicker-next').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const { pick } = btn.dataset;
+      // 5. Next month navigation
+      const nextBtn = e.target.closest('.forex-graph-datepicker-next');
+      if (nextBtn) {
+        clearBlurTimeout();
+        const { pick } = nextBtn.dataset;
         const ps = state[pick];
         const month = ps.viewMonth === 12 ? 1 : ps.viewMonth + 1;
         const year = ps.viewMonth === 12 ? ps.viewYear + 1 : ps.viewYear;
+        const nextIndex = year * 12 + month;
+        const now = new Date();
+        const maxIndex = now.getFullYear() * 12 + (now.getMonth() + 1);
+        if (nextIndex > maxIndex) return;
+
         ps.viewMonth = month;
         ps.viewYear = year;
 
         const monthKey = getMonthKey(year, month);
         if (!ps.enabledDaysByMonth[monthKey]) {
-          try {
-            ps.enabledDaysByMonth[monthKey] = await getEnabledDays(endpoints, year, month);
-          } catch (e) {
-            ps.enabledDaysByMonth[monthKey] = [];
-          }
+          getEnabledDays(endpoints, year, month)
+            .then((days) => {
+              ps.enabledDaysByMonth[monthKey] = days;
+              render();
+            })
+            .catch(() => {
+              ps.enabledDaysByMonth[monthKey] = [];
+              render();
+            });
+        } else {
+          render();
         }
-        render();
-      });
-    });
+        return;
+      }
 
-    // ── Day selection ────────────────────────────────────────────────────────
-    block.querySelectorAll('.forex-graph-datepicker-day-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const { pick } = btn.dataset;
-        const ps = state[pick];
-        const { day } = btn.dataset;
-        const iso = `${ps.viewYear}-${String(ps.viewMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        ps.selectedDate = iso;
-        ps.typedDate = formatDateInputValue(iso, monthLabels, buddhistYearOffset);
-        ps.calendarOpen = false;
-        render();
-      });
-    });
+      // 6. Calendar triggers
+      const trigger = e.target.closest('.forex-graph-date-trigger');
+      if (trigger) {
+        clearBlurTimeout();
+        const { pick } = trigger.dataset;
+        if (state[pick].calendarOpen) {
+          state[pick].calendarOpen = false;
+          render();
+        } else {
+          openCalendar(pick);
+        }
+        return;
+      }
 
-    // ── GO button ────────────────────────────────────────────────────────────
-    if (goButton) {
-      goButton.addEventListener('click', async () => {
+      // 7. GO button
+      if (e.target.closest('.forex-graph-go-btn')) {
+        clearBlurTimeout();
+        state.from.calendarOpen = false;
+        state.to.calendarOpen = false;
         if (state.loading) return;
-        await fetchAndRenderChart();
-        render();
-      });
-    }
+        (async () => {
+          await fetchAndRenderChart();
+          render();
+        })();
+        return;
+      }
 
-    // ── Print button ─────────────────────────────────────────────────────────
-    if (printButton) {
-      printButton.addEventListener('click', () => {
+      // 8. Print button
+      if (e.target.closest('.forex-graph-print-btn')) {
+        clearBlurTimeout();
+        state.from.calendarOpen = false;
+        state.to.calendarOpen = false;
         window.print();
-      });
-    }
+        return;
+      }
 
-    // ── Download button ──────────────────────────────────────────────────────
-    if (downloadButton) {
-      downloadButton.addEventListener('click', async () => {
+      // 9. Download button
+      if (e.target.closest('.forex-graph-download-btn')) {
+        clearBlurTimeout();
+        state.from.calendarOpen = false;
+        state.to.calendarOpen = false;
         const fromParsed = parseIsoDate(state.from.selectedDate);
         const toParsed = parseIsoDate(state.to.selectedDate);
         if (!fromParsed || !toParsed) return;
@@ -695,69 +772,145 @@ export default async function decorate(block) {
           language,
         );
         if (!url) return;
-        try {
-          const data = await fetchGet(url, { throwOnError: false });
-          if (!data) return;
-          const rows = Array.isArray(data) ? data : [];
-          if (!rows.length) return;
-          // Build CSV from all keys in the first row
-          const keys = Object.keys(rows[0]);
-          const header = keys.join(',');
-          const lines = rows.map((row) => keys.map((k) => {
-            const val = row[k] ?? '';
-            return String(val).includes(',') ? `"${val}"` : val;
-          }).join(','));
-          const csvText = [header, ...lines].join('\r\n');
-          const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
-          const objectUrl = URL.createObjectURL(blob);
-          // Create anchor without appending to DOM to avoid bbl-decorators interception
-          const anchor = document.createElement('a');
-          anchor.href = objectUrl;
-          anchor.download = placeholders.forexGraphDownloadFilename || 'FxData.csv';
-          anchor.dispatchEvent(new MouseEvent('click', { bubbles: false }));
-          URL.revokeObjectURL(objectUrl);
-        } catch (e) {
+        (async () => {
+          try {
+            const data = await fetchGet(url, { throwOnError: false });
+            if (!data) return;
+            const rows = Array.isArray(data) ? data : [];
+            if (!rows.length) return;
+            const keys = Object.keys(rows[0]);
+            const header = keys.join(',');
+            const lines = rows.map((row) => keys.map((k) => {
+              const val = row[k] ?? '';
+              return String(val).includes(',') ? `"${val}"` : val;
+            }).join(','));
+            const csvText = [header, ...lines].join('\r\n');
+            const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
+            const objectUrl = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = objectUrl;
+            anchor.download = placeholders.forexGraphDownloadFilename || 'FxData.csv';
+            anchor.dispatchEvent(new MouseEvent('click', { bubbles: false }));
+            URL.revokeObjectURL(objectUrl);
+          } catch (err) {
           // silently fail
-        }
-      });
-    }
-
-    // ── Outside click to close calendars ────────────────────────────────────
-    Object.values(outsideClickHandlers).forEach((handler) => {
-      document.removeEventListener('mousedown', handler);
+          }
+        })();
+      }
     });
-    outsideClickHandlers = {};
 
-    ['from', 'to'].forEach((pick) => {
-      if (!state[pick].calendarOpen) return;
-      const group = block.querySelector(`.forex-graph-${pick}-group`);
-      if (!group) return;
-      const handler = (e) => {
-        if (!group.contains(e.target)) {
-          state[pick].calendarOpen = false;
-          // If the click is inside the block (e.g. GO button), don't render here —
-          // the element's own click handler will call render(). Rendering now would
-          // replace the DOM before that click fires, detaching the target.
-          if (!block.contains(e.target)) {
+    // Focusin delegation
+    document.addEventListener('focusin', (e) => {
+      const targetBlock = e.target.closest('.forex-graph');
+      if (!targetBlock || targetBlock.getAttribute('data-forex-id') !== blockId) return;
+
+      if (!e.target.matches('.forex-graph-date-input')) return;
+      const { pick } = e.target.dataset;
+      clearBlurTimeout();
+      if (!state[pick].calendarOpen) {
+        openCalendar(pick);
+      }
+    });
+
+    // Input delegation
+    document.addEventListener('input', (e) => {
+      const targetBlock = e.target.closest('.forex-graph');
+      if (!targetBlock || targetBlock.getAttribute('data-forex-id') !== blockId) return;
+
+      if (!e.target.matches('.forex-graph-date-input')) return;
+      const { pick } = e.target.dataset;
+      state[pick].typedDate = e.target.value;
+    });
+
+    // Focusout/blur delegation with timeout to allow click events first
+    document.addEventListener('focusout', (e) => {
+      const targetBlock = e.target.closest('.forex-graph');
+      if (!targetBlock || targetBlock.getAttribute('data-forex-id') !== blockId) return;
+
+      if (!e.target.matches('.forex-graph-date-input')) return;
+      const { pick } = e.target.dataset;
+
+      const liveBlock = targetBlock;
+      const group = liveBlock.querySelector(`.forex-graph-${pick}-group`);
+      if (e.relatedTarget && group && group.contains(e.relatedTarget)) {
+        return;
+      }
+
+      clearBlurTimeout();
+      blurTimeoutId = setTimeout(() => {
+        blurTimeoutId = null;
+        const parsed = parseTypedDate(state[pick].typedDate, buddhistYearOffset);
+        if (!parsed) {
+          if (!state[pick].typedDate.trim()) {
+            state[pick].selectedDate = '';
+          } else {
+            state[pick].typedDate = formatDateInputValue(
+              state[pick].selectedDate,
+              monthLabels,
+              buddhistYearOffset,
+            );
+          }
+          render();
+          return;
+        }
+        if (parsed.iso !== state[pick].selectedDate) {
+          state[pick].selectedDate = parsed.iso;
+          state[pick].typedDate = formatDateInputValue(
+            parsed.iso,
+            monthLabels,
+            buddhistYearOffset,
+          );
+          state[pick].viewYear = Number(parsed.year);
+          state[pick].viewMonth = Number(parsed.month);
+          render();
+        }
+      }, 150);
+    });
+
+    // Keydown delegation
+    document.addEventListener('keydown', (e) => {
+      const targetBlock = e.target.closest('.forex-graph');
+      if (!targetBlock || targetBlock.getAttribute('data-forex-id') !== blockId) return;
+
+      if (!e.target.matches('.forex-graph-date-input')) return;
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      clearBlurTimeout();
+      e.target.blur();
+    });
+
+    // Document click listener for outside clicks (capture phase)
+    document.addEventListener('click', (e) => {
+      const liveBlock = getLiveBlock();
+
+      // Close currency dropdown
+      if (state.dropdownOpen) {
+        const dropdownEl = liveBlock.querySelector('.forex-graph-dropdown');
+        if (dropdownEl && !dropdownEl.contains(e.target)) {
+          state.dropdownOpen = false;
+          render();
+        }
+      }
+
+      // Close calendar pickers
+      ['from', 'to'].forEach((pick) => {
+        if (state[pick].calendarOpen) {
+          const group = liveBlock.querySelector(`.forex-graph-${pick}-group`);
+          if (group && !group.contains(e.target)) {
+            state[pick].calendarOpen = false;
             render();
           }
         }
-      };
-      outsideClickHandlers[pick] = handler;
-      document.addEventListener('mousedown', handler);
-    });
+      });
+    }, true);
+  }
 
-    // Draw chart after DOM is updated
-    rendering = false;
-    drawChart();
-  };
-
+  // -- Initialisation --
   const init = async () => {
     state.loading = true;
     render();
 
     try {
-      // Load families and enabled days in parallel
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
@@ -770,12 +923,10 @@ export default async function decorate(block) {
       state.families = Array.isArray(families) ? families : [];
       state.selectedFamily = state.families[0]?.Family || 'USD1';
 
-      // Cache enabled days for current month in both pickers
       const monthKey = getMonthKey(year, month);
       state.from.enabledDaysByMonth[monthKey] = enabledDays;
       state.to.enabledDaysByMonth[monthKey] = enabledDays;
 
-      // Set default dates: first valid day of month → last valid day
       const monthStr = String(month).padStart(2, '0');
       if (enabledDays.length) {
         state.from.selectedDate = `${year}-${monthStr}-${enabledDays[0]}`;
@@ -786,7 +937,6 @@ export default async function decorate(block) {
         state.to.selectedDate = `${year}-${monthStr}-${todayStr}`;
       }
 
-      // Format typed date display values
       state.from.typedDate = formatDateInputValue(
         state.from.selectedDate,
         monthLabels,
@@ -798,16 +948,21 @@ export default async function decorate(block) {
         buddhistYearOffset,
       );
 
-      // Set calendar view to current month
       state.from.viewYear = year;
       state.from.viewMonth = month;
       state.to.viewYear = year;
       state.to.viewMonth = month;
+
+      await fetchAndRenderChart();
     } finally {
       state.loading = false;
       render();
     }
   };
 
-  await init();
+  if (isNewState) {
+    await init();
+  } else {
+    render();
+  }
 }

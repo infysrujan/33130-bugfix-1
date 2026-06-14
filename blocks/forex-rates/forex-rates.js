@@ -152,38 +152,110 @@ function renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYe
   const columnWidths = ['30%', '70%', '12%', '12%', '19%', '19%', '19%'];
   const headings = authoring.columns.map((heading, i) => `<th width="${columnWidths[i] || 'auto'}">${heading}</th>`).join('');
 
-  block.innerHTML = `<section class="forex-rates-content">
-    <div class="forex-rates-controls">
-      <div class="forex-rates-control-row">
-        <span class="forex-rates-calendar-label">${escapeHtml(authoring.calendarLabel)}</span>
-        <div class="forex-rates-date-group">
-          <input id="forex-rates-date-text-input" class="forex-rates-date-text-input" type="text" inputmode="text" placeholder="DD MMM YYYY" value="${escapeHtml(state.typedDate)}" aria-label="${escapeHtml(authoring.calendarLabel)} date">
-          <button type="button" class="forex-rates-date-trigger icon-calendar" title="${escapeHtml(authoring.openCalendarLabel)}" aria-label="${escapeHtml(authoring.openCalendarLabel)}"></button>
-          ${renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset, authoring.prevMonthLabel, authoring.nextMonthLabel)}
-        </div>
-        <div class="forex-rates-time-wrap">
-          <div class="forex-rates-time-dropdown${timeDropdownOpen}${timeDisabled}" role="combobox" aria-expanded="${state.timeDropdownOpen}" aria-haspopup="listbox">
-            <button type="button" class="forex-rates-time-trigger" aria-label="Select time" ${state.updates.length ? '' : 'disabled'}>
-              <span class="forex-rates-time-label">${escapeHtml(selectedLabel)}</span>
-              <i class="icon-dropdown forex-rates-time-chevron" aria-hidden="true"></i>
-            </button>
-            <ul class="forex-rates-time-list" role="listbox">${timeItems}</ul>
+  let contentSec = block.querySelector('.forex-rates-content');
+  if (!contentSec) {
+    block.innerHTML = `<section class="forex-rates-content">
+      <div class="forex-rates-controls">
+        <div class="forex-rates-control-row">
+          <span class="forex-rates-calendar-label">${escapeHtml(authoring.calendarLabel)}</span>
+          <div class="forex-rates-date-group">
+            <input id="forex-rates-date-text-input" class="forex-rates-date-text-input" type="text" inputmode="text" placeholder="DD MMM YYYY" value="${escapeHtml(state.typedDate)}" aria-label="${escapeHtml(authoring.calendarLabel)} date">
+            <button type="button" class="forex-rates-date-trigger icon-calendar" title="${escapeHtml(authoring.openCalendarLabel)}" aria-label="${escapeHtml(authoring.openCalendarLabel)}"></button>
+            <div class="forex-rates-datepicker-container"></div>
           </div>
+          <div class="forex-rates-time-wrap">
+            <div class="forex-rates-time-dropdown" role="combobox" aria-expanded="false" aria-haspopup="listbox">
+              <button type="button" class="forex-rates-time-trigger" aria-label="Select time">
+                <span class="forex-rates-time-label"></span>
+                <i class="icon-dropdown forex-rates-time-chevron" aria-hidden="true"></i>
+              </button>
+              <ul class="forex-rates-time-list" role="listbox"></ul>
+            </div>
+          </div>
+          <button type="button" class="forex-rates-go-btn"></button>
+          <button type="button" class="forex-rates-print-btn"></button>
         </div>
-        <button type="button" class="forex-rates-go-btn"${(!state.selectedDate || !state.selectedUpdate || state.loading) ? ' disabled' : ''}>${escapeHtml(authoring.ctaLabel)}</button>
-        <button type="button" class="forex-rates-print-btn">${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i></button>
       </div>
-    </div>
-    <div class="forex-rates-table-wrap">
-      <table class="forex-rates-table">
-        <thead><tr>${headings}</tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-    <div class="forex-rates-disclaimer">${authoring.disclaimerHtml}</div>
-  </section>`;
+      <div class="forex-rates-table-wrap">
+        <table class="forex-rates-table">
+          <thead><tr>${headings}</tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="forex-rates-disclaimer">${authoring.disclaimerHtml}</div>
+    </section>`;
+    contentSec = block.querySelector('.forex-rates-content');
+  }
 
-  block.querySelectorAll('.forex-rates-flag').forEach((img) => {
+  // 1. Update Input Value if not currently focused
+  const input = contentSec.querySelector('.forex-rates-date-text-input');
+  if (input) {
+    if (document.activeElement !== input && input.value !== state.typedDate) {
+      input.value = state.typedDate;
+    }
+    input.setAttribute('value', state.typedDate);
+  }
+
+  // 2. Update Datepicker Container content
+  const datepickerContainer = contentSec.querySelector('.forex-rates-datepicker-container');
+  if (datepickerContainer) {
+    datepickerContainer.innerHTML = renderDatepicker(
+      state,
+      monthLabels,
+      dayLabels,
+      buddhistYearOffset,
+      authoring.prevMonthLabel,
+      authoring.nextMonthLabel,
+    );
+  }
+
+  // 3. Update Time Dropdown classes and contents
+  const timeDropdown = contentSec.querySelector('.forex-rates-time-dropdown');
+  if (timeDropdown) {
+    timeDropdown.className = `forex-rates-time-dropdown${timeDropdownOpen}${timeDisabled}`;
+    timeDropdown.setAttribute('aria-expanded', state.timeDropdownOpen);
+
+    const timeTriggerBtn = timeDropdown.querySelector('.forex-rates-time-trigger');
+    if (timeTriggerBtn) {
+      if (state.updates.length) {
+        timeTriggerBtn.removeAttribute('disabled');
+      } else {
+        timeTriggerBtn.setAttribute('disabled', '');
+      }
+    }
+
+    const timeLabel = timeDropdown.querySelector('.forex-rates-time-label');
+    if (timeLabel) {
+      timeLabel.textContent = selectedLabel;
+    }
+
+    const timeList = timeDropdown.querySelector('.forex-rates-time-list');
+    if (timeList) {
+      timeList.innerHTML = timeItems;
+    }
+  }
+
+  // 4. Update GO Button
+  const goBtn = contentSec.querySelector('.forex-rates-go-btn');
+  if (goBtn) {
+    goBtn.disabled = !state.selectedDate || !state.selectedUpdate || state.loading;
+    goBtn.textContent = authoring.ctaLabel;
+  }
+
+  // 5. Update Print Button
+  const printBtn = contentSec.querySelector('.forex-rates-print-btn');
+  if (printBtn) {
+    printBtn.innerHTML = `${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i>`;
+  }
+
+  // 6. Update Table Body Rows
+  const tbody = contentSec.querySelector('.forex-rates-table tbody');
+  if (tbody) {
+    tbody.innerHTML = rows;
+  }
+
+  // Attach error handler to flags
+  contentSec.querySelectorAll('.forex-rates-flag').forEach((img) => {
     img.addEventListener('error', (event) => {
       event.target.style.display = 'none';
     });
@@ -329,6 +401,41 @@ function printForexRates(block) {
 }
 
 export default async function decorate(block) {
+  const allBlocks = Array.from(document.querySelectorAll('.forex-rates'));
+  const blockIndex = allBlocks.indexOf(block) >= 0 ? allBlocks.indexOf(block) : 0;
+
+  window.forexStatesList = window.forexStatesList || [];
+  let state = window.forexStatesList[blockIndex];
+  let blockId;
+  let isNewState = false;
+
+  if (!state) {
+    isNewState = true;
+    blockId = block.dataset.forexId || `fx-${Math.random().toString(36).slice(2, 9)}`;
+    state = {
+      blockId,
+      blockIndex,
+      selectedDate: '',
+      selectedUpdate: '',
+      updates: [],
+      rates: [],
+      enabledDaysByMonth: {},
+      loading: false,
+      typedDate: '',
+      calendarOpen: false,
+      timeDropdownOpen: false,
+      viewMonth: 1,
+      viewYear: 1970,
+      maxSelectableMonth: null,
+      listenersAdded: false,
+    };
+    window.forexStatesList[blockIndex] = state;
+  } else {
+    blockId = state.blockId;
+  }
+
+  block.setAttribute('data-forex-id', blockId);
+
   const authoring = parseAuthoring(block);
   const [placeholders, configs] = await Promise.all([fetchPlaceholders(), fetchConfigs()]);
 
@@ -341,240 +448,390 @@ export default async function decorate(block) {
   const buddhistYearOffset = getLang() === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
   const endpoints = createApiEndpoints(configs);
 
-  const state = {
-    selectedDate: '',
-    selectedUpdate: '',
-    updates: [],
-    rates: [],
-    enabledDaysByMonth: {},
-    loading: false,
-    typedDate: '',
-    calendarOpen: false,
-    timeDropdownOpen: false,
-    viewMonth: 1,
-    viewYear: 1970,
-    maxSelectableMonth: null,
-  };
+  window.forexState = state;
+  window.forexStates = window.forexStates || new Map();
+  window.forexStates.set(blockId, state);
 
-  let outsideClickHandler = null;
-  let calendarFocusLock = false;
+  const getLiveBlock = () => document.querySelector(`.forex-rates[data-forex-id="${blockId}"]`) || block;
 
   const render = () => {
+    const liveBlock = getLiveBlock();
     try {
-      renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYearOffset);
+      renderBlock(liveBlock, state, authoring, monthLabels, dayLabels, buddhistYearOffset);
+    } catch (err) {
+      // ignore
+    }
+  };
+  state.render = render;
+
+  Object.defineProperty(state, 'blockRef', {
+    get() {
+      return getLiveBlock();
+    },
+    configurable: true,
+  });
+
+  // -- Business logic (defined once, outside render) --
+
+  const loadRates = async (dateIso, updateValue) => {
+    const parsed = parseIsoDate(dateIso);
+    if (!parsed || !updateValue) return;
+    state.loading = true;
+    render();
+    try {
+      const fxRates = await getRates(
+        endpoints,
+        parsed.day,
+        parsed.month,
+        parsed.year,
+        updateValue,
+        language,
+      );
+      state.rates = normalizeRates(fxRates);
+    } finally {
+      state.loading = false;
+      render();
+    }
+  };
+
+  const applyDateSelection = async (dateIso, shouldLoadRates = true) => {
+    const parsed = parseIsoDate(dateIso);
+    if (!parsed) return false;
+
+    const monthKey = getMonthKey(parsed.year, parsed.month);
+    if (!state.enabledDaysByMonth[monthKey]) {
+      try {
+        state.enabledDaysByMonth[monthKey] = await getEnabledDays(
+          endpoints,
+          parsed.year,
+          parsed.month,
+        );
+      } catch (e) {
+        state.enabledDaysByMonth[monthKey] = [];
+      }
+    }
+
+    const monthDays = state.enabledDaysByMonth[monthKey] || [];
+    if (monthDays.length && !monthDays.includes(parsed.day)) return false;
+
+    state.selectedDate = dateIso;
+    state.typedDate = formatDateInputValue(state.selectedDate, monthLabels, buddhistYearOffset);
+    state.viewYear = Number(parsed.year);
+    state.viewMonth = Number(parsed.month);
+    render();
+
+    try {
+      const updateOptions = await getUpdatesInDay(
+        endpoints,
+        parsed.day,
+        parsed.month,
+        parsed.year,
+      );
+      const normalizedUpdates = Array.isArray(updateOptions) ? updateOptions : [];
+      state.updates = normalizedUpdates;
+
+      const stillExists = normalizedUpdates.some(
+        (item) => trimValue(item.Update) === state.selectedUpdate,
+      );
+      if (!stillExists) {
+        state.selectedUpdate = trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
+      }
     } catch (e) {
-      setTimeout(render, 0);
+      // no-op to match live-site silent behavior
+    }
+
+    render();
+    if (shouldLoadRates && state.selectedDate
+      && state.selectedUpdate && isValidSelectedDay(state)) {
+      await loadRates(state.selectedDate, state.selectedUpdate);
+    }
+
+    return true;
+  };
+
+  const submitTypedDateWithFetch = async () => {
+    const parsed = parseTypedDate(state.typedDate, buddhistYearOffset);
+    if (!parsed) {
+      state.typedDate = formatDateInputValue(state.selectedDate, monthLabels, buddhistYearOffset);
+      render();
       return;
     }
 
-    const dateGroup = block.querySelector('.forex-rates-date-group');
-    const dateInput = block.querySelector('.forex-rates-date-text-input');
-    const dateTrigger = block.querySelector('.forex-rates-date-trigger');
-    const prevMonth = block.querySelector('.forex-rates-datepicker-prev');
-    const nextMonth = block.querySelector('.forex-rates-datepicker-next');
-    const dayButtons = block.querySelectorAll('.forex-rates-datepicker-day-btn');
-    const timeDropdownEl = block.querySelector('.forex-rates-time-dropdown');
-    const timeTrigger = block.querySelector('.forex-rates-time-trigger');
-    const goButton = block.querySelector('.forex-rates-go-btn');
-    const printButton = block.querySelector('.forex-rates-print-btn');
-
-    const loadRates = async (dateIso, updateValue) => {
-      const parsed = parseIsoDate(dateIso);
-      if (!parsed || !updateValue) return;
-      state.loading = true;
-      render();
-
+    const monthKey = getMonthKey(parsed.year, parsed.month);
+    if (!state.enabledDaysByMonth[monthKey]) {
       try {
-        const fxRates = await getRates(
+        state.enabledDaysByMonth[monthKey] = await getEnabledDays(
           endpoints,
-          parsed.day,
-          parsed.month,
           parsed.year,
-          updateValue,
-          language,
+          parsed.month,
         );
-        state.rates = normalizeRates(fxRates);
-      } finally {
-        state.loading = false;
-        render();
+      } catch (e) {
+        state.enabledDaysByMonth[monthKey] = [];
       }
-    };
+    }
 
-    const applyDateSelection = async (dateIso, shouldLoadRates = true) => {
-      const parsed = parseIsoDate(dateIso);
-      if (!parsed) return false;
+    const monthDays = state.enabledDaysByMonth[monthKey] || [];
+    if (monthDays.length && !monthDays.includes(parsed.day)) {
+      state.typedDate = formatDateInputValue(state.selectedDate, monthLabels, buddhistYearOffset);
+      render();
+      return;
+    }
 
-      const monthKey = getMonthKey(parsed.year, parsed.month);
-      if (!state.enabledDaysByMonth[monthKey]) {
-        try {
-          state.enabledDaysByMonth[monthKey] = await getEnabledDays(
-            endpoints,
-            parsed.year,
-            parsed.month,
-          );
-        } catch (e) {
-          state.enabledDaysByMonth[monthKey] = [];
-        }
-      }
+    state.loading = true;
+    render();
 
-      const monthDays = state.enabledDaysByMonth[monthKey] || [];
-      if (monthDays.length && !monthDays.includes(parsed.day)) return false;
-
-      state.selectedDate = dateIso;
-      state.typedDate = formatDateInputValue(
-        state.selectedDate,
-        monthLabels,
-        buddhistYearOffset,
+    try {
+      const updateOptions = await getUpdatesInDay(
+        endpoints,
+        parsed.day,
+        parsed.month,
+        parsed.year,
       );
+      const normalizedUpdates = Array.isArray(updateOptions) ? updateOptions : [];
+      const stillExists = normalizedUpdates.some(
+        (item) => trimValue(item.Update) === state.selectedUpdate,
+      );
+      const nextUpdate = stillExists
+        ? state.selectedUpdate
+        : trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
+
+      if (!nextUpdate || nextUpdate === '-') {
+        state.typedDate = formatDateInputValue(state.selectedDate, monthLabels, buddhistYearOffset);
+        return;
+      }
+
+      const fxRates = await getRates(
+        endpoints,
+        parsed.day,
+        parsed.month,
+        parsed.year,
+        nextUpdate,
+        language,
+      );
+
+      const normalizedRates = normalizeRates(fxRates);
+      if (!normalizedRates.length) {
+        state.typedDate = formatDateInputValue(state.selectedDate, monthLabels, buddhistYearOffset);
+        return;
+      }
+
+      state.selectedDate = parsed.iso;
       state.viewYear = Number(parsed.year);
       state.viewMonth = Number(parsed.month);
+      state.updates = normalizedUpdates;
+      state.selectedUpdate = nextUpdate;
+      state.rates = normalizedRates;
+      state.typedDate = formatDateInputValue(state.selectedDate, monthLabels, buddhistYearOffset);
+    } catch (e) {
+      state.typedDate = formatDateInputValue(state.selectedDate, monthLabels, buddhistYearOffset);
+    } finally {
+      state.loading = false;
       render();
+    }
+  };
 
-      try {
-        const updateOptions = await getUpdatesInDay(
-          endpoints,
-          parsed.day,
-          parsed.month,
-          parsed.year,
-        );
-        const normalizedUpdates = Array.isArray(updateOptions) ? updateOptions : [];
-        state.updates = normalizedUpdates;
+  // -- Calendar helper --
 
-        const stillExists = normalizedUpdates.some(
-          (item) => trimValue(item.Update) === state.selectedUpdate,
-        );
-        if (!stillExists) {
-          state.selectedUpdate = trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
-        }
-      } catch (e) {
-        // no-op to match live-site silent behavior
-      }
+  const openCalendar = () => {
+    const parsed = parseIsoDate(state.selectedDate);
+    if (parsed) {
+      state.viewYear = Number(parsed.year);
+      state.viewMonth = Number(parsed.month);
+    }
 
-      render();
-      if (
-        shouldLoadRates
-        && state.selectedDate
-        && state.selectedUpdate
-        && isValidSelectedDay(state)
-      ) {
-        await loadRates(state.selectedDate, state.selectedUpdate);
-      }
+    state.calendarOpen = true;
+    render();
 
-      return true;
-    };
-
-    const submitTypedDateWithFetch = async () => {
-      const parsed = parseTypedDate(state.typedDate, buddhistYearOffset);
-      if (!parsed) {
-        state.typedDate = formatDateInputValue(
-          state.selectedDate,
-          monthLabels,
-          buddhistYearOffset,
-        );
-        render();
-        return;
-      }
-
+    if (parsed) {
       const monthKey = getMonthKey(parsed.year, parsed.month);
       if (!state.enabledDaysByMonth[monthKey]) {
-        try {
-          state.enabledDaysByMonth[monthKey] = await getEnabledDays(
-            endpoints,
-            parsed.year,
-            parsed.month,
-          );
-        } catch (e) {
-          state.enabledDaysByMonth[monthKey] = [];
+        getEnabledDays(endpoints, parsed.year, parsed.month)
+          .then((days) => {
+            state.enabledDaysByMonth[monthKey] = days;
+            if (state.calendarOpen) render();
+          })
+          .catch(() => {
+            state.enabledDaysByMonth[monthKey] = [];
+          });
+      }
+    }
+  };
+
+  // -- Blur debounce helper --
+
+  let blurTimeoutId = null;
+
+  const clearBlurTimeout = () => {
+    if (blurTimeoutId) {
+      clearTimeout(blurTimeoutId);
+      blurTimeoutId = null;
+    }
+  };
+
+  // ── Document-level Event Delegation (survives block cloning/replacement) ──
+
+  if (!state.listenersAdded) {
+    state.listenersAdded = true;
+
+    // Click delegation
+    document.addEventListener('click', (e) => {
+      const targetBlock = e.target.closest('.forex-rates');
+      if (!targetBlock || targetBlock.getAttribute('data-forex-id') !== blockId) return;
+
+      const liveBlock = targetBlock;
+
+      // Calendar trigger toggle
+      if (e.target.closest('.forex-rates-date-trigger')) {
+        clearBlurTimeout();
+        if (state.calendarOpen) {
+          state.calendarOpen = false;
+          render();
+        } else {
+          openCalendar();
         }
+        return;
       }
 
-      const monthDays = state.enabledDaysByMonth[monthKey] || [];
-      if (monthDays.length && !monthDays.includes(parsed.day)) {
-        state.typedDate = formatDateInputValue(
-          state.selectedDate,
-          monthLabels,
-          buddhistYearOffset,
-        );
+      // Calendar day button
+      const dayBtn = e.target.closest('.forex-rates-datepicker-day-btn');
+      if (dayBtn) {
+        clearBlurTimeout();
+        const { day } = dayBtn.dataset;
+        const dateIso = `${state.viewYear}-${String(state.viewMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        applyDateSelection(dateIso).then((isApplied) => {
+          if (!isApplied) return;
+          state.calendarOpen = false;
+          render();
+        });
+        return;
+      }
+
+      // Previous month
+      if (e.target.closest('.forex-rates-datepicker-prev')) {
+        clearBlurTimeout();
+        const month = state.viewMonth === 1 ? 12 : state.viewMonth - 1;
+        const year = state.viewMonth === 1 ? state.viewYear - 1 : state.viewYear;
+        state.viewMonth = month;
+        state.viewYear = year;
+        const monthKey = getMonthKey(year, month);
+        if (!state.enabledDaysByMonth[monthKey]) {
+          getEnabledDays(endpoints, year, month)
+            .then((days) => { state.enabledDaysByMonth[monthKey] = days; render(); })
+            .catch(() => { state.enabledDaysByMonth[monthKey] = []; render(); });
+        } else {
+          render();
+        }
+        return;
+      }
+
+      // Next month
+      if (e.target.closest('.forex-rates-datepicker-next')) {
+        clearBlurTimeout();
+        const month = state.viewMonth === 12 ? 1 : state.viewMonth + 1;
+        const year = state.viewMonth === 12 ? state.viewYear + 1 : state.viewYear;
+        const nextIndex = year * 12 + month;
+        const maxIndex = state.maxSelectableMonth
+          ? state.maxSelectableMonth.year * 12 + state.maxSelectableMonth.month
+          : null;
+        if (maxIndex && nextIndex > maxIndex) return;
+        state.viewMonth = month;
+        state.viewYear = year;
+        const monthKey = getMonthKey(year, month);
+        if (!state.enabledDaysByMonth[monthKey]) {
+          getEnabledDays(endpoints, year, month)
+            .then((days) => { state.enabledDaysByMonth[monthKey] = days; render(); })
+            .catch(() => { state.enabledDaysByMonth[monthKey] = []; render(); });
+        } else {
+          render();
+        }
+        return;
+      }
+
+      // Time dropdown trigger
+      if (e.target.closest('.forex-rates-time-trigger')) {
+        clearBlurTimeout();
+        state.calendarOpen = false;
+        state.timeDropdownOpen = !state.timeDropdownOpen;
         render();
         return;
       }
 
-      state.loading = true;
-      render();
-
-      try {
-        const updateOptions = await getUpdatesInDay(
-          endpoints,
-          parsed.day,
-          parsed.month,
-          parsed.year,
-        );
-        const normalizedUpdates = Array.isArray(updateOptions) ? updateOptions : [];
-        const stillExists = normalizedUpdates.some(
-          (item) => trimValue(item.Update) === state.selectedUpdate,
-        );
-
-        const nextUpdate = stillExists
-          ? state.selectedUpdate
-          : trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
-
-        if (!nextUpdate || nextUpdate === '-') {
-          state.typedDate = formatDateInputValue(
-            state.selectedDate,
-            monthLabels,
-            buddhistYearOffset,
-          );
-          return;
-        }
-
-        const fxRates = await getRates(
-          endpoints,
-          parsed.day,
-          parsed.month,
-          parsed.year,
-          nextUpdate,
-          language,
-        );
-
-        const normalizedRates = normalizeRates(fxRates);
-        if (!normalizedRates.length) {
-          state.typedDate = formatDateInputValue(
-            state.selectedDate,
-            monthLabels,
-            buddhistYearOffset,
-          );
-          return;
-        }
-
-        state.selectedDate = parsed.iso;
-        state.viewYear = Number(parsed.year);
-        state.viewMonth = Number(parsed.month);
-        state.updates = normalizedUpdates;
-        state.selectedUpdate = nextUpdate;
-        state.rates = normalizedRates;
-        state.typedDate = formatDateInputValue(
-          state.selectedDate,
-          monthLabels,
-          buddhistYearOffset,
-        );
-      } catch (e) {
-        state.typedDate = formatDateInputValue(
-          state.selectedDate,
-          monthLabels,
-          buddhistYearOffset,
-        );
-      } finally {
-        state.loading = false;
+      // Time item selection
+      const timeItem = e.target.closest('.forex-rates-time-item');
+      if (timeItem) {
+        clearBlurTimeout();
+        const prev = state.selectedUpdate;
+        state.selectedUpdate = timeItem.dataset.value;
+        state.timeDropdownOpen = false;
         render();
+        if (prev !== state.selectedUpdate && state.selectedDate
+          && state.selectedUpdate && isValidSelectedDay(state)) {
+          loadRates(state.selectedDate, state.selectedUpdate);
+        }
+        return;
       }
-    };
 
-    if (dateInput) {
-      dateInput.addEventListener('input', (event) => {
-        state.typedDate = event.target.value;
-      });
+      // GO button
+      if (e.target.closest('.forex-rates-go-btn')) {
+        clearBlurTimeout();
+        state.calendarOpen = false;
+        const parsed = parseTypedDate(state.typedDate, buddhistYearOffset);
+        (async () => {
+          if (parsed && parsed.iso !== state.selectedDate) {
+            const isApplied = await applyDateSelection(parsed.iso, false);
+            if (!isApplied) return;
+          }
+          if (!state.selectedDate || !state.selectedUpdate || !isValidSelectedDay(state)) return;
+          await loadRates(state.selectedDate, state.selectedUpdate);
+        })();
+        return;
+      }
 
-      dateInput.addEventListener('blur', () => {
+      // Print button
+      if (e.target.closest('.forex-rates-print-btn')) {
+        clearBlurTimeout();
+        state.calendarOpen = false;
+        const parsed = parseTypedDate(state.typedDate, buddhistYearOffset);
+        (async () => {
+          if (parsed && parsed.iso !== state.selectedDate) {
+            await applyDateSelection(parsed.iso, false);
+          }
+          printForexRates(liveBlock);
+        })();
+      }
+    });
+
+    // Focusin delegation
+    document.addEventListener('focusin', (e) => {
+      const targetBlock = e.target.closest('.forex-rates');
+      if (!targetBlock || targetBlock.getAttribute('data-forex-id') !== blockId) return;
+      if (!e.target.matches('.forex-rates-date-text-input')) return;
+      clearBlurTimeout();
+      openCalendar();
+    });
+
+    // Input delegation
+    document.addEventListener('input', (e) => {
+      const targetBlock = e.target.closest('.forex-rates');
+      if (!targetBlock || targetBlock.getAttribute('data-forex-id') !== blockId) return;
+      if (!e.target.matches('.forex-rates-date-text-input')) return;
+      state.typedDate = e.target.value;
+    });
+
+    // Focusout delegation
+    document.addEventListener('focusout', (e) => {
+      const targetBlock = e.target.closest('.forex-rates');
+      if (!targetBlock || targetBlock.getAttribute('data-forex-id') !== blockId) return;
+      if (!e.target.matches('.forex-rates-date-text-input')) return;
+
+      const liveBlock = targetBlock;
+      const dateGroup = liveBlock.querySelector('.forex-rates-date-group');
+      if (e.relatedTarget && dateGroup && dateGroup.contains(e.relatedTarget)) {
+        return;
+      }
+      clearBlurTimeout();
+      blurTimeoutId = setTimeout(() => {
+        blurTimeoutId = null;
         const parsed = parseTypedDate(state.typedDate, buddhistYearOffset);
         if (!parsed) {
           state.typedDate = formatDateInputValue(
@@ -585,189 +842,44 @@ export default async function decorate(block) {
           render();
           return;
         }
-
         if (parsed.iso !== state.selectedDate) {
           applyDateSelection(parsed.iso);
         }
-      });
-
-      dateInput.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter') return;
-        event.preventDefault();
-        submitTypedDateWithFetch();
-      });
-    }
-
-    const openCalendar = () => {
-      if (calendarFocusLock) return;
-      const parsed = parseIsoDate(state.selectedDate);
-      if (parsed) {
-        state.viewYear = Number(parsed.year);
-        state.viewMonth = Number(parsed.month);
-      }
-
-      state.calendarOpen = true;
-      render();
-
-      // Restore focus to the new input so the user can type
-      calendarFocusLock = true;
-      block.querySelector('.forex-rates-date-text-input')?.focus();
-      calendarFocusLock = false;
-
-      if (parsed) {
-        const monthKey = getMonthKey(parsed.year, parsed.month);
-        if (!state.enabledDaysByMonth[monthKey]) {
-          getEnabledDays(endpoints, parsed.year, parsed.month)
-            .then((days) => {
-              state.enabledDaysByMonth[monthKey] = days;
-              if (state.calendarOpen) render();
-            })
-            .catch(() => {
-              state.enabledDaysByMonth[monthKey] = [];
-            });
-        }
-      }
-    };
-
-    if (dateInput) {
-      dateInput.addEventListener('focus', openCalendar);
-    }
-
-    if (dateTrigger) {
-      dateTrigger.addEventListener('click', openCalendar);
-    }
-
-    if (prevMonth) {
-      prevMonth.addEventListener('click', async () => {
-        const month = state.viewMonth === 1 ? 12 : state.viewMonth - 1;
-        const year = state.viewMonth === 1 ? state.viewYear - 1 : state.viewYear;
-        state.viewMonth = month;
-        state.viewYear = year;
-
-        const monthKey = getMonthKey(year, month);
-        if (!state.enabledDaysByMonth[monthKey]) {
-          try {
-            state.enabledDaysByMonth[monthKey] = await getEnabledDays(endpoints, year, month);
-          } catch (e) {
-            state.enabledDaysByMonth[monthKey] = [];
-          }
-        }
-
-        render();
-      });
-    }
-
-    if (nextMonth) {
-      nextMonth.addEventListener('click', async () => {
-        const month = state.viewMonth === 12 ? 1 : state.viewMonth + 1;
-        const year = state.viewMonth === 12 ? state.viewYear + 1 : state.viewYear;
-        const nextIndex = year * 12 + month;
-        const maxIndex = state.maxSelectableMonth
-          ? state.maxSelectableMonth.year * 12 + state.maxSelectableMonth.month
-          : null;
-
-        if (maxIndex && nextIndex > maxIndex) return;
-
-        state.viewMonth = month;
-        state.viewYear = year;
-
-        const monthKey = getMonthKey(year, month);
-        if (!state.enabledDaysByMonth[monthKey]) {
-          try {
-            state.enabledDaysByMonth[monthKey] = await getEnabledDays(endpoints, year, month);
-          } catch (e) {
-            state.enabledDaysByMonth[monthKey] = [];
-          }
-        }
-
-        render();
-      });
-    }
-
-    dayButtons.forEach((dayButton) => {
-      dayButton.addEventListener('click', () => {
-        const { day } = dayButton.dataset;
-        const dateIso = `${state.viewYear}-${String(state.viewMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        applyDateSelection(dateIso).then((isApplied) => {
-          if (!isApplied) return;
-          state.calendarOpen = false;
-          render();
-        });
-      });
+      }, 150);
     });
 
-    const toggleTimeDropdown = (open) => {
-      state.timeDropdownOpen = open;
-      if (timeDropdownEl) timeDropdownEl.classList.toggle('is-open', open);
-    };
-
-    if (timeTrigger) {
-      timeTrigger.addEventListener('click', () => {
-        const next = !state.timeDropdownOpen;
-        toggleTimeDropdown(next);
-        if (next) {
-          document.addEventListener('mousedown', function closeTime(e) {
-            if (!timeDropdownEl || !timeDropdownEl.contains(e.target)) {
-              toggleTimeDropdown(false);
-            }
-            document.removeEventListener('mousedown', closeTime);
-          });
-        }
-      });
-    }
-
-    block.querySelectorAll('.forex-rates-time-item').forEach((item) => {
-      item.addEventListener('click', () => {
-        const prev = state.selectedUpdate;
-        state.selectedUpdate = item.dataset.value;
-        toggleTimeDropdown(false);
-        if (prev !== state.selectedUpdate) {
-          const labelEl = block.querySelector('.forex-rates-time-label');
-          const selectedObj = state.updates.find(
-            (u) => trimValue(u.Update) === state.selectedUpdate,
-          );
-          if (labelEl && selectedObj) {
-            labelEl.textContent = `${trimValue(selectedObj.Update)}: ${trimValue(selectedObj.Time)}`;
-          }
-          block.querySelectorAll('.forex-rates-time-item').forEach((li) => {
-            li.classList.toggle('is-active', li.dataset.value === state.selectedUpdate);
-            li.setAttribute('aria-selected', li.dataset.value === state.selectedUpdate);
-          });
-          if (state.selectedDate && state.selectedUpdate && isValidSelectedDay(state)) {
-            loadRates(state.selectedDate, state.selectedUpdate);
-          }
-        }
-      });
+    // Keydown delegation
+    document.addEventListener('keydown', (e) => {
+      const targetBlock = e.target.closest('.forex-rates');
+      if (!targetBlock || targetBlock.getAttribute('data-forex-id') !== blockId) return;
+      if (!e.target.matches('.forex-rates-date-text-input')) return;
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      clearBlurTimeout();
+      submitTypedDateWithFetch();
     });
 
-    if (goButton) {
-      goButton.addEventListener('click', () => {
-        if (!state.selectedDate || !state.selectedUpdate || !isValidSelectedDay(state)) return;
-        loadRates(state.selectedDate, state.selectedUpdate);
-      });
-    }
-
-    if (printButton) {
-      printButton.addEventListener('click', () => {
-        printForexRates(block);
-      });
-    }
-
-    if (outsideClickHandler) {
-      document.removeEventListener('mousedown', outsideClickHandler);
-      outsideClickHandler = null;
-    }
-
-    if (state.calendarOpen && dateGroup) {
-      outsideClickHandler = (event) => {
-        if (!dateGroup.contains(event.target)) {
+    // Document-level outside-click handler
+    document.addEventListener('click', (e) => {
+      const liveBlock = getLiveBlock();
+      if (state.calendarOpen) {
+        const dateGroup = liveBlock.querySelector('.forex-rates-date-group');
+        if (dateGroup && !dateGroup.contains(e.target)) {
           state.calendarOpen = false;
           render();
         }
-      };
-      document.addEventListener('mousedown', outsideClickHandler);
-    }
-  };
+      }
+      if (state.timeDropdownOpen) {
+        const timeDropdown = liveBlock.querySelector('.forex-rates-time-dropdown');
+        if (timeDropdown && !timeDropdown.contains(e.target)) {
+          state.timeDropdownOpen = false;
+          render();
+        }
+      }
+    }, true); // capture phase to fire before other listeners
+  }
+
+  // -- Initialisation --
 
   const init = async () => {
     state.loading = true;
@@ -817,5 +929,9 @@ export default async function decorate(block) {
     }
   };
 
-  await init();
+  if (isNewState) {
+    await init();
+  } else {
+    render();
+  }
 }
