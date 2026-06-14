@@ -1,2 +1,4 @@
 @import url("./main.css");
-@import url("./custom-form.css");
+@import url("./form-global/form-global.css");
+@import url("./form-lead/form-lead.css");
+@import url("./form-custom/form-custom.css");
