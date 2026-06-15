@@ -373,42 +373,6 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper.field-
   height: auto;
 }
 
-/* Submit */
-main .section.form-container.custom-forms .form :is(.field-submitcta .button, .field-submitcta .button:disabled, .field-cancel .button, [class~="field-Cancel"] .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 9.6875rem;
-  min-width: 9.6875rem;
-  height: 2.75rem;
-  margin: var(--bbl-space-300) auto;
-  padding: 0 var(--bbl-space-250);
-  color: var(--bbl-color-active-blue);
-  border: 1px solid var(--bbl-color-active-blue);
-  border-radius: 0.4375rem;
-  background: #fff;
-  box-shadow: none;
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1);
-  line-height: 2.75rem;
-  letter-spacing: 0.05rem;
-  text-align: center;
-  cursor: pointer;
-  appearance: none;
-  pointer-events: all;
-  transform: none;
-}
-
-main .section.form-container.custom-forms .form :is(.field-submitcta .button, .field-cancel .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button):is(:hover, :disabled:hover) {
-  color: var(--bbl-color-white);
-  background: var(--bbl-color-active-blue);
-  border-color: var(--bbl-color-active-blue);
-}
-
-main .section.form-container.custom-forms .form .col-6:is(.field-submitcta, .submit-wrapper) :is(.button, button) {
-  margin-left: auto;
-  margin-right: 1rem;
-}
 
 main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) {
   padding-top: 40px;
@@ -418,45 +382,6 @@ main .section.form-container.custom-forms .form form .field-wrapper:has(> .check
   padding-bottom: 20px;
 }
 
-/* Convert the 1-column parent grid to flexbox to natively allow side-by-side items */
-main .section.form-container.custom-forms:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-/* Force all form fields in the panel to take 100% width (stack vertically like a 1-column grid) */
-main .section.form-container.custom-forms:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel>.field-wrapper {
-  width: 100%;
-}
-
-/* Allow the buttons to shrink to their intrinsic width, so they naturally sit side-by-side on the same row */
-main .section.form-container.custom-forms:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-submitcta.col-12,
-main .section.form-container.custom-forms:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-reset.col-6 {
-  width: auto;
-}
-
-/* Center the pair of buttons perfectly in the available space by using auto margins on the outsides, and a clean gap in the middle */
-main .section.form-container.custom-forms:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-submitcta.col-12 {
-  margin-left: auto;
-  margin-right: 0.5rem;
-}
-
-main .section.form-container.custom-forms:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-reset.col-6 {
-  margin-left: 0.5rem;
-  margin-right: auto;
-}
-
-/* Center solitary .col-12 buttons on the SME Form */
-main .section.form-container.custom-forms:has(.field-business-information-main, .field-loan-details-main) .form .col-12:is(.field-submitcta, .submit-wrapper, .reset-wrapper, .field-cancel) {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-main .section.form-container.custom-forms .form .col-6:is(.field-cancel, .field-reset) :is(.button, button) {
-  margin-left: 1rem;
-  margin-right: auto;
-}
 
 /* Privacy consent / TnC panel */
 main .section.form-container.custom-forms .form form :is(.field-privacyconsent, fieldset.panel-wrapper.field-wrapper) {
@@ -475,20 +400,6 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   padding: 0;
 }
 
-/* Button panel — side-by-side Submit / Reset (must come after the grid rule above to override display) */
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-}
-
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .field-submitcta,
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .field-reset {
-  width: auto;
-  margin: 0;
-}
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
   padding: 0 0 0 2.1875rem;
@@ -514,7 +425,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox'],
 main .section.form-container.custom-forms input[name='BBLAdvancedCheckbox'] {
   position: absolute;
-  top: 5px;
+  top: 3px;
   left: 0;
   z-index: 1;
   width: var(--bbl-space-250);
@@ -793,19 +704,6 @@ main .section.form-container.custom-forms .form form .field-wrapper:has(> .check
   left:0;
 }
 
-main .section.form-container.custom-forms .form :is(.field-submitcta form button[type='submit']:not(:disabled), form .submit-wrapper button:not(:disabled)){
-  background:#0064ff;
-  color:#fff;
-  border:none;
-}
-
-main .section.form-container.custom-forms .form :is(.field-submitcta form button[type='submit']:disabled, form .submit-wrapper button:disabled){
-  background:#e0e0e0;
-  color:#9e9e9e;
-  border:none;
-  cursor:not-allowed;
-  pointer-events:none;
-}
 
 
 @media (width > 47.5rem) {
