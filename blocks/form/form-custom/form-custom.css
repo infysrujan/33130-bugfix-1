@@ -673,6 +673,25 @@ main .section.form-container.custom-forms .form form.sip-form .radio-group-wrapp
   gap: 0;
 }
 
+/* Section / panel legend labels */
+main .section.form-container.custom-forms .panel-wrapper > legend.field-label {
+  color: var(--bbl-color-grey-85);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: default;
+}
+
+/* Checkbox/radio group question labels — match h4 design token */
+main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
+  color: var(--bbl-color-grey-85);
+  cursor: default;
+  text-align: left;
+  font-size: var(--bbl-heading-h4-size);
+  line-height: var(--bbl-heading-h4-line-height);
+  font-weight: var(--bbl-heading-h4-weight);
+  font-family: var(--bbl-font-family-medium);
+}
+
 main .section.form-container.custom-forms .form form.sip-form :is(.field-type-of-loan, .field-other-required-products) legend.field-label {
   display: block;
   width: 100%;
@@ -759,10 +778,6 @@ main .section.form-container.custom-forms .form form.sip-form .radio-group-wrapp
   border-color: var(--bbl-color-orange-130);
 }
 
-main .section.form-container.custom-forms .form form.sip-form .radio-group-wrapper.radio-tabs + fieldset.panel-wrapper.field-wrapper {
-  margin-top: 0.9375rem;
-}
-
 /* Bordered checkbox group panels */
 main .section.form-container.custom-forms .form form.sip-form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel, .field-other-required-product-panel) {
   border: 1px solid var(--bbl-color-grey-150);
@@ -771,27 +786,12 @@ main .section.form-container.custom-forms .form form.sip-form fieldset.panel-wra
   margin-bottom: 10px;
 }
 
+main .section.form-container.custom-forms .form form.sip-form .radio-group-wrapper.radio-tabs + fieldset.panel-wrapper.field-wrapper {
+  margin-top: 0.9375rem;
+}
+
 main .section.form-container.custom-forms .form form.sip-form :is(.field-type-of-loan-panel .field-please-specify-type-of-loan, .field-other-required-product-panel .field-please-specify-other-product) {
   width: 100%;
-}
-
-/* Section / panel legend labels */
-main .section.form-container.custom-forms .panel-wrapper > legend.field-label {
-  color: var(--bbl-color-grey-85);
-  font-size: 16px;
-  font-weight: 600;
-  cursor: default;
-}
-
-/* Checkbox/radio group question labels — match h4 design token */
-main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
-  color: var(--bbl-color-grey-85);
-  cursor: default;
-  text-align: left;
-  font-size: var(--bbl-heading-h4-size);
-  line-height: var(--bbl-heading-h4-line-height);
-  font-weight: var(--bbl-heading-h4-weight);
-  font-family: var(--bbl-font-family-medium);
 }
 
 /* Extracurricular Activities — stack radio options vertically and allow wrapping */
