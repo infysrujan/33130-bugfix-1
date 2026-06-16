@@ -183,6 +183,16 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     noResults.hidden = true;
     resultsSection.hidden = false;
     onLocationSelect(allLocs[0]);
+    // TEST ONLY — remove before merge
+    allLocs.push({
+      BranchName: 'Test Branch (No Coords)',
+      Address1: '123 Test Road',
+      Address2: 'Test District',
+      Province: 'Bangkok',
+      Postcode: '10000',
+      BranchStatus: 'Open',
+      Tel: '02-000-0000',
+    });
     // eslint-disable-next-line max-len
     renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs, currentIsAtm);
   }
