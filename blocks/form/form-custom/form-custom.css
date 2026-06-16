@@ -192,8 +192,26 @@ main .section.form-container.custom-forms .form select {
   border-color: var(--bbl-color-grey-23);
   cursor: pointer;
   appearance: none;
-  background: var(--bbl-color-white) url('../../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
+  background-color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-medium);
+}
+
+main .section.form-container.custom-forms .form .field-wrapper:has(> select)::after {
+  content: "\e902";
+  font-family: icomoon, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 6px;
+  line-height: 1;
+  top: 17px;
+  position: absolute;
+  right: var(--bbl-space-150);
+  bottom: calc(var(--bbl-font-size-b2) + 1.375rem);
+  transform: translateY(50%);
+  pointer-events: none;
+  color: #4e4e4e;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 main .section.form-container.custom-forms .drop-down-wrapper.field-wrapper select {
@@ -693,4 +711,10 @@ main .section.form-container.custom-forms .form form .field-wrapper:has(> .check
   z-index:1;
   bottom:0;
   left:0;
+}
+
+@media (width > 47.5rem) {
+  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
+    max-height: 250px;
+  }
 }
