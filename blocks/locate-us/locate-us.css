@@ -326,6 +326,8 @@
   display: flex;
   flex-direction: column;
   background-color: var(--bbl-color-map-bg);
+  padding-left: var(--bbl-space-1000);
+  padding-right: var(--bbl-space-1000);
 }
 
 .locate-us .locate-us-results:has(.locate-us-no-results:not([hidden])) .locate-us-map-row,
@@ -409,6 +411,7 @@
   justify-content: space-between;
   padding: var(--bbl-space-200) 0;
   background: none;
+  margin-bottom: 0;
   flex-grow: 1;
   border: none;
   cursor: pointer;
@@ -473,9 +476,9 @@
   margin-bottom: var(--bbl-space-050);
 }
 
-.locate-us .card-list{
-    padding: var(--bbl-space-250);
-  }
+.locate-us .card-list {
+  padding: var(--bbl-space-250);
+}
 
 .locate-us .locate-us-card-label {
   min-width: 3.75rem;
@@ -530,10 +533,10 @@
   font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
-  margin-top: 2.5rem;
+  margin-top: var(--bbl-space-500);
   margin-bottom: 0.625rem;
   overflow-wrap: break-word;
-  padding-right: 0.3125rem;
+  padding-right: 0.625rem;
 }
 
 .locate-us .locate-us-card-directions {
@@ -942,10 +945,6 @@
     font-size: 1.3125rem;
   }
 
-  .locate-us .card-list{
-    padding: var(--bbl-space-250);
-  }
-
   .locate-us .locate-us-card-name {
     font-size: 1.4375rem;
     line-height: 1.4219rem;
@@ -1037,6 +1036,8 @@
     height: 36.6875rem;
     padding: 0 var(--bbl-space-600) 1.875rem;
     background-color: unset;
+    padding-right: var(--bbl-space-1000);
+    padding-left: var(--bbl-space-1000);
   }
 
   .locate-us .locate-us-map {
@@ -1071,8 +1072,9 @@
     display: grid;
     padding: 0 2.8125rem 1.875rem;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem 2.3125rem;
+    gap: var(--bbl-space-200) 2.3125rem;
     margin-top: 0;
+    margin-bottom: 0;
     align-items: stretch;
   }
 
@@ -1105,8 +1107,9 @@
 
   .locate-us .locate-us-map-sidebar .locate-us-card {
     border: none;
-    padding-bottom: 1.5rem;
-    padding-right: 0;
+    padding-bottom: var(--bbl-space-300);
+    padding-left: 0.9375rem;
+    padding-right: 0.3125rem;
   }
 
   /* border already applied to all sides per-card on all viewports */
@@ -1279,7 +1282,8 @@
 
 @media (width > 64rem) {
   .locate-us .locate-us-map-row {
-    padding: 0 var(--bbl-space-1050) 1.875rem;
+    padding-left: var(--bbl-space-1000);
+    padding-right: var(--bbl-space-1000);
   }
 
   .locate-us .locate-us-cards {
