@@ -134,14 +134,14 @@ main .section.form-container.custom-forms .form form :is(.field-wrapper:has(sele
   color: var(--bbl-color-grey-85);
 }
 
-main .section.form-container.custom-forms .panel-wrapper > legend.field-label {
+main .section.form-container.custom-forms .panel-wrapper>legend.field-label {
   color: var(--bbl-color-grey-85);
   font-size: 16px;
   font-weight: 600;
   cursor: default;
 }
 
-main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
+main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-group-wrapper)>legend.field-label {
   color: var(--bbl-color-grey-85);
   font-size: 20px;
   font-weight: 400;
@@ -149,8 +149,8 @@ main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-gr
   text-align: center;
 }
 
-main .section.form-container.custom-forms .form form :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label{
-  font-size:20px;
+main .section.form-container.custom-forms .form form :is(.checkbox-group-wrapper, .radio-group-wrapper)>legend.field-label {
+  font-size: 20px;
 }
 
 main .section.form-container.custom-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
@@ -647,18 +647,19 @@ main .section.form-container.custom-forms .form form .checkbox-group-wrapper .ch
   margin: 3px 7px 10px 4px;
 }
 
-main .section.form-container.custom-forms .section.central-aligned .block, .section.central-aligned > .default-content-wrapper{
-  max-width:unset;
+main .section.form-container.custom-forms .section.central-aligned .block,
+.section.central-aligned>.default-content-wrapper {
+  max-width: unset;
 }
 
-main .section.form-container.custom-forms .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'], [class*='field-phonenumber'], [class*='field-mobilenumber'], [class*='field-companyname'], [class*='field-company'], [class*='field-property-dropdown'], [class*='field-juristicpersonregistrationnumber'])> :is(input, select){
-  padding-left:20px;
+main .section.form-container.custom-forms .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'], [class*='field-phonenumber'], [class*='field-mobilenumber'], [class*='field-companyname'], [class*='field-company'], [class*='field-property-dropdown'], [class*='field-juristicpersonregistrationnumber'])> :is(input, select) {
+  padding-left: 20px;
 }
 
-main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper > .field-label {
+main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper>.field-label {
   font-size: 20px;
-  top:10px;
-  z-index:1;
+  top: 10px;
+  z-index: 1;
   left: 0;
 }
 
@@ -671,15 +672,15 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper:not(.h
   margin: 20px 0;
 }
 
-main .section.form-container.custom-forms .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'], [class*='field-phonenumber'], [class*='field-mobilenumber'], [class*='field-companyname'], [class*='field-company'], [class*='field-email'], [class*='field-juristicpersonregistrationnumber'])::before{
+main .section.form-container.custom-forms .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'], [class*='field-phonenumber'], [class*='field-mobilenumber'], [class*='field-companyname'], [class*='field-company'], [class*='field-email'], [class*='field-juristicpersonregistrationnumber'])::before {
   content: '';
 }
 
-main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper .field-description{
-  position:absolute;
-  z-index:1;
-  bottom:0;
-  left:0;
+main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper .field-description {
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  left: 0;
 }
 
 @media (width > 47.5rem) {
