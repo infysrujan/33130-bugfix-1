@@ -1,11 +1,4 @@
-﻿/* =====================================================================
-   Lead-form styles scoped to .custom-forms
-   (mirrors lead.css with main .section.form-container.custom-forms scope)
-   ===================================================================== */
-
-/* Layout */
-
-main .custom-forms.form-container {
+﻿main .custom-forms.form-container {
   margin-top: 40px;
   padding: 0 16px;
 }
@@ -87,7 +80,6 @@ main .section.form-container.custom-forms .form form .field-title {
   padding: 0;
 }
 
-/* Body copy */
 main .section.form-container.custom-forms .form form .field-infotext {
   margin: var(--bbl-space-500) 0 var(--bbl-space-250);
   margin: 10px 0 var(--bbl-space-250) 0;
@@ -126,7 +118,6 @@ main .section.form-container.custom-forms .form form .plain-text-wrapper .custom
   margin-bottom: var(--bbl-space-075);
 }
 
-/* Labels */
 main .section.form-container.custom-forms .form form .field-label[data-visible='false']:not(:is([class*=' icon-'], [class^='icon-'])) {
   display: none;
 }
@@ -245,8 +236,6 @@ main .section.form-container.custom-forms .form form :is(.text-wrapper, .number-
 main .section.form-container.custom-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper [aria-live="polite"] {
   text-align: right;
   margin: 3px 12px 0 0;
-
-  /* margin-bottom: 10px; */
 }
 
 main .section.form-container.custom-forms .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].drop-down-wrapper).field-wrapper :is(input, select) {
@@ -312,7 +301,6 @@ main .section.form-container.custom-forms .form form :is(.text-wrapper, .number-
   margin-bottom: 10px;
 }
 
-/* Icon fields — icomoon label or field-class fallback */
 main .section.form-container.custom-forms .form form label:is([class*=' icon-'], [class^='icon-']) {
   position: relative;
   display: block;
@@ -391,7 +379,6 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper.field-
   height: auto;
 }
 
-
 main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) {
   padding-top: 40px;
 }
@@ -400,8 +387,6 @@ main .section.form-container.custom-forms .form form .field-wrapper:has(> .check
   padding-bottom: 20px;
 }
 
-
-/* Privacy consent / TnC panel */
 main .section.form-container.custom-forms .form form :is(.field-privacyconsent, fieldset.panel-wrapper.field-wrapper) {
   gap: 0;
   margin: 0;
@@ -472,9 +457,6 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   padding-left: 0;
   font-size: var(--bbl-font-size-b1);
   overflow: auto;
-
-  /* scrollbar-color: #0064ff #f1f1f1;
-  scrollbar-width: thin; */
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar {
@@ -532,8 +514,6 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper.radio-
   box-sizing: border-box;
   width: 100%;
   max-width: 46.25rem;
-
-  /* margin: 0 0 var(--bbl-font-size-b2); */
   padding: 0;
   overflow: visible;
   border: none;
@@ -547,8 +527,6 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper.radio-
 main .section.form-container.custom-forms .form form :is(.field-type-of-loan, .field-other-required-products) legend.field-label {
   display: block;
   width: 100%;
-
-  /* margin-bottom: var(--bbl-space-200); */
   text-align: center;
 }
 
@@ -632,7 +610,6 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper.radio-
   border-color: var(--bbl-color-orange-130);
 }
 
-/* Checkbox group panels — bordered box */
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
   .field-other-required-product-panel) {
   border: 1px solid var(--bbl-color-grey-150);
@@ -646,7 +623,6 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper.radio-
   margin-top: 0.9375rem;
 }
 
-/* Compact glyphs — money & email */
 main .section.form-container.custom-forms .form form :is(.field-wrapper:is(.icon-money, .icon-email),
   label:is(.icon-money, .icon-email))::before {
   font-size: 0.6875rem;
@@ -671,14 +647,8 @@ main .section.form-container.custom-forms .form form .checkbox-group-wrapper .ch
   margin: 3px 7px 10px 4px;
 }
 
-/* =====================================================================
-   Custom-forms-specific overrides
-   ===================================================================== */
-
 main .section.form-container.custom-forms .section.central-aligned .block, .section.central-aligned > .default-content-wrapper{
   max-width:unset;
-
-  /* margin-top:30px; */
 }
 
 main .section.form-container.custom-forms .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'], [class*='field-phonenumber'], [class*='field-mobilenumber'], [class*='field-companyname'], [class*='field-company'], [class*='field-property-dropdown'], [class*='field-juristicpersonregistrationnumber'])> :is(input, select){
@@ -686,7 +656,6 @@ main .section.form-container.custom-forms .form form .field-wrapper:not(:has(lab
 }
 
 main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper > .field-label {
-  /* position: absolute; */
   font-size: 20px;
   top:10px;
   z-index:1;
