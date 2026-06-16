@@ -1,0 +1,48 @@
+/* button styles for forms  */
+main .form form .panel-wrapper :has( > .button-wrapper) {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    gap:1.875rem;
+}
+
+main .form form .panel-wrapper .submit-wrapper {
+    width: auto;    
+}
+
+main .form button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: fit-content;
+  height: 2.75rem;
+  min-width: 7.5rem;
+  padding: 0 1rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-body-b1-medium-size);
+  font-weight: var(--bbl-body-b1-medium-weight);
+  line-height: var(--bbl-body-b1-line-height);
+  border-radius: var(--bbl-rounded-100);
+}
+
+main .form button[type='button'] {
+  background: transparent;
+  color: var(--bbl-color-active-blue);
+  border: 0.125rem solid var(--bbl-color-active-blue);
+  font-style: normal;
+}
+
+main .form button[type='button']:hover {
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-blue-70);
+  color: var(--bbl-color-white);
+  text-decoration: none;
+}
+
+main .form button[disabled] {
+  color: var(--bbl-color-grey-60);
+  background: var(--bbl-color-gray-300);
+  border: 0.0625rem solid var(--bbl-color-gray-300);
+  pointer-events: none;
+}
