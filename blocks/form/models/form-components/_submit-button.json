@@ -30,6 +30,28 @@
           "...": "../form-common/_basic-fields.json#/fields"
         },
         {
+          "component": "select",
+          "name": "linkType",
+          "label": "Button Style",
+          "valueType": "string",
+          "value": "primary",
+          "description": "Visual style variant for the button",
+          "options": [
+            {
+              "name": "Primary",
+              "value": "primary"
+            },
+            {
+              "name": "Secondary",
+              "value": "secondary"
+            },
+            {
+              "name": "Tertiary",
+              "value": "tertiary"
+            }
+          ]
+        },
+        {
           "...": "../form-common/_help-container.json#/fields"
         }
       ]

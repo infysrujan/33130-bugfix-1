@@ -5,6 +5,7 @@ import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit } from './submit.js';
 import DocBasedFormToAF from './transform.js';
+import decorateCreditCardTractApplication from './form-custom/creditcard-tract-application/creditcard-tract-application.js';
 import {
   checkValidation,
   createButton,
@@ -344,6 +345,7 @@ async function createFormForAuthoring(formDef) {
     }
     return [];
   });
+  decorateCreditCardTractApplication(form);
   return form;
 }
 
@@ -397,6 +399,8 @@ export async function createForm(formDef, data, source = 'aem') {
   form.addEventListener('submit', (e) => {
     handleSubmit(e, form, captcha);
   });
+
+  decorateCreditCardTractApplication(form);
 
   return {
     form,

@@ -1,0 +1,416 @@
+/* global form styles */
+
+/* Scrollbar resets for terms and conditions text area */
+main .section.form-container .form .tnc-text-decoration::-webkit-scrollbar-button,
+main .section.form-container .form .tnc-text-decoration::-webkit-scrollbar-button:single-button {
+  display: block;
+  width: 0;
+  height: 0;
+  background: transparent;
+  background-image: none;
+  border: 0;
+  box-shadow: none;
+  appearance: none;
+}
+
+/* Validation states and focus/hover border colors */
+main .section.form-container .form form .field-wrapper.field-invalid :is(input:not([type='radio'], [type='checkbox']), select, textarea) {
+  border-color: var(--bbl-color-red-130);
+}
+
+main .section.form-container .form form :is(.radio-wrapper, .checkbox-wrapper).field-invalid>input,
+main .section.form-container .form form :is(.radio-group-wrapper, .checkbox-group-wrapper).field-invalid :is(input[type='radio'], input[type='checkbox']) {
+  outline: 0.0625rem solid var(--bbl-color-red-130);
+  outline-offset: 0.0625rem;
+}
+
+main .section.form-container .form form .field-invalid :is(.field-validation-error, .field-description) {
+  color: var(--bbl-color-red-130);
+  font-weight: 400;
+}
+
+main .section.form-container .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea):is(:focus, :focus-visible, :active) {
+  outline: none;
+}
+
+main .section.form-container .form form .field-wrapper:not(.field-invalid) :is(input:not([type='radio'], [type='checkbox']), select, textarea):is(:hover, :focus, :focus-visible, :active) {
+  border-color: var(--bbl-color-blue-90);
+  outline: none;
+}
+
+/* Legend font styling overrides */
+main .section.form-container .panel-wrapper>legend.field-label {
+  color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-body-b1-size);
+  font-weight: var(--bbl-font-weight-medium);
+  cursor: default;
+  margin-left: var(--form-field-gap);
+  margin-right: var(--form-field-gap);
+}
+
+main .section.form-container :is(.checkbox-group-wrapper, .radio-group-wrapper)>legend.field-label {
+  color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-heading-h4-size);
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: default;
+  text-align: center;
+}
+
+/* Global Form Wrapper background & card resets */
+main .section.form-container div.form-wrapper {
+  padding: 0;
+  border-radius: unset;
+  box-shadow: none;
+}
+
+/* Button panel — side-by-side Submit / Reset and alignment overrides */
+main .section.form-container .form form fieldset.panel-wrapper.field-button-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: var(--bbl-space-200);
+}
+
+main .section.form-container .form form fieldset.panel-wrapper.field-button-panel .field-submitcta,
+main .section.form-container .form form fieldset.panel-wrapper.field-button-panel .field-reset {
+  width: auto;
+  margin: 0;
+}
+
+main .section.form-container .form .col-6:is(.field-submitcta, .submit-wrapper) :is(.button, button) {
+  margin-left: auto;
+  margin-right: var(--bbl-space-200);
+}
+
+main .section.form-container .form .col-6:is(.field-cancel, .field-reset) :is(.button, button) {
+  margin-left: var(--bbl-space-200);
+  margin-right: auto;
+}
+
+/* Radio group — segmented time slot and tab radio button styling */
+main .section.form-container .form form .radio-group-wrapper.horizontal {
+  justify-content: center;
+  margin-bottom: 0.625rem;
+  gap: 1.875rem;
+}
+
+main .section.form-container .form form .radio-group-wrapper.horizontal .radio-wrapper {
+  flex-wrap: nowrap;
+  min-width: 8.75rem;
+}
+
+main .section.form-container .form form .radio-group-wrapper.horizontal input[type='radio'] {
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+}
+
+main .section.form-container .form form .radio-group-wrapper.radio-tabs {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 46.25rem;
+  padding: 0;
+  overflow: visible;
+  border: none;
+}
+
+
+main .section.form-container .form form :is(.field-type-of-loan, .field-other-required-products) legend.field-label {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--bbl-space-200);
+  text-align: center;
+}
+
+main .section.form-container .form form .radio-group-wrapper.radio-tabs legend.field-label {
+  display: block;
+  flex: 0 0 100%;
+  width: 100%;
+  margin: 0 0 var(--bbl-space-100);
+  padding: 0;
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: default;
+}
+
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper {
+  position: relative;
+  display: flex;
+  flex: 1 0 25%;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: var(--bbl-space-1000);
+  margin: 0 0 var(--bbl-space-100);
+  margin-left: 0;
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  gap: 0;
+}
+
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input[type='radio'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
+  border-left: none;
+  border-radius: 0;
+  appearance: none;
+  cursor: pointer;
+}
+
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input[type='radio']:checked {
+  background-color: var(--bbl-color-blue-145);
+}
+
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:first-of-type input[type='radio'] {
+  border-left: 0.0625rem solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem 0 0 0.4375rem;
+}
+
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:last-of-type input[type='radio'] {
+  border-radius: 0 0.4375rem 0.4375rem 0;
+}
+
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-basis: auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 var(--bbl-space-100);
+  color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-body-b1-size);
+  font-weight: var(--bbl-font-weight-medium);
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+}
+
+main .section.form-container .form form .radio-group-wrapper.radio-tabs.field-invalid .radio-wrapper input[type='radio'] {
+  border-color: var(--bbl-color-orange-130);
+}
+
+/* Select dropdown custom chevron style */
+main .section.form-container .form form select {
+  padding-right: var(--bbl-space-300);
+  appearance: none;
+  background: var(--bbl-color-white) url('/icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
+  cursor: pointer;
+}
+
+/* Checkbox group and wrapper alignments */
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper {
+  display: contents;
+}
+
+main .section.form-container .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
+  flex-basis: auto;
+  flex-shrink: 1;
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: pointer;
+  line-height: 1.5625rem;
+}
+
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper .checkbox-group-wrapper .checkbox-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: var(--bbl-space-100);
+}
+
+main .section.form-container .form form .checkbox-group-wrapper .checkbox-wrapper input[type='checkbox'] {
+  flex-shrink: 0;
+  width: var(--bbl-space-200);
+  height: var(--bbl-space-200);
+  cursor: pointer;
+  margin: 0.1875rem var(--bbl-space-100) 0.1875rem var(--bbl-space-050);
+}
+
+/* Terms & Conditions (T&C) and Privacy Consent layouts */
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  grid-column: span 12;
+  width: 100%;
+  max-width: 46.25rem;
+  padding: 0;
+}
+
+main .section.form-container .form form :is(.field-privacyconsent, .field-privacynotice, fieldset.panel-wrapper.field-wrapper) {
+  gap: 0;
+  margin: 0;
+}
+
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper:is(.field-privacyconsent, .field-privacynotice, :has(> .field-approvalcheckbox, > .field-privacy)) {
+  padding: 0 0 0 2.1875rem;
+}
+
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper>legend {
+  display: none;
+}
+
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
+  grid-column: 1;
+  width: auto;
+}
+
+
+
+input[name='BBLAdvancedCheckbox'],
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox'] {
+  position: absolute;
+  top: 0.2rem;
+  left: 0;
+  width: var(--bbl-space-250);
+  margin: 0.1875rem var(--bbl-space-050) var(--bbl-body-b2-size) var(--bbl-space-050);
+  flex: none;
+}
+
+input[name='BBLAdvancedCheckbox']:hover,
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:hover {
+  border: 0.0625rem solid var(--bbl-color-grey-125);
+}
+
+input[name='BBLAdvancedCheckbox']:invalid,
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:invalid {
+  box-shadow: none;
+  outline: none;
+}
+
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
+  grid-row: 1;
+  grid-column: 1;
+  border: 0.0625rem solid var(--bbl-color-grey-150);
+  border-radius: var(--bbl-radius-none);
+  max-height: 15rem;
+  margin: 0.1875rem var(--bbl-space-100) 0.9375rem 0;
+  padding-left: 0;
+  font-size: var(--bbl-body-b1-size);
+  overflow: auto;
+  scrollbar-color: var(--bbl-color-active-blue) var(--bbl-color-grey-10);
+  scrollbar-width: thin;
+}
+
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar {
+  width: var(--bbl-space-100);
+}
+
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar-track {
+  background: var(--bbl-color-grey-10);
+}
+
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar-thumb {
+  background: var(--bbl-color-grey-153);
+  border-radius: var(--bbl-rounded-050);
+}
+
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is(> .field-description, .checkbox-wrapper .field-description) {
+  position: static;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
+  clear: both;
+}
+
+/* Reset margin-bottom on paragraphs inside plain-text wrappers to prevent double spacing */
+main .section.form-container .form form .plain-text-wrapper p:last-child {
+  margin-bottom: 0;
+}
+
+main .section.form-container .form form .plain-text-wrapper.field-text {
+  background-color: var(--bbl-color-grey-10);
+  padding: var(--bbl-space-050) 0.625rem;
+  border-radius: 0.4375rem;
+  font-size: 1rem;
+}
+
+/* Custom Form Button Sizing & Styles */
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 9.6875rem;
+  height: 2.75rem;
+  padding: 0 var(--bbl-space-250);
+  box-shadow: none;
+  border-radius: 0.4375rem;
+  gap: var(--bbl-space-100);
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .field-submitcta .button {
+  margin: var(--bbl-space-300) var(--bbl-space-200) var(--bbl-space-300) auto;
+  border: 0.0417rem solid transparent;
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.field-cancel, .field-reset) .button {
+  margin: 0 var(--bbl-space-300) auto;
+  border: 0.0417rem solid var(--bbl-color-active-blue);
+  background-color: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+}
+
+/* Radio group alignment (vertical) */
+main .section.form-container.custom-forms .form form .radio-group-wrapper:not(.horizontal) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: var(--bbl-space-250) 0;
+  text-align: center;
+}
+
+/* Terms & Conditions (tnc) text area */
+main .section.form-container.custom-forms .form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration,
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper:is(.field-privacyconsent, .field-privacynotice).field-wrapper>.tnc-text-decoration {
+  max-height: 8rem;
+  border: 0;
+  box-shadow: none;
+  outline: none;
+  padding: 0 var(--bbl-space-200) 0 0;
+}
+
+main .section.form-container .form form fieldset.panel-wrapper.field-wrapper:is( :has(.checkbox-wrapper.field-invalid),
+  :has(input[name='approvalcheckbox']:user-invalid),
+  .field-invalid) .tnc-text-decoration {
+  border-color: var(--bbl-color-orange-130);
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper:is(:has(.checkbox-wrapper.field-invalid),
+  :has(input[name='approvalcheckbox']:user-invalid),
+  .field-invalid) .tnc-text-decoration,
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper:is(.field-privacyconsent, .field-privacynotice).field-wrapper:is(:has(.checkbox-wrapper.field-invalid),
+  :has(input[name='approvalcheckbox']:user-invalid),
+  .field-invalid)>.tnc-text-decoration {
+  border: 0;
+}
+
+/* Invalid states border color override for inner panel wrapper inputs */
+main .section.form-container .form form fieldset.panel-wrapper.field-transdatetimepanel:has(.field-invalid)> :is(.field-cnf-date-exclude, .field-hours-exclude, .field-minutes-exclude) :is(input, select),
+main .section.form-container .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch).field-invalid :is(input, select) {
+  border-color: var(--bbl-color-red-130);
+}
+
+/* Invalid state layout padding override for branch panel */
+main .section.form-container .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel):has(.field-invalid) {
+  padding-bottom: var(--bbl-space-500);
+}

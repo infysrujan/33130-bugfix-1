@@ -616,32 +616,64 @@ function getCcField(fieldName) {
   return ccLastResult?.[fieldName] ?? '';
 }
 
+// Module-level cache — set by fetchPlanData, read by
+// getPlanField / getRiderField / getPlanError / getPlanErrorStatus
+let fetchPlanDataResult = null;
+let fetchPlanDataErrorMsg = '';
+let fetchPlanDataErrorStatus = '';
+
 /**
- * Fetches plan data for the given prospect details and returns the first plan.
+ * Fetches plan data and returns a single filtered plan based on prospectCategory and planTerm.
+ *
+ * Protection: planTerm is the planCode string directly — "8PWLBD", "12PWLBD", "16PWLBD"
+ * Health: planTerm is the roomAndBoard value as a string — "1500", "2000", "3000", "4000"
+ *
+ * The matched plan object is cached in fetchPlanDataResult so getPlanField()
+ * can retrieve individual fields without re-calling the API.
+ *
+ * @name fetchPlanData
  * @param {number} prospectAge
  * @param {string} prospectGender
- * @param {string} prospectCategory
+ * @param {string} prospectCategory - "Protection" or "Health"
  * @param {number} prospectSA
- * @return {object|null}
+ * @param {string|number} planTerm - planCode string (e.g. "8PWLBD") for Protection;
+ *                                  roomAndBoard number (e.g. 1500) for Health
+ * @return {string} JSON string of the matched plan, or empty string on failure
  */
-function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA) {
+function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA, planTerm) {
+  fetchPlanDataResult = null;
+  fetchPlanDataErrorMsg = '';
+  fetchPlanDataErrorStatus = '';
+
   const baseUrl = getBaseUrl('fetch-plan-data');
+  if (!baseUrl) {
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData: fetch-plan-data missing in configs.json');
+    return '';
+  }
 
   const xhr = new XMLHttpRequest();
   xhr.open('POST', baseUrl, false);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.setRequestHeader('Accept', 'application/json');
-  xhr.send(JSON.stringify({
+  // Health uses "hospitalplan" key; Protection uses "prospectSA"
+  const isHealth = String(prospectCategory).trim() === 'Health';
+  const body = {
     prospectAge,
     prospectGender,
     prospectCategory,
-    prospectSA,
-  }));
+    ...(isHealth ? { hospitalplan: String(planTerm) } : { prospectSA }),
+  };
 
-  if (xhr.status < 200 || xhr.status >= 300) {
+  try {
+    xhr.send(JSON.stringify(body));
+  } catch (e) {
+    // Sync XHR throws NetworkError on CORS block or connectivity failure
+    fetchPlanDataErrorMsg = e.message || 'Network error';
+    fetchPlanDataErrorStatus = 'NetworkError';
     // eslint-disable-next-line no-console
-    console.error('fetchPlanData API error:', xhr.status, xhr.statusText);
-    return null;
+    console.error('fetchPlanData network/CORS error:', e.message);
+    return 'ERROR';
   }
 
   let response;
@@ -649,14 +681,110 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
     response = JSON.parse(xhr.responseText);
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error('fetchPlanData JSON parse error:', e);
-    return null;
+    console.error('fetchPlanData JSON parse error (HTTP', xhr.status, '):', e);
+    return '';
+  }
+
+  // Gateway / proxy error — e.g. BBL API layer returned HTTP 500
+  // with { success: false, status: 500, message: "..." }
+  if (response?.success === false) {
+    fetchPlanDataErrorMsg = response.message || 'Unknown error';
+    fetchPlanDataErrorStatus = String(response.status || 'Error');
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData gateway error:', fetchPlanDataErrorStatus, fetchPlanDataErrorMsg);
+    return 'ERROR';
+  }
+
+  // AIA API-level error — { status: "ERROR", data: {}, errMsg: "..." }
+  if (response?.status === 'ERROR') {
+    fetchPlanDataErrorMsg = response.errMsg || 'Unknown error';
+    fetchPlanDataErrorStatus = 'ERROR';
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData API returned ERROR:', fetchPlanDataErrorMsg);
+    return 'ERROR';
   }
 
   const plans = response?.data?.plans;
-  if (!Array.isArray(plans) || plans.length === 0) return null;
+  if (!Array.isArray(plans) || plans.length === 0) return '';
 
-  return plans[0];
+  const term = String(planTerm || '').trim();
+  const category = String(prospectCategory || '').trim();
+  let matched = null;
+
+  if (category === 'Protection') {
+    matched = plans.find((p) => p.planCode === term) ?? null;
+  } else if (category === 'Health') {
+    matched = plans.find((p) => p.rider?.[0]?.roomAndBoard === Number(planTerm)) ?? null;
+  }
+
+  if (!matched) {
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData: no plan matched for category', category, 'planTerm', term);
+    return '';
+  }
+
+  fetchPlanDataResult = matched;
+  return JSON.stringify(matched);
+}
+
+/**
+ * Returns a named field from the last fetchPlanData call.
+ * For nested rider fields use dot notation: "rider.0.roomAndBoard"
+ *
+ * @name getPlanField
+ * @param {string} fieldName - Top-level key (e.g. "planCode", "premium")
+ *                             or dot-path (e.g. "rider.0.roomAndBoard")
+ * @return {string}
+ */
+function getPlanField(fieldName) {
+  if (!fetchPlanDataResult) return '';
+  const value = String(fieldName).split('.')
+    .reduce((obj, k) => (obj != null ? obj[k] : null), fetchPlanDataResult);
+  return value != null ? String(value) : '';
+}
+
+/**
+ * Returns a named field from the rider matching riderCode in the last fetchPlanData result.
+ * Returns defaultValue if the riderCode is absent from the rider array.
+ *
+ * @name getRiderField
+ * @param {string} riderCode - e.g. "TI_Free", "ADBN8", "WP_FREE"
+ * @param {string} fieldName - e.g. "riderSA", "riderName"
+ * @param {string} [defaultValue] - returned when riderCode not found (default: '')
+ * @return {string}
+ */
+function getRiderField(riderCode, fieldName, defaultValue) {
+  const fallback = defaultValue != null ? String(defaultValue) : '';
+  if (!fetchPlanDataResult) return fallback;
+  const riders = fetchPlanDataResult.rider;
+  if (!Array.isArray(riders)) return fallback;
+  const rider = riders.find((r) => r.riderCode === riderCode);
+  if (!rider) return fallback;
+  const value = rider[fieldName];
+  return value != null ? String(value) : fallback;
+}
+
+/**
+ * Returns the error message stored by the last fetchPlanData call that received
+ * an ERROR status, or '' when the last call succeeded.
+ *
+ * @name getPlanError
+ * @return {string}
+ */
+function getPlanError() {
+  return fetchPlanDataErrorMsg;
+}
+
+/**
+ * Returns the error status stored by the last fetchPlanData call:
+ * "ERROR" for an AIA API-level error, the HTTP status code string (e.g. "500")
+ * for a gateway error, or '' when the last call succeeded.
+ *
+ * @name getPlanErrorStatus
+ * @return {string}
+ */
+function getPlanErrorStatus() {
+  return fetchPlanDataErrorStatus;
 }
 
 /**
@@ -710,8 +838,6 @@ function fetchCcCampaignDetails(campaignId, language) {
 }
 
 function getidAndDob(id, dob) {
-  console.log('id', id);
-  console.log('dob', dob);
   const parts = dob.split(/[-/]/);
   // parts: [yyyy, mm, dd]  →  reorder to ddmmyyyy
   const ddmmyyyy = `${parts[2]}${parts[1]}${parts[0]}`;
@@ -809,6 +935,33 @@ function getSelectedLabelValue(dropdown) {
   return parts.length > 0 ? parts[0].trim() : '';
 }
 
+/**
+* Returns BranchName display labels for a given province.
+* Maps to enumNames for branch dropdown.
+*
+* @name getCampaignNames
+* @param {string} campaignId - Campaign ID to look up in the campaign details JSON
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string}
+*/
+function getCampaignNames(campaignId, lang = 'th') {
+  const data = fetchCcCampaignDetails(campaignId, lang);
+  return data.campaignName;
+}
+
+/**
+* Returns CampaignDetail for a given campaign ID.
+*
+* @name getCampaignDetails
+* @param {string} campaignId - Campaign ID to look up in the campaign details JSON
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string}
+*/
+function getCampaignDetails(campaignId, lang = 'th') {
+  const data = fetchCcCampaignDetails(campaignId, lang);
+  return data.campaignDetail;
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -833,7 +986,12 @@ export {
   CcApplicationStatus,
   getCcField,
   fetchPlanData,
-  fetchCcCampaignDetails,
+  getPlanField,
+  getRiderField,
+  getPlanError,
+  getPlanErrorStatus,
+  getCampaignDetails,
+  getCampaignNames,
   formatDateTime,
   updateTextCount,
   getSelectedLabelName,

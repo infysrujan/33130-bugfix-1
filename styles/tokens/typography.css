@@ -22,6 +22,7 @@
   --bbl-font-family-primary: 'BBL Sans', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
   --bbl-font-family-looped: 'BBL Sans Looped', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
   --bbl-font-family-medium: 'BBL Sans Medium', 'BangkokBank-Medium', Tahoma, Helvetica, Arial, sans-serif;
+  --bbl-font-family-bold: 'BBL Sans Bold', system-ui, sans-serif;
 
   /* =========================================================================
      FONT WEIGHTS
@@ -56,6 +57,9 @@
   --bbl-font-size-h3-mobile: 1.125rem;   /* 18px / 24px */
   --bbl-font-size-h4-mobile: 0.875rem;    /* 14px / 19px */
 
+  /* Intermediate */
+  --bbl-font-size-15: 0.9375rem;          /* 15px */
+
   /* Body - Desktop */
   --bbl-font-size-b1-desktop: 1rem;       /* 16px / 22px */
   --bbl-font-size-b2-desktop: 0.875rem; /* 14px / 18px */
@@ -79,6 +83,7 @@
   --bbl-line-height-b1-desktop: 1.375rem; /* 22px */
   --bbl-line-height-b2-desktop: 1.1875rem; /* 18px–19px, based on the client’s feedback.*/
   --bbl-line-height-b3-desktop: 1rem;     /* 16px */
+  --bbl-line-height-button: 1.3125rem;    /* 21px */
 
   /* Mobile */
   --bbl-line-height-d1-mobile: 3.3125rem; /* 53px */
@@ -167,6 +172,9 @@
   --bbl-text-banner-description-size: var(--bbl-heading-h3-reg-size);
   --bbl-text-banner-description-line-height: var(--bbl-heading-h3-reg-line-height);
   --bbl-text-banner-description-weight: var(--bbl-heading-h3-reg-weight);
+
+  /* --- Calculator / Form Titles --- */
+  --bbl-text-calculator-title-size: 1.4rem; /* 22.4px */
 
   /* --- Card / Section Titles --- */
   --bbl-text-article-card-title-size: var(--bbl-heading-h2-size);

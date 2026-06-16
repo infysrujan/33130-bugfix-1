@@ -30,7 +30,7 @@
         },
         {
           "component": "select",
-          "name": "properties.linkType",
+          "name": "linkType",
           "label": "Button Style",
           "valueType": "string",
           "value": "primary",

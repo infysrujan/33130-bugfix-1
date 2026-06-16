@@ -82,6 +82,10 @@
                                 {
                                     "name": "Form Review Panel 2 Column",
                                     "value": "form-review-2col"
+                                },
+                                {
+                                    "name": "Custom Fieldset Approval Panel",
+                                    "value": "custom-fieldset-approval"
                                 }
                             ]
                         }

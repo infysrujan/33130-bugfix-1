@@ -18,7 +18,7 @@ function formatMenuCardDate(dateStr) {
     const day = date.getDate();
     return `${day} ${month} ${buddhistYear}`;
   }
-  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function parseBooleanFlag(value, defaultValue = false) {

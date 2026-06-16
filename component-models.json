@@ -4178,7 +4178,7 @@
       },
       {
         "component": "select",
-        "name": "properties.linkType",
+        "name": "linkType",
         "label": "Button Style",
         "valueType": "string",
         "value": "primary",
@@ -6564,6 +6564,10 @@
               {
                 "name": "Form Review Panel 2 Column",
                 "value": "form-review-2col"
+              },
+              {
+                "name": "Custom Fieldset Approval Panel",
+                "value": "custom-fieldset-approval"
               }
             ]
           }
@@ -7185,6 +7189,28 @@
           {
             "name": "12 column",
             "value": "12"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Button Style",
+        "valueType": "string",
+        "value": "primary",
+        "description": "Visual style variant for the button",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
           }
         ]
       },

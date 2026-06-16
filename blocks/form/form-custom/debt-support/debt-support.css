@@ -1,0 +1,518 @@
+/* Debt Support registration — scoped via field-main-form-panel + field-loan-type */
+
+/* override global form error color */
+main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) .form form .field-invalid .field-description {
+  padding-left: var(--bbl-space-250);
+  margin-top: 0.3125rem;
+}
+
+main .custom-forms .form label,
+main .custom-forms .form fieldset.checkbox-group-wrapper legend,
+main .custom-forms .form fieldset.radio-group-wrapper legend,
+main .custom-forms .form form p {
+  font-weight: var(--form-label-font-weight);
+  font-size: var(--bbl-font-size-h4-mobile);
+  color: var(--form-label-color);
+}
+
+main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) div.form-wrapper,
+main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) div.default-content-wrapper {
+  padding: 0;
+  border-radius: unset;
+  box-shadow: none;
+}
+
+@media (width >= 64rem) {
+  main .custom-forms .form label,
+  main .custom-forms .form fieldset.checkbox-group-wrapper legend,
+  main .custom-forms .form fieldset.radio-group-wrapper legend,
+  main .custom-forms .form form p {
+    font-size: var(--form-font-size-xs);
+  }
+}
+
+main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) {
+  padding-inline: 0.9375rem;
+
+  & :is(.form-wrapper, .form.block, .form),
+  & .form form,
+  & .form form fieldset.panel-wrapper.field-main-form-panel {
+    width: 100%;
+    max-width: 46.25rem;
+    margin-inline: auto;
+  }
+
+  & :is(.form-wrapper, .form.block, .form) {
+    padding: 0;
+    box-shadow: unset;
+  }
+
+  /* Typography base — form tokens first, global tokens for line-height / family */
+  & .form form {
+    margin-top: 0.9375rem;
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--form-font-size-xs);
+    font-weight: var(--form-label-font-weight);
+    line-height: var(--bbl-text-default-line-height);
+    color: var(--bbl-color-grey-85);
+  }
+
+  & .form form fieldset.panel-wrapper.field-main-form-panel {
+    padding: 0;
+  }
+
+  /* Inputs */
+  & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .date-wrapper).field-wrapper :is(input, textarea),
+  & .drop-down-wrapper.field-wrapper select {
+    width: 100%;
+    height: 3.125rem;
+    margin: 0;
+    padding: 0 var(--bbl-space-250);
+    font-size: var(--form-input-font-size);
+    color: var(--bbl-color-grey-100);
+    border: var(--form-input-border-size) solid var(--bbl-color-grey-150);
+    border-radius: 0.4375rem;
+    background-color: var(--form-input-background-color);
+    line-height: var(--bbl-line-height-b1-desktop);
+  }
+
+  & .drop-down-wrapper.field-wrapper select {
+    padding-right: var(--bbl-space-500);
+    color: var(--bbl-color-black);
+    background: var(--form-input-background-color) url('../../../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
+    font-family: var(--bbl-font-family-medium);
+    font-weight: var(--bbl-body-b1-medium-weight);
+    cursor: pointer;
+    appearance: none;
+  }
+
+  & .form textarea {
+    height: auto;
+    min-height: 9.375rem;
+    margin-top: var(--bbl-space-100);
+    margin-bottom: var(--bbl-space-200);
+    padding: var(--bbl-space-150) var(--bbl-space-250);
+    line-height: var(--bbl-line-height-h2-mobile);
+  }
+
+  & .form :is(input, textarea)::placeholder {
+    opacity: 1;
+    color: var(--bbl-color-grey-150);
+    line-height: var(--bbl-line-height-b1-desktop);
+  }
+
+  & .form :is(input, select, textarea):is(:hover, :focus) {
+    color: var(--bbl-color-black);
+    border-color: var(--bbl-color-blue-90);
+    outline: none;
+  }
+
+  & .form form :is(p, .repeat-wrapper, .field-wrapper) {
+    margin: 0;
+    gap: var(--form-field-gap) var(--form-field-vert-gap);
+  }
+
+  & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
+    margin-bottom: 0.625rem;
+  }
+
+  & .form form :is(.field-approvalcheckbox, .field-loan-type .checkbox-group-wrapper) input[type='checkbox'] {
+    flex-shrink: 0;
+    width: var(--bbl-space-250);
+    height: var(--bbl-space-250);
+    margin: 0;
+    cursor: pointer;
+  }
+
+  /* Loan type panel */
+  & .form form fieldset.panel-wrapper.field-loan-type {
+    margin-bottom: 0.625rem;
+    border-radius: 0.4375rem;
+    padding: 0 0.3125rem;
+
+    & > legend {
+      margin-top: 0;
+    }
+  }
+
+  & .form form .field-wrapper:has(> .checkbox-group-wrapper) {
+    padding-block: 0;
+  }
+
+  & .form form .field-loan-type .checkbox-group-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    gap: 0.625rem var(--bbl-space-300);
+    margin: 0 0 0.9375rem;
+    padding: 0;
+
+    & > legend.field-label {
+      flex: 0 0 100%;
+      width: 100%;
+      margin-top: var(--bbl-space-100);
+      padding-left: 0.625rem;
+      text-align: left;
+      background: none;
+      position: initial;
+      font-size: var(--form-font-size-xs);
+      font-weight: var(--form-label-font-weight);
+    }
+
+    & .checkbox-wrapper {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      gap: var(--bbl-space-100);
+      width: 100%;
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    & .checkbox-wrapper label {
+      font-size: var(--bbl-font-size-h4-mobile);
+    }
+  }
+
+  /* Radio tabs — side-by-side on all breakpoints (matches live mobile) */
+  & .form form .radio-group-wrapper.radio-tabs {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 0.9375rem;
+    padding: 0;
+    overflow: visible;
+    border: none;
+
+    & > legend.field-label {
+      flex: 0 0 100%;
+      width: 100%;
+      margin: 0 0 0.625rem;
+      padding-left: 0.625rem;
+      text-align: left;
+      font-size: var(--form-fieldset-legend-font-size);
+      font-weight: var(--form-fieldset-legend-font-weight);
+      line-height: var(--bbl-heading-h4-line-height);
+      font-family: var(--bbl-font-family-medium);
+      color: var(--form-fieldset-legend-color);
+      background: none;
+      position: inherit;
+    }
+
+    & > .radio-wrapper {
+      position: relative;
+      display: flex;
+      flex: 1 0 25%;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      min-width: 0;
+      height: var(--bbl-space-1000);
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      border: none;
+      gap: 0;
+
+      & input[type='radio'] {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background: var(--bbl-color-white);
+        border: 1px solid var(--bbl-color-grey-150);
+        border-left: none;
+        border-radius: 0;
+        appearance: none;
+        cursor: pointer;
+      }
+
+      & input[type='radio']:checked {
+        background-color: var(--bbl-color-blue-145);
+      }
+
+      &:first-of-type input[type='radio'] {
+        border-left: 1px solid var(--bbl-color-grey-150);
+        border-radius: 0.4375rem 0 0 0.4375rem;
+      }
+
+      &:last-of-type input[type='radio'] {
+        border-radius: 0 0.4375rem 0.4375rem 0;
+      }
+
+      & label.field-label {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0 0.625rem;
+        font-size: var(--bbl-font-size-h4-mobile);
+        font-weight: var(--form-label-font-weight);
+        line-height: var(--bbl-line-height-h4-mobile);
+        text-align: center;
+        cursor: pointer;
+        background: transparent;
+      }
+    }
+
+    &.field-invalid .radio-wrapper input[type='radio'] {
+      border-color: var(--bbl-color-orange-130);
+    }
+  }
+
+  /* Section legends */
+  & .form form fieldset.panel-wrapper.field-wrapper > legend.field-label {
+    margin: 0;
+    padding: 0.625rem 0 var(--bbl-space-075) 0.625rem;
+    text-align: left;
+    font-family: var(--bbl-font-family-medium);
+    font-size: var(--form-fieldset-legend-font-size);
+    font-weight: var(--form-fieldset-legend-font-weight);
+    line-height: var(--bbl-heading-h4-line-height);
+    color: var(--form-fieldset-legend-color);
+    background: unset;
+    text-decoration: underline;
+    margin-bottom: 10px;
+  }
+
+  /* Mobile: stack half-width fields in a single column */
+  & .form form .field-wrapper.col-6 {
+    grid-column: span 12;
+    width: 100%;
+  }
+
+  /* Rich text — note + T&C (replaces authored inline styles) */
+  & .form form :is(.field-note, .field-term > .field-ticktext.tnc-text-decoration) {
+    line-height: var(--bbl-line-height-h2-mobile);
+  }
+
+  & .form form .field-note {
+    margin-top: 0.625rem;
+    margin-bottom: 0.625rem;
+
+    & :is(p, div) {
+      margin: 0;
+      padding: 0;
+    }
+
+    & p + p {
+      margin-top: 0.3125rem;
+    }
+  }
+
+  & .form form :is(.field-note, .field-term > .field-ticktext.tnc-text-decoration) :is(strong, b) {
+    font-family: var(--bbl-font-family-medium);
+    font-size: var(--form-font-size-xs);
+    font-weight: var(--bbl-body-b1-medium-weight);
+    line-height: var(--bbl-body-b1-medium-line-height);
+  }
+
+  /* Terms — consent checkbox + scrollable text */
+  & .form form fieldset.panel-wrapper.field-term {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    align-items: start;
+    gap: 0;
+    width: 100%;
+    margin-top: 0.9375rem;
+    padding: 0 0 0 2.1875rem;
+
+    & > legend {
+      display: none;
+    }
+
+    & > .field-approvalcheckbox {
+      display: contents;
+    }
+
+    & input[name='approvalcheckbox'] {
+      position: absolute;
+      top: var(--bbl-space-050);
+      left: 0;
+      z-index: 1;
+      width: var(--bbl-space-250);
+      height: var(--bbl-space-250);
+      margin: 3px var(--bbl-space-100) 3px var(--bbl-space-050);
+      flex: none;
+      cursor: pointer;
+      outline: none;
+    }
+
+    & input[name='approvalcheckbox']:hover {
+      border: 1px solid var(--bbl-color-grey-125);
+    }
+
+    & input[name='approvalcheckbox']:invalid {
+      box-shadow: none;
+      outline: none;
+    }
+
+    & :is(> .field-approvalcheckbox, .field-approvalcheckbox) .field-description {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      position: static;
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
+      font-size: var(--bbl-body-b2-size);
+      font-weight: var(--bbl-body-b2-weight);
+      line-height: var(--bbl-body-b2-line-height);
+      clear: both;
+      order: unset;
+    }
+
+    & > .field-ticktext.tnc-text-decoration {
+      grid-column: 1;
+      grid-row: 1;
+      max-height: 9.375rem;
+      margin: 0 0 1.25rem;
+      padding: 0 var(--bbl-space-100) 0 0;
+      overflow: auto;
+      scrollbar-color: var(--bbl-color-active-blue) var(--bbl-color-grey-10);
+      scrollbar-width: thin;
+
+      & > p {
+        margin: 0;
+        padding: 0;
+      }
+
+      & > p > p {
+        margin: 0 0.625rem 0 0;
+        padding: 0;
+        font-size: var(--bbl-font-size-h4-mobile);
+      }
+
+      & > p > p:first-child {
+        margin-bottom: 0.625rem;
+      }
+
+      & a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      &::-webkit-scrollbar {
+        width: var(--bbl-space-100);
+      }
+
+      &::-webkit-scrollbar-track {
+        background: var(--bbl-color-grey-10);
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: var(--bbl-color-active-blue);
+        border-radius: var(--bbl-rounded-050);
+      }
+    }
+  }
+
+  /* Buttons */
+  & .form form fieldset.panel-wrapper.field-button-panel {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 44px;
+    width: 100%;
+    margin-top: var(--bbl-space-200);
+
+    & > .field-wrapper {
+      display: flex;
+      justify-content: center;
+      width: auto;
+      max-width: none;
+      clear: none;
+    }
+
+    & :is(.field-submitcta, .field-cancelcta) :is(.button, button) {
+      min-width: 9.6875rem;
+      height: 2.75rem;
+      margin: 0;
+      border-radius: 0.4375rem;
+      font-size: var(--bbl-font-size-h4-mobile);
+      font-weight: var(--form-title-font-weight);
+      line-height: var(--bbl-line-height-h4-mobile);
+    }
+
+    & .field-submitcta :is(.button, button):not(:disabled) {
+      color: var(--bbl-color-white);
+      border: 1px solid var(--bbl-color-active-blue);
+      background: var(--bbl-color-active-blue);
+    }
+
+    & .field-cancelcta :is(.button, button):not(:disabled) {
+      color: var(--bbl-color-active-blue);
+      border: 1px solid var(--bbl-color-active-blue);
+      background: var(--bbl-color-white);
+
+      &:hover {
+        color: var(--bbl-color-white);
+        background: var(--bbl-color-active-blue);
+      }
+    }
+
+    & :is(.field-submitcta, .field-cancelcta) :is(.button, button):disabled {
+      color: var(--bbl-color-grey-60);
+      border: 1px solid var(--bbl-color-gray-300);
+      background: var(--bbl-color-gray-300);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: 0;
+    
+    & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .date-wrapper).field-wrapper :is(input, textarea),
+    & .drop-down-wrapper.field-wrapper select {
+      height: 2.9375rem;
+      line-height: var(--bbl-line-height-h3-desktop);
+    }
+
+    & .form form .field-loan-type .checkbox-group-wrapper .checkbox-wrapper {
+      width: calc(50% - var(--bbl-space-150));
+      padding-left: var(--bbl-space-250);
+      margin-bottom: 10px;
+
+      & label {
+        font-size: var(--form-font-size-xs);
+      }
+    }
+
+    & .form form .radio-group-wrapper.radio-tabs {
+      margin-bottom: 0;
+
+      & > .radio-wrapper label.field-label {
+        font-size: var(--form-font-size-xs);
+        line-height: var(--bbl-line-height-b1-desktop);
+      }
+    }
+
+    & .form form .field-wrapper.col-6 {
+      grid-column: span 6;
+    }
+
+    & .form form fieldset.panel-wrapper.field-term > .field-ticktext.tnc-text-decoration > p > p {
+      font-size: var(--form-font-size-xs);
+    }
+
+    & .form form fieldset.panel-wrapper.field-button-panel :is(.field-submitcta, .field-cancelcta) :is(.button, button) {
+      font-size: var(--form-font-size-xs);
+      line-height: var(--bbl-line-height-b1-desktop);
+    }
+  }
+}
