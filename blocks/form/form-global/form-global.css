@@ -88,8 +88,82 @@ main .section.form-container .form .col-6:is(.field-cancel, .field-reset) :is(.b
   margin-right: auto;
 }
 
+/* ----------START RADIO TABS----------- */
+main .form form .radio-group-wrapper.radio-tabs {
+  gap: 0;
+}
+
+main .form form .radio-group-wrapper.radio-tabs > .radio-wrapper {
+  position: relative;
+  display: flex;
+  flex: 1 0 25%;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: var(--bbl-space-1000);
+  margin: 0 0 8px;
+  margin-left: 0;
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  gap: 0;
+}
+
+main .form form .radio-group-wrapper.radio-tabs > .radio-wrapper label.field-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-basis: auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 var(--bbl-space-100);
+  color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-medium);
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+}
+
+main .form form .radio-group-wrapper.radio-tabs > .radio-wrapper input[type='radio'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-grey-150);
+  border-left: none;
+  border-radius: 0;
+  appearance: none;
+  cursor: pointer;
+}
+
+main .form form .radio-group-wrapper > .radio-wrapper input[type='radio']:checked {
+  background-color: var(--bbl-color-blue-145);
+}
+
+main .form form .radio-group-wrapper.radio-tabs > .radio-wrapper:first-of-type input[type='radio'] {
+  border-left: 1px solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem 0 0 0.4375rem;
+}
+
+main .form form .radio-group-wrapper.radio-tabs > .radio-wrapper:last-of-type input[type='radio'] {
+  border-radius: 0 0.4375rem 0.4375rem 0;
+}
+
+/* ----------END RADIO TABS----------- */
+
 /* Radio group — segmented time slot and tab radio button styling */
-main .section.form-container .form form .radio-group-wrapper.horizontal {
+
+/* main .section.form-container .form form .radio-group-wrapper.horizontal {
   justify-content: center;
   margin-bottom: 0.625rem;
   gap: 1.875rem;
@@ -203,7 +277,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-w
 
 main .section.form-container .form form .radio-group-wrapper.radio-tabs.field-invalid .radio-wrapper input[type='radio'] {
   border-color: var(--bbl-color-orange-130);
-}
+} */
 
 /* Select dropdown custom chevron style */
 main .section.form-container .form form select {
