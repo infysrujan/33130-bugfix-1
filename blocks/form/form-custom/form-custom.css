@@ -132,6 +132,10 @@ main .section.form-container.custom-forms .form form :is(.field-wrapper:has(sele
   color: #4E4E4E;
 }
 
+main .form input:disabled {
+  background-color: #e1e1e1;
+}
+
 main .section.form-container.custom-forms .panel-wrapper>legend.field-label {
   color: #4E4E4E;
   font-size: 16px;
@@ -173,6 +177,7 @@ main .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .e
   border-radius: 7px;
   font-size: 16px;
   line-height: 44px;
+  margin: 0;
 }
 
 main .section.form-container.custom-forms .form select {
@@ -210,6 +215,7 @@ main .section.form-container.custom-forms .drop-down-wrapper.field-wrapper selec
   border-radius: 7px;
   font-size: 13.3px;
   line-height: 44px;
+  margin: 0;
 }
 
 main .section.form-container.custom-forms .form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
