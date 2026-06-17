@@ -156,8 +156,9 @@ export default async function decorate(block) {
     inp.id = f.id;
     inp.autocomplete = 'off';
     inp.inputMode = f.valueType === 'decimal' ? 'decimal' : 'numeric';
-    inp.value = f.valueType === 'decimal' ? '0.00' : '0';
-    if (f.valueType === 'decimal') inp.placeholder = '0.00';
+    const defaultVal = f.valueType === 'decimal' ? '0.00' : '0';
+    inp.value = defaultVal;
+    inp.placeholder = defaultVal;
     inpCol.appendChild(inp);
     box.appendChild(lblCol);
     box.appendChild(inpCol);
@@ -203,6 +204,8 @@ export default async function decorate(block) {
 
   const siteConfigs = await fetchConfigs();
   const formulaDescription = siteConfigs[configKeyMap[calcType]] || '';
+  // eslint-disable-next-line no-console
+  console.log('[SME Calc] calcType:', calcType, '| key:', configKeyMap[calcType], '| formula:', formulaDescription || '(EMPTY - not in configs)');
 
   const resultConfig = {
     monthly: { prefix: resultText, suffix: ' baht.', integer: false },
@@ -371,12 +374,12 @@ export default async function decorate(block) {
       fieldValues[f.id] = getVal(f.id);
     });
 
-    if (calcType === 'term') {
+     if (calcType === 'term') {
       // Formula from config: n = [lnA-ln(A-Pi)]/ln(1+i)
       // A = monthly payment (field P), P = principal (field A), i = annual% / 1200
       const result = formulaCompute(formulaDescription, {
-        A: fieldValues.P,
-        P: fieldValues.A,
+        P: fieldValues.P,
+        A: fieldValues.A,
         i: fieldValues.i / 1200,
       });
       return Number.isFinite(result) ? result : 0;
@@ -396,7 +399,35 @@ export default async function decorate(block) {
     return Number.isFinite(result) ? result : 0;
   };
 
+  function validateAndMarkErrors() {
+    fields.forEach((f) => {
+      block.querySelector(`#${f.id}`)?.classList.remove('input-error');
+    });
+
+    let hasError = false;
+
+    // Scenarios 1–3: highlight the first field whose value is 0
+    for (let i = 0; i < fields.length; i += 1) {
+      if (getVal(fields[i].id) === 0) {
+        block.querySelector(`#${fields[i].id}`)?.classList.add('input-error');
+        hasError = true;
+        break;
+      }
+    }
+
+    // Scenario 4: decimal fields with value > 100 are invalid
+    fields.forEach((f) => {
+      if (f.valueType === 'decimal' && getVal(f.id) > 100) {
+        block.querySelector(`#${f.id}`)?.classList.add('input-error');
+        hasError = true;
+      }
+    });
+
+    return !hasError;
+  }
+
   calcBtn.addEventListener('click', () => {
+    if (!validateAndMarkErrors()) return;
     lastResult = compute();
     const displayVal = rc.integer
       ? Math.floor(lastResult).toLocaleString('en-US')
@@ -429,6 +460,7 @@ export default async function decorate(block) {
     });
 
     inp.addEventListener('input', () => {
+      inp.classList.remove('input-error');
       if (!decimal) {
         const pos = inp.selectionStart;
         const raw = inp.value.replace(/,/g, '');
