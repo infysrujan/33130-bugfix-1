@@ -155,7 +155,7 @@
   list-style: none;
   display: none;
   max-height: 10rem;
-  overflow-y: auto;
+  overflow: hidden auto;
   box-sizing: border-box;
   padding: 0;
   margin-top: 0.1875rem;

@@ -196,8 +196,8 @@
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-40);
   border-radius: var(--bbl-space-100);
-  max-height: 9.375rem;
-  overflow-y: auto;
+  max-height: 14rem;
+  overflow: hidden auto;
   z-index: 1000;
   display: none;
   box-shadow: 0 var(--bbl-space-050) var(--bbl-space-100) var(--bbl-color-black-alpha-12);
