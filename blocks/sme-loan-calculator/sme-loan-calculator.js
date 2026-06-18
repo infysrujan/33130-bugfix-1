@@ -4,7 +4,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 export default async function decorate(block) {
   const placeholders = await fetchPlaceholders();
 
-  // ── Helpers (defined first to satisfy no-use-before-define) ──
+  // ── Helpers ──
   function el(tag, cls) {
     const e = document.createElement(tag);
     if (cls) e.className = cls;
@@ -25,13 +25,11 @@ export default async function decorate(block) {
     row.appendChild(td);
   }
 
-  // CSP-safe recursive descent parser — object pattern avoids mutual no-use-before-define
+  // CSP-safe recursive descent parser
   function evalExpr(str) {
     const p = {
       pos: 0,
-      peek() {
-        return str[this.pos];
-      },
+      peek() { return str[this.pos]; },
       parseNumber() {
         let s = '';
         while (this.pos < str.length && /[\d.]/.test(this.peek())) {
@@ -44,30 +42,20 @@ export default async function decorate(block) {
         if (str.startsWith('Math.log(', this.pos)) {
           this.pos += 9;
           const val = this.parseExpression();
-          if (this.peek() === ')') {
-            this.pos += 1;
-          }
+          if (this.peek() === ')') this.pos += 1;
           return Math.log(val);
         }
         if (this.peek() === '(') {
           this.pos += 1;
           const val = this.parseExpression();
-          if (this.peek() === ')') {
-            this.pos += 1;
-          }
+          if (this.peek() === ')') this.pos += 1;
           return val;
         }
         return this.parseNumber();
       },
       parseUnary() {
-        if (this.peek() === '-') {
-          this.pos += 1;
-          return -this.parseFactor();
-        }
-        if (this.peek() === '+') {
-          this.pos += 1;
-          return this.parseFactor();
-        }
+        if (this.peek() === '-') { this.pos += 1; return -this.parseFactor(); }
+        if (this.peek() === '+') { this.pos += 1; return this.parseFactor(); }
         return this.parseFactor();
       },
       parsePower() {
@@ -194,6 +182,9 @@ export default async function decorate(block) {
   else if (ids.includes('A') && ids.includes('n') && !ids.includes('P')) calcType = 'loanbalance';
   else if (ids.includes('P') && ids.includes('A') && !ids.includes('n')) calcType = 'term';
 
+  // eslint-disable-next-line no-console
+  console.log('SME calcType =', calcType, '| ids =', JSON.stringify(ids));
+
   const configKeyMap = {
     monthly: 'smeMonthlyPayment',
     loanbalance: 'smeLoanBalance',
@@ -201,8 +192,16 @@ export default async function decorate(block) {
     wc: 'smeWorkingCapitalNeeds',
   };
 
-  const siteConfigs = await fetchConfigs();
-  const formulaDescription = siteConfigs[configKeyMap[calcType]] || '';
+  let formulaDescription = '';
+  try {
+    const siteConfigs = await fetchConfigs();
+    formulaDescription = siteConfigs[configKeyMap[calcType]] || '';
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('SME fetchConfigs failed:', e);
+  }
+  // eslint-disable-next-line no-console
+  console.log('SME formulaDescription =', formulaDescription);
 
   const resultConfig = {
     monthly: { prefix: resultText, suffix: ' baht.', integer: false },
@@ -210,9 +209,55 @@ export default async function decorate(block) {
     term: { prefix: resultText, suffix: ' month.', integer: true },
     wc: { prefix: resultText, suffix: ' baht.', integer: false },
   };
-  const rc = resultConfig[calcType];
+  const rc = resultConfig[calcType] || { prefix: resultText, suffix: '', integer: false };
 
-  // ── Group fields into rows (max 3 per row, new group on topText) ──
+  // ── Calculation helpers ──
+  const getVal = (id) => {
+    const inp = block.querySelector(`#${CSS.escape(id)}`);
+    if (!inp) return 0;
+    const v = parseFloat(inp.value.replace(/,/g, ''));
+    return Number.isFinite(v) ? v : 0;
+  };
+
+  const fmt = (n, dec = 2) => {
+    if (!Number.isFinite(n)) return 'N/A';
+    return n.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+  };
+
+  const compute = () => {
+    const fieldValues = {};
+    fields.forEach((f) => { fieldValues[f.id] = getVal(f.id); });
+
+    if (calcType === 'term') {
+      // n = [lnA - ln(A - P*i)] / ln(1+i)
+      // P = principal (Loan Balance), A = monthly payment (Loan Payment), i = monthly rate
+      const P = fieldValues.P;
+      const A = fieldValues.A;
+      const i = fieldValues.i / 1200;
+      // eslint-disable-next-line no-console
+      console.log('SME TERM inputs ->', { P, A, i, inner: A - P * i });
+      const inner = A - P * i;
+      if (!(inner > 0) || !(i > 0)) return 0;
+      const result = (Math.log(A) - Math.log(inner)) / Math.log(1 + i);
+      return Number.isFinite(result) && result > 0 ? result : 0;
+    }
+
+    if (calcType === 'loanbalance') {
+      const result = formulaCompute(formulaDescription, {
+        ...fieldValues,
+        i: fieldValues.i / 1200,
+      });
+      return Number.isFinite(result) ? result : 0;
+    }
+
+    const result = formulaCompute(formulaDescription, fieldValues);
+    return Number.isFinite(result) ? result : 0;
+  };
+
+  // ── Build DOM ──
+  rows.forEach((r) => { r.style.display = 'none'; });
+
+  // Group fields
   const fieldGroups = [];
   let cur = { header: '', fields: [] };
   fields.forEach((f) => {
@@ -227,12 +272,7 @@ export default async function decorate(block) {
   });
   if (cur.fields.length) fieldGroups.push(cur);
 
-  // ── Build DOM ──
-  // Hide original rows instead of removing them so UE data-aue-* attributes stay in the DOM
-  rows.forEach((r) => { r.style.display = 'none'; });
-
   const dark = el('div', 'sme-calc-dark-section');
-
   fieldGroups.forEach((group) => {
     const row = el('div', 'row paddingmain');
     if (group.header) {
@@ -240,9 +280,7 @@ export default async function decorate(block) {
       hdr.textContent = group.header;
       row.appendChild(hdr);
     }
-    group.fields.forEach((f) => {
-      row.appendChild(buildFieldCard(f));
-    });
+    group.fields.forEach((f) => { row.appendChild(buildFieldCard(f)); });
     dark.appendChild(row);
   });
 
@@ -256,7 +294,6 @@ export default async function decorate(block) {
 
   // Result section
   const resultSection = el('div', 'sme-calc-result-section');
-
   const resultLabel = el('p', 'sme-calc-result-label');
   resultLabel.textContent = `${resultValue}`;
   resultSection.appendChild(resultLabel);
@@ -267,7 +304,6 @@ export default async function decorate(block) {
     fp.textContent = formulaDescription;
     resultSection.appendChild(fp);
   }
-
   if (description) {
     const dp = el('p', 'sme-calc-description');
     dp.textContent = description;
@@ -280,134 +316,26 @@ export default async function decorate(block) {
   resultSection.appendChild(addBtn);
   block.appendChild(resultSection);
 
-  // Comparison table (hidden until first ADD TO TABLE)
-  const tableSection = el('div', 'sme-calc-table-section');
-  tableSection.hidden = true;
-
-  const tableHeading = el('h2', 'sme-calc-table-heading');
-  tableHeading.textContent = placeholders.smeCompareHeading || 'Compare your Result';
-  tableSection.appendChild(tableHeading);
-
-  const resultColHeader = {
-    monthly: placeholders.smeResultColMonthly || 'Loan Payment',
-    loanbalance: placeholders.smeResultColLoanbalance || 'Loan Balance',
-    term: placeholders.smeResultColTerm || 'Term',
-    wc: placeholders.smeResultColWc || 'Working Capital',
-  };
-
-  const resulttbl = el('div', 'resulttbl');
-  const table = el('table', 'tablelong fontcomparetable');
-  const thead = document.createElement('thead');
-
-  const hasGroups = fieldGroups.some((g) => g.header && g.fields.length > 1);
-
-  if (hasGroups) {
-    const row1 = document.createElement('tr');
-    const row2 = document.createElement('tr');
-
-    const resTh = document.createElement('th');
-    resTh.className = 'lineth';
-    resTh.rowSpan = 2;
-    resTh.textContent = resultColHeader[calcType];
-    row1.appendChild(resTh);
-
-    fieldGroups.forEach((group) => {
-      if (group.header && group.fields.length > 1) {
-        const gTh = document.createElement('th');
-        gTh.className = 'lineth';
-        gTh.colSpan = group.fields.length;
-        gTh.textContent = group.header;
-        row1.appendChild(gTh);
-        group.fields.forEach((f) => {
-          const th = document.createElement('th');
-          th.className = 'lineth';
-          th.textContent = f.label;
-          row2.appendChild(th);
-        });
-      } else {
-        group.fields.forEach((f) => {
-          const th = document.createElement('th');
-          th.className = 'lineth';
-          th.rowSpan = 2;
-          th.textContent = f.label;
-          row1.appendChild(th);
-        });
-      }
-    });
-    thead.appendChild(row1);
-    thead.appendChild(row2);
-  } else {
-    const headerRow = document.createElement('tr');
-    appendTh(headerRow, resultColHeader[calcType]);
-    fields.forEach((f) => appendTh(headerRow, f.label));
-    thead.appendChild(headerRow);
-  }
-
-  const tbody = el('tbody', 'fontcompareno');
-  table.appendChild(thead);
-  table.appendChild(tbody);
-  resulttbl.appendChild(table);
-  tableSection.appendChild(resulttbl);
-  block.appendChild(tableSection);
-
-  // ── Calculation ──
+  // ── WIRE THE CALCULATE BUTTON IMMEDIATELY (before table build, so nothing can block it) ──
   let lastResult = null;
 
-  const getVal = (id) => {
-    const inp = block.querySelector(`#${id}`);
-    if (!inp) return 0;
-    const v = parseFloat(inp.value.replace(/,/g, ''));
-    return Number.isFinite(v) ? v : 0;
-  };
-
-  const fmt = (n, dec = 2) => {
-    if (!Number.isFinite(n)) return 'N/A';
-    return n.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
-  };
-
-  const compute = () => {
-    const fieldValues = {};
-    fields.forEach((f) => {
-      fieldValues[f.id] = getVal(f.id);
-    });
-
-    if (calcType === 'term') {
-      // Formula from config: n = [lnA-ln(A-Pi)]/ln(1+i)
-      // A = monthly payment (field P), P = principal (field A), i = annual% / 1200
-      const result = formulaCompute(formulaDescription, {
-        A: fieldValues.P,
-        P: fieldValues.A,
-        i: fieldValues.i / 1200,
-      });
-      return Number.isFinite(result) ? result : 0;
-    }
-
-    if (calcType === 'loanbalance') {
-      // Formula from config: P = A*((1+i)^n-1)/(i(1+i)^n)
-      // i = annual% / 1200
-      const result = formulaCompute(formulaDescription, {
-        ...fieldValues,
-        i: fieldValues.i / 1200,
-      });
-      return Number.isFinite(result) ? result : 0;
-    }
-
-    const result = formulaCompute(formulaDescription, fieldValues);
-    return Number.isFinite(result) ? result : 0;
-  };
-
   calcBtn.addEventListener('click', () => {
-    lastResult = compute();
-    const displayVal = rc.integer
-      ? Math.floor(lastResult).toLocaleString('en-US')
-      : fmt(lastResult);
-    if (!resultNum) {
-      resultLabel.textContent = '';
-      resultLabel.style.whiteSpace = 'pre-wrap';
-      resultNum = el('strong', 'sme-result-number');
-      resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
+    try {
+      lastResult = compute();
+      const displayVal = rc.integer
+        ? Math.floor(lastResult).toLocaleString('en-US')
+        : fmt(lastResult);
+      if (!resultNum) {
+        resultLabel.textContent = '';
+        resultLabel.style.whiteSpace = 'pre-wrap';
+        resultNum = el('strong', 'sme-result-number');
+        resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
+      }
+      resultNum.textContent = displayVal;
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('SME calc failed:', err, { calcType, rc, formulaDescription });
     }
-    resultNum.textContent = displayVal;
   });
 
   // ── Input behaviour ──
@@ -454,16 +382,88 @@ export default async function decorate(block) {
     });
   });
 
-  // ── Add to table ──
-  addBtn.addEventListener('click', () => {
-    if (lastResult === null) return;
-    tableSection.hidden = false;
-    const tr = document.createElement('tr');
-    appendTd(tr, rc.integer ? Math.floor(lastResult).toLocaleString('en-US') : fmt(lastResult));
-    fields.forEach((f) => {
-      const inp = block.querySelector(`#${f.id}`);
-      appendTd(tr, inp ? inp.value : '');
+  // ── Comparison table (built AFTER button is wired) ──
+  try {
+    const tableSection = el('div', 'sme-calc-table-section');
+    tableSection.hidden = true;
+
+    const tableHeading = el('h2', 'sme-calc-table-heading');
+    tableHeading.textContent = placeholders.smeCompareHeading || 'Compare your Result';
+    tableSection.appendChild(tableHeading);
+
+    const resultColHeader = {
+      monthly: placeholders.smeResultColMonthly || 'Loan Payment',
+      loanbalance: placeholders.smeResultColLoanbalance || 'Loan Balance',
+      term: placeholders.smeResultColTerm || 'Term',
+      wc: placeholders.smeResultColWc || 'Working Capital',
+    };
+
+    const resulttbl = el('div', 'resulttbl');
+    const table = el('table', 'tablelong fontcomparetable');
+    const thead = document.createElement('thead');
+    const hasGroups = fieldGroups.some((g) => g.header && g.fields.length > 1);
+
+    if (hasGroups) {
+      const row1 = document.createElement('tr');
+      const row2 = document.createElement('tr');
+      const resTh = document.createElement('th');
+      resTh.className = 'lineth';
+      resTh.rowSpan = 2;
+      resTh.textContent = resultColHeader[calcType] || '';
+      row1.appendChild(resTh);
+
+      fieldGroups.forEach((group) => {
+        if (group.header && group.fields.length > 1) {
+          const gTh = document.createElement('th');
+          gTh.className = 'lineth';
+          gTh.colSpan = group.fields.length;
+          gTh.textContent = group.header;
+          row1.appendChild(gTh);
+          group.fields.forEach((f) => {
+            const th = document.createElement('th');
+            th.className = 'lineth';
+            th.textContent = f.label;
+            row2.appendChild(th);
+          });
+        } else {
+          group.fields.forEach((f) => {
+            const th = document.createElement('th');
+            th.className = 'lineth';
+            th.rowSpan = 2;
+            th.textContent = f.label;
+            row1.appendChild(th);
+          });
+        }
+      });
+      thead.appendChild(row1);
+      thead.appendChild(row2);
+    } else {
+      const headerRow = document.createElement('tr');
+      appendTh(headerRow, resultColHeader[calcType] || '');
+      fields.forEach((f) => appendTh(headerRow, f.label));
+      thead.appendChild(headerRow);
+    }
+
+    const tbody = el('tbody', 'fontcompareno');
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    resulttbl.appendChild(table);
+    tableSection.appendChild(resulttbl);
+    block.appendChild(tableSection);
+
+    addBtn.addEventListener('click', () => {
+      if (lastResult === null) return;
+      tableSection.hidden = false;
+      const tr = document.createElement('tr');
+      appendTd(tr, rc.integer ? Math.floor(lastResult).toLocaleString('en-US') : fmt(lastResult));
+      fields.forEach((f) => {
+        const inp = block.querySelector(`#${CSS.escape(f.id)}`);
+        appendTd(tr, inp ? inp.value : '');
+      });
+      tbody.appendChild(tr);
     });
-    tbody.appendChild(tr);
-  });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('SME table build failed:', err);
+  }
 }
