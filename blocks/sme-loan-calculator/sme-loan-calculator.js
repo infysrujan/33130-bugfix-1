@@ -513,3 +513,4 @@ export default async function decorate(block) {
     tbody.appendChild(tr);
   });
 }
+
