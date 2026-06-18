@@ -180,12 +180,27 @@ export default async function decorate(block) {
   const hasResultText = rows[5]?.children.length === 1;
   const resultText = hasResultText ? cellText(rows[5]) : '';
 
+  const fieldMaxValues = {
+    P: 99999999999,
+    A: 9999999999,
+    n: 999,
+    i: 999999,
+    B: 99999999999,
+    C: 9999999,
+    D: 999999,
+    E: 99999999999,
+    F: 9999999,
+    G: 999999,
+    H: 9999999,
+  };
+
   const fields = rows.slice(hasResultText ? 6 : 5).map((r) => ({
     id: cellText(r, 0),
     label: cellText(r, 1),
     topText: cellText(r, 2),
     bottomText: cellText(r, 3),
     valueType: cellText(r, 4) || 'integer',
+    maxValue: fieldMaxValues[cellText(r, 0)] ?? null,
   }));
 
   const ids = fields.map((f) => f.id);
@@ -396,7 +411,35 @@ export default async function decorate(block) {
     return Number.isFinite(result) ? result : 0;
   };
 
+  function validateAndMarkErrors() {
+    fields.forEach((f) => {
+      block.querySelector(`#${f.id}`)?.classList.remove('input-error');
+    });
+
+    let hasError = false;
+
+    // Scenarios 1–3: highlight the first field whose value is 0
+    for (let i = 0; i < fields.length; i += 1) {
+      if (getVal(fields[i].id) === 0) {
+        block.querySelector(`#${fields[i].id}`)?.classList.add('input-error');
+        hasError = true;
+        break;
+      }
+    }
+
+    // Scenario 4: decimal fields with value > 100 are invalid
+    fields.forEach((f) => {
+      if (f.valueType === 'decimal' && getVal(f.id) > 100) {
+        block.querySelector(`#${f.id}`)?.classList.add('input-error');
+        hasError = true;
+      }
+    });
+
+    return !hasError;
+  }
+
   calcBtn.addEventListener('click', () => {
+    if (!validateAndMarkErrors()) return;
     lastResult = compute();
     const displayVal = rc.integer
       ? Math.floor(lastResult).toLocaleString('en-US')
@@ -424,16 +467,19 @@ export default async function decorate(block) {
       if (!Number.isFinite(v)) {
         inp.value = decimal ? '0.00' : '0';
       } else {
-        inp.value = decimal ? v.toFixed(2) : Math.round(v).toLocaleString('en-US');
+        const capped = f?.maxValue != null && v > f.maxValue ? f.maxValue : v;
+        inp.value = decimal ? capped.toFixed(2) : Math.round(capped).toLocaleString('en-US');
       }
     });
 
     inp.addEventListener('input', () => {
+      inp.classList.remove('input-error');
       if (!decimal) {
         const pos = inp.selectionStart;
         const raw = inp.value.replace(/,/g, '');
-        const num = parseInt(raw, 10);
+        let num = parseInt(raw, 10);
         if (!Number.isNaN(num)) {
+          if (f?.maxValue != null && num > f.maxValue) num = f.maxValue;
           const formatted = num.toLocaleString('en-US');
           const diff = formatted.length - inp.value.length;
           inp.value = formatted;

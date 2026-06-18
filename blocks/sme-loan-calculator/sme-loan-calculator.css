@@ -12,6 +12,8 @@
   padding: 0;
 }
 
+
+
 /* ── Page section background ──────────────────────────────── */
 .section.tabs-container {
   background: var(--bbl-color-truthful-dark-blue);
@@ -246,6 +248,10 @@ main {
 
 .textbox-cal::placeholder {
   color: var(--bbl-color-white-alpha-30);
+}
+
+.textbox-cal.input-error {
+  color: var(--bbl-color-red-130);
 }
 
 /* ── Bottom text under each field (Baht, Month, % per year) ─ */
