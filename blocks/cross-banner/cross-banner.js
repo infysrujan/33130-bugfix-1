@@ -1,4 +1,5 @@
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
+import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 export default function decorate(block) {
   const [
@@ -9,6 +10,7 @@ export default function decorate(block) {
     titleEl,
     descriptionEl,
     buttonEl,
+    targetEl,
   ] = block.children;
   // const pictureHTML = imgEl?.querySelector('img')?.outerHTML || '';
   const pictureDesktop = imgElDesktop?.querySelector('picture');
@@ -17,13 +19,14 @@ export default function decorate(block) {
   let pictureHTML = '';
 
   if (pictureDesktop || pictureMobile) {
-    const picture = createSmartImage(imgElDesktop, imgElMobile, imgAlt);
+    const picture = createSmartImage(imgElDesktop, imgElMobile, imgAlt, false);
     pictureHTML = picture?.outerHTML || '';
   }
   const budgeText = budgeTextEl?.textContent?.trim() || '';
   const titleName = titleEl?.textContent?.trim() || '';
   const description = descriptionEl?.querySelector('p')?.innerHTML?.trim() || '';
   const buttonHTML = buttonEl?.innerHTML?.trim() || '';
+  const targetValue = targetEl?.textContent?.trim() || '';
 
   block.innerHTML = `
     <div class="cross-banner content">
@@ -38,4 +41,6 @@ export default function decorate(block) {
       </div>
     </div>
   `;
+
+  applyLinkTarget(block, '.cross-banner-button a', targetValue);
 }

@@ -30,12 +30,18 @@
   z-index: 101;
 }
 
+.header .mobile-top-bar .login-button {
+  padding-left: 0.5rem;
+  width: auto;
+}
+
 .header .hamburger-icon {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   width: 1.5rem;
   height: 1.125rem;
+  padding-right: 1.375rem;
 }
 
 .header .hamburger-icon span {
@@ -259,7 +265,23 @@ header.is-not-overlapped ~ main {
   .header .main-nav-right {
     display: flex;
     align-items: center;
-    gap: 0.625rem;
+    gap: 0.8125rem;
+    margin-top: -0.5625rem;
+  }
+
+  .header .main-nav-item {
+    margin-right: 1.625rem;
+    margin-top: -0.125rem;
+  }
+
+  .header .location {
+    margin-left: 0.5625rem;
+    margin-top: -0.125rem;
+  }
+
+  .header .search {
+    margin-left: 0.0625rem;
+    margin-top: -0.125rem;
   }
 
   /* desktop styles LOGIN */

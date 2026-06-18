@@ -1,15 +1,19 @@
+import { fetchGet } from '../../../scripts/utils/fetchApi.js';
+
 export function trimValue(value) {
   if (value === null || value === undefined) return '-';
   const normalized = String(value).trim();
   return normalized || '-';
 }
 
-async function fetchJson(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
-  return response.json();
+// For rate table cells: '-' with trailing spaces = display dash; plain '-' = empty
+function trimRateValue(value) {
+  if (value === null || value === undefined) return '';
+  const raw = String(value);
+  const trimmed = raw.trim();
+  if (!trimmed) return '';
+  if (trimmed === '-') return raw !== trimmed ? '-' : '';
+  return trimmed;
 }
 
 function replaceTemplateTokens(url, values) {
@@ -57,20 +61,20 @@ export function normalizeRates(list) {
   return (Array.isArray(list) ? list : []).map((item) => ({
     family: trimValue(item.Family),
     description: trimValue(item.Description),
-    buyingRates: trimValue(item.BuyingRates),
-    sellingRates: trimValue(item.SellingRates),
-    sightBill: trimValue(item.SightBill),
-    tt: trimValue(item.TT),
-    billDdTt: trimValue(item.Bill_DD_TT),
+    buyingRates: trimRateValue(item.BuyingRates),
+    sellingRates: trimRateValue(item.SellingRates),
+    sightBill: trimRateValue(item.SightBill),
+    tt: trimRateValue(item.TT),
+    billDdTt: trimRateValue(item.Bill_DD_TT),
   }));
 }
 
 export async function getLatestRates(endpoints) {
-  return fetchJson(endpoints.latestRates());
+  return fetchGet(endpoints.latestRates());
 }
 
 export async function getEnabledDays(endpoints, year, month) {
-  const data = await fetchJson(endpoints.dayInMonth(Number(year), Number(month)));
+  const data = await fetchGet(endpoints.dayInMonth(Number(year), Number(month)));
   return (Array.isArray(data) ? data : [])
     .map((item) => String(item.Day || '').trim())
     .filter(Boolean)
@@ -78,7 +82,7 @@ export async function getEnabledDays(endpoints, year, month) {
 }
 
 export async function getUpdatesInDay(endpoints, day, month, year) {
-  return fetchJson(endpoints.updateInDay(day, month, year));
+  return fetchGet(endpoints.updateInDay(day, month, year));
 }
 
 export async function getRates(endpoints, day, month, year, update, language) {
@@ -87,7 +91,7 @@ export async function getRates(endpoints, day, month, year, update, language) {
   if (!url) return [];
 
   try {
-    return await fetchJson(url);
+    return await fetchGet(url);
   } catch (e) {
     return [];
   }

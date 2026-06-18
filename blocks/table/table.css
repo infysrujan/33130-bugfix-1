@@ -167,6 +167,17 @@
   background: var(--bbl-color-grey-19);
 }
 
+/* Header Right Aligned */
+.table table.header-right-aligned tr.header-row td {
+  text-align: right;
+  vertical-align: middle;
+}
+
+/* Header Pastel Blue — #A1C6FF background */
+.table table.header-pastel-blue .header-row {
+  background-color: var(--bbl-color-blue-40);
+}
+
 /* --------------------------------------------------------------------------
    CELL VARIANTS — center aligned (specificity 0,3,3)
    -------------------------------------------------------------------------- */
@@ -222,6 +233,17 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   ROW VARIANTS — center aligned except first (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+.table table.zebra-light-gray tr:nth-child(odd) {
+  background-color: var(--bbl-color-grey-10);
+}
+
+.table table.solid-white {
+  background-color: var(--bbl-color-white);
 }
 
 /* --------------------------------------------------------------------------

@@ -8,3 +8,8 @@ blocks/form/rules/model/*
 blocks/form/rules/functions.js
 scripts/editor-support.js
 scripts/editor-support-rte.js
+scripts/vendor/
+
+*.min.js
+plugins/gtm-martech/*
+plugins/martech/*

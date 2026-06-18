@@ -1,267 +1,290 @@
 /* ==========================================================================
-   BBL Design System - Typography Variables
+   BBL Design System - Typography Variables (Updated)
    Extracted from Figma: BBL - Adobe Shared Workspace
-   
+   Node: Heading tag font size mapping (2823-41624)
+   https://www.figma.com/design/VmQfUEVP9pCU7lkctJazt5/BBL---Adobe-Shared-Workspace?node-id=2823-41624
+
    MOBILE-FIRST APPROACH:
-   - Base values = Mobile
-   - Media query overrides for larger screens (>= 600px)
-   
-   Font Family: BBL Sans (Regular, Medium) & BBL Sans Looped (Regular, Medium)
+   - Base values = Mobile (EN < 1025px)
+   - Media query overrides for desktop (EN >= 1025px)
+
+   Font Family: BBL Sans (Regular, Medium)
    Base Font Size: 16px
-   
-   Line Heights:
-   - English (EN): Based on 1.15em for headings, 1.35em for body
-   - Thai (TH): Based on 1.25em for large headings, 1.35em for body
-   ==========================================================================
-*/
+
+   Token format in Figma: [Tag] [weight] [size]/[line-height]
+   ========================================================================== */
 
 :root {
   /* =========================================================================
      FONT FAMILIES
      ========================================================================= */
-  
+
   --bbl-font-family-primary: 'BBL Sans', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
   --bbl-font-family-looped: 'BBL Sans Looped', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
   --bbl-font-family-medium: 'BBL Sans Medium', 'BangkokBank-Medium', Tahoma, Helvetica, Arial, sans-serif;
+  --bbl-font-family-bold: 'BBL Sans Bold', system-ui, sans-serif;
 
   /* =========================================================================
      FONT WEIGHTS
      ========================================================================= */
-  
+
   --bbl-font-weight-regular: 400;
   --bbl-font-weight-medium: 500;
 
   /* =========================================================================
      BASE / ROOT FONT SIZE
      ========================================================================= */
-  
+
   --bbl-font-size-base: 16px;
 
   /* =========================================================================
-     FONT SIZES (Reference values)
+     FONT SIZES - PX REFERENCE (from Figma)
      ========================================================================= */
-  
-  /* Display / Hero - Desktop reference */
-  --bbl-font-size-d1-desktop: 5.6rem;     /* 90px */
-  --bbl-font-size-d1-mobile: 3.3rem;      /* 46px */
-  
-  /* Headings - Desktop reference */
-  --bbl-font-size-h1-desktop: 4.4rem;     /* 70px */
-  --bbl-font-size-h2-desktop: 3.9rem;     /* 62px */
-  --bbl-font-size-h3-desktop: 3rem;       /* 48px */
-  --bbl-font-size-h4-desktop: 2rem;       /* 32px */
-  --bbl-font-size-h5-desktop: 1.5rem;     /* 24px */
-  
-  /* Headings - Mobile reference */
-  --bbl-font-size-h1-mobile: 2.2rem;      /* 31px */
-  --bbl-font-size-h2-mobile: 1.9rem;      /* 26px */
-  --bbl-font-size-h3-mobile: 1.6rem;      /* 22px */
-  --bbl-font-size-h4-mobile: 1.3rem;      /* 18px */
-  --bbl-font-size-h5-mobile: 1.3rem;      /* 18px */
-  
-  /* Body */
-  --bbl-font-size-b1: 1rem;               /* 16px desktop / 14px mobile */
-  --bbl-font-size-b2: 0.875rem;           /* 14px desktop / 12px mobile */
-  --bbl-font-size-b3: 0.75rem;            /* 12px */
-  --bbl-font-size-b4: 0.625rem;           /* 10px */
+
+  /* Display / Hero */
+  --bbl-font-size-d1-desktop: 5.625rem;   /* 90px / 104px line-height */
+  --bbl-font-size-d1-mobile: 2.875rem;    /* 46px / 53px line-height */
+
+  /* Headings - Desktop */
+  --bbl-font-size-h1-desktop: 3rem;        /* 48px / 55px */
+  --bbl-font-size-h2-desktop: 2rem;       /* 32px / 37px */
+  --bbl-font-size-h3-desktop: 1.5rem;    /* 24px / 32px */
+  --bbl-font-size-h4-desktop: 1rem;       /* 16px / 22px */
+
+  /* Headings - Mobile */
+  --bbl-font-size-h1-mobile: 1.375rem;   /* 22px / 30px */
+  --bbl-font-size-h2-mobile: 1.125rem;   /* 18px / 24px */
+  --bbl-font-size-h3-mobile: 1.125rem;   /* 18px / 24px */
+  --bbl-font-size-h4-mobile: 0.875rem;    /* 14px / 19px */
+
+  /* Intermediate */
+  --bbl-font-size-15: 0.9375rem;          /* 15px */
+
+  /* Body - Desktop */
+  --bbl-font-size-b1-desktop: 1rem;       /* 16px / 22px */
+  --bbl-font-size-b2-desktop: 0.875rem; /* 14px / 18px */
+  --bbl-font-size-b3-desktop: 0.75rem;    /* 12px / 16px */
+
+  /* Body - Mobile */
+  --bbl-font-size-b1-mobile: 0.875rem;   /* 14px / 19px */
+  --bbl-font-size-b2-mobile: 0.75rem;    /* 12px / 16px */
+  --bbl-font-size-b3-mobile: 0.75rem;    /* 12px / 16px */
 
   /* =========================================================================
-     LINE HEIGHTS - ENGLISH (EN)
+     LINE HEIGHTS - PX REFERENCE (from Figma)
      ========================================================================= */
-  
-  --bbl-line-height-heading-tight: 1.15;
-  --bbl-line-height-heading-normal: 1.35;
-  --bbl-line-height-body: 1.35;
 
-  /* =========================================================================
-     LINE HEIGHTS - THAI (TH)
-     (Thai script requires more vertical space)
-     ========================================================================= */
-  
-  --bbl-line-height-heading-tight-th: 1.25;
-  --bbl-line-height-heading-normal-th: 1.35;
-  --bbl-line-height-body-th: 1.35;
+  /* Desktop */
+  --bbl-line-height-d1-desktop: 6.5rem;   /* 104px */
+  --bbl-line-height-h1-desktop: 3.4375rem; /* 55px */
+  --bbl-line-height-h2-desktop: 2.3125rem; /* 37px */
+  --bbl-line-height-h3-desktop: 2rem;     /* 32px */
+  --bbl-line-height-h4-desktop: 1.375rem; /* 22px */
+  --bbl-line-height-b1-desktop: 1.375rem; /* 22px */
+  --bbl-line-height-b2-desktop: 1.1875rem; /* 18px–19px, based on the client’s feedback.*/
+  --bbl-line-height-b3-desktop: 1rem;     /* 16px */
+  --bbl-line-height-button: 1.3125rem;    /* 21px */
 
-  /* =========================================================================
-     PARAGRAPH SPACING
-     ========================================================================= */
-  
-  --bbl-paragraph-spacing-b1: 1em;        /* 16px at base */
-  --bbl-paragraph-spacing-b2: 0.75em;     /* 12px at base */
-  --bbl-paragraph-spacing-b3: 0.5em;      /* 8px at base */
+  /* Mobile */
+  --bbl-line-height-d1-mobile: 3.3125rem; /* 53px */
+  --bbl-line-height-h1-mobile: 1.875rem;  /* 30px */
+  --bbl-line-height-h2-mobile: 1.5rem;    /* 24px */
+  --bbl-line-height-h3-mobile: 1.5rem;    /* 24px */
+  --bbl-line-height-h4-mobile: 1.1875rem; /* 19px */
+  --bbl-line-height-b1-mobile: 1.1875rem; /* 19px */
+  --bbl-line-height-b2-mobile: 1rem;      /* 16px */
+  --bbl-line-height-b3-mobile: 1rem;      /* 16px */
 
   /* =========================================================================
      TYPOGRAPHY TOKENS - MOBILE (Default / Base)
-     Mobile-first: these are the mobile values
+     Text_roots EN < 1025
      ========================================================================= */
-  
+
   /* --- Display / Hero Title --- */
-  --bbl-heading-d1-size: 3.3rem;          /* 46px - Mobile */
-  --bbl-heading-d1-line-height: 1.15;
+  --bbl-heading-d1-size: var(--bbl-font-size-d1-mobile);
+  --bbl-heading-d1-line-height: var(--bbl-line-height-d1-mobile);
   --bbl-heading-d1-weight: var(--bbl-font-weight-medium);
-  
-  /* --- Heading H1 (XLarge) --- */
-  --bbl-heading-h1-size: 2.2rem;          /* 31px - Mobile */
-  --bbl-heading-h1-line-height: 1.15;
+
+  /* --- Heading H1 --- */
+  --bbl-heading-h1-size: var(--bbl-font-size-h1-mobile);
+  --bbl-heading-h1-line-height: var(--bbl-line-height-h1-mobile);
   --bbl-heading-h1-weight: var(--bbl-font-weight-medium);
-  
-  /* --- Heading H2 (Large) --- */
-  --bbl-heading-h2-size: 1.9rem;          /* 26px - Mobile */
-  --bbl-heading-h2-line-height: 1.15;
+
+  /* --- Heading H2 --- */
+  --bbl-heading-h2-size: var(--bbl-font-size-h2-mobile);
+  --bbl-heading-h2-line-height: var(--bbl-line-height-h2-mobile);
   --bbl-heading-h2-weight: var(--bbl-font-weight-medium);
-  
-  /* --- Heading H3 (Medium) --- */
-  --bbl-heading-h3-size: 1.6rem;          /* 22px - Mobile */
-  --bbl-heading-h3-line-height: 1.35;     /* Looser on mobile */
+
+  /* --- Heading H3 Medium --- */
+  --bbl-heading-h3-size: var(--bbl-font-size-h3-mobile);
+  --bbl-heading-h3-line-height: var(--bbl-line-height-h3-mobile);
   --bbl-heading-h3-weight: var(--bbl-font-weight-medium);
-  
-  /* --- Heading H4 (Small) --- */
-  --bbl-heading-h4-size: 1.3rem;          /* 18px - Mobile */
-  --bbl-heading-h4-line-height: 1.35;
+
+  /* --- Heading H3 Regular --- */
+  --bbl-heading-h3-reg-size: var(--bbl-font-size-h3-mobile);
+  --bbl-heading-h3-reg-line-height: var(--bbl-line-height-h3-mobile);
+  --bbl-heading-h3-reg-weight: var(--bbl-font-weight-regular);
+
+  /* --- Heading H4 Medium --- */
+  --bbl-heading-h4-size: var(--bbl-font-size-h4-mobile);
+  --bbl-heading-h4-line-height: var(--bbl-line-height-h4-mobile);
   --bbl-heading-h4-weight: var(--bbl-font-weight-medium);
-  
-  /* --- Heading H5 (XSmall) --- */
-  --bbl-heading-h5-size: 1.3rem;          /* 18px - Mobile */
-  --bbl-heading-h5-line-height: 1.35;
-  --bbl-heading-h5-weight: var(--bbl-font-weight-medium);
-  
-  /* --- Body B1 (Default) --- */
-  --bbl-body-b1-size: 0.875rem;           /* 14px - Mobile */
-  --bbl-body-b1-line-height: 1.35;
+
+  /* --- Body B1 Regular --- */
+  --bbl-body-b1-size: var(--bbl-font-size-b1-mobile);
+  --bbl-body-b1-line-height: var(--bbl-line-height-b1-mobile);
   --bbl-body-b1-weight: var(--bbl-font-weight-regular);
-  --bbl-body-b1-weight-medium: var(--bbl-font-weight-medium);
-  
-  /* --- Body B2 (Small) --- */
-  --bbl-body-b2-size: 0.75rem;            /* 12px - Mobile */
-  --bbl-body-b2-line-height: 1.35;
+
+  /* --- Body B1 Medium --- */
+  --bbl-body-b1-medium-size: var(--bbl-font-size-b1-mobile);
+  --bbl-body-b1-medium-line-height: var(--bbl-line-height-b1-mobile);
+  --bbl-body-b1-medium-weight: var(--bbl-font-weight-medium);
+
+  /* --- Body B2 Medium --- */
+  --bbl-body-b2-size: var(--bbl-font-size-b2-mobile);
+  --bbl-body-b2-line-height: var(--bbl-line-height-b2-mobile);
   --bbl-body-b2-weight: var(--bbl-font-weight-regular);
   --bbl-body-b2-weight-medium: var(--bbl-font-weight-medium);
-  
-  /* --- Body B3 (XSmall) --- */
-  --bbl-body-b3-size: 0.75rem;            /* 12px - Mobile */
-  --bbl-body-b3-line-height: 1.35;
+
+  /* --- Body B3 Medium --- */
+  --bbl-body-b3-size: var(--bbl-font-size-b3-mobile);
+  --bbl-body-b3-line-height: var(--bbl-line-height-b3-mobile);
   --bbl-body-b3-weight: var(--bbl-font-weight-regular);
   --bbl-body-b3-weight-medium: var(--bbl-font-weight-medium);
-  
-  /* --- Body B4 (XXSmall) --- */
-  --bbl-body-b4-size: 0.625rem;           /* 10px */
-  --bbl-body-b4-line-height: 1.35;
-  --bbl-body-b4-weight: var(--bbl-font-weight-regular);
-  --bbl-body-b4-weight-medium: var(--bbl-font-weight-medium);
 
   /* =========================================================================
-     SEMANTIC TYPOGRAPHY ALIASES
-     Maps design tokens to semantic usage
+     SEMANTIC TYPOGRAPHY ALIASES (Figma component mapping)
      ========================================================================= */
-  
-  /* --- Page Titles --- */
+
+  /* --- Hero / Banner --- */
   --bbl-text-hero-title-size: var(--bbl-heading-d1-size);
   --bbl-text-hero-title-line-height: var(--bbl-heading-d1-line-height);
   --bbl-text-hero-title-weight: var(--bbl-heading-d1-weight);
-  
-  --bbl-text-page-title-size: var(--bbl-heading-h2-size);
-  --bbl-text-page-title-line-height: var(--bbl-heading-h2-line-height);
-  --bbl-text-page-title-weight: var(--bbl-heading-h2-weight);
-  
-  /* --- Section Titles --- */
-  --bbl-text-section-title-size: var(--bbl-heading-h3-size);
-  --bbl-text-section-title-line-height: var(--bbl-heading-h3-line-height);
-  --bbl-text-section-title-weight: var(--bbl-heading-h3-weight);
-  
-  /* --- Card Titles --- */
-  --bbl-text-card-title-size: var(--bbl-heading-h4-size);
-  --bbl-text-card-title-line-height: var(--bbl-heading-h4-line-height);
-  --bbl-text-card-title-weight: var(--bbl-heading-h4-weight);
-  
-  --bbl-text-thumbnail-title-size: var(--bbl-heading-h5-size);
-  --bbl-text-thumbnail-title-line-height: var(--bbl-heading-h5-line-height);
-  --bbl-text-thumbnail-title-weight: var(--bbl-heading-h5-weight);
-  
-  /* --- Body Text --- */
-  --bbl-text-body-size: var(--bbl-body-b1-size);
-  --bbl-text-body-line-height: var(--bbl-body-b1-line-height);
-  --bbl-text-body-weight: var(--bbl-body-b1-weight);
-  
-  --bbl-text-body-small-size: var(--bbl-body-b2-size);
-  --bbl-text-body-small-line-height: var(--bbl-body-b2-line-height);
-  --bbl-text-body-small-weight: var(--bbl-body-b2-weight);
-  
+
+  --bbl-text-banner-title-size: var(--bbl-heading-h1-size);
+  --bbl-text-banner-title-line-height: var(--bbl-heading-h1-line-height);
+  --bbl-text-banner-title-weight: var(--bbl-heading-h1-weight);
+
+  --bbl-text-hero-description-size: var(--bbl-heading-h3-reg-size);
+  --bbl-text-hero-description-line-height: var(--bbl-heading-h3-reg-line-height);
+  --bbl-text-hero-description-weight: var(--bbl-heading-h3-reg-weight);
+
+  --bbl-text-banner-description-size: var(--bbl-heading-h3-reg-size);
+  --bbl-text-banner-description-line-height: var(--bbl-heading-h3-reg-line-height);
+  --bbl-text-banner-description-weight: var(--bbl-heading-h3-reg-weight);
+
+  /* --- Calculator / Form Titles --- */
+  --bbl-text-calculator-title-size: 1.4rem; /* 22.4px */
+
+  /* --- Card / Section Titles --- */
+  --bbl-text-article-card-title-size: var(--bbl-heading-h2-size);
+  --bbl-text-article-card-title-line-height: var(--bbl-heading-h2-line-height);
+  --bbl-text-article-card-title-weight: var(--bbl-heading-h2-weight);
+
+  --bbl-text-section-title-size: var(--bbl-heading-h2-size);
+  --bbl-text-section-title-line-height: var(--bbl-heading-h2-line-height);
+  --bbl-text-section-title-weight: var(--bbl-heading-h2-weight);
+
+  --bbl-text-thumbnail-card-title-size: var(--bbl-heading-h3-size);
+  --bbl-text-thumbnail-card-title-line-height: var(--bbl-heading-h3-line-height);
+  --bbl-text-thumbnail-card-title-weight: var(--bbl-heading-h3-weight);
+
   /* --- UI Elements --- */
-  --bbl-text-label-size: var(--bbl-body-b2-size);
-  --bbl-text-label-line-height: var(--bbl-body-b2-line-height);
-  --bbl-text-label-weight: var(--bbl-body-b2-weight-medium);
-  
-  --bbl-text-caption-size: var(--bbl-body-b3-size);
-  --bbl-text-caption-line-height: var(--bbl-body-b3-line-height);
-  --bbl-text-caption-weight: var(--bbl-body-b3-weight);
-  
-  /* --- Navigation --- */
-  --bbl-text-nav-size: var(--bbl-body-b1-size);
-  --bbl-text-nav-line-height: var(--bbl-body-b1-line-height);
-  --bbl-text-nav-weight: var(--bbl-body-b1-weight-medium);
-  
-  --bbl-text-breadcrumb-size: var(--bbl-body-b3-size);
-  --bbl-text-breadcrumb-line-height: var(--bbl-body-b3-line-height);
-  --bbl-text-breadcrumb-weight: var(--bbl-body-b3-weight-medium);
-  
-  /* --- Footer --- */
+  --bbl-text-sub-title-size: var(--bbl-heading-h4-size);
+  --bbl-text-sub-title-line-height: var(--bbl-heading-h4-line-height);
+  --bbl-text-sub-title-weight: var(--bbl-heading-h4-weight);
+
+  --bbl-text-accordion-size: var(--bbl-heading-h4-size);
+  --bbl-text-accordion-line-height: var(--bbl-heading-h4-line-height);
+  --bbl-text-accordion-weight: var(--bbl-heading-h4-weight);
+
+  --bbl-text-tab-header-size: var(--bbl-heading-h4-size);
+  --bbl-text-tab-header-line-height: var(--bbl-heading-h4-line-height);
+  --bbl-text-tab-header-weight: var(--bbl-heading-h4-weight);
+
+  --bbl-text-nav-link-size: var(--bbl-heading-h4-size);
+  --bbl-text-nav-link-line-height: var(--bbl-heading-h4-line-height);
+  --bbl-text-nav-link-weight: var(--bbl-heading-h4-weight);
+
+  --bbl-text-footer-head-size: var(--bbl-heading-h4-size);
+  --bbl-text-footer-head-line-height: var(--bbl-heading-h4-line-height);
+  --bbl-text-footer-head-weight: var(--bbl-heading-h4-weight);
+
+  /* --- Body Text --- */
+  --bbl-text-default-size: var(--bbl-body-b1-size);
+  --bbl-text-default-line-height: var(--bbl-body-b1-line-height);
+  --bbl-text-default-weight: var(--bbl-body-b1-weight);
+
+  --bbl-text-link-primary-size: var(--bbl-body-b1-medium-size);
+  --bbl-text-link-primary-line-height: var(--bbl-body-b1-medium-line-height);
+  --bbl-text-link-primary-weight: var(--bbl-body-b1-medium-weight);
+
+  --bbl-text-label-tag-size: var(--bbl-body-b2-size);
+  --bbl-text-label-tag-line-height: var(--bbl-body-b2-line-height);
+  --bbl-text-label-tag-weight: var(--bbl-body-b2-weight-medium);
+
   --bbl-text-footer-size: var(--bbl-body-b2-size);
   --bbl-text-footer-line-height: var(--bbl-body-b2-line-height);
   --bbl-text-footer-weight: var(--bbl-body-b2-weight);
-  
-  --bbl-text-footer-heading-size: var(--bbl-body-b1-size);
-  --bbl-text-footer-heading-line-height: var(--bbl-body-b1-line-height);
-  --bbl-text-footer-heading-weight: var(--bbl-body-b1-weight-medium);
-  
-  /* --- Links --- */
-  --bbl-text-link-size: var(--bbl-body-b1-size);
-  --bbl-text-link-line-height: var(--bbl-body-b1-line-height);
-  --bbl-text-link-weight: var(--bbl-body-b1-weight-medium);
-  
-  /* --- Buttons --- */
-  --bbl-text-button-size: var(--bbl-body-b1-size);
-  --bbl-text-button-line-height: var(--bbl-body-b1-line-height);
-  --bbl-text-button-weight: var(--bbl-body-b1-weight-medium);
-  
-  --bbl-text-button-small-size: var(--bbl-body-b2-size);
-  --bbl-text-button-small-line-height: var(--bbl-body-b2-line-height);
-  --bbl-text-button-small-weight: var(--bbl-body-b2-weight-medium);
+
+  --bbl-text-breadcrumb-size: var(--bbl-body-b3-size);
+  --bbl-text-breadcrumb-line-height: var(--bbl-body-b3-line-height);
+  --bbl-text-breadcrumb-weight: var(--bbl-body-b3-weight-medium);
+
+  --bbl-text-small-size: var(--bbl-body-b3-size);
+  --bbl-text-small-line-height: var(--bbl-body-b3-line-height);
+  --bbl-text-small-weight: var(--bbl-body-b3-weight-medium);
+
+  --bbl-text-top-links-size: var(--bbl-body-b3-size);
+  --bbl-text-top-links-line-height: var(--bbl-body-b3-line-height);
+  --bbl-text-top-links-weight: var(--bbl-body-b3-weight-medium);
 }
 
 /* ==========================================================================
    DESKTOP TYPOGRAPHY OVERRIDES
-   Breakpoint: >= 760px (Mobile-first approach) --bbl-breakpoint-tablet-min
+   Breakpoint: >= 1025px (Text_roots EN >= 1025)
    ========================================================================== */
 
-@media (width >= 760px) {
+@media (width >= 1025px) {
   :root {
-    /* --- Display / Hero Title - Desktop --- */
-    --bbl-heading-d1-size: 5.6rem;        /* 90px (up from 46px) */
-    
-    /* --- Heading H1 (XLarge) - Desktop --- */
-    --bbl-heading-h1-size: 4.4rem;        /* 70px (up from 31px) */
-    
-    /* --- Heading H2 (Large) - Desktop --- */
-    --bbl-heading-h2-size: 3.9rem;        /* 62px (up from 26px) */
-    
-    /* --- Heading H3 (Medium) - Desktop --- */
-    --bbl-heading-h3-size: 3rem;          /* 48px (up from 22px) */
-    --bbl-heading-h3-line-height: 1.15;   /* Tighter on desktop */
-    
-    /* --- Heading H4 (Small) - Desktop --- */
-    --bbl-heading-h4-size: 2rem;          /* 32px (up from 18px) */
-    --bbl-heading-h4-line-height: 1.15;
-    
-    /* --- Heading H5 (XSmall) - Desktop --- */
-    --bbl-heading-h5-size: 1.5rem;        /* 24px (up from 18px) */
-    
-    /* --- Body B1 (Default) - Desktop --- */
-    --bbl-body-b1-size: 1rem;             /* 16px (up from 14px) */
-    
-    /* --- Body B2 (Small) - Desktop --- */
-    --bbl-body-b2-size: 0.875rem;         /* 14px (up from 12px) */
-    
-    /* --- Body B3 (XSmall) - Desktop --- */
-    --bbl-body-b3-size: 0.75rem;          /* 12px (same) */
+    /* --- Display / Hero Title --- */
+    --bbl-heading-d1-size: var(--bbl-font-size-d1-desktop);
+    --bbl-heading-d1-line-height: var(--bbl-line-height-d1-desktop);
+
+    /* --- Heading H1 --- */
+    --bbl-heading-h1-size: var(--bbl-font-size-h1-desktop);
+    --bbl-heading-h1-line-height: var(--bbl-line-height-h1-desktop);
+
+    /* --- Heading H2 --- */
+    --bbl-heading-h2-size: var(--bbl-font-size-h2-desktop);
+    --bbl-heading-h2-line-height: var(--bbl-line-height-h2-desktop);
+
+    /* --- Heading H3 Medium --- */
+    --bbl-heading-h3-size: var(--bbl-font-size-h3-desktop);
+    --bbl-heading-h3-line-height: var(--bbl-line-height-h3-desktop);
+
+    /* --- Heading H3 Regular --- */
+    --bbl-heading-h3-reg-size: var(--bbl-font-size-h3-desktop);
+    --bbl-heading-h3-reg-line-height: var(--bbl-line-height-h3-desktop);
+
+    /* --- Heading H4 Medium --- */
+    --bbl-heading-h4-size: var(--bbl-font-size-h4-desktop);
+    --bbl-heading-h4-line-height: var(--bbl-line-height-h4-desktop);
+
+    /* --- Body B1 Regular --- */
+    --bbl-body-b1-size: var(--bbl-font-size-b1-desktop);
+    --bbl-body-b1-line-height: var(--bbl-line-height-b1-desktop);
+
+    /* --- Body B1 Medium --- */
+    --bbl-body-b1-medium-size: var(--bbl-font-size-b1-desktop);
+    --bbl-body-b1-medium-line-height: var(--bbl-line-height-b1-desktop);
+
+    /* --- Body B2 --- */
+    --bbl-body-b2-size: var(--bbl-font-size-b2-desktop);
+    --bbl-body-b2-line-height: var(--bbl-line-height-b2-desktop);
+
+    /* --- Body B3 --- */
+    --bbl-body-b3-size: var(--bbl-font-size-b3-desktop);
+    --bbl-body-b3-line-height: var(--bbl-line-height-b3-desktop);
   }
 }

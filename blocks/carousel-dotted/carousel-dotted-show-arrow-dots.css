@@ -100,8 +100,20 @@
   margin-right: 0.25rem;
 }
 
-.carousel-dotted.show-arrows-dots .carousel-arrow:disabled {
-  cursor: not-allowed;
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:hover {
+  background-color: var(--bbl-color-white);
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:active {
+  background-color: var(--bbl-color-gray-300);
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next:hover {
+  margin-left: 0.313rem;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev:hover {
+  margin-left: -0.313rem;
 }
 
 /* Dots */

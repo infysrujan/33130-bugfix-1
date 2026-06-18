@@ -19,6 +19,11 @@
   height: calc(100vw / 2);
 }
 
+.menu-banner .thumb-full:not([style*="background-image"]) {
+  height: auto;
+  min-height: 0;
+}
+
 .menu-banner .inner {
   width: 100%;
 }
@@ -26,7 +31,6 @@
 .menu-banner .desktop-tools {
   position: relative;
   z-index: 2;
-  max-width: 75rem;
   padding: var(--bbl-space-500) var(--bbl-space-container-xs);
 }
 
@@ -44,9 +48,9 @@
 
 /* Eyebrow text */
 .menu-banner .sub-title-medium {
-  font-weight: var(--bbl-font-weight-regular);
-  font-size: 0.875rem;
-  line-height: normal;
+  font-weight: var(--bbl-text-sub-title-weight);
+  font-size: var(--bbl-text-sub-title-size);
+  line-height: var(--bbl-text-sub-title-line-height);
   color: var(--bbl-color-black);
   margin-top: 1.875rem;
   padding-bottom: 0.9375rem;
@@ -103,8 +107,10 @@
 
 .menu-banner .title-1 > * {
   margin: 0;
-  font-size: 1.4rem;
-  line-height: 1.75rem;
+  font-size:var(--bbl-text-article-card-title-size);
+  line-height: var(--bbl-text-article-card-title-line-height);
+  font-weight: var(--bbl-text-article-card-title-weight);
+  font-family:var(--bbl-font-family-medium);
 }
 
 /* Text blue styling for em tags in RTE */
@@ -166,7 +172,7 @@
 
 /* Card title */
 .menu-banner .sub-title-small {
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
   font-weight: var(--bbl-font-weight-regular);
   font-size: 0.7rem;
   line-height: normal;
@@ -177,11 +183,6 @@
 
 /* Tablet: width > 760px */
 @media (width > 47.5rem) {
-  .menu-banner .desktop-tools,
-  .menu-banner .mobile-tools {
-    padding: var(--bbl-space-600);
-  }
-
   .menu-banner .desktop-tools .inner {
     display: block;
   }
@@ -229,7 +230,6 @@
 /* Desktop: width > 1024px */
 @media (width > 64rem) {
   .menu-banner .desktop-tools {
-    padding: 0 var(--bbl-space-1050) var(--bbl-space-250);
     display: flow-root;
   }
 
@@ -239,14 +239,7 @@
     max-height: none;
   }
 
-  .menu-banner .sub-title-medium {
-    font-size: 1rem;
-    line-height: normal;
-  }
-
   .menu-banner .title-1 > * {
-    font-size: 3rem;
-    line-height: 2.875rem;
     margin: 0.625rem 0 var(--bbl-space-250);
   }
 

@@ -17,10 +17,10 @@
 	align-items: center;
 	gap: 0.625rem;
 	color: var(--bbl-color-grey-130);
-	font-family: BangkokBank-Medium, Helvetica, "Microsoft JhengHei", "Ã¥Â¾Â®Ã¨Â»Å¸Ã¦Â­Â£Ã¯Â¿Â½Ã©Â«â€ ", "Hiragino Sans GB", Arial, sans-serif;
-	font-size: 0.875rem;
-	font-weight: 700;
-	line-height: 1.2031rem;
+	font-family: var(--bbl-font-family-looped);
+    font-size: var(--bbl-text-top-links-size);
+    font-weight: var( --bbl-text-top-links-weight);
+    line-height: var(--bbl-text-top-links-line-height);
 	white-space: nowrap;
 }
 
@@ -58,20 +58,11 @@
 	}
 
 	.top-nav li a {
-		font-size: 0.72rem;
-		font-weight: 400;
-		line-height: 1;
 		color: var(--bbl-color-black);
 	}
 
 	.top-nav .link-icon {
 		font-size: 0.9rem;
-	}
-
-	.top-nav .link-icon a {
-		font-size: 0.875rem;
-		font-weight: 700;
-		line-height: 1.2031rem;
 	}
 
 	.top-nav-item {

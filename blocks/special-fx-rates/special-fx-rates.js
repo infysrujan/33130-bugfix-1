@@ -1,12 +1,11 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { normalizeRates } from '../forex-rates/helpers/api-helpers.js';
 import { parseApiDate } from '../forex-rates/helpers/date-helpers.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 async function fetchFxRatesConfig(url) {
   try {
-    const resp = await fetch(url);
-    if (!resp.ok) return null;
-    return await resp.json();
+    return fetchGet(url, { throwOnError: false });
   } catch {
     return null;
   }
@@ -61,9 +60,7 @@ function parseAuthoring(block) {
 }
 
 async function fetchFxBannerRates(url) {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Request failed: ${response.status}`);
-  return response.json();
+  return fetchGet(url);
 }
 
 function renderBlock(block, rates, timestamp, authoring) {

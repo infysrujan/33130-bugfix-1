@@ -107,11 +107,19 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "BBL Sans Looped";
+  src: url("../fonts/BBLSans_looped-medium.eot");
+  src: url("../fonts/BBLSans_looped-medium.woff") format("woff"), url("../fonts/BBLSans_looped-medium.woff2") format("woff2");
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Icon font */
 @font-face {
   font-family: icomoon;
   src: url("../fonts/icomoon.woff") format("woff");
   font-weight: 300;
   font-style: normal;
-  font-display: block;
+  font-display: swap;
 }

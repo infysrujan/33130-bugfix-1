@@ -192,6 +192,10 @@
             {
               "name": "Multiple Download",
               "value": "multiple-download"
+            },
+            {
+              "name": "Select Dropdown",
+              "value": "select-dropdown"
             }
           ]
         },
@@ -318,9 +322,17 @@
               "name": "Card",
               "value": "card"
             },
-            {
+             {
               "name": "X-Small",
               "value": "x-small"
+            },
+            {
+              "name": "Logo",
+              "value": "logo"
+            },
+            {
+              "name": "Profile",
+              "value": "profile"
             }
           ]
         },
@@ -386,6 +398,45 @@
               }
             ]
           }
+        },
+        {
+          "component": "text",
+          "name": "dropdownLable",
+          "label": "Dropdown Lable",
+          "description": "Dropdown lable text for dropdown links",
+          "condition": {
+            "===": [
+              {
+                "var": "buttonActionType"
+              },
+              "select-dropdown"
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "drop-links",
+          "value": "",
+          "label": "Dropdown Links",
+          "valueType": "string",
+          "condition": {
+            "and": [
+              {
+                "===": [
+                  {
+                    "var": "buttonActionType"
+                  },
+                  "select-dropdown"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "component": "date-time",
+          "name": "financialDate",
+          "label": "Financial Date",
+          "valueType": "string"
         }
       ]
     }

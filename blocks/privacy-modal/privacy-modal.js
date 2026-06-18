@@ -1,4 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
 
 const COOKIE_DURATION_DAYS = 30;
 const COOKIE_NAME = 'HRPRIVACY';
@@ -83,14 +84,14 @@ function isScrolledToBottom(el) {
 function buildModal({
   title, privacyHTML, checkboxLabel, ctaLabel, onAgree, onClose,
 }) {
-  /* Overlay */
-  const overlay = createElement('div', {
-    className: 'privacy-modal-overlay',
-    attrs: { role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'privacy-modal-title' },
+  const { overlay, dialog: modal, closeBtn } = createModalShell({
+    overlayClass: 'privacy-modal-overlay',
+    dialogClass: 'privacy-modal-dialog',
+    closeBtnClass: 'privacy-modal-close',
+    ariaLabelledBy: 'privacy-modal-title',
+    closeBtnAriaLabel: 'Close privacy notice',
   });
-
-  /* Modal dialog container */
-  const modal = createElement('div', { className: 'privacy-modal-dialog' });
+  closeBtn.setAttribute('title', 'Close');
 
   /* Header */
   const header = createElement('div', { className: 'privacy-modal-header' });
@@ -101,19 +102,6 @@ function buildModal({
   /* Use innerHTML so richtext markup (e.g. <br>, <p>) renders correctly */
   titleEl.innerHTML = title;
   header.append(titleEl);
-
-  /* Close button — direct child of modal container so position:absolute is
-     relative to the container, allowing it to sit outside the top-right corner
-     exactly like the live site (top:-10px; right:-15px). */
-  const closeBtn = createElement('button', {
-    className: 'privacy-modal-close',
-    attrs: {
-      type: 'button',
-      'aria-label': 'Close privacy notice',
-      title: 'Close',
-    },
-  });
-  closeBtn.innerHTML = '&times;';
 
   /* Scrollable body */
   const scrollBody = createElement('div', {
@@ -158,7 +146,6 @@ function buildModal({
   modalFooter.append(checkboxRow, ctaBtn);
   /* Close button appended directly to modal (not header) for correct absolute positioning */
   modal.append(closeBtn, header, scrollBody, modalFooter);
-  overlay.append(modal);
 
   /* -----------------------------------------------------------------------
    * Interaction wiring
@@ -219,23 +206,12 @@ function buildModal({
  * @param {HTMLElement} overlay
  */
 function openModal(overlay) {
-  if (!overlay.isConnected) document.body.appendChild(overlay);
-  // Allow paint before adding visible class for CSS transition
-  requestAnimationFrame(() => {
-    overlay.classList.add('privacy-modal-overlay-visible');
-  });
+  showModal(overlay, 'privacy-modal-overlay-visible');
   overlay.focus();
 }
 
-/**
- * Closes the modal with a CSS transition, then removes it from the DOM.
- * @param {HTMLElement} overlay
- */
 function closeModal(overlay) {
-  overlay.classList.remove('privacy-modal-overlay-visible');
-  overlay.addEventListener('transitionend', () => {
-    overlay.remove();
-  }, { once: true });
+  hideModal(overlay, 'privacy-modal-overlay-visible');
 }
 
 /* -------------------------------------------------------------------------
@@ -291,7 +267,7 @@ export default function decorate(block) {
     const pendingHref = window.pendingNavigationUrl;
     if (pendingHref) {
       window.pendingNavigationUrl = null;
-      window.location.href = pendingHref;
+      window.open(pendingHref, '_blank', 'noopener,noreferrer');
     }
   }
 

@@ -58,15 +58,24 @@
   --bbl-color-grey-25: #919dab;
   --bbl-color-grey-26: #d9d9d9;
   --bbl-color-grey-27: #d3d3d3;
+  --bbl-color-grey-28: #333333;
   --bbl-color-grey-78: #787878;
   --bbl-color-grey-152: #dcdcdc;
   --bbl-color-grey-153: #696969;
+  --bbl-color-grey-155: #eeeef2;
+  --bbl-color-grey-156: #585858;
+  --bbl-color-grey-157: #f6f7f7;
+  --bbl-color-grey-159: #808080;
+  --bbl-color-grey-160: #778899;
   
 
   /* =========================================================================
      BLUE SCALE
      ========================================================================= */
 
+  --bbl-color-blue-3: #f8f9fc;
+  --bbl-color-blue-6: #f1f3f9;
+  --bbl-color-blue-9: #e5e8f4;
   --bbl-color-blue-10: #E8F1FF;
   --bbl-color-blue-20: #D9E8FF;
   --bbl-color-blue-30: #C9DEFF;
@@ -86,10 +95,13 @@
   --bbl-color-blue-120: #031D37;
   --bbl-color-blue-130: #002087;
   --bbl-color-blue-140: #4890ff;
+  --bbl-color-blue-steel: #e5edf4;
   --bbl-color-blue-steel-light: #E6EEF4;
   --bbl-color-blue-steel-dark: #DEEAF6;
   --bbl-color-blue-145: #E5EDF4;
   --bbl-color-blue-222: #E0E6F8;
+  --bbl-color-blue-63: #4d83d8;
+  --bbl-color-blue-64: #f1f4f7;
 
   /* =========================================================================
      RED SCALE
@@ -125,6 +137,7 @@
   --bbl-color-green-100: #083D37;
   --bbl-color-green-110: #062C29;
   --bbl-color-green-120: #032120;
+  --bbl-color-green-55: #23b45c;
 
   /* =========================================================================
      PURPLE SCALE
@@ -206,8 +219,11 @@
   --bbl-color-black-alpha-14: rgba(0, 0, 0, 0.14);
   --bbl-color-black-alpha-20: rgba(0, 0, 0, 0.20);
   --bbl-color-black-alpha-30: rgba(0, 0, 0, 0.30);
+  --bbl-color-black-alpha-33: rgb(0 0 0 / 33%);
   --bbl-color-black-alpha-40: rgba(0, 0, 0, 0.40);
   --bbl-color-black-alpha-60: rgba(0, 0, 0, 0.60);
+  --bbl-color-black-alpha-75: rgba(0, 0, 0, 0.75);
+  --bbl-color-black-alpha-80: rgba(0, 0, 0, 0.80);
   --bbl-color-black-alpha-17: rgba(0, 100, 255, 0.17);
   --bbl-color-blue-105-alpha-17: rgb(0 51 153 / 17%);
 
@@ -216,6 +232,7 @@
   --bbl-color-white-alpha-10: rgba(255, 255, 255, 0.10);
   --bbl-color-white-alpha-20: rgba(255, 255, 255, 0.20);
   --bbl-color-white-alpha-30: rgba(255, 255, 255, 0.30);
+  --bbl-color-white-alpha-35: rgba(255, 255, 255, 0.35);
   --bbl-color-white-alpha-40: rgba(255, 255, 255, 0.40);
   --bbl-color-white-alpha-60: rgba(255, 255, 255, 0.60);
   --bbl-color-white-alpha-50: rgba(255, 255, 255, 0.5);
@@ -271,6 +288,24 @@
   --bbl-color-sme-field-border: rgb(158 158 158 / 60%);
   
   /* =========================================================================
+     SLATE / COOL GREY
+     ========================================================================= */
+
+  --bbl-color-slate-60: #565e6a;
+
+  /* =========================================================================
+     ADDITIONAL TRANSPARENCY / ALPHA
+     ========================================================================= */
+
+  --bbl-color-black-alpha-50: rgb(0 0 0 / 50%);
+
+  /* =========================================================================
+     BRAND EXTENDED BLUES
+     ========================================================================= */
+
+  --bbl-color-blue-indigo: #111582;
+
+  /* =========================================================================
      COMPONENT UTILITY COLORS
      Colors used by specific components that have no match in the scale above
      ========================================================================= */
@@ -280,5 +315,6 @@
   --bbl-color-status-closed: #e53935;      /* Locate Us — branch closed status */
   --bbl-color-toast-error: #b85c5c;        /* Locate Us — error toast background */
   --bbl-color-status-other: #bb6967;       /* Locate Us — branch status non-open */
+  --bbl-color-grey-70-alpha-62: rgb(70 70 70 / 62%);  /* Privacy Modal — close button background */
 }
 

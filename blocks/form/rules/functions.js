@@ -131,8 +131,17 @@ function defaultSubmitSuccessHandler(globals) {
       thankYouMessage.setAttribute('tabindex', '-1');
       thankYouMessage.setAttribute('role', 'alertdialog');
       thankYouMessage.innerHTML = submitSuccessResponse.thankYouMessage;
-      formContainerElement.replaceWith(thankYouMessage);
+      // Hide the form and replace with success message only
+      if (formContainerElement) {
+        formContainerElement.style.display = 'none';
+        formContainerElement.parentNode.insertBefore(thankYouMessage, formContainerElement);
+      } else {
+        document.body.appendChild(thankYouMessage);
+      }
       thankYouMessage.focus();
+      if (thankYouMessage.scrollIntoView) {
+        thankYouMessage.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   }
 }

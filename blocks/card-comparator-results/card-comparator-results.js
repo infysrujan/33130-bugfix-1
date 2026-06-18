@@ -1,8 +1,7 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
-
-const TABLET_MIN = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim();
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -44,19 +43,22 @@ async function loadIconSvg(name) {
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
 
-// Fetch all credit card items from the card-suggester-data config endpoint
+// Fetch all credit card items, cached on window so other blocks on the same page
+// (e.g. credit-card-selector) reuse the same response without a second network request
 async function loadAllCards() {
   try {
     const configs = await fetchConfigs();
-    const cardSuggesterData = configs.creditCardSelectorSuggesterData;
-    if (!cardSuggesterData) {
-      return [];
+    const baseUrl = configs.creditCardSelectorSuggesterData;
+    if (!baseUrl) return [];
+    const lang = getLang();
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${lang}`);
+    const cacheKey = `bbl-credit-cards-${lang}`;
+    if (!window[cacheKey]) {
+      window[cacheKey] = fetchGet(url, { throwOnError: false })
+        .then((json) => json?.data?.creditCardsList?.items || json?.data || json?.items || [])
+        .catch(() => []);
     }
-    const resp = await fetch(cardSuggesterData);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    const cards = json.data?.creditCardsList?.items || json.data || json.items || [];
-    return cards;
+    return window[cacheKey];
   } catch {
     return [];
   }
@@ -78,9 +80,8 @@ async function loadSourcingOrder() {
     const configs = await fetchConfigs();
     const url = configs.creditCardSelectorFilteringMatrixUrl;
     if (!url) return null;
-    const resp = await fetch(url);
-    if (!resp.ok) return null;
-    const json = await resp.json();
+    const json = await fetchGet(url, { throwOnError: false });
+    if (!json) return null;
     const lang = getLang();
     const productNameKey = lang === 'th' ? 'Product Name (TH)' : 'Product Name (EN)';
     const map = {};
@@ -100,7 +101,7 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
 
   const matched = allCards.filter((card) => {
     const cardName = norm(card.name || '');
-    return normalizedNames.some((n) => cardName.includes(n) || n.includes(cardName));
+    return normalizedNames.some((n) => cardName === n);
   });
 
   // No sourcing map available — preserve the user's selection order
@@ -108,7 +109,7 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
     return normalizedNames
       .map((n) => matched.find((c) => {
         const cardName = norm(c.name || '');
-        return cardName.includes(n) || n.includes(cardName);
+        return cardName === n || cardName.includes(n);
       }))
       .filter(Boolean);
   }
@@ -145,13 +146,15 @@ function resolveApplyUrl(urlField) {
 function buildApplyArea(card, doc, labels, icons) {
   const hasWebApply = card.webApplyEnabled === true || card.webApplyEnabled === 'true';
   const hasMobileApply = card.mobileApplyEnabled === true || card.mobileApplyEnabled === 'true';
-  if (!hasWebApply && !hasMobileApply) return null;
-
-  const webUrl = resolveApplyUrl(card.webApplyUrl);
-  const mobileUrl = resolveApplyUrl(card.mobileApplyUrl);
 
   const area = doc.createElement('div');
   area.className = 'ccr-apply-area';
+
+  // No apply buttons — return empty placeholder so JS equalization can size it
+  if (!hasWebApply && !hasMobileApply) return area;
+
+  const webUrl = resolveApplyUrl(card.webApplyUrl);
+  const mobileUrl = resolveApplyUrl(card.mobileApplyUrl);
 
   // Desktop: single apply button shown when webApplyEnabled
   if (hasWebApply) {
@@ -224,8 +227,8 @@ function buildCompareCard(card, doc, labels, icons) {
   caption.appendChild(nameEl);
 
   // Apply area (desktop single button / mobile two-button group)
-  const applyArea = buildApplyArea(card, doc, labels, icons);
-  if (applyArea) caption.appendChild(applyArea);
+  // Always appended — empty div acts as height placeholder for JS equalization
+  caption.appendChild(buildApplyArea(card, doc, labels, icons));
 
   // Detail rows as dl/dt/dd (matching live site's .compare-info structure)
   const compareInfo = doc.createElement('div');
@@ -357,9 +360,7 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc, 
   const selectedNames = cards.map((c) => c.name);
   const sorted = filterAndSortCards(allCards, selectedNames, sourcingMap);
 
-  const displayCards = sorted.length > 0
-    ? sorted
-    : cards.map(({ name, image }) => ({ name, image }));
+  const displayCards = sorted.length > 0 ? sorted : cards;
 
   displayCards.forEach((card) => {
     container.appendChild(buildCompareCard(card, doc, labels, icons));
@@ -369,8 +370,6 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc, 
 // ── Row height equalizer — matches live site JS (sets inline height) ──────────
 
 function equalizeRowHeights(grid) {
-  if (!window.matchMedia(`(width > ${TABLET_MIN})`).matches) return;
-
   const cards = [...grid.querySelectorAll('.ccr-card')];
   if (cards.length < 2) return;
 
@@ -385,19 +384,26 @@ function equalizeRowHeights(grid) {
     card.querySelectorAll('.ccr-card-name, .ccr-apply-area, dl').forEach((el) => {
       // eslint-disable-next-line no-param-reassign
       el.style.height = '';
+      // eslint-disable-next-line no-param-reassign
+      el.style.minHeight = '';
+      el.classList.remove('ccr-apply-lined'); // eslint-disable-line no-param-reassign
     });
   });
 
   // Equalize card name height
   const nameEls = cards.map((c) => c.querySelector('.ccr-card-name')).filter(Boolean);
   const maxNameH = Math.max(...nameEls.map((el) => el.offsetHeight));
-  nameEls.forEach((el) => { el.style.height = `${maxNameH}px`; }); // eslint-disable-line no-param-reassign
+  nameEls.forEach((el) => { el.style.minHeight = `${maxNameH}px`; }); // eslint-disable-line no-param-reassign
 
   // Equalize apply area height (so dl rows align even when some cards have no apply area)
   const applyAreas = cards.map((c) => c.querySelector('.ccr-apply-area')).filter(Boolean);
   if (applyAreas.length > 1) {
     const maxApplyH = Math.max(...applyAreas.map((el) => el.offsetHeight));
-    applyAreas.forEach((el) => { el.style.height = `${maxApplyH}px`; }); // eslint-disable-line no-param-reassign
+    applyAreas.forEach((el) => {
+      el.style.minHeight = `${maxApplyH}px`; // eslint-disable-line no-param-reassign
+      // Show divider on all cards (including empty placeholders) when any card has buttons
+      if (maxApplyH > 0) el.classList.add('ccr-apply-lined'); // eslint-disable-line no-param-reassign
+    });
   }
 
   // Equalize each field's dl by data-field key, not by array index.

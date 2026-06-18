@@ -86,9 +86,9 @@
 
 /* --- Title --- */
 .content-insert-cards .title-2 {
-  font-size: 1.3125rem;
-  line-height: 1.08;
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-text-thumbnail-card-title-size);
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
+  font-weight: var(--bbl-text-thumbnail-card-title-weight);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   margin: 0;
@@ -231,10 +231,6 @@
 }
 
 .content-insert-cards .title-2 {
-  font-size: 1.3125rem;
-  line-height: 1.08;
-  font-weight: var(--bbl-font-weight-regular);
-  font-family: var(--bbl-font-family-medium);
   margin-bottom: 0.625rem;
   padding-bottom: var(--bbl-space-150);
 }
@@ -273,12 +269,8 @@
 
 @media (width > 64rem) {
 .content-insert-cards .title-2 {
-  font-size: var(--bbl-heading-h5-size);
-  line-height: 1.08;
   margin-bottom: 0.625rem;
   padding-bottom: 0.9375rem;
-  font-weight: var(--bbl-font-weight-regular);
-  font-family: var(--bbl-font-family-medium);
 }
 
 .content-insert-cards .text-default {

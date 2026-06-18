@@ -1,5 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { getLang } from '../../scripts/scripts.js';
 
 // Breakpoint matching design system tokens (760px tablet, 1024px desktop)
 const DESKTOP_BREAKPOINT = 1024;
@@ -50,7 +51,7 @@ function buildFooterStructure(block) {
     groupLink.className = 'footer-group';
 
     // Create title header
-    const header = document.createElement('h3');
+    const header = document.createElement('h4');
     header.className = 'footer-title';
     header.textContent = title;
 
@@ -143,8 +144,14 @@ function setupAccordion(block) {
  */
 export default async function decorate(block) {
   // load footer as fragment
-  const footerMeta = getMetadata('footer');
-  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
+  let footerPath = '';
+  if (document.querySelector('body.error-page')) {
+    const lang = getLang();
+    footerPath = `/${lang}/footer`;
+  } else {
+    const footerMeta = getMetadata('footer');
+    footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
+  }
   const fragment = await loadFragment(footerPath);
 
   if (!fragment) return;

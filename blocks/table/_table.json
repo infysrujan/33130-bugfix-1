@@ -22,6 +22,14 @@
       "id": "table",
       "fields": [
         {
+          "component": "text",
+          "name": "id",
+          "label": "Id",
+          "valueType": "string",
+          "value": "",
+          "description": "The id of the table"
+        },
+        {
           "component": "multiselect",
           "name": "style",
           "label": "Variation",
@@ -70,6 +78,10 @@
                   "value": "header-center-aligned"
                 },
                 {
+                  "name": "Right Aligned",
+                  "value": "header-right-aligned"
+                },
+                {
                   "name": "Header Blue",
                   "value": "header-blue"
                 },
@@ -84,6 +96,23 @@
                 {
                   "name": "Header Light Gray",
                   "value": "header-light-gray"
+                },
+                {
+                  "name": "Header Pastel Blue",
+                  "value": "header-pastel-blue"
+                }
+              ]
+            },
+            {
+              "name": "Row",
+              "children": [
+                {
+                  "name": "Zebra Light Gray",
+                  "value": "zebra-light-gray"
+                },
+                {
+                  "name": "Solid White",
+                  "value": "solid-white"
                 }
               ]
             },

@@ -1,4 +1,5 @@
 import { buildUrl, createEl, hasValue } from './utils.js';
+import { fetchGet } from '../../../scripts/utils/fetchApi.js';
 
 // ─── Google Maps iframe ───────────────────────────────────────────────────────
 
@@ -33,7 +34,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
   const directionsUrl = dirTemplate ? buildUrl(dirTemplate, { LAT: loc.Lat, LNG: loc.Lng }) : '';
   const getDirectionText = placeholders?.getDirectionText || 'Get Direction';
   const branchBookingText = placeholders?.branchBookingText || 'Branch Booking';
-  const nearestLabel = placeholders?.nearestLocationTag || 'Nearest';
+  const nearestLabel = placeholders?.nearestLocationTag || 'nearest';
   const statusLabel = placeholders?.statusLabel || 'Status:';
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
@@ -124,9 +125,7 @@ export async function fetchNearMe(lat, lng, code, configs) {
     return [];
   }
   const url = buildUrl(template, { LAT: lat, LONG: lng, CODE: code });
-  const resp = await fetch(url);
-  if (!resp.ok) return [];
-  return resp.json();
+  return (await fetchGet(url, { throwOnError: false })) ?? [];
 }
 
 export async function fetchProvinces(configs) {
@@ -137,9 +136,8 @@ export async function fetchProvinces(configs) {
     console.error('[locate-us] Missing config key: get-providence');
     return [];
   }
-  const resp = await fetch(url);
-  if (!resp.ok) return [];
-  const data = await resp.json();
+  const data = await fetchGet(url, { throwOnError: false });
+  if (!data) return [];
   provincesCache = data.map((p) => p.Province);
   return provincesCache;
 }
@@ -152,9 +150,8 @@ export async function fetchDistricts(province, configs) {
     return [];
   }
   const url = buildUrl(template, { PROVINCE: province });
-  const resp = await fetch(url);
-  if (!resp.ok) return [];
-  const data = await resp.json();
+  const data = await fetchGet(url, { throwOnError: false });
+  if (!data) return [];
   return data.map((d) => d.District);
 }
 
@@ -172,9 +169,8 @@ export async function fetchByProvince(province, district, lat, lng, code, config
     LONG: lng,
     CODE: code,
   });
-  const resp = await fetch(url);
-  if (!resp.ok) return [];
-  const data = await resp.json();
+  const data = await fetchGet(url, { throwOnError: false });
+  if (!data) return [];
   return Array.isArray(data) ? data : [data];
 }
 
@@ -192,7 +188,5 @@ export async function fetchByKeyword(lat, lng, keyword, district, code, configs)
     DISTRICT: district || '0',
     CODE: code,
   });
-  const resp = await fetch(url);
-  if (!resp.ok) return [];
-  return resp.json();
+  return (await fetchGet(url, { throwOnError: false })) ?? [];
 }

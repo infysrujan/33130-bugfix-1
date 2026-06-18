@@ -19,14 +19,16 @@ export function submitSuccess(e, form) {
       thankYouMessage.className = 'form-message success-message';
     }
     thankYouMessage.innerHTML = thankYouMsg || DEFAULT_THANK_YOU_MESSAGE;
+    // Hide the form and show only the success message
+    form.style.display = 'none';
     form.parentNode.insertBefore(thankYouMessage, form);
     if (thankYouMessage.scrollIntoView) {
       thankYouMessage.scrollIntoView({ behavior: 'smooth' });
     }
-    form.reset();
   }
   form.setAttribute('data-submitting', 'false');
-  form.querySelector('button[type="submit"]').disabled = false;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = false;
 }
 
 export function submitFailure(e, form) {

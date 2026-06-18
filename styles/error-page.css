@@ -1,3 +1,24 @@
+/* lang based error pages */
+:lang(th) {
+  .error-page-en {
+    display: none;
+  }
+
+  .error-page-th {
+    display: block;
+  }
+}
+
+:lang(en) {
+  .error-page-en {
+    display: block;
+  }
+
+  .error-page-th {
+    display: none;
+  }
+}
+
 .error-page header .top-nav,
 .error-page header .main-nav-right{
     display: none;

@@ -4,6 +4,10 @@
  * Loaded as a fragment from /en/fragments/cookie-modal (or the TH equivalent).
  * Builds an accessible modal dialog with per-cookie-type toggles.
  */
+import { createModalShell, hideModal } from '../../scripts/utils/modal.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
+
+import { getCookie, setCookie } from '../../scripts/utils/cookies.js';
 
 const COOKIE_DURATION_DAYS = 30;
 const COOKIE_CONSENT = 'ConsentAlert';
@@ -27,18 +31,6 @@ const COOKIE_VALUE_MAP = {
   AnalysisCookie: 'Analysis',
   AdvertisingCookie: 'Advertising',
 };
-
-function setCookie(name, value, days) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; `
-    + `expires=${expires}; path=/; SameSite=Lax`;
-}
-
-function getCookie(name) {
-  const encoded = encodeURIComponent(name);
-  const match = document.cookie.split('; ').find((row) => row.startsWith(`${encoded}=`));
-  return match ? decodeURIComponent(match.split('=')[1]) : null;
-}
 
 function el(tag, { className, text, attrs = {} } = {}) {
   const node = document.createElement(tag);
@@ -176,31 +168,12 @@ function openModal(overlay, trigger) {
 
 function closeModal(overlay) {
   const restoreTarget = overlay[LAST_TRIGGER_KEY];
-  const prefersReducedMotion = typeof window.matchMedia === 'function'
-    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   document.body.classList.remove('cookie-modal-open');
-
-  let removed = false;
-  const finishClose = () => {
-    if (removed) return;
-    removed = true;
-    overlay.remove();
-
+  hideModal(overlay, 'cookie-modal-visible', () => {
     if (restoreTarget && typeof restoreTarget.focus === 'function') {
       restoreTarget.focus();
     }
-  };
-
-  overlay.classList.remove('cookie-modal-visible');
-
-  if (prefersReducedMotion) {
-    finishClose();
-    return;
-  }
-
-  overlay.addEventListener('transitionend', finishClose, { once: true });
-  window.setTimeout(finishClose, 300);
+  });
 }
 
 function setupUEBlockRefresh(blockEl) {
@@ -223,8 +196,8 @@ function setupUEBlockRefresh(blockEl) {
     // Block-level refresh: fetch the current page, extract only the updated
     // cookie-modal block, and swap it in atomically. No full page reload.
     try {
-      const res = await fetch(window.location.href);
-      const html = await res.text();
+      const html = await fetchGet(window.location.href, { throwOnError: false });
+      if (!html) throw new Error('page fetch failed');
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const newBlock = doc.querySelector('.cookie-modal');
       if (newBlock) {
@@ -289,26 +262,15 @@ export default function decorate(block) {
     };
   });
 
-  const overlay = el('div', {
-    className: 'cookie-modal-overlay',
-    attrs: {
-      role: 'dialog',
-      'aria-modal': 'true',
-      'aria-labelledby': 'cookie-modal-title',
-      'aria-describedby': 'cookie-modal-description',
-      tabindex: '-1',
-    },
-  });
-
-  const dialog = el('div', {
-    className: 'cookie-modal-dialog',
-  });
-  const closeBtn = el('button', {
-    className: 'cookie-modal-close',
-    attrs: {
-      type: 'button',
-      'aria-label': 'Close cookie settings',
-    },
+  const { overlay, dialog, closeBtn } = createModalShell({
+    overlayClass: 'cookie-modal-overlay',
+    dialogClass: 'cookie-modal-dialog',
+    closeBtnClass: 'cookie-modal-close',
+    ariaLabelledBy: 'cookie-modal-title',
+    ariaDescribedBy: 'cookie-modal-description',
+    closeBtnAriaLabel: 'Close cookie settings',
+    closeBtnHTML: '',
+    tabindex: '-1',
   });
   const closeBtnImg = el('img', {
     attrs: {
@@ -360,7 +322,6 @@ export default function decorate(block) {
   footer.append(saveBtn);
 
   dialog.append(closeBtn, header, body, footer);
-  overlay.append(dialog);
 
   closeBtn.addEventListener('click', () => closeModal(overlay));
 

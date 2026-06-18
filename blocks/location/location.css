@@ -21,7 +21,7 @@
   background-position: center;
 }
 
-@media (width > 1024px) {
+@media (width > 64rem) {
   .location-icon {
     background-image: url('../../icons/Location_dark.svg');
   }

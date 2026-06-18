@@ -1,173 +1,192 @@
 .section.central-aligned .block.all-carousel-fragment {
-    margin-inline: auto;
+  margin-inline: auto;
+}
+
+.carousel-dotted-container:has(.all-carousel-fragment)
+  .carousel-dotted-wrapper {
+  overflow: hidden;
+  margin-inline: -0.625rem;
 }
 
 .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
-    position: relative;
-    display: flex;
-    gap: var(--bbl-space-250);
-    align-items: stretch;
-    width: max-content;
-    min-width: 100%;
-    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
-    padding-bottom: var(--bbl-space-075);
+  position: relative;
+  display: flex;
+  gap: var(--bbl-space-250);
+  align-items: stretch;
+  width: max-content;
+  min-width: 100%;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  padding-bottom: var(--bbl-space-075);
 }
 
 .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
-    width: calc(100% + (2 * var(--bbl-space-section-xs)));
-    margin-inline: calc(-1 * var(--bbl-space-section-xs));
-    overflow: hidden;
+  width: calc(100% + (2 * var(--bbl-space-section-xs)));
+  margin-inline: calc(-1 * var(--bbl-space-section-xs));
+  overflow: hidden;
 }
 
 .carousel-dotted.all-carousel-fragment.show-arrows-dots
-    .carousel-track-wrapper {
-    overflow: visible;
+  .carousel-track-wrapper {
+  overflow: visible;
 }
 
 .carousel-fragment .card-list-wrapper {
-    display: flex;
-    height: 100%;
+  display: flex;
+  height: 100%;
 }
 
 .carousel-fragment .card-list-wrapper .card-list.block {
-    display: flex;
-    flex: 1;
+  display: flex;
+  flex: 1;
+  margin-inline: 0;
 }
 
 .carousel-dotted.all-carousel-fragment .carousel-dotted-item.carousel-fragment {
-    position: relative;
-    display: block;
-    opacity: 1;
-    flex: 0 0 auto;
-    width: auto;
-    min-width: 0;
-    transition: none;
+  position: relative;
+  display: block;
+  opacity: 1;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  transition: none;
 }
 
 .carousel-dotted.all-carousel-fragment
-    .carousel-dotted-item.carousel-fragment
-    :is(> .card-list-wrapper, .card-list.block, .cards-list) {
-    width: 100%;
-    max-width: 100%;
+  .carousel-dotted-item.carousel-fragment
+  :is(> .card-list-wrapper, .card-list.block, .cards-list) {
+  width: 100%;
+  max-width: 100%;
 }
 
 .carousel-dotted.all-carousel-fragment
-    .carousel-dotted-item.carousel-fragment
-    .cards-list {
-    align-items: stretch;
-    flex-wrap: nowrap;
+  .carousel-dotted-item.carousel-fragment
+  .cards-list {
+  align-items: stretch;
+  flex-wrap: nowrap;
 }
 
 .carousel-dotted.all-carousel-fragment
-    .carousel-dotted-item.carousel-fragment
-    :is(.cards-list-item, .cards-list-item-link, .cards-list-inner) {
-    align-self: stretch;
-    margin-bottom: 0;
+  .carousel-dotted-item.carousel-fragment
+  :is(.cards-list-item, .cards-list-item-link, .cards-list-inner) {
+  align-self: stretch;
+  margin-bottom: 0;
+}
+
+.carousel-dotted.all-carousel-fragment .slick-dots li:only-child {
+  display: none;
 }
 
 .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .carousel-dotted.all-carousel-fragment.show-arrows-dots
-    .carousel-arrow-prev:hover {
-    transform: translateY(-50%) translateX(-0.3rem);
+  .carousel-arrow-prev:hover {
+  transform: translateY(-50%) translateX(-0.3rem);
 }
 
-.carousel-dotted.all-carousel-fragment.show-arrows-dots
-    .carousel-arrow-next:hover {
-    transform: translateY(-50%) translateX(0.3rem);
+.carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow:hover {
+  background-color: unset;
+  transform: translateY(-50%) translateX(0.3rem);
 }
 
 @media (width > 47.5rem) {
-    .section.central-aligned .block.all-carousel-fragment {
-        margin-inline: 0;
-    }
+  .carousel-dotted-container:has(.all-carousel-fragment)
+    .carousel-dotted-wrapper {
+    overflow: unset;
+    margin-inline: 0;
+  }
 
-    .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
-        gap: 0;
-        width: 100%;
-        min-width: 0;
-    }
+  .section.central-aligned .block.all-carousel-fragment {
+    margin-inline: 0;
+  }
 
-    .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
-        width: calc(100% + (2 * var(--bbl-space-section-sm)));
-        margin-inline: calc(-1 * var(--bbl-space-section-sm));
-    }
+  .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
+    gap: 0;
+    width: 100%;
+    min-width: 0;
+  }
 
-    .carousel-dotted.all-carousel-fragment.show-arrows-dots {
-        display: block;
-        position: relative;
-        overflow: visible;
-    }
+  .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
+    width: 100%;
+    margin-inline: 0;
+  }
 
-    .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
-        display: none;
-    }
+  .carousel-dotted.all-carousel-fragment.show-arrows-dots {
+    display: block;
+    position: relative;
+    overflow: visible;
+  }
 
-    .carousel-dotted.all-carousel-fragment
-        .carousel-dotted-item.carousel-fragment {
-        width: 100%;
-        min-width: 100%;
-    }
+  .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
+    display: none;
+  }
 
-    .carousel-dotted.all-carousel-fragment
-        .carousel-dotted-item.carousel-fragment
-        :is(.card-list-wrapper, .card-list.block, .cards-list) {
-        width: 100%;
-        max-width: 100%;
-        justify-content: center;
-    }
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.carousel-fragment {
+    width: 100%;
+    min-width: 100%;
+  }
 
-    .carousel-dotted.all-carousel-fragment
-        .carousel-dotted-item.carousel-fragment
-        .cards-list-item {
-        flex: 1 1 0;
-        min-width: 0;
-        margin-bottom: 0;
-    }
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.carousel-fragment
+    :is(.card-list-wrapper, .card-list.block, .cards-list) {
+    justify-content: center;
+  }
+
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.carousel-fragment
+    .cards-list-item {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-bottom: 0;
+  }
+
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.no-scroll
+    .cards-list-item {
+    flex: 0 0 calc((100% - 2.5rem) / 3);
+  }
 }
 
 @media (width > 64rem) {
-    .section.central-aligned .block.all-carousel-fragment {
-        margin: 0 auto;
-    }
+  .section.central-aligned .block.all-carousel-fragment {
+    margin: 0 auto;
+  }
 
-    .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
-        width: 100%;
-        margin-inline: 0;
-    }
+  .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
+    width: 100%;
+    margin-inline: 0;
+  }
 
-    .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
-        display: flex;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 2;
-    }
+  .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
 
-    .carousel-dotted.all-carousel-fragment
-        .carousel-dotted-item.carousel-fragment
-        .cards-list {
-        gap: 0 var(--bbl-space-500);
-    }
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.carousel-fragment
+    .cards-list {
+    gap: 0 var(--bbl-space-500);
+  }
 
-    .carousel-dotted.all-carousel-fragment
-        .carousel-dotted-item.carousel-fragment
-        .cards-list-item {
-        flex: 1 1 0;
-        min-width: 0;
-        margin-bottom: 0;
-    }
+  .carousel-dotted.all-carousel-fragment.show-arrows-dots
+    .carousel-arrow-prev {
+    left: -4.3125rem;
+  }
 
-    .carousel-dotted.all-carousel-fragment.show-arrows-dots
-        .carousel-arrow-prev {
-        left: -4.3125rem;
-    }
+  .carousel-dotted.all-carousel-fragment.show-arrows-dots
+    .carousel-arrow-next {
+    right: -4.3125rem;
+  }
 
-    .carousel-dotted.all-carousel-fragment.show-arrows-dots
-        .carousel-arrow-next {
-        right: -4.3125rem;
-    }
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.no-scroll
+    .cards-list-item {
+    flex: 0 0 30.22%;
+  }
 }

@@ -74,7 +74,7 @@
   padding: var(--bbl-space-200);
   border: 0.063rem dashed var(--bbl-color-black-alpha-20);
   border-radius: var(--bbl-rounded-150);
-  background-color: rgb(0 0 0 / 2%);
+  background-color: var(--bbl-color-black-alpha-5);
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .thumb-large {
@@ -95,7 +95,7 @@
   font-size: 0.7875rem;
   line-height: 1.29;
   font-weight: var(--bbl-font-weight-regular);
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
   margin: 0;
 }
 
@@ -270,6 +270,7 @@
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .content-insert-card .text-default {
   font-size: var(--bbl-font-size-b2);
   line-height: 1.29;
+  font-family: var(--bbl-font-family-looped);
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .desc {

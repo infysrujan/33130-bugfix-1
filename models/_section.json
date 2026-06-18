@@ -21,6 +21,12 @@
       "fields": [
         {
           "component": "text",
+          "name": "id",
+          "label": "Section ID",
+          "description": "Used for deep linking — e.g. /page#Howto scrolls to the section with id 'Howto'"
+        },
+        {
+          "component": "text",
           "name": "name",
           "label": "Section Name",
           "description": "The label shown for this section in the Content Tree"
@@ -95,6 +101,10 @@
                 {
                   "name": "Grey 100",
                   "value": "bg-grey-100"
+                },
+                {
+                  "name": "Blue 01",
+                  "value": "bg-blue-01"
                 }
               ]
             },
@@ -125,6 +135,10 @@
                 {
                   "name":"Columns 2(50-50)",
                   "value": "columns-2-50"
+                },
+                {
+                  "name":"Columns 2(65-35)",
+                  "value": "columns-2-65"
                 }
               ]
             },
@@ -163,6 +177,19 @@
                 {
                   "name": "Background Private Banking",
                   "value": "background-privatebanking"
+                }
+              ]
+            },
+            {
+              "name": "Forms Theme",
+              "children": [
+                {
+                  "name": "Custom Forms",
+                  "value": "custom-forms"
+                },
+                {
+                  "name": "Lead Forms",
+                  "value": "lead-forms"
                 }
               ]
             }
@@ -207,6 +234,9 @@
         "table",
         "locate-us",
         "rate-card",
+        "fund-prices",
+        "fund-prices-table",
+        "fund-prices-dropdown",
         "accordion-block",
         "social-icons",
         "card-list",
@@ -219,7 +249,9 @@
         "video",
         "carousel-video",
         "forex-rates",
+        "market-report",
         "sme-loan-calculator",
+        "dynamic-board",
         "bcap",
         "multi-column-tiles",
         "retirement-calculator",
@@ -229,15 +261,28 @@
         "promo-card-listing",
         "top-promotional-cards",
         "multi-column-tiles",
+        "fund-prices",
         "property-for-sale-details",
         "property-for-sale",
         "stock-ticker",
         "cookie-alert",
         "cookie-modal",
+        "welcome-banner",
         "news-media-details",
         "news-media",
         "latest-news",
-        "forward-points-sme"
+        "forward-points-sme",
+        "saving-plan",
+        "category-banner",      
+        "bbm-glow-card",
+        "menu-list",
+        "search-reports",
+        "search-reports-results",
+        "mf-results",
+        "mf-comparator-results",
+        "mf-comparator",
+        "mf-questionnaire",
+        "cc-campaign"
       ]
     }
   ]

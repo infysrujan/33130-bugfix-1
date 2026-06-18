@@ -52,14 +52,15 @@
 .rate-card .tab-header a,
 .rate-card .tab-header a:any-link {
   color: var(--bbl-color-gray-121);
-  font-size: 0.7875rem;
+  font-size: var(--bbl-text-label-tag-size);
+  font-family: var(--bbl-font-family-looped);
   padding: 0.5rem 0.625rem;
-  font-weight: 400;
+  font-weight: var(--bbl-text-label-tag-weight);
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 0.9844rem;
+  line-height: var(--bbl-text-label-tag-line-height);
   cursor: pointer;
   text-decoration: none;
   background: transparent;
@@ -175,12 +176,7 @@
 .rate-card table tbody td:not(:first-child) {
   text-align: right;
   font-size: 1.3125rem;
-}
-
-/* If the header has exactly 3 columns, align the second column to the left */
-.rate-card table:has(thead tr > th:nth-child(3):last-child) thead th:nth-child(2),
-.rate-card table:has(thead tr > th:nth-child(3):last-child) tbody td:nth-child(2) {
-  text-align: left;
+  font-variant-numeric: tabular-nums;
 }
 
 /* --------------------------------------------------------------------------
@@ -237,12 +233,15 @@
 .rate-card .text-x-small {
   font-size: 0.75rem;
   color: var(--bbl-color-grey-70);
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
 }
 
 .rate-card .date-update {
   color: var(--bbl-color-black);
-  font-size: 0.75rem;
+  font-size: var(--bbl-text-small-size);
+  line-height: var(--bbl-text-small-line-height);
+  font-weight: var(--bbl-text-small-weight);
+  font-family: var(--bbl-font-family-looped);
   display: inline-flex;
   align-items: center;
   gap: 0.3125rem;
@@ -385,8 +384,8 @@
 
   .rate-card .tab-header a, 
 	.rate-card .tab-header a:any-link {
-    font-size: 0.9rem;
     padding: 0.4375rem 1rem 0.3125rem;
+    font-family:var(--bbl-font-family-medium);
   }
 
   .rate-card .country-select span,
@@ -419,6 +418,56 @@
 	.rate-card .link-primary.pull-right {
     font-size: 0.8rem;
 	}
+}
+
+/* --------------------------------------------------------------------------
+   EQUAL-HEIGHT COLUMNS — Desktop only
+   Switch columns-3 section to CSS grid when rate-card is present.
+   Grid rows naturally make all children equal height without height:100% propagation.
+   -------------------------------------------------------------------------- */
+@media (width > 64rem) {
+  .section.columns-3:has(.rate-card) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: unset;
+  }
+
+  /* Reset flex-specific width/flex overrides from styles.css */
+  .section.columns-3:has(.rate-card) > * {
+    width: auto;
+    flex: unset;
+    min-width: 0;
+  }
+
+  /* Rate-card fills its grid cell */
+  .section.columns-3:has(.rate-card) .rate-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  .section.columns-3:has(.rate-card) .rate-card .currency-info {
+    flex: 1;
+  }
+
+  /* Carousel fills its grid cell — overflow:hidden clips internal slide content */
+  .section.columns-3:has(.rate-card) .carousel-dotted-wrapper {
+    overflow: hidden;
+  }
+
+  .section.columns-3:has(.rate-card) .carousel-dotted.all-without-image {
+    min-height: unset;
+    height: calc(100% - 2.5rem);
+    overflow: hidden;
+  }
+
+  /* Kill tab-state specific min-height overrides from carousel-dotted-default.css */
+  .section.columns-3:has(.rate-card .tab-header li:not(:first-child) .active) .carousel-dotted.all-without-image,
+  .section.columns-3:has(.rate-card .tab-header li:last-child .active) .carousel-dotted.all-without-image {
+    min-height: unset;
+    height: calc(100% - 2.5rem);
+  }
 }
 
 /* --------------------------------------------------------------------------

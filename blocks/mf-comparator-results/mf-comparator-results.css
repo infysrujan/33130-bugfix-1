@@ -1,0 +1,313 @@
+.mf-comparator-results .mfcr-notes {
+  padding: var(--bbl-space-layout-sm) var(--bbl-space-container-xs);
+  font-family: var(--bbl-font-family-primary);
+  font-size: 0.8125rem;
+  color: var(--bbl-color-grey-150);
+  line-height: var(--bbl-line-height-body, 1.6);
+}
+
+.mf-comparator-results .mfcr-notes p,
+.mf-comparator-results .mfcr-notes ul {
+  margin: 0 0 var(--bbl-space-component-sm);
+}
+
+.mf-comparator-results .mfcr-notes ul {
+  padding-left: 1.25rem;
+  list-style-type: disc;
+  color: var(--bbl-color-grey-150);
+}
+
+.mf-comparator-results .mfcr-notes li {
+  margin-bottom: 0.25rem;
+  font-family: var(--bbl-font-family-primary);
+  font-size: 0.8125rem;
+  color: var(--bbl-color-grey-150);
+  line-height: 1.63;
+}
+
+.mf-comparator-results .mfcr-notes p {
+  font-family: var(--bbl-font-family-primary);
+  font-size: 0.8125rem;
+  color: var(--bbl-color-grey-150);
+  font-weight: normal;
+  line-height: 1.63;
+}
+
+/* ── Comparison grid — scrollable on mobile ───────────────────────────────── */
+
+.mf-comparator-results .mfcr-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--bbl-space-250);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: var(--bbl-space-100) var(--bbl-space-container-xs);
+}
+
+.mf-comparator-results .mfcr-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Card column ──────────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
+  border-radius: 0.4375rem;
+  overflow: hidden;
+  flex: 0 0 16.875rem;
+  scroll-snap-align: start;
+  box-sizing: border-box;
+}
+
+.mf-comparator-results .mfcr-grid.single-card {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.mf-comparator-results .mfcr-grid.single-card .mfcr-card {
+  flex: 0 0 16.875rem;
+  margin: 0 auto;
+}
+
+.no-touch.desktop .mf-comparator-results .mfcr-card:hover {
+  border-color: var(--bbl-color-active-blue);
+  box-shadow: 0.1732rem 0.1732rem 0 var(--bbl-color-black-alpha-17);
+}
+
+/* ── Image area ───────────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-inner {
+  height: 8.4375rem;
+  overflow: hidden;
+  position: relative;
+  padding: 0;
+  background-color: var(--bbl-color-grey-10);
+  border-top-left-radius: 0.4375rem;
+  border-top-right-radius: 0.4375rem;
+}
+
+.mf-comparator-results .mfcr-thumb {
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.mf-comparator-results .mfcr-img-print {
+  display: none;
+}
+
+@media print {
+  .mf-comparator-results .mfcr-img-print {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* ── Caption ──────────────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-caption {
+  padding: 1.25rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  line-height: 1.375;
+  color: var(--bbl-color-grey-70);
+}
+
+/* Card name */
+.mf-comparator-results .mfcr-card-name {
+  font-family: var(--bbl-font-family-medium), sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.625rem;
+  color: var(--bbl-color-black);
+  margin: 0 0 0.9375rem;
+  box-sizing: border-box;
+}
+
+/* ── Compare info rows ────────────────────────────────────────────────────── */
+
+.mf-comparator-results .compare-info dl {
+  border-top: 0.0625rem solid var(--bbl-color-grey-150);
+  padding: 1.4375rem 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.mf-comparator-results .compare-info dl:first-child {
+  border-top: none;
+  padding-top: 0.625rem;
+}
+
+.mf-comparator-results .mfcr-label {
+  font-size: 1rem;
+  font-family: var(--bbl-font-family-medium), sans-serif;
+  color: var(--bbl-color-black);
+  margin: 0;
+}
+
+.mf-comparator-results .mfcr-value {
+  font-size: 1rem;
+  line-height: 1.625rem;
+  padding: 0.5rem 0 0;
+  margin: 0;
+  color: var(--bbl-color-grey-70);
+}
+
+.mf-comparator-results .mfcr-value ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style-type: disc;
+}
+
+.mf-comparator-results .mfcr-value li {
+  margin-bottom: 0.25rem;
+}
+
+/* ── Fund company logo ────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-logo {
+  margin-top: auto;
+  padding-top: var(--bbl-space-200);
+}
+
+.mf-comparator-results .mfcr-logo img {
+  max-height: 2.5rem;
+  max-width: 7.5rem;
+  object-fit: contain;
+  display: block;
+}
+
+/* ── Read more link ───────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-read-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 1.25rem 1.25rem;
+  min-height: 2.75rem;
+  height: auto;
+  padding: 0.3125rem 0;
+  box-sizing: border-box;
+  border-radius: 0.4375rem;
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-primary);
+  font-size: 1rem;
+  line-height: 1.375;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.mf-comparator-results .mfcr-read-more:hover {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border-color: var(--bbl-color-active-blue);
+}
+
+/* ── No results ───────────────────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-no-results {
+  padding: var(--bbl-space-layout-md) var(--bbl-space-container-xs);
+  text-align: center;
+  color: var(--bbl-color-grey-70);
+}
+
+/* ── Scroll dots — mobile only ────────────────────────────────────────────── */
+
+.mf-comparator-results .mfcr-scroll-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--bbl-space-100);
+  margin-top: var(--bbl-space-200);
+  padding: 0 var(--bbl-space-container-xs);
+}
+
+.mf-comparator-results .mfcr-scroll-dot {
+  appearance: none;
+  width: var(--bbl-space-100);
+  height: var(--bbl-space-100);
+  border-radius: var(--bbl-radius-full);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 0;
+  line-height: 0;
+  transition: all 180ms ease;
+}
+
+.mf-comparator-results .mfcr-scroll-dot.is-active {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+/* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
+
+@media (width > 47.5rem) {
+  .mf-comparator-results .mfcr-notes {
+    padding: var(--bbl-space-layout-sm) var(--bbl-space-container-md);
+  }
+
+  .mf-comparator-results .mfcr-grid {
+    overflow-x: visible;
+    scroll-snap-type: none;
+    justify-content: center;
+    gap: 0 var(--bbl-space-250);
+    padding: 0 var(--bbl-space-container-md);
+  }
+
+  .mf-comparator-results .mfcr-card {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
+    scroll-snap-align: none;
+  }
+
+  /* Two cards alignment / sizing overrides */
+  .mf-comparator-results .mfcr-grid.two-cards {
+    justify-content: center;
+  }
+
+  .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
+    max-width: 22.5rem;
+  }
+
+  .mf-comparator-results .mfcr-scroll-dots {
+    display: none;
+  }
+}
+
+/* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
+
+@media (width > 64rem) {
+  .mf-comparator-results .mfcr-notes {
+    padding: var(--bbl-space-layout-sm) var(--bbl-space-container-xl);
+  }
+
+  .mf-comparator-results .mfcr-grid {
+    gap: 0 var(--bbl-space-500);
+    padding: 0 var(--bbl-space-container-xl);
+  }
+
+  .mf-comparator-results .mfcr-card {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+  }
+
+  .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+    max-width: 22.5rem;
+  }
+}

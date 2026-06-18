@@ -1,281 +1,206 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
-import { getLang } from '../../scripts/bbl-decorators.js';
+import { getLang, isAuthoringInstance, applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
-import { loadFragment } from '../fragment/fragment.js';
+import { openModal } from '../../scripts/utils/modal.js';
 
-function getTextValue(value) {
-  return value?.toString().trim() || '';
-}
-
-function formatMenuCardDate(dateStr) {
+function formatDate(dateStr) {
   if (!dateStr) return '';
-  const lang = getLang();
   const date = new Date(dateStr);
-  if (lang === 'th') {
-    const buddhistYear = date.getFullYear() + 543;
-    const month = date.toLocaleString('th-TH', { month: 'long' });
-    const day = date.getDate();
-    return `${day} ${month} ${buddhistYear}`;
+  if (getLang() === 'th') {
+    return `${date.getDate()} ${date.toLocaleString('th-TH', { month: 'long' })} ${date.getFullYear() + 543}`;
   }
-  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-function parseBooleanFlag(value, defaultValue = false) {
-  const normalizedValue = getTextValue(value).toLowerCase();
-  if (!normalizedValue) return defaultValue;
-  if (normalizedValue === 'true') return true;
-  if (normalizedValue === 'false') return false;
-  return defaultValue;
+function isToggleCell(cell) {
+  const text = cell?.textContent?.trim().toLowerCase() || '';
+  return text === 'true' || text === 'false' || cell?.innerHTML?.trim() === '';
 }
 
-function isBooleanLikeValue(value) {
-  const normalizedValue = getTextValue(value).toLowerCase();
-  return normalizedValue === 'true' || normalizedValue === 'false';
+function extractToggledLink(cells, valueCellSelector) {
+  const valueCell = cells.find(valueCellSelector);
+  if (!valueCell) return { enabled: false, cell: null, toggleCell: null };
+
+  const indexInAll = cells.indexOf(valueCell);
+  const prevCell = cells[indexInAll - 1];
+  const isToggle = isToggleCell(prevCell);
+  const isDisabled = isToggle && prevCell?.textContent?.trim().toLowerCase() === 'false';
+
+  return { enabled: !isDisabled, cell: valueCell, toggleCell: isToggle ? prevCell : null };
 }
 
-function getOverlayHref(linkDiv) {
-  const linkedHref = linkDiv?.querySelector('a')?.getAttribute('href')?.trim();
-  if (linkedHref && !isBooleanLikeValue(linkedHref)) return linkedHref;
-  const textValue = getTextValue(linkDiv?.textContent);
-  if (textValue && !isBooleanLikeValue(textValue)) return textValue;
-  return '';
-}
+function buildCardWrapper(
+  cardLinkHref,
+  cardLinkTarget,
+  cardLinkTitle,
+  overlayHref,
+  enableOverlayModal,
+) {
+  const wrapper = createElementFromHTML('<div class="menu-card-action-item-link"></div>', document);
+  wrapper.setAttribute('role', 'button');
+  wrapper.setAttribute('tabindex', '0');
+  if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle);
 
-function decorateModalContent(modalBody) {
-  let hasTitle = false;
-  const wrappers = [...modalBody.querySelectorAll('.default-content-wrapper')];
-  const [firstWrapper] = wrappers;
-  const headings = wrappers.flatMap((wrapper) => [...wrapper.querySelectorAll('h1, h2, h3, h4, h5, h6')]);
-  const lastHeading = headings.at(-1);
+  if (enableOverlayModal) {
+    wrapper.setAttribute('data-modal', overlayHref);
+  } else {
+    wrapper.setAttribute('data-href', cardLinkHref);
+  }
 
-  if (firstWrapper) firstWrapper.classList.add('card-list-modal-content');
-
-  wrappers.forEach((wrapper) => {
-    let textIndex = 0;
-    [...wrapper.children].forEach((el, index) => {
-      if (el.matches('h1, h2, h3, h4, h5, h6')) {
-        if (!hasTitle) {
-          el.classList.add('card-list-modal-title');
-          hasTitle = true;
-        } else if (el === lastHeading) {
-          el.classList.add('card-list-modal-last-title');
-        } else {
-          el.classList.add('card-list-modal-subtitle');
-        }
-        return;
-      }
-      if (!el.matches('p')) return;
-      const isMedia = !!el.querySelector('picture, img');
-      const classes = [
-        'card-list-modal-paragraph',
-        `card-list-modal-paragraph-${index + 1}`,
-        isMedia ? 'card-list-modal-media' : 'card-list-modal-text',
-      ];
-      if (!isMedia) {
-        textIndex += 1;
-        classes.push(
-          `card-list-modal-text-${textIndex}`,
-          textIndex === 1 ? 'card-list-modal-intro' : 'card-list-modal-description',
-        );
-      }
-      el.classList.add(...classes);
-    });
+  wrapper.addEventListener('click', (e) => {
+    if (e.target.closest('a') || e.target.closest('[role="link"]')) return;
+    if (!enableOverlayModal) {
+      e.preventDefault();
+      window.location.href = wrapper.getAttribute('data-href');
+    }
   });
 
-  wrappers.slice(1).forEach((wrapper) => wrapper.replaceWith(...wrapper.childNodes));
+  wrapper.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      wrapper.click();
+    }
+  });
+
+  return wrapper;
 }
 
-function createModal(doc) {
-  if (doc.querySelector('.custom-modal')) return doc.querySelector('.custom-modal');
+function createCardItem(cardRow, doc) {
+  const cells = [...cardRow.children];
 
-  const modal = createElementFromHTML(`
-    <div class="custom-modal" aria-hidden="true">
-      <div class="modal-overlay"></div>
-      <div class="modal-content" role="dialog" aria-modal="true">
-        <button class="modal-close" type="button" aria-label="Close modal">&times;</button>
-        <div class="modal-body card-list-modal-body"></div>
-      </div>
-    </div>`, doc);
+  if (!cells.some((c) => c.textContent.trim().length > 0)) return null;
 
-  const closeModal = () => {
-    modal.classList.remove('active');
-    modal.setAttribute('aria-hidden', 'true');
-    doc.body.classList.remove('modal-open');
-  };
-
-  modal.querySelector('.modal-close')?.addEventListener('click', closeModal);
-  modal.querySelector('.modal-overlay')?.addEventListener('click', closeModal);
-  doc.addEventListener('keydown', (e) => e.key === 'Escape' && modal.classList.contains('active') && closeModal());
-
-  return doc.body.appendChild(modal);
-}
-
-async function openModal(doc, fragmentPath) {
-  const modal = createModal(doc);
-  const modalBody = modal.querySelector('.modal-body');
-  if (!modalBody) return;
-
-  try {
-    const fragment = await loadFragment(fragmentPath);
-    if (!fragment) throw new Error(`Unable to load fragment: ${fragmentPath}`);
-    modalBody.replaceChildren(...fragment.children);
-    decorateModalContent(modalBody);
-    modal.classList.add('active');
-    modal.setAttribute('aria-hidden', 'false');
-    doc.body.classList.add('modal-open');
-  } catch {
-    // Modal content failed to load; keep the current page state unchanged.
-  }
-}
-
-function createMenuCardItem(cardElement, doc) {
-  const cells = [...cardElement.children];
-  const [
-    imageDiv,
-    titleDiv,
-    descDiv,
-    actionTypeTextDiv,
-    defaultButtonDiv,
-    downloadButtonDivA,
-    downloadButtonDivB,
-    dropdownLabletDiv,
-    dropdownLinksDiv,
-    multipleDownloadLinksDiv,
-    isCardClickableDiv,
-    cardLinkDiv,
-    enableOverlayModalDiv,
-    overlayHrefDiv,
-  ] = cells;
-
-  const downloadButtonDiv = downloadButtonDivA?.querySelector('a')
-    ? downloadButtonDivA
-    : downloadButtonDivB;
+  const [imageDiv, titleDiv, descDiv, actionTypeDiv] = cells;
 
   const img = imageDiv?.querySelector('img');
-  const title = titleDiv?.innerHTML?.trim();
-  const description = descDiv?.innerHTML;
-  const actionTypeText = actionTypeTextDiv?.textContent?.trim();
-  const defaultButton = defaultButtonDiv?.querySelector('a');
-  const downloadButton = downloadButtonDiv?.querySelector('a');
-  const dropdownLable = dropdownLabletDiv?.textContent?.trim();
-  const dropdownLinks = dropdownLinksDiv?.innerHTML;
-  const multipleDownloadLinks = multipleDownloadLinksDiv?.innerHTML;
-  const isCardClickable = parseBooleanFlag(isCardClickableDiv?.textContent, false);
-  const cardLinkAnchor = cardLinkDiv?.querySelector('a');
-  const cardLinkHref = cardLinkAnchor?.href || '';
-  const cardLinkTarget = cardLinkAnchor?.target || '';
-  const cardLinkTitle = cardLinkAnchor?.title?.trim() || '';
-  const enableOverlayModal = isBooleanLikeValue(enableOverlayModalDiv?.textContent)
-    ? parseBooleanFlag(enableOverlayModalDiv?.textContent, false)
-    : !!getOverlayHref(enableOverlayModalDiv);
-  const overlayHref = isBooleanLikeValue(enableOverlayModalDiv?.textContent)
-    ? getOverlayHref(overlayHrefDiv)
-    : getOverlayHref(enableOverlayModalDiv);
-  const dateTextRaw = cells.at(-1)?.textContent?.trim() || '';
+  const headingEl = titleDiv?.querySelector('h1, h2, h3, h4, h5, h6');
+  const titleText = titleDiv?.textContent?.trim() || '';
+  const titleType = headingEl?.tagName?.toLowerCase() || 'h3';
+  const title = headingEl?.outerHTML?.trim()
+    ?? (titleText ? `<${titleType}>${titleText}</${titleType}>` : '');
+  const description = descDiv?.innerHTML?.trim() || '';
+  const actionType = actionTypeDiv?.textContent?.trim().toLowerCase().replace('-button', '') || 'default';
+
+  let remaining = cells.slice(4);
 
   let dateText = '';
-  if (dateTextRaw) {
-    const parsedDate = new Date(dateTextRaw);
-    if (!Number.isNaN(parsedDate.getTime())) {
-      dateText = formatMenuCardDate(dateTextRaw);
-    } else {
-      dateText = dateTextRaw;
-    }
+  const lastCell = remaining[remaining.length - 1];
+  const lastCellText = lastCell?.textContent?.trim() || '';
+  if (lastCellText.length >= 8 && !Number.isNaN(Date.parse(lastCellText))
+    && !lastCell?.querySelector('a')) {
+    dateText = formatDate(lastCellText);
+    remaining = remaining.slice(0, -1);
   }
 
-  const card = createElementFromHTML(
-    '<div class="menu-card-action-item"></div>',
-    doc,
+  const processLink = (selector) => {
+    const { enabled, cell, toggleCell } = extractToggledLink(remaining, selector);
+    const anchor = enabled && cell ? cell.querySelector('a') : null;
+    remaining = remaining.filter((c) => c !== cell && c !== toggleCell);
+    return { enabled, anchor };
+  };
+
+  const { enabled: enableOverlayModal, anchor: modalAnchor } = processLink(
+    (c) => c.querySelector('a[href*="/fragments/"]'),
+  );
+  const overlayHref = modalAnchor?.getAttribute('href') || '';
+
+  const { enabled: isCardClickable, anchor: cardLinkAnchor } = processLink(
+    (c) => {
+      if (c.querySelector('ul')) return false;
+      const a = c.querySelector('a');
+      if (!a) return false;
+      const text = a.textContent?.trim() || '';
+      const href = a.getAttribute('href')?.trim() || '';
+      return text.includes('/') || (text && href.endsWith(text)) || text === href;
+    },
+  );
+  const cardLinkHref = cardLinkAnchor?.getAttribute('href') || '';
+  const cardLinkTarget = cardLinkAnchor?.target || '';
+  const cardLinkTitle = cardLinkAnchor?.title?.trim() || '';
+
+  const actionCells = remaining.filter(
+    (c) => c.querySelector('a') && !c.querySelector('h1, h2, h3, h4, h5, h6, img, picture'),
   );
 
-  const inner = createElementFromHTML(
-    '<div class="menu-card-action-inner"></div>',
-    doc,
-  );
+  const card = createElementFromHTML('<div class="menu-card-action-item"></div>', doc);
+  const inner = createElementFromHTML('<div class="menu-card-action-inner"></div>', doc);
 
-  /* ---------------- IMAGE ---------------- */
-  if (img) {
-    const newImg = img.cloneNode(true);
-    inner.appendChild(newImg);
-  }
+  if (img) inner.appendChild(img.cloneNode(true));
 
-  /* ---------------- TITLE ---------------- */
   if (title) {
-    inner.appendChild(
-      createElementFromHTML(
-        `<div class="menu-card-action-title">${title}</div>`,
-        doc,
-      ),
-    );
+    inner.appendChild(createElementFromHTML(`<div class="menu-card-action-title">${title}</div>`, doc));
   }
 
-  /* ---------------- DESCRIPTION ---------------- */
   if (description) {
-    inner.appendChild(
-      createElementFromHTML(
-        `<div class="menu-card-action-description">${description}</div>`,
-        doc,
-      ),
-    );
+    inner.appendChild(createElementFromHTML(`<div class="menu-card-action-description">${description}</div>`, doc));
     inner.querySelector('.menu-card-action-title')?.classList.add('has-description');
   }
 
-  /* ---------------- ACTION DEFAULT ---------------- */
-  if (actionTypeText === 'default' && defaultButton) {
-    const defaultButtonClone = defaultButton.cloneNode(true);
-    defaultButtonClone.removeAttribute('data-modal');
-    if (enableOverlayModal && overlayHref) {
-      defaultButtonClone.removeAttribute('href');
-      defaultButtonClone.setAttribute('data-modal', overlayHref);
+  const appendDownloadLink = (anchor) => {
+    const dlLink = createDownloadLink(anchor, doc);
+    if (dlLink) {
+      dlLink.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
+      inner.appendChild(dlLink);
     }
-    inner.appendChild(defaultButtonClone);
+  };
+
+  if (actionType === 'download' && actionCells.length > 0) {
+    const dlCell = actionCells[actionCells.length - 1];
+    const { enabled: openInNewTab, toggleCell: dlToggleCell } = extractToggledLink(
+      remaining,
+      (c) => c === dlCell,
+    );
+    if (dlToggleCell) remaining = remaining.filter((c) => c !== dlToggleCell);
+    const dlAnchor = dlCell.querySelector('a');
+    if (dlToggleCell) applyLinkTarget(dlCell, 'a', openInNewTab);
+    appendDownloadLink(dlAnchor);
+  } else if (actionType === 'multiple-download' && actionCells.length > 0) {
+    const multipleCell = actionCells[actionCells.length - 1];
+    const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);
+    temp.querySelectorAll('a').forEach(appendDownloadLink);
+  } else if (actionType === 'select-dropdown') {
+    const dropdownCell = actionCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length >= 1);
+    if (dropdownCell) {
+      const labelCellIdx = remaining.indexOf(dropdownCell) - 1;
+      const label = (labelCellIdx >= 0 && !remaining[labelCellIdx].querySelector('a'))
+        ? remaining[labelCellIdx].textContent.trim()
+        : remaining[labelCellIdx]?.textContent.trim() || 'Select';
+      inner.appendChild(createGlobalDropdown(label, dropdownCell.innerHTML, doc));
+    }
+  } else if (actionType && actionCells.length > 0) {
+    const buttonContainer = actionCells[0].querySelector('.button-container') ?? actionCells[0];
+    const btn = buttonContainer.cloneNode(true);
+    const buttonLink = btn.querySelector('a');
+    buttonLink?.removeAttribute('data-modal');
+
+    if (!isCardClickable && enableOverlayModal && overlayHref && buttonLink) {
+      buttonLink.setAttribute('href', overlayHref);
+      buttonLink.setAttribute('data-modal', overlayHref);
+    }
+
+    if (actionType !== 'default') {
+      btn.classList.add(`action-${actionType}`);
+    }
+
+    inner.appendChild(btn);
   }
 
-  /* ---------------- ACTION : DOWNLOAD ---------------- */
-  if (actionTypeText === 'download' && downloadButton) {
-    const dlLink = createDownloadLink(downloadButton, doc);
-    dlLink?.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
-    inner.appendChild(dlLink);
-  }
-
-  /* ---------------- ACTION : MULTIPLE DOWNLOAD ---------------- */
-  if (actionTypeText === 'multiple-download' && multipleDownloadLinks) {
-    const temp = createElementFromHTML(`<div>${multipleDownloadLinks}</div>`, doc);
-    temp.querySelectorAll('a').forEach((anchor) => {
-      const downloadLink = createDownloadLink(anchor, doc);
-      if (downloadLink) {
-        downloadLink.classList.add('multiple-download-wrapper');
-        downloadLink.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
-        inner.appendChild(downloadLink);
-      }
-    });
-  }
-
-  /* ---------------- ACTION : DROPDOWN ---------------- */
-  if (actionTypeText === 'select-dropdown') {
-    const dropdown = createGlobalDropdown(dropdownLable || 'Select', dropdownLinks, doc);
-    inner.appendChild(dropdown);
-  }
-
-  /* ---------------- DATE TEXT ---------------- */
   if (dateText) {
-    const dateTextWrapper = doc.createElement('div');
-    dateTextWrapper.className = 'menu-card-action-date pad-top-30';
-    dateTextWrapper.textContent = dateText;
-    inner.appendChild(dateTextWrapper);
+    const dateEl = doc.createElement('div');
+    dateEl.className = 'menu-card-action-date pad-top-30';
+    dateEl.textContent = dateText;
+    inner.appendChild(dateEl);
   }
 
-  if (isCardClickable && cardLinkHref) {
-    const wrapper = createElementFromHTML('<a class="menu-card-action-item-link"></a>', doc);
-    if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle);
-    if (cardLinkTarget) wrapper.setAttribute('target', cardLinkTarget);
-    if (cardLinkTarget === '_blank') wrapper.setAttribute('rel', 'noopener noreferrer');
-    if (enableOverlayModal && overlayHref) {
-      wrapper.setAttribute('data-modal', overlayHref);
-    } else if (!enableOverlayModal) {
-      wrapper.setAttribute('href', cardLinkHref);
-    }
+  if (isCardClickable) {
+    const wrapper = buildCardWrapper(
+      cardLinkHref,
+      cardLinkTarget,
+      cardLinkTitle,
+      overlayHref,
+      enableOverlayModal,
+    );
     wrapper.appendChild(inner);
     card.appendChild(wrapper);
   } else {
@@ -285,35 +210,112 @@ function createMenuCardItem(cardElement, doc) {
   return card;
 }
 
-export default function decorate(block) {
-  const doc = block.ownerDocument;
-  const [mobileRow, ...cardRows] = [...block.children];
-  const mobileExperience = mobileRow?.textContent?.trim();
+function stripAuthoringInstrumentation(root) {
+  if (!root) return;
+  [root, ...root.querySelectorAll('*')].forEach((el) => {
+    [...el.attributes]
+      .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
+      .forEach(({ name }) => el.removeAttribute(name));
+  });
+}
+
+function removeDuplicateAuthoringBlocks(block) {
+  const blockResource = block.dataset.aueResource;
+  if (!blockResource) return;
+
+  block.ownerDocument.querySelectorAll('.menu-card-actions.block').forEach((other) => {
+    if (other === block) return;
+    if (other.dataset.aueResource !== blockResource) return;
+    if (!other.classList.contains('has-preview') && !other.querySelector('.menu-card-actions-preview')) return;
+    other.remove();
+  });
+}
+
+function getPreviewContainer(block, doc) {
+  const previewContainers = [...block.querySelectorAll(':scope > .menu-card-actions-preview')];
+  const previewContainer = previewContainers.shift() || doc.createElement('div');
+
+  previewContainers.forEach((container) => container.remove());
+
+  previewContainer.className = 'menu-card-actions-preview';
+  if (!previewContainer.isConnected) block.appendChild(previewContainer);
+
+  return previewContainer;
+}
+
+function renderCardActions(target, rows, block, doc) {
+  const firstRowText = rows[0]?.textContent?.trim().toLowerCase() || '';
+  const isFirstRowLayout = rows[0]?.children.length === 1
+    && /^[a-z-]+$/.test(firstRowText)
+    && !rows[0].querySelector('a, img, h1, h2, h3, h4, h5, h6');
+
+  const layoutClass = isFirstRowLayout ? firstRowText : '';
+  const isScrollable = layoutClass === 'scrollable';
+  const customClasses = layoutClass && layoutClass !== 'stacked' ? ` ${layoutClass}` : '';
+  const layout = isScrollable ? 'scrollable' : `stacked${customClasses}`;
+  const cardRows = isFirstRowLayout ? rows.slice(1) : rows;
+
   const section = block.closest('.menu-card-actions-container');
   ['text', 'image'].forEach((type, i) => {
     section?.querySelector(`.default-content-wrapper > p:nth-of-type(${i + 1})`)
       ?.classList.add(`default-content-wrapper-${type}`);
   });
 
-  const container = createElementFromHTML(
-    `<div class="menu-card-action ${mobileExperience}"></div>`,
-    doc,
-  );
+  const container = createElementFromHTML(`<div class="menu-card-action ${layout}"></div>`, doc);
+
+  if (isFirstRowLayout) rows[0].hidden = true;
 
   cardRows.forEach((row) => {
-    const card = createMenuCardItem(row, doc);
-    moveInstrumentation(row, card);
+    const card = createCardItem(row, doc);
+
+    if (!card) return;
+
+    if (!isAuthoringInstance(block)) {
+      moveInstrumentation(row, card);
+      row.remove();
+    }
     container.appendChild(card);
   });
 
-  block.textContent = '';
-  block.appendChild(container);
+  target.appendChild(container);
 
-  block.addEventListener('click', (event) => {
-    const trigger = event.target.closest('[data-modal]');
-    if (!trigger || !block.contains(trigger)) return;
-    event.preventDefault();
-    const fragmentPath = trigger.getAttribute('data-modal');
-    if (fragmentPath) openModal(doc, fragmentPath);
-  });
+  if (!block.dataset.menuCardActionsDecorated) {
+    block.dataset.menuCardActionsDecorated = 'true';
+    block.addEventListener('click', (event) => {
+      const trigger = event.target.closest('[data-modal]');
+      if (!trigger || !block.contains(trigger)) return;
+      const nestedLink = event.target.closest('a, [role="link"]');
+      if (nestedLink && nestedLink !== trigger) return;
+      event.preventDefault();
+      const fragmentPath = trigger.getAttribute('data-modal');
+      if (fragmentPath) openModal(doc, { fragmentPath });
+    });
+  }
+}
+
+export default function decorate(block) {
+  const doc = block.ownerDocument;
+
+  if (isAuthoringInstance(block)) {
+    removeDuplicateAuthoringBlocks(block);
+
+    block.querySelectorAll(':scope > div').forEach((row) => {
+      if (!row.classList.contains('menu-card-actions-preview')) {
+        row.dataset.configRow = '';
+        row.style.display = 'none';
+      }
+    });
+
+    block.classList.add('has-preview');
+    const previewContainer = getPreviewContainer(block, doc);
+
+    previewContainer.innerHTML = '';
+    const allRows = [...block.querySelectorAll(':scope > div[data-config-row]')];
+    renderCardActions(previewContainer, allRows, block, doc);
+    stripAuthoringInstrumentation(previewContainer);
+    return;
+  }
+
+  const allRows = [...block.children];
+  renderCardActions(block, allRows, block, doc);
 }

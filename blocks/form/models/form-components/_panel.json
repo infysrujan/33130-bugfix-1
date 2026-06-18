@@ -30,6 +30,68 @@
                     "...": "../form-common/_basic-input-fields.json#/fields"
                 },
                 {
+                    "component": "multiselect",
+                    "name": "style",
+                    "label": "Style",
+                    "valueType": "string",
+                    "required": false,
+                    "options": [
+                        {
+                            "name": "Panel type",
+                            "children": [
+                                {
+                                    "name": "Credit Card Approved Panel",
+                                    "value": "cc-app-approved"
+                                },
+                                {
+                                    "name": "Credit Card Denied Panel",
+                                    "value": "cc-app-denied"
+                                },
+                                {
+                                    "name": "Credit Card Not Found Panel",
+                                    "value": "cc-app-notfound"
+                                },
+                                {
+                                    "name": "Credit Card Application Cancel",
+                                    "value": "cc-app-cancel"
+                                },
+                                {
+                                    "name": "Credit Card Application Pending",
+                                    "value": "cc-app-pending"
+                                },
+                                {
+                                    "name": "Credit Card Application Incomplete",
+                                    "value": "cc-app-incomplete"
+                                },
+                                {
+                                    "name": "Credit Card Application Callback",
+                                    "value": "cc-app-callback"
+                                },
+                                {
+                                    "name": "Credit Card Application Not Found",
+                                    "value": "cc-app-notfound"
+                                },
+                                {
+                                    "name": "Credit Card Application Message Form",
+                                    "value": "cc-app-message-form"
+                                },
+                                {
+                                    "name": "Credit Card Application Main Form",
+                                    "value": "cc-app-main-form"
+                                },
+                                {
+                                    "name": "Form Review Panel 2 Column",
+                                    "value": "form-review-2col"
+                                },
+                                {
+                                    "name": "Custom Fieldset Approval Panel",
+                                    "value": "custom-fieldset-approval"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "component": "tab",
                     "label": "Repeat Panel",
                     "name": "repeat"

@@ -35,6 +35,18 @@
     },
     { 
       "...": "./components/wizard/_wizard.json#/definitions" 
+    },
+    {
+      "...": "./components/double-key-dropdown/_double-key-dropdown.json#/definitions"
+    },
+    {
+      "...": "./components/forms-menu-card/_forms-menu-card.json#/definitions"
+    },
+    {
+      "...": "./components/forms-card-list/_forms-card-list.json#/definitions"
+    },
+    {
+      "...": "./components/forms-card-list-item/_forms-card-list-item.json#/definitions"
     }
   ],
   "models": [
@@ -56,6 +68,12 @@
             },
             {
               "component": "text",
+              "name": "customFunctionsPath",
+              "label": "Form Specific Custom Functions Path",
+              "valueType": "string"
+            },
+            {
+              "component": "text",
               "name": "style",
               "label": "Form Specific styles path",
               "valueType": "string"
@@ -69,6 +87,12 @@
     },
     {
       "...": "./components/*/_*.json#/models"
+    },
+    {
+      "...": "./components/double-key-dropdown/_double-key-dropdown.json#/models"
+    },
+    {
+      "...": "./components/forms-menu-card/_forms-menu-card.json#/models"
     }
   ],
   "filters": [
@@ -99,7 +123,16 @@
         "text-input",
         "tnc",
         "wizard",
-        "range"
+        "range",
+        "double-key-dropdown",
+        "forms-menu-card",
+        "forms-card-list"
+      ]
+    },
+    {
+      "id": "forms-card-list",
+      "components": [
+        "forms-card-list-item"
       ]
     }
   ]

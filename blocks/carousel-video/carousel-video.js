@@ -75,13 +75,19 @@ export default async function decorate(block) {
   const mainPlayer = document.createElement('div');
   mainPlayer.className = 'cv-main-player';
 
-  const iframe = document.createElement('iframe');
-  iframe.src = `${embedBaseUrl}${items[0].id}`;
-  iframe.title = playerTitle;
-  iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
-  iframe.setAttribute('allowfullscreen', '');
-  iframe.setAttribute('loading', 'lazy');
-  mainPlayer.appendChild(iframe);
+  // All iframes are created upfront so they load immediately.
+  // Visibility is controlled by the .active class on each iframe.
+  const iframeEls = items.map(({ id }, i) => {
+    const iframeEl = document.createElement('iframe');
+    iframeEl.src = `${embedBaseUrl}${id}`;
+    iframeEl.title = playerTitle;
+    iframeEl.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+    iframeEl.setAttribute('allowfullscreen', '');
+    iframeEl.setAttribute('loading', 'lazy');
+    if (i === 0) iframeEl.classList.add('active');
+    mainPlayer.appendChild(iframeEl);
+    return iframeEl;
+  });
   block.appendChild(mainPlayer);
 
   // ── Thumbnail carousel ────────────────────────────────────────────────────
@@ -166,21 +172,23 @@ export default async function decorate(block) {
   // ── State helpers ─────────────────────────────────────────────────────────
   function setActive(index) {
     activeIndex = index;
-    iframe.src = `${embedBaseUrl}${items[index].id}`;
+    iframeEls.forEach((f, i) => f.classList.toggle('active', i === index));
     thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
   }
 
   function getThumbWidth() {
-    // Fall back to the CSS-declared width so the initial scroll is correct
-    // even before the first browser layout pass.
-    return allThumbBtns[0]?.offsetWidth || 185;
+    const btn = allThumbBtns[0];
+    if (!btn) return 193;
+    if (btn.offsetWidth > 0) return btn.offsetWidth;
+    const computed = parseFloat(window.getComputedStyle(btn).width);
+    return computed > 0 ? Math.round(computed) : 193;
   }
 
   function scrollTrack(rawNew) {
     rawScrollIndex = Math.max(0, Math.min(rawNew, 3 * n + extraCount - VISIBLE));
     const w = getThumbWidth();
-    track.style.transform = `translateX(-${rawScrollIndex * (w + THUMB_GAP)}px)`;
+    track.style.transform = `translate3d(-${rawScrollIndex * (w + THUMB_GAP)}px, 0px, 0px)`;
   }
 
   // Jump without triggering the CSS transition (used for seamless wrap resets).
@@ -188,29 +196,18 @@ export default async function decorate(block) {
     rawScrollIndex = rawNew;
     const w = getThumbWidth();
     track.style.transition = 'none';
-    track.style.transform = `translateX(-${rawScrollIndex * (w + THUMB_GAP)}px)`;
+    track.style.transform = `translate3d(-${rawScrollIndex * (w + THUMB_GAP)}px, 0px, 0px)`;
     track.getBoundingClientRect(); // force reflow so the transition suppression takes effect
     track.style.transition = '';
   }
 
-  // Return the DOM position (across all 3 sets) for realIndex that is
-  // closest to the current rawScrollIndex — this drives infinite scrolling.
-  // When two candidates are equidistant, prefer the original zone (n..2n-1)
-  // over clones so that short carousels (n < VISIBLE) never scroll into empty space.
-  function nearestRawForIndex(index) {
-    const candidates = [index, n + index, 2 * n + index];
-    return candidates.reduce((best, c) => {
-      const cDist = Math.abs(c - rawScrollIndex);
-      const bestDist = Math.abs(best - rawScrollIndex);
-      if (cDist < bestDist) return c;
-      if (cDist === bestDist && c >= n && c < 2 * n && (best < n || best >= 2 * n)) return c;
-      return best;
-    });
-  }
-
   // Scroll so the given index lands at the first (leftmost) visible slot.
+  // Always picks the next occurrence ahead of (>=) the current position so
+  // the track only ever moves rightward (clockwise).
   function scrollToFirst(index) {
-    const itemRaw = nearestRawForIndex(index);
+    const candidates = [index, n + index, 2 * n + index];
+    const ahead = candidates.filter((c) => c >= rawScrollIndex);
+    const itemRaw = ahead.length > 0 ? Math.min(...ahead) : 2 * n + index;
     scrollTrack(itemRaw);
   }
 
@@ -263,8 +260,14 @@ export default async function decorate(block) {
 
   dotEls.forEach((dot, i) => {
     dot.addEventListener('click', () => {
+      if (i === activeIndex) return;
+      const goForward = i > activeIndex;
       setActive(i);
-      scrollToFirst(i);
+      if (goForward) {
+        scrollForward(i);
+      } else {
+        scrollBackward(i);
+      }
     });
   });
 
@@ -273,7 +276,12 @@ export default async function decorate(block) {
   nextBtn.disabled = n <= 1;
 
   // Place the track at the start of the original set without animation.
-  scrollTrackSilent(n);
+  // Use rAF so offsetWidth reflects the actual rendered thumb size for the
+  // current breakpoint rather than falling back to the hardcoded default.
+  requestAnimationFrame(() => {
+    scrollTrackSilent(n);
+    mainPlayer.classList.add('active');
+  });
 
   // Recalculate scroll offset on resize
   let resizeTimer;

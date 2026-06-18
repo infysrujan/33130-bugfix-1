@@ -19,16 +19,13 @@
   letter-spacing: -0.0125rem;
 }
 
-:lang(th) {
-  .menu-card-actions-container .default-content-wrapper :is(h1) {
-    line-height: 2.4375rem;
-  }
-
-  .menu-card-actions-container .default-content-wrapper :is(h2) {
-    line-height: 2.0625rem;
-  }
+.menu-card-actions-container .default-content-wrapper :is(h1):lang(th) {
+  line-height: 1.875rem;
 }
 
+.menu-card-actions-container .default-content-wrapper :is(h2):lang(th) {
+  line-height: 1.5rem;
+}
 
 .menu-card-actions-container .default-content-wrapper .default-content-wrapper-text {
   font-weight: var(--bbl-font-family-regular);
@@ -83,6 +80,8 @@
   width: 100%;
   box-sizing: border-box;
   transition: border 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  overflow-wrap: break-word;
 }
 
 .menu-card-action-item-link .menu-card-action-inner {
@@ -112,7 +111,10 @@
 }
 
 .menu-card-action-title :is(h1, h2, h3, h4, h5, h6) {
-  font: 400 1.14rem/1.25rem var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
+  font-size: 1.14rem;
+  line-height: 1.25rem;
+  font-family: var(--bbl-font-family-medium);
   margin-block: var(--bbl-space-250) 0.9375rem;
   padding-bottom: 0.9375rem;
   box-sizing: border-box;
@@ -121,18 +123,31 @@
   display: inline-block;
 }
 
-.menu-card-action-inner .button.primary {
-    border-radius: 0.4375rem;
-    box-sizing: border-box;
+:lang(th) {
+  .menu-card-action-title :is(h1) {
+    line-height: 1.875rem;
+  }
+
+  .menu-card-action-title :is(h2) {
+    line-height: 1.5rem;
+  }
+}
+
+.menu-card-action-inner .button-container {
+    margin-block: 0;
     width: 100%;
-    padding: 0;
+}
+
+.menu-card-action-inner .button-m {
     display: block;
-    text-align: center;
-    line-height: 2.75rem;
+    width: auto;
+    max-width: 100%;
     text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    line-height: 2.75rem;
     margin-top: calc(var(--bbl-space-250) - 0.9375rem);
-    min-width: 100%;
 }
 
 .menu-card-action-inner .global-dropdown {
@@ -147,10 +162,13 @@
   position: relative;
   padding-right: 0.9375rem;
   margin-top: var(--bbl-space-250);
-  font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-medium);
+  font-weight: var(--bbl-text-link-primary-weight);
+  font-size: var(--bbl-text-link-primary-size);
+  line-height: var(--bbl-text-link-primary-line-height);
+  font-family: var(--bbl-font-family-medium);
 }
 
-.menu-card-action-inner .menu-card-action-description ~ :is(.button.primary, .global-dropdown) {
+.menu-card-action-inner .menu-card-action-description ~ :is(.button-m, .global-dropdown) {
     margin-top: var(--bbl-space-250);
     min-width: 100%;
 }
@@ -162,21 +180,20 @@
 
 .menu-card-action .menu-card-action-inner .button-tertiary:hover {
   color: var(--bbl-color-blue-90);
+  background: transparent;
   text-decoration: none;
 }
 
 .menu-card-action .menu-card-action-inner .button-tertiary::before {
   content: "\e901";
-  position: absolute;
-  right: 0.1875rem;
-  top: 52%;
-  transform: translateY(-50%);
-  font: 300 var(--bbl-font-size-b4) / 1 icomoon, sans-serif;
-  transition: all 0.3s ease-in-out;
+  order: 2; /* Robust flexbox alignment to place ::before after the text */
+  font: 300 0.625rem / 1 icomoon, sans-serif;
+  transition: transform 0.3s ease-in-out;
+  display: block;
 }
 
 .menu-card-action-inner .button-tertiary:hover::before {
-  transform: translateY(-50%) translateX(0.25rem);
+  transform: translateX(0.25rem);
 }
 
 .menu-card-action-description {
@@ -189,7 +206,7 @@
 }
 
 .menu-card-action-description p {
-  font: var(--bbl-font-family-regular) var(--bbl-font-size-b2)/1.1244rem var(--bbl-font-family-regular);
+   font: var(--bbl-font-weight-regular) var(--bbl-font-size-b2)/1.1244rem var(--bbl-font-family-regular);
   flex-grow: 1;
   margin: 0;
 }
@@ -234,16 +251,13 @@
   flex-grow: 0;
 }
 
-.menu-card-action-date p {
+.menu-card-action-date {
   line-height: 1.203rem;
   color: var(--bbl-color-grey-85);
+  padding-top: var(--bbl-space-250);
   margin: 0;
 }
 
-.menu-card-action-date {
-  margin-top: auto;
-  padding-top: var(--bbl-space-250);
-}
 
 .menu-card-action-inner .download-button-wrapper {
   margin-top: var(--bbl-space-250);
@@ -253,8 +267,32 @@
   margin-top: 1.875rem;
 }
 
-.menu-card-action-inner .download-button-wrapper + .download-button-wrapper {
+.menu-card-action-inner .download-button-wrapper+.download-button-wrapper {
   margin-top: 0;
+}
+
+.menu-card-action-item:has(.global-dropdown.is-open) {
+  z-index: 10;
+}
+
+.menu-card-action.scrollable:has(.global-dropdown.is-open) {
+  overflow: visible;
+}
+
+.menu-card-action-inner .download-button-wrapper .download-files {
+  padding: 0 var(--bbl-space-500) 0 var(--bbl-space-250);
+}
+
+.menu-card-action-description ul{
+  padding: 0.625rem 0 0;
+  margin: 0;
+}
+
+.menu-card-action-description ul li{
+  padding: .2rem;
+  margin: 0 0 0.625rem 0.875rem;
+  color: var(--bbl-color-grey-85);
+  line-height: 1.4613rem;
 }
 
 @media (width > 47.5rem) {
@@ -272,10 +310,17 @@
   }
 
   .menu-card-action-title :is(h1, h2, h3, h4, h5, h6) {
-    font: var(--bbl-font-weight-regular) 1.3125rem/1.4219rem var(--bbl-font-family-medium);
+    font-weight: var(--bbl-font-weight-regular);
+    font-size: 1.3125rem;
+    line-height: 1.4219rem;
+    font-family: var(--bbl-font-family-medium);
   }
 
-  .menu-card-action-date p {
+  .menu-card-action-date {
+    font-size: var(--bbl-font-size-b2);
+  }
+
+  .menu-card-action-description ul li{
     font-size: var(--bbl-font-size-b2);
   }
 }
@@ -288,19 +333,35 @@
 
   :lang(th) {
     .menu-card-actions-container .default-content-wrapper :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .menu-card-actions-container .default-content-wrapper :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .menu-card-actions-container .default-content-wrapper :is(h3) {
       line-height: 3.75rem;
     }
 
-    .menu-card-actions-container .default-content-wrapper :is(h4) {
+    .menu-card-actions-container .default-content-wrapper :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .menu-card-actions-container .default-content-wrapper :is(h3) {
+      line-height: 2rem;
+    }
+
+    .menu-card-actions-container .default-content-wrapper :is(h4) {
+      line-height: 1.375rem;
+    }
+
+    .menu-card-action-title :is(h1) {
+      line-height: 3.75rem;
+    }
+
+    .menu-card-action-title :is(h2) {
+      line-height: 2.5rem;
+    }
+
+    .menu-card-action-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .menu-card-action-title :is(h4) {
+      line-height: 1.375rem;
     }
   }
 
@@ -338,13 +399,13 @@
     font: var(--bbl-font-weight-regular) var(--bbl-font-size-base) / 1.375rem var(--bbl-font-family-regular);
   }
 
-  .menu-card-action .menu-card-action-inner .button-tertiary {
-    font-size: 0.8rem;
-    line-height: 1.12rem;
-  }
-
-  .menu-card-action-date p {
+  .menu-card-action-date {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.375rem;
+  }
+
+  .menu-card-action-description ul li{
+    font-size: var(--bbl-font-size-b1);
+    line-height: 1.67rem;
   }
 }

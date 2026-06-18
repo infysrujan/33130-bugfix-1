@@ -80,9 +80,10 @@
 
 .story-card .title-1 {
   margin: 0.625rem 0 1.25rem;
-  font-size: 1.4rem;
-  line-height: 1.375rem;
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-text-article-card-title-size);
+  line-height: var(--bbl-text-article-card-title-line-height);
+  font-weight: var(--bbl-text-article-card-title-weight);
+  font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
 }
 
@@ -105,6 +106,14 @@
 .story-card .button-container {
   display: inline-block;
   margin: 0.3125rem 0.9375rem 0.3125rem 0;
+}
+
+.story-card .story-card-social-icons {
+  margin-bottom: 1rem;
+}
+
+.story-card .story-card-social-icons a:hover {
+  text-decoration: none;
 }
 
 /* ========================================================================
@@ -154,18 +163,13 @@
 }
 
 /* Desktop */
-@media (width >= 64.0625rem) {
+@media (width > 64rem) {
   .story-card .outer {
     max-width: 100%;
   }
 
   .story-card .sub-title-medium.line {
     font-size: 1rem;
-  }
-
-  .story-card .title-1 {
-    font-size: 3rem;
-    line-height: 2.875rem;
   }
 
   .story-card .text-default {

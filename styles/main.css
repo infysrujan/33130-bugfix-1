@@ -1,0 +1,532 @@
+/*
+ * Copyright 2020 Adobe. All rights reserved.
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+:root {
+    /* site-level sizing */
+    --nav-height: 64px;
+    --bbl-layout-content-max-width-desktop: 1240px;
+    --bbl-layout-content-max-width-1920: 1752px;
+    --bbl-layout-central-aligned-max-width: 900px;
+    
+    /* header height used for scroll-margin-top offset (mobile-first) */
+    --header-scroll-offset: 5rem;
+}
+
+@media (width > 64rem) {
+    :root {
+        /* matches --header-d-height in header.css */
+        --header-scroll-offset: 7.8125rem;
+    }
+}
+
+body {
+    display: none;
+    margin: 0;
+    background-color: var(--bbl-bg-primary);
+    color: var(--bbl-text-primary);
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--bbl-text-body-size);
+    line-height: var(--bbl-text-body-line-height);
+}
+
+body.appear {
+    display: block;
+}
+
+header .header,
+footer .footer {
+    visibility: hidden;
+}
+
+header .header[data-block-status="loaded"],
+footer .footer[data-block-status="loaded"] {
+    visibility: visible;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0.8em;
+  margin-bottom: 0.25em;
+  font-family: var(--bbl-font-family-medium);
+  scroll-margin-top: var(--header-scroll-offset);
+}
+
+h1 {
+    font-size: var(--bbl-heading-h1-size);
+    line-height: var(--bbl-heading-h1-line-height);
+    font-weight: var(--bbl-heading-h1-weight);
+}
+
+h2 {
+    font-size: var(--bbl-heading-h2-size);
+    line-height: var(--bbl-heading-h2-line-height);
+    font-weight: var(--bbl-heading-h2-weight);
+}
+
+h3 {
+    font-size: var(--bbl-heading-h3-size);
+    line-height: var(--bbl-heading-h3-line-height);
+    font-weight: var(--bbl-heading-h3-weight);
+}
+
+h4 {
+    font-size: var(--bbl-heading-h4-size);
+    line-height: var(--bbl-heading-h4-line-height);
+    font-weight: var(--bbl-heading-h4-weight);
+}
+
+h5 {
+    font-size: var(--bbl-heading-h5-size);
+    line-height: var(--bbl-heading-h5-line-height);
+    font-weight: var(--bbl-heading-h5-weight);
+}
+
+/* No dedicated H6 token yet; map to the smallest text token */
+h6 {
+    font-size: var(--bbl-text-body-small-size);
+    line-height: var(--bbl-text-body-small-line-height);
+    font-weight: var(--bbl-text-body-small-weight);
+}
+
+strong{
+  font-family: var(--bbl-font-family-medium);
+}
+
+p,
+dl,
+ol,
+ul,
+pre,
+blockquote {
+    margin-top: 0.8em;
+    margin-bottom: 0.25em;
+}
+
+code,
+pre {
+    font-size: var(--bbl-text-body-small-size);
+}
+
+pre {
+    padding: 16px;
+    border-radius: 8px;
+    background-color: var(--bbl-bg-secondary);
+    overflow-x: auto;
+    white-space: pre;
+}
+
+main > div {
+    margin: 40px 16px;
+}
+
+input,
+textarea,
+select,
+button {
+    font: inherit;
+}
+
+/* links */
+a:any-link {
+    color: var(--bbl-text-link);
+    text-decoration: none;
+    overflow-wrap: break-word;
+}
+
+a:hover {
+    color: var(--bbl-text-link-hover);
+    text-decoration: underline;
+}
+
+main img {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+}
+
+.icon {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+}
+
+.icon img {
+    height: 100%;
+    width: 100%;
+}
+
+/* =========================================================================
+   SECTION-DEFAULT - Global Styles
+   ========================================================================= */
+.section {
+    width: 100%;
+    padding-inline: var(--bbl-space-section-xs);
+    margin: 0 auto;
+    box-sizing: border-box;
+    scroll-margin-top: var(--header-scroll-offset);
+}
+
+@media (width > 47.5rem) {
+    .section {
+        padding-inline: var(--bbl-space-section-sm);
+    }
+}
+
+@media (width > 64rem) {
+    .section {
+        padding-inline: var(--bbl-space-section-xl);
+    }
+
+    .section.columns-2-65 > *:first-child {
+        flex: 0 0 68%;
+    }
+}
+
+@media (width > 87.5rem) {
+    .section {
+        max-width: var(--bbl-layout-content-max-width-desktop);
+        padding-inline: 0;
+    }
+}
+
+/* =========================================================================
+   SECTION-LEVEL  - Global Styles
+   ========================================================================= */
+
+.section > .default-content-wrapper {
+    display: flow-root;
+}
+
+.section.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    text-align: center;
+}
+
+.section.center-image .section-image-item {
+    display: block;
+    text-align: center;
+}
+
+.section.center-image .default-content-wrapper > p {
+    text-align: center;
+}
+
+.section.center-image .default-content-wrapper > p > picture,
+.section.center-image .default-content-wrapper > p > img {
+    display: inline-block;
+    max-width: 100%;
+}
+
+.section.center-image .section-image-item :is(picture, img) {
+    display: block;
+    margin-inline: auto;
+    max-width: 100%;
+}
+
+.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
+.section.underline-image .section-image-item {
+    position: relative;
+    padding-bottom: var(--bbl-space-250);
+    margin: 1.875rem 0;
+}
+
+.section.underline-image .default-content-wrapper > p > picture,
+.section.underline-image .default-content-wrapper > p > img {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 1.875rem;
+    margin-bottom: 1.875rem;
+    max-width: 100%;
+}
+
+.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+.section.underline-image .section-image-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: var(--bbl-space-1000);
+    height: 0.0625rem;
+    background-color: var(--bbl-color-grey-150);
+}
+
+.section.underline-image .default-content-wrapper > p > picture::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: var(--bbl-space-1000);
+    height: 0.0625rem;
+    background-color: var(--bbl-color-grey-150);
+}
+
+.section.underline-title.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+.section.underline-image.center-image .section-image-item::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.section.underline-image.center-image .default-content-wrapper > p > picture::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@media (width > 47.5rem) {
+    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
+    .section.underline-image .section-image-item {
+        padding-bottom: 1.875rem;
+    }
+
+    .section.underline-image .default-content-wrapper > p > picture,
+    .section.underline-image .default-content-wrapper > p > img {
+        padding-bottom: var(--bbl-space-500);
+    }
+}
+
+@media (width > 64rem) {
+    .section.underline-image .default-content-wrapper > p > picture,
+    .section.underline-image .default-content-wrapper > p > img {
+        padding-bottom: 1.875rem;
+    }
+}
+
+.section.bg-truthful-blue  *,
+.section.bg-truthful-dark-blue  *{
+    color: var(--bbl-color-white);
+}
+
+.section.center-content .default-content-wrapper * {
+    text-align: center;
+    margin: auto;
+}
+
+/* =========================================================================
+   SECTION-FULL-BLEED-BG - Global Styles
+   ========================================================================= */
+.section.full-bleed-bg {
+    max-width: 100%;
+    padding-inline: 0;
+    margin: 0 auto;
+}
+
+.section.full-bleed-bg .content,
+.section.full-bleed-bg .default-content-wrapper {
+    padding-inline: var(--bbl-space-section-xs);
+    margin: 0 auto;
+}
+
+@media (width > 47.5rem) {
+    .section.full-bleed-bg .content,
+    .section.full-bleed-bg .default-content-wrapper {
+        padding-inline: var(--bbl-space-section-sm);
+    }
+}
+
+@media (width > 64rem) {
+    .section.full-bleed-bg .content,
+    .section.full-bleed-bg .default-content-wrapper {
+        padding-inline: var(--bbl-space-section-xl);
+    }
+}
+
+@media (width > 120rem) {
+    .section.full-bleed-bg .content,
+    .section.full-bleed-bg .default-content-wrapper {
+        max-width: var(--bbl-layout-content-max-width-1920);
+        padding-inline: 0;
+    }
+}
+
+/* =========================================================================
+   SECTION-FULL-BLEED-SPECIAL - Global Styles
+   ========================================================================= */
+.section.full-bleed-special {
+    width: 100%;
+    padding-inline: var(--bbl-space-section-xs);
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+@media (width > 47.5rem) {
+    .section.full-bleed-special {
+        padding-inline: var(--bbl-space-section-sm);
+    }
+}
+
+@media (width > 64rem) {
+    .section.full-bleed-special {
+        max-width: 100%;
+        padding-inline:  var(--bbl-space-section-xl);
+    }
+}
+
+@media (width > 120rem) {
+    .section.full-bleed-special {
+        max-width: var(--bbl-layout-content-max-width-1920);
+        padding-inline: 0;
+    }
+}
+
+/* =========================================================================
+   SECTION-CENTRAL-ALIGNED - Global Styles
+   ========================================================================= */
+.section.central-aligned > .default-content-wrapper {
+    margin-inline: 1rem;
+}
+ 
+@media (width > 47.5rem) {
+    .section.central-aligned > .default-content-wrapper {
+        margin-inline: 3rem;
+    }
+}
+ 
+@media (width > 64rem) {
+    .section.central-aligned .block,
+    .section.central-aligned > .default-content-wrapper {
+        max-width: var(--bbl-layout-central-aligned-max-width);
+        margin: 0 auto;
+    }
+}
+
+/* =========================================================================
+   SECTION-COLUMNS - Global Styles
+   ========================================================================= */
+.section.columns-3 {
+    display: flex;
+    gap: var(--bbl-space-layout-sm);
+    flex-direction: column;
+}
+
+.section.columns-2-75 {
+    display: flex;
+    flex-direction: column;
+}
+
+.section.columns-2-50 {
+    display: flex;
+    flex-direction: column;
+}
+
+.section.columns-2-65 {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (width > 64rem) {
+    .section.columns-3 { 
+        flex-direction: row;
+    }
+
+    .section.columns-3  > * {
+        width: 33%;
+        flex: 1;
+    }
+
+    .section.columns-2-50 {
+        flex-direction: row;
+    }
+
+    .section.columns-2-50 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-65 {
+        flex-direction: row;
+    }
+
+    .section.columns-2-75 {
+        flex-direction: row;
+    }
+
+    .section.columns-2-65 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-75 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-65 > *:first-child {
+        flex: 0 0 65%;
+    }
+
+    .section.columns-2-75 > *:first-child {
+        flex: 0 0 75%;
+    }
+}
+
+
+/* =========================================================================
+   SPACING UTILITIES
+   These classes rely on the responsive tokens in `styles/tokens/spacing.css`.
+   ========================================================================= */
+
+.pad-container-xs {
+    padding-inline: var(--bbl-space-container-xs);
+    box-sizing: border-box;
+}
+
+.pad-container-sm {
+    padding-inline: var(--bbl-space-container-sm);
+    box-sizing: border-box;
+}
+
+.pad-container-md {
+    padding-inline: var(--bbl-space-container-md);
+    box-sizing: border-box;
+}
+
+.pad-container-lg {
+    padding-inline: var(--bbl-space-container-lg);
+    box-sizing: border-box;
+}
+
+.pad-container-xl {
+    padding-inline: var(--bbl-space-container-xl);
+    box-sizing: border-box;
+}
+
+/* =========================================================================
+   SECTION-LEVEL SPACING - Global Styles
+   ========================================================================= */
+
+.pad-top-30 {
+    padding-top: 1.875rem;
+}
+
+.pad-bot-30 {
+    padding-bottom: 1.875rem;
+}
+
+.mar-top-30 {
+    margin-top: 1.875rem;
+}
+
+.mar-bot-30 {
+    margin-bottom: 1.875rem;
+}
+
+.hidden {
+    display: none;
+}
+
+.rte-anchor {
+    display: block;
+    height: 0;
+    overflow: hidden;
+    scroll-margin-top: var(--header-scroll-offset);
+}

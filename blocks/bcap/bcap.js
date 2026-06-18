@@ -1,6 +1,7 @@
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 let getUpdateInMonthBase = '';
 let allFundPricesUrl = '';
@@ -10,6 +11,10 @@ let allFundPricesUrl = '';
 const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
 let latestMdate = null;
+
+/** Cloned header cells (with `#key` suffixes)
+ * used for column mapping after display text is stripped. */
+const headerMappingCellsByTable = new WeakMap();
 
 /** @param {Date} selectedDate - local calendar day */
 function isDateOlderThanFundHistoryLimit(selectedDate) {
@@ -39,11 +44,7 @@ function formatDateForFundPricesPath(date) {
 async function fetchAllFundPrices(date) {
   const path = formatDateForFundPricesPath(date);
   const url = `${allFundPricesUrl}${path}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`AllFundPrices API returned ${response.status}`);
-  }
-  const data = await response.json();
+  const data = await fetchGet(url);
   return Array.isArray(data) ? data : [];
 }
 
@@ -51,11 +52,7 @@ async function fetchAllFundPrices(date) {
 async function fetchNavEnabledDaysForMonth({ year, month }) {
   const apiMonth = month + 1;
   const url = `${getUpdateInMonthBase}/${year}/${apiMonth}/0`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`GetUpdateInMonth returned ${response.status}`);
-  }
-  const data = await response.json();
+  const data = await fetchGet(url);
   if (!Array.isArray(data)) return [];
   return data
     .map((item) => (item && item.day != null ? Number(item.day) : NaN))
@@ -172,11 +169,15 @@ function appendRowFromData(tableElement, dataArray) {
   }
 
   let headerRow = tbody.querySelector('.header-row');
+
   if (!headerRow) {
     const firstRow = tbody.querySelector('tr');
     if (firstRow) {
-      // Check and clean up #words from td values
       const tds = firstRow.querySelectorAll('td');
+      headerMappingCellsByTable.set(
+        tableElement,
+        Array.from(tds).map((td) => td.cloneNode(true)),
+      );
       tds.forEach((td) => {
         if (typeof td.textContent === 'string') {
           // Remove any occurrence of '#' followed by a word (e.g., "#fundtype")
@@ -195,7 +196,8 @@ function appendRowFromData(tableElement, dataArray) {
     return;
   }
 
-  const headers = Array.from(headerRow.querySelectorAll('td'));
+  const headerMappingCells = headerMappingCellsByTable.get(tableElement)
+    || Array.from(headerRow.querySelectorAll('td'));
   const categoryKey = lang === 'th' ? 'mf_cateTha' : 'mf_cateEng';
   const categoryOrder = buildCategoryOrder(dataArray, categoryKey);
   const groupedByCategory = groupRowsByCategory(dataArray, categoryKey);
@@ -206,7 +208,7 @@ function appendRowFromData(tableElement, dataArray) {
     const group = groupedByCategory[category];
     group.forEach((row, rowIndex) => {
       const tr = document.createElement('tr');
-      headers.forEach((headerCell) => {
+      headerMappingCells.forEach((headerCell) => {
         const normalizedKey = normalizeHeaderKey(headerCell.textContent.trim());
         const columnKey = resolveColumnKey(normalizedKey, lang);
 
@@ -321,7 +323,7 @@ function printElement() {
     .brand-logo-container {
       width: 12.5rem;
       height: 3.125rem;
-      margin-block: 4rem;
+      margin-block: 3rem 1rem;
     }
 
     h2 {
@@ -438,6 +440,7 @@ function printElement() {
     printWindow.focus();
     setTimeout(() => {
       printWindow.print();
+      printWindow.close();
     }, 100);
   };
   if (printWindow.document.readyState === 'complete') {
@@ -479,7 +482,7 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   const root = doc.createElement('div');
-  root.className = 'bcap-root';
+  root.className = 'bcap-root content';
 
   const dateLabel = doc.createElement('div');
   dateLabel.className = 'calendar-wrapper';
@@ -511,24 +514,19 @@ export default async function decorate(block) {
     const latestDateUrl = configs?.bcapLatestDateUrl || '';
     getUpdateInMonthBase = configs?.bcapGetUpdateInMonthBase || '';
     allFundPricesUrl = configs?.bcapAllFundPricesUrl || '';
-    const [namesResponse, latestResponse] = await Promise.all([
-      fetch(allFundNamesUrl),
-      fetch(latestDateUrl),
+    const [latestJson, data] = await Promise.all([
+      fetchGet(latestDateUrl, { throwOnError: false }),
+      fetchGet(allFundNamesUrl),
     ]);
 
-    if (latestResponse.ok) {
-      const latestJson = await latestResponse.json();
+    if (latestJson) {
       latestMdate = latestJson?.mdate;
       const parsed = latestJson?.mdate ? parseLocalDateFromYmd(latestJson.mdate) : null;
       if (parsed) calendarDate = parsed;
     } else {
-      console.error(`bcap: LatestDate API returned ${latestResponse.status}`);
+      console.error('bcap: LatestDate API failed');
     }
 
-    if (!namesResponse.ok) {
-      throw new Error(`AllFundNames API returned ${namesResponse.status}`);
-    }
-    const data = await namesResponse.json();
     funds = Array.isArray(data) ? data : [];
   } catch (error) {
     console.error('bcap: failed to load fund list', error);

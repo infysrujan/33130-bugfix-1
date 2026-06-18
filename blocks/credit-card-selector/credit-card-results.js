@@ -1,8 +1,8 @@
-import decorateCardList from '../card-list/card-list.js';
 import { loadCSS } from '../../scripts/aem.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -69,30 +69,33 @@ function sortBySourcing(cards) {
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
 
-async function loadSheetData() {
+async function loadCardData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.creditCardSelectorFilteringMatrixUrl;
-    if (!url) return [];
-    const resp = await fetch(url);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    const rows = (json.data || []).map(normalizeRow);
-    return rows;
+    const baseUrl = configs.creditCardSelectorSuggesterData;
+    if (!baseUrl) return [];
+    const lang = getLang();
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${lang}`);
+    const cacheKey = `bbl-credit-cards-${lang}`;
+    if (!window[cacheKey]) {
+      window[cacheKey] = fetchGet(url, { throwOnError: false })
+        .then((json) => json?.data?.creditCardsList?.items || json?.data || json?.items || [])
+        .catch(() => []);
+    }
+    return window[cacheKey];
   } catch {
     return [];
   }
 }
 
-async function loadCardData() {
+async function loadSheetData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.creditCardSelectorSuggesterData;
+    const url = configs.creditCardSelectorFilteringMatrixUrl;
     if (!url) return [];
-    const resp = await fetch(url);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    return json.data?.creditCardsList?.items || json.data || json.items || [];
+    const json = await fetchGet(url, { throwOnError: false });
+    const rows = (json?.data || []).map(normalizeRow);
+    return rows;
   } catch {
     return [];
   }
@@ -167,28 +170,20 @@ async function resolveFilteredCards(sheetCards, filterState) {
 
 // ── card-list block DOM builder ────────────────────────────────────────────────
 
-function createBlockRow(doc, ...cells) {
-  const row = doc.createElement('div');
-  cells.forEach((content) => {
-    const cell = doc.createElement('div');
-    if (content instanceof Node) cell.appendChild(content);
-    else if (content !== null && content !== undefined) cell.textContent = String(content);
-    row.appendChild(cell);
-  });
-  return row;
-}
-
+/**
+ * Build the card list HTML directly, producing the same class structure
+ * as card-list.js so that card-list.css applies without running card-list.js.
+ */
 function buildCardBlock(cards, doc, lang, labels) {
   const block = doc.createElement('div');
   // 'credit-card' is the EDS variation class — sits alongside 'card-list block'
   block.className = 'card-list credit-card block';
   block.dataset.blockName = 'card-list';
 
-  block.appendChild(createBlockRow(doc, 'scrollable')); // layout
-  block.appendChild(createBlockRow(doc, 'center')); // alignment
-  block.appendChild(createBlockRow(doc, 'cards-3')); // cards per row
+  const list = doc.createElement('div');
+  list.className = 'cards-list scrollable center cards-3';
 
-  cards.forEach((card) => {
+  cards.forEach((card, idx) => {
     const nameEN = getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName');
     const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
     const description = getCardField(card, 'cardDescription', 'description');
@@ -201,61 +196,77 @@ function buildCardBlock(cards, doc, lang, labels) {
     const primaryName = isTH && nameTH ? nameTH : nameEN;
     const secondaryName = isTH && nameTH ? nameEN : nameTH;
 
-    // Image cell
-    const imgCell = doc.createElement('div');
+    if (idx === 0) {
+      // eslint-disable-next-line no-console
+      console.log('[credit-card-results] buildCardBlock | lang:', lang, '| isTH:', isTH, '| card keys:', Object.keys(card), '| nameEN:', nameEN, '| nameTH:', nameTH, '| primaryName:', primaryName);
+    }
+
+    const cardEl = doc.createElement('div');
+    cardEl.className = 'cards-list-item';
+
+    const inner = doc.createElement('div');
+    inner.className = 'cards-list-inner';
+
+    // Image
     if (imgSrc) {
+      const imageWrapper = doc.createElement('div');
+      imageWrapper.className = 'cards-list-image cards-list-image-x-small';
       const img = doc.createElement('img');
       img.src = imgSrc;
       img.alt = primaryName;
       img.loading = 'lazy';
-      imgCell.appendChild(img);
+      imageWrapper.appendChild(img);
+      inner.appendChild(imageWrapper);
     }
 
-    // Title cell: primary name as heading, secondary name as sub-label
-    const titleCell = doc.createElement('div');
+    // Content
+    const content = doc.createElement('div');
+    content.className = 'cards-list-content';
+
+    // Secondary name (sub-label above title)
     if (secondaryName) {
       const sub = doc.createElement('p');
       sub.className = 'ccs-name-th';
       sub.textContent = secondaryName;
-      titleCell.appendChild(sub);
+      content.appendChild(sub);
     }
+
+    // Title
+    const titleEl = doc.createElement('div');
+    titleEl.className = 'cards-list-title';
     const h3 = doc.createElement('h3');
     h3.textContent = primaryName;
     h3.dataset.cardId = card.cardId || card.id || '';
-    titleCell.appendChild(h3);
+    titleEl.appendChild(h3);
+    content.appendChild(titleEl);
 
-    // Description cell
-    const descCell = doc.createElement('div');
+    // Description
     if (description && typeof description === 'string') {
+      titleEl.classList.add('has-description');
+      const descEl = doc.createElement('div');
+      descEl.className = 'cards-list-description';
       const p = doc.createElement('p');
       p.textContent = description;
-      descCell.appendChild(p);
+      descEl.appendChild(p);
+      content.appendChild(descEl);
     }
 
-    // Button cell — Learn more link
-    const btnCell = doc.createElement('div');
+    inner.appendChild(content);
+
+    // Button — Learn more link
+    const buttonWrapper = doc.createElement('div');
+    buttonWrapper.className = 'cards-list-button';
     const link = doc.createElement('a');
     link.href = learnHref;
     link.textContent = labels.learnMore;
-    btnCell.appendChild(link);
+    buttonWrapper.appendChild(link);
+    inner.appendChild(buttonWrapper);
 
-    block.appendChild(createBlockRow(
-      doc,
-      imgCell,
-      null,
-      titleCell,
-      descCell,
-      null,
-      btnCell,
-      'x-small',
-      'true',
-      'false',
-      null,
-      null,
-      'false',
-    ));
+    cardEl.appendChild(inner);
+    list.appendChild(cardEl);
   });
 
+  block.appendChild(list);
   return block;
 }
 
@@ -500,7 +511,6 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
 
     const blockEl = buildCardBlock(cards, doc, lang, labels);
     cardListContainer.appendChild(blockEl);
-    decorateCardList(blockEl);
     addCompareButtons(blockEl, doc, labels);
     restoreCompareState(cardListContainer);
 

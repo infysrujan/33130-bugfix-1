@@ -1,5 +1,6 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
+import { createPictureWithoutOptimization } from '../../scripts/bbl-decorators.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { openModal } from '../../scripts/modal.js';
 
 /**
  * Helper to get text content from a row
@@ -44,6 +45,7 @@ function buildContent(
 ) {
   const content = doc.createElement('div');
   content.className = 'story-card-content';
+  let enableModal = false;
 
   // Eyebrow
   if (eyebrowText) {
@@ -81,6 +83,18 @@ function buildContent(
         // Only append if button has valid href and text
         if (anchor && anchor.href && anchor.textContent.trim()) {
           const clonedContainer = buttonContainer.cloneNode(true);
+
+          const isModalEnabled = [...buttonRow.children].some(
+            (cell) => !cell.contains(buttonContainer) && cell.textContent?.trim().toLowerCase() === 'true',
+          );
+
+          if (isModalEnabled) {
+            const clonedAnchor = clonedContainer.querySelector('a');
+            clonedAnchor.setAttribute('data-modal', clonedAnchor.getAttribute('href'));
+            clonedAnchor.removeAttribute('href');
+            enableModal = true;
+          }
+
           moveInstrumentation(buttonRow, clonedContainer);
           content.appendChild(clonedContainer);
         }
@@ -88,7 +102,7 @@ function buildContent(
     });
   }
 
-  return content;
+  return { content, enableModal };
 }
 
 /**
@@ -105,7 +119,7 @@ function buildThumb(img, imageAlt, imageRow, doc) {
 
   if (img) {
     // Create optimized picture element like carousel
-    const optimizedPicture = createOptimizedPicture(
+    const optimizedPicture = createPictureWithoutOptimization(
       img.src,
       imageAlt || img.alt || '',
       false,
@@ -123,6 +137,51 @@ function buildThumb(img, imageAlt, imageRow, doc) {
   }
 
   return thumb;
+}
+
+/**
+ * Build the social icons section
+ * @param {Array} socialIconRows - Array of social icon row elements
+ * @param {Document} doc - Document reference
+ * @returns {Element|null} The social icons container or null if no icons
+ */
+function buildSocialIcons(socialIconRows, doc) {
+  if (!socialIconRows || !socialIconRows.length) return null;
+
+  const container = doc.createElement('div');
+  container.className = 'story-card-social-icons';
+
+  socialIconRows.forEach((row) => {
+    const cells = [...row.children];
+    const picture = cells[0]?.querySelector('picture');
+    const altText = cells[1]?.textContent?.trim() || '';
+    const href = cells[2]?.querySelector('a')?.href || '';
+
+    if (!picture || !href) return;
+
+    // Remove whitespace text nodes from picture so post-decorators don't
+    // use them as the anchor's title (they read anchor.textContent)
+    [...picture.childNodes].forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) node.remove();
+    });
+
+    const img = picture.querySelector('img');
+    if (img) {
+      img.removeAttribute('title');
+      if (altText) img.alt = altText;
+    }
+
+    const anchor = doc.createElement('a');
+    anchor.href = href;
+    anchor.target = '_blank';
+    anchor.rel = 'noopener noreferrer';
+    anchor.appendChild(picture);
+    moveInstrumentation(row, anchor);
+
+    container.appendChild(anchor);
+  });
+
+  return container.children.length ? container : null;
 }
 
 /**
@@ -172,8 +231,11 @@ export default function decorate(block) {
   const descriptionRow = hasAltText ? rows[4] : rows[3];
   const positionRow = rows[positionRowIndex];
 
-  // Collect all button rows after position row (could be 0, 1, or multiple)
-  const buttonRows = rows.slice(positionRowIndex + 1);
+  // Split rows after position row into button rows and social icon rows
+  // Social icon rows are identified by an image in the first cell (button rows never have this)
+  const postRows = rows.slice(positionRowIndex + 1);
+  const socialIconRows = postRows.filter((row) => row.children[0]?.querySelector('picture, img'));
+  const buttonRows = postRows.filter((row) => !row.children[0]?.querySelector('picture, img') && row.querySelector('.button-container'));
 
   // Get image
   const img = imageRow?.querySelector('img');
@@ -206,7 +268,7 @@ export default function decorate(block) {
   const inner = doc.createElement('div');
   inner.className = 'inner';
 
-  const content = buildContent(
+  const { content, enableModal } = buildContent(
     eyebrowText,
     titleText,
     descriptionHTML,
@@ -216,6 +278,17 @@ export default function decorate(block) {
     descriptionRow,
     doc,
   );
+
+  const socialIcons = buildSocialIcons(socialIconRows, doc);
+  if (socialIcons) {
+    const firstButton = content.querySelector('.button-container');
+    if (firstButton) {
+      content.insertBefore(socialIcons, firstButton);
+    } else {
+      content.appendChild(socialIcons);
+    }
+  }
+
   inner.appendChild(content);
   outer.appendChild(inner);
 
@@ -238,4 +311,15 @@ export default function decorate(block) {
   // Replace block content
   block.textContent = '';
   block.appendChild(wrapper);
+
+  // Only attach the modal handler if at least one button has enableModal enabled.
+  if (enableModal) {
+    block.addEventListener('click', (event) => {
+      const trigger = event.target.closest('[data-modal]');
+      if (!trigger || !block.contains(trigger)) return;
+      event.preventDefault();
+      const fragmentPath = trigger.getAttribute('data-modal');
+      if (fragmentPath) openModal(doc, fragmentPath);
+    });
+  }
 }

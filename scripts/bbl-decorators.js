@@ -6,6 +6,7 @@ import {
   decorateBlock,
   loadBlock,
 } from './aem.js';
+
 /**
  * Helper function to parse comma-separated URL strings from config
  * @param {string} urlString - Comma-separated URL string
@@ -150,6 +151,11 @@ function handleGlobalLinkClicks() {
 
     if (!link) return;
 
+    if (link.dataset.bypassRedirect === 'true') {
+      delete link.dataset.bypassRedirect;
+      return;
+    }
+
     const href = link.getAttribute('href');
 
     // Skip internal links, hash links, and relative paths
@@ -208,12 +214,89 @@ function handleGlobalLinkClicks() {
         link.setAttribute('target', originalTarget);
       }
       // Re-trigger the click to allow normal navigation
+      link.dataset.bypassRedirect = 'true';
       link.click();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Error processing link click:', error);
     }
   }, true); // Use capture phase
+}
+
+function isHomepage() {
+  const p = window.location.pathname.replace(/\/$/, '') || '/';
+  return ['/', '/en', '/th-TH', '/th-th'].includes(p);
+}
+
+function preloadWelcomeBannerImage(fragment, basePath) {
+  const block = fragment.querySelector('.welcome-banner');
+  if (!block) return;
+
+  const mobileRow = block.children[1];
+  const img = mobileRow?.querySelector('img');
+  const src = img?.getAttribute('src');
+  if (!src) return;
+
+  const resolvedSrc = src.startsWith('./')
+    ? new URL(src, new URL(basePath, window.location)).href
+    : src;
+  if (document.querySelector(`link[rel="preload"][as="image"][href="${resolvedSrc}"]`)) return;
+
+  const link = document.createElement('link');
+  link.rel = 'preload';
+  link.as = 'image';
+  link.href = resolvedSrc;
+  link.setAttribute('fetchpriority', 'high');
+  document.head.append(link);
+}
+
+async function waitForImageLoad(img) {
+  if (!img || img.complete) return;
+  await new Promise((resolve) => {
+    img.setAttribute('loading', 'eager');
+    img.setAttribute('fetchpriority', 'high');
+    img.addEventListener('load', resolve, { once: true });
+    img.addEventListener('error', resolve, { once: true });
+  });
+}
+
+let welcomeBannerLoadPromise;
+
+async function loadWelcomeBanner(doc) {
+  if (!isHomepage()) {
+    return undefined;
+  }
+  if (welcomeBannerLoadPromise) {
+    await welcomeBannerLoadPromise;
+    return undefined;
+  }
+
+  const lang = doc.documentElement.lang || 'en';
+  const path = `/${lang}/fragments/welcome-banner/welcome-banner`;
+
+  welcomeBannerLoadPromise = new Promise((resolve) => {
+    document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
+      detail: {
+        path,
+        onHtmlParsed: preloadWelcomeBannerImage,
+        callback: async (fragment) => {
+          if (!fragment) {
+            // eslint-disable-next-line no-console
+            console.error('[Welcome Banner] Fragment not found at', path);
+            resolve();
+            return;
+          }
+          const main = doc.querySelector('main');
+          [...fragment.querySelectorAll(':scope > .section')].forEach((s) => main.append(s));
+          await waitForImageLoad(doc.querySelector('.welcome-banner-media img'));
+          resolve();
+        },
+      },
+    }));
+  });
+
+  await welcomeBannerLoadPromise;
+  return undefined;
 }
 
 async function loadBreadcrumb(doc) {
@@ -302,7 +385,7 @@ function decorateButtonsV1(element) {
   });
 }
 
-function decorateTerritoryButtons(main) {
+function decorateTertiaryButtons(main) {
   // Find anchors that are "button" only (no variants like primary/secondary)
   // and convert them to "button territory".
   main.querySelectorAll('a.button:not([class*=" "])').forEach((a) => {
@@ -341,7 +424,7 @@ function isAuthoringInstance(block) {
   return hasAueAttrs && window.self !== window.top;
 }
 
-if (Window.LAZY_PHASE) {
+if (window.LAZY_PHASE) {
   handleGlobalLinkClicks();
 } else {
   document.addEventListener('lazy-phase', () => {
@@ -397,8 +480,7 @@ async function buildCookieAlert(main) {
         path: fragmentPath,
         callback: (fragment) => {
           if (!fragment) {
-            // eslint-disable-next-line no-console
-            console.warn('[cookie-alert] Fragment not found at', fragmentPath);
+            console.error('[cookie-alert] Fragment not found at', fragmentPath);
             return;
           }
           // Move the decorated sections directly (preserves event listeners).
@@ -413,12 +495,62 @@ async function buildCookieAlert(main) {
   }
 }
 
+function createPictureWithoutOptimization(
+  src,
+  alt = '',
+  eager = false,
+  breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }],
+) {
+  const url = new URL(src, window.location.href);
+  const picture = document.createElement('picture');
+  const { pathname } = url;
+
+  // webp
+  breakpoints.forEach((br) => {
+    const source = document.createElement('source');
+    if (br.media) source.setAttribute('media', br.media);
+    source.setAttribute('type', 'image/webp');
+    source.setAttribute('srcset', `${pathname}`);
+    picture.appendChild(source);
+  });
+
+  // fallback
+  breakpoints.forEach((br, i) => {
+    if (i < breakpoints.length - 1) {
+      const source = document.createElement('source');
+      if (br.media) source.setAttribute('media', br.media);
+      source.setAttribute('srcset', `${pathname}`);
+      picture.appendChild(source);
+    } else {
+      const img = document.createElement('img');
+      img.setAttribute('loading', eager ? 'eager' : 'lazy');
+      if (eager) img.setAttribute('fetchpriority', 'high');
+      img.setAttribute('alt', alt);
+      picture.appendChild(img);
+      img.setAttribute('src', `${pathname}`);
+    }
+  });
+
+  return picture;
+}
+
+function applyLinkTarget(container, selector, targetValue) {
+  const anchor = container.querySelector(selector);
+  if (anchor) {
+    const openInNewTab = targetValue === true || targetValue?.toString().toLowerCase() === 'true';
+    anchor.target = openInNewTab ? '_blank' : '_self';
+  }
+}
+
 export {
-  decorateTerritoryButtons,
+  decorateTertiaryButtons,
   decorateButtonsV1,
   decorateSvgWithAltText,
   loadBreadcrumb,
+  loadWelcomeBanner,
   isAuthoringInstance,
   buildCookieAlert,
   getLang,
+  createPictureWithoutOptimization,
+  applyLinkTarget,
 };

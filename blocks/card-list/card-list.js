@@ -1,106 +1,24 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
-import { loadFragment } from '../fragment/fragment.js';
-
-function decorateModalContent(modalBody) {
-  let hasTitle = false;
-  const wrappers = [...modalBody.querySelectorAll('.default-content-wrapper')];
-  const [firstWrapper] = wrappers;
-  const headings = wrappers.flatMap((wrapper) => [...wrapper.querySelectorAll('h1, h2, h3, h4, h5, h6')]);
-  const lastHeading = headings.at(-1);
-
-  if (firstWrapper) {
-    firstWrapper.classList.add('card-list-modal-content');
-  }
-
-  wrappers.forEach((wrapper) => {
-    let textIndex = 0;
-
-    [...wrapper.children].forEach((el, index) => {
-      if (el.matches('h1, h2, h3, h4, h5, h6')) {
-        if (!hasTitle) {
-          el.classList.add('card-list-modal-title');
-          hasTitle = true;
-        } else if (el === lastHeading) {
-          el.classList.add('card-list-modal-last-title');
-        } else {
-          el.classList.add('card-list-modal-subtitle');
-        }
-        return;
-      }
-
-      if (!el.matches('p')) return;
-
-      const isMedia = !!el.querySelector('picture, img');
-      const classes = [
-        'card-list-modal-paragraph',
-        `card-list-modal-paragraph-${index + 1}`,
-        isMedia ? 'card-list-modal-media' : 'card-list-modal-text',
-      ];
-
-      if (!isMedia) {
-        textIndex += 1;
-        classes.push(
-          `card-list-modal-text-${textIndex}`,
-          textIndex === 1 ? 'card-list-modal-intro' : 'card-list-modal-description',
-        );
-      }
-
-      el.classList.add(...classes);
-    });
-  });
-
-  wrappers.slice(1).forEach((wrapper) => {
-    wrapper.replaceWith(...wrapper.childNodes);
-  });
-}
-
-function createModal(doc) {
-  if (doc.querySelector('.custom-modal')) return doc.querySelector('.custom-modal');
-
-  const modal = createElementFromHTML(`
-    <div class="custom-modal" aria-hidden="true">
-      <div class="modal-overlay"></div>
-      <div class="modal-content" role="dialog" aria-modal="true">
-        <button class="modal-close" type="button" aria-label="Close modal">&times;</button>
-        <div class="modal-body card-list-modal-body"></div>
-      </div>
-    </div>`, doc);
-
-  const closeModal = () => {
-    modal.classList.remove('active');
-    modal.setAttribute('aria-hidden', 'true');
-    doc.body.classList.remove('modal-open');
-  };
-
-  modal.querySelector('.modal-close')?.addEventListener('click', closeModal);
-  modal.querySelector('.modal-overlay')?.addEventListener('click', closeModal);
-  doc.addEventListener('keydown', (e) => e.key === 'Escape' && modal.classList.contains('active') && closeModal());
-
-  return doc.body.appendChild(modal);
-}
-
-async function openModal(doc, fragmentPath) {
-  const modal = createModal(doc);
-  const modalBody = modal.querySelector('.modal-body');
-  if (!modalBody) return;
-
-  try {
-    const fragment = await loadFragment(fragmentPath);
-    if (!fragment) throw new Error(`Unable to load fragment: ${fragmentPath}`);
-
-    modalBody.replaceChildren(...fragment.children);
-    decorateModalContent(modalBody);
-    modal.classList.add('active');
-    modal.setAttribute('aria-hidden', 'false');
-    doc.body.classList.add('modal-open');
-  } catch {
-    // fragment failed to load — modal stays closed
-  }
-}
+import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
+import { openModal } from '../../scripts/utils/modal.js';
+import { applyLinkTarget, getLang, isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
 function getTextValue(value) {
   return value?.toString().trim() || '';
+}
+
+function formatMenuCardDate(dateStr) {
+  if (!dateStr) return '';
+  const lang = getLang();
+  const date = new Date(dateStr);
+  if (lang === 'th') {
+    const buddhistYear = date.getFullYear() + 543;
+    const month = date.toLocaleString('th-TH', { month: 'long' });
+    const day = date.getDate();
+    return `${day} ${month} ${buddhistYear}`;
+  }
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function parseBooleanFlag(value, defaultValue = false) {
@@ -137,17 +55,31 @@ function createCardListItem(cardElement, doc) {
     remarkDiv,
     actionTypeTextDiv,
     defaultButtonDiv,
-    multipleDownloadLinksDiv,
+    targetOrDownloadDiv,
   ] = cells;
 
   const actionTypeText = actionTypeTextDiv?.textContent?.trim().replace('-button', '') || 'default';
 
-  const downloadLinksCell = multipleDownloadLinksDiv?.querySelector('a') ? multipleDownloadLinksDiv : cells[9];
-  const multipleDownloadLinks = downloadLinksCell?.querySelector('a') ? downloadLinksCell.innerHTML : null;
-  const stubOffset = downloadLinksCell === cells[9] ? 1 : 0;
+  const cell8Text = targetOrDownloadDiv?.textContent?.trim() ?? '';
+  const hasTargetFlag = isBooleanLikeValue(cell8Text);
+  const openInNewTab = hasTargetFlag ? parseBooleanFlag(cell8Text, false) : false;
 
-  const relIdx = cells.slice(9 + stubOffset).findIndex((c) => !isBooleanLikeValue(c.textContent?.trim() ?? ''));
-  const base = relIdx === -1 ? cells.length : (9 + stubOffset) + relIdx;
+  const downloadOffset = hasTargetFlag ? 1 : 0;
+  const downloadLinksCell = cells[8 + downloadOffset]?.querySelector('a')
+    ? cells[8 + downloadOffset]
+    : null;
+  const multipleDownloadLinks = downloadLinksCell?.querySelector('a')
+    ? downloadLinksCell.innerHTML
+    : null;
+
+  const stubOffset = downloadLinksCell === cells[9 + downloadOffset] ? 1 : 0;
+
+  const relIdx = cells.slice(9 + downloadOffset + stubOffset).findIndex(
+    (c) => !isBooleanLikeValue(c.textContent?.trim() ?? ''),
+  );
+  const base = relIdx === -1
+    ? cells.length
+    : (9 + downloadOffset + stubOffset) + relIdx;
 
   const img = imageDiv?.querySelector('img');
   const promoTag = promoTagDiv?.textContent?.trim();
@@ -155,6 +87,14 @@ function createCardListItem(cardElement, doc) {
   const subtitle = subtitleDiv?.textContent?.trim() || '';
   const description = descDiv?.innerHTML;
   const remark = remarkDiv?.innerHTML;
+  const dateTextRaw = cells[cells.length - 1]?.textContent?.trim() || '';
+  let financialDate = '';
+  if (dateTextRaw) {
+    const parsedDate = new Date(dateTextRaw);
+    financialDate = !Number.isNaN(parsedDate.getTime())
+      ? formatMenuCardDate(dateTextRaw)
+      : dateTextRaw;
+  }
   const defaultButton = defaultButtonDiv?.querySelector('a');
   const imageLayout = cells[base]?.textContent?.trim() || 'default';
   const enableTitleUnderline = parseBooleanFlag(cells[base + 1]?.textContent, false);
@@ -237,6 +177,16 @@ function createCardListItem(cardElement, doc) {
 
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
     buttonWrapper.appendChild(buttonLink);
+    applyLinkTarget(buttonWrapper, 'a', openInNewTab);
+    inner.appendChild(buttonWrapper);
+  }
+
+  if (actionTypeText === 'select-dropdown') {
+    // dropdown fields: cells.length-3 = label, cells.length-2 = links (before financialDate)
+    const label = cells[cells.length - 3]?.textContent?.trim() || 'Select';
+    const linksHTML = cells[cells.length - 2]?.innerHTML || '';
+    const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
+    buttonWrapper.appendChild(createGlobalDropdown(label, linksHTML, doc));
     inner.appendChild(buttonWrapper);
   }
 
@@ -261,12 +211,21 @@ function createCardListItem(cardElement, doc) {
     }
   }
 
+  if (financialDate) {
+    inner.appendChild(
+      createElementFromHTML(`<div class="cards-list-date">${financialDate}</div>`, doc),
+    );
+  }
+
   if (isCardClickable && cardLinkHref) {
     const wrapper = createElementFromHTML('<a class="cards-list-item-link"></a>', doc);
 
     if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle);
     if (cardLinkTarget) wrapper.setAttribute('target', cardLinkTarget);
     if (cardLinkTarget === '_blank') wrapper.setAttribute('rel', 'noopener noreferrer');
+
+    wrapper.target = openInNewTab ? '_blank' : '_self';
+    if (openInNewTab) wrapper.setAttribute('rel', 'noopener noreferrer');
 
     if (enableOverlayModal && overlayHref) {
       wrapper.setAttribute('data-modal', overlayHref);
@@ -283,12 +242,62 @@ function createCardListItem(cardElement, doc) {
   return card;
 }
 
+function stripAuthoringInstrumentation(root) {
+  if (!root) return;
+  [root, ...root.querySelectorAll('*')].forEach((el) => {
+    [...el.attributes]
+      .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
+      .forEach(({ name }) => el.removeAttribute(name));
+  });
+}
+
+function removeDuplicateAuthoringBlocks(block) {
+  const blockResource = block.dataset.aueResource;
+  if (!blockResource) return;
+
+  block.ownerDocument.querySelectorAll('.card-list.block').forEach((other) => {
+    if (other === block) return;
+    if (other.dataset.aueResource !== blockResource) return;
+    if (!other.querySelector(':scope > .cards-list')) return;
+    other.remove();
+  });
+}
+
+function getSourceRows(block) {
+  return [...block.children].filter((row) => !row.classList.contains('cards-list'));
+}
+
+function bindModalHandler(block, doc) {
+  if (block.dataset.cardListModalBound) return;
+  block.dataset.cardListModalBound = 'true';
+
+  block.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-modal]');
+    if (!trigger || !block.contains(trigger)) return;
+    event.preventDefault();
+    const fragmentPath = trigger.getAttribute('data-modal');
+    if (fragmentPath) openModal(doc, { fragmentPath, dialogClass: 'card-list-modal-body' });
+  });
+}
+
 export default function decorate(block) {
-  if (block.dataset.decorated) return;
+  const isAuthoring = isAuthoringInstance(block);
+  if (block.dataset.decorated && !isAuthoring) return;
   block.dataset.decorated = 'true';
 
   const doc = block.ownerDocument;
-  const [LayoutRow, Alignment, cardsPerRowEl, ...cardRows] = [...block.children];
+
+  if (isAuthoring) {
+    removeDuplicateAuthoringBlocks(block);
+    block.querySelectorAll(':scope > .cards-list').forEach((container) => container.remove());
+  }
+
+  const sourceRows = getSourceRows(block);
+  if (isAuthoring) {
+    sourceRows.forEach((row) => { row.style.display = 'none'; });
+  }
+
+  const [LayoutRow, Alignment, cardsPerRowEl, ...cardRows] = sourceRows;
   const cardListLayout = LayoutRow?.textContent?.trim();
   const cardListAlignment = Alignment?.textContent?.trim();
   const cardsPerRow = cardsPerRowEl?.textContent?.trim();
@@ -303,18 +312,20 @@ export default function decorate(block) {
 
   cardRows.forEach((row) => {
     const card = createCardListItem(row, doc);
-    moveInstrumentation(row, card);
+    if (!isAuthoring) {
+      moveInstrumentation(row, card);
+    }
     container.appendChild(card);
-    row.remove();
+    if (!isAuthoring) {
+      row.remove();
+    }
   });
 
   block.appendChild(container);
 
-  block.addEventListener('click', (event) => {
-    const trigger = event.target.closest('[data-modal]');
-    if (!trigger || !block.contains(trigger)) return;
-    event.preventDefault();
-    const fragmentPath = trigger.getAttribute('data-modal');
-    if (fragmentPath) openModal(doc, fragmentPath);
-  });
+  if (isAuthoring) {
+    stripAuthoringInstrumentation(container);
+  }
+
+  bindModalHandler(block, doc);
 }

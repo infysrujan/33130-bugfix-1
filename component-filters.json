@@ -42,6 +42,9 @@
       "table",
       "locate-us",
       "rate-card",
+      "fund-prices",
+      "fund-prices-table",
+      "fund-prices-dropdown",
       "accordion-block",
       "social-icons",
       "card-list",
@@ -54,7 +57,9 @@
       "video",
       "carousel-video",
       "forex-rates",
+      "market-report",
       "sme-loan-calculator",
+      "dynamic-board",
       "bcap",
       "multi-column-tiles",
       "retirement-calculator",
@@ -64,15 +69,94 @@
       "promo-card-listing",
       "top-promotional-cards",
       "multi-column-tiles",
+      "fund-prices",
       "property-for-sale-details",
       "property-for-sale",
       "stock-ticker",
       "cookie-alert",
       "cookie-modal",
+      "welcome-banner",
       "news-media-details",
       "news-media",
       "latest-news",
-      "forward-points-sme"
+      "forward-points-sme",
+      "saving-plan",
+      "category-banner",
+      "bbm-glow-card",
+      "menu-list",
+      "search-reports",
+      "search-reports-results",
+      "mf-results",
+      "mf-comparator-results",
+      "mf-comparator",
+      "mf-questionnaire",
+      "cc-campaign"
+    ]
+  },
+  {
+    "id": "text",
+    "rte": {
+      "toolbar": {
+        "format": [
+          "bold",
+          "italic",
+          "underline",
+          "strike"
+        ],
+        "alignment": [
+          "left",
+          "center",
+          "right",
+          "justify"
+        ],
+        "indentation": [
+          "indent",
+          "outdent"
+        ],
+        "blocks": [
+          "paragraph",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6"
+        ],
+        "list": [
+          "bullet_list",
+          "ordered_list"
+        ],
+        "insert": [
+          "link",
+          "unlink",
+          "image",
+          "special_characters"
+        ],
+        "sr_script": [
+          "superscript",
+          "subscript"
+        ],
+        "editor": [
+          "removeformat",
+          "paste_text"
+        ],
+        "sections": [
+          "format",
+          "alignment",
+          "indentation",
+          "blocks",
+          "list",
+          "insert",
+          "sr_script",
+          "editor"
+        ]
+      }
+    }
+  },
+  {
+    "id": "bbm-glow-card",
+    "components": [
+      "bbm-glow-card-item"
     ]
   },
   {
@@ -183,8 +267,35 @@
       "text-input",
       "tnc",
       "wizard",
-      "range"
+      "range",
+      "double-key-dropdown",
+      "forms-menu-card",
+      "forms-card-list"
     ]
+  },
+  {
+    "id": "forms-card-list",
+    "components": [
+      "forms-card-list-item"
+    ]
+  },
+  {
+    "id": "fund-prices-table",
+    "rte": {
+      "toolbar": {
+        "insert": [
+          "table"
+        ],
+        "editor": [
+          "removeformat"
+        ],
+        "sections": [
+          "insert",
+          "editor"
+        ]
+      }
+    },
+    "components": []
   },
   {
     "id": "header-section",
@@ -250,6 +361,13 @@
     "maxItems": 6
   },
   {
+    "id": "menu-list",
+    "components": [
+      "menu-list-item"
+    ],
+    "maxItems": 5
+  },
+  {
     "id": "multi-column-tiles",
     "components": [
       "multi-column-tiles-item"
@@ -277,7 +395,8 @@
   {
     "id": "story-card",
     "components": [
-      "button"
+      "button",
+      "social-icon"
     ]
   },
   {
@@ -360,7 +479,6 @@
       "cards-product",
       "columns",
       "fragment",
-      "megamenu",
       "carousel",
       "story-card",
       "warning-card",
@@ -369,14 +487,15 @@
       "cross-banner",
       "form",
       "embed-adaptive-form",
-      "brand-logo",
-      "location",
-      "login",
-      "main-nav-item",
+      "download-file",
+      "table",
+      "accordion-block",
       "forex-rates",
       "forex-graph",
       "sme-loan-calculator",
-      "table"
+      "table",
+      "card-list",
+      "menu-card-actions"
     ]
   },
   {
@@ -395,6 +514,12 @@
     "id": "video",
     "components": [
       "video"
+    ]
+  },
+  {
+    "id": "welcome-banner",
+    "components": [
+      "button"
     ]
   }
 ]

@@ -70,6 +70,12 @@
           "valueType": "boolean"
         },
         {
+          "component": "boolean",
+          "label": "Enable Welcome Banner",
+          "name": "isWelcomeBanner",
+          "valueType": "boolean"
+        },
+        {
           "component": "reference",
           "valueType": "string",
           "name": "ogImage",

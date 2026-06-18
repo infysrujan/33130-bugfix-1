@@ -1,4 +1,4 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
+import { createPictureWithoutOptimization } from '../../scripts/bbl-decorators.js';
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 
 /**
@@ -35,7 +35,7 @@ function createMenuBannerCard(cardElement, doc) {
         '<span class="visual-img"></span>',
         doc,
       );
-      const optimizedPic = createOptimizedPicture(
+      const optimizedPic = createPictureWithoutOptimization(
         cardImg.src,
         altText || titleText || '',
         false,
@@ -65,7 +65,7 @@ function createMenuBannerCard(cardElement, doc) {
         '<span class="visual-img"></span>',
         doc,
       );
-      const optimizedPic = createOptimizedPicture(
+      const optimizedPic = createPictureWithoutOptimization(
         cardImg.src,
         altText || titleText || '',
         false,
@@ -170,7 +170,7 @@ export default function decorate(block) {
     doc,
   );
 
-  // Create desktop version with background
+  // Create desktop version with background image as inline style (matches BBL reference)
   const desktopTools = createElementFromHTML(
     '<div class="thumb-full large"></div>',
     doc,
@@ -181,7 +181,7 @@ export default function decorate(block) {
   }
 
   const desktopContainer = createElementFromHTML(
-    '<div class="inner-container desktop-tools"></div>',
+    '<div class="inner-container content desktop-tools"></div>',
     doc,
   );
 

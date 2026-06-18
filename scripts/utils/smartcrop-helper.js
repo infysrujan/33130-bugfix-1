@@ -1,4 +1,4 @@
-import { createOptimizedPicture } from '../aem.js';
+import { createPictureWithoutOptimization } from '../bbl-decorators.js';
 
 /** Min-width for desktop image source (px). */
 const DESKTOP_MEDIA_MIN = 761;
@@ -23,7 +23,13 @@ function createElement(tag, ...classNames) {
   return el;
 }
 
-export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt, blockName) {
+export default function createSmartImage(
+  pictureDesktop,
+  pictureMobile,
+  imageAlt,
+  eager,
+  blockName,
+) {
   const imgDesktop = pictureDesktop?.querySelector('img');
   const imgMobile = pictureMobile?.querySelector('img');
   // Extract alt text from a cell that may contain HTML
@@ -48,7 +54,8 @@ export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt
     mobileSource.setAttribute('srcset', mobileSrc);
 
     const img = createElement('img');
-    img.setAttribute('loading', 'lazy');
+    img.setAttribute('loading', eager ? 'eager' : 'lazy');
+    if (eager) img.setAttribute('fetchpriority', 'high');
 
     img.setAttribute('alt', altText || img.alt || '');
     img.setAttribute('src', mobileSrc);
@@ -61,7 +68,8 @@ export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt
   }
   if (blockName === 'multi-column-tiles') {
     const img = createElement('img');
-    img.setAttribute('loading', 'lazy');
+    img.setAttribute('loading', eager ? 'eager' : 'lazy');
+    if (eager) img.setAttribute('fetchpriority', 'high');
     let allSrc = imgDesktop.getAttribute('src');
     allSrc = cleanImgSrc(allSrc);
 
@@ -72,10 +80,10 @@ export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt
 
   const img = imgMobile || imgDesktop;
   if (!img) return null;
-  return createOptimizedPicture(
+  return createPictureWithoutOptimization(
     img.src,
     altText || '',
-    false,
+    eager,
     [{ media: `(max-width: ${MOBILE_MEDIA_MAX}px)`, width: '2000' }, { width: '750' }],
   );
 }

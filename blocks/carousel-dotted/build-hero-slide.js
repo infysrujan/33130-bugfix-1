@@ -1,30 +1,25 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
-/**
- * Build a slide HERO BANNER IMAGE CAROUSEL or TEXT ANIMATION VARIANT
- * Structure: Image | Image Alt | Title | Subtitle | Button
- * Cell layout (carousel-dotted-slide, slideType = heroBannerImageCarousel / textAnimationVariant):
- *   0: variant, 1: slideType,
- *   2: badgeText (empty), 3: image (empty), 4: description (empty),
- *   5: link group (merged, empty) — link+linkText+linkTitle+linkType merged into 1 cell
- *   6: headerText (empty), 7: defaultText (empty),
- *   8: heroImage, 9: imageAlt, 10: title, 11: subtitle, 12: heroLink (merged)
- */
 export default function buildSlideHeroVariant(row, index, cells, variant) {
   const slide = document.createElement('div');
   slide.className = `carousel-item ${variant}`;
   slide.dataset.index = index;
   moveInstrumentation(row, slide);
 
-  const heroImageCell = cells[10];
-  const imageAlt = cells[11]?.textContent.trim() || '';
-  const titleCell = cells[12];
-  const subtitleCell = cells[13];
-  const linkCell = cells[14];
+  const heroImageCell = cells[11];
+  const imageAlt = cells[12]?.textContent.trim() || '';
+  const titleCell = cells[13];
+  const subtitleCell = cells[14];
+  const linkCell = cells[15];
 
   const picture = heroImageCell?.querySelector('picture');
   if (picture) {
-    if (imageAlt) picture.querySelector('img')?.setAttribute('alt', imageAlt);
+    const img = picture.querySelector('img');
+    if (imageAlt && img) img.setAttribute('alt', imageAlt);
+    if (img && index === 0) {
+      img.setAttribute('loading', 'eager');
+      img.setAttribute('fetchpriority', 'high');
+    }
     const media = document.createElement('div');
     media.className = 'carousel-bg';
     media.append(picture);

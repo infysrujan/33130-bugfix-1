@@ -101,6 +101,13 @@
                     "...": "../form-common/_basic-validation-fields.json#/fields"
                 },
                 {
+                    "component": "number",
+                    "name": "maxSelect",
+                    "label": "Max selections allowed",
+                    "valueType": "number",
+                    "description": "Limits how many options a user can check. Leave empty for no limit."
+                },
+                {
                     "...": "../form-common/_help-container.json#/fields"
                 }
             ]

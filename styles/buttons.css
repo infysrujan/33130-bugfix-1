@@ -68,18 +68,18 @@ button,
 
 /* --- Medium (Desktop) - 44px height --- */
 .button-m {
-  max-height: 2.75rem;
-  min-width: 7.5rem;
-  padding: 1rem 0.5rem;
-  font-size: 1rem;
-  text-align: center;
-  line-height: 1.375rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  display: block;
-  font-family: var(--bbl-font-family-medium);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   max-width: fit-content;
-  font-style: normal;
+  height: 2.75rem;
+  min-width: 7.5rem;
+  padding: 0 1rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-body-b1-medium-size);
+  font-weight: var(--bbl-body-b1-medium-weight);
+  line-height: var(--bbl-body-b1-line-height);
+  border-radius: var(--bbl-rounded-100);
 }
 
 /* --- Large (Hero Banner) - 52px height --- */
@@ -198,6 +198,7 @@ button.secondary,
   background: transparent;
   color: var(--bbl-color-active-blue);
   border: 2px solid var(--bbl-color-active-blue);
+  font-style: normal;
 }
 
 /* Hover */
@@ -250,9 +251,9 @@ button.secondary,
    TERTIARY BUTTONS (Text/Link Style)
    Text-only buttons with optional arrow
    ========================================================================= */
-
+.adobe-ue-edit .button-container > a.button,/* Authoring support: added class for better button visibility in Adobe UE */
 .button-tertiary,
-button.tertiary {
+button.tertiary { 
   background: transparent;
   color: var(--bbl-color-active-blue);
   border: none;
@@ -265,7 +266,8 @@ button.tertiary {
   align-items: center;
 }
 
-/* Arrow icon (using CSS) */
+/* Arrow icon */
+.adobe-ue-edit .button-container > a.button::after,/* Authoring support: added class for better button visibility in Adobe UE */
 .button-tertiary::after {
   content: '';
   display: inline-block;
@@ -453,16 +455,17 @@ a.link-inverted[aria-disabled="true"] {
 }
 
 .download-button-wrapper .download-files {
-    max-height: 2.75rem;
+    height: 2.75rem;
     text-decoration: none;
     display: block;
-    font: var(--bbl-font-weight-regular) var(--bbl-font-size-b2) / 2.75rem
-            Muli-Bold,
-        sans-serif;
+    font-size: var(--bbl-font-size-b1-mobile);
+    font-weight: var(--bbl-font-weight-regular);
+    font-family: var(--bbl-font-family-medium);
+    line-height: 2.75rem;
     background: var(--bbl-color-ice-blue);
     box-shadow: 0 0.125rem 0.5rem 0 var(--bbl-color-white-alpha-125);
     margin-bottom: 0.4375rem;
-    padding: 0 var(--bbl-space-500) 0 1.875rem;
+    padding: 0 var(--bbl-space-500) 0 0.9375rem;
     max-width: 100%;
     text-align: left;
     position: relative;
@@ -483,7 +486,7 @@ a.link-inverted[aria-disabled="true"] {
 
 .download-files.icon-download:hover::before,
 .download-files:hover .icon-download::before {
-    transform: translateY(-4px);
+    transform: translateY(4px);
 }
 
 @media (width > 64rem) {
@@ -595,6 +598,11 @@ a.link-inverted[aria-disabled="true"] {
         max-width: none;
         white-space: nowrap;
     }
+
+    .download-button-wrapper .download-files {
+      padding: 0 var(--bbl-space-500) 0 1.875rem;
+    }
+
 }
 
 @media (width > 64rem) {

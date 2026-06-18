@@ -81,6 +81,7 @@
           "component": "select",
           "name": "titleType",
           "label": "Title Type",
+          "value": "h3",
           "options": [
             {
               "name": "h1",
@@ -204,24 +205,19 @@
         },
         {
           "component": "container",
-          "name": "targetSettings",
+          "name": "defaultTargetLinkSettings",
           "label": "Target settings",
+          "condition": {
+            "===": [{ "var": "buttonActionType" }, "default"]
+          },
           "fields": [
             {
               "component": "boolean",
-              "name": "targetLink",
+              "name": "defaultTargetLink",
               "label": "Open link in new tab",
               "description": "Enable to open the button link in a new browser tab",
               "valueType": "boolean",
-              "value": false,
-              "condition": {
-              "===": [
-              {
-                "var": "buttonActionType"
-              },
-              "default"
-            ]
-          }
+              "value": false
             }
           ]
         },
@@ -270,24 +266,19 @@
         },
         {
           "component": "container",
-          "name": "targetSettings",
+          "name": "downloadTargetLinkSettings",
           "label": "Target settings",
+          "condition": {
+            "===": [{ "var": "buttonActionType" }, "download"]
+          },
           "fields": [
             {
               "component": "boolean",
-              "name": "targetLink",
+              "name": "downloadTargetLink",
               "label": "Open link in new tab",
               "description": "Enable to open the button link in a new browser tab",
               "valueType": "boolean",
-              "value": false,
-              "condition": {
-              "===": [
-              {
-                "var": "buttonActionType"
-              },
-              "download"
-            ]
-          }
+              "value": false
             }
           ]
         },
@@ -342,36 +333,34 @@
         {
           "component": "boolean",
           "name": "isCardClickable",
-          "label": "Is Card Clickable",
-          "description": "Enable to make the entire card a clickable link",
+          "label": "Full Card Clickable",
+          "description": "If enabled, the entire card will be clickable.",
           "valueType": "boolean",
           "value": false
         },
         {
           "component": "aem-content",
           "name": "cardLink",
-          "label": "Card Link",
-          "description": "Destination URL when the card is clicked",
+          "label": "Link",
+          "description": "Destination URL for the clickable card",
           "condition": {
-            "===": [
+            "!!": [
               {
                 "var": "isCardClickable"
-              },
-              true
+              }
             ]
           }
         },
         {
           "component": "text",
           "name": "cardLinkTitle",
-          "label": "Card Link Title",
+          "label": "Link Title",
           "description": "Accessibility title attribute for the clickable card (optional)",
           "condition": {
-            "===": [
+            "!!": [
               {
                 "var": "isCardClickable"
-              },
-              true
+              }
             ]
           }
         },
@@ -379,21 +368,20 @@
           "component": "boolean",
           "name": "enableOverlayModal",
           "label": "Enable Overlay Modal",
-          "description": "Open card link in a modal overlay instead of navigating",
+          "description": "If enabled, an overlay modal will be displayed.",
           "valueType": "boolean",
           "value": false
         },
         {
           "component": "aem-content",
-          "name": "overlayHref",
-          "label": "Overlay Fragment Path",
-          "description": "Path to the fragment shown in the modal overlay",
+          "name": "fragmentPath",
+          "label": "Fragment path",
+          "valueType": "string",
           "condition": {
-            "===": [
+            "!!": [
               {
                 "var": "enableOverlayModal"
-              },
-              true
+              }
             ]
           }
         },

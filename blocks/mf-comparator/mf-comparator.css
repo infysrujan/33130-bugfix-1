@@ -1,0 +1,226 @@
+/* Authored source rows hidden after decoration */
+.mf-comparator .mfc-source-row {
+  display: none;
+}
+
+/* ── Sticky bar ───────────────────────────────────────────────────────────── */
+
+.mf-comparator {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 11;
+  padding: var(--bbl-space-150) 0;
+  background: var(--bbl-color-white);
+  box-shadow: 0 0 var(--bbl-space-150) var(--bbl-color-black-alpha-20);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.mf-comparator.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Inner container — mobile: vertical stack ─────────────────────────────── */
+
+.mf-comparator .inner-container {
+  padding: 0 var(--bbl-space-container-xs);
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  gap: var(--bbl-space-gap-sm);
+  row-gap: 0;
+}
+
+/* ── Limit warning ────────────────────────────────────────────────────────── */
+
+.mf-comparator .mfc-error {
+  width: 100%;
+  color: var(--bbl-color-system-red, #d32f2f);
+  font-size: var(--bbl-font-size-b2, 0.875rem);
+  font-weight: 600;
+  padding-bottom: var(--bbl-space-100);
+}
+
+/* ── Compare group — scrollable row of selected cards ─────────────────────── */
+
+.mf-comparator .compare-group {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-150);
+  padding-bottom: var(--bbl-space-150);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* ── Product card item ────────────────────────────────────────────────────── */
+
+.mf-comparator .product-comparing {
+  display: flex;
+  align-items: center;
+  flex: 0 0 16.25rem;
+  min-width: 0;
+  padding: 0 var(--bbl-space-250);
+  position: relative;
+  white-space: normal;
+}
+
+.mf-comparator .product-comparing:first-child {
+  padding-left: 0;
+}
+
+.mf-comparator .product-comparing + .product-comparing {
+  border-left: 0.0625rem solid var(--bbl-color-grey-150);
+}
+
+/* ── Thumbnail ────────────────────────────────────────────────────────────── */
+
+.mf-comparator .product-comparing .thumb {
+  flex-shrink: 0;
+  width: 5.125rem;
+  height: 3.125rem;
+  position: relative;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: var(--bbl-radius-md);
+  background-color: var(--bbl-color-grey-10);
+}
+
+/* ── Close icon ───────────────────────────────────────────────────────────── */
+
+.mf-comparator .icon-close {
+  position: absolute;
+  top: -0.5rem;
+  left: -0.25rem;
+  z-index: 10;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+  border-radius: var(--bbl-radius-full);
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-gray-300);
+  color: var(--bbl-color-gray-600);
+  font-size: var(--bbl-font-size-b3, 0.8125rem);
+  font-weight: 300;
+  line-height: 1.0625rem;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mf-comparator .icon-close:hover {
+  box-shadow: 0.0625rem 0.0625rem var(--bbl-space-075) 0 var(--bbl-color-black-alpha-30);
+}
+
+/* ── Info area ────────────────────────────────────────────────────────────── */
+
+.mf-comparator .product-comparing .info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0 0 0 var(--bbl-space-150);
+}
+
+.mf-comparator .product-comparing .text-small {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  font-size: var(--bbl-font-size-b3, 0.8125rem);
+  line-height: 1.375;
+  margin: 0;
+  font-family: var(--bbl-font-family-medium);
+}
+
+/* ── Compare CTA button ───────────────────────────────────────────────────── */
+
+.mf-comparator .mfc-btn-primary {
+  flex-shrink: 0;
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border: none;
+  border-radius: var(--bbl-radius-button);
+  padding: 0 var(--bbl-space-500);
+  height: 2.75rem;
+  font-size: var(--bbl-font-size-b1, 1rem);
+  font-weight: var(--bbl-font-weight-regular);
+  font-family: var(--bbl-font-family-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+  min-width: 9.6875rem;
+  width: 100%;
+}
+
+.mf-comparator .mfc-btn-primary:hover {
+  background: var(--bbl-color-blue-90);
+}
+
+.mf-comparator .mfc-btn-primary:disabled {
+  background: var(--bbl-color-grey-40);
+  color: var(--bbl-color-gray-600);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── UE authoring mode ────────────────────────────────────────────────────── */
+
+.adobe-ue-edit div[data-aue-component="mf-comparator"] {
+  position: sticky;
+  bottom: 0;
+  opacity: 1;
+  transform: translateY(0);
+  z-index: 200;
+}
+
+.adobe-ue-edit div[data-aue-component="mf-comparator"] .compare-group {
+  display: none;
+}
+
+/* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
+
+@media (width > 47.5rem) {
+  .mf-comparator .inner-container {
+    padding: 0 var(--bbl-space-container-md);
+  }
+
+  .mf-comparator .mfc-btn-primary {
+    width: auto;
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+/* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
+
+@media (width > 64rem) {
+  .mf-comparator .inner-container {
+    flex-direction: row;
+    gap: var(--bbl-space-250);
+  }
+
+  .mf-comparator .compare-group {
+    border-bottom: none;
+    padding-bottom: 0;
+    overflow-x: visible;
+    white-space: normal;
+  }
+
+  .mf-comparator .product-comparing {
+    flex-shrink: 1;
+  }
+
+  .mf-comparator .mfc-btn-primary {
+    margin: 0;
+    display: inline-block;
+  }
+}

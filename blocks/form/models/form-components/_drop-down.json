@@ -83,6 +83,13 @@
           "valueType": "string"
         },
         {
+          "component": "text",
+          "name": "customClassName",
+          "label": "Custom CSS Class Name",
+          "description": "Enter one or more CSS class names (space-separated) to apply custom styling to this dropdown field wrapper.",
+          "valueType": "string"
+        },
+        {
           "component": "tab",
           "label": "Validation",
           "name": "validation"

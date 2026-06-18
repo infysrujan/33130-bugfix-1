@@ -2,13 +2,35 @@
   width: 100%;
 }
 
-/* YouTube embed – 16:9 aspect ratio */
+/* YouTube embed */
 .video .video-embed {
   position: relative;
   width: 100%;
-  padding-top: 56.25%;
+  padding-top: 0;
+  height: 13.375rem;
   overflow: hidden;
   background-color: var(--bbl-color-black);
+}
+
+@media (width > 47.5rem) {
+  .video .video-wrapper {
+    margin: 0 auto;
+  }
+
+  .video .video-embed {
+    height: 25.625rem;
+  }
+}
+
+@media (width > 64rem) {
+  .video .video-wrapper {
+    max-width: 56.25rem;
+    margin: 0 auto;
+  }
+
+  .video .video-embed {
+    height: 30.625rem;
+  }
 }
 
 .video .video-embed iframe,

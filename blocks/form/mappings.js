@@ -1,7 +1,7 @@
 import { loadCSS } from '../../scripts/aem.js';
 
 let customComponents = ['range'];
-const OOTBComponentDecorators = ['accordion', 'file', 'modal', 'password', 'rating', 'repeat', 'tnc', 'toggleable-link', 'wizard'];
+const OOTBComponentDecorators = ['accordion', 'double-key-dropdown', 'file', 'modal', 'password', 'rating', 'repeat', 'tnc', 'toggleable-link', 'wizard'];
 
 export function setCustomComponents(components) {
   customComponents = components;
@@ -74,8 +74,38 @@ export default async function componentDecorator(element, fd, container, formId)
     await loadComponent(type, element, fd, container, formId);
   }
 
+  // double-key-dropdown: fd[':type'] is the full JCR resourceType path at runtime,
+  // while fd['fd:viewType'] carries the short component name. Load explicitly.
+  if (
+    fd['fd:viewType'] === 'double-key-dropdown'
+    && !getOOTBComponents().includes(type)
+  ) {
+    await loadComponent('double-key-dropdown', element, fd, container, formId);
+  }
+
+  // forms-menu-card: display-only card grid rendered inside an Adaptive Form.
+  // Some AEM runtime versions expose the component via fd:viewType; others set :type to
+  // the fd:viewType value directly (matching the behaviour of accordion, rating, etc.).
+  if (fd['fd:viewType'] === 'forms-menu-card' || type === 'forms-menu-card') {
+    await loadComponent('forms-menu-card', element, fd, container, formId);
+  }
+
+  // forms-card-list: responsive card grid container (panelcontainer base).
+  if (fd['fd:viewType'] === 'forms-card-list' || type === 'forms-card-list') {
+    await loadComponent('forms-card-list', element, fd, container, formId);
+  }
+
+  // forms-card-list-item: individual feature card (image base, display-only).
+  if (fd['fd:viewType'] === 'forms-card-list-item' || type === 'forms-card-list-item') {
+    await loadComponent('forms-card-list-item', element, fd, container, formId);
+  }
+
   if (fieldType === 'file-input') {
     await loadComponent('file', element, fd, container, formId);
+  }
+
+  if (fieldType === 'checkbox-group' && fd.properties?.maxSelect) {
+    await loadComponent('checkbox-group', element, fd, container, formId);
   }
 
   return null;

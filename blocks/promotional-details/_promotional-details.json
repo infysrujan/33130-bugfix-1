@@ -21,6 +21,23 @@
       "id": "promotional-details",
       "fields": [
         {
+          "component": "select",
+          "name": "promotionType",
+          "label": "Promotion Type",
+          "valueType": "string",
+          "value": "credit-card",
+          "options": [
+            {
+              "name": "Credit Card",
+              "value": "credit-card"
+            },
+            {
+              "name": "Bangkok Bank M",
+              "value": "bangkok-bank-m"
+            }
+          ]
+        },
+        {
           "component": "text",
           "name": "promoId",
           "label": "Promo ID",
@@ -132,17 +149,17 @@
           "valueType": "string"
         },
         {
+          "component": "text",
+          "name": "ctaLabel",
+          "label": "Cta Label",
+          "value": "",
+          "required": true
+        },
+        {
           "component": "aem-content",
           "name": "ctaLink",
           "label": "Cta Link",
           "description": "Destination URL for the button"
-        },
-        {
-          "component": "text",
-          "name": "ctaLabel",
-          "label": "Cta Label",
-          "description": "Button label text",
-          "required": true
         },
         {
           "component": "container",
@@ -185,7 +202,62 @@
           "name": "responsibleLendingDisclaimerText",
           "label": "Disclaimer Text (appears on the promotional page)",
           "valueType": "string",
-          "condition": { "!!": [{ "var": "responsibleLendingDisclaimerEnabled" }] }
+          "condition": {
+            "!!": [
+              {
+                "var": "responsibleLendingDisclaimerEnabled"
+              }
+            ]
+          }
+        },
+        {
+          "component": "select",
+          "name": "isRegister",
+          "label": "Is Register",
+          "valueType": "string",
+          "value": "N",
+          "options": [
+            {
+              "name": "No Registration",
+              "value": "N"
+            },
+            {
+              "name": "Register",
+              "value": "Y"
+            },
+            {
+              "name": "Register with Data",
+              "value": "D"
+            }
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "promotionType"
+              },
+              "bangkok-bank-m"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "registerCtaLabel",
+          "label": "Register Cta Label",
+          "valueType": "string",
+          "value": "",
+          "required": true,
+          "condition": {
+            "!": [
+              {
+                "===": [
+                  {
+                    "var": "isRegister"
+                  },
+                  "N"
+                ]
+              }
+            ]
+          }
         }
       ]
     }

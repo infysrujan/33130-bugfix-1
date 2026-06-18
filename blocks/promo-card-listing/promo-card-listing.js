@@ -1,97 +1,187 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
+import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
+import { activateTab } from '../tabs/helpers/tabs-utils.js';
 import {
-  buildCardHtml, buildPaginationHtml, sortCards, bindPaginationClick,
+  bindPaginationClick,
+  buildCardHtml,
+  buildCardOptions,
+  buildPaginationHtml,
+  getPromotionDataUrl,
+  fetchJson,
+  getPromotionPathFlags,
+  handleMobileAppView,
+  mergeLocalConfig,
+  normalizePromotionType,
+  normalizeQueryLang,
+  getPromotionApiConfig,
+  getPromotionLanguage,
+  sortCards,
 } from '../../scripts/utils/card-helpers.js';
 
-const fetchCache = {};
+const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
 
-const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
+function isTopPromotionsLabel(value) {
+  const key = String(value || '').trim().toLowerCase().replace(/\s+/g, '');
+  return TOP_PROMO_KEYS.some((k) => k.toLowerCase() === key);
+}
 
-const LOGO_ICONS = {
-  visa: '/icons/visa-new.svg',
-  mastercard: '/icons/mastercard-new.svg',
-  amex: '/icons/amex-new.svg',
-  unionpay: '/icons/upi-new.svg',
-};
-
-const CARD_TYPE_NORMALIZE = {
-  วีซ่า: 'visa',
-  มาสเตอร์การ์ด: 'mastercard',
-  แอมเอ็กซ์: 'amex',
-  ยูเนี่ยนเพย์: 'unionpay',
-};
-
-export async function fetchJson(url) {
-  if (!fetchCache[url]) {
-    fetchCache[url] = fetch(url, { headers: { Accept: 'application/json' } })
-      .then((r) => (r.ok && r.status !== 204 ? r.json() : null))
-      .catch(() => null);
+function extractListingConfig(block) {
+  const firstRow = block.querySelector(':scope > div');
+  const isKeyValueRows = firstRow && firstRow.children.length >= 2;
+  if (isKeyValueRows) {
+    const config = readBlockConfig(block);
+    const promotionType = (config['promotion-type'] || config.promotiontype || '').trim();
+    return { promotionType };
   }
-  return fetchCache[url];
+  const promotionType = block.children[0]?.textContent?.trim() || '';
+  return { promotionType };
 }
 
-function formatDate(dateStr, locale = 'en-GB') {
-  if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString(locale, {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
+async function fetchPromotionalData(url) {
+  return fetchJson(url);
 }
 
-function buildDateLine(card, locale) {
-  const start = formatDate(card.promotionStartDate, locale);
-  const end = formatDate(card.promotionEndDate, locale);
-  const label = card.dateValidityLabel || 'until';
-  if (start && end) return `${start} ${label} ${end}`;
-  if (end) return `${label} ${end}`;
+function getCardTypeFromRef(mapping, cardRef) {
+  if (!mapping || !cardRef) return '';
+  if (typeof mapping === 'string') return '';
+  if (mapping[cardRef]) return mapping[cardRef];
+  if (mapping.cardRefs?.[cardRef]) return mapping.cardRefs[cardRef];
+  if (Array.isArray(mapping.data)) {
+    const match = mapping.data.find((item) => {
+      const key = item.key || item.Key || item.cardRef || item.card_ref;
+      return String(key) === String(cardRef);
+    });
+    return match?.value || match?.Value || match?.cardType || match?.card_type || '';
+  }
   return '';
 }
 
-function buildLogosHtml(logos) {
-  if (!logos?.length) return '';
-  const imgs = logos
-    .map((key) => {
-      const src = LOGO_ICONS[key];
-      return src ? `<img src="${src}" alt="${key}" class="promo-selector-logo" loading="lazy">` : '';
+function filterByPromotionType(cards, promotionType) {
+  if (!promotionType || promotionType === 'credit-card') return cards;
+  const normalized = promotionType.toLowerCase();
+  const filtered = cards.filter((card) => {
+    const rawType = card.promotionType || card.promotiontype || '';
+    return String(rawType).toLowerCase() === normalized;
+  });
+  return filtered.length ? filtered : cards;
+}
+
+function getTabsContainer(block) {
+  const section = block.closest('.section');
+  return section?.querySelector('.tabs') || block.closest('.tabs') || null;
+}
+
+function applyCategoryTabs(tabsContainer, categories) {
+  if (!tabsContainer || !categories?.length) return;
+  const categorySet = new Set(
+    categories.map((c) => (c.label || '').trim().toLowerCase()).filter(Boolean),
+  );
+  if (!categorySet.size) return;
+
+  const tabButtons = [...tabsContainer.querySelectorAll('.tabs-nav button')];
+  const dropdown = tabsContainer.querySelector('.tabs-dropdown select');
+  let matchCount = 0;
+
+  tabButtons.forEach((btn, index) => {
+    const label = btn.textContent.trim().toLowerCase();
+    const isMatch = categorySet.has(label);
+    const panelId = btn.getAttribute('aria-controls');
+    const panel = panelId ? tabsContainer.querySelector(`#${panelId}`) : null;
+    if (isMatch) matchCount += 1;
+    btn.hidden = !isMatch;
+    btn.setAttribute('aria-hidden', isMatch ? 'false' : 'true');
+    if (panel) panel.hidden = !isMatch;
+    if (dropdown) {
+      const option = dropdown.querySelector(`option[value="${index}"]`);
+      if (option) option.hidden = !isMatch;
+    }
+  });
+
+  if (!matchCount) {
+    tabButtons.forEach((btn, index) => {
+      const panelId = btn.getAttribute('aria-controls');
+      const panel = panelId ? tabsContainer.querySelector(`#${panelId}`) : null;
+      btn.hidden = false;
+      btn.setAttribute('aria-hidden', 'false');
+      if (panel) panel.hidden = false;
+      if (dropdown) {
+        const option = dropdown.querySelector(`option[value="${index}"]`);
+        if (option) option.hidden = false;
+      }
+    });
+    return;
+  }
+
+  const activeIndex = tabButtons.findIndex((btn) => btn.classList.contains('active'));
+  if (activeIndex === -1 || tabButtons[activeIndex].hidden) {
+    const firstVisibleIndex = tabButtons.findIndex((btn) => !btn.hidden);
+    if (firstVisibleIndex >= 0) activateTab(tabsContainer, firstVisibleIndex);
+  }
+}
+
+function toStringValue(item) {
+  if (typeof item === 'string') return item;
+  if (item && typeof item === 'object') return item.value || item.label || item.name || '';
+  return '';
+}
+
+function normalizeList(value) {
+  if (Array.isArray(value)) return value.map(toStringValue).filter(Boolean);
+  if (value == null) return [];
+  return [toStringValue(value)].filter(Boolean);
+}
+
+function buildSubOptions(items, defaultLabel) {
+  const defaultOption = defaultLabel
+    ? `<li class="promo-selector-option" data-value="" role="option">${defaultLabel}</li>`
+    : '';
+  return defaultOption.concat(items
+    .map((s) => {
+      const value = toStringValue(s);
+      return `<li class="promo-selector-option" data-value="${value}" role="option">${value}</li>`;
     })
-    .join('');
-  return `<div class="promo-selector-logos">${imgs}</div>`;
+    .join(''));
 }
 
-export function buildCardOptions(card) {
-  const locale = LOCALE_MAP[getLang()] || 'en-GB';
-  return {
-    dateLine: buildDateLine(card, locale),
-    logoHtml: buildLogosHtml(
-      (card.cardTypes || []).map((t) => CARD_TYPE_NORMALIZE[t] || t.toLowerCase()),
-    ),
-  };
+function isTruthyFlag(value) {
+  if (value === true) return true;
+  if (value === false || value == null) return false;
+  const normalized = String(value).trim().toLowerCase();
+  return normalized === 'true'
+    || normalized === 'yes'
+    || normalized === 'y'
+    || normalized === '1';
 }
 
-function buildSubOptions(items) {
-  return items
-    .map((s) => `<li class="promo-selector-option" data-value="${s.label}" role="option">${s.label}</li>`)
-    .join('');
-}
-
-function filterCards(allCards, filters, page, pageSize) {
+function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
   const {
     category, subcategory, cardType, area,
   } = filters;
   const today = new Date();
 
   const matched = allCards.filter((card) => {
-    if (category && card.category?.toLowerCase() !== category.toLowerCase()) return false;
+    if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
+    if (!topPromotionOnly && category) {
+      const cardCats = normalizeList(card.category).map((c) => c.toLowerCase());
+      if (!cardCats.includes(category.toLowerCase())) return false;
+    }
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
-    if (subcategory && card.subcategory !== subcategory) return false;
-    const cardTypesLower = (card.cardTypes || []).map((t) => t.toLowerCase());
-    if (cardType && !cardTypesLower.includes(cardType.toLowerCase())) return false;
+    if (subcategory) {
+      const cardSubCats = normalizeList(card.subcategory).map((c) => c.toLowerCase());
+      if (!cardSubCats.includes(subcategory.toLowerCase())) return false;
+    }
+    if (cardType) {
+      const cardTypesLower = normalizeList(card.cardTypes).map((t) => t.toLowerCase());
+      if (!cardTypesLower.includes(cardType.toLowerCase())) return false;
+    }
     if (area) {
-      const cardAreas = Array.isArray(card.area) ? card.area : [card.area];
-      if (!cardAreas.includes('All') && !cardAreas.includes(area)) return false;
+      const cardAreas = normalizeList(card.area);
+      const areaMatch = cardAreas.some((a) => a.toLowerCase() === area.toLowerCase());
+      const allMatch = cardAreas.some((a) => a.toLowerCase() === 'all');
+      if (!allMatch && !areaMatch) return false;
     }
     return true;
   });
@@ -111,7 +201,18 @@ function setupPanel(
   areas,
   pageSize,
   placeholders,
+  options = {},
 ) {
+  const searchParams = new URLSearchParams(window.location.search);
+  const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
+
+  const {
+    disableFilters = false,
+    forcedCardType = '',
+    hidePagination = false,
+    isBbm: isBbmPanel = false,
+    isHighlightsPanel = false,
+  } = options;
   const labelCategory = placeholders.promoFilterCategory || 'Category';
   const labelCardType = placeholders.promoFilterCardType || 'Card Type';
   const labelArea = placeholders.promoFilterArea || 'Area';
@@ -119,44 +220,52 @@ function setupPanel(
   const labelSearch = placeholders.promoSearch || 'Search';
   const subDisabled = !subcategories.length;
 
-  panel.innerHTML = `
-    <div class="promo-selector-filters">
-      <div class="promo-selector-filter${subDisabled ? ' is-disabled' : ''}" data-filter="subcategory">
-        <button class="promo-selector-filter-btn"${subDisabled ? ' disabled' : ''} aria-expanded="false" aria-haspopup="listbox">
-          <span class="promo-selector-filter-label">${labelCategory}</span>
-          <span class="icon-dropdown promo-selector-filter-arrow"></span>
-        </button>
-        <ul class="promo-selector-dropdown" role="listbox">
-          ${buildSubOptions(subcategories)}
-        </ul>
+  if (disableFilters) {
+    panel.innerHTML = `
+      <div class="promo-selector-content pad-top-30 pad-bot-30">
+        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
+        <div class="promo-selector-pagination"></div>
+      </div>`;
+  } else {
+    panel.innerHTML = `
+      <div class="promo-selector-filters">
+        <div class="promo-selector-filter${subDisabled ? ' is-disabled' : ''}" data-filter="subcategory">
+          <button class="promo-selector-filter-btn"${subDisabled ? ' disabled' : ''} aria-expanded="false" aria-haspopup="listbox">
+            <span class="promo-selector-filter-label">${labelCategory}</span>
+            <span class="icon-dropdown promo-selector-filter-arrow"></span>
+          </button>
+          <ul class="promo-selector-dropdown" role="listbox">
+            ${buildSubOptions(subcategories, labelCategory)}
+          </ul>
+        </div>
+        <div class="promo-selector-filter" data-filter="cardType">
+          <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
+            <span class="promo-selector-filter-label">${labelCardType}</span>
+            <span class="icon-dropdown promo-selector-filter-arrow"></span>
+          </button>
+          <ul class="promo-selector-dropdown" role="listbox">
+            ${buildSubOptions(cardTypes, labelCardType)}
+          </ul>
+        </div>
+        <div class="promo-selector-filter" data-filter="area">
+          <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
+            <span class="promo-selector-filter-label">${labelArea}</span>
+            <span class="icon-dropdown promo-selector-filter-arrow"></span>
+          </button>
+          <ul class="promo-selector-dropdown" role="listbox">
+            ${buildSubOptions(areas, labelArea)}
+          </ul>
+        </div>
+        <div class="promo-selector-filter-actions">
+          <div class="promo-selector-filter-action btn-reset"><button class="promo-selector-btn-reset button secondary" type="button">${labelReset}</button></div>
+          <div class="promo-selector-filter-action btn-search"><button class="promo-selector-btn-search button primary" type="button">${labelSearch}</button></div>
+        </div>
       </div>
-      <div class="promo-selector-filter" data-filter="cardType">
-        <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
-          <span class="promo-selector-filter-label">${labelCardType}</span>
-          <span class="icon-dropdown promo-selector-filter-arrow"></span>
-        </button>
-        <ul class="promo-selector-dropdown" role="listbox">
-          ${buildSubOptions(cardTypes)}
-        </ul>
-      </div>
-      <div class="promo-selector-filter" data-filter="area">
-        <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
-          <span class="promo-selector-filter-label">${labelArea}</span>
-          <span class="icon-dropdown promo-selector-filter-arrow"></span>
-        </button>
-        <ul class="promo-selector-dropdown" role="listbox">
-          ${buildSubOptions(areas)}
-        </ul>
-      </div>
-      <div class="promo-selector-filter-actions">
-        <div class="promo-selector-filter-action btn-reset"><button class="promo-selector-btn-reset button secondary" type="button">${labelReset}</button></div>
-        <div class="promo-selector-filter-action btn-search"><button class="promo-selector-btn-search button primary" type="button">${labelSearch}</button></div>
-      </div>
-    </div>
-    <div class="promo-selector-content pad-top-30 pad-bot-30">
-      <div class="promo-selector-grid"></div>
-      <div class="promo-selector-pagination"></div>
-    </div>`;
+      <div class="promo-selector-content pad-top-30 pad-bot-30">
+        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
+        <div class="promo-selector-pagination"></div>
+      </div>`;
+  }
 
   const gridEl = panel.querySelector('.promo-selector-grid');
   const paginationEl = panel.querySelector('.promo-selector-pagination');
@@ -166,30 +275,54 @@ function setupPanel(
   };
 
   function render() {
+    const activeCardType = forcedCardType || state.cardType;
     const { cards, total } = filterCards(allCards, {
       category,
       subcategory: state.subcategory,
-      cardType: state.cardType,
+      cardType: activeCardType,
       area: state.area,
-    }, state.page, pageSize);
+    }, state.page, pageSize, isHighlightsPanel);
 
     gridEl.innerHTML = cards.length
-      ? cards.map((c) => buildCardHtml(c, category, placeholders, buildCardOptions(c))).join('')
+      ? cards.map((c) => {
+        let cardData = c;
+        if (isBbmPanel && queryLang && c.ctaLink) {
+          try {
+            const url = new URL(c.ctaLink, window.location.origin);
+            url.searchParams.set('sc_lang', queryLang);
+            const isInternal = url.origin === window.location.origin;
+            const ctaPath = url.pathname + url.search + url.hash;
+            cardData = { ...c, ctaLink: isInternal ? ctaPath : url.toString() };
+          } catch {
+            // Keep original ctaLink if URL parsing fails completely
+          }
+        }
+        const cardOptions = buildCardOptions(cardData);
+        cardOptions.baseUrl = options.baseUrl;
+        if (isBbmPanel) cardOptions.logoHtml = '';
+        return buildCardHtml(cardData, category, placeholders, cardOptions);
+      }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
-    paginationEl.innerHTML = buildPaginationHtml(state.page, Math.ceil(total / pageSize));
+    paginationEl.innerHTML = hidePagination
+      ? ''
+      : buildPaginationHtml(state.page, Math.ceil(total / pageSize));
   }
 
-  // Lazy render — only when panel becomes visible (inactive tabs are hidden = not intersecting)
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
-      observer.disconnect();
-      render();
-    }
-  }, { rootMargin: '100px' });
-  observer.observe(panel);
+  if (options.immediate) {
+    render();
+  } else {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        observer.disconnect();
+        render();
+      }
+    }, { rootMargin: '100px' });
+    observer.observe(panel);
+  }
 
-  // Dropdown open/close
+  if (disableFilters) return;
+
   panel.querySelectorAll('.promo-selector-filter-btn').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -258,43 +391,159 @@ function setupPanel(
 }
 
 export default async function decorate(block) {
-  const lang = getLang();
-  const configs = await fetchConfigs();
-  const baseUrl = configs?.promoCardListingCardSelector || '';
-  const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
-  const pageSize = parseInt(configs?.promoCardListingItemsPerPage, 10) || '';
+  const searchParams = new URLSearchParams(window.location.search);
+  handleMobileAppView(searchParams);
 
-  // Fetch all data once, shared across all tab panels
-  const [tagsData, placeholders] = await Promise.all([
-    fetchJson(promotionsUrl),
+  const { pathname } = window.location;
+  const { isBbmPath, isCreditCardPath } = getPromotionPathFlags(pathname);
+
+  const docLang = getLang();
+  const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
+  const { promotionType: blockPromoType } = extractListingConfig(block);
+  const datasetType = block.dataset.promotionType?.trim();
+  const configuredPromoType = blockPromoType || datasetType;
+  const isBbmPreConfig = isBbmPath
+    || (!isCreditCardPath && normalizePromotionType(configuredPromoType) === 'bangkok-bank-m');
+  const lang = getPromotionLanguage(docLang, queryLang, isBbmPreConfig);
+
+  const configs = await fetchConfigs();
+  const effectiveConfigs = configs || {};
+  if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
+    await mergeLocalConfig(pathname, lang, effectiveConfigs, toCamelCase);
+  }
+  const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
+  const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
+
+  const promotionApi = getPromotionApiConfig({
+    pathname,
+    configuredPromoType,
+    bbmBaseUrl,
+    creditBaseUrl,
+  });
+  const { isBbm, promotionType } = promotionApi;
+
+  const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
+  const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
+
+  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
+  const [activeData, cardRefConfig, placeholders] = await Promise.all([
+    fetchPromotionalData(promotionsUrl),
+    fetchJson(effectiveConfigs.bbmCardRef || ''),
     fetchPlaceholders(),
   ]);
-  const allCards = tagsData?.cards || [];
-  const categories = tagsData?.categories || [];
-  const cardTypes = tagsData?.cardTypes || [
-    { label: 'Visa' },
-    { label: 'Mastercard' },
-    { label: 'UnionPay' },
-    { label: 'Amex' },
-  ];
-  const areas = tagsData?.areas || [];
+  const activeCards = filterByPromotionType(activeData?.cards || [], promotionType);
+  const topPromoCards = activeCards.filter((card) => isTruthyFlag(card.topPromotion));
+  const activeCardTypes = activeData?.cardTypes || [];
+  const activeAreas = activeData?.areas || [];
+  const isBbmPage = isBbm;
+  const cardRef = isBbmPage ? searchParams.get('card_ref') : '';
+  const forcedCardType = getCardTypeFromRef(cardRefConfig, cardRef);
+  const disableFilters = Boolean(forcedCardType);
+  const activeCategories = activeData?.categories || [];
 
-  // Find tab panels created by tabs.js from the empty tab sections
-  const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
+  if (isAuthoringInstance(block)) {
+    block.querySelectorAll(':scope > div').forEach((row) => {
+      const key = row.children[0]?.textContent?.trim().toLowerCase().replace(/-/g, '');
+      if (key === 'promotiontype') {
+        row.dataset.configRow = '';
+      }
+    });
+    block.classList.add('has-preview');
+    let previewPanel = block.querySelector('.promo-card-listing-preview');
+    if (!previewPanel) {
+      previewPanel = document.createElement('div');
+      previewPanel.className = 'promo-card-listing-preview';
+      block.appendChild(previewPanel);
+    }
+    const firstCategory = activeCategories[0]?.label || '';
+    const firstSubcategories = activeCategories[0]?.subcategories || [];
+    const isHighlightsPanel = isBbm && isTopPromotionsLabel(firstCategory);
+    previewPanel.innerHTML = '';
+    setupPanel(
+      previewPanel,
+      isHighlightsPanel ? topPromoCards : activeCards,
+      firstCategory,
+      firstSubcategories,
+      activeCardTypes,
+      activeAreas,
+      pageSize,
+      placeholders,
+      {
+        disableFilters: disableFilters && isBbm,
+        forcedCardType: isBbm ? forcedCardType : '',
+        hidePagination: disableFilters && isBbm,
+        isBbm,
+        isHighlightsPanel,
+        immediate: true,
+        baseUrl: promotionApi?.baseUrl,
+      },
+    );
+    return;
+  }
 
-  tabPanels.forEach((panel) => {
+  const tabsContainer = getTabsContainer(block);
+  applyCategoryTabs(tabsContainer, activeCategories);
+
+  const promoSection = block.closest('.section');
+  if (promoSection) promoSection.classList.add('promo-card-listing-section');
+
+  if (tabsContainer) {
+    const tabsNav = tabsContainer.querySelector('.tabs-nav');
+    const navWrapper = tabsContainer.querySelector('.tabs-nav-wrapper');
+    if (tabsNav && navWrapper) {
+      const updateScrollFade = () => {
+        const { scrollLeft, scrollWidth, clientWidth } = tabsNav;
+        navWrapper.classList.toggle('is-scroll-start', scrollLeft > 2);
+        navWrapper.classList.toggle('is-scroll-end', scrollLeft + clientWidth >= scrollWidth - 2);
+      };
+      tabsNav.addEventListener('scroll', updateScrollFade, { passive: true });
+      requestAnimationFrame(updateScrollFade);
+    }
+  }
+
+  const tabPanels = tabsContainer
+    ? [...tabsContainer.querySelectorAll('.tabs-content .tab-panel')]
+    : [...document.querySelectorAll('[role="tabpanel"]')];
+
+  tabPanels.forEach((panel, index) => {
     const tabBtnId = panel.getAttribute('aria-labelledby');
-    const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
+    if (panel.hidden) return;
+    const tabBtn = tabBtnId
+      ? (tabsContainer?.querySelector(`#${tabBtnId}`) || document.getElementById(tabBtnId))
+      : null;
     const tabText = tabBtn?.textContent?.trim() || '';
 
-    const catMeta = categories.find((c) => c.label.toLowerCase() === tabText.toLowerCase()) || {};
+    const dataSet = activeData;
+    const dataCategories = dataSet?.categories || [];
+    const dataCardTypes = activeCardTypes;
+    const dataAreas = activeAreas;
+    const catMeta = dataCategories.find((c) => c.label.toLowerCase() === tabText.toLowerCase())
+      || {};
     const category = catMeta.label || tabText;
     const subcategories = catMeta.subcategories || [];
 
-    setupPanel(panel, allCards, category, subcategories, cardTypes, areas, pageSize, placeholders);
+    const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText));
+
+    setupPanel(
+      panel,
+      isHighlightsPanel ? topPromoCards : activeCards,
+      category,
+      subcategories,
+      dataCardTypes,
+      dataAreas,
+      pageSize,
+      placeholders,
+      {
+        disableFilters: disableFilters && isBbm,
+        forcedCardType: isBbm ? forcedCardType : '',
+        hidePagination: disableFilters && isBbm,
+        isBbm,
+        isHighlightsPanel,
+        baseUrl: promotionApi?.baseUrl,
+      },
+    );
   });
 
-  // Close all dropdowns on outside click (single listener for all panels)
   document.addEventListener('click', () => {
     document.querySelectorAll('.promo-selector-filter.is-open').forEach((f) => {
       f.classList.remove('is-open');
@@ -302,6 +551,5 @@ export default async function decorate(block) {
     });
   });
 
-  // Block is just a data-source config — hide it from view
   block.hidden = true;
 }

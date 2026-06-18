@@ -27,3 +27,7 @@
 .bg-truthful-dark-blue {
   background-color: var(--bbl-color-truthful-dark-blue);
 }
+
+.bg-blue-01 { 
+  background-color: var(--bbl-color-blue-40);
+}
