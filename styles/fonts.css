@@ -121,5 +121,5 @@
   src: url("../fonts/icomoon.woff") format("woff");
   font-weight: 300;
   font-style: normal;
-  font-display: block;
+  font-display: swap;
 }

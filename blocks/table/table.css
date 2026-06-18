@@ -173,6 +173,11 @@
   vertical-align: middle;
 }
 
+/* Header Pastel Blue — #A1C6FF background */
+.table table.header-pastel-blue .header-row {
+  background-color: var(--bbl-color-blue-40);
+}
+
 /* --------------------------------------------------------------------------
    CELL VARIANTS — center aligned (specificity 0,3,3)
    -------------------------------------------------------------------------- */

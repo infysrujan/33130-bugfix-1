@@ -467,10 +467,6 @@
   font-weight: var(--bbl-font-family-regular);
 }
 
-.modal-body .section.central-aligned .block {
-  margin-inline: 0;
-}
-
 .cards-list-inner:has(.cards-list-downloads) {
   flex: none;
 }

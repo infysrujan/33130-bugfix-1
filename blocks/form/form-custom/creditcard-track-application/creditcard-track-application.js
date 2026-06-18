@@ -5,6 +5,7 @@
  * Panel types are identified by authoring cc-app-* classes — not field-* names.
  */
 
+// global changes for T & C and radio button
 const CC_PANEL_ITEM = 'cc-panel-item';
 const CC_APP_PREFIX = 'cc-app-';
 const PANEL_SELECTOR = 'fieldset.panel-wrapper.field-wrapper';

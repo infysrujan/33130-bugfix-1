@@ -656,12 +656,25 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
   xhr.open('POST', baseUrl, false);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.setRequestHeader('Accept', 'application/json');
-  xhr.send(JSON.stringify({
+  // Health uses "hospitalplan" key; Protection uses "prospectSA"
+  const isHealth = String(prospectCategory).trim() === 'Health';
+  const body = {
     prospectAge,
     prospectGender,
     prospectCategory,
-    prospectSA,
-  }));
+    ...(isHealth ? { hospitalplan: String(planTerm) } : { prospectSA }),
+  };
+
+  try {
+    xhr.send(JSON.stringify(body));
+  } catch (e) {
+    // Sync XHR throws NetworkError on CORS block or connectivity failure
+    fetchPlanDataErrorMsg = e.message || 'Network error';
+    fetchPlanDataErrorStatus = 'NetworkError';
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData network/CORS error:', e.message);
+    return 'ERROR';
+  }
 
   let response;
   try {
@@ -949,6 +962,23 @@ function getCampaignDetails(campaignId, lang = 'th') {
   return data.campaignDetail;
 }
 
+/**
+ * Returns true when the number of selected checkbox values does not exceed maxCount.
+ * Use as the expression in a Validate rule on a checkbox-group field so the form
+ * blocks submission when too many options are selected.
+ *
+ * UE Validate expression:  validateMaxCheckbox($field, 3)
+ *
+ * @name validateMaxCheckbox
+ * @param {string[]} selected - The checkbox-group value (array of selected values)
+ * @param {number} maxCount - Maximum allowed selections
+ * @return {boolean}
+ */
+function validateMaxCheckbox(selected, maxCount) {
+  const arr = Array.isArray(selected) ? selected : [];
+  return arr.length <= Number(maxCount);
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -983,4 +1013,5 @@ export {
   updateTextCount,
   getSelectedLabelName,
   getSelectedLabelValue,
+  validateMaxCheckbox,
 };

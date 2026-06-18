@@ -5,7 +5,7 @@ import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit } from './submit.js';
 import DocBasedFormToAF from './transform.js';
-import decorateCreditCardTractApplication from './form-custom/creditcard-tract-application/creditcard-tract-application.js';
+import decorateCreditCardTractApplication from './form-custom/creditcard-track-application/creditcard-track-application.js';
 import {
   checkValidation,
   createButton,

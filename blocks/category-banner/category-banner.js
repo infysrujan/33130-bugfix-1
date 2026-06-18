@@ -68,7 +68,7 @@ export default function decorate(block) {
     btnWrap.className = 'category-banner-buttons';
     buttons.forEach(({ href, text, title: t }) => {
       const a = document.createElement('a');
-      a.className = 'category-banner-btn';
+      a.className = 'category-banner-btn button-m secondary';
       a.href = href;
       a.textContent = text;
       if (t) a.title = t;

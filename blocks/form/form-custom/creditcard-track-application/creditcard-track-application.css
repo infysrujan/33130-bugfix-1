@@ -30,7 +30,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 }
 
 main .section.form-container.custom-forms:has(.cc-app-main-form) {
-  --cc-form-max-width: 53.125rem;
+  --cc-form-max-width: 55.625rem;
   --cc-form-gutter: 0.9375rem;
   --cc-timeline-panel-width: 28.75rem;
   --cc-message-form-max-width: 46.25rem;
@@ -48,7 +48,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     margin-inline: auto;
   }
 
-  /* Page + panel titles — form legend tokens (18px live), global line-height */
+  /* Page + panel titles — form legend tokens (1.125rem live), global line-height */
   & :is(
     h3,
     .form form .field-title h2,
@@ -138,7 +138,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     margin: 0;
     padding: 0 var(--bbl-space-250);
     border-color: var(--bbl-color-red-130);
-    outline: 1px solid transparent;
+    outline: 0.0625rem solid transparent;
   }
 
   & .form form .field-invalid :is(input, select, textarea) {
@@ -153,13 +153,32 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
     position: relative;
     clear: both;
-    margin-bottom: 0.625rem;
+    margin-bottom: 2.1875rem;
   }
 
   /* Mobile: stack half-width fields in a single column */
-  & .form form .field-wrapper.col-6 {
+  & .form form .field-wrapper.col-6:not(.button-wrapper) {
     grid-column: span 12;
     width: 100%;
+  }
+
+  /* Button panel — preserve flex layout inside CC form */
+  & .form form fieldset.panel-wrapper.field-button-panel {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--bbl-space-200);
+    width: 100%;
+    clear: both;
+
+    & > .button-wrapper {
+      display: flex;
+      justify-content: center;
+      width: auto;
+      max-width: none;
+      clear: none;
+    }
   }
 
   /* Field labels (titles use form-fieldset-legend tokens above) */
@@ -198,21 +217,36 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     content: '';
   }
 
-  /* Buttons */
+  /* Buttons — CC-specific panels and panel-action roles */
+  & .form form fieldset.panel-wrapper:is(.field-submitbuttonpanel, .field-submitbuttonpanel2) {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: var(--bbl-space-200);
+  }
+
   & .form :is(
-    :is(.field-submitbuttonpanel, .field-submitbuttonpanel2, .field-button-panel) .button,
-    :is(.field-submitcta, .field-cancel, [class~='field-Cancel'], form .submit-wrapper) .button,
-    :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary),
-    .cc-panel-item-panel-action-primary :is(.button, button)
+    fieldset.panel-wrapper:is(.field-submitbuttonpanel, .field-submitbuttonpanel2) .button,
+    :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) .button
   ) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     min-width: 9.6875rem;
     width: auto;
+    max-width: fit-content;
     height: 2.75rem;
     margin: 0;
+    padding: 0 var(--bbl-space-250);
+    box-shadow: none;
     border-radius: 0.4375rem;
+    gap: var(--bbl-space-100);
     font-size: var(--bbl-font-size-h4-mobile);
     font-weight: var(--form-title-font-weight);
     line-height: var(--bbl-line-height-h4-mobile);
+    cursor: pointer;
+    appearance: none;
   }
 
   & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) {
@@ -222,71 +256,42 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     max-width: none;
   }
 
-  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) :is(.button, button, .button.primary) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 var(--bbl-space-200);
-    box-shadow: none;
-    cursor: pointer;
-    appearance: none;
-  }
-
   & .form :is(
-    :is(.button.primary, .button.tertiary, .field-submit .button):not(:disabled),
-    .cc-panel-item-panel-action-primary :is(.button, button):not(:disabled)
+    .button.primary:not(:disabled),
+    .button.tertiary:not(:disabled),
+    .submit-wrapper .button:not(:disabled),
+    .cc-panel-item-panel-action-primary .button:not(:disabled)
   ) {
+    border: 0.0417rem solid transparent;
+    background-color: var(--bbl-color-active-blue);
     color: var(--bbl-color-white);
-    border: 1px solid var(--bbl-color-active-blue);
-    background: var(--bbl-color-active-blue);
   }
 
-  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary):not(:disabled) {
+  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) .button:not(:disabled),
+  & .form .button.secondary {
+    border: 0.0417rem solid var(--bbl-color-active-blue);
+    background-color: var(--bbl-color-white);
     color: var(--bbl-color-active-blue);
-    border: 1px solid var(--bbl-color-active-blue);
-    background: var(--bbl-color-white);
   }
 
-  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary):not(:disabled):hover {
-    color: var(--bbl-color-white);
+  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) .button:not(:disabled):hover,
+  & .form .button.secondary:hover {
     border-color: var(--bbl-color-active-blue);
-    background: var(--bbl-color-active-blue);
+    background-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
   }
 
   & .form :is(
-    :is(.button.primary, .button.tertiary, .field-submit .button):disabled,
-    :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary):disabled,
-    .cc-panel-item-panel-action-primary :is(.button, button):disabled
+    .button.primary:disabled,
+    .button.tertiary:disabled,
+    .submit-wrapper .button:disabled,
+    :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) .button:disabled
   ) {
     color: var(--bbl-color-grey-60);
-    border: 1px solid var(--bbl-color-gray-300);
-    background: var(--bbl-color-gray-300);
+    border: 0.0417rem solid var(--bbl-color-gray-300);
+    background-color: var(--bbl-color-gray-300);
     cursor: not-allowed;
     pointer-events: none;
-  }
-
-  & .form .button.secondary {
-    color: var(--bbl-color-active-blue);
-    border: 1px solid var(--bbl-color-active-blue);
-    background: var(--bbl-color-white);
-
-    &:hover {
-      color: var(--bbl-color-white);
-      border-color: var(--bbl-color-active-blue);
-      background: var(--bbl-color-active-blue);
-    }
-  }
-
-  & .form fieldset.panel-wrapper.field-wrapper:not(.cc-panel-item-form-consent) .tnc-text-decoration {
-    max-height: 9.375rem;
-    border: none;
-  }
-
-  @media (width < 64rem) {
-    & .form form :is(.field-short-privacy-notice, .tnc-text-decoration) :is(p, p p) {
-      font-size: var(--bbl-font-size-h4-mobile);
-      line-height: var(--bbl-line-height-h2-mobile);
-    }
   }
 
   & .form form {
@@ -301,14 +306,27 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     line-height: var(--bbl-text-default-line-height);
     color: var(--bbl-color-grey-85);
 
-    & > .field-wrapper,
-    & .field-wrapper,
-    & .field-wrapper.col-6,
-    & .field-wrapper.col-12 {
+    & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-']),
+    & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-']),
+    & .field-wrapper.col-6:not(.button-wrapper),
+    & .field-wrapper.col-12:not(:is(.field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-'])) {
       display: block;
       width: 100%;
       max-width: 100%;
       clear: both;
+      grid-column: auto;
+    }
+
+    & .field-wrapper.custom-fieldset-approval {
+      display: grid;
+      clear: none;
+    }
+
+    & .custom-fieldset-approval > fieldset.panel-wrapper {
+      display: contents;
+      width: auto;
+      max-width: none;
+      clear: none;
       grid-column: auto;
     }
 
@@ -336,7 +354,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       vertical-align: middle;
     }
 
-    & .radio-group-wrapper.horizontal {
+    & .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
       display: flex;
       flex-flow: row wrap;
       justify-content: flex-start;
@@ -375,13 +393,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       }
 
       &.field-submitbuttonpanel,
-      &.field-submitbuttonpanel2,
-      &.field-button-panel {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: center;
-        align-items: center;
-        gap: var(--bbl-space-200);
+      &.field-submitbuttonpanel2 {
         width: 100%;
         margin-top: var(--bbl-space-200);
 
@@ -390,119 +402,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           justify-content: center;
           width: auto;
           clear: none;
-        }
-      }
-
-      &.cc-app-main-form > .cc-panel-item-form-consent {
-        position: relative;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: auto auto;
-        width: 100%;
-        max-width: 100%;
-        margin-top: var(--bbl-space-200);
-        padding: 0 0 0 2.1875rem;
-
-        & > legend {
-          display: none;
-        }
-
-        & .checkbox-wrapper {
-          display: contents;
-        }
-
-        & input[name='approvalcheckbox'] {
-          position: absolute;
-          top: var(--bbl-space-050);
-          left: 0;
-          z-index: 1;
-          width: var(--bbl-space-250);
-          height: var(--bbl-space-250);
-          margin: 3px var(--bbl-space-100) 3px var(--bbl-space-050);
-          flex: none;
-          cursor: pointer;
-          outline: none;
-        }
-
-        & input[name='approvalcheckbox']:hover {
-          border: 1px solid var(--bbl-color-grey-125);
-        }
-
-        & input[name='approvalcheckbox']:invalid {
-          box-shadow: none;
-          outline: none;
-        }
-
-        & .tnc-text-decoration {
-          grid-row: 1;
-          grid-column: 1 / -1;
-          width: 100%;
-          min-width: 0;
-          max-width: 100%;
-          max-height: 10.9375rem;
-          margin: 0 0 1.25rem;
-          padding: 0 var(--bbl-space-100) 0 0;
-          border-radius: var(--bbl-radius-none);
-          color: var(--bbl-color-grey-85);
-          line-height: var(--bbl-line-height-h2-mobile);
-          overflow: auto;
-          scrollbar-color: var(--bbl-color-active-blue) var(--bbl-color-grey-10);
-          scrollbar-width: thin;
-
-          & :is(p, p p) {
-            margin: 0;
-            padding: 0;
-            line-height: var(--bbl-line-height-h2-mobile);
-          }
-
-          @media (width < 64rem) {
-            & :is(p, p p) {
-              font-size: var(--bbl-font-size-h4-mobile);
-            }
-          }
-
-          &::-webkit-scrollbar {
-            width: var(--bbl-space-100);
-          }
-
-          &::-webkit-scrollbar-track {
-            background: var(--bbl-color-grey-10);
-          }
-
-          &::-webkit-scrollbar-thumb {
-            background: var(--bbl-color-active-blue);
-            border-radius: var(--bbl-rounded-050);
-          }
-        }
-
-        &:is(
-          :has(.checkbox-wrapper.field-invalid),
-          :has(input[name='approvalcheckbox']:user-invalid),
-          .field-invalid
-        ) .tnc-text-decoration {
-          border-color: var(--bbl-color-orange-130);
-        }
-
-        & :is(> .field-description, .checkbox-wrapper .field-description) {
-          grid-row: 2;
-          grid-column: 1 / -1;
-          position: static;
-          display: block;
-          width: 100%;
-          max-width: 100%;
-          margin: 0;
-          padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
-          font-size: var(--bbl-body-b2-size);
-          font-weight: var(--bbl-body-b2-weight);
-          line-height: var(--bbl-body-b2-line-height);
-          clear: both;
-          order: unset;
-        }
-
-        & :is(.field-wrapper.col-1, .field-wrapper.col-11, .field-wrapper.col-12) {
-          grid-column: 1 / -1;
-          width: 100%;
-          max-width: 100%;
         }
       }
 
@@ -862,7 +761,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       line-height: var(--bbl-line-height-b1-desktop);
     }
 
-    /* Page + panel titles — desktop heading scale (live ~24px) */
+    /* Page + panel titles — desktop heading scale (live ~1.5rem) */
     & :is(
       h3,
       .form form .field-title h2,
@@ -876,21 +775,13 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       line-height: var(--bbl-heading-h3-line-height);
     }
 
-    & .form form .field-wrapper.col-6 {
+    & .form form .field-wrapper.col-6:not(.button-wrapper) {
       grid-column: span 6;
     }
 
-    & .form form fieldset.panel-wrapper.cc-app-main-form > .cc-panel-item-form-consent .tnc-text-decoration :is(p, p p),
-    & .form form :is(.field-short-privacy-notice, .tnc-text-decoration) :is(p, p p) {
-      font-size: var(--form-font-size-xs);
-      line-height: var(--bbl-line-height-b1-desktop);
-    }
-
     & .form :is(
-      :is(.field-submitbuttonpanel, .field-submitbuttonpanel2, .field-button-panel) .button,
-      :is(.field-submitcta, .field-cancel, [class~='field-Cancel'], form .submit-wrapper) .button,
-      :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary),
-      .cc-panel-item-panel-action-primary :is(.button, button)
+      fieldset.panel-wrapper:is(.field-submitbuttonpanel, .field-submitbuttonpanel2) .button,
+      :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) .button
     ) {
       font-size: var(--form-font-size-xs);
       line-height: var(--bbl-line-height-b1-desktop);
@@ -952,7 +843,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       margin-inline: auto;
 
       & > .field-wrapper.col-6:not(
-        :is(.cc-panel-item-form-title, .cc-panel-item-form-input, .cc-panel-item-form-cover)
+        :is(.cc-panel-item-form-title, .cc-panel-item-form-input, .cc-panel-item-form-cover, .button-wrapper)
       ) {
         grid-column: span 1;
         width: 100%;
@@ -974,11 +865,20 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         margin: 0;
       }
 
-      & > :is(.cc-panel-item-form-consent, .cc-panel-item-form-actions),
-      & > .field-wrapper.col-12:is(.cc-panel-item-form-consent, .cc-panel-item-form-actions) {
+      & > :is(.custom-fieldset-approval, .cc-panel-item-form-actions),
+      & > .field-wrapper.col-12:is(.custom-fieldset-approval, .cc-panel-item-form-actions) {
         grid-column: 1 / -1;
         width: 100%;
         max-width: var(--cc-form-max-width);
+      }
+      
+      /* global changes for T & C and radio button */
+      & > :is(.cc-panel-item-form-actions, .field-wrapper.col-12.cc-panel-item-form-actions) {
+        padding: 0;
+      }
+
+      & > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration) {
+        max-height: 10.9375rem;
       }
     }
 

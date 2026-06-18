@@ -1,0 +1,12 @@
+/*
+ * checkbox-group.css
+ * Styles for the max-select checkbox-group decorator.
+ * Applied only when fd.properties.maxSelect is set on the field.
+ */
+
+/* Gray out unchecked options that have been disabled because the max is reached */
+.checkbox-group-wrapper .checkbox-wrapper:has(input[type="checkbox"]:disabled) {
+  cursor: not-allowed;
+  opacity: 0.45;
+  pointer-events: none;
+}

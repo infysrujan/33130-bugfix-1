@@ -360,6 +360,11 @@ export async function renderChart(state, data) {
     const config = buildChartConfig(original, newSeries, chartLabels, overlayPlugin, colors);
     config.options.responsive = false;
     state.chartInstance = new Chart(ctx, config);
+    canvas.style.height = '';
+    const heightObserver = new MutationObserver(() => {
+      if (canvas.style.height) canvas.style.height = '';
+    });
+    heightObserver.observe(canvas, { attributes: true, attributeFilter: ['style'] });
     if (!state.chartResizeObserver && window.ResizeObserver) {
       state.chartResizeObserver = new ResizeObserver(() => {
         window.requestAnimationFrame(() => window.requestAnimationFrame(

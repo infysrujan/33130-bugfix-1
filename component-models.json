@@ -4439,6 +4439,13 @@
         "description": "Displayed when validation script fails."
       },
       {
+        "component": "number",
+        "name": "maxSelect",
+        "label": "Max selections allowed",
+        "valueType": "number",
+        "description": "Limits how many options a user can check. Leave empty for no limit."
+      },
+      {
         "component": "tab",
         "label": "Help Content",
         "name": "help"
@@ -6920,6 +6927,27 @@
           {
             "name": "Vertically",
             "value": "vertical"
+          }
+        ]
+      },
+      {
+        "component": "radio-group",
+        "label": "Alignment",
+        "name": "align",
+        "valueType": "string",
+        "value": "left",
+        "options": [
+          {
+            "name": "Left",
+            "value": "left"
+          },
+          {
+            "name": "Center",
+            "value": "center"
+          },
+          {
+            "name": "Right",
+            "value": "right"
           }
         ]
       },

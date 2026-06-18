@@ -935,7 +935,8 @@
                     "Item 1",
                     "Item 2"
                   ],
-                  "orientation": "horizontal"
+                  "orientation": "horizontal",
+                  "align": "left"
                 }
               }
             }

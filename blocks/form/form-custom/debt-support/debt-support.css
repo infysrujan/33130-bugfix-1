@@ -116,7 +116,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     margin-bottom: 0.625rem;
   }
 
-  & .form form :is(.field-approvalcheckbox, .field-loan-type .checkbox-group-wrapper) input[type='checkbox'] {
+  & .form form .field-loan-type .checkbox-group-wrapper input[type='checkbox'] {
     flex-shrink: 0;
     width: var(--bbl-space-250);
     height: var(--bbl-space-250);
@@ -166,107 +166,11 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
       gap: var(--bbl-space-100);
       width: 100%;
       margin: 0;
-      padding-left: 20px;
+      padding-left: 1.25rem;
     }
 
     & .checkbox-wrapper label {
       font-size: var(--bbl-font-size-h4-mobile);
-    }
-  }
-
-  /* Radio tabs — side-by-side on all breakpoints (matches live mobile) */
-  & .form form .radio-group-wrapper.radio-tabs {
-    display: flex;
-    flex-flow: row wrap;
-    gap: 0;
-    width: 100%;
-    max-width: 100%;
-    margin: 0 0 0.9375rem;
-    padding: 0;
-    overflow: visible;
-    border: none;
-
-    & > legend.field-label {
-      flex: 0 0 100%;
-      width: 100%;
-      margin: 0 0 0.625rem;
-      padding-left: 0.625rem;
-      text-align: left;
-      font-size: var(--form-fieldset-legend-font-size);
-      font-weight: var(--form-fieldset-legend-font-weight);
-      line-height: var(--bbl-heading-h4-line-height);
-      font-family: var(--bbl-font-family-medium);
-      color: var(--form-fieldset-legend-color);
-      background: none;
-      position: inherit;
-    }
-
-    & > .radio-wrapper {
-      position: relative;
-      display: flex;
-      flex: 1 0 25%;
-      flex-wrap: nowrap;
-      align-items: center;
-      justify-content: center;
-      width: auto;
-      min-width: 0;
-      height: var(--bbl-space-1000);
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      border: none;
-      gap: 0;
-
-      & input[type='radio'] {
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        background: var(--bbl-color-white);
-        border: 1px solid var(--bbl-color-grey-150);
-        border-left: none;
-        border-radius: 0;
-        appearance: none;
-        cursor: pointer;
-      }
-
-      & input[type='radio']:checked {
-        background-color: var(--bbl-color-blue-145);
-      }
-
-      &:first-of-type input[type='radio'] {
-        border-left: 1px solid var(--bbl-color-grey-150);
-        border-radius: 0.4375rem 0 0 0.4375rem;
-      }
-
-      &:last-of-type input[type='radio'] {
-        border-radius: 0 0.4375rem 0.4375rem 0;
-      }
-
-      & label.field-label {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        flex: 1;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0 0.625rem;
-        font-size: var(--bbl-font-size-h4-mobile);
-        font-weight: var(--form-label-font-weight);
-        line-height: var(--bbl-line-height-h4-mobile);
-        text-align: center;
-        cursor: pointer;
-        background: transparent;
-      }
-    }
-
-    &.field-invalid .radio-wrapper input[type='radio'] {
-      border-color: var(--bbl-color-orange-130);
     }
   }
 
@@ -282,7 +186,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     color: var(--form-fieldset-legend-color);
     background: unset;
     text-decoration: underline;
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
   }
 
   /* Mobile: stack half-width fields in a single column */
@@ -292,13 +196,10 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
   }
 
   /* Rich text — note + T&C (replaces authored inline styles) */
-  & .form form :is(.field-note, .field-term > .field-ticktext.tnc-text-decoration) {
-    line-height: var(--bbl-line-height-h2-mobile);
-  }
-
   & .form form .field-note {
     margin-top: 0.625rem;
     margin-bottom: 0.625rem;
+    line-height: var(--bbl-line-height-h2-mobile);
 
     & :is(p, div) {
       margin: 0;
@@ -308,125 +209,24 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     & p + p {
       margin-top: 0.3125rem;
     }
-  }
 
-  & .form form :is(.field-note, .field-term > .field-ticktext.tnc-text-decoration) :is(strong, b) {
-    font-family: var(--bbl-font-family-medium);
-    font-size: var(--form-font-size-xs);
-    font-weight: var(--bbl-body-b1-medium-weight);
-    line-height: var(--bbl-body-b1-medium-line-height);
-  }
-
-  /* Terms — consent checkbox + scrollable text */
-  & .form form fieldset.panel-wrapper.field-term {
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    align-items: start;
-    gap: 0;
-    width: 100%;
-    margin-top: 0.9375rem;
-    padding: 0 0 0 2.1875rem;
-
-    & > legend {
-      display: none;
-    }
-
-    & > .field-approvalcheckbox {
-      display: contents;
-    }
-
-    & input[name='approvalcheckbox'] {
-      position: absolute;
-      top: var(--bbl-space-050);
-      left: 0;
-      z-index: 1;
-      width: var(--bbl-space-250);
-      height: var(--bbl-space-250);
-      margin: 3px var(--bbl-space-100) 3px var(--bbl-space-050);
-      flex: none;
-      cursor: pointer;
-      outline: none;
-    }
-
-    & input[name='approvalcheckbox']:hover {
-      border: 1px solid var(--bbl-color-grey-125);
-    }
-
-    & input[name='approvalcheckbox']:invalid {
-      box-shadow: none;
-      outline: none;
-    }
-
-    & :is(> .field-approvalcheckbox, .field-approvalcheckbox) .field-description {
-      grid-column: 1 / -1;
-      grid-row: 2;
-      position: static;
+    & :is(strong, b) {
       display: block;
-      width: 100%;
-      margin: 0;
-      padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
-      font-size: var(--bbl-body-b2-size);
-      font-weight: var(--bbl-body-b2-weight);
-      line-height: var(--bbl-body-b2-line-height);
-      clear: both;
-      order: unset;
-    }
-
-    & > .field-ticktext.tnc-text-decoration {
-      grid-column: 1;
-      grid-row: 1;
-      max-height: 9.375rem;
-      margin: 0 0 1.25rem;
-      padding: 0 var(--bbl-space-100) 0 0;
-      overflow: auto;
-      scrollbar-color: var(--bbl-color-active-blue) var(--bbl-color-grey-10);
-      scrollbar-width: thin;
-
-      & > p {
-        margin: 0;
-        padding: 0;
-      }
-
-      & > p > p {
-        margin: 0 0.625rem 0 0;
-        padding: 0;
-        font-size: var(--bbl-font-size-h4-mobile);
-      }
-
-      & > p > p:first-child {
-        margin-bottom: 0.625rem;
-      }
-
-      & a {
-        color: inherit;
-        text-decoration: none;
-        transition: color 0.3s ease;
-      }
-
-      &::-webkit-scrollbar {
-        width: var(--bbl-space-100);
-      }
-
-      &::-webkit-scrollbar-track {
-        background: var(--bbl-color-grey-10);
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: var(--bbl-color-active-blue);
-        border-radius: var(--bbl-rounded-050);
-      }
+      margin-bottom: 0.625rem;
+      font-family: var(--bbl-font-family-medium);
+      font-size: var(--form-font-size-xs);
+      font-weight: var(--bbl-body-b1-medium-weight);
+      line-height: var(--bbl-body-b1-medium-line-height);
     }
   }
 
-  /* Buttons */
+  & .form form .custom-fieldset-approval .tnc-text-decoration > p > p + p {
+    margin-top: 0.625rem;
+  }
+
+  /* Buttons — sizing/colors from form-global; debt-specific panel spacing */
   & .form form fieldset.panel-wrapper.field-button-panel {
-    display: flex;
     flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 44px;
     width: 100%;
     margin-top: var(--bbl-space-200);
 
@@ -436,41 +236,6 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
       width: auto;
       max-width: none;
       clear: none;
-    }
-
-    & :is(.field-submitcta, .field-cancelcta) :is(.button, button) {
-      min-width: 9.6875rem;
-      height: 2.75rem;
-      margin: 0;
-      border-radius: 0.4375rem;
-      font-size: var(--bbl-font-size-h4-mobile);
-      font-weight: var(--form-title-font-weight);
-      line-height: var(--bbl-line-height-h4-mobile);
-    }
-
-    & .field-submitcta :is(.button, button):not(:disabled) {
-      color: var(--bbl-color-white);
-      border: 1px solid var(--bbl-color-active-blue);
-      background: var(--bbl-color-active-blue);
-    }
-
-    & .field-cancelcta :is(.button, button):not(:disabled) {
-      color: var(--bbl-color-active-blue);
-      border: 1px solid var(--bbl-color-active-blue);
-      background: var(--bbl-color-white);
-
-      &:hover {
-        color: var(--bbl-color-white);
-        background: var(--bbl-color-active-blue);
-      }
-    }
-
-    & :is(.field-submitcta, .field-cancelcta) :is(.button, button):disabled {
-      color: var(--bbl-color-grey-60);
-      border: 1px solid var(--bbl-color-gray-300);
-      background: var(--bbl-color-gray-300);
-      cursor: not-allowed;
-      pointer-events: none;
     }
   }
 
@@ -486,7 +251,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     & .form form .field-loan-type .checkbox-group-wrapper .checkbox-wrapper {
       width: calc(50% - var(--bbl-space-150));
       padding-left: var(--bbl-space-250);
-      margin-bottom: 10px;
+      margin-bottom: 0.625rem;
 
       & label {
         font-size: var(--form-font-size-xs);
@@ -495,24 +260,18 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
 
     & .form form .radio-group-wrapper.radio-tabs {
       margin-bottom: 0;
+      gap: 0;
 
       & > .radio-wrapper label.field-label {
         font-size: var(--form-font-size-xs);
         line-height: var(--bbl-line-height-b1-desktop);
       }
     }
-
+    
+    /* global changes for T & C and radio button */
     & .form form .field-wrapper.col-6 {
       grid-column: span 6;
     }
 
-    & .form form fieldset.panel-wrapper.field-term > .field-ticktext.tnc-text-decoration > p > p {
-      font-size: var(--form-font-size-xs);
-    }
-
-    & .form form fieldset.panel-wrapper.field-button-panel :is(.field-submitcta, .field-cancelcta) :is(.button, button) {
-      font-size: var(--form-font-size-xs);
-      line-height: var(--bbl-line-height-b1-desktop);
-    }
   }
 }

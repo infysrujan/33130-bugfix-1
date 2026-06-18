@@ -455,12 +455,13 @@ a.link-inverted[aria-disabled="true"] {
 }
 
 .download-button-wrapper .download-files {
-    max-height: 2.75rem;
+    height: 2.75rem;
     text-decoration: none;
     display: block;
-    font: var(--bbl-font-weight-regular) var(--bbl-font-size-b2) / 2.75rem
-            Muli-Bold,
-        sans-serif;
+    font-size: var(--bbl-font-size-b1-mobile);
+    font-weight: var(--bbl-font-weight-regular);
+    font-family: var(--bbl-font-family-medium);
+    line-height: 2.75rem;
     background: var(--bbl-color-ice-blue);
     box-shadow: 0 0.125rem 0.5rem 0 var(--bbl-color-white-alpha-125);
     margin-bottom: 0.4375rem;
@@ -485,7 +486,7 @@ a.link-inverted[aria-disabled="true"] {
 
 .download-files.icon-download:hover::before,
 .download-files:hover .icon-download::before {
-    transform: translateY(-4px);
+    transform: translateY(4px);
 }
 
 @media (width > 64rem) {
