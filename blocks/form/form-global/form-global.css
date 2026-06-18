@@ -66,7 +66,7 @@ main .section.form-container div.form-wrapper {
 }
 
 /* Button panel — side-by-side Submit / Reset and alignment overrides */
-main .section.form-container .form form fieldset.panel-wrapper.field-button-panel {
+main .section.form-container .form form fieldset.panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -74,18 +74,17 @@ main .section.form-container .form form fieldset.panel-wrapper.field-button-pane
   gap: var(--bbl-space-200);
 }
 
-main .section.form-container .form form fieldset.panel-wrapper.field-button-panel .field-submitcta,
-main .section.form-container .form form fieldset.panel-wrapper.field-button-panel .field-reset {
+main .section.form-container .form form fieldset.panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) > .button-wrapper {
   width: auto;
   margin: 0;
 }
 
-main .section.form-container .form .col-6:is(.field-submitcta, .submit-wrapper) :is(.button, button) {
+main .section.form-container .form .panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) > .col-6:first-child :is(.button, button) {
   margin-left: auto;
   margin-right: var(--bbl-space-200);
 }
 
-main .section.form-container .form .col-6:is(.field-cancel, .field-reset) :is(.button, button) {
+main .section.form-container .form .panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) > .col-6:last-child :is(.button, button) {
   margin-left: var(--bbl-space-200);
   margin-right: auto;
 }
@@ -136,12 +135,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs {
   border: none;
 }
 
-main .section.form-container .form form :is(.field-type-of-loan, .field-other-required-products) legend.field-label {
-  display: block;
-  width: 100%;
-  margin-bottom: var(--bbl-space-200);
-  text-align: center;
-}
+/* Removed specific field alignments */
 
 main .section.form-container .form form .radio-group-wrapper.radio-tabs > legend.field-label {
   display: block;
@@ -162,7 +156,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > legend
 main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper {
   position: relative;
   display: flex;
-  flex: 1 0 25%;
+  flex: 1 1 0;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
@@ -369,15 +363,24 @@ main .section.form-container .form form .plain-text-wrapper p:last-child {
   margin-bottom: 0;
 }
 
-main .section.form-container .form form .plain-text-wrapper.field-text {
+/* Apply pill style to the first paragraph of ALL plain-text-wrappers */
+main .section.form-container .form form > .plain-text-wrapper p:first-of-type {
+  font-size: 1rem;
   background-color: var(--bbl-color-grey-10);
   padding: var(--bbl-space-050) 0.625rem;
   border-radius: 0.4375rem;
-  font-size: 1rem;
+}
+
+/* Reset the style for any plain-text-wrapper that comes AFTER another one, ensuring ONLY the first gets styled */
+main .section.form-container .form form > .plain-text-wrapper ~ .plain-text-wrapper p:first-of-type {
+  font-size: inherit;
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
 }
 
 /* Custom Form Button Sizing & Styles */
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) .button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -389,14 +392,14 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   gap: var(--bbl-space-100);
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .field-submitcta .button {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) > .button-wrapper:first-of-type .button {
   margin: var(--bbl-space-300) var(--bbl-space-200) var(--bbl-space-300) auto;
   border: 0.0417rem solid transparent;
   background-color: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.field-cancel, .field-reset) .button {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) > .button-wrapper:last-of-type .button {
   margin: 0 var(--bbl-space-300) auto;
   border: 0.0417rem solid var(--bbl-color-active-blue);
   background-color: var(--bbl-color-white);
@@ -414,13 +417,13 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper:not(.h
 }
 
 /* Invalid states border color override for inner panel wrapper inputs */
-main .section.form-container .form form fieldset.panel-wrapper.field-transdatetimepanel:has(.field-invalid)> :is(.field-cnf-date-exclude, .field-hours-exclude, .field-minutes-exclude) :is(input, select),
-main .section.form-container .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch).field-invalid :is(input, select) {
+main .section.form-container .form form fieldset.panel-wrapper:has(> .date-wrapper):has(.field-invalid)> :is(.date-wrapper, .drop-down-wrapper) :is(input, select),
+main .section.form-container .form form fieldset.panel-wrapper:has(> .drop-down-wrapper.col-6) > .drop-down-wrapper.col-6.field-invalid :is(input, select) {
   border-color: var(--bbl-color-red-130);
 }
 
 /* Invalid state layout padding override for branch panel */
-main .section.form-container .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel):has(.field-invalid) {
+main .section.form-container .form form fieldset.panel-wrapper:has(> .drop-down-wrapper.col-6):has(.field-invalid) {
   padding-bottom: var(--bbl-space-500);
 }
 
