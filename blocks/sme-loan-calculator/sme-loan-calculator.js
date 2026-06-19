@@ -186,7 +186,7 @@ export default async function decorate(block) {
   if (hasResultText) fieldStart = hasErrorMessage ? 6 : 5;
 
   const fields = rows.slice(fieldStart).map((r) => ({
-    id: cellText(r, 0),
+    id: cellText(r, 0).trim(),
     label: cellText(r, 1),
     topText: cellText(r, 2),
     bottomText: cellText(r, 3),
@@ -199,6 +199,9 @@ export default async function decorate(block) {
   else if (ids.includes('A') && ids.includes('n') && !ids.includes('P')) calcType = 'loanbalance';
   else if (ids.includes('P') && ids.includes('A') && !ids.includes('n')) calcType = 'term';
 
+  console.log('SME Calculator IDs:', ids);
+  console.log('Detected calculator type:', calcType);
+
   const configKeyMap = {
     monthly: 'smeMonthlyPayment',
     loanbalance: 'smeLoanBalance',
@@ -207,7 +210,15 @@ export default async function decorate(block) {
   };
 
   const siteConfigs = await fetchConfigs();
-  const formulaDescription = siteConfigs[configKeyMap[calcType]] || '';
+  const formulaDescription =
+  siteConfigs?.[configKeyMap[calcType]]?.trim() || '';
+
+if (!formulaDescription) {
+  console.error(
+    `Missing formula config for ${calcType}`,
+    configKeyMap[calcType],
+  );
+}
 
   const resultConfig = {
     monthly: { prefix: resultText, suffix: ' baht.', integer: false },
@@ -371,35 +382,49 @@ export default async function decorate(block) {
   };
 
   const compute = () => {
-    const fieldValues = {};
-    fields.forEach((f) => {
-      fieldValues[f.id] = getVal(f.id);
-    });
+  const fieldValues = {};
 
+  fields.forEach((f) => {
+    fieldValues[f.id.trim()] = getVal(f.id.trim());
+  });
+
+  console.log('calcType:', calcType);
+  console.log('formulaDescription:', formulaDescription);
+  console.log('fieldValues:', fieldValues);
+
+  let result = 0;
+
+  try {
     if (calcType === 'term') {
-      // Formula from config: n = [lnA-ln(A-Pi)]/ln(1+i)
-      // A = monthly payment (field P), P = principal (field A), i = annual% / 1200
-      const result = formulaCompute(formulaDescription, {
-        P: fieldValues.P,
-        A: fieldValues.A,
+      result = formulaCompute(formulaDescription, {
+        A: fieldValues.P,
+        P: fieldValues.A,
         i: fieldValues.i / 1200,
       });
-      return result;
-    }
-
-    if (calcType === 'loanbalance') {
-      // Formula from config: P = A*((1+i)^n-1)/(i(1+i)^n)
-      // i = annual% / 1200
-      const result = formulaCompute(formulaDescription, {
+    } else if (calcType === 'loanbalance') {
+      result = formulaCompute(formulaDescription, {
         ...fieldValues,
         i: fieldValues.i / 1200,
       });
-      return result;
+    } else {
+      result = formulaCompute(formulaDescription, fieldValues);
     }
 
-    const result = formulaCompute(formulaDescription, fieldValues);
+    if (!Number.isFinite(result)) {
+      console.error('Invalid calculation result', {
+        calcType,
+        formulaDescription,
+        fieldValues,
+      });
+      return 0;
+    }
+
     return result;
-  };
+  } catch (error) {
+    console.error('Calculation failed', error);
+    return 0;
+  }
+};
 
   function validateAndMarkErrors() {
     fields.forEach((f) => {
@@ -418,9 +443,12 @@ export default async function decorate(block) {
     }
 
     fields.forEach((f) => {
-      if (f.valueType === 'decimal' && getVal(f.id) > 100) {
-        block.querySelector(`#${f.id}`)?.classList.add('input-error');
-        hasError = true;
+      if (f.valueType === 'decimal') {
+        const v = getVal(f.id);
+        if (v <= 0 || v > 100) {
+          block.querySelector(`#${f.id}`)?.classList.add('input-error');
+          hasError = true;
+        }
       }
     });
 
@@ -429,10 +457,18 @@ export default async function decorate(block) {
 
   calcBtn.addEventListener('click', () => {
     if (!validateAndMarkErrors()) return;
-    const raw = compute();
     resultLabel.textContent = '';
     resultLabel.style.whiteSpace = 'pre-wrap';
     resultNum = el('strong', 'sme-result-number');
+    let raw;
+    try {
+      raw = compute();
+    } catch (e) {
+      resultNum.textContent = errorMessage;
+      resultLabel.append(`${rc.prefix} `, resultNum);
+      lastResult = null;
+      return;
+    }
     if (!Number.isFinite(raw)) {
       resultNum.textContent = errorMessage;
       resultLabel.append(`${rc.prefix} `, resultNum);
