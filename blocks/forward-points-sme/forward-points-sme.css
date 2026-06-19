@@ -366,10 +366,10 @@
 }
 
 .forward-points-sme .fpsme-table thead th {
-  padding: 0.75rem 0.625rem;
+  padding: var(--bbl-space-250) 0.625rem;
   font-size: 0.875rem;
   font-family: var(--bbl-font-family-medium);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-gray-142);
   text-align: center;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-24);
   line-height: 1.4;
@@ -384,8 +384,8 @@
 }
 
 .forward-points-sme .fpsme-table tbody td {
-  padding: 0.75rem 0.625rem;
-  font-size: 1rem;
+  padding: var(--bbl-space-250) 0.625rem;
+  font-size: 0.938rem;
   color: var(--bbl-color-gray-142);
   vertical-align: middle;
 }
@@ -417,7 +417,11 @@
 }
 
 .forward-points-sme .fpsme-unit-right {
-  text-align: right;
+    padding-left:var(--bbl-space-250);
+    margin-left: 51.5%;
+    width: 41%;
+    text-align: right;
+    display: inline-block;
 }
 
 /* ── Section 1 bar ─────────────────────────────────────────── */
@@ -493,7 +497,6 @@
 .forward-points-sme .fpsme-fwd-tables {
   display: flex;
   flex-direction: column;
-  gap: var(--bbl-space-500);
 }
 
 .forward-points-sme .fpsme-fwd-table-col {
@@ -502,7 +505,7 @@
 }
 
 .forward-points-sme .fpsme-fwd-subtitle {
-  font-size: 1rem;
+  font-size: var(--bbl-heading-h4-size);
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-70);
   text-align: center;
@@ -736,19 +739,12 @@
 
   .forward-points-sme .fpsme-dp-calendar thead th {
     font-size: 1rem;
-    padding-bottom: 0.75rem;
+    padding-bottom: 0.75rem
   }
 
   .forward-points-sme .fpsme-table thead th {
     font-size: 1rem;
-    padding: 0.875rem 1rem;
   }
-
-  .forward-points-sme .fpsme-table tbody td {
-    font-size: 1rem;
-    padding: 1.425rem 1rem;
-  }
-
 
   .forward-points-sme .fpsme-time-item {
     font-size: 1rem;
