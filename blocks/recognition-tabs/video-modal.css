@@ -1,0 +1,107 @@
+/* ─────────────────────────────────────────────
+   VIDEO MODAL — standalone styles
+   Pair with video-modal.js
+
+   Classes used:
+     .video-modal             fixed overlay (root)
+     .video-modal__backdrop   dark background
+     .video-modal__content    flex centering wrapper
+     .video-modal__player     video box (position:relative anchor for close btn)
+     .video-modal__close      circle X button — top-right, outside the box
+     .video-modal__media      the <video> or <iframe> element
+     .video-modal__play-btn   play button overlaid on card image
+───────────────────────────────────────────── */
+
+/* Play button on card */
+.video-modal__play-btn {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  left: 50%;
+  padding: 0;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s ease;
+  z-index: 2;
+}
+
+.video-modal__play-btn:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.video-modal__play-btn svg {
+  display: block;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* Modal overlay */
+.video-modal {
+  inset: 0;
+  position: fixed;
+  z-index: 9999;
+}
+
+.video-modal[hidden] {
+  display: none;
+}
+
+/* Dark backdrop */
+.video-modal__backdrop {
+  background: rgba(0, 0, 0, 0.85);
+  inset: 0;
+  position: absolute;
+}
+
+/* Centering wrapper */
+.video-modal__content {
+  align-items: center;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 40px 24px;
+  pointer-events: none;
+  position: absolute;
+}
+
+/* Video box */
+.video-modal__player {
+  max-width: 960px;
+  pointer-events: all;
+  position: relative;
+  width: 100%;
+}
+
+/* Close button — white circle, sits outside top-right corner of video box */
+.video-modal__close {
+  background: #fff;
+  border: 0;
+  border-radius: 50%;
+  color: #1a1a2e;
+  cursor: pointer;
+  height: 40px;
+  padding: 8px;
+  position: absolute;
+  right: -16px;
+  top: -16px;
+  transition: background 0.2s ease;
+  width: 40px;
+  z-index: 1;
+}
+
+.video-modal__close:hover {
+  background: #e0e0e0;
+}
+
+.video-modal__close svg {
+  display: block;
+}
+
+/* The actual video / iframe */
+.video-modal__media {
+  aspect-ratio: 16 / 9;
+  display: block;
+  height: auto;
+  max-height: 80vh;
+  width: 100%;
+}

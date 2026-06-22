@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recognition Tabs – Preview</title>
+
+  <style>
+    /* ─── Design-token fallbacks (EDS provides these globally) ─── */
+    :root {
+      --corp-color-surface: #f5f5f7;
+      --corp-color-surface-secondary: #fff;
+      --corp-color-heading: #1a1a2e;
+      --corp-color-primary: #003087;
+      --corp-color-primary-hover: #00509e;
+      --corp-color-white: #fff;
+      --corp-color-white-1: #f0f0f5;
+      --corp-color-neutral-black: #1a1a1a;
+      --corp-color-neutral-black-3: #333;
+      --corp-color-blue-1: #003087;
+      --corp-color-overlay-black-60: rgba(0,0,0,0.6);
+      --corp-radius-sm: 8px;
+      --corp-space-xs: 6px;
+      --corp-space-sm: 8px;
+      --corp-space-md: 12px;
+      --corp-space-xl: 20px;
+      --corp-space-2xl: 32px;
+      --corp-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --corp-display-font-family: Georgia, serif;
+      --corp-type-mobile-tag-1-font-size: 11px;
+      --corp-type-mobile-tag-1-font-weight: 600;
+      --corp-type-mobile-tag-1-line-height: 1.4;
+      --corp-type-mobile-display-2-font-size: 28px;
+      --corp-type-mobile-display-2-font-weight: 700;
+      --corp-type-mobile-display-2-line-height: 1.2;
+      --corp-type-mobile-display-3-font-size: 24px;
+      --corp-type-mobile-display-5-line-height: 1.3;
+      --corp-type-mobile-body-sm-2-font-size: 13px;
+      --corp-type-mobile-body-sm-2-font-weight: 500;
+      --corp-type-mobile-body-sm-2-line-height: 1.4;
+      --corp-type-mobile-body-2-font-size: 14px;
+      --corp-type-mobile-body-2-font-weight: 400;
+      --corp-type-mobile-body-2-line-height: 1.5;
+      --corp-type-mobile-body-xs-font-size: 11px;
+      --corp-type-mobile-body-xs-font-weight: 500;
+      --corp-type-mobile-body-xs-line-height: 1.3;
+      --corp-type-mobile-heading-2-medium-font-size: 18px;
+      --corp-type-mobile-heading-2-medium-font-weight: 600;
+      --corp-type-mobile-heading-2-medium-line-height: 1.3;
+      --corp-type-tablet-heading-xl-font-size: 20px;
+      --corp-type-tablet-heading-xl-font-weight: 600;
+      --corp-type-tablet-heading-xl-line-height: 1.3;
+      --corp-type-tablet-display-font-size: 36px;
+      --corp-type-tablet-display-font-weight: 700;
+      --corp-type-tablet-display-line-height: 1.1;
+      --corp-type-tablet-body-2-font-size: 16px;
+      --corp-type-tablet-body-2-font-weight: 400;
+      --corp-type-tablet-body-2-line-height: 1.5;
+      --corp-type-tablet-body-8-line-height: 1.6;
+      --corp-type-tablet-body-lg-font-size: 18px;
+      --corp-type-tablet-body-lg-line-height: 1.4;
+      --corp-type-desktop-heading-xxl-font-size: 48px;
+      --corp-type-desktop-heading-xxl-font-weight: 700;
+      --corp-type-desktop-heading-xxl-line-height: 1.1;
+      --corp-type-desktop-heading-4-font-size: 20px;
+      --corp-type-desktop-heading-4-font-weight: 600;
+      --corp-type-desktop-heading-4-line-height: 1.3;
+      --corp-type-desktop-body-2-font-size: 16px;
+      --corp-type-desktop-body-2-font-weight: 400;
+      --corp-type-desktop-body-2-line-height: 1.6;
+      --corp-type-desktop-body-4-font-size: 14px;
+      --corp-type-desktop-body-4-line-height: 1.5;
+      --corp-type-desktop-body-5-font-size: 13px;
+      --corp-type-desktop-body-5-font-weight: 500;
+      --corp-type-desktop-body-lg-line-height: 1.4;
+      --corp-type-desktop-body-xs-line-height: 1.3;
+      --secondary-gray-200: #e0e0e0;
+      --container-margin: 20px;
+      --fw-700: 700;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--corp-font-family); background: #eee; }
+
+    /* ─── Splide minimal shim (carousel is replaced by simple grid in preview) ─── */
+    .splide__track { overflow: hidden; }
+    .splide__list  { display: flex; gap: 15px; }
+    .splide__slide { flex: 0 0 calc(33.333% - 10px); min-width: 0; }
+    @media (max-width: 1023px) { .splide__slide { flex: 0 0 calc(50% - 8px); } }
+    @media (max-width: 767px)  { .splide__slide { flex: 0 0 calc(100% - 44px); } }
+
+    /* sr-only utility */
+    .sr-only {
+      clip: rect(0,0,0,0); clip-path: inset(50%); height: 1px; overflow: hidden;
+      position: absolute; white-space: nowrap; width: 1px;
+    }
+
+    /* block block wrapper */
+    .block { display: block; }
+  </style>
+
+  <!-- Block's own CSS -->
+  <link rel="stylesheet" href="recognition-tabs.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     VARIATION 1 – Default / Training Page
+═══════════════════════════════════════════════════════════ -->
+<h2 style="padding:24px 20px 8px;font-family:sans-serif;color:#555;font-size:13px;text-transform:uppercase;letter-spacing:1px;">Variation: Default (Training Page)</h2>
+
+<div class="recognition-tabs block" id="rt-training">
+  <!-- Row 0: subtitle -->
+  <div><div><p>Our Achievements</p></div></div>
+  <!-- Row 1: title -->
+  <div><div><h2>Recognition &amp; <strong>Awards</strong></h2></div></div>
+  <!-- Row 2: description -->
+  <div><div><p>Celebrating excellence across our training programmes and global workforce initiatives.</p></div></div>
+  <!-- Row 3: tab list -->
+  <div><div>
+    <ul>
+      <li>Training</li>
+      <li>Safety</li>
+      <li>Innovation</li>
+    </ul>
+  </div></div>
+
+  <!-- Cards — Training tab (image only) -->
+  <div>
+    <div>
+      <picture>
+        <img src="https://picsum.photos/seed/train1/600/400" alt="Award ceremony" width="600" height="400" />
+      </picture>
+    </div>
+    <div><p>Best Training Programme 2024</p></div>
+    <div>Training</div>
+    <!-- No video -->
+  </div>
+
+  <div>
+    <div>
+      <picture>
+        <img src="https://picsum.photos/seed/train2/600/400" alt="Classroom" width="600" height="400" />
+      </picture>
+    </div>
+    <div><p>Excellence in Learning</p></div>
+    <div>Training</div>
+    <!-- Video card — EDS delivers the video URL as a plain link or text -->
+    <div><a href="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">Video</a></div>
+  </div>
+
+  <div>
+    <div>
+      <picture>
+        <img src="https://picsum.photos/seed/train3/600/400" alt="Digital learning" width="600" height="400" />
+      </picture>
+    </div>
+    <div><p>Digital Skills Award</p></div>
+    <div>Training</div>
+    <div><a href="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4">Video</a></div>
+  </div>
+
+  <div>
+    <div>
+      <picture>
+        <img src="https://picsum.photos/seed/train4/600/400" alt="Graduation" width="600" height="400" />
+      </picture>
+    </div>
+    <div><p>Top Graduate Programme</p></div>
+    <div>Training</div>
+  </div>
+
+  <!-- Cards — Safety tab -->
+  <div>
+    <div>
+      <picture>
+        <img src="https://picsum.photos/seed/safe1/600/400" alt="Safety award" width="600" height="400" />
+      </picture>
+    </div>
+    <div><p>Zero Incident Achievement</p></div>
+    <div>Safety</div>
+    <div><a href="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4">Video</a></div>
+  </div>
+
+  <div>
+    <div>
+      <picture>
+        <img src="https://picsum.photos/seed/safe2/600/400" alt="Safety team" width="600" height="400" />
+      </picture>
+    </div>
+    <div><p>Best Safety Culture</p></div>
+    <div>Safety</div>
+  </div>
+
+  <!-- Cards — Innovation tab -->
+  <div>
+    <div>
+      <picture>
+        <img src="https://picsum.photos/seed/innov1/600/400" alt="Innovation award" width="600" height="400" />
+      </picture>
+    </div>
+    <div><p>Technology Leader 2024</p></div>
+    <div>Innovation</div>
+    <div><a href="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4">Video</a></div>
+  </div>
+
+  <div>
+    <div>
+      <picture>
+        <img src="https://picsum.photos/seed/innov2/600/400" alt="Innovation lab" width="600" height="400" />
+      </picture>
+    </div>
+    <div><p>Future Mobility Award</p></div>
+    <div>Innovation</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     VARIATION 2 – Safety Page
+═══════════════════════════════════════════════════════════ -->
+<h2 style="padding:40px 20px 8px;font-family:sans-serif;color:#555;font-size:13px;text-transform:uppercase;letter-spacing:1px;">Variation: Safety Page</h2>
+
+<div class="recognition-tabs safety-page block" id="rt-safety">
+  <div><div><p>Safety First</p></div></div>
+  <div><div><h2>Safety <strong>Technologies</strong></h2></div></div>
+  <div><div><p>Our commitment to workplace safety is recognised globally through industry-leading initiatives and cutting-edge technologies.</p></div></div>
+  <div><div>
+    <ul>
+      <li>Active</li>
+      <li>Passive</li>
+      <li>Digital</li>
+    </ul>
+  </div></div>
+
+  <!-- Active -->
+  <div>
+    <div><picture><img src="https://picsum.photos/seed/act1/600/400" alt="Active safety" width="600" height="400" /></picture></div>
+    <div><p>Collision Avoidance System</p><p>Industry-leading AI-powered braking.</p></div>
+    <div>Active</div>
+    <div><a href="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">Video</a></div>
+  </div>
+
+  <div>
+    <div><picture><img src="https://picsum.photos/seed/act2/600/400" alt="Lane keep" width="600" height="400" /></picture></div>
+    <div><p>Lane Keep Assist</p><p>Smart steering corrections at highway speeds.</p></div>
+    <div>Active</div>
+  </div>
+
+  <div>
+    <div><picture><img src="https://picsum.photos/seed/act3/600/400" alt="Pedestrian detect" width="600" height="400" /></picture></div>
+    <div><p>Pedestrian Detection</p><p>Real-time object recognition and automatic braking.</p></div>
+    <div>Active</div>
+    <div><a href="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4">Video</a></div>
+  </div>
+
+  <!-- Passive -->
+  <div>
+    <div><picture><img src="https://picsum.photos/seed/pass1/600/400" alt="Airbags" width="600" height="400" /></picture></div>
+    <div><p>Advanced Airbag System</p><p>Multi-stage airbags for all occupant sizes.</p></div>
+    <div>Passive</div>
+    <div><a href="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4">Video</a></div>
+  </div>
+
+  <div>
+    <div><picture><img src="https://picsum.photos/seed/pass2/600/400" alt="Seatbelt" width="600" height="400" /></picture></div>
+    <div><p>Pre-tensioning Seatbelts</p><p>Instant tensioning on impact detection.</p></div>
+    <div>Passive</div>
+  </div>
+
+  <!-- Digital -->
+  <div>
+    <div><picture><img src="https://picsum.photos/seed/dig1/600/400" alt="Digital cockpit" width="600" height="400" /></picture></div>
+    <div><p>360° Camera Suite</p><p>Full surround visibility at low speeds.</p></div>
+    <div>Digital</div>
+    <div><a href="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4">Video</a></div>
+  </div>
+
+  <div>
+    <div><picture><img src="https://picsum.photos/seed/dig2/600/400" alt="HUD" width="600" height="400" /></picture></div>
+    <div><p>Heads-Up Display</p><p>Critical info projected onto the windscreen.</p></div>
+    <div>Digital</div>
+  </div>
+</div>
+
+<script type="module">
+  // ─── Minimal EDS stub so the block JS can import without errors ───
+  window.moveInstrumentation = () => {};
+
+  // Intercept the block's import of scripts.js
+  const origImport = Function.prototype.constructor;
+
+  // ─── Splide shim: make `new Splide(el, opts).mount()` a no-op
+  //     (the preview uses CSS flex instead of the real carousel)
+  window.Splide = class SplideShim {
+    constructor(el) { this._el = el; }
+    on()     { return this; }
+    mount()  {
+      // Flatten slide list so all cards are visible in preview
+      const list = this._el.querySelector('.splide__list');
+      if (list) {
+        list.style.flexWrap = 'wrap';
+      }
+      return this;
+    }
+    go()     {}
+    destroy(){}
+  };
+  window.DELAYED_PHASE = true;
+
+  // Patch moveInstrumentation export for ESM
+  const scriptSrc = `
+    export function moveInstrumentation() {}
+  `;
+  const blob = new Blob([scriptSrc], { type: 'application/javascript' });
+  const scriptUrl = URL.createObjectURL(blob);
+
+  // Use an import map to redirect scripts.js
+  const map = document.createElement('script');
+  map.type = 'importmap';
+  map.textContent = JSON.stringify({
+    imports: {
+      '../../scripts/scripts.js': scriptUrl,
+    }
+  });
+  document.head.prepend(map);
+</script>
+
+<script type="module">
+  // Load and run the real block JS
+  import decorate from './recognition-tabs.js';
+
+  document.querySelectorAll('.recognition-tabs.block').forEach(block => {
+    decorate(block);
+  });
+</script>
+
+</body>
+</html>

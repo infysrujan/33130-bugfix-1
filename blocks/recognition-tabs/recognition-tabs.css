@@ -1,0 +1,762 @@
+/* Recognition tabs — tabbed Splide carousels filtered by card category (lowercase match) */
+.recognition-tabs {
+  --recognition-tabs-gap: 16px;
+  --recognition-tabs-media-radius: var(--corp-radius-sm, 8px);
+
+  background: var(--corp-color-surface);
+  padding-bottom: 87px;
+  overflow: hidden;
+  padding-left: var(--container-margin);
+
+  @media (width >= 768px) {
+    padding-bottom: 95px;
+  }
+
+  @media (width >= 1200px) {
+    padding-bottom: 170px;
+  }
+
+  .recognition-tabs__inner {
+    width: 100%;
+  }
+
+  .recognition-tabs__header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 21px;
+    text-align: center;
+    padding-right: var(--container-margin);
+
+    @media (width >= 768px) {
+      margin-bottom: 16px;
+    }
+
+    @media (width >= 1200px) {
+      margin-bottom: 32px;
+    }
+  }
+
+  .recognition-tabs__subtitle {
+    margin-bottom: 16px;
+    * {
+      color: color-mix(in srgb, var(--corp-color-heading) 40%, transparent);
+      font-family: var(--corp-font-family);
+      font-size: var(--corp-type-mobile-tag-1-font-size);
+      font-weight: var(--corp-type-mobile-tag-1-font-weight);
+      line-height: var(--corp-type-mobile-tag-1-line-height);
+      text-transform: uppercase;
+    }
+
+    @media (width >= 768px) {
+      * {
+        font-size: var(--corp-type-tablet-heading-xl-font-size);
+        font-weight: var(--corp-type-tablet-heading-xl-font-weight);
+        line-height: var(--corp-type-tablet-heading-xl-line-height);
+        text-transform: capitalize;
+      }
+    }
+  }
+
+  .recognition-tabs__title {
+    * {
+      color: var(--corp-color-heading);
+      font-family: var(--corp-display-font-family);
+      font-size: var(--corp-type-mobile-display-2-font-size);
+      font-weight: var(--corp-type-mobile-display-2-font-weight);
+      line-height: var(--corp-type-mobile-display-2-line-height);
+    }
+
+    strong {
+      color: var(--corp-color-primary);
+    }
+
+    @media (width >= 768px) {
+      * {
+        font-size: var(--corp-type-tablet-display-font-size);
+        font-weight: var(--corp-type-tablet-display-font-weight);
+        line-height: var(--corp-type-tablet-display-line-height);
+      }
+    }
+
+    @media (width >= 1024px) {
+      * {
+        font-size: var(--corp-type-desktop-heading-xxl-font-size);
+        font-weight: var(--corp-type-desktop-heading-xxl-font-weight);
+        line-height: var(--corp-type-desktop-heading-xxl-line-height);
+      }
+    }
+  }
+
+  .recognition-tabs__tabs {
+    border-radius: 13.427px;
+    background: rgb(233 233 233 / 50%);
+    backdrop-filter: blur(20px);
+    width: calc(100% - 20px);
+    margin-bottom: 32px;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+
+    @media (width >= 768px) {
+      width: max-content;
+      margin: 0 auto 32px;
+    }
+
+    @media (width >= 1200px) {
+      margin-bottom: 50px;
+    }
+  }
+
+  .recognition-tabs__tab {
+    background: transparent;
+    border: 0;
+    padding: 17px;
+    border-radius: 9px;
+    color: var(--corp-color-heading);
+    cursor: pointer;
+    font-family: var(--corp-font-family);
+    font-size: var(--corp-type-mobile-body-sm-2-font-size);
+    font-weight: var(--corp-type-mobile-body-sm-2-font-weight);
+    line-height: var(--corp-type-mobile-body-sm-2-line-height);
+
+    &[aria-selected='true'] {
+      background: var(--corp-color-primary);
+      color: var(--corp-color-white);
+    }
+
+    @media (width >= 768px) {
+      font-size: var(--corp-type-tablet-body-2-font-size);
+      font-weight: var(--corp-type-tablet-body-2-font-weight);
+      line-height: var(--corp-type-tablet-body-2-line-height);
+    }
+
+    @media (width >= 1200px) {
+      line-height: var(--corp-type-desktop-body-xs-line-height);
+    }
+  }
+
+  .recognition-tabs__panel {
+    position: relative;
+  }
+
+  .recognition-tabs__carousel {
+    position: relative;
+  }
+
+  .recognition-tabs__splide {
+    .splide__pagination {
+      display: flex;
+      gap: var(--corp-space-sm, 8px);
+      justify-content: center;
+      list-style: none;
+      margin: 20px 0 0;
+      padding: 0;
+      position: static;
+
+      @media (width >= 768px) {
+        margin-top: 24px;
+      }
+    }
+
+    .splide__pagination__page {
+      background: color-mix(in srgb, var(--corp-color-heading) 25%, transparent);
+      border: 0;
+      border-radius: 100px;
+      height: 8px;
+      opacity: 1;
+      padding: 0;
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+      width: 8px;
+
+      &.is-active {
+        background: var(--corp-color-primary);
+        transform: scale(1.15);
+      }
+    }
+  }
+
+  .recognition-tabs__slide {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .recognition-tabs__card {
+    width: 100%;
+  }
+
+  .recognition-tabs__media {
+    border-radius: var(--recognition-tabs-media-radius);
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .recognition-tabs__picture {
+    display: block;
+    margin: 0;
+    width: 100%;
+
+    img {
+      display: block;
+      height: auto;
+      object-fit: cover;
+      width: 100%;
+    }
+  }
+
+  .recognition-tabs__play-btn {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    left: 50%;
+    padding: 0;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s ease;
+    z-index: 2;
+
+    &:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    svg {
+      display: block;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+    }
+  }
+
+  .recognition-tabs__card-title {
+    position: absolute;
+    bottom: 20px;
+    left: 14px;
+    right: 14px;
+
+    * {
+      color: var(--corp-color-white);
+      font-family: var(--corp-font-family);
+      font-size: var(--corp-type-mobile-body-2-font-size);
+      font-weight: var(--corp-type-mobile-body-2-font-weight);
+      line-height: var(--corp-type-mobile-body-2-line-height);
+    }
+
+    @media (width >= 768px) {
+      bottom: 18px;
+      left: 18px;
+      right: 18px;
+      * {
+        line-height: var(--corp-type-tablet-body-lg-line-height);
+      }
+    }
+
+    @media (width >= 1200px) {
+      bottom: 24px;
+      left: 24px;
+      right: 24px;
+      * {
+        font-size: var(--corp-type-desktop-heading-4-font-size);
+        font-weight: var(--corp-type-desktop-heading-4-font-weight);
+        line-height: var(--corp-type-desktop-heading-4-line-height);
+      }
+    }
+  }
+
+  .recognition-tabs__arrows {
+    display: none;
+    gap: 24px;
+    justify-content: center;
+    position: absolute;
+    right: var(--container-margin);
+
+    @media (width >= 768px) {
+      display: flex;
+      top: -92px;
+    }
+
+    @media (width >= 1200px) {
+      top: -110px;
+    }
+
+    .corp-arrow-btn {
+      border: 0;
+      padding: 0;
+      position: relative;
+
+      &:hover {
+        background: transparent;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: url(/corporate/icons/arrow-left-blue.svg) no-repeat center / contain;
+        width: 30px;
+        height: 30px;
+      }
+
+      &.recognition-tabs__nav-btn--next::before {
+        transform: translate(-50%, -50%) rotate(180deg);
+      }
+    }
+  }
+
+  .recognition-tabs__arrows--hidden {
+    display: none;
+  }
+
+  .recognition-tabs__nav-btn[disabled],
+  .recognition-tabs__nav-btn.is-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  /* safety page */
+  &.safety-page {
+    padding: 112px 0 74px;
+
+    .recognition-tabs__inner {
+      /* box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto; */
+      padding-left: var(--container-margin);
+      padding-right: var(--container-margin);
+      width: 100%;
+    }
+
+    .recognition-tabs__intro-row {
+      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      width: 100%;
+    }
+
+    .recognition-tabs__description-row,
+    .recognition-tabs__panel-row {
+      align-items: start;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .recognition-tabs__header {
+      margin: 0;
+      padding: 0;
+      text-align: left;
+    }
+
+    .recognition-tabs__subtitle {
+      display: none;
+    }
+
+    .recognition-tabs__title {
+      margin: 0;
+
+      * {
+        color: var(--corp-color-primary);
+        font-size: var(--corp-type-mobile-display-3-font-size);
+        font-weight: var(--corp-type-mobile-display-2-font-weight);
+        letter-spacing: -0.56px;
+        line-height: var(--corp-type-mobile-display-5-line-height);
+        margin: 0;
+      }
+
+      strong {
+        color: var(--corp-color-primary-hover);
+      }
+    }
+
+    .recognition-tabs__tabs {
+      align-self: start;
+      background: var(--corp-color-white-1);
+      border-radius: 14px;
+      box-sizing: border-box;
+      display: grid;
+      gap: var(--corp-space-xs);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin: 24px 0 32px;
+      padding: var(--corp-space-xs);
+      width: 100%;
+    }
+
+    .recognition-tabs__tab {
+      align-items: center;
+      background: transparent;
+      border: 0;
+      border-radius: 11px;
+      color: var(--corp-color-primary);
+      cursor: pointer;
+      display: flex;
+      font-size: var(--corp-type-mobile-body-xs-font-size);
+      font-weight: var(--corp-type-mobile-body-xs-font-weight);
+      justify-content: center;
+      line-height: var(--corp-type-mobile-body-xs-line-height);
+      padding: 12px 48px;
+      text-transform: uppercase;
+
+      &[aria-selected='true'] {
+        background: var(--corp-color-primary);
+        border-radius: 10px;
+        color: var(--corp-color-surface-secondary);
+        gap: 10px;
+      }
+    }
+
+    .recognition-tabs__description {
+      margin: 0 0 var(--corp-space-2xl);
+
+      * {
+        color: var(--corp-color-neutral-black);
+        font-size: var(--corp-type-mobile-body-2-font-size);
+        font-weight: var(--corp-type-mobile-body-2-font-weight);
+        letter-spacing: -0.14px;
+        line-height: var(--corp-type-mobile-body-2-line-height);
+        margin: 0;
+      }
+
+      strong {
+        font-weight: var(--fw-700);
+      }
+    }
+
+    .recognition-tabs__panel,
+    .recognition-tabs__carousel {
+      position: relative;
+    }
+
+    .recognition-tabs__splide {
+      overflow: visible;
+
+      .splide__pagination {
+        align-items: center;
+        display: flex;
+        gap: var(--corp-space-sm);
+        justify-content: center;
+        list-style: none;
+        margin: var(--corp-space-xl) 0 0;
+        padding: 0;
+        position: static;
+      }
+
+      .splide__pagination__page {
+        background: #d2d5ef;
+        border: 0;
+        border-radius: 50%;
+        height: 10px;
+        opacity: 1;
+        padding: 0;
+        width: 10px;
+
+        &.is-active {
+          background: var(--corp-color-blue-1);
+          transform: none;
+        }
+      }
+    }
+
+    .recognition-tabs__slide {
+      align-items: flex-start;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .recognition-tabs__card,
+    .recognition-tabs__media,
+    .recognition-tabs__picture {
+      width: 100%;
+    }
+
+    .recognition-tabs__media {
+      border-radius: var(--corp-radius-sm);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .recognition-tabs__picture {
+      display: block;
+      margin: 0;
+
+      img {
+        display: block;
+        height: auto;
+        object-fit: cover;
+        width: 100%;
+      }
+    }
+
+    .recognition-tabs__card-title {
+      margin-top: var(--corp-space-xl);
+      position: static;
+
+      * {
+        color: var(--corp-color-overlay-black-60);
+        font-size: var(--corp-type-mobile-body-2-font-size);
+        font-weight: var(--corp-type-mobile-body-2-font-weight);
+        letter-spacing: -0.14px;
+        line-height: var(--corp-type-mobile-body-2-line-height);
+        margin: 0;
+      }
+
+      *:first-child {
+        color: var(--corp-color-neutral-black);
+        font-size: var(--corp-type-mobile-heading-2-medium-font-size);
+        font-weight: var(--corp-type-mobile-heading-2-medium-font-weight);
+        line-height: var(--corp-type-mobile-heading-2-medium-line-height);
+        margin-bottom: var(--corp-space-md);
+        opacity: 1;
+      }
+    }
+
+    .recognition-tabs__arrows {
+      display: none;
+    }
+
+    @media (width >= 768px) {
+      padding: 17px 0 70px;
+
+      .recognition-tabs__intro-row {
+        flex-direction: row;
+        justify-content: space-between;
+        margin-bottom: 0;
+      }
+
+      .recognition-tabs__tabs--safety {
+        margin: 0 0 0 auto;
+        flex: 0 0 38%;
+      }
+
+      .recognition-tabs__title {
+        * {
+          color: var(--corp-color-neutral-black);
+          letter-spacing: -0.42px;
+        }
+
+        strong {
+          color: var(--corp-color-blue-1);
+          font-weight: inherit;
+        }
+      }
+
+      .recognition-tabs__description {
+        margin: 8px 0 38px;
+
+        * {
+          color: var(--corp-color-neutral-black-3);
+          font-size: var(--corp-type-tablet-body-2-font-size);
+          font-weight: var(--corp-type-tablet-body-2-font-weight);
+          letter-spacing: -0.36px;
+          line-height: var(--corp-type-tablet-body-8-line-height);
+        }
+      }
+      .recognition-tabs__tab {
+        padding: 12px 48px;
+        gap: 10px;
+        font-size: var(--corp-type-desktop-body-5-font-size);
+        font-weight: var(--corp-type-desktop-body-5-font-weight);
+        line-height: var(--corp-type-desktop-body-lg-line-height);
+
+        &[aria-selected='true'] {
+          color: var(--corp-color-white);
+        }
+      }
+
+      .recognition-tabs__card-title {
+        margin-top: 14px;
+
+        * {
+          color: var(--corp-color-neutral-black-3);
+          font-size: var(--corp-type-tablet-body-2-font-size);
+          font-weight: var(--corp-type-tablet-body-2-font-weight);
+          letter-spacing: -0.36px;
+          line-height: var(--corp-type-tablet-body-8-line-height);
+          opacity: 0.8;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        *:first-child {
+          color: var(--corp-color-neutral-black-3);
+          font-size: var(--corp-type-tablet-body-lg-font-size);
+          line-height: var(--corp-type-tablet-body-lg-line-height);
+        }
+      }
+
+      .recognition-tabs__arrows {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 17px;
+        position: static;
+
+        .corp-arrow-btn {
+          background: var(--corp-color-blue-1);
+          border: 0;
+          border-radius: 50%;
+          height: 32px;
+          padding: 0;
+          position: relative;
+          width: 32px;
+
+          &::before {
+            background: url('/corporate/icons/arrow-left-blue.svg') no-repeat center / contain;
+            content: '';
+            filter: brightness(0) invert(1);
+            height: 16px;
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+          }
+
+          &.recognition-tabs__nav-btn--next::before {
+            transform: translate(-50%, -50%) rotate(180deg);
+          }
+        }
+      }
+
+      .recognition-tabs__nav-btn[disabled],
+      .recognition-tabs__nav-btn.is-disabled {
+        background: var(--secondary-gray-200);
+        opacity: 1;
+        pointer-events: none;
+      }
+    }
+
+    @media (width >= 1200px) {
+      padding: 17px 0 130px;
+
+
+      .recognition-tabs__title * {
+        font-size: var(--corp-type-desktop-heading-xxl-font-size);
+        font-weight: var(--corp-type-desktop-heading-xxl-font-weight);
+        line-height: var(--corp-type-desktop-heading-xxl-line-height);
+        letter-spacing: -1.5px;
+      }
+
+      .recognition-tabs__description {
+        margin: 8px 0 64px;
+
+        * {
+          font-size: var(--corp-type-desktop-body-2-font-size);
+          font-weight: var(--corp-type-desktop-body-2-font-weight);
+          line-height: var(--corp-type-desktop-body-2-line-height);
+          letter-spacing: 0.16px;
+        }
+      }
+
+      .recognition-tabs__card-title {
+        * {
+          font-size: var(--corp-type-desktop-body-4-font-size);
+          line-height: var(--corp-type-desktop-body-4-line-height);
+        }
+
+        *:first-child {
+          font-size: var(--corp-type-desktop-heading-4-font-size);
+          letter-spacing: -0.4px;
+        }
+      }
+
+      .recognition-tabs__arrows {
+        gap: var(--corp-space-xl);
+        margin: 0;
+        position: absolute;
+        right: 0;
+        top: -54px;
+
+        .corp-arrow-btn {
+          background: transparent;
+          height: 32px;
+          width: 32px;
+
+          &::before {
+            filter: none;
+            height: 16px;
+            width: 16px;
+          }
+        }
+      }
+
+      .recognition-tabs__nav-btn[disabled],
+      .recognition-tabs__nav-btn.is-disabled {
+        background: transparent;
+        opacity: 0.35;
+      }
+    }
+  }
+}
+
+/* Video modal — global (not scoped to .recognition-tabs) */
+.recognition-tabs__video-modal {
+  inset: 0;
+  position: fixed;
+  z-index: 9999;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.recognition-tabs__video-modal-backdrop {
+  background: rgba(0, 0, 0, 0.85);
+  inset: 0;
+  position: absolute;
+}
+
+.recognition-tabs__video-modal-content {
+  align-items: center;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 40px 24px;
+  pointer-events: none;
+  position: absolute;
+}
+
+.recognition-tabs__video-modal-player {
+  max-width: 960px;
+  pointer-events: all;
+  position: relative;
+  width: 100%;
+}
+
+.recognition-tabs__video-modal-close {
+  background: #fff;
+  border: 0;
+  border-radius: 50%;
+  color: #1a1a2e;
+  cursor: pointer;
+  height: 40px;
+  padding: 8px;
+  pointer-events: all;
+  position: absolute;
+  right: -16px;
+  top: -16px;
+  transition: background 0.2s ease, color 0.2s ease;
+  width: 40px;
+  z-index: 1;
+
+  &:hover {
+    background: #e0e0e0;
+  }
+
+  svg {
+    display: block;
+  }
+}
+
+.recognition-tabs__video-player {
+  aspect-ratio: 16 / 9;
+  display: block;
+  height: auto;
+  max-height: 80vh;
+  pointer-events: all;
+  width: 100%;
+}
