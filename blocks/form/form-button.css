@@ -1,14 +1,14 @@
 /* button styles for forms  */
 main .form form .panel-wrapper :has( > .button-wrapper) {
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-    align-items: center;
-    gap:1.875rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.875rem;
 }
 
 main .form form .panel-wrapper .submit-wrapper {
-    width: auto;    
+  width: auto;
 }
 
 main .form button {

@@ -20,12 +20,6 @@ main .section.form-container .form form .field-wrapper.field-invalid :is(input:n
   border-color: var(--bbl-color-red-130);
 }
 
-main .section.form-container .form form :is(.radio-wrapper, .checkbox-wrapper).field-invalid>input,
-main .section.form-container .form form :is(.radio-group-wrapper, .checkbox-group-wrapper).field-invalid :is(input[type='radio'], input[type='checkbox']) {
-  outline: 0.0625rem solid var(--bbl-color-red-130);
-  outline-offset: 0.0625rem;
-}
-
 main .section.form-container .form form .field-invalid :is(.field-validation-error, .field-description) {
   color: var(--bbl-color-red-130);
   font-weight: 400;
@@ -74,17 +68,17 @@ main .section.form-container .form form fieldset.panel-wrapper:not(:has(.panel-w
   gap: var(--bbl-space-200);
 }
 
-main .section.form-container .form form fieldset.panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) > .button-wrapper {
+main .section.form-container .form form fieldset.panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper)>.button-wrapper {
   width: auto;
   margin: 0;
 }
 
-main .section.form-container .form .panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) > .col-6:first-child :is(.button, button) {
+main .section.form-container .form .panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper)>.col-6:first-child :is(.button, button) {
   margin-left: auto;
   margin-right: var(--bbl-space-200);
 }
 
-main .section.form-container .form .panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) > .col-6:last-child :is(.button, button) {
+main .section.form-container .form .panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper)>.col-6:last-child :is(.button, button) {
   margin-left: var(--bbl-space-200);
   margin-right: auto;
 }
@@ -95,7 +89,7 @@ main .section.form-container .form form .radio-group-wrapper:not(.radio-tabs, .c
   margin-left: 0;
 }
 
-main .section.form-container .form form .radio-group-wrapper:not(.radio-tabs, .cards) > .radio-wrapper {
+main .section.form-container .form form .radio-group-wrapper:not(.radio-tabs, .cards)>.radio-wrapper {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -137,7 +131,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs {
 
 /* Removed specific field alignments */
 
-main .section.form-container .form form .radio-group-wrapper.radio-tabs > legend.field-label {
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>legend.field-label {
   display: block;
   flex: 0 0 100%;
   width: 100%;
@@ -153,7 +147,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > legend
   cursor: default;
 }
 
-main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper {
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper {
   position: relative;
   display: flex;
   flex: 1 1 0;
@@ -170,7 +164,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio
   gap: 0;
 }
 
-main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper input[type='radio'] {
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input[type='radio'] {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -185,20 +179,20 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio
   cursor: pointer;
 }
 
-main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper input[type='radio']:checked {
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input[type='radio']:checked {
   background-color: var(--bbl-color-blue-145);
 }
 
-main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper:first-of-type input[type='radio'] {
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:first-of-type input[type='radio'] {
   border-left: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: 0.4375rem 0 0 0.4375rem;
 }
 
-main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper:last-of-type input[type='radio'] {
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:last-of-type input[type='radio'] {
   border-radius: 0 0.4375rem 0.4375rem 0;
 }
 
-main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper label.field-label {
+main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
   position: relative;
   z-index: 1;
   display: flex;
@@ -218,7 +212,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio
   background: transparent;
 }
 
-main .section.form-container .form form .radio-group-wrapper.radio-tabs.field-invalid > .radio-wrapper input[type='radio'] {
+main .section.form-container .form form .radio-group-wrapper.radio-tabs.field-invalid>.radio-wrapper input[type='radio'] {
   border-color: var(--bbl-color-orange-130);
 }
 
@@ -242,45 +236,45 @@ main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbo
   padding-left: 0;
 }
 
-main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards) > :is(.radio-wrapper, .checkbox-wrapper) {
+main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards)> :is(.radio-wrapper, .checkbox-wrapper) {
   min-width: 11.25rem;
   max-width: 18.75rem;
 }
 
-main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards) > :is(.radio-wrapper, .checkbox-wrapper) > label {
+main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards)> :is(.radio-wrapper, .checkbox-wrapper)>label {
   gap: var(--bbl-space-100);
   border-width: 0.0625rem;
 }
 
-main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards) > :is(.radio-wrapper, .checkbox-wrapper) > label:hover {
+main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards)> :is(.radio-wrapper, .checkbox-wrapper)>label:hover {
   border-color: var(--bbl-color-grey-150);
   transform: translateY(-0.0625rem);
 }
 
-main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards) > :is(.radio-wrapper, .checkbox-wrapper) > input:checked ~ label {
+main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards)> :is(.radio-wrapper, .checkbox-wrapper)>input:checked~label {
   border-width: 0.0625rem;
 }
 
-main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards) > :is(.radio-wrapper, .checkbox-wrapper) > input:checked ~ label::after {
+main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards)> :is(.radio-wrapper, .checkbox-wrapper)>input:checked~label::after {
   width: var(--bbl-space-100);
   height: var(--bbl-space-100);
 }
 
-main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards) > :is(.radio-wrapper, .checkbox-wrapper) > input:focus ~ label {
+main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards)> :is(.radio-wrapper, .checkbox-wrapper)>input:focus~label {
   box-shadow: 0 0 0 0.0625rem var(--button-primary-color);
 }
 
-main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards) > :is(.radio-wrapper, .checkbox-wrapper) > label > img {
+main .section.form-container .form form :is(.radio-group-wrapper.cards, .checkbox-group-wrapper.cards, fieldset.cards)> :is(.radio-wrapper, .checkbox-wrapper)>label>img {
   max-width: 1.125rem;
   max-height: 1.125rem;
 }
 
-@media (width >= 64rem) {
+@media (width >=64rem) {
   main .section.form-container .form form .radio-group-wrapper.radio-tabs {
     margin-bottom: 0;
   }
 
-  main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper label.field-label {
+  main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
     font-size: var(--form-font-size-xs);
     line-height: var(--bbl-line-height-b1-desktop);
   }
@@ -316,8 +310,8 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper .ch
 
 main .section.form-container .form form .checkbox-group-wrapper .checkbox-wrapper input[type='checkbox'] {
   flex-shrink: 0;
-  width: var(--bbl-space-200);
-  height: var(--bbl-space-200);
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
   cursor: pointer;
   margin: 0.1875rem var(--bbl-space-100) 0.1875rem var(--bbl-space-050);
 }
@@ -337,7 +331,7 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is
   width: auto;
 }
 
-main .section.form-container .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval) {
+main .section.form-container .form form>fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) {
   position: relative;
   display: grid;
   grid-template-columns: 1fr;
@@ -347,7 +341,6 @@ main .section.form-container .form form > fieldset.panel-wrapper.field-wrapper:n
   max-width: 46.25rem;
   padding: 0;
 }
-
 
 main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is(> .field-description, .checkbox-wrapper .field-description):where(:not(.custom-fieldset-approval *)) {
   position: static;
@@ -364,7 +357,7 @@ main .section.form-container .form form .plain-text-wrapper p:last-child {
 }
 
 /* Apply pill style to the first paragraph of ALL plain-text-wrappers */
-main .section.form-container .form form > .plain-text-wrapper p:first-of-type {
+main .section.form-container .form form>.plain-text-wrapper p:first-of-type {
   font-size: 1rem;
   background-color: var(--bbl-color-grey-10);
   padding: var(--bbl-space-050) 0.625rem;
@@ -372,7 +365,7 @@ main .section.form-container .form form > .plain-text-wrapper p:first-of-type {
 }
 
 /* Reset the style for any plain-text-wrapper that comes AFTER another one, ensuring ONLY the first gets styled */
-main .section.form-container .form form > .plain-text-wrapper ~ .plain-text-wrapper p:first-of-type {
+main .section.form-container .form form>.plain-text-wrapper~.plain-text-wrapper p:first-of-type {
   font-size: inherit;
   background-color: transparent;
   padding: 0;
@@ -384,26 +377,48 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 9.6875rem;
+  min-width: 9.6875rem;
+  width: auto;
+  max-width: fit-content;
   height: 2.75rem;
+  margin: 0;
   padding: 0 var(--bbl-space-250);
   box-shadow: none;
   border-radius: 0.4375rem;
   gap: var(--bbl-space-100);
+  font-size: var(--bbl-font-size-h4-mobile);
+  font-weight: var(--form-title-font-weight);
+  line-height: var(--bbl-line-height-h4-mobile);
+  cursor: pointer;
+  appearance: none;
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) > .button-wrapper:first-of-type .button {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .field-submitcta .button {
   margin: var(--bbl-space-300) var(--bbl-space-200) var(--bbl-space-300) auto;
   border: 0.0417rem solid transparent;
   background-color: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(:has(.panel-wrapper)):has(.button-wrapper) > .button-wrapper:last-of-type .button {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.field-cancel, .field-reset) .button {
   margin: 0 var(--bbl-space-300) auto;
   border: 0.0417rem solid var(--bbl-color-active-blue);
   background-color: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled):hover,
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled):hover {
+  border-color: var(--bbl-color-active-blue);
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+}
+
+@media (width >=64rem) {
+  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
+    font-size: var(--form-font-size-xs);
+    line-height: var(--bbl-line-height-b1-desktop);
+  }
 }
 
 /* Radio group alignment (vertical) */
@@ -418,7 +433,7 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper:not(.h
 
 /* Invalid states border color override for inner panel wrapper inputs */
 main .section.form-container .form form fieldset.panel-wrapper:has(> .date-wrapper):has(.field-invalid)> :is(.date-wrapper, .drop-down-wrapper) :is(input, select),
-main .section.form-container .form form fieldset.panel-wrapper:has(> .drop-down-wrapper.col-6) > .drop-down-wrapper.col-6.field-invalid :is(input, select) {
+main .section.form-container .form form fieldset.panel-wrapper:has(> .drop-down-wrapper.col-6)>.drop-down-wrapper.col-6.field-invalid :is(input, select) {
   border-color: var(--bbl-color-red-130);
 }
 
@@ -442,11 +457,11 @@ main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.
   padding: 0 0 0 var(--bbl-space-500);
 }
 
-main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) > legend {
+main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval)>legend {
   display: none;
 }
 
-main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) > fieldset.panel-wrapper {
+main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval)>fieldset.panel-wrapper {
   display: contents;
 }
 
@@ -523,17 +538,17 @@ main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.
   margin: 0;
 }
 
-main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p {
+main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration>p>p {
   margin: 0;
   padding: 0;
   font-size: var(--bbl-font-size-h4-mobile);
 }
 
-main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p + p {
+main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration>p>p+p {
   margin-top: 0.625rem;
 }
 
-main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p:first-child {
+main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration>p>p:first-child {
   padding-right: var(--bbl-space-250);
 }
 
@@ -572,11 +587,9 @@ main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.
   order: unset;
 }
 
-main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval):is(
-  :has(.checkbox-wrapper.field-invalid),
+main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval):is( :has(.checkbox-wrapper.field-invalid),
   :has(input[type='checkbox']:user-invalid),
-  .field-invalid
-) .tnc-text-decoration {
+  .field-invalid) .tnc-text-decoration {
   border-color: var(--bbl-color-orange-130);
 }
 
@@ -587,8 +600,8 @@ main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.
   }
 }
 
-@media (width >= 64rem) {
-  main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p,
+@media (width >=64rem) {
+  main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration>p>p,
   main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration :is(p, p p) {
     font-size: var(--form-font-size-xs);
     line-height: 1.5625rem;

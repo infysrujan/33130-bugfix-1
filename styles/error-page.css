@@ -20,8 +20,19 @@
 }
 
 .error-page header .top-nav,
-.error-page header .main-nav-right{
+.error-page header .main-nav-right
+{
     display: none;
+}
+
+body.error-page .header-wrapper .hamburger-icon,
+body.error-page .header-wrapper .login {
+  display: none;
+}
+
+body.error-page .header .mobile-top-bar {
+  display:flex;
+  justify-content: center;
 }
 
 .error-page .footer-container .footer-row {
@@ -51,9 +62,9 @@
     margin: 0 auto;
     padding: 0;
     font-family: var(--bbl-font-family-medium);
-    font-size: 1.3125rem;
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 1.43rem;
+    font-size: var(--bbl-text-thumbnail-card-title-size);
+    font-weight: var(--bbl-text-thumbnail-card-title-weight);
+    line-height: var(--bbl-text-thumbnail-card-title-line-height);
 }
 
 .error-page main .default-content-wrapper :is(h2,h3,h4,h5,h6)::after {
@@ -75,8 +86,9 @@
 
 .error-page main .default-content-wrapper p:not(.button-container, :has(picture)) {
     margin: 0 auto;
-    font-size: var(--bbl-font-size-b2);
-    line-height: 1.125rem;
+    font-size: var(--bbl-body-b1-size);
+    line-height: var(--bbl-body-b1-line-height);
+    font-weight: var(--bbl-body-b1-weight);
     max-width: 100%;
     font-family: var(--bbl-font-family-primary);
     padding-bottom: 1.875rem;
@@ -90,45 +102,46 @@
 }
 
 .error-page main .default-content-wrapper > .button-container {
-    display: inline-flex;
-    margin: 0 0.2rem;
+    display: block;
+    width: 100%;
+    margin: 0 0 1rem;
 }
 
 .error-page main .default-content-wrapper .button-m.primary,
 .error-page main .default-content-wrapper .button-m.secondary {
+    display: block;
     padding: 0 1.25rem;
-    min-height: 2.75rem;
     width: auto;
     align-content: center;
     min-width: 8.3313rem;
+    margin: 0 auto;
 }
 
 .error-page main .default-content-wrapper .button-m.secondary {
-    border: 0.0625rem solid var(--bbl-color-active-blue);
+    margin-top: 0.625rem;
 }
 
 @media (width > 47.5rem) {
-  .error-page main .default-content-wrapper :is(h1,h2,h3,h4,h5,h6) {
-    font-size: 1.3125rem;
-  }
-
   .error-page main .default-content-wrapper p:not(.button-container, :has(picture)) {
     width: 65%;
     max-width: 37.5rem;
     margin: 0 auto;
   }
+
+  .error-page main .default-content-wrapper > .button-container {
+    display: inline-flex;
+    width: auto;
+  }
+
+  .error-page main .default-content-wrapper .button-m.primary,
+  .error-page main .default-content-wrapper .button-m.secondary {
+    display: inline-flex;
+    margin: 0;
+  }
 }
 
 @media (width > 64rem) {
-  .error-page main .default-content-wrapper :is(h1,h2,h3,h4,h5,h6) {
-    font-size: 1.5rem;
-    line-height: 1.625rem;
-  }
-
   .error-page main .default-content-wrapper p:not(.button-container, :has(picture)) {
-    font-size: var(--bbl-font-size-b1);
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 1.375rem;
     max-width: 100%;
     margin: 0 auto;
   }

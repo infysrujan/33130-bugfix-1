@@ -90,13 +90,13 @@ function buildYesNoContent({
   yesBtn.type = 'button';
   yesBtn.className = 'mfq-btn mfq-btn-yes';
   yesBtn.textContent = yesLabel || 'Yes';
-  yesBtn.addEventListener('click', onYes);
+  yesBtn.addEventListener('click', (e) => { e.stopPropagation(); onYes(); });
 
   const noBtn = document.createElement('button');
   noBtn.type = 'button';
   noBtn.className = 'mfq-btn mfq-btn-no';
   noBtn.textContent = noLabel || 'No';
-  noBtn.addEventListener('click', onNo);
+  noBtn.addEventListener('click', (e) => { e.stopPropagation(); onNo(); });
 
   actions.appendChild(yesBtn);
   actions.appendChild(noBtn);
@@ -278,6 +278,7 @@ export default async function decorate(block) {
       const card = e.target.closest('[data-risk-value]');
       if (!card) return;
       e.preventDefault();
+      e.stopPropagation();
       setSurveyAnswer('riskLevel', card.dataset.riskValue);
       openScreen2();
     });

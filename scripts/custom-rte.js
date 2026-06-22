@@ -19,8 +19,8 @@ export function decorateRteInlineImages(main) {
 
     const prev = markerP.previousElementSibling;
     const next = markerP.nextElementSibling;
-    const picture = prev?.querySelector('picture.rte-inline-image')
-      ?? next?.querySelector('picture.rte-inline-image')
+    const picture = (prev?.tagName === 'P' ? prev.querySelector('picture.rte-inline-image') : null)
+      ?? (next?.tagName === 'P' ? next.querySelector('picture.rte-inline-image') : null)
       ?? markerP.querySelector('picture.rte-inline-image');
 
     if (picture) {

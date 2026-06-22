@@ -118,16 +118,15 @@
 
 .mfq-risk-options .list-thumb-square {
   list-style: none;
-  margin: 0 0 var(--bbl-space-300);
   padding: 0;
   display: flex;
   flex-flow: row wrap;
-  gap: var(--bbl-space-100);
 }
 
 .mfq-risk-options .list-thumb-square li {
   width: 9.375rem;
   height: 9.375rem;
+  margin: 0 var(--bbl-space-050) 0.625rem;
 }
 
 /* Button fills the entire li cell — matches live site 150×150 card */
@@ -231,7 +230,9 @@
 
   .mfq-risk-options .list-thumb-square {
     flex-wrap: nowrap;
-    gap: var(--bbl-space-100);
+    width: 100%;
+    padding: 1.875rem 0;
+    margin-top: 0.625rem;
   }
 
   .mfq-risk-options .list-thumb-square li {
@@ -246,17 +247,16 @@
 /* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
 
 @media (width > 64rem) {
-  .mfq-risk-options .list-thumb-square {
-    gap: var(--bbl-space-200);
-  }
-
   .mfq-risk-options .list-thumb-square li {
-    width: 10.625rem;
-    height: 10.625rem;
-  }
+    width: 9.375rem;  
+    height: 9.375rem; 
+}
   
   .modal-body .mfq-title {
-    font-size:var(--bbl-font-size-h3-desktop);
     text-align: center;
-}
+    font-size: 3rem;        
+    line-height: 2.875rem;  
+    margin: 1.875rem 0;     
+    padding-bottom: 1.875rem; 
+  }
 }

@@ -18,7 +18,8 @@
                                 "Item 1",
                                 "Item 2"
                             ],
-                            "orientation": "horizontal"
+                            "orientation": "horizontal",
+                            "align": "left"
                         }
                     }
                 }
@@ -91,6 +92,27 @@
                         {
                             "name": "Vertically",
                             "value": "vertical"
+                        }
+                    ]
+                },
+                {
+                    "component": "radio-group",
+                    "label": "Alignment",
+                    "name": "align",
+                    "valueType": "string",
+                    "value": "left",
+                    "options": [
+                        {
+                            "name": "Left",
+                            "value": "left"
+                        },
+                        {
+                            "name": "Center",
+                            "value": "center"
+                        },
+                        {
+                            "name": "Right",
+                            "value": "right"
                         }
                     ]
                 },

@@ -137,7 +137,8 @@
   color: var(--bbl-color-black);
   margin: 0;
   position: relative;
-  padding-bottom: var(--bbl-space-150);
+  margin-bottom: var(--bbl-space-250);
+  padding-bottom: var(--bbl-space-250);
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .title-2::before {
@@ -152,7 +153,6 @@
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .desc {
   margin-bottom: var(--bbl-space-150);
-  padding-top: var(--bbl-space-250);
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .content-insert-card .text-default {
@@ -263,8 +263,6 @@
   line-height: 1.08;
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-medium);
-  margin-bottom: 0.625rem;
-  padding-bottom: var(--bbl-space-150);
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .content-insert-card .text-default {
@@ -276,6 +274,7 @@
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .desc {
   margin-bottom: var(--bbl-space-150);
 }
+
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .btn-primary {
   font-size: var(--bbl-body-b1-size);
@@ -296,8 +295,6 @@
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .title-2 {
   font-size: var(--bbl-heading-h5-size);
   line-height: 1.08;
-  margin-bottom: 0.625rem;
-  padding-bottom: 0.9375rem;
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-medium);
 }

@@ -66,14 +66,40 @@ export const defaultErrorMessages = {
 // eslint-disable-next-line no-useless-escape
 export const emailPattern = '([A-Za-z0-9][._]?)+[A-Za-z0-9]@[A-Za-z0-9]+(\.?[A-Za-z0-9]){2}\.([A-Za-z0-9]{2,4})?';
 
-let submitBaseUrl = 'https://publish-p185039-e1939903.adobeaemcloud.com';
+// let submitBaseUrl = 'https://publish-p185039-e1939903.adobeaemcloud.com';
+/**
+ * Synchronously fetches the Submit URL for a given key from configs.json.
+ * This is used in functions that need to run synchronously in the AEM Forms Rule Engine.
+ *
+ * @param {string} key - The config key to look up (e.g., 'get-province-en', 'cc-apply-status')
+ * @returns {string} - The submit URL from configs.json, or empty string if not found/error
+ */
+function getSubmitUrl(key) {
+  let submitUrl = '';
+  const cfgXhr = new XMLHttpRequest();
+  cfgXhr.open('GET', '/configs.json', false);
+  cfgXhr.send(null);
+  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
+    try {
+      const entry = JSON.parse(cfgXhr.responseText)
+        .data?.find((c) => c.Key === key);
+      submitUrl = entry?.Value || '';
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('constants.js: failed to read configs.json', e);
+    }
+  }
+
+  if (!submitUrl) {
+    // eslint-disable-next-line no-console
+    console.error('constants.js: failed to read configs.json');
+    return '';
+  }
+  return submitUrl;
+}
 
 export const SUBMISSION_SERVICE = 'https://forms.adobe.com/adobe/forms/af/submit/';
 
-export function setSubmitBaseUrl(url) {
-  submitBaseUrl = url;
-}
-
 export function getSubmitBaseUrl() {
-  return submitBaseUrl;
+  return getSubmitUrl('submit-url');
 }

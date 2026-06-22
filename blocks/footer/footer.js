@@ -1,6 +1,5 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { getLang } from '../../scripts/scripts.js';
 
 // Breakpoint matching design system tokens (760px tablet, 1024px desktop)
 const DESKTOP_BREAKPOINT = 1024;
@@ -146,8 +145,7 @@ export default async function decorate(block) {
   // load footer as fragment
   let footerPath = '';
   if (document.querySelector('body.error-page')) {
-    const lang = getLang();
-    footerPath = `/${lang}/footer`;
+    footerPath = '/footer';
   } else {
     const footerMeta = getMetadata('footer');
     footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';

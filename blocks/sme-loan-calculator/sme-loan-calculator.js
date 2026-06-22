@@ -177,10 +177,15 @@ export default async function decorate(block) {
   const resultValue = cellText(rows[1]) || '0.00';
   const description = cellText(rows[2]);
   const addToTableButtonName = cellText(rows[3]);
-  const hasResultText = rows[5]?.children.length === 1;
-  const resultText = hasResultText ? cellText(rows[5]) : '';
+  const hasResultText = rows[4]?.children.length === 1;
+  const resultText = hasResultText ? cellText(rows[4]) : '';
+  const hasErrorMessage = hasResultText && rows[5]?.children.length === 1;
+  const errorMessage = hasErrorMessage ? cellText(rows[5]) : '';
 
-  const fields = rows.slice(hasResultText ? 6 : 5).map((r) => ({
+  let fieldStart = 4;
+  if (hasResultText) fieldStart = hasErrorMessage ? 6 : 5;
+
+  const fields = rows.slice(fieldStart).map((r) => ({
     id: cellText(r, 0),
     label: cellText(r, 1),
     topText: cellText(r, 2),
@@ -375,11 +380,11 @@ export default async function decorate(block) {
       // Formula from config: n = [lnA-ln(A-Pi)]/ln(1+i)
       // A = monthly payment (field P), P = principal (field A), i = annual% / 1200
       const result = formulaCompute(formulaDescription, {
-        A: fieldValues.P,
-        P: fieldValues.A,
+        P: fieldValues.P,
+        A: fieldValues.A,
         i: fieldValues.i / 1200,
       });
-      return Number.isFinite(result) ? result : 0;
+      return result;
     }
 
     if (calcType === 'loanbalance') {
@@ -389,25 +394,57 @@ export default async function decorate(block) {
         ...fieldValues,
         i: fieldValues.i / 1200,
       });
-      return Number.isFinite(result) ? result : 0;
+      return result;
     }
 
     const result = formulaCompute(formulaDescription, fieldValues);
-    return Number.isFinite(result) ? result : 0;
+    return result;
   };
 
+  function validateAndMarkErrors() {
+    fields.forEach((f) => {
+      block.querySelector(`#${f.id}`)?.classList.remove('input-error');
+    });
+
+    let hasError = false;
+
+    for (let i = 0; i < fields.length; i += 1) {
+      const f = fields[i];
+      if (f.valueType !== 'decimal' && getVal(f.id) === 0) {
+        block.querySelector(`#${f.id}`)?.classList.add('input-error');
+        hasError = true;
+        break;
+      }
+    }
+
+    fields.forEach((f) => {
+      if (f.valueType === 'decimal' && getVal(f.id) > 100) {
+        block.querySelector(`#${f.id}`)?.classList.add('input-error');
+        hasError = true;
+      }
+    });
+
+    return !hasError;
+  }
+
   calcBtn.addEventListener('click', () => {
-    lastResult = compute();
-    const displayVal = rc.integer
-      ? Math.floor(lastResult).toLocaleString('en-US')
-      : fmt(lastResult);
-    if (!resultNum) {
-      resultLabel.textContent = '';
-      resultLabel.style.whiteSpace = 'pre-wrap';
-      resultNum = el('strong', 'sme-result-number');
+    if (!validateAndMarkErrors()) return;
+    const raw = compute();
+    resultLabel.textContent = '';
+    resultLabel.style.whiteSpace = 'pre-wrap';
+    resultNum = el('strong', 'sme-result-number');
+    if (!Number.isFinite(raw)) {
+      resultNum.textContent = errorMessage;
+      resultLabel.append(`${rc.prefix} `, resultNum);
+      lastResult = null;
+    } else {
+      lastResult = raw;
+      const displayVal = rc.integer
+        ? Math.floor(lastResult).toLocaleString('en-US')
+        : fmt(lastResult);
+      resultNum.textContent = displayVal;
       resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
     }
-    resultNum.textContent = displayVal;
   });
 
   // ── Input behaviour ──
@@ -429,6 +466,7 @@ export default async function decorate(block) {
     });
 
     inp.addEventListener('input', () => {
+      inp.classList.remove('input-error');
       if (!decimal) {
         const pos = inp.selectionStart;
         const raw = inp.value.replace(/,/g, '');

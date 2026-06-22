@@ -448,7 +448,6 @@ function buildShellMarkup(data) {
       <section class="saving-plan-tweak" hidden>
         <div class="saving-plan-tweak-header">
           <h3 class="saving-plan-tweak-title">${labels.tweakTitle}</h3>
-          <h4 class="saving-plan-newplan-title">${labels.newPlanTitle}</h4>
         </div>
         <div class="saving-plan-tweak-grid">
           <div class="saving-plan-tweak-sliders">
@@ -463,6 +462,7 @@ function buildShellMarkup(data) {
   })}
           </div>
           <div class="saving-plan-newplan">
+            <h4 class="saving-plan-newplan-title">${labels.newPlanTitle}</h4>
             <div class="saving-plan-newplan-card">
               <p class="saving-plan-newplan-future" data-newplan="future"></p>
               <p class="saving-plan-newplan-lead">${labels.newPlan.monthlySavingLabel}</p>

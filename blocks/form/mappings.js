@@ -108,5 +108,9 @@ export default async function componentDecorator(element, fd, container, formId)
     await loadComponent('checkbox-group', element, fd, container, formId);
   }
 
+  if (fieldType === 'radio-group') {
+    await loadComponent('radio-group', element, fd, container, formId);
+  }
+
   return null;
 }

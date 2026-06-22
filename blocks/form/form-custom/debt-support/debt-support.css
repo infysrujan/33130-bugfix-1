@@ -166,7 +166,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
       gap: var(--bbl-space-100);
       width: 100%;
       margin: 0;
-      padding-left: 20px;
+      padding-left: 1.25rem;
     }
 
     & .checkbox-wrapper label {
@@ -186,7 +186,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     color: var(--form-fieldset-legend-color);
     background: unset;
     text-decoration: underline;
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
   }
 
   /* Mobile: stack half-width fields in a single column */
@@ -224,13 +224,9 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     margin-top: 0.625rem;
   }
 
-  /* Buttons */
+  /* Buttons — sizing/colors from form-global; debt-specific panel spacing */
   & .form form fieldset.panel-wrapper.field-button-panel {
-    display: flex;
     flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 44px;
     width: 100%;
     margin-top: var(--bbl-space-200);
 
@@ -240,41 +236,6 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
       width: auto;
       max-width: none;
       clear: none;
-    }
-
-    & :is(.field-submitcta, .field-cancelcta) :is(.button, button) {
-      min-width: 9.6875rem;
-      height: 2.75rem;
-      margin: 0;
-      border-radius: 0.4375rem;
-      font-size: var(--bbl-font-size-h4-mobile);
-      font-weight: var(--form-title-font-weight);
-      line-height: var(--bbl-line-height-h4-mobile);
-    }
-
-    & .field-submitcta :is(.button, button):not(:disabled) {
-      color: var(--bbl-color-white);
-      border: 1px solid var(--bbl-color-active-blue);
-      background: var(--bbl-color-active-blue);
-    }
-
-    & .field-cancelcta :is(.button, button):not(:disabled) {
-      color: var(--bbl-color-active-blue);
-      border: 1px solid var(--bbl-color-active-blue);
-      background: var(--bbl-color-white);
-
-      &:hover {
-        color: var(--bbl-color-white);
-        background: var(--bbl-color-active-blue);
-      }
-    }
-
-    & :is(.field-submitcta, .field-cancelcta) :is(.button, button):disabled {
-      color: var(--bbl-color-grey-60);
-      border: 1px solid var(--bbl-color-gray-300);
-      background: var(--bbl-color-gray-300);
-      cursor: not-allowed;
-      pointer-events: none;
     }
   }
 
@@ -290,7 +251,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     & .form form .field-loan-type .checkbox-group-wrapper .checkbox-wrapper {
       width: calc(50% - var(--bbl-space-150));
       padding-left: var(--bbl-space-250);
-      margin-bottom: 10px;
+      margin-bottom: 0.625rem;
 
       & label {
         font-size: var(--form-font-size-xs);
@@ -312,9 +273,5 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
       grid-column: span 6;
     }
 
-    & .form form fieldset.panel-wrapper.field-button-panel :is(.field-submitcta, .field-cancelcta) :is(.button, button) {
-      font-size: var(--form-font-size-xs);
-      line-height: var(--bbl-line-height-b1-desktop);
-    }
   }
 }

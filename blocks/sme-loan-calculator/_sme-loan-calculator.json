@@ -67,6 +67,13 @@
 					"label": "Result Text",
 					"description": "can add the result text",
 					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "errorMessage",
+					"label": "Error Message",
+					"description": "can add the error message",
+					"valueType": "string"
 				}
 			]
 		},

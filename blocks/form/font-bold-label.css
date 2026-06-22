@@ -1,0 +1,13 @@
+main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
+  font-size: var(--bbl-form-font-size-17);
+  font-weight: var(--bbl-form-font-weight-bold);
+  padding-inline: var(--bbl-form-padding-10);
+  line-height: var(--bbl-form-line-height-1);
+}
+
+main .lead-forms .form form .field-wrapper[class*='icon-']:has(> label:not([data-visible='false'])) > .field-label {
+  font-size: var(--bbl-form-font-size-17);
+  font-weight: var(--bbl-form-font-weight-bold);
+  padding-inline: var(--bbl-form-padding-10);
+  line-height: var(--bbl-form-line-height-1);
+}

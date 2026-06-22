@@ -1,0 +1,47 @@
+main .lead-forms .form form > .plain-text-wrapper p {
+  text-align: left;
+}
+
+main .lead-forms .form form .field-infotext {
+  margin-top: var(--bbl-form-margin-10);
+}
+
+main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .telephone-wrapper).field-wrapper.col-6 {
+  grid-column: span 12;
+}
+
+main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input {
+  margin-bottom: var(--bbl-form-margin-14);
+}
+
+main .lead-forms .form form .text-wrapper.field-wrapper.col-6:has(+ .text-wrapper.field-wrapper.col-6) input {
+  margin-bottom: 0;
+}
+
+main .lead-forms .form form .text-wrapper.field-wrapper.col-6:has(+ .text-wrapper.field-wrapper.col-6):has([aria-live="polite"]) input {
+  margin-bottom: var(--bbl-form-margin-14);
+}
+
+main .lead-forms .form form :is(.field-wrapper:has(select), .drop-down-wrapper)>.field-label {
+  text-align: center;
+  font-weight: var(--bbl-font-weight-regular);
+  padding-block: var(--bbl-form-padding-30);
+  margin-block: 0 var(--bbl-space-050);
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: 1;
+}
+
+@media (width > 64rem) {
+  main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .telephone-wrapper).field-wrapper.col-6 {
+    grid-column: span 6;
+  }
+
+  main .lead-forms .form form :is(.field-wrapper:has(select), .drop-down-wrapper)>.field-label {
+    text-align: center;
+    font-size: var(--bbl-font-size-b1-desktop);
+  }
+
+  main .lead-forms .form form .text-wrapper.field-wrapper.col-6:has(+ .text-wrapper.field-wrapper.col-6) input {
+    margin-bottom: var(--bbl-form-margin-14);
+  }
+}

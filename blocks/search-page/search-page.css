@@ -299,6 +299,11 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
   .search-modal .search-modal-panel-description {
     font-size: var(--bbl-body-b1-size);
   }
+
+  .section.search-page-container .menu-banner .desktop-tools .inner {
+    max-width: 60rem;
+    margin: 0 auto;
+  }
 }
 
 @media (width > 64rem) {
@@ -355,5 +360,9 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
   .search-modal .search-modal-panel-description {
     font-size: var(--bbl-font-size-base);
     line-height: 1.375rem;
+  }
+
+  .section.search-page-container .menu-banner .desktop-tools {
+    padding-inline: 0;
   }
 }

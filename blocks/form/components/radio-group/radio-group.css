@@ -1,0 +1,19 @@
+/*
+ * radio-group.css
+ * Alignment styles applied when the author sets Alignment via Universal Editor.
+ */
+
+.radio-group-wrapper.align-left {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.radio-group-wrapper.align-center {
+  justify-content: center;
+  text-align: center;
+}
+
+.radio-group-wrapper.align-right {
+  justify-content: flex-end;
+  text-align: right;
+}

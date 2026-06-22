@@ -369,6 +369,15 @@
   background: var(--bbl-color-grey-60);
 }
 
+.cards-list-button .button-container{
+  margin: 0;
+}
+
+.cards-list-button .button-m{
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
 .cards-list-button .button-tertiary::after {
   display: none;
 }
@@ -465,10 +474,6 @@
   margin-block: 1.203rem 0;
   line-height: 1.203rem;
   font-weight: var(--bbl-font-family-regular);
-}
-
-.modal-body .section.central-aligned .block {
-  margin-inline: 0;
 }
 
 .cards-list-inner:has(.cards-list-downloads) {
