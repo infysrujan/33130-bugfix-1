@@ -76,7 +76,7 @@
 .card-description {
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--clw-description-line-height-mobile);
-  margin: 0px;
+  margin: 0;
   color: var(--bbl-color-grey-70);
 }
 
