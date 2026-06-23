@@ -1,6 +1,6 @@
 export default function decorateBelovedHealthSaver(form) {
-  if (form.querySelector('.form-container.wizard-forms')) {
-    const arrayLis = document.querySelectorAll('.wizard li');
+  if (document.querySelector('.form-container.wizard-forms')) {
+    const arrayLis = form.querySelectorAll('.wizard li');
 
     arrayLis.forEach((li) => {
       const span = document.createElement('span');
