@@ -1,5 +1,6 @@
 import { openModal } from '../../scripts/utils/modal.js';
 import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
+import { loadFragment } from '../fragment/fragment.js';
 
 const parseBool = (el) => el?.textContent.trim().toLowerCase() === 'true';
 
@@ -15,12 +16,25 @@ export default function decorate(block) {
       return t === 'true' || t === 'false';
     });
 
-    const targetLink = boolCells.length === 2 ? parseBool(boolCells[0]) : anchor.target === '_blank';
-    const enableModal = parseBool(boolCells.at(-1));
+    const targetLink = boolCells.length >= 2 ? parseBool(boolCells[0]) : anchor.target === '_blank';
+    const enableModal = boolCells.length >= 2 ? parseBool(boolCells[1]) : parseBool(boolCells[0]);
+    const enableCookieModal = boolCells.length >= 3 ? parseBool(boolCells[2]) : false;
 
     boolCells.forEach((cell) => { cell.hidden = true; });
 
-    if (enableModal) {
+    if (enableCookieModal) {
+      const href = anchor.getAttribute('href');
+      if (href) {
+        anchor.removeAttribute('href');
+        anchor.addEventListener('click', async (e) => {
+          e.preventDefault();
+          if (typeof window.showCookieModal !== 'function') {
+            await loadFragment(href);
+          }
+          window.showCookieModal?.(anchor);
+        });
+      }
+    } else if (enableModal) {
       const href = anchor.getAttribute('href');
       if (href) {
         anchor.removeAttribute('href');
