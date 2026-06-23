@@ -6,6 +6,8 @@ import componentDecorator from './mappings.js';
 import { handleSubmit } from './submit.js';
 import DocBasedFormToAF from './transform.js';
 import decorateCreditCardTractApplication from './form-custom/creditcard-track-application/creditcard-track-application.js';
+import decorateBelovedHealthSaver from './form-custom/bt-beloved-health-saver/bt-beloved-health-saver.js';
+
 import {
   checkValidation,
   createButton,
@@ -401,7 +403,7 @@ export async function createForm(formDef, data, source = 'aem') {
   });
 
   decorateCreditCardTractApplication(form);
-
+  decorateBelovedHealthSaver(form);
   return {
     form,
     captcha,

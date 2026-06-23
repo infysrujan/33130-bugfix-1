@@ -436,7 +436,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   pointer-events: none;
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled),
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .primary, .button-wrapper:not(.submit-wrapper,.field-submit,.field-bookconsultationbutton,.field-submitnext)) .button:not(:disabled),
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled) {
   border: 0.0417rem solid var(--bbl-color-active-blue);
   background-color: var(--bbl-color-white);

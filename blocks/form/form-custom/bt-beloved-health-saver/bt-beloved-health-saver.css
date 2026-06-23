@@ -1,0 +1,424 @@
+:root {
+  --bbl-form-color-blue-105: rgb(33 150 243 / 100%);
+  --bbl-form-color-grey-1: #d1d5db;
+}
+
+main .form form .field-wrapper.wizard {
+  margin: 0;
+
+  &>.field-wrapper {
+    margin: 0 0 0.625rem;
+    gap: 0.625rem 0.9375rem;
+  }
+
+  .field-wrapper {
+    margin-block: 0.3125rem 0;
+  }
+
+  .image-wrapper {
+    margin-bottom: 2.5rem;
+  }
+
+  .plain-text-wrapper p {
+    font-size: 1rem;
+    margin-bottom: 0;
+    line-height: 1.3125rem;
+  }
+
+  li.wizard-menu-item[data-visible="false"] {
+    display: flex !important;
+  }
+
+  .wizard-menu-item span {
+    display: none;
+  }
+
+  @media (width > 47.5rem) {
+    .wizard-menu-item span {
+      display: block;
+    }
+  }
+
+  .wizard-menu-items {
+    flex-wrap: nowrap;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+    font-family: var(--bbl-font-family-medium);
+    width: 80%;
+    margin: 0 auto;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 2rem;
+    max-width: 46.25rem;
+  }
+
+  .wizard-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 6.625rem;
+    max-width: 16rem;
+    text-align: center;
+    position: relative;
+    width: 30%;
+    gap: 0.5rem;
+  }
+
+  .wizard-menu-item::before {
+    width: 1.25rem;
+    height: 1.25rem;
+    font-weight: 400;
+    line-height: 1.375rem;
+    background-color: var(--bbl-color-grey-20);
+    color: var(--bbl-color-grey-60);
+    border-color: var(--bbl-color-grey-20);
+    z-index: 2;
+  }
+
+  .wizard-menu-item:has(~ .wizard-menu-active-item)::before {
+    background-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
+    border-color: var(--bbl-color-active-blue);
+    background-image: url('/icons/forms/form-tick.svg');
+    content: '';
+    background-position: 26% 40%;
+  }
+
+  .wizard-menu-item.wizard-menu-active-item::before {
+    background-color: var(--bbl-color-white);
+    color: var(--bbl-color-active-blue);
+    border-color: var(--bbl-color-active-blue);
+  }
+
+  li.wizard-menu-item::after {
+    content: '';
+    height: 0.125rem;
+    width: calc(91%);
+    background-color: var(--bbl-form-color-grey-1);
+    position: absolute;
+    z-index: 1;
+    display: block;
+    right: calc(-44%);
+    top: 0.6875rem;
+  }
+
+  li.wizard-menu-item:last-of-type::after {
+    display: none;
+  }
+
+  .wizard-menu-item:has(~ .wizard-menu-active-item)::after {
+    background-color: var(--bbl-color-active-blue);
+  }
+
+  .wizard-button-wrapper {
+    display: none;
+  }
+
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper {
+  &.field-wizard {
+    &>legend {
+      display: none;
+    }
+  }
+
+  &.field-insurancerecommendationformpanel,
+  &.field-selectpanel {
+    /* margin-top: 2rem; */
+    &>legend {
+      display: none;
+    }
+
+    legend.field-label {
+      text-align: left;
+    }
+
+    :is(.checkbox-group-wrapper, .radio-group-wrapper)>legend.field-label {
+      font-size: var(--bbl-heading-h4-size);
+      font-weight: var(--bbl-font-weight-regular);
+    }
+
+    .field-wrapper:not(.radio-group-wrapper) label.field-label {
+      margin-bottom: 0.625rem;
+      display: inline-block;
+    }
+
+    input {
+      text-align: right;
+    }
+
+    .field-premiumpaymentterm.radio-group-wrapper:not(.horizontal) {
+      align-items: flex-start;
+      gap: 0.4375rem;
+    }
+
+    .number-wrapper {
+      margin-bottom: 0.875rem;
+    }
+
+    .radio-group-wrapper {
+      margin-bottom: 0.9375rem;
+      justify-content: left;
+      gap: 0;
+    }
+
+    .radio-wrapper {
+      padding-left: 0.625rem;
+    }
+
+    .field-description {
+      margin-left: 1rem;
+    }
+
+    .field-wrapper:is(.radio-group-wrapper).field-invalid :is(input[type='radio']) {
+      outline: 0;
+    }
+
+    [data-required="true"]>label::before {
+      content: attr(title);
+      position: relative;
+      left: 0.6875rem;
+      bottom: -2.5625rem;
+      display: block;
+      color: var(--bbl-color-grey-70);
+      height: 0;
+    }
+  }
+
+  &.field-insuranceplandetails,
+  &.field-premiumplanspanel {
+    legend {
+      display: none;
+    }
+
+    .plain-text-wrapper :is(h1, h2, h3, h4, h5, h6) {
+      text-align: center;
+      position: relative;
+      margin-bottom: 1.875rem;
+      padding-bottom: 1.875rem;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        width: var(--bbl-space-1000);
+        height: 0.0625rem;
+        background-color: var(--bbl-color-grey-150);
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    .plain-text-wrapper>p {
+      margin-bottom: 1.875rem;
+      text-align: center;
+    }
+
+    .field-form-width-1240+.field-form-width-740 .plain-text-wrapper>p {
+      text-align: left;
+      margin-bottom: 0;
+    }
+
+    li {
+      margin: 0 0 0.625rem 1.25rem;
+    }
+
+    ul {
+      padding: 0;
+      margin-left: 1.25rem;
+    }
+  }
+
+  &.field-insurancesummarypanel,
+  &.field-insurancepanel {
+    align-items: baseline;
+
+    legend {
+      display: none;
+    }
+
+    .text-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    label {
+      flex-basis: 75%;
+    }
+
+    input {
+      pointer-events: none;
+      cursor: not-allowed;
+      border: 0;
+
+      /* width: unset; */
+      flex-basis: 25%;
+      height: auto;
+      text-align: right;
+      padding-right: 0;
+      margin-bottom: 0;
+      font-size: 1.4rem;
+      line-height: 1.3rem;
+      font-weight: 400;
+      font-family: var(--bbl-font-family-primary);
+    }
+
+    .field-wrapper {
+      /* margin: 0 0 0 0.125rem; */
+      margin-right: 0;
+      align-items: baseline;
+    }
+
+    .field-css-summarywithhr {
+      border-top: 0.0625rem solid lightgrey;
+      margin: 1.25rem 0;
+      padding-top: 0.625rem;
+    }
+
+    .field-css-summarywithhr .text-wrapper label {
+      font-size: 1.5rem;
+      line-height: 1.3rem;
+      font-weight: 700;
+      font-family: var(--bbl-font-family-primary);
+      margin-block: 0.625rem;
+    }
+
+    .field-css-summarywithhr .text-wrapper input {
+      color: var(--bbl-color-active-blue);
+      font-size: 2.2em;
+      font-weight: 700;
+    }
+
+    .field-css-summarywithhr+.plain-text-wrapper p a {
+      text-decoration: underline;
+      color: var(--bbl-form-color-blue-105);
+      margin: 1.25rem 0;
+      display: block;
+    }
+
+    .text-wrapper+.plain-text-wrapper {
+      /* align-items: baseline; */
+    }
+
+    .field-bookconsultationbutton .button.primary {
+      border: 0.0417rem solid transparent;
+      background-color: var(--bbl-color-active-blue);
+      color: var(--bbl-color-white);
+    }
+
+  }
+
+  &.field-insurancerecommendationformpanel,
+  &.field-insuranceplandetails,
+  &.field-insurancesummarypanel,
+  &.field-selectpanel,
+  &.field-premiumplanspanel {
+    .field-button-panel,
+    .field-submitfinal {
+      margin-top: 1.25rem;
+    }
+  }
+
+  &.field-selectpanel {
+    .radio-group-wrapper:not(.horizontal) {
+      text-align: left;
+      align-items: flex-start;
+      gap: 1.1875rem;
+    }
+  }
+
+}
+
+input[type="number"] {
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+main .section.form-container.wizard-forms {
+  padding: 0 1rem;
+
+  @media (width > 47.5rem) {
+    padding: 0 3rem;
+  }
+
+  .form-wrapper {
+    padding: 0 1rem;
+
+    @media (width > 47.5rem) {
+      padding: 0 3rem;
+    }
+  }
+
+  .form form {
+    max-width: unset;
+
+    &>fieldset.panel-wrapper.field-wrapper.wizard {
+      max-width: unset;
+    }
+
+    fieldset.panel-wrapper.field-wrapper {
+      .field-form-width-740.col-12 {
+        max-width: 56.25rem;
+        margin: 0 auto;
+      }
+
+      &.field-wrapper.field-insuranceplandetails .field-form-width-740.col-12 {
+        max-width: 56.25rem;
+      }
+
+      &.field-insurancerecommendationformpanel,
+      &.field-selectpanel,
+      &.field-insurancepanel {
+        max-width: 46.25rem;
+        margin: 0 auto;
+      }
+
+      &.field-insurancesummarypanel {
+        max-width: 50rem;
+        margin: 0 auto;
+      }
+
+    }
+  }
+
+  .field-form-width-1240 {
+    max-width: 77.5rem;
+    margin: 0 auto;
+  }
+}
+
+/* main .section.form-container .form form fieldset.panel-wrapper.field-wrapper.wizard .image-wrapper {
+  margin-bottom: 2.5rem;
+}
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper .field-form-width-panel-740.col-12 {
+  max-width: 56.25rem;
+  margin: 0 auto;
+}
+
+.wizard-forms .field-form-width-1240 {
+  max-width: 77.5rem;
+  margin: 0 auto;
+}
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper.field-insuranceplandetails .field-form-width-panel-740.col-12 {
+  max-width: 56.25rem;
+}
+
+main .section.form-container .form form .wizard fieldset.panel-wrapper.field-insurancerecommendationformpanel {
+  max-width: 46.25rem;
+  margin: 0 auto;
+}
+
+main .section.form-container .form form .wizard fieldset.panel-wrapper.field-insurancesummarypanel {
+  max-width: 50rem;
+  margin: 0 auto;
+} */
