@@ -383,6 +383,10 @@
               {
                 "name": "Lead Forms",
                 "value": "lead-forms"
+              },
+              {
+                "name": "Wizard Forms",
+                "value": "wizard-forms"
               }
             ]
           }
@@ -6889,6 +6893,10 @@
           {
             "name": "Tabs",
             "value": "radio-tabs"
+          },
+          {
+            "name": "Tick",
+            "value": "radio-tick"
           }
         ],
         "value": "default"

@@ -190,6 +190,10 @@
                 {
                   "name": "Lead Forms",
                   "value": "lead-forms"
+                },
+                {
+                  "name": "Wizard Forms",
+                  "value": "wizard-forms"
                 }
               ]
             }

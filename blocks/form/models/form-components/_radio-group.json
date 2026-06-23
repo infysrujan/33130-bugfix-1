@@ -54,6 +54,10 @@
                         {
                             "name": "Tabs",
                             "value": "radio-tabs"
+                        },
+                        {
+                            "name": "Tick",
+                            "value": "radio-tick"
                         }
                     ],
                     "value": "default"

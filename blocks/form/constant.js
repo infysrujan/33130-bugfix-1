@@ -50,7 +50,24 @@ export const getLogLevelFromURL = (urlString = null) => {
 // Available options: 'off', 'debug', 'info', 'warn', 'error'
 export const LOG_LEVEL = getLogLevelFromURL();
 
-export const defaultErrorMessages = {
+// Placeholder keys (camelCase) that correspond to each error type.
+// Add these keys to your language placeholders spreadsheet to enable i18n.
+// Key naming: "form-error-<type>" → toCamelCase → "formError<Type>"
+const FORM_ERROR_PLACEHOLDER_KEYS = {
+  accept: 'formErrorAccept',
+  maxFileSize: 'formErrorMaxFileSize',
+  maxItems: 'formErrorMaxItems',
+  minItems: 'formErrorMinItems',
+  pattern: 'formErrorPattern',
+  minLength: 'formErrorMinLength',
+  maxLength: 'formErrorMaxLength',
+  maximum: 'formErrorMaximum',
+  minimum: 'formErrorMinimum',
+  required: 'formErrorRequired',
+};
+
+// English fallback — used when placeholders are not loaded or key is absent.
+const EN_ERROR_MESSAGES = {
   accept: 'The specified file type not supported.',
   maxFileSize: 'File too large. Reduce size and try again.',
   maxItems: 'Specify a number of items equal to or less than $0.',
@@ -62,6 +79,28 @@ export const defaultErrorMessages = {
   minimum: 'Value must be greater than or equal to $0.',
   required: 'Please fill in this field.',
 };
+
+// Returns the first fully-resolved placeholders object from the window cache.
+// window.placeholders entries are Promises while loading, then replaced with objects.
+function getActivePlaceholders() {
+  return Object.values(window.placeholders || {})
+    .find((p) => p && typeof p === 'object' && !(p instanceof Promise)) || {};
+}
+
+// Proxy intercepts each property read and returns the localized string from
+// window.placeholders when available, falling back to the EN_ERROR_MESSAGES value.
+// util.js and file.js require no changes — they read this object synchronously at
+// validation time, which is always after placeholders have loaded.
+export const defaultErrorMessages = new Proxy(EN_ERROR_MESSAGES, {
+  get(target, key) {
+    const placeholderKey = FORM_ERROR_PLACEHOLDER_KEYS[key];
+    if (placeholderKey) {
+      const localized = getActivePlaceholders()[placeholderKey];
+      return localized || target[key];
+    }
+    return target[key];
+  },
+});
 
 // eslint-disable-next-line no-useless-escape
 export const emailPattern = '([A-Za-z0-9][._]?)+[A-Za-z0-9]@[A-Za-z0-9]+(\.?[A-Za-z0-9]){2}\.([A-Za-z0-9]{2,4})?';
