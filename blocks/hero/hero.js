@@ -1,5 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { decorateButtonsV1, applyLinkTarget } from '../../scripts/bbl-decorators.js';
+import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
@@ -575,7 +575,6 @@ export default async function decorate(block) {
     [preTitleCell, headingCell, textCell, ...(isAppCta ? [] : [linkCell])].forEach((cell) => {
       if (cell) contentGroup.innerHTML += cell.innerHTML;
     });
-    decorateButtonsV1(contentGroup);
 
     if (isAppCta) {
       const appCtasEl = createElement('div', 'hero-app-ctas');
@@ -605,7 +604,7 @@ export default async function decorate(block) {
         }
       }
     }
-    applyLinkTarget(contentGroup, 'a.button', targetValue);
+    applyLinkTarget(contentGroup, 'a', targetValue);
 
     contentInner.append(contentGroup);
     const content = createElement('div', 'hero-banner-content', 'content');

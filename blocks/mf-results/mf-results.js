@@ -413,7 +413,7 @@ export default async function decorate(block) {
   if (cfg.viewAllLabel) {
     const viewAllBtn = doc.createElement('a');
     viewAllBtn.href = cfg.viewAllUrl || '#';
-    viewAllBtn.className = 'mfr-cta mfr-cta--secondary';
+    viewAllBtn.className = 'mfr-cta button-m secondary';
     viewAllBtn.textContent = cfg.viewAllLabel;
     footer.appendChild(viewAllBtn);
   }
@@ -421,7 +421,7 @@ export default async function decorate(block) {
   if (cfg.startOverLabel) {
     const startOverBtn = doc.createElement('button');
     startOverBtn.type = 'button';
-    startOverBtn.className = 'mfr-cta mfr-cta--secondary';
+    startOverBtn.className = 'mfr-cta button-m secondary';
     startOverBtn.textContent = cfg.startOverLabel;
 
     startOverBtn.addEventListener('click', () => {

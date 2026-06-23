@@ -1,0 +1,398 @@
+.sme-loan-form main .section.form-container.custom-forms {
+  padding-inline: 0.9375rem;
+
+  &.central-aligned > .default-content-wrapper {
+    & h2 {
+      position: relative;
+      margin: var(--bbl-space-250) 0 var(--bbl-space-200);
+      padding: 0;
+      color: var(--bbl-color-black);
+      font-family: var(--bbl-font-family-medium);
+      font-size: var(--bbl-font-size-h3-mobile);
+      font-weight: var(--bbl-font-weight-regular);
+      line-height: var(--bbl-line-height-h3-mobile);
+      text-align: center;
+    }
+  }
+
+  & :is(.form-wrapper, .form.block, .form),
+  & .form form,
+  & .form form fieldset.panel-wrapper.field-main-form-panel {
+    width: 100%;
+    max-width: 46.25rem;
+    margin-inline: auto;
+  }
+
+  & :is(.form-wrapper, .form.block) {
+    padding: 0;
+    border-radius: unset;
+    box-shadow: none;
+  }
+
+  & .form.block {
+    margin-top: var(--bbl-space-250);
+  }
+
+  & .form form {
+    gap: 0.1875rem;
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--form-font-size-xs);
+    line-height: var(--bbl-text-default-line-height);
+    color: var(--bbl-color-grey-85);
+  }
+
+  & .form form :is(p, .repeat-wrapper, .field-wrapper) {
+    margin: 0;
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper > legend:not([data-visible='false']) {
+    width: 100%;
+    margin: 20px 0 10px;
+    padding: var(--bbl-space-075);
+    text-align: left;
+    font-size: var(--bbl-font-size-b2-desktop);
+    line-height: var(--bbl-space-250);
+    color: var(--bbl-color-grey-160);
+    background-color: var(--bbl-color-gray-122);
+    border-bottom: 0.0625rem solid var(--bbl-color-white);
+    border-right: 0.0625rem solid var(--bbl-color-white);
+    font-weight: var(--bbl-font-weight-medium);
+    font-family: var(--bbl-font-family-primary);
+  }
+
+  & .form form .form-review-2col fieldset.panel-wrapper.field-wrapper > legend {
+    width: 100%;
+    margin: 0;
+    padding: var(--bbl-space-150);
+    text-align: left;
+    font-size: var(--bbl-font-size-b2-desktop);
+    line-height: var(--bbl-space-250);
+    color: var(--bbl-color-grey-160);
+    background-color: var(--bbl-color-gray-122);
+    border-bottom: 0.0625rem solid var(--bbl-color-white);
+    border-right: 0.0625rem solid var(--bbl-color-white);
+    font-weight: var(--bbl-font-weight-medium);
+    font-family: var(--bbl-font-family-primary);
+  }
+
+  & .form form :is(.field-infotext, .plain-text-wrapper) {
+    margin: var(--bbl-space-250) 0;
+  }
+
+  & .form form :is(.field-infotext p, .plain-text-wrapper p) {
+    color: var(--bbl-color-grey-85);
+    font-size: var(--form-font-size-xs);
+    line-height: 1.5625rem;
+  }
+
+  & .form form :is(.field-wrapper:has(select), .drop-down-wrapper) > .field-label {
+    display: block;
+    width: 100%;
+    margin: 0 0 var(--bbl-space-050);
+    padding: var(--bbl-space-500) 0 var(--bbl-space-300);
+    text-align: center;
+    font-size: var(--form-font-size-xs);
+    font-weight: var(--bbl-font-weight-medium);
+    color: var(--bbl-color-grey-85);
+  }
+
+  & .form form :is(.field-prefix-dropdown, .field-province).field-wrapper > .field-label {
+    padding: 0;
+    text-align: left;
+  }
+
+  & .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: var(--form-field-gap) var(--bbl-space-500);
+    margin-bottom: 0.625rem;
+    padding-left: var(--bbl-space-250);
+    box-sizing: border-box;
+    max-width: 100%;
+
+    & .radio-wrapper {
+      flex-wrap: nowrap;
+      min-width: 8.75rem;
+      margin: 0;
+    }
+
+    & input[type='radio'] {
+      width: var(--bbl-space-250);
+      height: var(--bbl-space-250);
+    }
+  }
+
+  & .form form .radio-group-wrapper.field-convenienttime:not(.radio-tabs, .cards) {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--bbl-space-100);
+    margin: var(--bbl-space-250) 0 0.625rem;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: 100%;
+    text-align: center;
+
+    & .radio-wrapper {
+      flex: 0 0 auto;
+      flex-wrap: nowrap;
+      width: auto;
+      max-width: 100%;
+      min-width: 8.75rem;
+      margin: 0;
+      justify-content: flex-start;
+
+      & label.field-label {
+        min-width: 0;
+        white-space: normal;
+        text-align: left;
+      }
+    }
+
+    & input[type='radio'] {
+      width: var(--bbl-space-250);
+      height: var(--bbl-space-250);
+      flex-shrink: 0;
+    }
+  }
+
+  & .form form :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
+    margin: 0 0 0.625rem;
+    padding-left: var(--bbl-space-250);
+    box-sizing: border-box;
+    max-width: 100%;
+    text-align: left;
+    font-family: var(--bbl-font-family-bold);
+    background: none;
+    border: none;
+  }
+
+  & .form form .radio-group-wrapper.field-convenienttime > legend.field-label {
+    width: 100%;
+    margin: var(--bbl-space-250) 0 0.625rem;
+    padding: 0;
+    text-align: center;
+    font-family: var(--bbl-font-family-primary);
+    font-weight: var(--bbl-font-weight-regular);
+  }
+
+  & .form form fieldset.panel-wrapper > .checkbox-group-wrapper > legend.field-label {
+    width: 100%;
+    margin-bottom: var(--bbl-space-200);
+    padding-left: 0;
+    text-align: center;
+    font-family: var(--bbl-font-family-primary);
+    font-weight: var(--bbl-font-weight-regular);
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper:has(> .checkbox-group-wrapper) {
+    border: 0.0625rem solid var(--bbl-color-grey-150);
+    border-radius: 0.4375rem;
+    padding: var(--bbl-space-250);
+    margin-bottom: 0.625rem;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  & .form form .field-wrapper:has(> .checkbox-group-wrapper) {
+    padding-top: 0;
+
+    & .field-wrapper {
+      margin-left: 0;
+    }
+
+    & .checkbox-wrapper {
+      margin-left: var(--bbl-space-250);
+    }
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper > .checkbox-group-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    gap: var(--form-field-gap) var(--bbl-space-200);
+    padding-left: var(--bbl-space-250);
+
+    & .checkbox-wrapper {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      gap: var(--bbl-space-100);
+      width: 100%;
+      margin: 0;
+
+      & input[type='checkbox'] {
+        flex-shrink: 0;
+        width: var(--bbl-space-250);
+        height: var(--bbl-space-250);
+        margin: 0.1875rem var(--bbl-space-100) 0.1875rem var(--bbl-space-050);
+        cursor: pointer;
+      }
+
+      & .field-label {
+        font-weight: var(--bbl-font-weight-regular);
+        line-height: 1.5625rem;
+        cursor: pointer;
+      }
+    }
+  }
+
+  & .form form fieldset.panel-wrapper.field-main-form-panel {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+  }
+
+  & .form form fieldset.panel-wrapper.field-main-form-panel > .field-wrapper {
+    width: 100%;
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper:has(> .checkbox-group-wrapper) > .field-wrapper {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+
+    & :is(input, textarea, select) {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper:has(> .checkbox-group-wrapper) :is(.field-please-specify-type-of-loan, .field-please-specify-other-product) {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  & .form form :is(.field-wrapper, .radio-group-wrapper).col-4,
+  & .form form :is(.field-wrapper, .radio-group-wrapper).col-5,
+  & .form form :is(.field-wrapper, .radio-group-wrapper).col-6,
+  & .form form :is(.field-wrapper, .radio-group-wrapper).col-7,
+  & .form form :is(.field-wrapper, .radio-group-wrapper).col-8 {
+    grid-column: span 12;
+  }
+
+  & .form form fieldset.panel-wrapper.field-button-panel {
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--bbl-space-200);
+
+    & :is(.button-wrapper, .submit-wrapper, .reset-wrapper) {
+      width: auto;
+      margin: 0;
+    }
+
+    & .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      min-width: 9.6875rem;
+      max-width: fit-content;
+      height: 2.75rem;
+      margin-inline: 0;
+      padding: 0 var(--bbl-space-250);
+      box-sizing: border-box;
+      line-height: 2.75rem;
+    }
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
+    gap: 0;
+    padding: 0 0 0 2.1875rem;
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
+    grid-row: 1;
+    grid-column: 1;
+    max-height: 15rem;
+    margin: 0.1875rem var(--bbl-space-100) 0.9375rem 0;
+    padding-left: 0;
+    border: 0.0625rem solid var(--bbl-color-grey-150);
+    border-radius: var(--bbl-radius-none);
+    font-size: var(--form-font-size-xs);
+    overflow: auto;
+    scrollbar-color: var(--bbl-color-blue-90) var(--bbl-color-grey-10);
+    scrollbar-width: thin;
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) .checkbox-wrapper {
+    display: contents;
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox'] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: var(--bbl-space-250);
+    height: var(--bbl-space-250);
+    margin: 0.1875rem var(--bbl-space-050) var(--bbl-font-size-b2) var(--bbl-space-050);
+    flex: none;
+  }
+
+  @media (width > 47.5rem) {
+    padding-inline: 0;
+
+    &.central-aligned > .default-content-wrapper {
+      & h2 {
+        margin: var(--bbl-space-500) 0 var(--bbl-space-300);
+        font-size: var(--bbl-font-size-h3-desktop);
+        line-height: var(--bbl-line-height-h3-desktop);
+      }
+    }
+
+    & .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
+      gap: var(--form-field-gap) 1.875rem;
+
+      & .radio-wrapper {
+        margin: 0 var(--bbl-space-250);
+      }
+    }
+
+    & .form form .field-wrapper.col-4 {
+      grid-column: span 4;
+      width: auto;
+    }
+
+    & .form form .field-wrapper.col-5 {
+      grid-column: span 5;
+      width: auto;
+    }
+
+    & .form form .field-wrapper.col-6 {
+      grid-column: span 6;
+      width: auto;
+    }
+
+    & .form form .field-wrapper.col-7 {
+      grid-column: span 7;
+      width: auto;
+    }
+
+    & .form form .field-wrapper.col-8 {
+      grid-column: span 8;
+      width: auto;
+    }
+
+    & .form form fieldset.panel-wrapper.field-wrapper > .checkbox-group-wrapper.col-6 {
+      grid-column: span 12;
+      width: 100%;
+    }
+
+    & .form form .field-wrapper:has(> .checkbox-group-wrapper) {
+      padding-top: var(--bbl-space-500);
+
+      & .checkbox-wrapper {
+        margin-left: 0;
+      }
+    }
+
+    & .form form fieldset.panel-wrapper.field-wrapper > .checkbox-group-wrapper .checkbox-wrapper {
+      width: calc(50% - var(--bbl-space-200));
+    }
+  }
+}

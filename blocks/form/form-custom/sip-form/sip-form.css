@@ -1,0 +1,165 @@
+.sip-form main .section.form-container.custom-forms {
+  &.central-aligned > .default-content-wrapper {
+    & h2 {
+      color: var(--bbl-color-black);
+      font-size: var(--bbl-font-size-h3-desktop);
+      line-height: var(--bbl-line-height-h4-desktop);
+      padding-bottom: 1.875rem;
+    }
+
+    & h4 {
+      padding-bottom: 1.875rem;
+      color: var(--bbl-color-grey-85);
+    }
+  }
+
+  & .form.block {
+    margin-top: 2.8125rem;
+  }
+
+  & .form form {
+    & fieldset.panel-wrapper.field-wrapper > legend {
+      padding: 0;
+      margin: 0 var(--form-field-gap) 0.625rem;
+      text-align: center;
+      font-size: var(--form-font-size-xs);
+      line-height: var(--bbl-line-height-h4-desktop);
+      color: var(--bbl-color-grey-85);
+      background-color: var(--bbl-color-grey-10);
+      font-family: var(--bbl-font-family-bold);
+    }
+
+    & .form-review-2col fieldset.panel-wrapper.field-wrapper > legend {
+      width: 100%;
+      margin: 0;
+      padding: var(--bbl-space-150);
+      text-align: left;
+      font-size: var(--bbl-font-size-b2-desktop);
+      line-height: var(--bbl-space-250);
+      color: var(--bbl-color-grey-160);
+      background-color: var(--bbl-color-gray-122);
+      border-bottom: 0.0625rem solid var(--bbl-color-white);
+      border-right: 0.0625rem solid var(--bbl-color-white);
+      font-weight: var(--bbl-font-weight-medium);
+      font-family: var(--bbl-font-family-primary);
+    }
+
+    & .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
+      flex-flow: row wrap;
+      justify-content: flex-start;
+      gap: var(--form-field-gap) var(--bbl-space-250);
+      padding-left: 10px;
+
+      & .radio-wrapper {
+        min-width: auto;
+        margin: 0;
+      }
+    }
+
+    & :is(.checkbox-group-wrapper, .radio-group-wrapper) {
+      & > legend.field-label {
+        margin: 0 0 0.625rem;
+        padding-left: var(--bbl-space-250);
+        box-sizing: border-box;
+        max-width: 100%;
+        text-align: left;
+        font-family: var(--bbl-font-family-bold);
+      }
+
+      & + .plain-text-wrapper {
+        margin-top: 0.625rem;
+        padding: 0.625rem;
+        border-radius: 0.3125rem;
+        background-color: var(--bbl-color-grey-05);
+        line-height: 1.5625rem;
+
+        & p > p {
+          color: var(--bbl-color-grey-85);
+        }
+      }
+    }
+
+    & .field-wrapper:has(> .checkbox-group-wrapper) {
+      padding-top: 0;
+
+      & .field-wrapper {
+        margin-left: 0;
+      }
+
+      & .checkbox-wrapper {
+        margin-left: var(--bbl-space-250);
+      }
+    }
+
+    & fieldset.panel-wrapper > .checkbox-group-wrapper {
+      display: flex;
+      flex-flow: row wrap;
+      gap: var(--form-field-gap) var(--bbl-space-200);
+      padding-left: var(--bbl-space-250);
+
+      & .checkbox-wrapper {
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+
+    & :is(.field-wrapper, .radio-group-wrapper).col-5,
+    & :is(.field-wrapper, .radio-group-wrapper).col-6,
+    & :is(.field-wrapper, .radio-group-wrapper).col-7 {
+      grid-column: span 12;
+    }
+
+    & fieldset.panel-wrapper.field-button-panel {
+      flex-flow: row wrap;
+      justify-content: center;
+      align-items: center;
+      gap: var(--bbl-space-200);
+
+      & :is(.button-wrapper, .submit-wrapper, .reset-wrapper) {
+        width: auto;
+        margin: 0;
+      }
+
+      & .button {
+        width: auto;
+        max-width: fit-content;
+        margin-inline: 0;
+        box-sizing: border-box;
+      }
+    }
+
+    @media (width > 47.5rem) {
+      & .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
+        gap: var(--form-field-gap) 1.875rem;
+
+        & .radio-wrapper {
+          margin: 0 var(--bbl-space-250);
+        }
+      }
+
+      & .field-wrapper.col-5 {
+        grid-column: span 5;
+        width: auto;
+      }
+
+      & .field-wrapper.col-6 {
+        grid-column: span 6;
+        width: auto;
+      }
+
+      & .field-wrapper.col-7 {
+        grid-column: span 7;
+        width: auto;
+      }
+
+      & fieldset.panel-wrapper > .checkbox-group-wrapper.col-6 {
+        grid-column: span 12;
+        width: 100%;
+      }
+
+      & fieldset.panel-wrapper > .checkbox-group-wrapper .checkbox-wrapper {
+        width: calc(50% - var(--bbl-space-200));
+      }
+    }
+  }
+}

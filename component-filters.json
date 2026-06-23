@@ -90,7 +90,8 @@
       "mf-comparator-results",
       "mf-comparator",
       "mf-questionnaire",
-      "cc-campaign"
+      "cc-campaign",
+      "custom-button"
     ]
   },
   {
@@ -241,6 +242,12 @@
     ]
   },
   {
+    "id": "custom-button",
+    "components": [
+      "button"
+    ]
+  },
+  {
     "id": "form",
     "components": [
       "captcha",
@@ -270,7 +277,8 @@
       "range",
       "double-key-dropdown",
       "forms-menu-card",
-      "forms-card-list"
+      "forms-card-list",
+      "forms-card-list-item"
     ]
   },
   {

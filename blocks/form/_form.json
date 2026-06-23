@@ -126,7 +126,8 @@
         "range",
         "double-key-dropdown",
         "forms-menu-card",
-        "forms-card-list"
+        "forms-card-list",
+        "forms-card-list-item"
       ]
     },
     {

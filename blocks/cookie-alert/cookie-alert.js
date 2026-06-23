@@ -115,11 +115,6 @@ export default async function decorate(block) {
 
   const configs = await fetchConfigs();
 
-  if (document.querySelector('.popup-modal-card-offer')) {
-    block.closest('.section')?.remove();
-    return;
-  }
-
   // Create banner structure while preserving block attributes
   const banner = document.createElement('div');
   banner.className = 'cookie-alert-banner';

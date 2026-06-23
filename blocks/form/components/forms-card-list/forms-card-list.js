@@ -1,27 +1,34 @@
-/**
- * Forms Card List Component
- *
- * Container that wraps forms-card-list-item children in a responsive CSS grid.
- * Base resourceType: core/fd/components/form/panelcontainer/v1/panelcontainer
- *
- * Children (forms-card-list-item) are already decorated before this runs.
- * This decorator solely applies the grid wrapper and panel class.
- */
+import { openModal } from '../../../../scripts/utils/modal.js';
 
-/**
- * Default export — called by mappings.js when fd['fd:viewType'] === 'forms-card-list'.
- *
- * @param {HTMLElement} panel – The panel container element rendered by form.js
- * @returns {HTMLElement}
- */
+function bindModalHandler(panel, doc) {
+  if (panel.dataset.cardListModalBound) return;
+  panel.dataset.cardListModalBound = 'true';
+  panel.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-modal]');
+    if (!trigger || !panel.contains(trigger)) return;
+    event.preventDefault();
+    const fragmentPath = trigger.getAttribute('data-modal');
+    if (fragmentPath) openModal(doc, { fragmentPath, dialogClass: 'card-list-modal-body' });
+  });
+}
+
 export default function decorate(panel) {
   panel.classList.add('forms-card-list');
 
-  const grid = document.createElement('div');
-  grid.className = 'forms-card-list-grid';
+  const layout = panel.dataset.cardListLayout || 'default';
+  const alignment = panel.dataset.cardListAlignment || 'default';
+  const cardsPerRow = panel.dataset.cardsPerRow || '';
 
-  [...panel.children].forEach((child) => grid.appendChild(child));
+  const containerClasses = ['cards-list', layout, alignment, cardsPerRow]
+    .filter(Boolean)
+    .join(' ');
 
-  panel.appendChild(grid);
+  const container = document.createElement('div');
+  container.className = containerClasses;
+
+  [...panel.children].forEach((child) => container.appendChild(child));
+  panel.appendChild(container);
+
+  bindModalHandler(panel, panel.ownerDocument);
   return panel;
 }

@@ -91,7 +91,7 @@ main .section.form-container div.form-wrapper {
 }
 
 /* Button panel — side-by-side Submit / Reset and alignment overrides */
-main .section.form-container .form form fieldset.panel-wrapper.field-button-panel {
+main .section.form-container .form form fieldset.panel-wrapper.field-button-panel.field-wrapper {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -346,8 +346,8 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper .ch
 
 main .section.form-container .form form .checkbox-group-wrapper .checkbox-wrapper input[type='checkbox'] {
   flex-shrink: 0;
-  width: var(--bbl-space-200);
-  height: var(--bbl-space-200);
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
   cursor: pointer;
   margin: 0.1875rem var(--bbl-space-100) 0.1875rem var(--bbl-space-050);
 }
@@ -377,7 +377,6 @@ main .section.form-container .form form > fieldset.panel-wrapper.field-wrapper:n
   max-width: 46.25rem;
   padding: 0;
 }
-
 
 main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is(> .field-description, .checkbox-wrapper .field-description):where(:not(.custom-fieldset-approval *)) {
   position: static;

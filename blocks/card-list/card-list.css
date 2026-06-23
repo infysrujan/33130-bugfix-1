@@ -369,6 +369,15 @@
   background: var(--bbl-color-grey-60);
 }
 
+.cards-list-button .button-container{
+  margin: 0;
+}
+
+.cards-list-button .button-m{
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
 .cards-list-button .button-tertiary::after {
   display: none;
 }

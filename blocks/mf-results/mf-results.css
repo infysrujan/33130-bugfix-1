@@ -15,7 +15,7 @@
 /* ── Disclaimer ───────────────────────────────────────────────────────────── */
 
 .mfr-disclaimer {
-  padding-top: var(--bbl-space-layout-sm);
+  padding: 1.875rem 0;
   font-size: var(--bbl-font-size-b3, 0.8125rem);
   color: var(--bbl-color-grey-70);
   line-height: var(--bbl-line-height-body, 1.6);
@@ -70,7 +70,7 @@
 /* ── Card list container ──────────────────────────────────────────────────── */
 
 .mfr-card-list-container {
-  margin-bottom: var(--bbl-space-layout-lg);
+  margin-bottom: var(--bbl-space-1000);
 }
 
 /* ── Mobile: hide scrollbar (cards stacked, but guard for safety) ────────── */
@@ -167,9 +167,10 @@
 
 .mfr-no-results {
   text-align: center;
-  padding: var(--bbl-space-layout-xl) var(--bbl-space-container-xs);
+  padding-top: 1.875rem;
   font-size: var(--bbl-font-size-b1, 1rem);
   color: var(--bbl-color-grey-70);
+  margin:0;
 }
 
 /* ==========================================================================
@@ -337,7 +338,10 @@
 
 .mfr-footer {
   text-align: center;
-  margin-bottom: var(--bbl-space-layout-md);
+}
+
+.mfr-footer :is(button,a){
+ margin-top: 0.625rem;
 }
 
 .mfr-cta {
@@ -381,12 +385,12 @@
 /* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
 
 @media (width > 47.5rem) {
-  .mfr-wrapper {
-    padding: var(--bbl-space-600);
-  }
-
   .mfr-cta {
     font-size: var(--bbl-font-size-b1, 1rem);
+  }
+
+  .mfr-no-results {
+    padding-bottom: 1.875rem;
   }
 
   .card-list.mf-results .cards-list.scrollable {
@@ -409,6 +413,11 @@
     flex-direction: row;
     justify-content: center;
   }
+
+  .mfr-footer :is(button,a){
+    margin-top: 0;
+  }
+
 }
 
 /* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */

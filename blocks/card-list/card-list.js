@@ -165,19 +165,17 @@ function createCardListItem(cardElement, doc) {
   }
 
   if (actionTypeText === 'default' && defaultButton) {
-    const buttonLink = defaultButton.cloneNode(true);
-    buttonLink.removeAttribute('data-modal');
-
-    if (enableOverlayModal && overlayHref) {
-      buttonLink.removeAttribute('href');
-      buttonLink.setAttribute('data-modal', overlayHref);
-    } else {
-      buttonLink.removeAttribute('data-modal');
-    }
-
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
-    buttonWrapper.appendChild(buttonLink);
-    applyLinkTarget(buttonWrapper, 'a', openInNewTab);
+    buttonWrapper.innerHTML = defaultButtonDiv.innerHTML;
+    const buttonLink = buttonWrapper.querySelector('a');
+    if (buttonLink) {
+      buttonLink.removeAttribute('data-modal');
+      if (enableOverlayModal && overlayHref) {
+        buttonLink.removeAttribute('href');
+        buttonLink.setAttribute('data-modal', overlayHref);
+      }
+    }
+    applyLinkTarget(buttonWrapper, 'a.button-m', openInNewTab);
     inner.appendChild(buttonWrapper);
   }
 

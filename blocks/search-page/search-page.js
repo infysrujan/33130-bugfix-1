@@ -192,6 +192,20 @@ function renderRecentSearches(container, recentTitle, onSearch) {
 }
 
 export default async function decorate(block) {
+  block.querySelector(':scope > .search-modal')?.remove();
+  block.querySelector(':scope > .search-page-source-rows')?.remove();
+
+  const blockResource = block.dataset.aueResource;
+  if (blockResource) {
+    block.ownerDocument.querySelectorAll('.search-page.block').forEach((other) => {
+      if (other !== block
+        && other.dataset.aueResource === blockResource
+        && other.querySelector(':scope > .search-modal')) {
+        other.remove();
+      }
+    });
+  }
+
   const rows = [...block.children];
   const placeholders = await fetchPlaceholders();
   const config = getSearchConfig(rows, placeholders);
@@ -223,6 +237,12 @@ export default async function decorate(block) {
       </div>
     </div>
   `;
+
+  const sourceHolder = document.createElement('div');
+  sourceHolder.className = 'search-page-source-rows';
+  sourceHolder.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;opacity:0;';
+  rows.forEach((row) => sourceHolder.appendChild(row));
+  block.append(sourceHolder);
 
   const input = block.querySelector('.search-modal-input');
   const searchButton = block.querySelector('.search-modal-submit-button');

@@ -1,107 +1,184 @@
-/**
- * Forms Card List Item Component
- *
- * Renders a single feature-highlight card inside a forms-card-list container.
- * Base resourceType: core/fd/components/form/image/v1/image (display-only, no form data)
- *
- * Authored fields (fd.properties):
- *   icon            : string  – DAM asset path to card icon
- *   iconAlt         : string  – Alt text for the icon image
- *   title           : string  – Bold card heading (standard AEM Forms title field)
- *   cardDescription : string  – Body text below the divider (supports inline HTML)
- */
+import { createElementFromHTML } from '../../../../scripts/scripts.js';
+import createDownloadLink from '../../../../scripts/utils/download-helpers.js';
+import createGlobalDropdown from '../../../../scripts/utils/dropdown-helpers.js';
+import { applyLinkTarget, getLang } from '../../../../scripts/bbl-decorators.js';
 
-/**
- * Resolves a property from the fd object, checking all storage locations
- * produced by the properties.* naming convention in the component model.
- *
- * @param {Object} fd
- * @param {string} key
- * @returns {*}
- */
-function getProp(fd, key) {
-  const nested = fd.properties?.[key];
-  if (nested !== undefined && nested !== null && nested !== '') return nested;
-  const nestedDot = fd.properties?.[`properties.${key}`];
-  if (nestedDot !== undefined && nestedDot !== null && nestedDot !== '') return nestedDot;
-  const flat = fd[`properties.${key}`];
-  if (flat !== undefined && flat !== null && flat !== '') return flat;
-  return fd[key];
-}
-
-/**
- * Builds the icon wrapper. Supports DAM asset paths and inline SVG strings.
- * Returns null when no icon is provided.
- *
- * @param {string} iconPath
- * @param {string} altText
- * @returns {HTMLElement|null}
- */
-function buildIconElement(iconPath, altText) {
-  if (!iconPath) return null;
-
-  const wrapper = document.createElement('div');
-  wrapper.className = 'forms-card-list-icon';
-  wrapper.setAttribute('aria-hidden', 'true');
-
-  const trimmed = iconPath.trim();
-  if (trimmed.startsWith('<svg')) {
-    wrapper.innerHTML = trimmed;
-  } else {
-    const img = document.createElement('img');
-    img.src = trimmed;
-    img.alt = altText || '';
-    img.loading = 'lazy';
-    img.width = 48;
-    img.height = 48;
-    wrapper.appendChild(img);
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const lang = getLang();
+  const date = new Date(dateStr);
+  if (lang === 'th') {
+    const buddhistYear = date.getFullYear() + 543;
+    const month = date.toLocaleString('th-TH', { month: 'long' });
+    return `${date.getDate()} ${month} ${buddhistYear}`;
   }
-
-  return wrapper;
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-/**
- * Default export — called by mappings.js when fd['fd:viewType'] === 'forms-card-list-item'.
- *
- * @param {HTMLElement} fieldDiv – The .field-wrapper element rendered by form.js
- * @param {Object}      fd       – The field definition from AEM Forms
- * @returns {HTMLElement}
- */
+function getHref(field) {
+  if (!field) return '';
+  if (typeof field === 'string') return field.trim();
+  return field.href?.trim() || '';
+}
+
+function getLinkClass(linkType) {
+  if (linkType === 'tertiary') return 'button-tertiary';
+  if (linkType) return `button ${linkType}`;
+  return 'button';
+}
+
 export default function decorate(fieldDiv, fd) {
   fieldDiv.classList.add('field-forms-card-list-item');
 
-  const iconPath = getProp(fd, 'icon');
-  const iconAlt = getProp(fd, 'iconAlt') || fd.title || '';
+  const doc = fieldDiv.ownerDocument;
+
+  const imagePath = fd.cardListImage || '';
+  const imageAlt = fd.cardListImageAlt || '';
+  const imageLayout = fd.imageLayout || 'default';
+  const promoTag = fd.promoTag || '';
   const title = fd.title || '';
-  const description = getProp(fd, 'cardDescription') || '';
+  const titleType = fd.titleType || 'h2';
+  const subtitle = fd.subtitle || '';
+  const description = fd.description || '';
+  const remarkText = fd['remark-text'] || '';
+  const enableTitleUnderline = !!fd.enableTitleUnderline;
+  const actionType = (fd.buttonActionType || 'default-button').replace('-button', '');
+  const openInNewTab = !!fd.targetLink;
+  const linkHref = getHref(fd.link);
+  const linkText = fd.linkText || '';
+  const linkTitle = fd.linkTitle || '';
+  const linkType = fd.linkType || '';
+  const multipleDownloadLinksHTML = fd.multipleDownloadLinks || '';
+  const dropdownLabel = fd.dropdownLable || 'Select';
+  const dropLinksHTML = fd['drop-links'] || '';
+  const isCardClickable = !!fd.isCardClickable;
+  const cardLinkHref = getHref(fd.cardLink);
+  const cardLinkTitle = fd.cardLinkTitle || '';
+  const enableOverlayModal = !!fd.enableOverlayModal;
+  const fragmentPath = getHref(fd.fragmentPath);
+  const financialDateRaw = fd.financialDate || '';
 
-  const card = document.createElement('div');
-  card.className = 'forms-card-list-card';
-  card.setAttribute('aria-label', title || 'Card');
+  const card = createElementFromHTML('<div class="cards-list-item"></div>', doc);
+  const inner = createElementFromHTML('<div class="cards-list-inner"></div>', doc);
+  const content = createElementFromHTML('<div class="cards-list-content"></div>', doc);
 
-  const iconEl = buildIconElement(iconPath, iconAlt);
-  if (iconEl) card.appendChild(iconEl);
-
-  if (title) {
-    const titleEl = document.createElement('h3');
-    titleEl.className = 'forms-card-list-title';
-    titleEl.textContent = title;
-    card.appendChild(titleEl);
+  if (imagePath) {
+    const img = document.createElement('img');
+    img.src = imagePath;
+    img.alt = imageAlt;
+    img.loading = 'lazy';
+    const imageWrapper = createElementFromHTML(
+      `<div class="cards-list-image cards-list-image-${imageLayout}"></div>`,
+      doc,
+    );
+    imageWrapper.appendChild(img);
+    inner.appendChild(imageWrapper);
   }
 
-  const divider = document.createElement('hr');
-  divider.className = 'forms-card-list-divider';
-  card.appendChild(divider);
+  if (promoTag) {
+    content.appendChild(
+      createElementFromHTML(`<div class="cards-list-promo-tag"><p>${promoTag}</p></div>`, doc),
+    );
+  }
+
+  if (title) {
+    const titleClasses = ['cards-list-title'];
+    if (enableTitleUnderline) titleClasses.push('has-title-underline');
+    content.appendChild(
+      createElementFromHTML(
+        `<div class="${titleClasses.join(' ')}"><${titleType}>${title}</${titleType}></div>`,
+        doc,
+      ),
+    );
+  }
+
+  if (subtitle) {
+    content.appendChild(
+      createElementFromHTML(`<div class="cards-list-subtitle"><p>${subtitle}</p></div>`, doc),
+    );
+  }
 
   if (description) {
-    const descEl = document.createElement('div');
-    descEl.className = 'forms-card-list-description';
-    descEl.innerHTML = description;
-    card.appendChild(descEl);
+    content.appendChild(
+      createElementFromHTML(`<div class="cards-list-description">${description}</div>`, doc),
+    );
+    content.querySelector('.cards-list-title')?.classList.add('has-description');
+  }
+
+  if (remarkText) {
+    content.appendChild(
+      createElementFromHTML(`<div class="cards-list-remark">${remarkText}</div>`, doc),
+    );
+  }
+
+  if (content.children.length) inner.appendChild(content);
+
+  if (actionType === 'default' && linkHref) {
+    const buttonLink = document.createElement('a');
+    buttonLink.href = enableOverlayModal && fragmentPath ? '#' : linkHref;
+    buttonLink.className = getLinkClass(linkType);
+    if (linkText) buttonLink.textContent = linkText;
+    if (linkTitle) buttonLink.title = linkTitle;
+    if (enableOverlayModal && fragmentPath) {
+      buttonLink.removeAttribute('href');
+      buttonLink.setAttribute('data-modal', fragmentPath);
+    }
+    const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
+    buttonWrapper.appendChild(buttonLink);
+    applyLinkTarget(buttonWrapper, 'a', openInNewTab);
+    inner.appendChild(buttonWrapper);
+  }
+
+  if (actionType === 'select-dropdown') {
+    const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
+    buttonWrapper.appendChild(createGlobalDropdown(dropdownLabel, dropLinksHTML, doc));
+    inner.appendChild(buttonWrapper);
+  }
+
+  if (actionType === 'multiple-download' && multipleDownloadLinksHTML) {
+    const temp = createElementFromHTML(`<div>${multipleDownloadLinksHTML}</div>`, doc);
+    const buttonWrapper = createElementFromHTML(
+      '<div class="cards-list-button cards-list-downloads"></div>',
+      doc,
+    );
+    temp.querySelectorAll('a').forEach((anchor) => {
+      const downloadLink = createDownloadLink(anchor, doc);
+      if (downloadLink) {
+        downloadLink.classList.add('multiple-download-wrapper');
+        downloadLink.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
+        buttonWrapper.appendChild(downloadLink);
+      }
+    });
+    if (buttonWrapper.children.length) inner.appendChild(buttonWrapper);
+  }
+
+  if (financialDateRaw) {
+    const parsedDate = new Date(financialDateRaw);
+    const displayDate = !Number.isNaN(parsedDate.getTime())
+      ? formatDate(financialDateRaw)
+      : financialDateRaw;
+    inner.appendChild(
+      createElementFromHTML(`<div class="cards-list-date">${displayDate}</div>`, doc),
+    );
+  }
+
+  if (isCardClickable && cardLinkHref) {
+    const wrapper = createElementFromHTML('<a class="cards-list-item-link"></a>', doc);
+    if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle);
+    wrapper.target = openInNewTab ? '_blank' : '_self';
+    if (openInNewTab) wrapper.setAttribute('rel', 'noopener noreferrer');
+    if (enableOverlayModal && fragmentPath) {
+      wrapper.setAttribute('data-modal', fragmentPath);
+    } else {
+      wrapper.setAttribute('href', cardLinkHref);
+    }
+    wrapper.appendChild(inner);
+    card.appendChild(wrapper);
+  } else {
+    card.appendChild(inner);
   }
 
   fieldDiv.innerHTML = '';
   fieldDiv.appendChild(card);
-
   return fieldDiv;
 }

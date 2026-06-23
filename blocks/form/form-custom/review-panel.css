@@ -252,3 +252,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
     margin: 0 auto;
   }
 }
+
+main .section.form-container .form form .field-wrapper.form-review-2col :is(input:not([type='radio'], [type='checkbox']), select, textarea):is(:hover, :focus, :focus-visible, :active) {
+    border: unset;
+}

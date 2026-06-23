@@ -40,7 +40,7 @@
   --bbl-color-grey-130: #2B2B2B;
   --bbl-color-grey-140: #3F3F3F;
   --bbl-color-grey-150: #9E9E9E;
-  --bbl-color-grey-160: #8A8A8A;
+  --bbl-color-grey-160: #778899;
   --bbl-color-gray-121: #171717;
   --bbl-color-gray-122: #e8e8e8;
   --bbl-color-gray-142: #606060;
@@ -65,8 +65,10 @@
   --bbl-color-grey-155: #eeeef2;
   --bbl-color-grey-156: #585858;
   --bbl-color-grey-157: #f6f7f7;
+  --bbl-color-grey-158: #f1f1f1;
   --bbl-color-grey-159: #808080;
-  --bbl-color-grey-160: #778899;
+  --bbl-color-grey-161: #888;
+  --bbl-color-gray-200: #E0E0E0;
   
 
   /* =========================================================================
@@ -91,6 +93,7 @@
   --bbl-color-blue-105: #003399;
   --bbl-color-blue-108: #002D5B;
   --bbl-color-blue-113: #022D53;
+  --bbl-color-blue-115: #4B70B7;
   /* Truthful Blue is at position ~110 */
   --bbl-color-blue-120: #031D37;
   --bbl-color-blue-130: #002087;

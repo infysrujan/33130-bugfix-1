@@ -282,7 +282,8 @@
         "mf-comparator-results",
         "mf-comparator",
         "mf-questionnaire",
-        "cc-campaign"
+        "cc-campaign",
+        "custom-button"
       ]
     }
   ]

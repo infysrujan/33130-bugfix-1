@@ -20,6 +20,12 @@ main .section.form-container.custom-forms .form form :is(input:not([type='radio'
   margin-top: 0;
   margin-bottom: var(--bbl-space-100);
   padding: 0 var(--bbl-space-250);
+  border-radius: 0.4375rem;
+}
+
+main .section.form-container.custom-forms .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea)::placeholder{
+    opacity: 1;
+    color: var(--bbl-color-grey-150);
 }
 
 main .section.form-container.custom-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):not(:has(label:is([class*=' icon-'], [class^='icon-'])))::before {
@@ -47,7 +53,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 /* Override lead-form.css 1-column layouts to restore standard 12-column grids */
 main .section.form-container.custom-forms .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) {
   grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
-  width:auto;
+  width: auto;
 }
 
 main .section.form-container.custom-forms .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
@@ -63,8 +69,47 @@ main .section.form-container.custom-forms .form form .field-wrapper:has(> .check
   margin: 0.625rem 0;
 }
 
+main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper > .field-label {
+  position: absolute;
+  top: 0.625rem;
+  z-index: 1;
+  left: 0;
+}
+
+main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper .field-description {
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  left: 0;
+}
+
 main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper > .field-description) {
   padding-bottom: var(--bbl-space-250);
+}
+
+main .section.form-container.custom-forms .form form .radio-group-wrapper:not(.horizontal) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: var(--bbl-space-250) 0;
+}
+
+/* Legend label font styles */
+main .section.form-container.custom-forms .panel-wrapper > legend.field-label {
+  color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-font-size-b3-mobile);
+  font-weight: 600;
+  cursor: default;
+}
+
+main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
+  color: var(--bbl-color-grey-85);
+  font-size: 1.25rem;
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: default;
+  text-align: center;
 }
 
 main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject>legend.field-label {
@@ -73,6 +118,49 @@ main .section.form-container.custom-forms .form form fieldset.radio-group-wrappe
   text-align: left;
   text-decoration: underline;
   color: var(--bbl-text-primary);
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>div:has(select) select {
+  padding-right: 1.875rem;
+}
+
+/* Invalid field padding */
+main .section.form-container.custom-forms .form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
+main .section.form-container.custom-forms .form-wrapper .form .drop-down-wrapper.field-invalid select {
+  padding: 0 var(--bbl-space-250);
+}
+
+main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) select {
+  padding-right: 1.875rem;
+}
+
+/* Approval/privacy panel indent */
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
+  padding: 0 0 0 2.1875rem;
+}
+
+/* TnC text decoration */
+main .section.form-container.custom-forms .form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
+  max-height: 9.375rem;
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
+  border: none;
+}
+
+/* Submit button styles */
+main .section.form-container.custom-forms .form :is(.field-submitcta form button[type='submit']:not(:disabled), form .submit-wrapper button:not(:disabled)) {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border: none;
+}
+
+main .section.form-container.custom-forms .form :is(.field-submitcta form button[type='submit']:disabled, form .submit-wrapper button:disabled) {
+  background: var(--bbl-color-gray-200);
+  color: var(--bbl-color-grey-150);
+  border: none;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Transaction Date & Time Panel Overrides (Financial & Non-Financial) */
@@ -114,11 +202,6 @@ main .section.form-container.custom-forms .form form .field-compliantnonfin-comp
   width: 100%;
   height: 2.6389rem;
   margin: 0;
-}
-
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>div:has(select) select,
-main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) select {
-  padding-right: 1.875rem;
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>.field-hours-exclude::after {

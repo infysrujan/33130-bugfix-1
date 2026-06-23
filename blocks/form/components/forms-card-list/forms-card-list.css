@@ -1,8 +1,7 @@
-/* ============================================================
-   Forms Card List — responsive grid container
-   ============================================================ */
+/* Inherit all cards-list styles from the reference block */
+@import url('../../../card-list/card-list.css');
 
-/* ── Panel reset — strip panelcontainer fieldset chrome ── */
+/* Strip panelcontainer form chrome */
 .forms-card-list {
   border: none;
   padding: 0;
@@ -11,37 +10,4 @@
 
 .forms-card-list > legend {
   display: none;
-}
-
-/* ── Grid ─────────────────────────────────────────────── */
-.forms-card-list-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  width: 100%;
-}
-
-/* Stretch each item wrapper so cards share equal height per row */
-.forms-card-list-grid > .field-forms-card-list-item {
-  display: flex;
-  align-self: stretch;
-}
-
-.forms-card-list-grid > .field-forms-card-list-item .forms-card-list-card {
-  width: 100%;
-}
-
-/* ── Tablet: 768px–1023px → 2 columns ────────────────── */
-@media (width <= 1023px) {
-  .forms-card-list-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* ── Mobile: <768px → 1 column ───────────────────────── */
-@media (width <= 767px) {
-  .forms-card-list-grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
 }

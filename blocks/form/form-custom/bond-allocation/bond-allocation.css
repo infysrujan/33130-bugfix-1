@@ -1,0 +1,328 @@
+/* Bond Allocation — scoped via .field-bond-allocation-review (Bond_Allocation_TH) */
+.bond-allocation-form main .section.form-container.custom-forms {
+  .field-heading, .field-heading2 {
+    position: relative;
+
+    & ::after{
+      content: '';
+    }
+
+    h2{
+      margin-top: 0;
+      font-family: var(--bbl-font-family-medium);
+      font-size: var(--bbl-font-size-h2-desktop);
+      font-weight: var(--bbl-font-weight-regular);
+      color: var(--bbl-color-grey-85);
+      text-align: center;
+    }
+  }
+
+
+
+  .field-subheading {
+    margin-bottom: 0.937rem;
+
+    p {
+      text-align: center;
+      color: var(--bbl-color-grey-85);
+      font-family: var(--bbl-font-family-primary);
+      font-size: var(--bbl-font-size-h2-mobile);
+      font-weight: var(--bbl-font-weight-regular);
+      line-height: var(--bbl-line-height-h2-mobile);
+    }
+  }
+
+  .field-bond-holder-number {
+    margin-bottom: 10px;
+  }
+
+  & .form form .field-heading::before,
+  & .form form .field-heading2::before {
+    content: none;
+  }
+
+  & .form form .field-heading::after,
+  & .form form .field-heading2::after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 1px;
+    background-color: var(--bbl-color-grey-85);
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  & .form form :has(.field-citizenid) {
+    position: relative;
+  }
+
+  & .form form .field-citizenid p {
+    padding-left: 1.375rem;
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--bbl-font-size-b2-desktop);
+    font-weight: var(--bbl-font-weight-regular);
+    color: var(--bbl-color-grey-153);
+  }
+
+  & .form form .helper-text {
+    position: absolute;
+    top: 2.5rem;
+    right: 0;
+    padding-right: 1.375rem;
+  }
+
+  & .form form .helper-text input {
+    border: none;
+    text-align: right;
+    padding: 0;
+    background-color: transparent;
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--bbl-font-size-b2-desktop);
+    font-weight: var(--bbl-font-weight-regular);
+
+    &::placeholder {
+      color: var(--form-label-color);
+      opacity: 1;
+    }
+  }
+
+  /* ── successPanel: 3-column grid for table layout ── */
+  & .form form .field-bond-allocation-review fieldset.field-successpanel {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr;
+    background-color: transparent;
+    overflow: hidden;
+    padding-bottom: 0;
+    margin-bottom: 30px;
+  }
+
+  /* ── Government Savings Bond: full-width blue-gray row ── */
+  & .form form .field-bond-allocation-review .field-governmentsavingsbond {
+    border-bottom: 1px solid var(--bbl-color-gray-300);
+
+    & > label.field-label {
+      display: none;
+    }
+
+    & > input {
+      width: 100% !important;
+      background-color: var(--bbl-color-blue-steel);
+      border: none;
+      border-bottom: 1px solid var(--bbl-color-gray-300);
+      border-radius: 0;
+      padding: 0.9375rem;
+      font-family: var(--bbl-font-family-primary);
+      font-size: var(--bbl-font-size-h2-mobile);
+      font-weight: var(--bbl-font-weight-medium);
+      min-height: 2.75rem;
+    }
+  }
+
+  /* ── 3-column table: Series / TotalPurchaseAmount / TotalAllotment  */
+  & .form form .field-bond-allocation-review .field-series,
+  & .form form .field-bond-allocation-review .field-totalpurchaseamount,
+  & .form form .field-bond-allocation-review .field-totalallotment {
+    display: contents;
+  }
+
+  /* Place labels in grid row 3 (rows 1-2 are the full-width header rows) */
+  & .form form .field-bond-allocation-review .field-series > label.field-label {
+    grid-row: 3;
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    background-color: var(--bbl-color-blue-steel);
+    border: none;
+    border-bottom: 2px solid var(--bbl-color-gray-300);
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--bbl-font-size-h2-mobile);
+    font-weight: var(--bbl-font-weight-medium);
+    text-align: left;
+    padding: 0.9375rem;
+    min-height: 3rem;
+    box-sizing: border-box;
+    color: var(--form-label-color);
+  }
+
+  & .form form .field-bond-allocation-review .field-totalpurchaseamount > label.field-label,
+  & .form form .field-bond-allocation-review .field-totalallotment > label.field-label {
+    grid-row: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: var(--bbl-color-blue-steel);
+    border: none;
+    border-bottom: 2px solid var(--bbl-color-gray-300);
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--bbl-font-size-h2-mobile);
+    font-weight: var(--bbl-font-weight-medium);
+    text-align: center;
+    padding: 0.625rem 0.5rem;
+    min-height: 3rem;
+    box-sizing: border-box;
+    color: var(--form-label-color);
+  }
+
+  & .form form .field-bond-allocation-review .field-totalpurchaseamount > label.field-label {
+    grid-column: 2;
+  }
+
+  & .form form .field-bond-allocation-review .field-totalallotment > label.field-label {
+    grid-column: 3;
+  }
+
+  /* Place inputs in grid row 4 */
+  & .form form .field-bond-allocation-review .field-series > input {
+    grid-row: 4;
+    grid-column: 1;
+    width: 100% !important;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid var(--bbl-color-gray-300);
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--bbl-font-size-b1-desktop);
+    font-weight: var(--bbl-font-weight-regular);
+    padding: 0.9375rem;
+    min-height: 2.75rem;
+    box-sizing: border-box;
+    border-radius: 0;
+    text-align: left;
+  }
+
+  & .form form .field-bond-allocation-review .field-totalpurchaseamount > input,
+  & .form form .field-bond-allocation-review .field-totalallotment > input {
+    grid-row: 4;
+    width: 100% !important;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid var(--bbl-color-gray-300);
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--bbl-font-size-b1-desktop);
+    font-weight: var(--bbl-font-weight-regular);
+    padding: 0.625rem 0.75rem;
+    min-height: 2.75rem;
+    box-sizing: border-box;
+    border-radius: 0;
+    text-align: right;
+    padding-right: 1rem;
+  }
+
+  & .form form .field-bond-allocation-review .field-totalpurchaseamount > input {
+    grid-column: 2;
+  }
+
+  & .form form .field-bond-allocation-review .field-totalallotment > input {
+    grid-column: 3;
+  }
+
+  /* Full-width rows inside the grid */
+  & .form form .field-bond-allocation-review .field-successpanel > .field-resultsbondsubheader,
+  & .form form .field-bond-allocation-review .field-successpanel > .field-governmentsavingsbond,
+  & .form form .field-bond-allocation-review .field-successpanel > .plain-text-wrapper {
+    grid-column: 1 / -1;
+  }
+
+  & .form form .field-bond-allocation-review .field-errortext {
+    background-color: transparent;
+    padding: 0;
+    max-width: 400px;
+    margin: 10px auto 40px;
+
+    p {
+      font-family: var(--bbl-font-family-primary);
+      font-size: var(--bbl-font-size-b1-desktop);
+      font-weight: var(--bbl-font-weight-regular);
+      color: var(--bbl-color-grey-85);
+      line-height: var(--bbl-line-height-b1-desktop);
+    }
+  }
+
+  /* ── Bondholder number: centered inline ── */
+  & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper:not(.panel-wrapper) {
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+  }
+
+  & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper > label.field-label {
+    width: auto;
+    flex-shrink: 1;
+    background-color: transparent;
+    border: none;
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--bbl-font-size-h2-mobile);
+    font-weight: var(--bbl-font-weight-regular);
+    color: var(--bbl-color-grey-85);
+    padding-right: 0;
+    white-space: nowrap;
+  }
+
+  & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper > input {
+    width: auto;
+    flex-shrink: 1;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--bbl-font-size-b1-desktop);
+    font-weight: var(--bbl-font-weight-regular);
+    padding: 0;
+    min-height: auto;
+    color: var(--bbl-color-grey-85);
+    padding-left: 0.25rem;
+  }
+
+  /* ── infotxt / thank-you text ── */
+  & .form form .field-bond-allocation-review .field-successpanel > .plain-text-wrapper {
+    padding: 1.5625rem 0.0625rem 0.9375rem;
+
+    & p {
+      font-family: var(--bbl-font-family-primary);
+      font-size: var(--bbl-font-size-b1-desktop);
+      font-weight: var(--bbl-font-weight-regular);
+      color: var(--bbl-color-grey-85);
+      line-height: var(--bbl-line-height-b1-desktop);
+    }
+  }
+
+  & .form form .field-bond-allocation-review fieldset.field-button-panel .button-wrapper .button.primary:not(:disabled) {
+    border-color: transparent;
+    background-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
+  }
+
+  & .form form .field-bond-allocation-review fieldset.field-button-panel .button-wrapper .button.primary:not(:disabled):hover {
+    background-color: var(--bbl-color-blue-90);
+    border-color: transparent;
+  }
+
+  @media (width < 64rem) {
+    & .form form .field-bond-allocation-review fieldset.field-button-panel {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+    }
+
+    & .form form .field-bond-allocation-review fieldset.field-button-panel .button-wrapper,
+    & .form form .field-bond-allocation-review fieldset.field-button-panel .submit-wrapper {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    & .form form .field-bond-allocation-review fieldset.field-button-panel .button {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    /* Primary/details button first on mobile */
+    & .form form .field-bond-allocation-review fieldset.field-button-panel .button-wrapper:has(.button.primary),
+    & .form form .field-bond-allocation-review fieldset.field-button-panel .submit-wrapper {
+      order: -1;
+    }
+  }
+}

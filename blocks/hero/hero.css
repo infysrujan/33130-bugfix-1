@@ -62,7 +62,6 @@
   position: relative;
   width: 100%;
   display: block;
-  min-height: 60.75rem;
 }
 
 .hero-banner-video {
@@ -349,12 +348,14 @@
 }
 
 .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
-  font-size: 0.7875rem;
+  font-size: var(--bbl-text-label-tag-size);
   margin: 0.625rem 0 0;
   padding-bottom: 0.3125rem;
   color: var(--bbl-color-black);
   display: block;
-  font-family: var(--bbl-font-family-looped);
+  font-weight: var( --bbl-text-label-tag-weight);
+  line-height: var(--bbl-text-label-tag-line-height);
+  font-family: var(--bbl-font-family-medium);
 }
 
 .hero-banner-content .hero-banner-content-group .hero-banner-pre-title::before {
@@ -421,13 +422,13 @@
   display: none;
 }
 
-.hero-banner-content-group .button-container .button-m {
+.hero-banner-content-group .button-container a {
   width: auto;
   min-width: 6.25rem;
   white-space: nowrap;
 }
 
-.hero-banner-content-group .hero-banner-private-wealth-banking .button-container .button-m {
+.hero-banner-content-group .hero-banner-private-wealth-banking .button-container a {
   max-width: 8.4375rem;
   width: 48%;
 }
@@ -612,8 +613,9 @@
   color: var(--bbl-color-white);
 }
 
-:is(.hero-banner-private-wealth-banking, .hero-banner-simple) .hero-banner-content-group .button-container .button-m {
+:is(.hero-banner-private-wealth-banking, .hero-banner-simple) .hero-banner-content-group .button-container a {
   min-width: 8.4375rem;
+  box-sizing: border-box;
   width: 48%;
 }
 
@@ -654,11 +656,12 @@
 }
 
 .hero-banner-item.no-mobile-app-cta .hero-app-cta-mobile-fallback {
+  margin: 0;
   display: block;
 }
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-app-cta-mobile-fallback .button-container {
-  margin: 0;
+  margin: 0.375rem 0 0;
   padding-bottom: 0.9375rem;
 }
 
@@ -725,7 +728,7 @@
     color: var(--bbl-color-white);
   }
 
-  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
+  .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
     position: absolute;
     padding: 0;
     color: var(--bbl-color-white);
@@ -780,7 +783,7 @@
     margin-bottom: 0;
   }
 
-  :is(.hero-banner-private-wealth-banking, .hero-banner-simple) .hero-banner-content-group .button-container .button-m {
+  :is(.hero-banner-private-wealth-banking, .hero-banner-simple) .hero-banner-content-group .button-container a {
     min-width: 11.25rem;
   }
 
@@ -790,7 +793,7 @@
     justify-content: flex-start;
   }
 
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner .button-container .button-m {
+  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner .button-container a {
     margin-bottom: 6.25rem;
   }
 
@@ -834,7 +837,7 @@
     padding: 0 var(--bbl-space-1050) 0;
   }
 
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
+  .section.full-bleed-bg .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
     bottom: 4.6875rem;
     padding: 0 var(--bbl-space-1050);
   }
@@ -848,7 +851,7 @@
     padding: 0;
   }
 
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner .button-container .button-m {
+  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner .button-container a {
     margin-bottom: 0;
   }
 
@@ -864,11 +867,6 @@
     -webkit-box-orient: vertical;
     overflow-y: clip;
     margin-inline: 0;
-  }
-
-  .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
-    font-size: 0.9rem;
-    height: 1.8125rem;
   }
 
   :lang(th) {
@@ -1052,13 +1050,18 @@
     display: none;
   }
 
-  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container .button-m.primary {
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container a {
     margin-left: 2.9375rem;
     margin-bottom: 1.5625rem;
   }
 
-  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-content-inner .button-container .button-m.primary {
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container .button-m.primary {
+    margin-left: 2.9375rem;
+    margin-bottom: 3.125rem;
+  }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-content-inner .button-container a {
     margin-left: 1.5625rem;
-    margin-bottom: 1.5625rem;
+    margin-bottom: 3.125rem;
   }
 }

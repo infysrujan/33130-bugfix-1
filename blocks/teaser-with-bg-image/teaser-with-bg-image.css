@@ -82,8 +82,9 @@
 .teaser-bg-image-description p {
   margin: 0;
   color: var(--bbl-color-grey-150);
-  font-weight: var(--bbl-font-weight-regular);
-  line-height: 0.875rem;
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: 1;
+  font-weight: var(--bbl-body-b1-weight);
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 10;
@@ -140,8 +141,9 @@
 .teaser-bg-image-card-description p {
   margin: 0;
   color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-font-size-b1-mobile);
   line-height: 1.1244rem;
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-body-b1-weight);
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 10;
@@ -201,6 +203,7 @@
   .teaser-bg-image-title :is(h1, h2, h3, h4, h5, h6) {
     color: var(--bbl-color-white);
     padding: 0;
+    letter-spacing: -0.0125rem;
     font-size: 1.4rem;
     max-width: 37.5rem;
     line-height: 1.3746rem;
@@ -226,6 +229,7 @@
   }
 
   .teaser-bg-image-description p {
+    line-height: 1.1243rem;
     color: var(--bbl-color-white);
     max-width: 37.5rem;
   }
@@ -243,10 +247,6 @@
   .teaser-bg-image-card {
     width: calc(33.3333% - var(--bbl-space-500));
     margin: 0;
-  }
-
-  .teaser-bg-image-card-description p {
-    font-size: var(--bbl-font-size-b2);
   }
 
   .teaser-bg-image-cta {
