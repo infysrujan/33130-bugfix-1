@@ -62,7 +62,6 @@
   position: relative;
   width: 100%;
   display: block;
-  min-height: 60.75rem;
 }
 
 .hero-banner-video {
@@ -729,7 +728,7 @@
     color: var(--bbl-color-white);
   }
 
-  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
+  .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
     position: absolute;
     padding: 0;
     color: var(--bbl-color-white);
@@ -838,7 +837,7 @@
     padding: 0 var(--bbl-space-1050) 0;
   }
 
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
+  .section.full-bleed-bg .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
     bottom: 4.6875rem;
     padding: 0 var(--bbl-space-1050);
   }
@@ -1058,11 +1057,11 @@
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container .button-m.primary {
     margin-left: 2.9375rem;
-    margin-bottom: 1.5625rem;
+    margin-bottom: 3.125rem;
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-content-inner .button-container a {
     margin-left: 1.5625rem;
-    margin-bottom: 1.5625rem;
+    margin-bottom: 3.125rem;
   }
 }

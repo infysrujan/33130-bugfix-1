@@ -259,7 +259,10 @@ button.tertiary {
   border: none;
   padding: 0;
   height: auto;
-  font-weight: var(--bbl-font-weight-medium);
+  font-weight: var(--bbl-text-link-primary-weight);
+  font-size: var(--bbl-text-link-primary-size);
+  line-height: var(--bbl-text-link-primary-line-height);
+  font-family: var(--bbl-font-family-medium);
   text-decoration: none;
   gap: var(--bbl-space-050);
   display: inline-flex;
@@ -273,12 +276,13 @@ button.tertiary {
   display: inline-block;
   width: 1em;
   height: 1em;
-  background-color: currentcolor;
+  background-color: var(--bbl-color-active-blue);
   vertical-align: middle;
   flex: 0 0 auto;
+  text-decoration: none;
   /* stylelint-disable-next-line property-no-vendor-prefix */
-  -webkit-mask: url('../icons/Arrow-right.svg') no-repeat center / 100% 100%;
-  mask: url('../icons/Arrow-right.svg') no-repeat center / 100% 100%;
+  -webkit-mask: url('../icons/Chevron-right.svg') no-repeat center / 100% 100%;
+  mask: url('../icons/Chevron-right.svg') no-repeat center / 100% 100%;
   transition: transform 0.2s ease-in-out;
 }
 

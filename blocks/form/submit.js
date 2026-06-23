@@ -75,7 +75,7 @@ function getFieldValue(fe, payload) {
 function constructPayload(form) {
   const payload = { __id__: generateUnique() };
   [...form.elements].forEach((fe) => {
-    if (fe.name && !fe.matches('button') && !fe.disabled && fe.tagName !== 'FIELDSET') {
+    if (fe.name && !fe.matches('button') && !fe.disabled && fe.tagName !== 'FIELDSET' && !fe.name.includes('_exclude')) {
       const value = getFieldValue(fe, payload);
       if (fe.closest('.repeat-wrapper')) {
         payload[fe.name] = payload[fe.name] ? `${payload[fe.name]},${fe.value}` : value;
