@@ -255,6 +255,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper {
       line-height: 1.3rem;
       font-weight: 400;
       font-family: var(--bbl-font-family-primary);
+      padding-left: 0;
     }
 
     .field-wrapper {
