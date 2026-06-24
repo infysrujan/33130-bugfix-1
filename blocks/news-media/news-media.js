@@ -57,7 +57,7 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
 
     gridEl.innerHTML = cards.length
       ? cards.map((c) => {
-        const ctaLink = c.ctaLink && c.aboutUsId ? `${c.ctaLink}?ID=${c.aboutUsId}` : (c.ctaLink || '');
+        const ctaLink = c.ctaLink || '';
         const normalized = { ...c, ctaLink };
         const dateLine = formatDate(c.publishDate, locale);
         return buildCardHtml(normalized, '', {}, { dateLine });

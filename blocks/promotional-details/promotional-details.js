@@ -2,7 +2,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
-import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
+import { isAuthoringInstance, fetchBlockAuthoringData } from '../../scripts/bbl-decorators.js';
 import {
   createModalShell,
   showModal,
@@ -287,25 +287,20 @@ export default async function decorate(block) {
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
   const clickToViewFull = placeholders.promoClickToViewFull || '';
   const registerCtaUrl = effectiveConfigs.bbmIsRegister || '';
-  const previewData = isAuthoringInstance(block) && !card
-    ? getAuthoringPreviewData(block)
-    : null;
-
-  if (!card && !previewData) {
-    const errorMsg = placeholders.promoNoResults || 'No promotion details found.';
-    block.innerHTML = `<p class="promo-detail-error">${errorMsg}</p>`;
-    return;
-  }
-
-  const data = card || previewData;
 
   if (isAuthoringInstance(block)) {
-    block.querySelectorAll(':scope > div').forEach((row) => {
-      const key = row.children[0]?.textContent?.trim().toLowerCase().replace(/-/g, '');
-      if (key === 'promotiontype' || key === 'promoid') {
-        row.dataset.configRow = '';
-      }
-    });
+    const authoringData = await fetchBlockAuthoringData('promotional_details');
+    const previewData = !authoringData ? getAuthoringPreviewData(block) : null;
+    const data = authoringData || previewData || card;
+
+    if (!data) {
+      const errorMsg = placeholders.promoNoResults || 'No promotion details found.';
+      block.innerHTML = `<p class="promo-detail-error">${errorMsg}</p>`;
+      return;
+    }
+
+    const originalChildren = [...block.children];
+
     block.classList.add('has-preview');
     let previewContainer = block.querySelector('.promo-detail-preview');
     if (!previewContainer) {
@@ -313,6 +308,7 @@ export default async function decorate(block) {
       previewContainer.className = 'promo-detail-preview';
       block.appendChild(previewContainer);
     }
+
     renderDetails(
       previewContainer,
       data,
@@ -322,16 +318,20 @@ export default async function decorate(block) {
       registerCtaUrl,
       promoId,
     );
+
+    const hidden = document.createElement('div');
+    hidden.style.display = 'none';
+    originalChildren.forEach((child) => hidden.appendChild(child));
+    block.appendChild(hidden);
+
     return;
   }
 
-  renderDetails(
-    block,
-    data,
-    periodLabel,
-    locale,
-    clickToViewFull,
-    registerCtaUrl,
-    promoId,
-  );
+  if (!card) {
+    const errorMsg = placeholders.promoNoResults || 'No promotion details found.';
+    block.innerHTML = `<p class="promo-detail-error">${errorMsg}</p>`;
+    return;
+  }
+
+  renderDetails(block, card, periodLabel, locale, clickToViewFull, registerCtaUrl, promoId);
 }

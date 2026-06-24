@@ -181,6 +181,10 @@ main {
   margin-bottom: 2rem;
 }
 
+.row.paddingmain.alignc {
+  align-items: center;
+}
+
 .col-md-4.paddingcal {
   width: 100%;
   min-width: 0;
@@ -306,7 +310,7 @@ main {
 }
 
 .sme-calc-result-label strong {
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 /* ── Formula / substituted expression (hidden) ───────────── */
@@ -316,7 +320,7 @@ main {
 
 /* ── Description text ────────────────────────────────────── */
 .sme-calc-description {
-  font-size: 1rem;
+  font-size: var(--bbl-font-size-b1-mobile);
   color: var(--bbl-color-white-alpha-80);
   margin: 0 0 1.75rem;
   line-height: 1.375rem;
@@ -422,6 +426,10 @@ main {
 
 /* ── Tablet and above ─────────────────────────────────────── */
 @media (width > 47.5rem) {
+  .section:not(.tabs-container, .center-title) .default-content-wrapper p {
+    font-size: var(--bbl-font-size-b1-mobile);
+  }
+
   .section.tabs-container .tabs.simple-tab .tabs-nav-wrapper {
     padding: 0 3rem;
     overflow: visible;
@@ -469,13 +477,18 @@ main {
     align-items: flex-start;
   }
 
-  .sme-calc-result-label {
-    font-size: var(--bbl-font-size-h5-desktop);
-  }
 }
 
 /* ── Desktop: 3-column field layout ──────────────────────── */
 @media (width > 64rem) {
+  .sme-calc-result-label {
+    font-size: var(--bbl-font-size-h3-desktop);
+  }
+
+  .sme-calc-description {
+    font-size: var(--bbl-font-size-b1-desktop);
+  }
+
   .section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
     font-size: 1rem;
     padding: 1.25rem 1rem;
