@@ -1,5 +1,56 @@
 import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
 
+// Strip _exclude fields from AEM forms submit payload (afb-runtime posts via fetch internally).
+(function installExcludeFieldsInterceptor() {
+  if (window.aemFormExcludeInterceptor) return;
+  window.aemFormExcludeInterceptor = true;
+  const nativeFetch = window.fetch;
+
+  function filterExclude(obj) {
+    return Object.fromEntries(Object.entries(obj).filter(([k]) => !k.includes('_exclude')));
+  }
+
+  window.fetch = async function fetchExcludeFilter(resource, init) {
+    if (init?.method === 'POST') {
+      // AEM forms: multipart/form-data, 'data' field = JSON { payload: {...}, 'payload-hash': ... }
+      if (init.body instanceof FormData) {
+        try {
+          const dataStr = init.body.get('data');
+          if (typeof dataStr === 'string') {
+            const parsed = JSON.parse(dataStr);
+            const { payload } = parsed;
+            if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
+              const filtered = filterExclude(payload);
+              const newFormData = new FormData();
+              init.body.forEach((value, key) => {
+                const newVal = key === 'data'
+                  ? JSON.stringify({ ...parsed, payload: filtered })
+                  : value;
+                newFormData.append(key, newVal);
+              });
+              return nativeFetch.call(this, resource, { ...init, body: newFormData });
+            }
+          }
+        } catch { /* unexpected structure — pass through */ }
+      }
+      // Sheet-based forms: JSON string body with 'data' or 'payload' key
+      if (typeof init.body === 'string') {
+        try {
+          const parsed = JSON.parse(init.body);
+          const key = ['payload', 'data'].find(
+            (k) => parsed?.[k] && typeof parsed[k] === 'object' && !Array.isArray(parsed[k]),
+          );
+          if (key) {
+            const newBody = JSON.stringify({ ...parsed, [key]: filterExclude(parsed[key]) });
+            return nativeFetch.call(this, resource, { ...init, body: newBody });
+          }
+        } catch { /* not filterable JSON — pass through */ }
+      }
+    }
+    return nativeFetch.call(this, resource, init);
+  };
+}());
+
 let formPlaceholders = {};
 
 export function setFormPlaceholders(placeholders) {
@@ -10,7 +61,14 @@ export function submitSuccess(e, form) {
   const { payload } = e;
   const redirectUrl = form.dataset.redirectUrl || payload?.body?.redirectUrl;
   const thankYouMsg = form.dataset.thankYouMsg || payload?.body?.thankYouMessage;
-  if (redirectUrl) {
+
+  const thankyouPanel = form.querySelector('fieldset[name="thankyou_visible_panel"]');
+  if (thankyouPanel) {
+    thankyouPanel.dataset.visible = 'true';
+    const reviewPanel = form.querySelector('fieldset[name="review_panel"]');
+    if (reviewPanel) reviewPanel.dataset.visible = 'false';
+    thankyouPanel.scrollIntoView?.({ behavior: 'smooth' });
+  } else if (redirectUrl) {
     window.location.assign(encodeURI(redirectUrl));
   } else {
     let thankYouMessage = form.parentNode.querySelector('.form-message.success-message');
@@ -31,7 +89,13 @@ export function submitSuccess(e, form) {
   if (submitBtn) submitBtn.disabled = false;
 }
 
-export function submitFailure(e, form) {
+export function submitFailure(_e, form) {
+  const thankyouPanel = form.querySelector('fieldset[name="thankyou_visible_panel"]');
+  if (thankyouPanel) {
+    thankyouPanel.dataset.visible = 'false';
+    const reviewPanel = form.querySelector('fieldset[name="review_panel"]');
+    if (reviewPanel) reviewPanel.dataset.visible = 'true';
+  }
   const defaultErrorMsg = 'Some error occured while submitting the form';
   const errorMsg = formPlaceholders?.formSubmissionErrorMessage || defaultErrorMsg;
   let errorMessage = form.querySelector('.form-message.error-message');

@@ -424,6 +424,18 @@ function isAuthoringInstance(block) {
   return hasAueAttrs && window.self !== window.top;
 }
 
+async function fetchBlockAuthoringData(blockKey) {
+  try {
+    const pagePath = window.location.pathname.replace('.html', '');
+    const resp = await fetch(`${pagePath}/_jcr_content.infinity.json`);
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    return data?.root?.section?.[blockKey] || null;
+  } catch {
+    return null;
+  }
+}
+
 if (window.LAZY_PHASE) {
   handleGlobalLinkClicks();
 } else {
@@ -549,6 +561,7 @@ export {
   loadBreadcrumb,
   loadWelcomeBanner,
   isAuthoringInstance,
+  fetchBlockAuthoringData,
   buildCookieAlert,
   getLang,
   createPictureWithoutOptimization,
