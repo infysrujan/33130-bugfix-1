@@ -115,6 +115,10 @@ main .form form .field-wrapper.wizard {
     display: none;
   }
 
+  .button-tertiary::after {
+    display: none;
+  }
+
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper {
