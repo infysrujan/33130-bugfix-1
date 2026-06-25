@@ -6,8 +6,6 @@ import { fetchJson } from '../../scripts/utils/card-helpers.js';
 import { fetchPost } from '../../scripts/utils/fetchApi.js';
 import { loadChartJs, renderChart, buildChartLegend } from './saving-plan-chart.js';
 
-const INFLATION_RATE = 1.5;
-
 const ICON_BASE = '/icons/saving-plan';
 const ICONS_CACHE = {};
 
@@ -169,6 +167,7 @@ function buildDataFromConfig(json, lang, placeholders) {
       balance: Number(C['defaultFormValues-savedAmount']) || 0,
       annualReturn: Number(C['defaultFormValues-expectedReturnRate']) || 0.5,
       annualIncrease: Number(C['defaultFormValues-annualSavingIncreaseRate']) || 0,
+      inflationRate: Number(C['defaultFormValues-inflationRate']),
     },
     validation: {
       goalAmount: { min: 10000 },
@@ -214,8 +213,8 @@ function solveMonthly({
   return coefficient === 0 ? 0 : needed / coefficient;
 }
 
-function getFallbackCalculation(inputs) {
-  const futureValue = inputs.goalAmount * (1 + INFLATION_RATE / 100) ** inputs.goalPeriod;
+function getFallbackCalculation(inputs, inflationRate) {
+  const futureValue = inputs.goalAmount * (1 + inflationRate / 100) ** inputs.goalPeriod;
   return {
     FutureValue: futureValue,
     SavingMonth: solveMonthly({
@@ -242,22 +241,22 @@ function normalizeCalculationResponse(payload, fallback) {
   };
 }
 
-function buildCalculationPayload(inputs) {
+function buildCalculationPayload(inputs, inflationRate) {
   return {
     FutureSavingAmount: inputs.goalAmount,
     NYear: inputs.goalPeriod,
     FirstSavingAmount: inputs.balance,
     CompensationRate: inputs.annualReturn / 100,
     SavingIncRate: inputs.annualIncrease / 100,
-    inflationrate: INFLATION_RATE,
+    inflationrate: inflationRate,
   };
 }
 
-async function fetchCalculation(inputs, calcUrl, apimKey) {
-  const fallback = getFallbackCalculation(inputs);
+async function fetchCalculation(inputs, calcUrl, apimKey, inflationRate) {
+  const fallback = getFallbackCalculation(inputs, inflationRate);
   if (!calcUrl) return fallback;
   try {
-    const payload = buildCalculationPayload(inputs);
+    const payload = buildCalculationPayload(inputs, inflationRate);
     // eslint-disable-next-line no-console
     console.log('[saving-plan] API request payload:', payload);
     const json = await fetchPost(calcUrl, payload, {
@@ -697,7 +696,7 @@ async function renderNewPlan(state, data, tweakInputs) {
     annualIncrease: tweakInputs.annualIncrease,
   };
   // eslint-disable-next-line max-len
-  const calculation = await fetchCalculation(tweakApiInputs, state.config.calcUrl, state.config.apimKey);
+  const calculation = await fetchCalculation(tweakApiInputs, state.config.calcUrl, state.config.apimKey, data.defaults.inflationRate);
   const futureText = fillTemplate(data.labels.newPlan.futureValueTemplate, {
     amount: `<strong>${escapeHtml(formatNumber(calculation.FutureValue))}</strong>`,
     years: `<strong>${escapeHtml(String(baseInputs.goalPeriod))}</strong>`,
@@ -931,7 +930,7 @@ function attachHandlers(state, data) {
     const chartShown = !root.querySelector('.saving-plan-chart-row')?.hasAttribute('hidden');
     if (!chartShown) return;
 
-    const calculation = getFallbackCalculation(inputs);
+    const calculation = getFallbackCalculation(inputs, data.defaults.inflationRate);
     state.calculatedInputs = inputs;
     state.calculatedCalculation = calculation;
     renderResult(state, data, calculation);
@@ -966,7 +965,8 @@ function attachHandlers(state, data) {
     const inputs = readInputs(root);
     if (!applyValidation(root, inputs, data)) return;
     // Fetch from API and store result; falls back to local calculation if API unavailable
-    const calculation = await fetchCalculation(inputs, state.config.calcUrl, state.config.apimKey);
+    // eslint-disable-next-line max-len
+    const calculation = await fetchCalculation(inputs, state.config.calcUrl, state.config.apimKey, data.defaults.inflationRate);
     state.calculatedInputs = inputs;
     state.calculatedCalculation = calculation;
     state.tweakActive = false;
