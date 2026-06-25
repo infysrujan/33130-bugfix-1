@@ -300,6 +300,10 @@ async function loadWelcomeBanner(doc) {
 }
 
 async function loadBreadcrumb(doc) {
+  const isMobileAppView = doc.body.classList.contains('mobile-app-view');
+  if (isMobileAppView) {
+    return;
+  }
   const breadcrumbsMeta = getMetadata('breadcrumbs') || 'true';
   if (breadcrumbsMeta.toLowerCase() === 'true') {
     const footer = doc.querySelector('footer');

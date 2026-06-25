@@ -392,7 +392,6 @@ function setupPanel(
 
 export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
-  handleMobileAppView(searchParams);
 
   const { pathname } = window.location;
   const { isBbmPath, isCreditCardPath } = getPromotionPathFlags(pathname);
@@ -421,6 +420,7 @@ export default async function decorate(block) {
     creditBaseUrl,
   });
   const { isBbm, promotionType } = promotionApi;
+  handleMobileAppView(searchParams, isBbm);
 
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;

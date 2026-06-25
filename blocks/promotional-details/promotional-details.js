@@ -248,7 +248,6 @@ async function fetchPromotionalData(url, promoId) {
 
 export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
-  handleMobileAppView(searchParams);
 
   const { promotionType: blockPromoType, promoId } = extractBlockConfig(block);
   const { pathname } = window.location;
@@ -275,6 +274,8 @@ export default async function decorate(block) {
     bbmBaseUrl,
     creditBaseUrl,
   });
+  const { isBbm } = promotionApi;
+  handleMobileAppView(searchParams, isBbm);
 
   const locale = LOCALE_MAP[lang] || 'en-GB';
   const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);

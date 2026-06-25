@@ -138,12 +138,13 @@ export function getPromotionDataUrl(baseUrl, lang) {
   return localized + search + hash;
 }
 
-export function handleMobileAppView(searchParams) {
+export function handleMobileAppView(searchParams, isBbm) {
   const hasCardRef = searchParams.has('card_ref');
+  const shouldHide = hasCardRef && isBbm;
   ['header', 'footer'].forEach((selector) => {
     const el = document.querySelector(selector);
     if (el) {
-      if (hasCardRef) {
+      if (shouldHide) {
         el.style.display = 'none';
         el.classList.add('is-hidden');
       } else {
@@ -153,7 +154,7 @@ export function handleMobileAppView(searchParams) {
     }
   });
 
-  if (hasCardRef) {
+  if (shouldHide) {
     document.body.classList.add(MOBILE_APP_VIEW_CLASS);
   } else {
     document.body.classList.remove(MOBILE_APP_VIEW_CLASS);
