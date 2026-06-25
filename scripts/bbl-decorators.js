@@ -300,7 +300,7 @@ async function loadWelcomeBanner(doc) {
 }
 
 async function loadBreadcrumb(doc) {
-  const isMobileAppView = doc.body.classList.contains('mobile-app-view');
+  const isMobileAppView = doc?.body?.classList?.contains('mobile-app-view');
   if (isMobileAppView) {
     return;
   }

@@ -419,13 +419,13 @@ export default async function decorate(block) {
     bbmBaseUrl,
     creditBaseUrl,
   });
-  const { isBbm, promotionType } = promotionApi;
+  const { isBbm, promotionType, baseUrl } = promotionApi || {};
   handleMobileAppView(searchParams, isBbm);
 
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
 
-  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
+  const promotionsUrl = getPromotionDataUrl(baseUrl, lang);
   const [activeData, cardRefConfig, placeholders] = await Promise.all([
     fetchPromotionalData(promotionsUrl),
     fetchJson(effectiveConfigs.bbmCardRef || ''),

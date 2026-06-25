@@ -274,11 +274,11 @@ export default async function decorate(block) {
     bbmBaseUrl,
     creditBaseUrl,
   });
-  const { isBbm } = promotionApi;
+  const { isBbm, baseUrl } = promotionApi || {};
   handleMobileAppView(searchParams, isBbm);
 
   const locale = LOCALE_MAP[lang] || 'en-GB';
-  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
+  const promotionsUrl = getPromotionDataUrl(baseUrl, lang);
 
   const [placeholders, card] = await Promise.all([
     fetchPlaceholders(),
