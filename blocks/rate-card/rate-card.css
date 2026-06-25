@@ -152,12 +152,6 @@
   background: transparent;
 }
 
-/* Right-align Buy/Sell/Rate/NAV columns */
-.rate-card table thead th:not(:first-child) {
-  text-align: right;
-  width: var(--bbl-space-1000);
-}
-
 .rate-card table tbody td {
   padding: 0.3125rem 0;
   font-size: 0.875rem;
@@ -168,15 +162,20 @@
   height: 2.25rem;
 }
 
+/* Right-align Buy/Sell/Rate/NAV columns */
+.rate-card table thead th:not(:first-child),
+.rate-card table tbody td:not(:first-child) {
+  text-align: center;
+
+}
+
 .rate-card table tbody td.text-right {
   text-align: right;
 }
 
 /* Values in the rate columns (Buy/Sell/Rate/NAV) — bold & larger */
 .rate-card table tbody td:not(:first-child) {
-  text-align: right;
   font-size: 1.3125rem;
-  font-variant-numeric: tabular-nums;
 }
 
 /* --------------------------------------------------------------------------
@@ -398,11 +397,8 @@
     height: 2.5625rem;
   }
 
-  .rate-card table thead th:not(:first-child) {
-    width: 4.375rem;
-  }
-
   .rate-card table tbody td:not(:first-child) {
+    padding-left: 0.625rem; 
     font-size: 1.5rem;
   }
 

@@ -510,6 +510,10 @@
   overflow: visible;
 }
 
+.card-list-container.hidden {
+  display: none;
+}
+
 @media (width > 47.5rem) {
   .cards-list-date p,
   .cards-list-remark p,

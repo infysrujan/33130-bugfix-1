@@ -10,6 +10,7 @@ import decorateBondAllocationForm from './form-custom/bond-allocation/bond-alloc
 import decorateSipForm from './form-custom/sip-form/sip-form.js';
 import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
 import decorateBelovedHealthSaver from './form-custom/bt-beloved-health-saver/bt-beloved-health-saver.js';
+import decorateReliefMeasures from './form-custom/relief-measures/relief-measures.js';
 import {
   checkValidation,
   createButton,
@@ -353,6 +354,7 @@ async function createFormForAuthoring(formDef) {
   decorateBondAllocationForm(form);
   decorateSipForm(form);
   decorateSmeLoanForm(form);
+  decorateReliefMeasures(form);
   return form;
 }
 
@@ -412,6 +414,7 @@ export async function createForm(formDef, data, source = 'aem') {
   decorateSipForm(form);
   decorateSmeLoanForm(form);
   decorateBelovedHealthSaver(form);
+  decorateReliefMeasures(form);
   return {
     form,
     captcha,
@@ -587,7 +590,7 @@ export default async function decorate(block) {
       }
     }
     form.dataset.redirectUrl = formDef.redirectUrl || '';
-    form.dataset.thankYouMsg = formDef.thankYouMsg || '';
+    form.dataset.thankYouMsg = formDef.thankYouMessage || formDef.thankYouMsg || '';
     form.dataset.action = formDef.action || pathname?.split('.json')[0];
     form.dataset.source = source;
     form.dataset.rules = rules;

@@ -1,3 +1,8 @@
+/* ── Block-scoped design tokens ──────────────────────────── */
+:root {
+  --bbl-font-size-15: 0.9375rem;
+}
+
 /* ── Wrapper paragraph reset (must precede higher-specificity rules) ── */
 .sme-loan-calculator-wrapper > p {
   width: 100%;

@@ -95,6 +95,18 @@
           "valueType": "string",
           "multi": true,
           "description": "Description for each card, one per row. Supports inline HTML (e.g. asterisk footnotes). Order must match Card Titles."
+        },
+        {
+          "component": "select",
+          "name": "properties.cardStyle",
+          "label": "Card Style",
+          "valueType": "string",
+          "value": "menu-card-default",
+          "description": "Choose how cards are displayed: default grid layout or horizontal scrollable row.",
+          "options": [
+            { "name": "Default", "value": "menu-card-default" },
+            { "name": "Scrollable", "value": "menu-card-scrollable" }
+          ]
         }
       ]
     }

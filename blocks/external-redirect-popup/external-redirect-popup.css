@@ -4,6 +4,8 @@
 
 /* ── Overlay ── */
 .external-redirect-popup {
+  --external-redirect-popup-title-font-size: 1.3125rem;
+
   display: none;
   position: fixed;
   left: 0;
@@ -92,7 +94,7 @@
 .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
   margin: 0;
   font-family: BangkokBank-Bold, 'BBL Sans', BangkokBank-Regular, sans-serif;
-  font-size: var(--bbl-font-size-h1-mobile);
+  font-size: var(--external-redirect-popup-title-font-size);
   line-height: 1.4219rem;
   color: var(--bbl-color-truthful-blue);
   font-weight: 400;
