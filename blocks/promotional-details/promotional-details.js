@@ -248,16 +248,16 @@ async function fetchPromotionalData(url, promoId) {
 
 export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
-  handleMobileAppView(searchParams);
-
-  const { promotionType: blockPromoType, promoId } = extractBlockConfig(block);
   const { pathname } = window.location;
   const { isBbmPath, isCreditCardPath } = getPromotionPathFlags(pathname);
+  const { promotionType: blockPromoType, promoId } = extractBlockConfig(block);
+  const isBbmPreConfig = isBbmPath
+    || (!isCreditCardPath && normalizePromotionType(blockPromoType) === 'bangkok-bank-m');
+
+  handleMobileAppView(searchParams, isBbmPreConfig);
 
   const docLang = getLang();
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
-  const isBbmPreConfig = isBbmPath
-    || (!isCreditCardPath && normalizePromotionType(blockPromoType) === 'bangkok-bank-m');
   const lang = getPromotionLanguage(docLang, queryLang, isBbmPreConfig);
 
   const configs = await fetchConfigs();
