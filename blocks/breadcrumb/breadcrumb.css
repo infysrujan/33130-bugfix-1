@@ -93,6 +93,11 @@
   color: var(--bbl-text-link);
 }
 
+body.mobile-app-view .breadcrumb-wrapper,
+body.mobile-app-view .breadcrumb {
+  display: none;
+}
+
 @media (width > 47.5rem) {
   .breadcrumb-wrapper {
     display: flex;
