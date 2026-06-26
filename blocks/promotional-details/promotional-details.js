@@ -248,17 +248,31 @@ async function fetchPromotionalData(url, promoId) {
 
 export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
+
+  const { promotionType: blockPromoType, promoId } = extractBlockConfig(block);
   const { pathname } = window.location;
   const { isBbmPath, isCreditCardPath } = getPromotionPathFlags(pathname);
-  const { promotionType: blockPromoType, promoId } = extractBlockConfig(block);
-  const isBbmPreConfig = isBbmPath
-    || (!isCreditCardPath && normalizePromotionType(blockPromoType) === 'bangkok-bank-m');
-
-  handleMobileAppView(searchParams, isBbmPreConfig);
 
   const docLang = getLang();
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
+  const isBbmPreConfig = isBbmPath
+    || (!isCreditCardPath && normalizePromotionType(blockPromoType) === 'bangkok-bank-m');
   const lang = getPromotionLanguage(docLang, queryLang, isBbmPreConfig);
+
+  if (isBbmPreConfig) {
+    const hasCardRef = searchParams.has('card_ref') || document.referrer.includes('card_ref');
+
+    let isMobileView = hasCardRef;
+    try {
+      if (hasCardRef) sessionStorage.setItem('mobile-app-view', 'true');
+      isMobileView = hasCardRef || sessionStorage.getItem('mobile-app-view') === 'true';
+    } catch (e) {
+      console.error('Failed to access sessionStorage for mobile-app-view:', e);
+    }
+
+    if (isMobileView) searchParams.set('card_ref', 'true');
+    handleMobileAppView(searchParams);
+  }
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};

@@ -138,34 +138,26 @@ export function getPromotionDataUrl(baseUrl, lang) {
   return localized + search + hash;
 }
 
-export function handleMobileAppView(searchParams, isBbm = true) {
-  let isMobileView = false;
-  if (isBbm) {
-    const hasCardRef = searchParams.has('card_ref') || document.referrer.includes('card_ref');
-    let isSessionMobileView = false;
-    try {
-      if (hasCardRef) {
-        sessionStorage.setItem('mobile-app-view', 'true');
-      }
-      isSessionMobileView = sessionStorage.getItem('mobile-app-view') === 'true';
-    } catch (e) {
-      // Ignore sessionStorage errors
-    }
-    isMobileView = hasCardRef || isSessionMobileView;
-    if (isMobileView) {
-      searchParams.set('card_ref', 'true');
-    }
-  }
-
+export function handleMobileAppView(searchParams) {
+  const hasCardRef = searchParams.has('card_ref');
   ['header', 'footer'].forEach((selector) => {
     const el = document.querySelector(selector);
     if (el) {
-      el.style.display = isMobileView ? 'none' : '';
-      el.classList.toggle('is-hidden', isMobileView);
+      if (hasCardRef) {
+        el.style.display = 'none';
+        el.classList.add('is-hidden');
+      } else {
+        el.style.display = '';
+        el.classList.remove('is-hidden');
+      }
     }
   });
 
-  document.body.classList.toggle(MOBILE_APP_VIEW_CLASS, isMobileView);
+  if (hasCardRef) {
+    document.body.classList.add(MOBILE_APP_VIEW_CLASS);
+  } else {
+    document.body.classList.remove(MOBILE_APP_VIEW_CLASS);
+  }
 }
 
 function formatDate(dateStr, locale = 'en-GB') {
