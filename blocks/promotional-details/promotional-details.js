@@ -248,7 +248,6 @@ async function fetchPromotionalData(url, promoId) {
 
 export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
-  handleMobileAppView(searchParams);
 
   const { promotionType: blockPromoType, promoId } = extractBlockConfig(block);
   const { pathname } = window.location;
@@ -258,6 +257,24 @@ export default async function decorate(block) {
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
   const isBbmPreConfig = isBbmPath
     || (!isCreditCardPath && normalizePromotionType(blockPromoType) === 'bangkok-bank-m');
+
+  if (isBbmPreConfig) {
+    const hasCardRef = searchParams.has('card_ref') || document.referrer.includes('card_ref');
+    let isSessionMobileView = false;
+    try {
+      if (hasCardRef) {
+        sessionStorage.setItem('mobile-app-view', 'true');
+      }
+      isSessionMobileView = sessionStorage.getItem('mobile-app-view') === 'true';
+    } catch (e) {
+      console.error('Failed to access sessionStorage for mobile-app-view:', e);
+    }
+    if (hasCardRef || isSessionMobileView) {
+      searchParams.set('card_ref', 'true');
+    }
+    handleMobileAppView(searchParams);
+  }
+
   const lang = getPromotionLanguage(docLang, queryLang, isBbmPreConfig);
 
   const configs = await fetchConfigs();
