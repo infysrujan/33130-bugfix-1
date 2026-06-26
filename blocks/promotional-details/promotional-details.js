@@ -258,22 +258,20 @@ export default async function decorate(block) {
   const isBbmPreConfig = isBbmPath
     || (!isCreditCardPath && normalizePromotionType(blockPromoType) === 'bangkok-bank-m');
 
-  if (isBbmPreConfig) {
-    const hasCardRef = searchParams.has('card_ref') || document.referrer.includes('card_ref');
-    let isSessionMobileView = false;
-    try {
-      if (hasCardRef) {
-        sessionStorage.setItem('mobile-app-view', 'true');
-      }
-      isSessionMobileView = sessionStorage.getItem('mobile-app-view') === 'true';
-    } catch (e) {
-      console.error('Failed to access sessionStorage for mobile-app-view:', e);
-    }
-    if (hasCardRef || isSessionMobileView) {
-      searchParams.set('card_ref', 'true');
-    }
-    handleMobileAppView(searchParams);
+if (isBbmPreConfig) {
+  const hasCardRef = searchParams.has('card_ref') || document.referrer.includes('card_ref');
+
+  let isMobileView = hasCardRef;
+  try {
+    if (hasCardRef) sessionStorage.setItem('mobile-app-view', 'true');
+    isMobileView = hasCardRef || sessionStorage.getItem('mobile-app-view') === 'true';
+  } catch (e) {
+    console.error('Failed to access sessionStorage for mobile-app-view:', e);
   }
+
+  if (isMobileView) searchParams.set('card_ref', 'true');
+  handleMobileAppView(searchParams);
+}
 
   const lang = getPromotionLanguage(docLang, queryLang, isBbmPreConfig);
 
