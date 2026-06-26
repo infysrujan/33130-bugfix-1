@@ -271,8 +271,9 @@ async function loadWelcomeBanner(doc) {
     return undefined;
   }
 
-  const lang = doc.documentElement.lang || 'en';
-  const path = `/${lang}/fragments/welcome-banner/welcome-banner`;
+  const configData = await fetchConfigs();
+  const path = configData.welcomeBannerFragmentPath;
+  if (!path) return undefined;
 
   welcomeBannerLoadPromise = new Promise((resolve) => {
     document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
@@ -424,13 +425,11 @@ function isAuthoringInstance(block) {
   return hasAueAttrs && window.self !== window.top;
 }
 
-async function fetchBlockAuthoringData(blockKey) {
+async function fetchBlockAuthoringData(blockName) {
   try {
-    const pagePath = window.location.pathname.replace('.html', '');
-    const resp = await fetch(`${pagePath}/_jcr_content.infinity.json`);
+    const resp = await fetch(`/tools/authoring-data/${blockName}.json`);
     if (!resp.ok) return null;
-    const data = await resp.json();
-    return data?.root?.section?.[blockKey] || null;
+    return resp.json();
   } catch {
     return null;
   }
