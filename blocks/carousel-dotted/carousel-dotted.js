@@ -237,38 +237,10 @@ export default async function decorate(block) {
   if (block.dataset.carouselInit) return;
   block.dataset.carouselInit = 'true';
 
-  const rows = [...block.children].filter((row) => !row.classList.contains('carousel-rendered'));
+  const rows = [...block.children];
   const hasAuthoringAttrs = rows.some((row) => [...row.attributes]
     .some(({ name }) => name.startsWith('data-aue-')));
   const isAuthoring = hasAuthoringAttrs && window.self !== window.top;
-  const sourceRows = rows;
-
-  const stripAuthoringAttrs = (root) => {
-    if (!root) return;
-    const all = [root, ...root.querySelectorAll('*')];
-    all.forEach((el) => {
-      [...el.attributes]
-        .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
-        .forEach(({ name }) => el.removeAttribute(name));
-    });
-  };
-
-  const ensureRenderHost = () => {
-    if (!isAuthoring) return block;
-    let host = block.querySelector(':scope > .carousel-rendered');
-    if (!host) {
-      host = document.createElement('div');
-      host.className = 'carousel-rendered';
-      block.append(host);
-    }
-    return host;
-  };
-
-  if (isAuthoring) {
-    sourceRows.forEach((row) => {
-      row.style.display = 'none';
-    });
-  }
 
   // Read configuration values from block rows
   const dotsAlignment = readDotsAlignment(rows[0]);
@@ -297,9 +269,7 @@ export default async function decorate(block) {
   const isMfCardListCarousel = variant === 'mf-card-list-carousel';
 
   const slides = rows.slice(nextIndex);
-  const renderSlides = isAuthoring
-    ? slides.map((row) => row.cloneNode(true))
-    : slides;
+  const renderSlides = slides;
   block.classList.add('content');
 
   if (showDots) {
@@ -318,7 +288,7 @@ export default async function decorate(block) {
     block.classList.add('mf-card-list-carousel');
   }
 
-  if (autoScroll) {
+  if (autoScroll && !isAuthoring) {
     block.classList.add('auto-scroll');
     if (scrollTimeDelay) block.dataset.scrollDelay = scrollTimeDelay;
   }
@@ -606,7 +576,7 @@ export default async function decorate(block) {
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
 
-  const renderHost = ensureRenderHost();
+  const renderHost = block;
   if (allHeroBanner) {
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
@@ -693,9 +663,7 @@ export default async function decorate(block) {
     renderHost.append(moreWrap);
   }
 
-  if (isAuthoring) {
-    stripAuthoringAttrs(renderHost);
-  }
+  // No attribute stripping in authoring mode
 
   if (slideEls.length) {
     setActive(0);
@@ -720,7 +688,7 @@ export default async function decorate(block) {
     isFirstLoad = false;
   });
 
-  if (autoScroll) {
+  if (autoScroll && !isAuthoring) {
     const delay = scrollTimeDelay ? parseInt(scrollTimeDelay, 10) : 3000;
     initializeAutoScroll(block, slideEls, setActive, prevArrow, nextArrow, dotButtons, delay, 1);
   }

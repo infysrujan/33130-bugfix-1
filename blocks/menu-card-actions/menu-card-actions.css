@@ -252,6 +252,7 @@
 }
 
 .menu-card-action-date {
+  font-size: var(--bbl-body-b1-size);
   line-height: 1.203rem;
   color: var(--bbl-color-grey-85);
   padding-top: var(--bbl-space-250);
@@ -275,10 +276,6 @@
   z-index: 10;
 }
 
-.menu-card-action.scrollable:has(.global-dropdown.is-open) {
-  overflow: visible;
-}
-
 .menu-card-action-inner .download-button-wrapper .download-files {
   padding: 0 var(--bbl-space-500) 0 var(--bbl-space-250);
 }
@@ -296,6 +293,10 @@
 }
 
 @media (width > 47.5rem) {
+  .menu-card-action.scrollable .global-dropdown-panel li a {
+    white-space: normal;
+  }
+
   .menu-card-action.stacked {
     gap: 0 var(--bbl-space-250);
     justify-content: center;
@@ -316,9 +317,6 @@
     font-family: var(--bbl-font-family-medium);
   }
 
-  .menu-card-action-date {
-    font-size: var(--bbl-font-size-b2);
-  }
 
   .menu-card-action-description ul li{
     font-size: var(--bbl-font-size-b2);
@@ -326,6 +324,10 @@
 }
 
 @media (width > 64rem) {
+  .menu-card-action.scrollable .global-dropdown-panel li a {
+    white-space: nowrap;
+  }
+
   .menu-card-actions-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
     font-size: 3rem;
     line-height: 2.875rem;
@@ -400,7 +402,6 @@
   }
 
   .menu-card-action-date {
-    font-size: var(--bbl-font-size-b1);
     line-height: 1.375rem;
   }
 

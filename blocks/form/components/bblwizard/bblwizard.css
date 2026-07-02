@@ -1,0 +1,193 @@
+/* ==========================================================================
+   BBL Wizard Steps — horizontal step progress indicator
+   Breakpoints: mobile < 760px | tablet 760–1024px | desktop >= 1025px
+   ========================================================================== */
+
+.field-bbl-wizard {
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Step track — flex row containing alternating [step] [connector] [step]
+   -------------------------------------------------------------------------- */
+
+.bbl-wizard-steps {
+  display: flex;
+  align-items: flex-start; /* steps + connectors all start at top; margin-top positions connectors */
+  justify-content: center;
+  padding: 24px 16px 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   Individual step — circle + label stacked vertically
+   -------------------------------------------------------------------------- */
+
+.bbl-wizard-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 80px;
+  max-width: 120px;
+}
+
+/* --------------------------------------------------------------------------
+   Indicator circle
+   -------------------------------------------------------------------------- */
+
+.bbl-wizard-step-indicator {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+
+  /* Inactive (default) */
+  background-color: var(--bbl-color-white, #fff);
+  border: 2px solid var(--bbl-color-grey-40, #c8c8cc);
+  color: var(--bbl-color-grey-60, #939399);
+}
+
+/* Active step — outlined blue */
+.bbl-wizard-step.is-active .bbl-wizard-step-indicator {
+  background-color: var(--bbl-color-white, #fff);
+  border-color: var(--bbl-color-active-blue, #0064ff);
+  color: var(--bbl-color-active-blue, #0064ff);
+}
+
+/* Completed step — filled blue + white checkmark */
+.bbl-wizard-step.is-completed .bbl-wizard-step-indicator {
+  background-color: var(--bbl-color-active-blue, #0064ff);
+  border-color: var(--bbl-color-active-blue, #0064ff);
+  color: var(--bbl-color-white, #fff);
+}
+
+.bbl-wizard-step.is-completed .bbl-wizard-step-indicator svg {
+  width: 20px;
+  height: 20px;
+  fill: currentcolor;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Step label
+   -------------------------------------------------------------------------- */
+
+.bbl-wizard-step-title {
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--bbl-color-grey-60, #939399);
+  transition: color 0.25s ease, font-weight 0.25s ease;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.bbl-wizard-step.is-active .bbl-wizard-step-title,
+.bbl-wizard-step.is-completed .bbl-wizard-step-title {
+  color: var(--bbl-color-truthful-blue, #002850);
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   Connector line — sits between two step items in the flex row.
+   margin-top = (indicator height - connector height) / 2
+   so the 2 px line aligns with the vertical centre of the 40 px circle.
+   -------------------------------------------------------------------------- */
+
+.bbl-wizard-step-connector {
+  flex: 1 1 0;
+  min-width: 16px;
+  height: 2px;
+  margin-top: 19px; /* (40px circle − 2px line) / 2 */
+  background-color: var(--bbl-color-grey-40, #c8c8cc);
+  transition: background-color 0.25s ease;
+}
+
+/* Connector between two completed/active steps is blue */
+.bbl-wizard-step-connector.is-completed {
+  background-color: var(--bbl-color-active-blue, #0064ff);
+}
+
+/* ==========================================================================
+   Mobile — < 760px
+   ========================================================================== */
+
+@media (width < 760px) {
+  .bbl-wizard-steps {
+    padding: 16px 8px 6px;
+  }
+
+  .bbl-wizard-step {
+    min-width: 56px;
+    max-width: 88px;
+    gap: 6px;
+  }
+
+  .bbl-wizard-step-indicator {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .bbl-wizard-step.is-completed .bbl-wizard-step-indicator svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .bbl-wizard-step-title {
+    font-size: 10px;
+  }
+
+  .bbl-wizard-step-connector {
+    min-width: 8px;
+    margin-top: 15px; /* (32px − 2px) / 2 */
+  }
+}
+
+/* ==========================================================================
+   Desktop — >= 1025px
+   ========================================================================== */
+
+@media (width >= 1025px) {
+  .bbl-wizard-steps {
+    padding: 28px 24px 10px;
+  }
+
+  .bbl-wizard-step {
+    min-width: 100px;
+    max-width: 148px;
+    gap: 10px;
+  }
+
+  .bbl-wizard-step-indicator {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+  }
+
+  .bbl-wizard-step.is-completed .bbl-wizard-step-indicator svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .bbl-wizard-step-title {
+    font-size: 13px;
+  }
+
+  .bbl-wizard-step-connector {
+    margin-top: 23px; /* (48px − 2px) / 2 */
+  }
+}

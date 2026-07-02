@@ -68,7 +68,7 @@
   outline: none;
   transition: all 0.3s ease;
   white-space: nowrap;
-	border-radius: 2rem;
+  border-radius: 2rem;
 }
 
 .rate-card .tab-header a.active,
@@ -101,7 +101,7 @@
   width: 100%;
 }
 
-.rate-card section > div {
+.rate-card section>div {
   display: none;
 }
 
@@ -111,7 +111,7 @@
   margin-bottom: 0;
 }
 
-.rate-card section > div.active {
+.rate-card section>div.active {
   display: block;
 }
 
@@ -351,7 +351,8 @@
     min-height: auto;
   }
 
-  .rate-card .tab-header a, .rate-card .tab-header a:any-link {
+  .rate-card .tab-header a,
+  .rate-card .tab-header a:any-link {
     padding: 0.4375rem 1rem 0.3125rem;
   }
 
@@ -372,9 +373,9 @@
    DESKTOP (> 64rem)
    ========================================================================== */
 @media (width > 64rem) {
-	.rate-card {
+  .rate-card {
     padding: 1.25rem 0;
-	}
+  }
 
   .rate-card .currency-info {
     max-width: 100%;
@@ -382,10 +383,10 @@
     min-height: 27.8125rem;
   }
 
-  .rate-card .tab-header a, 
-	.rate-card .tab-header a:any-link {
+  .rate-card .tab-header a,
+  .rate-card .tab-header a:any-link {
     padding: 0.4375rem 1rem 0.3125rem;
-    font-family:var(--bbl-font-family-medium);
+    font-family: var(--bbl-font-family-medium);
   }
 
   .rate-card .country-select span,
@@ -403,10 +404,11 @@
   }
 
   .rate-card table tbody td:not(:first-child) {
+    padding-left: 0.625rem;
     font-size: 1.5rem;
   }
 
-  .rate-card section > .inner:first-child .default-wrap{
+  .rate-card section>.inner:first-child .default-wrap {
     position: absolute;
     bottom: -20%;
   }
@@ -415,17 +417,15 @@
     font-size: 1.5rem;
   }
 
-	.rate-card .link-primary.pull-right {
+  .rate-card .link-primary.pull-right {
     font-size: 0.8rem;
-	}
-}
+  }
 
 /* --------------------------------------------------------------------------
    EQUAL-HEIGHT COLUMNS — Desktop only
    Switch columns-3 section to CSS grid when rate-card is present.
    Grid rows naturally make all children equal height without height:100% propagation.
    -------------------------------------------------------------------------- */
-@media (width > 64rem) {
   .section.columns-3:has(.rate-card) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -433,7 +433,7 @@
   }
 
   /* Reset flex-specific width/flex overrides from styles.css */
-  .section.columns-3:has(.rate-card) > * {
+  .section.columns-3:has(.rate-card)>* {
     width: auto;
     flex: unset;
     min-width: 0;

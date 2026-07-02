@@ -10,6 +10,7 @@
   margin: 0 auto;
   background: var(--bbl-color-white);
   box-sizing: border-box;
+  padding: 0 var(--bbl-space-200);
 }
 
 /* ── Disclaimer ───────────────────────────────────────────────────────────── */
@@ -167,7 +168,6 @@
 
 .mfr-no-results {
   text-align: center;
-  padding-top: 1.875rem;
   font-size: var(--bbl-font-size-b1, 1rem);
   color: var(--bbl-color-grey-70);
   margin:0;
@@ -389,8 +389,8 @@
     font-size: var(--bbl-font-size-b1, 1rem);
   }
 
-  .mfr-no-results {
-    padding-bottom: 1.875rem;
+  .mf-results-container .default-content-wrapper p {
+  padding-bottom: 1.875rem;
   }
 
   .card-list.mf-results .cards-list.scrollable {
@@ -399,6 +399,7 @@
     scroll-snap-type: none;
     gap: 0 var(--bbl-space-250);
     padding: 0;
+    justify-content: center;
   }
 
   .card-list.mf-results .cards-list.scrollable .cards-list-item {
@@ -423,10 +424,6 @@
 /* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
 
 @media (width > 64rem) {
-  .mfr-wrapper {
-    padding: var(--bbl-space-600) var(--bbl-space-200);
-  }
-
   .card-list.mf-results .cards-list.scrollable {
     gap: 0 var(--bbl-space-500);
   }

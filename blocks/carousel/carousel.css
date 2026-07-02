@@ -71,6 +71,12 @@
     color: var(--bbl-color-active-blue);
 }
 
+.bangkok-bankm-card .carousel-header h2,
+.bangkok-bankm-card .carousel-header a {
+    color: var(--bbl-color-white);
+}
+
+
 .carousel-nav {
     display: none;
 }

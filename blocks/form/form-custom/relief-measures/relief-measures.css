@@ -1,0 +1,4 @@
+.relief-measures-form main .section.form-container .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) .radio-wrapper {
+    flex-wrap:wrap;
+    min-width: 100%;
+}

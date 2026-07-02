@@ -1,6 +1,6 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import { getLang, isAuthoringInstance, applyLinkTarget } from '../../scripts/bbl-decorators.js';
-import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
+import createGlobalDropdown, { attachScrollableDropdownPanel } from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
 
@@ -160,12 +160,12 @@ function createCardItem(cardRow, doc) {
     const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);
     temp.querySelectorAll('a').forEach(appendDownloadLink);
   } else if (actionType === 'select-dropdown') {
-    const dropdownCell = actionCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length >= 1);
+    const labelCell = remaining.find((c) => !c.querySelector('a') && !isToggleCell(c) && c.textContent.trim());
+    const label = labelCell?.textContent.trim() || 'Select';
+    const labelIdx = remaining.indexOf(labelCell);
+    const dropdownSearch = labelIdx >= 0 ? remaining.slice(labelIdx + 1) : remaining;
+    const dropdownCell = dropdownSearch.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length >= 1);
     if (dropdownCell) {
-      const labelCellIdx = remaining.indexOf(dropdownCell) - 1;
-      const label = (labelCellIdx >= 0 && !remaining[labelCellIdx].querySelector('a'))
-        ? remaining[labelCellIdx].textContent.trim()
-        : remaining[labelCellIdx]?.textContent.trim() || 'Select';
       inner.appendChild(createGlobalDropdown(label, dropdownCell.innerHTML, doc));
     }
   } else if (actionType && actionCells.length > 0) {
@@ -278,6 +278,8 @@ function renderCardActions(target, rows, block, doc) {
   });
 
   target.appendChild(container);
+
+  if (isScrollable) attachScrollableDropdownPanel(container, doc);
 
   if (!block.dataset.menuCardActionsDecorated) {
     block.dataset.menuCardActionsDecorated = 'true';

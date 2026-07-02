@@ -1,0 +1,168 @@
+/* =============================================================
+   Protection BT Beloved Plus — insuranceSummaryPanel layout
+   Renders the summary as a read-only card:
+     label (left)  ·····  value  unit (right, same row)
+   Premium row uses a larger blue value with an HR separator.
+   ============================================================= */
+
+/* ── Legend: suppress gray panel header ─────────────────────
+   The BBLWizard step indicator already labels this panel.    */
+fieldset[name="insuranceSummaryPanel"] > legend {
+  display: none;
+}
+
+/* ── Plan title ─────────────────────────────────────────────── */
+fieldset[name="insuranceSummaryPanel"] h5 {
+  color: var(--bbl-color-active-blue, #0064ff);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-block: 1rem;
+}
+
+/* ── Coverage field rows ─────────────────────────────────────
+   form-custom.css forces .col-11 and .col-1 to span 12 each
+   (stacked). Restore them to share one 12-column row so the
+   value and "บาท" unit appear side-by-side.                  */
+
+fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 {
+  grid-column: span 11 !important;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--bbl-color-grey-40, #e5e5ea);
+  margin: 0;
+}
+
+fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 label {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  color: var(--bbl-color-grey-85, #555);
+  font-size: 0.875rem;
+  font-weight: 400;
+  white-space: normal;
+}
+
+/* Strip input to transparent display text */
+main fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 input {
+  flex: 0 0 auto;
+  width: auto !important;
+  min-width: 4rem;
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  height: auto !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-align: right;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-truthful-blue, #002850);
+  pointer-events: none;
+}
+
+/* "บาท" unit label — col-1 */
+fieldset[name="insuranceSummaryPanel"] > .plain-text-wrapper.col-1 {
+  grid-column: span 1 !important;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0 0.75rem 0.25rem;
+  border-bottom: 1px solid var(--bbl-color-grey-40, #e5e5ea);
+  margin: 0;
+}
+
+fieldset[name="insuranceSummaryPanel"] > .plain-text-wrapper.col-1 p {
+  margin: 0;
+  color: var(--bbl-color-grey-85, #555);
+  font-size: 0.875rem;
+}
+
+/* ── Premium panel (css-summaryWithHR) ───────────────────────
+   Horizontal-rule separator + large blue premium value       */
+
+fieldset[name="css-summaryWithHR"] {
+  border: none !important;
+  border-top: 2px solid var(--bbl-color-active-blue, #0064ff) !important;
+  padding: 1rem 0 0 !important;
+  margin-top: 0 !important;
+  gap: 0;
+}
+
+fieldset[name="css-summaryWithHR"] > legend {
+  display: none;
+}
+
+fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 {
+  grid-column: span 11 !important;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  margin: 0;
+  border: none;
+}
+
+fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 label {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--bbl-color-truthful-blue, #002850);
+}
+
+/* Large blue premium value */
+main fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 input {
+  flex: 0 0 auto;
+  width: auto !important;
+  min-width: 4rem;
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  height: auto !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-align: right;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--bbl-color-active-blue, #0064ff);
+  pointer-events: none;
+}
+
+/* "บาท/ปี" unit label — col-1 */
+fieldset[name="css-summaryWithHR"] > .plain-text-wrapper.col-1 {
+  grid-column: span 1 !important;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 0 0.4rem 0.25rem;
+  margin: 0;
+}
+
+fieldset[name="css-summaryWithHR"] > .plain-text-wrapper.col-1 p {
+  margin: 0;
+  color: var(--bbl-color-grey-85, #555);
+  font-size: 0.875rem;
+}
+
+/* ── Appointment CTA — filled primary blue ───────────────────
+   bookConsultationButton renders as type='button' which
+   form-button.css styles as outlined. Override to filled.   */
+
+.field-bookconsultationbutton button[type='button'] {
+  background: var(--bbl-color-active-blue, #0064ff) !important;
+  color: var(--bbl-color-white, #fff) !important;
+  border-color: var(--bbl-color-active-blue, #0064ff) !important;
+}
+
+.field-bookconsultationbutton button[type='button']:hover {
+  background: var(--bbl-color-truthful-blue, #002850) !important;
+  border-color: var(--bbl-color-truthful-blue, #002850) !important;
+}

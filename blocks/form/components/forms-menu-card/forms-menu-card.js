@@ -134,8 +134,10 @@ export default function decorate(fieldDiv, fd) {
   const cardCount = Math.max(icons.length, titles.length, descriptions.length);
   if (cardCount === 0) return fieldDiv;
 
+  const cardStyle = getProp(fd, 'cardStyle') || 'menu-card-default';
+
   const grid = document.createElement('div');
-  grid.className = 'forms-menu-card-grid';
+  grid.className = `forms-menu-card-grid ${cardStyle}`;
 
   for (let i = 0; i < cardCount; i += 1) {
     grid.appendChild(buildCard(icons[i] || '', titles[i] || '', descriptions[i] || '', i));

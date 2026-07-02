@@ -55,20 +55,6 @@ main .section.form-container.custom-forms .form form .field-wrapper:has(> .check
   margin: 0.625rem 0;
 }
 
-main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper>.field-label {
-  position: absolute;
-  top: 0.625rem;
-  z-index: 1;
-  left: 0;
-}
-
-main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper .field-description {
-  position: absolute;
-  z-index: 1;
-  bottom: 0;
-  left: 0;
-}
-
 main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper > .field-description) {
   padding-bottom: var(--bbl-space-250);
 }
@@ -249,6 +235,11 @@ main .section.form-container.custom-forms .form form .text-wrapper.icon-username
 
 main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.radio-tabs {
   gap: var(--bbl-space-150);
+}
+
+main .section.form-container.custom-forms .form .form-message.success-message {
+ color:inherit;
+ background-color: transparent;
 }
 
 @media (width > 47.5rem) {

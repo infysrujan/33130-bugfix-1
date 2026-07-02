@@ -438,6 +438,19 @@ main .lead-forms .form form .email-wrapper::before {
   pointer-events: none;
 }
 
+main .lead-forms .form form .email-wrapper::before {
+ content: "\e919";
+  font-family: icomoon, sans-serif;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  font-size: 0.75rem;
+}
+
 main .lead-forms .form form .field-wrapper[class*='icon-'].field-invalid::before,
 main .lead-forms .form form .email-wrapper.field-invalid::before {
   top: var(--bbl-form-top-30);

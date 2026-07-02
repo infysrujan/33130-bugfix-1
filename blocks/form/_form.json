@@ -43,10 +43,7 @@
       "...": "./components/forms-menu-card/_forms-menu-card.json#/definitions"
     },
     {
-      "...": "./components/forms-card-list/_forms-card-list.json#/definitions"
-    },
-    {
-      "...": "./components/forms-card-list-item/_forms-card-list-item.json#/definitions"
+      "...": "./components/bblwizard/_bblwizard.json#/definitions"
     }
   ],
   "models": [
@@ -127,7 +124,8 @@
         "double-key-dropdown",
         "forms-menu-card",
         "forms-card-list",
-        "forms-card-list-item"
+        "forms-card-list-item",
+        "bbl-wizard"
       ]
     },
     {

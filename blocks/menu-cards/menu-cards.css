@@ -1,20 +1,16 @@
 /* Base styles (mobile-first) */
-.menu-cards {
-  /* padding: 0 var(--bbl-space-container-xs); */
-}
 
 .menu-cards .tips-insight-quick-access {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: var(--bbl-space-100);
-  margin-top: var(--bbl-space-250);
 }
 
 .menu-cards .tips-insight-quick-access-item {
   flex: 0 0 calc(33% - 1.5rem);
-  max-width: calc(33.333% - 1.5rem);
   min-height: 8.125rem;
+  box-sizing: border-box;
   border: 1px solid rgb(0 0 0 / 10%);
   background: var(--bbl-color-white);
   border-radius: 0.4375rem;
@@ -64,20 +60,15 @@
 
 /* Tablet: width > 760px */
 @media (width > 47.5rem) {
-  .menu-cards {
-    /* padding: var(--bbl-space-600); */
-  }
-
   .menu-cards .tips-insight-quick-access {
     gap: var(--bbl-space-200);
   }
 
   .menu-cards .tips-insight-quick-access-item {
-    min-height: 12.5rem;
-    max-height: 13.4375rem;
-    flex: 0 0 calc(33.333% - 4rem);
-    max-width: calc(33.333% - 4rem);
+    height: 10.35rem;
+    flex: 0 0 calc(33.62% - 4rem);
     padding: var(--bbl-space-300);
+    box-sizing: unset;
   }
 
   .menu-cards .tips-insight-quick-access-title {
@@ -95,14 +86,11 @@
 @media (width > 64rem) {
   .menu-cards .tips-insight-quick-access {
     gap: var(--bbl-space-300);
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
 
   .menu-cards .tips-insight-quick-access-item {
-    flex: 0 0 calc(33.333% - 4rem);
-    max-width: calc(33.333% - 4rem);
-    min-height: 13.125rem;
-    padding: 1.4375rem;
+    flex: 0 0 calc(32.33% - 4rem);
   }
 
   .menu-cards .tips-insight-quick-access-title {

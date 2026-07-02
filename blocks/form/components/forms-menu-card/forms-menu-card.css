@@ -35,13 +35,31 @@
 }
 
 /* ============================================================
-   Card grid
+   Card grid — base
    ============================================================ */
 .forms-menu-card-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: var(--forms-menu-card-gap);
   width: 100%;
+}
+
+/* ============================================================
+   Style: Default (responsive grid)
+   ============================================================ */
+.forms-menu-card-grid.menu-card-default {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* ============================================================
+   Style: Scrollable (horizontal scroll row)
+   ============================================================ */
+.forms-menu-card-grid.menu-card-scrollable {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
 }
 
 /* ============================================================
@@ -54,6 +72,11 @@
   border: 1px solid var(--forms-menu-card-border-color);
   border-radius: var(--forms-menu-card-border-radius);
   padding: var(--forms-menu-card-padding);
+}
+
+.forms-menu-card-grid.menu-card-scrollable .forms-menu-card-item {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
 }
 
 /* Icon */
@@ -113,19 +136,19 @@
 }
 
 /* ============================================================
-   Responsive — tablet (2 columns)
+   Responsive — tablet (2 columns, default only)
    ============================================================ */
 @media (width <= 1023px) {
-  .forms-menu-card-grid {
+  .forms-menu-card-grid.menu-card-default {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 /* ============================================================
-   Responsive — mobile (1 column)
+   Responsive — mobile (1 column, default only)
    ============================================================ */
 @media (width <= 767px) {
-  .forms-menu-card-grid {
+  .forms-menu-card-grid.menu-card-default {
     grid-template-columns: 1fr;
   }
 }

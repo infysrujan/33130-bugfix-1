@@ -1254,7 +1254,15 @@ export default async function decorate(block) {
     const data = await loadData();
     const state = {};
 
+    const toggleCardListVisibility = (show) => {
+      const sec = document.querySelector('.card-list-container');
+      if (sec) {
+        sec.classList.toggle('hidden', !show);
+      }
+    };
+
     const goToJourney1 = () => {
+      toggleCardListVisibility(false);
       renderJourney1(block, data, (journey1Values, apiResponse) => {
         state.journey1 = journey1Values;
         state.apiResponse = apiResponse;
@@ -1263,6 +1271,7 @@ export default async function decorate(block) {
     };
 
     const goToJourney3 = () => {
+      toggleCardListVisibility(true);
       // eslint-disable-next-line no-use-before-define
       renderJourney3(block, data, state, goToJourney2, (journey3Values, apiResult3) => {
         state.journey3 = journey3Values;
@@ -1272,6 +1281,7 @@ export default async function decorate(block) {
     };
 
     const goToJourney2 = () => {
+      toggleCardListVisibility(false);
       renderJourney2(block, data, state, goToJourney1, (journey2Values, result1, result2) => {
         state.journey2 = journey2Values;
         state.apiResult1 = result1;

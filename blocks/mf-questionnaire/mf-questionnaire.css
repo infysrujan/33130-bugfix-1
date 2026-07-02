@@ -9,7 +9,6 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: var(--bbl-space-300);
 }
 
 /* ── Title ────────────────────────────────────────────────────────────────── */
@@ -22,7 +21,7 @@
 /* ── Divider ──────────────────────────────────────────────────────────────── */
 .mfq-divider {
   display: block;
-  width: 3rem;
+  width: 5rem;
   height: 0.125rem;
   background-color: var(--bbl-color-grey-40);
   margin: 0 auto;
@@ -73,6 +72,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--bbl-space-150);
+  padding: 4.375rem 0 0;
 }
 
 .mfq-btn {
@@ -104,7 +104,7 @@
   text-align: left;
   line-height: 1.375;
   font-family: var(--bbl-font-family-primary);
-  margin: var(--bbl-space-300) auto 0;
+  margin: 1.875rem auto 0;
 }
 
 /* ── Risk option cards (reuses list-thumb-square / thumb-square) ──────────── */
@@ -118,9 +118,10 @@
 
 .mfq-risk-options .list-thumb-square {
   list-style: none;
-  padding: 0;
   display: flex;
   flex-flow: row wrap;
+  padding: 1.875rem 0;
+  margin:0;
 }
 
 .mfq-risk-options .list-thumb-square li {
@@ -210,10 +211,12 @@
 .modal-body .mfq-title {
   font-size: 1.4rem;
   text-align: center;
+  margin: 1.875rem 0 0;
+  padding-bottom: var(--bbl-space-250);
 }
 
 .modal-body .mfq-divider {
-  margin: var(--bbl-space-300) auto;
+  margin-bottom: 1.875rem;
 }
 
 .modal-body .mfq-disclaimer {
@@ -231,8 +234,6 @@
   .mfq-risk-options .list-thumb-square {
     flex-wrap: nowrap;
     width: 100%;
-    padding: 1.875rem 0;
-    margin-top: 0.625rem;
   }
 
   .mfq-risk-options .list-thumb-square li {
@@ -247,6 +248,11 @@
 /* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
 
 @media (width > 64rem) {
+  .mfq-risk-options .list-thumb-square {
+    flex-wrap:nowrap;
+    width:auto;
+  }
+  
   .mfq-risk-options .list-thumb-square li {
     width: 9.375rem;  
     height: 9.375rem; 
@@ -256,7 +262,7 @@
     text-align: center;
     font-size: 3rem;        
     line-height: 2.875rem;  
-    margin: 1.875rem 0;     
+    margin: 1.875rem 0 0;     
     padding-bottom: 1.875rem; 
   }
 }

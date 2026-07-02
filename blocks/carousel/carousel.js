@@ -1,5 +1,6 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
+import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 const DESKTOP_BREAKPOINT = 1025;
 
@@ -14,7 +15,7 @@ function createCarouselHeader(title, linkElement, doc) {
   const headerHTML = `
     <div class="carousel-header">
       ${title ? `<h2>${title}</h2>` : ''}
-      ${linkElement ? `<a href="${linkElement.href}" class="link-primary"${linkElement.title ? ` title="${linkElement.title}"` : ''}>${linkElement.textContent}</a>` : ''}
+      ${linkElement ? `<a href="${linkElement.href}" class="link-primary" target="${linkElement.target || '_self'}"${linkElement.title ? ` title="${linkElement.title}"` : ''}>${linkElement.textContent}</a>` : ''}
     </div>
   `;
   return createElementFromHTML(headerHTML, doc);
@@ -251,9 +252,12 @@ export default function decorate(block) {
   const doc = block.ownerDocument;
   const children = [...block.children];
 
-  // Extract carousel header information (first 2 rows)
-  const titleElement = children[0]?.querySelector('p');
-  const linkElement = children[1]?.querySelector('a');
+  const headerRows = children.filter((el) => el.children.length <= 1);
+  const carouselCards = children.filter((el) => el.children.length > 1);
+
+  const titleElement = headerRows[0]?.querySelector('p');
+  const linkElement = headerRows[1]?.querySelector('a');
+  applyLinkTarget(headerRows[1], 'a', headerRows[2]?.textContent?.trim());
 
   const title = titleElement?.textContent.trim() || '';
 
@@ -268,9 +272,6 @@ export default function decorate(block) {
 
   // Create carousel track
   const carouselTrack = createElementFromHTML('<div class="carousel-track"></div>', doc);
-
-  // Process carousel cards (remaining rows after the first 2)
-  const carouselCards = children.slice(2);
   carouselCards.forEach((cardElement) => {
     const card = createCarouselCard(cardElement, doc);
     moveInstrumentation(cardElement, card);

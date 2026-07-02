@@ -1,6 +1,6 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
-import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
+import createGlobalDropdown, { attachScrollableDropdownPanel } from '../../scripts/utils/dropdown-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
 import { applyLinkTarget, getLang, isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
@@ -320,6 +320,9 @@ export default function decorate(block) {
   });
 
   block.appendChild(container);
+
+  const isScrollableLayout = cardListLayout === 'scrollable' || cardListLayout === 'carousel';
+  if (isScrollableLayout) attachScrollableDropdownPanel(container, doc);
 
   if (isAuthoring) {
     stripAuthoringInstrumentation(container);

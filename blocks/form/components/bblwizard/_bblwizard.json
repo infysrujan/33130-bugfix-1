@@ -1,0 +1,80 @@
+{
+  "definitions": [
+    {
+      "title": "BBL Wizard Steps",
+      "id": "bbl-wizard",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/fd/components/form/image/v1/image",
+            "template": {
+              "jcr:title": "BBL Wizard Steps",
+              "fieldType": "image",
+              "fd:viewType": "bbl-wizard"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "bbl-wizard",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Basic",
+          "name": "basic"
+        },
+        {
+          "component": "text",
+          "name": "name",
+          "label": "Name",
+          "valueType": "string",
+          "required": true,
+          "valueFormat": "regexp",
+          "validation": {
+            "regExp": "^[^$].*",
+            "customErrorMsg": "Name cannot start with $"
+          }
+        },
+        {
+          "component": "text",
+          "name": "jcr:title",
+          "label": "Title",
+          "valueType": "string"
+        },
+        {
+          "component": "boolean",
+          "name": "visible",
+          "label": "Show Component",
+          "valueType": "boolean",
+          "value": true
+        },
+        {
+          "component": "tab",
+          "label": "Steps",
+          "name": "steps"
+        },
+        {
+          "component": "text",
+          "name": "properties.stepTitles",
+          "label": "Step Labels",
+          "valueType": "string",
+          "multi": true,
+          "required": true,
+          "description": "Label shown under each step circle, one per row. Number of rows = total steps."
+        },
+        {
+          "component": "text",
+          "name": "properties.stepPanels",
+          "label": "Step Panel Names",
+          "valueType": "string",
+          "multi": true,
+          "required": true,
+          "description": "The 'name' property of the form panel for each step, one per row. Order and count must match Step Labels."
+        }
+      ]
+    }
+  ]
+}

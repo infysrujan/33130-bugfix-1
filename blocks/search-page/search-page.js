@@ -110,8 +110,8 @@ function getSearchConfig(rows, placeholders = {}) {
     learnMoreLabel: blockConfig.learnMoreLabel,
     loadMoreLabel: blockConfig.learnMoreLabel,
     ariaLabel: placeholders.ariaLableSearch,
-    searchImage: placeholders.imageUrl ? blockConfig.searchImage : ' ',
-    searchImageAlt: placeholders.imageAltText || blockConfig.searchImageAlt,
+    searchImage: blockConfig.searchImage || placeholders.imageUrl || '',
+    searchImageAlt: blockConfig.searchImageAlt || placeholders.imageAltText || '',
   };
 }
 
@@ -217,7 +217,7 @@ export default async function decorate(block) {
         <div class="search-modal-search-input inner-content">
           <input type="text" class="search-modal-input" placeholder="${escapeHtml(config.placeholder)}" autocomplete="off" aria-label="${escapeHtml(config.ariaLabel)}">
           <div class="inner-content search-modal-search-button">
-            <button type="button" class="button primary search-modal-submit-button" title="${escapeHtml(config.searchLabel)}">${escapeHtml(config.searchLabel)}</button>
+            <button type="button" class="button-m primary search-modal-submit-button" title="${escapeHtml(config.searchLabel)}">${escapeHtml(config.searchLabel)}</button>
           </div>
         </div>
       </div>
