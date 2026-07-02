@@ -18,7 +18,7 @@ main .section.form-container.custom-forms .form form :is(input:not([type='radio'
   box-sizing: border-box;
   width: 100%;
   margin-top: 0;
-  margin-bottom: var(--bbl-space-100);
+  margin-bottom: var(--bbl-space-000);
   padding: 0 var(--bbl-space-250);
   border-radius: 0.4375rem;
 }
@@ -55,16 +55,33 @@ main .section.form-container.custom-forms .form form .field-wrapper:has(> .check
   margin: 0.625rem 0;
 }
 
+main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper>.field-label {
+  position: absolute;
+  top: 0.625rem;
+  z-index: 1;
+  left: 0;
+}
+
+main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper .field-description {
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  left: 0;
+}
+
 main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper > .field-description) {
   padding-bottom: var(--bbl-space-250);
 }
 
-main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.radio-tabs>legend.field-label {
-  font-size: var(--bbl-heading-h4-size);
-  font-weight: var(--bbl-font-weight-medium);
+main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.radio-tabs>legend.field-label,
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper>legend.field-label{
+  font-size: var( --bbl-body-b1-size);
+  font-weight: var(--bbl-body-b1-weight);
   text-align: left;
   text-decoration: underline;
   color: var(--bbl-text-primary);
+  background: transparent;
+  font-family: var(--bbl-font-family-medium);
 }
 
 /* Spacing to prevent panel legend/capsule from overlapping validation errors of preceding fields */
@@ -233,13 +250,17 @@ main .section.form-container.custom-forms .form form .text-wrapper.icon-username
   padding-left: 2.75rem;
 }
 
-main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.radio-tabs {
-  gap: var(--bbl-space-150);
-}
-
 main .section.form-container.custom-forms .form .form-message.success-message {
  color:inherit;
  background-color: transparent;
+}
+
+/* Reset margin-bottom on paragraphs inside plain-text wrappers to prevent double spacing */
+main .section.form-container .form form .plain-text-wrapper p:last-child {
+  margin-bottom: 0;
+  text-align: left;
+  font-family: var(--bbl-font-family-medium);
+  color: #585858;
 }
 
 @media (width > 47.5rem) {

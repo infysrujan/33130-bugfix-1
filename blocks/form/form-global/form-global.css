@@ -23,6 +23,7 @@ main .section.form-container .form form .field-wrapper.field-invalid :is(input:n
 main .section.form-container .form form .field-invalid :is(.field-validation-error, .field-description) {
   color: var(--bbl-color-red-130);
   font-weight: 400;
+  padding: var(--bbl-space-100) 0 0 var(--bbl-space-200);
 }
 
 main .section.form-container .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea):is(:focus, :focus-visible, :active) {
