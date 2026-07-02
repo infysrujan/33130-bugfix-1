@@ -275,7 +275,6 @@ header.is-not-overlapped ~ main {
   }
 
   .header .location {
-    margin-left: 0.5625rem;
     margin-top: -0.125rem;
   }
 
