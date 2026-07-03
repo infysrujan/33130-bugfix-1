@@ -5,10 +5,10 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchJson } from '../../scripts/utils/card-helpers.js';
 import { fetchPost } from '../../scripts/utils/fetchApi.js';
 import { loadChartJs, renderChart, buildChartLegend } from './saving-plan-chart.js';
-
+ 
 const ICON_BASE = '/icons/saving-plan';
 const ICONS_CACHE = {};
-
+ 
 async function loadIcons() {
   const names = ['goal', 'goal-amount', 'goal-period', 'balance', 'annual-return', 'annual-increase', 'step-up', 'step-up-adjusted'];
   await Promise.all(names.map(async (name) => {
@@ -18,35 +18,35 @@ async function loadIcons() {
     } catch { /* empty */ }
   }));
 }
-
+ 
 function getIcon(name) {
   return ICONS_CACHE[name] || '';
 }
-
+ 
 function formatNumber(value) {
   if (!Number.isFinite(value)) return '0';
   return Math.round(value).toLocaleString('en-US');
 }
-
+ 
 function formatDecimal(value) {
   if (!Number.isFinite(value)) return '0';
   return Number(value.toFixed(2)).toLocaleString('en-US', { maximumFractionDigits: 2 });
 }
-
+ 
 function parseNumber(value) {
   if (typeof value !== 'string') return Number(value) || 0;
   const cleaned = value.replace(/,/g, '').trim();
   if (cleaned === '') return 0;
   return Number(cleaned) || 0;
 }
-
+ 
 function fillTemplate(template, vars) {
   return Object.entries(vars).reduce(
     (acc, [k, v]) => acc.replace(new RegExp(`\\{${k}\\}`, 'g'), v),
     template,
   );
 }
-
+ 
 function parseProducts(L) {
   const nums = [...new Set(
     Object.keys(L)
@@ -61,24 +61,24 @@ function parseProducts(L) {
     ctaUrl: L[`products-${n}-ctaUrl`] || '',
   }));
 }
-
+ 
 function buildDataFromConfig(json, lang, placeholders) {
   const langData = json[lang]?.data || [];
   const commonData = json.common?.data || [];
-
+ 
   const L = {};
   langData.forEach(({ Key, Value }) => { if (Key) L[Key] = Value; });
   const C = {};
   commonData.forEach(({ Key, Value }) => { if (Key) C[Key] = Value; });
-
+ 
   const unit = L['common-unit'] || '';
   const footnoteReturnTemplate = placeholders.savingPlanFootnoteReturnTemplate || '';
   const footnoteIncreaseTemplate = placeholders.savingPlanFootnoteIncreaseTemplate || '';
   const futureValueTemplate = (L['common-toHaveMoney'] || '')
     .replace('{money}', '{amount}').replace('{unit}', unit);
-
+ 
   const minError = L['validation-minValueError'] || '';
-
+ 
   const goalKeys = [...new Set(
     Object.keys(L)
       .filter((k) => k.startsWith('savingGoals-') && k.endsWith('-label'))
@@ -95,7 +95,7 @@ function buildDataFromConfig(json, lang, placeholders) {
     infoUrl: L[`cards-${gk}-link`] || '#',
     imageUrl: L[`cards-${gk}-imageUrl`] || '',
   }));
-
+ 
   return {
     labels: {
       sectionTitle: L['common-title'] || '',
@@ -180,14 +180,14 @@ function buildDataFromConfig(json, lang, placeholders) {
     products: parseProducts(L),
   };
 }
-
+ 
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 }
-
+ 
 function solveMonthly({
   target, balance, years, annualReturn, annualIncrease,
 }) {
@@ -212,7 +212,7 @@ function solveMonthly({
   }
   return coefficient === 0 ? 0 : needed / coefficient;
 }
-
+ 
 function getFallbackCalculation(inputs, inflationRate) {
   const futureValue = inputs.goalAmount * (1 + inflationRate / 100) ** inputs.goalPeriod;
   return {
@@ -226,7 +226,7 @@ function getFallbackCalculation(inputs, inflationRate) {
     }),
   };
 }
-
+ 
 function normalizeCalculationResponse(payload, fallback) {
   const source = payload || {};
   const future = Number(
@@ -240,7 +240,7 @@ function normalizeCalculationResponse(payload, fallback) {
     SavingMonth: Number.isFinite(monthly) ? monthly : fallback.SavingMonth,
   };
 }
-
+ 
 function buildCalculationPayload(inputs, inflationRate) {
   return {
     FutureSavingAmount: inputs.goalAmount,
@@ -251,7 +251,7 @@ function buildCalculationPayload(inputs, inflationRate) {
     inflationrate: inflationRate,
   };
 }
-
+ 
 async function fetchCalculation(inputs, calcUrl, apimKey, inflationRate) {
   const fallback = getFallbackCalculation(inputs, inflationRate);
   if (!calcUrl) return fallback;
@@ -277,7 +277,7 @@ async function fetchCalculation(inputs, calcUrl, apimKey, inflationRate) {
     return fallback;
   }
 }
-
+ 
 function getFieldMinError(field, value, rules, messages) {
   const message = messages[field] || '';
   if (!Number.isFinite(value)) return message;
@@ -287,7 +287,7 @@ function getFieldMinError(field, value, rules, messages) {
   if (rule.max !== undefined && value > rule.max) return message;
   return '';
 }
-
+ 
 function buildField({
   name, label, value, decimal = false, icon = '', placeholder = '',
 }) {
@@ -315,7 +315,7 @@ function buildField({
     </div>
   `;
 }
-
+ 
 function buildDropdownField({
   name, label, value, options,
 }) {
@@ -340,7 +340,7 @@ function buildDropdownField({
     </div>
   `;
 }
-
+ 
 function buildSlider({
   name, label, value, min, max, step,
 }) {
@@ -363,7 +363,7 @@ function buildSlider({
     </div>
   `;
 }
-
+ 
 function buildProductCard(product) {
   const cta = product.ctaUrl
     ? `<a class="saving-plan-product-cta" href="${product.ctaUrl}">${product.ctaText || ''}</a>`
@@ -380,7 +380,7 @@ function buildProductCard(product) {
     </article>
   `;
 }
-
+ 
 function buildShellMarkup(data) {
   const { labels, defaults, goals } = data;
   return `
@@ -389,7 +389,7 @@ function buildShellMarkup(data) {
         <h2 class="saving-plan-header-title">${labels.sectionTitle}</h2>
         <span class="saving-plan-header-divider" aria-hidden="true"></span>
       </header>
-
+ 
       <div class="saving-plan-calculator">
         <div class="saving-plan-form">
           <h3 class="saving-plan-form-title">${labels.calculateTitle}</h3>
@@ -418,7 +418,7 @@ function buildShellMarkup(data) {
             <button type="button" class="saving-plan-form-btn saving-plan-form-btn-primary" data-action="calculate" disabled>${labels.buttons.calculate}</button>
           </div>
         </div>
-
+ 
         <aside class="saving-plan-result">
           <h3 class="saving-plan-result-title">${labels.resultTitle}</h3>
           <div class="saving-plan-result-card">
@@ -433,7 +433,7 @@ function buildShellMarkup(data) {
           <p class="saving-plan-result-footnote" data-result="footnote-return"></p>
         </aside>
       </div>
-
+ 
       <section class="saving-plan-chart-row" hidden>
         <div class="saving-plan-chart-wrap">
           ${buildChartLegend(labels.chart, getIcon)}
@@ -443,7 +443,7 @@ function buildShellMarkup(data) {
         </div>
         <div class="saving-plan-info-card-slot"></div>
       </section>
-
+ 
       <section class="saving-plan-tweak" hidden>
         <div class="saving-plan-tweak-header">
           <h3 class="saving-plan-tweak-title">${labels.tweakTitle}</h3>
@@ -475,7 +475,7 @@ function buildShellMarkup(data) {
           </div>
         </div>
       </section>
-
+ 
       ${labels.additionalInfoLinkText ? `
       <section class="saving-plan-additional">
         <h3 class="saving-plan-additional-title">${labels.additionalInfoTitle}</h3>
@@ -483,12 +483,12 @@ function buildShellMarkup(data) {
           <li><a class="saving-plan-additional-link" href="${labels.additionalInfoUrl || '#'}">${labels.additionalInfoLinkText}</a></li>
         </ul>
       </section>` : ''}
-
+ 
       <section class="saving-plan-disclaimer">
         <h4 class="saving-plan-disclaimer-title">${labels.disclaimerTitle}</h4>
         <div class="saving-plan-disclaimer-text">${labels.disclaimer}</div>
       </section>
-
+ 
       <section class="saving-plan-products" hidden>
         <h3 class="saving-plan-products-title">${labels.productSectionTitle}</h3>
         <div class="saving-plan-products-divider"></div>
@@ -497,7 +497,7 @@ function buildShellMarkup(data) {
     </div>
   `;
 }
-
+ 
 function readInputs(root) {
   const goalWrap = root.querySelector('[data-field="goal"]');
   return {
@@ -509,7 +509,7 @@ function readInputs(root) {
     annualIncrease: parseNumber(root.querySelector('[data-field="annualIncrease"] input')?.value),
   };
 }
-
+ 
 function setFieldError(wrap, message) {
   if (!wrap) return;
   const input = wrap.querySelector('input');
@@ -532,19 +532,19 @@ function setFieldError(wrap, message) {
     if (existing) existing.remove();
   }
 }
-
+ 
 function applyValidation(root, inputs, data) {
   const messages = data.labels.validation;
   const rules = data.validation;
   const fields = ['goalAmount', 'goalPeriod', 'balance', 'annualReturn', 'annualIncrease'];
   let isValid = true;
   const fieldErrors = {};
-
+ 
   fields.forEach((name) => {
     fieldErrors[name] = getFieldMinError(name, inputs[name], rules, messages);
     if (fieldErrors[name]) isValid = false;
   });
-
+ 
   // Cross-field: annual increase must not exceed annual return.
   // Only applied when both fields pass their own min/max, so per-field messages take priority.
   if (!fieldErrors.annualReturn && !fieldErrors.annualIncrease
@@ -553,24 +553,24 @@ function applyValidation(root, inputs, data) {
     fieldErrors.annualIncrease = messages.crossFieldIncreaseExceedsReturn || '';
     isValid = false;
   }
-
+ 
   fields.forEach((name) => {
     setFieldError(root.querySelector(`[data-field="${name}"]`), fieldErrors[name]);
   });
-
+ 
   return isValid;
 }
-
+ 
 function setHTML(root, selector, html) {
   const el = root.querySelector(selector);
   if (el) el.innerHTML = html;
 }
-
+ 
 function setText(root, selector, text) {
   const el = root.querySelector(selector);
   if (el) el.textContent = text;
 }
-
+ 
 function renderResult(state, data, calculation) {
   const { root } = state;
   const inputs = readInputs(root);
@@ -600,7 +600,7 @@ function renderResult(state, data, calculation) {
     : `*Including inflation rate of ${data.defaults.inflationRate}% p.a. and expected annual return ${formatDecimal(annualReturn)}%`;
   setText(root, '[data-result="footnote-return"]', returnLabel);
 }
-
+ 
 function clearNewPlan(root) {
   const future = root.querySelector('[data-newplan="future"]');
   if (future) future.setAttribute('hidden', '');
@@ -609,7 +609,7 @@ function clearNewPlan(root) {
   setText(root, '[data-newplan="footnote-increase"]', '');
   setText(root, '[data-newplan="footnote-return"]', '');
 }
-
+ 
 function setSliderBounds(root, name, {
   min, max, value, step,
 }) {
@@ -625,14 +625,14 @@ function setSliderBounds(root, name, {
   if (minEl) minEl.textContent = formatter(min);
   if (maxEl) maxEl.textContent = formatter(max);
 }
-
+ 
 function goalAmountStep(amount) {
   if (amount >= 1000000) return 50000;
   if (amount >= 100000) return 10000;
   if (amount >= 10000) return 1000;
   return 100;
 }
-
+ 
 function syncSliderDisplays(root) {
   root.querySelectorAll('.saving-plan-slider').forEach((slider) => {
     const input = slider.querySelector('input[type="range"]');
@@ -648,7 +648,7 @@ function syncSliderDisplays(root) {
     input.style.background = `linear-gradient(to right, var(--sp-blue) ${pct}%, var(--sp-slider-track) ${pct}%)`;
   });
 }
-
+ 
 function renderNewPlanPlaceholder(state, data, inputs) {
   const { root } = state;
   const goalMin = inputs.goalAmount;
@@ -683,7 +683,7 @@ function renderNewPlanPlaceholder(state, data, inputs) {
   setText(root, '[data-newplan="footnote-increase"]', '');
   setText(root, '[data-newplan="footnote-return"]', returnLabel);
 }
-
+ 
 async function renderNewPlan(state, data, tweakInputs) {
   const { root } = state;
   const baseInputs = state.calculatedInputs || readInputs(root);
@@ -722,13 +722,13 @@ async function renderNewPlan(state, data, tweakInputs) {
   state.tweakCalculation = calculation;
   return calculation;
 }
-
+ 
 function renderInfoCard(state) {
   // Clears the banner slot — the fragment is loaded only after Calculate.
   const slot = state.root.querySelector('.saving-plan-info-card-slot');
   if (slot) slot.innerHTML = '';
 }
-
+ 
 async function renderCategoryBannerForGoal(state, data) {
   const slot = state.root.querySelector('.saving-plan-info-card-slot');
   if (!slot) return;
@@ -744,20 +744,20 @@ async function renderCategoryBannerForGoal(state, data) {
   const lang = getLang();
   await loadCategoryBannerFragment(state.config.fragmentPath, `${fragmentId}-${lang}`, slot);
 }
-
+ 
 function renderProducts(state, data) {
   const grid = state.root.querySelector('.saving-plan-products-grid');
   if (!grid) return;
   grid.innerHTML = data.products.map(buildProductCard).join('');
 }
-
+ 
 function setButtonsEnabled(root, enabled) {
   const calc = root.querySelector('[data-action="calculate"]');
   const clear = root.querySelector('[data-action="clear"]');
   if (calc) calc.disabled = !enabled;
   if (clear) clear.disabled = !enabled;
 }
-
+ 
 function isAnyFieldEmpty(root) {
   const inputs = root.querySelectorAll('[data-field][data-decimal] input');
   if (Array.from(inputs).some((input) => input.value.trim() === '')) return true;
@@ -765,14 +765,14 @@ function isAnyFieldEmpty(root) {
   if (goalWrap && !goalWrap.dataset.value) return true;
   return false;
 }
-
+ 
 function showAfterCalculate(root) {
   root.querySelector('.saving-plan-chart-row')?.removeAttribute('hidden');
   root.querySelector('.saving-plan-tweak')?.removeAttribute('hidden');
   root.querySelector('.saving-plan-products')?.removeAttribute('hidden');
   root.closest('.section')?.nextElementSibling?.classList.add('is-visible');
 }
-
+ 
 function readSliders(root) {
   return {
     goalAmount: parseNumber(root.querySelector('[data-slider="goalAmount"] input')?.value),
@@ -780,13 +780,13 @@ function readSliders(root) {
     annualIncrease: parseNumber(root.querySelector('[data-slider="annualIncrease"] input')?.value),
   };
 }
-
+ 
 function formatFieldValue(input, decimal) {
   const formatter = decimal ? formatDecimal : formatNumber;
   const value = parseNumber(input.value);
   input.value = formatter(value);
 }
-
+ 
 function formatLive(input, decimal) {
   const raw = input.value;
   const cursor = input.selectionStart;
@@ -806,7 +806,7 @@ function formatLive(input, decimal) {
   }
   input.setSelectionRange(newCursor, newCursor);
 }
-
+ 
 function resetCalculator(state, data) {
   const { defaults } = data;
   const { root } = state;
@@ -857,7 +857,7 @@ function resetCalculator(state, data) {
   renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
   root.closest('.section')?.nextElementSibling?.classList.remove('is-visible');
 }
-
+ 
 function attachDropdownHandlers(state, data, onSelectionChange) {
   const { root } = state;
   const wrap = root.querySelector('[data-field="goal"]');
@@ -866,23 +866,23 @@ function attachDropdownHandlers(state, data, onSelectionChange) {
   const panel = wrap.querySelector('.saving-plan-dropdown-panel');
   const current = wrap.querySelector('.saving-plan-dropdown-current');
   if (!trigger || !panel || !current) return;
-
+ 
   const close = () => {
     wrap.classList.remove('is-open');
     trigger.setAttribute('aria-expanded', 'false');
   };
-
+ 
   const open = () => {
     wrap.classList.add('is-open');
     trigger.setAttribute('aria-expanded', 'true');
   };
-
+ 
   trigger.addEventListener('click', (e) => {
     e.stopPropagation();
     if (wrap.classList.contains('is-open')) close();
     else open();
   });
-
+ 
   panel.addEventListener('click', (e) => {
     const option = e.target.closest('.saving-plan-dropdown-option');
     if (!option) return;
@@ -902,11 +902,11 @@ function attachDropdownHandlers(state, data, onSelectionChange) {
     renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
     if (typeof onSelectionChange === 'function') onSelectionChange();
   });
-
+ 
   document.addEventListener('click', (e) => {
     if (!wrap.contains(e.target)) close();
   });
-
+ 
   trigger.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') close();
     else if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
@@ -916,10 +916,10 @@ function attachDropdownHandlers(state, data, onSelectionChange) {
     }
   });
 }
-
+ 
 function attachHandlers(state, data) {
   const { root } = state;
-
+ 
   const liveUpdate = async () => {
     const inputs = readInputs(root);
     const valid = applyValidation(root, inputs, data);
@@ -928,7 +928,7 @@ function attachHandlers(state, data) {
     if (!valid || !filled) return;
     const chartShown = !root.querySelector('.saving-plan-chart-row')?.hasAttribute('hidden');
     if (!chartShown) return;
-
+ 
     const calculation = getFallbackCalculation(inputs, data.defaults.inflationRate);
     state.calculatedInputs = inputs;
     state.calculatedCalculation = calculation;
@@ -938,7 +938,7 @@ function attachHandlers(state, data) {
     }
     await renderChart(state, data);
   };
-
+ 
   root.querySelectorAll('[data-field][data-decimal]').forEach((wrap) => {
     const input = wrap.querySelector('input');
     if (!input) return;
@@ -952,14 +952,14 @@ function attachHandlers(state, data) {
       liveUpdate();
     });
   });
-
+ 
   attachDropdownHandlers(state, data, liveUpdate);
-
+ 
   root.querySelector('[data-action="clear"]')?.addEventListener('click', () => {
     resetCalculator(state, data);
     liveUpdate();
   });
-
+ 
   root.querySelector('[data-action="calculate"]')?.addEventListener('click', async () => {
     const inputs = readInputs(root);
     if (!applyValidation(root, inputs, data)) return;
@@ -972,7 +972,7 @@ function attachHandlers(state, data) {
     state.tweakInputs = null;
     state.tweakCalculation = null;
     renderResult(state, data, calculation);
-
+ 
     syncSliderDisplays(root);
     await renderCategoryBannerForGoal(state, data);
     const isNegative = calculation.SavingMonth < 0;
@@ -988,7 +988,7 @@ function attachHandlers(state, data) {
       await renderChart(state, data);
     }
   });
-
+ 
   let sliderDebounceTimer = null;
   root.querySelectorAll('.saving-plan-slider input').forEach((input) => {
     input.addEventListener('input', () => {
@@ -1014,7 +1014,7 @@ function attachHandlers(state, data) {
         }
       }
       syncSliderDisplays(root);
-
+ 
       clearTimeout(sliderDebounceTimer);
       sliderDebounceTimer = setTimeout(async () => {
         const tweakInputs = {
@@ -1028,39 +1028,39 @@ function attachHandlers(state, data) {
       }, 600);
     });
   });
-
+ 
   // Initial render — show projected balance with monthly=0 so result panel isn't empty on load.
   liveUpdate();
 }
-
+ 
 export default async function decorate(block) {
   const siteConfig = await fetchConfigs();
   const configPath = siteConfig.savingPlanConfigPath;
   if (!configPath) return;
-
+ 
   const [json, placeholders] = await Promise.all([
     fetchJson(configPath),
     fetchPlaceholders(),
     loadIcons(),
   ]);
-
+ 
   if (!json) return;
-
+ 
   const cfg = {};
   (json?.saving_tool_config?.data || []).forEach(({ Key, Value }) => {
     if (Key) cfg[Key.replace(/-([a-zA-Z0-9])/g, (_, c) => c.toUpperCase())] = Value;
   });
-
+ 
   const calcUrl = cfg.savingPlanCalculatorUrl || '';
   const apimKey = cfg.savingPlanApimKey || '';
-
+ 
   const lang = getLang();
   const data = buildDataFromConfig(json, lang, placeholders);
   const fragmentPath = cfg.savingPlanFragmentPath?.replace(/\{lang\}/g, lang) || '';
-
+ 
   block.innerHTML = buildShellMarkup(data);
   block.classList.add('saving-plan-block');
-
+ 
   const state = {
     root: block,
     config: { calcUrl, apimKey, fragmentPath },
@@ -1072,16 +1072,16 @@ export default async function decorate(block) {
     chartInstance: null,
     chartResizeObserver: null,
   };
-
+ 
   renderInfoCard(state);
   renderResult(state, data, { FutureValue: 0, SavingMonth: 0 });
   attachHandlers(state, data);
-
+ 
   // Tag the next section sibling so it can be styled relative to the saving-plan section.
   const section = block.closest('.section');
   const nextSection = section?.nextElementSibling;
   if (nextSection) nextSection.classList.add('saving-plan-container2');
-
+ 
   // // Hide the EDS section-separator <hr> that appears between the block's section and the next.
   // let el = block.parentElement;
   // while (el && el.tagName !== 'MAIN') {
@@ -1093,3 +1093,4 @@ export default async function decorate(block) {
   //   el = el.parentElement;
   // }
 }
+ 
