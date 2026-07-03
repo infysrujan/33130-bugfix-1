@@ -15,6 +15,18 @@ main .custom-forms .form form p {
   color: var(--form-label-color);
 }
 
+main .form-container.custom-forms .form h2 strong{
+    font-size: 3rem;
+    color: var(--bbl-color-black);
+    font-weight: var(--bbl-font-weight-regular);
+    line-height: 3.75rem;
+    font-family: var(--bbl-font-family-medium);
+}
+
+main .section.form-container .form form .plain-text-wrapper p:last-child p{
+  text-align: left;
+}
+
 main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) div.form-wrapper,
 main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) div.default-content-wrapper {
   padding: 0;
