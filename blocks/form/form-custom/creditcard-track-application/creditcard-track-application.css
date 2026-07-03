@@ -62,7 +62,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     border: 0;
     text-align: left;
     letter-spacing: normal;
-    color: var(--form-fieldset-legend-color);
+    color: var( --bbl-color-grey-85);
     font-family: var(--bbl-font-family-medium);
     font-size: var(--form-fieldset-legend-font-size);
     font-weight: var(--form-fieldset-legend-font-weight);
@@ -178,6 +178,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       width: auto;
       max-width: none;
       clear: none;
+      color: var(--bbl-color-grey-60);
     }
   }
 
@@ -189,9 +190,9 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     margin: 0;
     padding: 0;
     text-align: left;
-    color: var(--form-label-color);
+    color: var( --bbl-color-grey-85);
     font-size: var(--bbl-font-size-h4-mobile);
-    font-weight: var(--form-label-font-weight);
+    font-weight: 100;
     line-height: var(--bbl-line-height-h4-mobile);
   }
 
@@ -243,7 +244,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     border-radius: 0.4375rem;
     gap: var(--bbl-space-100);
     font-size: var(--bbl-font-size-h4-mobile);
-    font-weight: var(--form-title-font-weight);
+    font-weight: var(--bbl-font-weight-regular);
     line-height: var(--bbl-line-height-h4-mobile);
     cursor: pointer;
     appearance: none;
@@ -757,7 +758,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
     & .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label):not(:is(.field-title *, .cc-panel-item-form-title *)),
     & .form form :is(.drop-down-wrapper, .field-wrapper:has(select)) > .field-label {
-      font-size: var(--form-font-size-xs);
+      font-size: 0.9375rem;
       line-height: var(--bbl-line-height-b1-desktop);
     }
 
