@@ -98,13 +98,15 @@
           "component": "richtext",
           "name": "cardShortDescription",
           "label": "Card Short Description",
-          "valueType": "string"
+          "valueType": "string",
+          "filter": "promotional-details"
         },
         {
           "component": "richtext",
           "name": "detailDescription",
           "label": "Detail Description (appears on the promotional page)",
-          "valueType": "string"
+          "valueType": "string",
+          "filter": "promotional-details"
         },
         {
           "component": "aem-tag",
@@ -202,6 +204,7 @@
           "name": "responsibleLendingDisclaimerText",
           "label": "Disclaimer Text (appears on the promotional page)",
           "valueType": "string",
+          "filter": "promotional-details",
           "condition": {
             "!!": [
               {
