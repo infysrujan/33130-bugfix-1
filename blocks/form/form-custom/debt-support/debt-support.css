@@ -15,16 +15,30 @@ main .custom-forms .form form p {
   color: var(--form-label-color);
 }
 
-main .form-container.custom-forms .form h2 strong{
-    font-size: 3rem;
-    color: var(--bbl-color-black);
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 3.75rem;
-    font-family: var(--bbl-font-family-medium);
+main .form-container.custom-forms .form :is(h1, h2, h3, h4, h5, h6){
+  position: relative;
+  font-size: 3rem;
+  color: var(--bbl-color-black);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 3.75rem;
+  font-family: var(--bbl-font-family-medium);
+  padding-bottom: 1.875rem;
+    margin: 1.875rem 0;
 }
 
 main .section.form-container .form form .plain-text-wrapper p:last-child p{
   text-align: left;
+}
+
+main .form-container.custom-forms .form :is(h1, h2, h3, h4, h5, h6)::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 0.0625rem;
+  background: var(--bbl-color-grey-150);
+  margin-left: -2.5rem;
+  left: 50%;
+  width: 5rem;
 }
 
 main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) div.form-wrapper,
