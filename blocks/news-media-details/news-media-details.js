@@ -1,6 +1,4 @@
 import { getLang, isAuthoringInstance, fetchBlockAuthoringData } from '../../scripts/bbl-decorators.js';
-import { fetchConfigs } from '../../scripts/config.js';
-import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
 
@@ -19,45 +17,68 @@ function stripInstrumentation(el) {
   });
 }
 
-function readFromCells(block) {
-  const row = block.querySelector(':scope > div');
-  if (!row) return null;
-  const cells = [...row.children];
+function readFromBlock(block) {
+  const rows = [...block.querySelectorAll(':scope > div')];
+  if (!rows.length) return null;
 
-  // Field order: aboutUsId, title, cardImageUrl, detailImageUrl,
-  //              cardShortDescription, detailDescription, category, publishDate, ...
-  const aboutUsId = cells[0]?.textContent?.trim() || '';
-
-  const titleEl = cells[1]?.cloneNode(true);
-  const detailImgEl = cells[3]?.cloneNode(true);
-  const detailDescEl = cells[5]?.cloneNode(true);
-
-  if (titleEl) stripInstrumentation(titleEl);
-  if (detailImgEl) stripInstrumentation(detailImgEl);
-  if (detailDescEl) stripInstrumentation(detailDescEl);
-
-  const title = titleEl?.innerHTML?.trim() || '';
-  const detailImg = detailImgEl?.querySelector('img');
-  const detailImageUrl = detailImg?.getAttribute('src') || '';
-  const detailDescription = detailDescEl?.innerHTML?.trim() || '';
-  const publishDate = cells[7]?.textContent?.trim() || '';
-
-  return {
-    aboutUsId, title, detailImageUrl, detailImgAlt: detailImg?.alt || '', detailDescription, publishDate,
+  const getHtml = (cell) => {
+    if (!cell) return '';
+    const clone = cell.cloneNode(true);
+    stripInstrumentation(clone);
+    return clone.innerHTML.trim();
   };
-}
+  const getText = (cell) => cell?.textContent?.trim() || '';
+  const getRef = (cell) => {
+    if (!cell) return { src: '', alt: '' };
+    const img = cell.querySelector('img');
+    if (img) return { src: img.getAttribute('src') || '', alt: img.alt || '' };
+    const a = cell.querySelector('a');
+    return { src: a?.getAttribute('href') || cell.textContent.trim(), alt: '' };
+  };
 
-async function fetchFromJson(aboutUsId, lang) {
-  if (!aboutUsId) return null;
-  try {
-    const configs = await fetchConfigs();
-    const baseUrl = configs?.newsMediaBaseUrl || '';
-    const dataUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
-    const json = await fetchGet(dataUrl, { throwOnError: false });
-    return json?.news?.find((c) => c.aboutUsId === aboutUsId) || null;
-  } catch {
-    return null;
+  const firstRowCols = rows[0].children.length;
+
+  if (firstRowCols === 2) {
+    const cellMap = {};
+    rows.forEach((row) => {
+      const [keyCell, valCell] = row.children;
+      if (!keyCell || !valCell) return;
+      const key = keyCell.textContent.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+      cellMap[key] = valCell;
+    });
+    const imgRef = getRef(cellMap.detailimageurl);
+    return {
+      aboutUsId: getText(cellMap.aboutusid),
+      title: getHtml(cellMap.title),
+      detailImageUrl: imgRef.src,
+      detailImgAlt: imgRef.alt,
+      detailDescription: getHtml(cellMap.detaildescription),
+      publishDate: getText(cellMap.publishdate),
+    };
   }
+
+  if (firstRowCols > 2) {
+    const cells = [...rows[0].children];
+    const imgRef = getRef(cells[3]);
+    return {
+      aboutUsId: getText(cells[0]),
+      title: getHtml(cells[1]),
+      detailImageUrl: imgRef.src,
+      detailImgAlt: imgRef.alt,
+      detailDescription: getHtml(cells[5]),
+      publishDate: getText(cells[7]),
+    };
+  }
+
+  const imgRef = getRef(rows[3]?.children[0]);
+  return {
+    aboutUsId: getText(rows[0]?.children[0]),
+    title: getHtml(rows[1]?.children[0]),
+    detailImageUrl: imgRef.src,
+    detailImgAlt: imgRef.alt,
+    detailDescription: getHtml(rows[5]?.children[0]),
+    publishDate: getText(rows[7]?.children[0]),
+  };
 }
 
 function buildDetailHtml(card, locale) {
@@ -77,12 +98,7 @@ async function renderNewsDetail(block) {
   const locale = LOCALE_MAP[lang] || 'en-US';
   const isAuthoring = isAuthoringInstance(block);
 
-  let card = readFromCells(block);
-
-  if (card && !card.title && !card.detailDescription && card.aboutUsId) {
-    const fetched = await fetchFromJson(card.aboutUsId, lang);
-    if (fetched) card = { ...card, ...fetched };
-  }
+  const card = readFromBlock(block);
 
   if (isAuthoring) {
     const authoringData = await fetchBlockAuthoringData('news_media_details');

@@ -1,5 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { openModal } from '../../scripts/utils/modal.js';
 
 const getFragmentPath = (cells) => cells.map((cell) => cell.querySelector('a')?.getAttribute('href')?.trim()).find(Boolean)
   ?? cells.map((cell) => cell.textContent.trim()).find((text) => text.startsWith('/'))
@@ -25,6 +26,16 @@ const createErrorSlide = (row, index, message, doc) => {
   const slide = createSlide(row, index, doc);
   slide.textContent = message;
   return slide;
+};
+
+const bindSlideModalHandler = (slide, doc) => {
+  slide.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-modal]');
+    if (!trigger) return;
+    event.preventDefault();
+    const fragmentPath = trigger.getAttribute('data-modal');
+    if (fragmentPath) openModal(doc, { fragmentPath, dialogClass: 'card-list-modal-body' });
+  });
 };
 
 const createFragmentSlide = (row, slideIndex, section, itemsChunk, doc) => {
@@ -130,6 +141,7 @@ export default function buildCardListFragmentSlides(row, index) {
     if (items.length <= chunkSize) {
       const slide = createFragmentSlide(row, index, section, items, doc);
       slide.classList.add('no-scroll');
+      bindSlideModalHandler(slide, doc);
       return [slide];
     }
 
@@ -143,8 +155,10 @@ export default function buildCardListFragmentSlides(row, index) {
       chunks.push(chunk);
     }
 
-    return chunks.map(
-      (chunk, i) => createFragmentSlide(row, index + i, section, chunk, doc),
-    );
+    return chunks.map((chunk, i) => {
+      const slide = createFragmentSlide(row, index + i, section, chunk, doc);
+      bindSlideModalHandler(slide, doc);
+      return slide;
+    });
   });
 }

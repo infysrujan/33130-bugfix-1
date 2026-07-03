@@ -332,6 +332,10 @@
               {
                 "name": "Columns 2(65-35)",
                 "value": "columns-2-65"
+              },
+              {
+                "name": "Columns 2(25-75)",
+                "value": "columns-2-25"
               }
             ]
           },
@@ -2591,7 +2595,7 @@
       {
         "component": "aem-tag",
         "name": "cardTypes",
-        "label": "Card Types",
+        "label": "Fund Types",
         "valueType": "string",
         "condition": {
           "===": [
@@ -3383,21 +3387,6 @@
           {
             "name": "Tertiary",
             "value": "tertiary"
-          }
-        ]
-      },
-      {
-        "component": "container",
-        "name": "targetSettings",
-        "label": "Target Settings",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "targetLink",
-            "label": "Open link in new tab",
-            "description": "Enable to open the Compare button link in a new browser tab",
-            "valueType": "boolean",
-            "value": false
           }
         ]
       }
@@ -6379,6 +6368,10 @@
           {
             "name": "123,421%",
             "value": "#,###,##0%"
+          },
+          {
+            "name": "123,421,567",
+            "value": "###,###,###"
           }
         ]
       },
@@ -7929,6 +7922,64 @@
     ]
   },
   {
+    "id": "bbl-wizard",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Basic",
+        "name": "basic"
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Name",
+        "valueType": "string",
+        "required": true,
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^[^$].*",
+          "customErrorMsg": "Name cannot start with $"
+        }
+      },
+      {
+        "component": "text",
+        "name": "jcr:title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "visible",
+        "label": "Show Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "tab",
+        "label": "Steps",
+        "name": "steps"
+      },
+      {
+        "component": "text",
+        "name": "properties.stepTitles",
+        "label": "Step Labels",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "Label shown under each step circle, one per row. Number of rows = total steps."
+      },
+      {
+        "component": "text",
+        "name": "properties.stepPanels",
+        "label": "Step Panel Names",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "The 'name' property of the form panel for each step, one per row. Order and count must match Step Labels."
+      }
+    ]
+  },
+  {
     "id": "double-key-dropdown",
     "fields": [
       {
@@ -8127,562 +8178,6 @@
     ]
   },
   {
-    "id": "forms-card-list-item",
-    "fields": [
-      {
-        "component": "tab",
-        "label": "Basic",
-        "name": "basic"
-      },
-      {
-        "component": "text",
-        "name": "name",
-        "label": "Name",
-        "valueType": "string",
-        "required": true,
-        "valueFormat": "regexp",
-        "validation": {
-          "regExp": "^[^$].*",
-          "customErrorMsg": "Name cannot start with $"
-        }
-      },
-      {
-        "component": "boolean",
-        "name": "visible",
-        "label": "Show Component",
-        "valueType": "boolean",
-        "value": true
-      },
-      {
-        "component": "tab",
-        "label": "Card",
-        "name": "card"
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "cardListImage",
-        "label": "Card List Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cardListImageAlt",
-        "label": "Alt",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "name": "promoTag",
-        "label": "Promo Tag",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "title",
-        "label": "Title",
-        "valueType": "string"
-      },
-      {
-        "component": "select",
-        "name": "titleType",
-        "label": "Title Type",
-        "options": [
-          {
-            "name": "h1",
-            "value": "h1"
-          },
-          {
-            "name": "h2",
-            "value": "h2"
-          },
-          {
-            "name": "h3",
-            "value": "h3"
-          },
-          {
-            "name": "h4",
-            "value": "h4"
-          },
-          {
-            "name": "h5",
-            "value": "h5"
-          },
-          {
-            "name": "h6",
-            "value": "h6"
-          }
-        ]
-      },
-      {
-        "component": "text",
-        "name": "subtitle",
-        "label": "Subtitle",
-        "valueType": "string",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "name": "description",
-        "label": "Description",
-        "valueType": "string",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "name": "remark-text",
-        "label": "Remark Text",
-        "valueType": "string",
-        "value": ""
-      },
-      {
-        "component": "select",
-        "name": "imageLayout",
-        "label": "Image Layout",
-        "valueType": "string",
-        "value": "default",
-        "options": [
-          {
-            "name": "Full",
-            "value": "full"
-          },
-          {
-            "name": "Default",
-            "value": "default"
-          },
-          {
-            "name": "Card",
-            "value": "card"
-          },
-          {
-            "name": "X-Small",
-            "value": "x-small"
-          },
-          {
-            "name": "Logo",
-            "value": "logo"
-          },
-          {
-            "name": "Profile",
-            "value": "profile"
-          }
-        ]
-      },
-      {
-        "component": "boolean",
-        "name": "enableTitleUnderline",
-        "label": "Underline Title",
-        "description": "If enabled, the title will be underlined.",
-        "valueType": "boolean",
-        "value": false
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "description": "Select type of button action",
-        "name": "buttonActionType",
-        "value": "default",
-        "label": "Button Action Type",
-        "options": [
-          {
-            "name": "Default Button",
-            "value": "default-button"
-          },
-          {
-            "name": "Multiple Download",
-            "value": "multiple-download"
-          },
-          {
-            "name": "Select Dropdown",
-            "value": "select-dropdown"
-          }
-        ]
-      },
-      {
-        "component": "aem-content",
-        "name": "link",
-        "label": "Link",
-        "description": "Destination URL for the button",
-        "condition": {
-          "===": [
-            {
-              "var": "buttonActionType"
-            },
-            "default-button"
-          ]
-        }
-      },
-      {
-        "component": "text",
-        "name": "linkText",
-        "label": "Text",
-        "description": "Button label text",
-        "required": true,
-        "condition": {
-          "===": [
-            {
-              "var": "buttonActionType"
-            },
-            "default-button"
-          ]
-        }
-      },
-      {
-        "component": "text",
-        "name": "linkTitle",
-        "label": "Title",
-        "description": "Accessibility title attribute (optional)",
-        "condition": {
-          "===": [
-            {
-              "var": "buttonActionType"
-            },
-            "default-button"
-          ]
-        }
-      },
-      {
-        "component": "select",
-        "name": "linkType",
-        "label": "Type",
-        "description": "Button style variant",
-        "valueType": "string",
-        "value": "",
-        "options": [
-          {
-            "name": "Primary",
-            "value": "primary"
-          },
-          {
-            "name": "Secondary",
-            "value": "secondary"
-          },
-          {
-            "name": "Tertiary",
-            "value": "tertiary"
-          }
-        ],
-        "condition": {
-          "===": [
-            {
-              "var": "buttonActionType"
-            },
-            "default-button"
-          ]
-        }
-      },
-      {
-        "component": "boolean",
-        "name": "targetLink",
-        "label": "Open link in new tab",
-        "description": "Enable to open the button link in a new browser tab",
-        "valueType": "boolean",
-        "value": false,
-        "condition": {
-          "===": [
-            {
-              "var": "buttonActionType"
-            },
-            "default-button"
-          ]
-        }
-      },
-      {
-        "component": "richtext",
-        "name": "multipleDownloadLinks",
-        "label": "Multiple Download Links",
-        "valueType": "string",
-        "value": "",
-        "condition": {
-          "===": [
-            {
-              "var": "buttonActionType"
-            },
-            "multiple-download"
-          ]
-        }
-      },
-      {
-        "component": "text",
-        "name": "dropdownLable",
-        "label": "Dropdown Label",
-        "description": "Dropdown label text for dropdown links",
-        "condition": {
-          "===": [
-            {
-              "var": "buttonActionType"
-            },
-            "select-dropdown"
-          ]
-        }
-      },
-      {
-        "component": "richtext",
-        "name": "drop-links",
-        "label": "Dropdown Links",
-        "valueType": "string",
-        "value": "",
-        "condition": {
-          "===": [
-            {
-              "var": "buttonActionType"
-            },
-            "select-dropdown"
-          ]
-        }
-      },
-      {
-        "component": "boolean",
-        "name": "isCardClickable",
-        "label": "Full Card Clickable",
-        "description": "If enabled, the entire card will be clickable.",
-        "valueType": "boolean",
-        "value": false
-      },
-      {
-        "component": "aem-content",
-        "name": "cardLink",
-        "label": "Link",
-        "description": "Destination URL for the clickable card",
-        "condition": {
-          "!!": [
-            {
-              "var": "isCardClickable"
-            }
-          ]
-        }
-      },
-      {
-        "component": "text",
-        "name": "cardLinkTitle",
-        "label": "Link Title",
-        "description": "Accessibility title attribute for the clickable card (optional)",
-        "condition": {
-          "!!": [
-            {
-              "var": "isCardClickable"
-            }
-          ]
-        }
-      },
-      {
-        "component": "boolean",
-        "name": "enableOverlayModal",
-        "label": "Enable Overlay Modal",
-        "description": "If enabled, an overlay modal will be displayed.",
-        "valueType": "boolean",
-        "value": false
-      },
-      {
-        "component": "aem-content",
-        "name": "fragmentPath",
-        "label": "Fragment Path",
-        "valueType": "string",
-        "condition": {
-          "!!": [
-            {
-              "var": "enableOverlayModal"
-            }
-          ]
-        }
-      },
-      {
-        "component": "date-time",
-        "name": "financialDate",
-        "label": "Financial Date",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "forms-card-list",
-    "fields": [
-      {
-        "component": "tab",
-        "label": "Basic",
-        "name": "basic"
-      },
-      {
-        "component": "text",
-        "name": "name",
-        "label": "Name",
-        "valueType": "string",
-        "required": true,
-        "valueFormat": "regexp",
-        "validation": {
-          "regExp": "^[^$].*",
-          "customErrorMsg": "Name cannot start with $"
-        }
-      },
-      {
-        "component": "text",
-        "name": "jcr:title",
-        "label": "Title",
-        "valueType": "string"
-      },
-      {
-        "component": "boolean",
-        "name": "hideTitle",
-        "label": "Hide title",
-        "valueType": "boolean"
-      },
-      {
-        "component": "datasource-bindref",
-        "name": "dataRef",
-        "label": "Bind reference",
-        "valueType": "string"
-      },
-      {
-        "component": "boolean",
-        "name": "unboundFormElement",
-        "label": "Mark as Unbound Form Element",
-        "valueType": "boolean"
-      },
-      {
-        "component": "boolean",
-        "name": "visible",
-        "label": "Show Component",
-        "valueType": "boolean",
-        "value": true
-      },
-      {
-        "component": "boolean",
-        "name": "enabled",
-        "label": "Enable Component",
-        "valueType": "boolean",
-        "value": true
-      },
-      {
-        "component": "boolean",
-        "name": "readOnly",
-        "label": "Read-only",
-        "valueType": "boolean"
-      },
-      {
-        "component": "select",
-        "name": "colspan",
-        "label": "Column Span",
-        "valueType": "string",
-        "value": "12",
-        "options": [
-          {
-            "name": "1 column",
-            "value": "1"
-          },
-          {
-            "name": "2 column",
-            "value": "2"
-          },
-          {
-            "name": "3 column",
-            "value": "3"
-          },
-          {
-            "name": "4 column",
-            "value": "4"
-          },
-          {
-            "name": "5 column",
-            "value": "5"
-          },
-          {
-            "name": "6 column",
-            "value": "6"
-          },
-          {
-            "name": "7 column",
-            "value": "7"
-          },
-          {
-            "name": "8 column",
-            "value": "8"
-          },
-          {
-            "name": "9 column",
-            "value": "9"
-          },
-          {
-            "name": "10 column",
-            "value": "10"
-          },
-          {
-            "name": "11 column",
-            "value": "11"
-          },
-          {
-            "name": "12 column",
-            "value": "12"
-          }
-        ]
-      },
-      {
-        "component": "tab",
-        "label": "Card List",
-        "name": "card-list"
-      },
-      {
-        "component": "select",
-        "name": "cardListLayout",
-        "value": "default",
-        "label": "Card List Layout",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Stacked",
-            "value": "stacked"
-          },
-          {
-            "name": "Scrollable",
-            "value": "scrollable"
-          },
-          {
-            "name": "Carousel",
-            "value": "carousel"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "cardListAlignment",
-        "value": "default",
-        "label": "Card List Alignment",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Center",
-            "value": "center"
-          },
-          {
-            "name": "Left",
-            "value": "left"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "cardsPerRow",
-        "value": "default",
-        "label": "Cards Per Row",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "1 Card Per Row",
-            "value": "cards-1"
-          },
-          {
-            "name": "3 Cards Per Row",
-            "value": "cards-3"
-          },
-          {
-            "name": "4 Cards Per Row",
-            "value": "cards-4"
-          }
-        ]
-      }
-    ]
-  },
-  {
     "id": "forms-menu-card",
     "fields": [
       {
@@ -8795,6 +8290,24 @@
         "valueType": "string",
         "multi": true,
         "description": "Description for each card, one per row. Supports inline HTML (e.g. asterisk footnotes). Order must match Card Titles."
+      },
+      {
+        "component": "select",
+        "name": "properties.cardStyle",
+        "label": "Card Style",
+        "valueType": "string",
+        "value": "menu-card-default",
+        "description": "Choose how cards are displayed: default grid layout or horizontal scrollable row.",
+        "options": [
+          {
+            "name": "Default",
+            "value": "menu-card-default"
+          },
+          {
+            "name": "Scrollable",
+            "value": "menu-card-scrollable"
+          }
+        ]
       }
     ]
   },
@@ -10140,6 +9653,24 @@
         "valueType": "string",
         "multi": true,
         "description": "Description for each card, one per row. Supports inline HTML (e.g. asterisk footnotes). Order must match Card Titles."
+      },
+      {
+        "component": "select",
+        "name": "properties.cardStyle",
+        "label": "Card Style",
+        "valueType": "string",
+        "value": "menu-card-default",
+        "description": "Choose how cards are displayed: default grid layout or horizontal scrollable row.",
+        "options": [
+          {
+            "name": "Default",
+            "value": "menu-card-default"
+          },
+          {
+            "name": "Scrollable",
+            "value": "menu-card-scrollable"
+          }
+        ]
       }
     ]
   },
@@ -12722,8 +12253,8 @@
       {
         "component": "text",
         "name": "linkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Search Button Text",
+        "description": "Search Button label text",
         "required": true
       },
       {
@@ -12741,8 +12272,8 @@
       {
         "component": "text",
         "name": "learnMoreLinkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Learn More Button Text",
+        "description": "Learn More Button label text",
         "required": true
       },
       {

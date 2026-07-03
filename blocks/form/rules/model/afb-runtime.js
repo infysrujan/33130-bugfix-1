@@ -25,7 +25,7 @@
 import { propertyChange, ExecuteRule, Initialize, RemoveItem, Change, FormLoad, FieldChanged, ValidationComplete, ScriptError, Valid, Invalid, SubmitSuccess, CustomEvent, RequestSuccess, RequestFailure, SubmitError, Submit, Save, Reset, SubmitFailure, Focus, RemoveInstance, AddInstance, AddItem, Click } from './afb-events.js';
 import Formula from '../formula/index.js';
 import { format, parseDefaultDate, datetimeToNumber, parseDateSkeleton, numberToDatetime, formatDate, parseDate } from './afb-formatters.min.js';
-import { generatePayloadHash } from '../../functions.js';
+import { generatePayloadHash, filterExcludeFields } from '../../functions.js';
 
 function __decorate(decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3112,13 +3112,14 @@ const submit = async (context, success, error, submitAs = 'multipart/form-data',
         data = context.form.exportData(attachments);
     }
     let submitContentType = submitAs;
-    
-    // Generate payload hash only for data
-    const payloadHash = await generatePayloadHash(data);
-    
+
+    // Exclude "_exclude" fields before hashing so the hash matches the payload actually sent
+    const filteredData = filterExcludeFields(data);
+    const payloadHash = await generatePayloadHash(filteredData);
+
     // Structure: data contains payload and payload-hash
     const dataWithHash = {
-        'payload': data,
+        'payload': filteredData,
         ...(payloadHash && { 'payload-hash': payloadHash })
     };
 

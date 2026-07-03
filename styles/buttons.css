@@ -80,6 +80,7 @@ button,
   font-weight: var(--bbl-body-b1-medium-weight);
   line-height: var(--bbl-body-b1-line-height);
   border-radius: var(--bbl-rounded-100);
+  text-decoration: none;
 }
 
 /* --- Large (Hero Banner) - 52px height --- */
@@ -555,6 +556,11 @@ a.link-inverted[aria-disabled="true"] {
     transition: max-height 0.5s ease-out;
 }
 
+.global-dropdown-panel.panel-flip {
+    left: auto;
+    right: 0;
+}
+
 .global-dropdown.is-open .global-dropdown-panel {
     max-height: 31.25rem;
     pointer-events: auto;
@@ -578,7 +584,7 @@ a.link-inverted[aria-disabled="true"] {
     display: block;
     color: var(--bbl-color-black);
     padding: var(--bbl-space-150) 0;
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b1-size);
     line-height: var(--bbl-body-b1-size);
     font-weight: var(--bbl-font-weight-regular);
 }
@@ -611,7 +617,6 @@ a.link-inverted[aria-disabled="true"] {
 
 @media (width > 64rem) {
     .global-dropdown-panel li a {
-        font-size: var(--bbl-font-size-b1);
         line-height: 1rem;
     }
 }

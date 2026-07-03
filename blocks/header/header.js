@@ -671,7 +671,11 @@ export default async function decorate(block) {
   const main = document.querySelector('main');
   const headerSection = document.querySelector('header');
   const firstMainChild = main?.firstElementChild;
-  if (!firstMainChild || !firstMainChild.classList.contains('hero-container')) {
+  const { body } = document;
+  if (
+    (!firstMainChild || !firstMainChild.classList.contains('hero-container'))
+    && !body.classList.contains('bangkok-bankm-card')
+  ) {
     headerSection.classList.add('is-not-overlapped');
   }
 

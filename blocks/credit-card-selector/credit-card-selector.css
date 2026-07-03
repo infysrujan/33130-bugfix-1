@@ -25,12 +25,45 @@
   text-align: left;
 }
 
+.section.full-bleed-bg.credit-card-selector-container {
+  padding-inline: var(--bbl-space-200);
+}
+
 .credit-card-selector .card-selector-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h3-mobile);
+  font-size: var(--bbl-font-size-h1-desktop);
   font-weight: var(--bbl-font-weight-medium);
   line-height: 2rem;
-  color: var(--bbl-color-grey-110);
+  color: var(--bbl-color-black);
+  margin: 0;
+  max-width: 100%;
+}
+
+/* The global .central-aligned rule caps .default-content-wrapper at 900px,
+   forcing this title to wrap unnecessarily — let it use the full section width. */
+.section.credit-card-selector-container.central-aligned > .default-content-wrapper {
+  box-sizing: border-box;
+  max-width: none;
+  width: 100%;
+  padding-left: 4.375rem;
+}
+
+/* Remove the decorative underline below the title for this section */
+.section.credit-card-selector-container.underline-title .default-content-wrapper > h2:first-child::after {
+  display: none;
+}
+
+/* Actual page title is the section's authored heading, not a block-generated
+   .card-selector-title (that class never matches this plain <h2>) — override
+   the global h2 size (32px) directly on the real element. */
+.section.credit-card-selector-container .default-content-wrapper > h2:first-child {
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-medium);
+  color: var(--bbl-color-black);
+  font-size: var(--bbl-font-size-h1-desktop);
+  line-height: 1.2;
+  width: 100%;
+  max-width: 100%;
   margin: 0;
 }
 
@@ -79,7 +112,7 @@
   font-family: var(--bbl-font-family-medium);
   font-size: 1.286rem;
   font-weight: var(--bbl-font-weight-medium);
-  color: var(--bbl-color-grey-110);
+  color: var(--bbl-color-black);
   margin: 0;
 }
 
@@ -99,12 +132,12 @@
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--bbl-space-050);
+  gap: var(--bbl-space-100);
 }
 
 /* Default two-column layout — Benefits (and Monthly Income desktop cards) */
 .credit-card-selector .option-list .option-item {
-  flex: 0 0 calc(50% - var(--bbl-space-025));
+  flex: 0 0 calc(50% - var(--bbl-space-050));
 }
 
 
@@ -231,6 +264,7 @@
 /* Hover — blue border preview */
 .credit-card-selector .option-card:hover {
   border-color: var(--bbl-color-active-blue);
+  box-shadow: 0.1732rem 0.1732rem 0 rgb(0 100 255 / 17%);
 }
 
 .credit-card-selector .option-card.is-selected {
@@ -325,7 +359,7 @@
   background-color: var(--bbl-color-gray-300);
   color: var(--bbl-color-grey-60);
   cursor: not-allowed;
-  border: 0.063px solid var(--bbl-color-gray-300);
+  border: 0.0039rem solid var(--bbl-color-gray-300);
 }
 
 .credit-card-selector .selector-button-primary:hover:not(:disabled) {
@@ -486,10 +520,12 @@
 /* ── Image area — contain the full credit card art ───────────────────────── */
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small {
-  height: 11rem;
+  height: 8.375rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 1.25rem 1.25rem 0;
+  box-sizing: border-box;
 }
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small img {
@@ -511,9 +547,10 @@
 /* ── Card title h3 ───────────────────────────────────────────────────────── */
 
 .card-list.credit-card .cards-list-title h3 {
+  font-family: var(--bbl-font-family-medium);
   font-size: 1.5rem;
   line-height: 1.3;
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-medium);
   color: var(--bbl-color-black);
   overflow-wrap: anywhere;
 }
@@ -545,7 +582,7 @@
   font-weight: var(--bbl-font-weight-medium);
   text-decoration: none;
   transition: background-color 0.2s ease;
-  border: 0.063px solid var(--bbl-color-active-blue);
+  border: 0.0039rem solid var(--bbl-color-active-blue);
 }
 
 .card-list.credit-card .cards-list-button a::before,
@@ -730,7 +767,8 @@
   }
 
   .ccs-results-title {
-    font-size: var(--bbl-font-size-h4-desktop);
+    font-size: var(--bbl-font-size-h1-desktop);
+    line-height: var(--bbl-line-height-heading-tight);
   }
 
   .ccs-scroll-dots {
@@ -739,6 +777,10 @@
 
   .credit-card-selector .card-selector-header {
     padding: var(--bbl-space-400) var(--bbl-space-600) var(--bbl-space-600);
+  }
+
+  .section.full-bleed-bg.credit-card-selector-container{
+    padding-inline: var(--bbl-space-600);
   }
 
   /* Two-column grid on tablet */
@@ -774,7 +816,7 @@
   }
 
   .credit-card-selector .option-list-three-column .option-item {
-    flex: 0 0 calc(33.333% - 0.1875rem);
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-100)) / 3);
   }
 
   /* Actions: right-aligned on tablet+ */
@@ -808,7 +850,7 @@
   }
 
   .ccs-results-title {
-    font-size: var(--bbl-font-size-h3-desktop);
+    font-size: var(--bbl-font-size-h1-desktop);
     line-height: var(--bbl-line-height-heading-tight);
   }
 
@@ -817,16 +859,17 @@
     text-align: center;
   }
 
-  /* Desktop: large heading matches original 3 rem */
+  /* Desktop: large heading matches original 48px */
   .credit-card-selector .card-selector-title {
-    font-size: var(--bbl-font-size-h3-desktop);
+    font-size: var(--bbl-font-size-h1-desktop);
     line-height: var(--bbl-line-height-heading-tight);
   }
 
-  /* Desktop: section titles step up to 1.5 rem */
+  /* Desktop: section titles are 24px / black */
   .credit-card-selector .filter-group-title {
-    font-size: var(--bbl-font-size-h5-desktop);
-    font-weight:var(--bbl-font-weight-regular);
+    font-size: var(--bbl-font-size-h3-desktop);
+    font-weight: var(--bbl-font-weight-regular);
+    color: var(--bbl-color-black);
   }
 
   .credit-card-selector .card-selector-content {

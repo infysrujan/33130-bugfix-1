@@ -124,7 +124,6 @@
 @media (width > 47.5rem) {
   .story-card .thumb-full {
     flex-direction: row;
-    justify-content: space-between;
   }
 
   .story-card.image-right .thumb-full {
@@ -136,6 +135,10 @@
     height: 28.125rem;
   }
 
+  .story-card .outer {
+    padding: 0 3rem 0 1.25rem;
+  }
+
   .story-card .thumb {
     margin: 0;
     min-width: 50%;
@@ -144,10 +147,6 @@
   .story-card .thumb picture,
   .story-card .thumb img {
     height: 28.125rem;
-  }
-
-  .story-card .outer {
-    padding: 0 3rem 0 1.25rem;
   }
 
   .story-card.image-right .outer {

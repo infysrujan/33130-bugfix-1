@@ -9,6 +9,7 @@ import decorateCreditCardTractApplication from './form-custom/creditcard-track-a
 import decorateBondAllocationForm from './form-custom/bond-allocation/bond-allocation.js';
 import decorateSipForm from './form-custom/sip-form/sip-form.js';
 import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
+import decorateReliefMeasures from './form-custom/relief-measures/relief-measures.js';
 import {
   checkValidation,
   createButton,
@@ -352,6 +353,7 @@ async function createFormForAuthoring(formDef) {
   decorateBondAllocationForm(form);
   decorateSipForm(form);
   decorateSmeLoanForm(form);
+  decorateReliefMeasures(form);
   return form;
 }
 
@@ -410,6 +412,7 @@ export async function createForm(formDef, data, source = 'aem') {
   decorateBondAllocationForm(form);
   decorateSipForm(form);
   decorateSmeLoanForm(form);
+  decorateReliefMeasures(form);
   return {
     form,
     captcha,
@@ -584,8 +587,9 @@ export default async function decorate(block) {
         form = await createFormForAuthoring(formDef);
       }
     }
-    form.dataset.redirectUrl = formDef.redirectUrl || '';
-    form.dataset.thankYouMsg = formDef.thankYouMsg || '';
+    form.dataset.redirectUrl = formDef.redirectUrl || formDef.properties?.redirectUrl || '';
+    form.dataset.thankYouMsg = formDef.thankYouMessage || formDef.thankYouMsg
+      || formDef.properties?.thankYouMessage || formDef.properties?.thankYouMsg || '';
     form.dataset.action = formDef.action || pathname?.split('.json')[0];
     form.dataset.source = source;
     form.dataset.rules = rules;

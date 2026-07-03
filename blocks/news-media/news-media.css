@@ -80,15 +80,6 @@
   padding-bottom: 0.9375rem;
 }
 
-.latest-news-wrapper .button-container {
-  padding-bottom: 0;
-}
-
-.latest-news-container .button-container .button-m {
-  min-width: 13.125rem;
-  display: inline-flex;
-}
-
 @media (width > 47.5rem) {
   .news-media-tabs .tabs-nav-wrapper .tabs-nav button {
     height: unset;
@@ -129,7 +120,4 @@
     margin-inline: 0.625rem;
   }
 
-  .latest-news-container .button-container .button-m {
-    min-width: 15rem;
-  }
 }

@@ -31,26 +31,26 @@ function saveComparatorCookie(selectedCards) {
 //   Row 1: linkText    (text)
 //   Row 2: linkTitle   (text, optional)
 //   Row 3: linkType    (select: primary | secondary | tertiary)
-//   Row 4: targetLink  (boolean, inside targetSettings container)
 function readBlockConfig(block) {
   const rows = [...block.children];
   rows.forEach((row) => moveInstrumentation(row, block));
 
-  const readText = (row) => row?.children[0]?.querySelector('p')?.textContent?.trim()
+  const readCellText = (row) => row?.children[0]?.querySelector('p')?.textContent?.trim()
     ?? row?.children[0]?.textContent?.trim()
     ?? '';
 
   // Row 0: link — aem-content renders as <a href="published-url"> or plain-text path
   const cell0 = rows[0]?.children[0];
   const anchor = cell0?.querySelector('a');
-  const link = anchor?.href ?? readText(rows[0]);
+  const link = anchor?.href ?? readCellText(rows[0]);
+
+  const textRows = rows.slice(1);
 
   return {
     link,
-    linkText: readText(rows[1]) || 'Compare',
-    linkTitle: readText(rows[2]),
-    linkType: readText(rows[3]) || 'primary',
-    targetLink: readText(rows[4]) === 'true',
+    linkText: readCellText(textRows[0]) || 'Compare',
+    linkTitle: readCellText(textRows[1]),
+    linkType: readCellText(textRows[2]) || 'primary',
   };
 }
 
@@ -158,7 +158,7 @@ export default async function decorate(block) {
   [...block.children].forEach((row) => { row.classList.remove('ccs-source-row'); });
 
   const {
-    link, linkText, linkTitle, linkType, targetLink,
+    link, linkText, linkTitle, linkType,
   } = readBlockConfig(block);
 
   // Hide authored rows via CSS class with !important (UE cannot override this)
@@ -199,7 +199,7 @@ export default async function decorate(block) {
       document.dispatchEvent(new CustomEvent('credit-card-compare-show', { detail: { cards } }));
       resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (link) {
-      window.open(`${link}?compare-product-btn=`, targetLink ? '_blank' : '_self');
+      window.open(`${link}?compare-product-btn=`, '_self');
     }
   });
 

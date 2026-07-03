@@ -59,12 +59,22 @@
 
 .market-report-written-by {
   margin-block: 1.875rem;
+  color: var(--bbl-color-grey-85);
+}
+
+.market-report-col-left .market-report-author {
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-body-b1-size);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: var(--bbl-body-b1-line-height);
+  color: var(--bbl-color-black);
 }
 
 .market-report-page a.print-button.icon-print {
   font: 1rem BangkokBank-Medium, sans-serif;
   color: var(--bbl-color-black);
   text-transform: uppercase;
+  text-decoration: none;
   display: block;
   position: relative;
   padding-right: 1.75rem;

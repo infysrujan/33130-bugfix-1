@@ -1,8 +1,11 @@
-.header {
+:root {
   --header-m-height: 5rem;
-  --header-d-height: 7.8125rem;
-  --nav-height: 5.375rem;
+  --header-d-height: 7.78rem;
+}
 
+.header {
+  --nav-height: 5.375rem;
+  
   position: absolute;
   top: 0;
   left: 0;
@@ -275,7 +278,6 @@ header.is-not-overlapped ~ main {
   }
 
   .header .location {
-    margin-left: 0.5625rem;
     margin-top: -0.125rem;
   }
 
@@ -296,7 +298,7 @@ header.is-not-overlapped ~ main {
 
   header.is-not-overlapped ~ main {
     /* matches header height */
-    padding-top: var(--header-d-height, 7.8125rem);
+    padding-top: var(--header-d-height, 7.78rem);
   }
 
   .header .megamenu-panel .megamenu-inner .megamenu-column-links {

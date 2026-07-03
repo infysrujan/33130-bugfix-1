@@ -314,6 +314,11 @@ main .section.form-container.custom-forms .form form fieldset.radio-group-wrappe
   gap: var(--bbl-space-150);
 }
 
+main .section.form-container.custom-forms .form .form-message.success-message {
+ color:inherit;
+ background-color: transparent;
+}
+
 @media (width > 47.5rem) {
   main .section.form-container.custom-forms.central-aligned>.default-content-wrapper {
     margin-top: 1.875rem;

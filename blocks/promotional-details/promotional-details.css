@@ -89,7 +89,7 @@ body.mobile-app-view main > div:first-child {
 }
 
 .promotional-details .promo-detail-row-no-image .promo-detail-description {
-  text-align: center;
+  text-align: left;
 }
 
 .promotional-details .promo-detail-date {

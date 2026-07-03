@@ -1246,33 +1246,16 @@
           }
         },
         {
-          "title": "Forms Card List",
-          "id": "forms-card-list",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/fd/components/form/panelcontainer/v1/panelcontainer",
-                "template": {
-                  "jcr:title": "Forms Card List",
-                  "fieldType": "panel",
-                  "fd:viewType": "forms-card-list",
-                  "filter": "forms-card-list"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Forms Card List Item",
-          "id": "forms-card-list-item",
+          "title": "BBL Wizard Steps",
+          "id": "bbl-wizard",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/fd/components/form/image/v1/image",
                 "template": {
-                  "jcr:title": "Forms Card List Item",
+                  "jcr:title": "BBL Wizard Steps",
                   "fieldType": "image",
-                  "fd:viewType": "forms-card-list-item"
+                  "fd:viewType": "bbl-wizard"
                 }
               }
             }

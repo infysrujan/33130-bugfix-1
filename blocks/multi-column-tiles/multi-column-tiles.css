@@ -1,5 +1,11 @@
 /* Mobile (all devices base) */
 
+:root {
+  /* Not available in typography tokens, so defined locally */
+  --bbl-multi-column-tiles-title-size-mobile: 1.0625rem; 
+  --bbl-multi-column-tiles-title-size-desktop: 1.25rem;  
+}
+
 .multi-column-tiles-container {
   padding: 0;
   padding-inline: 0;
@@ -18,11 +24,7 @@
   }
 }
 
-@media (width > 87.5rem) {
-  .multi-column-tiles-container {
-    margin-inline: 0;
-  }
-}
+
 
 .multi-column-tiles {
   width: 100%;
@@ -99,7 +101,7 @@
   z-index: 1;
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-primary);
-  font-size: 1.5rem;
+  font-size: var(--bbl-multi-column-tiles-title-size-mobile);
   line-height: 1.375;
   letter-spacing: 0.0313rem;
   font-weight: var(--bbl-font-weight-regular, 400);
@@ -110,6 +112,10 @@
   margin: 0;
   transform: translateY(0);
   transition: all 0.5s;
+}
+
+.bangkok-bankm-card .multi-column-tiles-title {
+  color: var(--bbl-color-white);
 }
 
 .multi-column-tiles-tile:hover .multi-column-tiles-title,
@@ -159,7 +165,7 @@
 
 /* === Desktop and above (> 64rem) === */
 
-@media (width >= 64rem) {
+@media (width > 64rem) {
   /* All tile counts: fill full width, no horizontal scroll */
   .multi-column-tiles .multi-column-tiles-wrapper,
   .multi-column-tiles .tiles-count-2,
@@ -177,7 +183,11 @@
   }
 
   .multi-column-tiles-image {
-    height: 100vh;
+    height: 37.5rem; 
+  }
+
+  .multi-column-tiles-title {
+    font-size: var(--bbl-multi-column-tiles-title-size-desktop);
   }
 }
 

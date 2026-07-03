@@ -359,6 +359,7 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is
 /* Reset margin-bottom on paragraphs inside plain-text wrappers to prevent double spacing */
 main .section.form-container .form form .plain-text-wrapper p:last-child {
   margin-bottom: 0;
+  text-align: center;
 }
 
 main .section.form-container .form form .plain-text-wrapper.field-text {

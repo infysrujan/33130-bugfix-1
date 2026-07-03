@@ -1445,7 +1445,7 @@
         {
           "component": "aem-tag",
           "name": "cardTypes",
-          "label": "Card Types",
+          "label": "Fund Types",
           "valueType": "string",
           "condition": {
             "===": [
