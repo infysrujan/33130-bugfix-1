@@ -263,63 +263,6 @@
 }
 
 /* --------------------------------------------------------------------------
-   "SEE MORE" LINK
-   Match BBL: simple text link with arrow, NOT a bordered button.
-   -------------------------------------------------------------------------- */
-.rate-card .link-primary,
-.rate-card .link-primary:any-link,
-.rate-card a.link-primary {
-  color: var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-medium);
-  font-weight: 400;
-  text-decoration: none;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  font-size: 0.9rem;
-  line-height: 1.375rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  white-space: nowrap;
-  background: transparent;
-  border: none;
-  padding: 0;
-  border-radius: 0;
-  height: auto;
-  width: auto;
-  min-height: 0;
-}
-
-.rate-card .link-primary:hover,
-.rate-card a.link-primary:hover {
-  color: var(--bbl-color-blue-90);
-  text-decoration: none;
-}
-
-.rate-card .link-primary.pull-right {
-  margin-left: auto;
-  font-size: 0.7rem;
-}
-
-/* Icon styles */
-.rate-card .icon-arrow-left {
-  font-size: 0.625rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  padding-left: 0.25rem;
-  transition: transform 0.3s ease;
-  vertical-align: middle;
-}
-
-.rate-card .link-primary:hover .icon-arrow-left {
-  transform: translateX(0.1875rem);
-}
-
-
-
-/* --------------------------------------------------------------------------
    NO-DATA STATE
    -------------------------------------------------------------------------- */
 .rate-card .no-data {
@@ -328,17 +271,6 @@
   color: var(--bbl-color-grey-70);
   font-style: italic;
   font-family: var(--bbl-font-family-medium);
-}
-
-/* --------------------------------------------------------------------------
-   ACCESSIBILITY
-   -------------------------------------------------------------------------- */
-
-/* Tab focus handled above via :focus-visible */
-
-.rate-card .link-primary:focus-visible {
-  outline: 0.125rem solid var(--bbl-color-active-blue);
-  outline-offset: 0.125rem;
 }
 
 /* ==========================================================================
@@ -360,12 +292,6 @@
     flex-direction: row;
     align-items: center;
     margin-top: 1.5rem;
-  }
-
-  .rate-card .link-primary.pull-right {
-    margin-left: auto;
-    width: auto;
-    text-align: right;
   }
 }
 
@@ -415,10 +341,6 @@
 
   .rate-card .percent {
     font-size: 1.5rem;
-  }
-
-  .rate-card .link-primary.pull-right {
-    font-size: 0.8rem;
   }
 
 /* --------------------------------------------------------------------------

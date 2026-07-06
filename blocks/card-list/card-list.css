@@ -59,6 +59,21 @@
   font-weight: var(--bbl-text-default-weight);
 }
 
+.cards-list-description :is(p, li) a {
+  color: inherit;
+}
+
+.cards-list-description :is(p, li) a[class] {
+  display: inline;
+  font-weight: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.cards-list-description :is(p, li) a[class]::after {
+  display: none;
+}
+
 .cards-list-promo-tag p {
   margin: 0;
 }
@@ -378,39 +393,6 @@
 .cards-list-button .button-m{
   min-width: 100%;
   box-sizing: border-box;
-}
-
-.cards-list-button .button-tertiary::after {
-  display: none;
-}
-
-.cards-list-button .button-tertiary {
-  position: relative;
-  padding-right: 0.9375rem;
-  color: var(--bbl-color-active-blue);
-  font-weight: var(--bbl-text-link-primary-weight);
-  font-size: var(--bbl-text-link-primary-size);
-  line-height: var(--bbl-text-link-primary-line-height);
-  font-family: var(--bbl-font-family-medium);
-}
-
-.cards-list-button .button-tertiary:hover {
-  color: var(--bbl-color-blue-90);
-  text-decoration: none;
-}
-
-.cards-list-button .button-tertiary::before {
-  content: "\e901";
-  position: absolute;
-  right: 0.1875rem;
-  top: 52%;
-  transform: translateY(-50%);
-  font: 300 0.625rem / 1 icomoon, sans-serif;
-  transition: all 0.3s ease-in-out;
-}
-
-.cards-list-button .button-tertiary:hover::before {
-  transform: translateY(-50%) translateX(0.25rem);
 }
 
 .cards-list.scrollable::-webkit-scrollbar {

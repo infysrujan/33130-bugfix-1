@@ -146,15 +146,14 @@ function createCardItem(cardRow, doc) {
   };
 
   if (actionType === 'download' && actionCells.length > 0) {
-    const dlCell = actionCells[actionCells.length - 1];
-    const { enabled: openInNewTab, toggleCell: dlToggleCell } = extractToggledLink(
-      remaining,
-      (c) => c === dlCell,
-    );
-    if (dlToggleCell) remaining = remaining.filter((c) => c !== dlToggleCell);
-    const dlAnchor = dlCell.querySelector('a');
-    if (dlToggleCell) applyLinkTarget(dlCell, 'a', openInNewTab);
-    appendDownloadLink(dlAnchor);
+    const dlCell = actionCells.filter((c) => !c.querySelector('ul')).pop()
+      ?? actionCells[actionCells.length - 1];
+    const toggle = remaining.slice(remaining.indexOf(dlCell) + 1).find(isToggleCell);
+    if (toggle) {
+      remaining = remaining.filter((c) => c !== toggle);
+      applyLinkTarget(dlCell, 'a', toggle.textContent.trim().toLowerCase() !== 'false');
+    }
+    appendDownloadLink(dlCell.querySelector('a'));
   } else if (actionType === 'multiple-download' && actionCells.length > 0) {
     const multipleCell = actionCells[actionCells.length - 1];
     const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);

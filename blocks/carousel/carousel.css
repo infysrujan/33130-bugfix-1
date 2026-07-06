@@ -43,6 +43,7 @@
 .carousel-header a::after {
     content: "\e901";
     position: absolute;
+    font-family: icomoon, sans-serif;
     font-size: 0.625rem;
     top: 50%;
     transform: translateY(-50%);

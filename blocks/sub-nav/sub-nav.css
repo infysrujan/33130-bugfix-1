@@ -1,72 +1,72 @@
 /* Sub Nav block: dark bar with back button and optional dropdown */
 
 .sub-nav.block {
-	padding: 0.75rem 0;
+    padding: 0.75rem 0;
 }
 
 .sub-nav .wrapper {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
 /* Back button: circular, white outline, left chevron */
 .sub-nav .sub-nav-back {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 2.9375rem;
-	height: 2.9375rem;
-	padding: 0;
-	margin: 0;
-	border: 0.0625rem solid var(--bbl-color-white-alpha-50);
-	border-radius: 50%;
-	background: transparent;
-	color: var(--bbl-color-white);
-	cursor: pointer;
-	flex-shrink: 0;
-	transition: opacity 0.2s ease, background-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.9375rem;
+    height: 2.9375rem;
+    padding: 0;
+    margin: 0;
+    border: 0.0625rem solid var(--bbl-color-white-alpha-50);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--bbl-color-white);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
 }
 
 .sub-nav .sub-nav-back:hover {
-	opacity: 0.9;
-	border-color: var(--bbl-color-white);
+    opacity: 0.9;
+    border-color: var(--bbl-color-white);
 }
 
 .sub-nav .sub-nav-back:focus-visible {
-	outline: 0.125rem solid var(--bbl-color-white);
-	outline-offset: 0.125rem;
+    outline: 0.125rem solid var(--bbl-color-white);
+    outline-offset: 0.125rem;
 }
 
 .sub-nav .sub-nav-back-circle {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .sub-nav .sub-nav-back-circle.icon-arrow-left::before {
-	transform: translateY(0%) rotate(180deg);
-	font-size: 0.625rem;
+    transform: translateY(0%) rotate(180deg);
+    font-size: 0.625rem;
 }
 
 /* Sub-nav dropdown (uses dropdown-helpers.js createGlobalDropdown) */
 .sub-nav .sub-nav-select.global-dropdown {
-	min-width: 13.75rem;
-	width: auto;
-	max-width: 22rem;
+    min-width: 13.75rem;
+    width: auto;
+    max-width: 22rem;
 }
 
 .sub-nav .sub-nav-select .global-dropdown-trigger {
-	background-color: transparent;
-	border-radius: 0.4375rem;
-	border: 0.0625rem solid var(--bbl-color-white-alpha-50);
-	color: var(--bbl-color-white);
-	min-width: 13.75rem;
-	text-align: left;
-	padding-inline: 1.25rem 2.1875rem;
-	text-transform: capitalize;
-	font-size: var(--bbl-font-size-b2);
+    background-color: transparent;
+    border-radius: 0.4375rem;
+    border: 0.0625rem solid var(--bbl-color-white-alpha-50);
+    color: var(--bbl-color-white);
+    min-width: 13.75rem;
+    text-align: left;
+    padding-inline: 1.25rem 2.1875rem;
+    text-transform: capitalize;
+    font-size: var(--bbl-font-size-b2);
 }
 
 .sub-nav button.global-dropdown-trigger.icon-dropdown:hover {
@@ -74,59 +74,59 @@
 }
 
 .sub-nav .sub-nav-select .global-dropdown-panel {
-	margin-top: 0.25rem;
+    margin-top: 0.25rem;
 
-	/* Right-align panel with trigger; panel expands to the left for long options */
-	left: auto;
-	right: 0;
-	width: max-content;
-	min-width: 100%;
-	max-width: min(90vw, 22rem);
+    /* Right-align panel with trigger; panel expands to the left for long options */
+    left: auto;
+    right: 0;
+    width: max-content;
+    min-width: 100%;
+    max-width: min(90vw, 22rem);
 }
 
 .sub-nav .sub-nav-select .global-dropdown-panel li a {
-	color: var(--bbl-color-black);
+    color: var(--bbl-color-black);
 
-	/* Allow long option text to wrap instead of overflowing viewport */
-	max-width: 100%;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;
-	text-transform: capitalize;
+    /* Allow long option text to wrap instead of overflowing viewport */
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-transform: capitalize;
 }
 
 .sub-nav .sub-nav-select .global-dropdown-panel li a:hover {
-	color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-active-blue);
 }
 
 /* Sub-nav with tab: tab buttons on the right */
 .sub-nav .sub-nav-tabs {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
 }
 
 .sub-nav .sub-nav-tab-btn {
-	font: inherit;
-	line-height: 2.75rem;
-	letter-spacing: 0.05rem;
-	padding: 0 1.25rem;
-	height: 2.75rem;
-	min-width: 9.4375rem;
-	border: 0.0625rem solid var(--bbl-color-white);
-	border-radius: 0.4375rem;
-	background: transparent;
-	color: var(--bbl-color-white);
-	transition: background-color 0.2s ease, border-color 0.2s ease;
+    font: inherit;
+    line-height: 2.75rem;
+    letter-spacing: 0.05rem;
+    padding: 0 1.25rem;
+    height: 2.75rem;
+    min-width: 9.4375rem;
+    border: 0.0625rem solid var(--bbl-color-white);
+    border-radius: 0.4375rem;
+    background: transparent;
+    color: var(--bbl-color-white);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .sub-nav .sub-nav-tab-btn.active {
-	background-color: var(--bbl-color-white);
-	color: var(--bbl-color-gray-143);
+    background-color: var(--bbl-color-white);
+    color: var(--bbl-color-gray-143);
 }
 
 .sub-nav .sub-nav-tab-btn:focus-visible {
-	outline: 0.125rem solid var(--bbl-color-white);
-	outline-offset: 0.125rem;
+    outline: 0.125rem solid var(--bbl-color-white);
+    outline-offset: 0.125rem;
 }

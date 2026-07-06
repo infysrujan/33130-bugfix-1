@@ -3389,21 +3389,6 @@
             "value": "tertiary"
           }
         ]
-      },
-      {
-        "component": "container",
-        "name": "targetSettings",
-        "label": "Target Settings",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "targetLink",
-            "label": "Open link in new tab",
-            "description": "Enable to open the Compare button link in a new browser tab",
-            "valueType": "boolean",
-            "value": false
-          }
-        ]
       }
     ]
   },
@@ -6383,6 +6368,10 @@
           {
             "name": "123,421%",
             "value": "#,###,##0%"
+          },
+          {
+            "name": "123,421,567",
+            "value": "###,###,###"
           }
         ]
       },
@@ -12264,8 +12253,8 @@
       {
         "component": "text",
         "name": "linkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Search Button Text",
+        "description": "Search Button label text",
         "required": true
       },
       {
@@ -12283,8 +12272,8 @@
       {
         "component": "text",
         "name": "learnMoreLinkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Learn More Button Text",
+        "description": "Learn More Button label text",
         "required": true
       },
       {

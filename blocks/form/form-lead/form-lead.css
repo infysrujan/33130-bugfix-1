@@ -62,6 +62,11 @@
   --bbl-form-line-height-25: 1.5625rem;              /* 25px */
   --bbl-form-line-height-32: 2rem;                   /* 32px */
   --bbl-form-line-height-44: 2.75rem;                /* 44px */
+
+  /* Colors */
+  --bbl-color-gray-299: #f7f7f7;
+  --bbl-color-gray-151: #e1e1e1;
+  --bbl-color-gray-800: #929292;
 }
 
 main .section.form-container.lead-forms .form .form-message.success-message {
@@ -255,6 +260,19 @@ main .lead-forms .form form .field-initialfielditemname.field-invalid > .field-l
   height: auto;
 }
 
+main .lead-forms .form textarea {
+  height: auto;
+  min-height: 6.25rem;
+  padding: var(--bbl-space-100) var(--bbl-space-250);
+  line-height: var(--bbl-form-line-height-1-5);
+}
+
+main .lead-forms .form form input,
+main .lead-forms .form form textarea,
+main .lead-forms .form form select{
+    height:44px;
+}
+
 main .section.form-container.lead-forms .form form select {
   padding: 0 var(--bbl-form-padding-30) 0 var(--bbl-space-250);
   border-color: var(--bbl-color-grey-23);
@@ -279,7 +297,7 @@ main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-labe
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-1);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-form-font-weight-bold);
   cursor: default;
 }
 
@@ -335,13 +353,6 @@ main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .tele
 main .lead-forms .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].drop-down-wrapper, [class*='icon-'].date-wrapper).field-wrapper :is(input, select) {
   padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
   margin-bottom: var(--bbl-form-margin-14);
-}
-
-main .lead-forms .form textarea {
-  height: auto;
-  min-height: 6.25rem;
-  padding: var(--bbl-space-100) var(--bbl-space-250);
-  line-height: var(--bbl-form-line-height-1-5);
 }
 
 main .lead-forms .form select option {
@@ -917,7 +928,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
 
   main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
     font-size: var(--bbl-font-size-b1-desktop);
-    line-height: var(--bbl-line-height-b3-desktop);
+    line-height: 1.3rem;
   }
 
   main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {

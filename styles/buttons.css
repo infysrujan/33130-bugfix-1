@@ -80,6 +80,7 @@ button,
   font-weight: var(--bbl-body-b1-medium-weight);
   line-height: var(--bbl-body-b1-line-height);
   border-radius: var(--bbl-rounded-100);
+  text-decoration: none;
 }
 
 /* --- Large (Hero Banner) - 52px height --- */
@@ -289,7 +290,7 @@ button.tertiary {
 /* Hover */
 .button-tertiary:hover {
   color: var(--bbl-color-blue-70);
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .button-tertiary:hover::after {

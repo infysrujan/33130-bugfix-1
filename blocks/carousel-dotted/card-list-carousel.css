@@ -127,6 +127,7 @@
     .carousel-dotted-item.carousel-fragment {
     width: 100%;
     min-width: 100%;
+    height: auto;
   }
 
   .carousel-dotted.all-carousel-fragment

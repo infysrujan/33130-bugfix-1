@@ -375,10 +375,6 @@
   margin: 0;
 }
 
-.carousel-dotted.all-with-image .carousel-dotted-more .button-container a {
-  visibility: hidden;
-}
-
 .carousel-dotted.all-with-image .carousel-dotted-more .button-container a::after {
   visibility: visible;
 }
@@ -394,22 +390,6 @@
 
 .carousel-dotted-item.with-image .carousel-dotted-more {
   bottom: 1.25rem;
-}
-
-.carousel-dotted .button-tertiary {
-  transition: color 0.3s ease;
-}
-
-.carousel-dotted .button-tertiary:hover {
-  text-decoration: none;
-  color: var(--bbl-color-blue-90);
-}
-
-.carousel-dotted .carousel-dotted-item.with-image .button-tertiary:hover::after,
-.carousel-dotted .carousel-dotted-item.without-image .button-tertiary:hover::after,
-.carousel-dotted.all-with-image .carousel-dotted-more .button-tertiary:hover::after,
-.carousel-dotted.all-without-image .carousel-dotted-more .button-tertiary:hover::after {
-  margin-left: 1.25rem;
 }
 
 .carousel-item.slick-active:not(.is-active)
@@ -757,10 +737,6 @@ p.text-large.text-light {
     min-height: 27.8125rem;
   }
 
-  .carousel-dotted.all-with-image .carousel-dotted-more .button-container a {
-    visibility: visible;
-  }
-
   .carousel-dotted .carousel-bg {
     position: absolute;
     inset: 0;
@@ -879,10 +855,6 @@ p.text-large.text-light {
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-subtitle p{
     color: var(--bbl-color-white);
-  }
-
-  .carousel-dotted .button-tertiary.icon-arrow-left::before {
-    left: 5.3125rem;
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image,
@@ -1036,11 +1008,6 @@ p.text-large.text-light {
 
   .section:has(.rate-card) .carousel-dotted-wrapper:has(.carousel-dotted.all-without-image) {
     order: unset;
-  }
-
-  .carousel-dotted .button-tertiary.icon-arrow-left::before {
-    left: 4.5rem;
-    font-size: 0.625rem;
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {

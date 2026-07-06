@@ -451,7 +451,8 @@ export default async function decorate(block) {
     const headingCell = row.children[col]; col += 1;
     const textCell = row.children[col]; col += 1;
     const linkCell = row.children[col]; col += 1;
-    if (!row.children[col]?.querySelector('picture, a[href]')) col += 1;
+    const skipCell = row.children[col];
+    if (skipCell && !skipCell.textContent?.trim() && !skipCell.querySelector('picture, a[href]')) col += 1;
     const appStoreImageCell = row.children[col]; col += 1;
     const appStoreLinkCell = row.children[col]; col += 1;
     const googlePlayImageCell = row.children[col]; col += 1;
@@ -604,7 +605,7 @@ export default async function decorate(block) {
         }
       }
     }
-    applyLinkTarget(contentGroup, 'a', targetValue);
+    if (targetValue) applyLinkTarget(contentGroup, 'a.button-m', targetValue);
 
     contentInner.append(contentGroup);
     const content = createElement('div', 'hero-banner-content', 'content');

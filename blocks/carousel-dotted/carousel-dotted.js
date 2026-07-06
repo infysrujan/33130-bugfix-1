@@ -648,9 +648,6 @@ export default async function decorate(block) {
   if (seeMoreLink) {
     const moreWrap = document.createElement('div');
     moreWrap.className = 'carousel-dotted-more';
-    if (seeMoreLink.classList.contains('button-tertiary')) {
-      seeMoreLink.classList.add('icon-arrow-left');
-    }
     const openInNewTab = seeMoreTargetValue === 'true' || seeMoreLink.target === '_blank';
     if (openInNewTab) seeMoreLink.setAttribute('target', '_blank');
     if (seeMoreButtonContainer) {

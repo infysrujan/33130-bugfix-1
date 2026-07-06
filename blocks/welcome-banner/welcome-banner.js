@@ -1,4 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { isAuthoringInstance, decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
@@ -71,15 +72,17 @@ function isDateActive(startStr, endStr) {
 // ─── CTA extraction ───────────────────────────────────────────────────────────
 
 /**
- * Maps a single anchor element to a plain CTA descriptor object.
- * @param {HTMLAnchorElement} a
- * @returns {{ href: string, label: string, target: string, sourceAnchor: HTMLAnchorElement }}
+ * Extracts CTA data from a single button row.
+ * The second cell contains the open-in-new-tab toggle ("true"/"false").
+ * @param {Element} row
+ * @returns {{ href: string, sourceAnchor: HTMLAnchorElement }|null}
  */
-function anchorToCtaData(a) {
+function rowToCtaData(row) {
+  const cells = [...row.children];
+  const a = cells[0]?.querySelector('a');
+  if (!a) return null;
   return {
     href: a.getAttribute('href') || '#',
-    label: a.textContent.trim(),
-    target: a.getAttribute('target') || '',
     sourceAnchor: a,
   };
 }
@@ -92,40 +95,34 @@ function anchorToCtaData(a) {
  * @returns {Array}
  */
 function extractCtas(buttonRows, placeholder) {
-  const fromRows = buttonRows
-    .map((row) => row?.querySelector('a'))
-    .filter(Boolean)
-    .map(anchorToCtaData);
-
+  const fromRows = buttonRows.map(rowToCtaData).filter(Boolean);
   if (fromRows.length) return fromRows;
 
-  const fallbackAnchors = [
+  return [
     ...placeholder.closest('.section')?.querySelectorAll('.default-content-wrapper a') ?? [],
-  ];
-  return fallbackAnchors.map(anchorToCtaData);
+  ].map((a) => ({
+    href: a.getAttribute('href') || '#',
+    sourceAnchor: a,
+  }));
 }
 
 // ─── DOM builders ─────────────────────────────────────────────────────────────
 
 /**
- * Builds a single CTA anchor with navigation and dismiss logic.
+ * Attaches dismiss/navigation logic to the original anchor and returns it
+ * along with its inline wrapper (e.g. <strong>) so the authored markup and
+ * existing button classes (applied by decorateButtonsV1) are preserved as-is.
  * @param {Document} doc
  * @param {object}   ctaData
  * @param {Function} dismissAndSuppress
- * @returns {HTMLAnchorElement}
+ * @returns {HTMLElement}
  */
 function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
-  const a = doc.createElement('a');
-  a.className = 'welcome-banner-cta';
-  a.href = ctaData.href;
-  a.textContent = ctaData.label;
+  const { sourceAnchor, href } = ctaData;
+  const target = sourceAnchor.getAttribute('target') || '';
 
-  if (ctaData.target) a.setAttribute('target', ctaData.target);
-  if (ctaData.sourceAnchor) moveInstrumentation(ctaData.sourceAnchor, a);
-
-  a.addEventListener('click', (e) => {
+  sourceAnchor.addEventListener('click', (e) => {
     e.preventDefault();
-    const { href, target } = ctaData;
     dismissAndSuppress();
     if (!href || href === '#') return;
     if (target === '_blank') {
@@ -135,7 +132,7 @@ function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
     }
   });
 
-  return a;
+  return sourceAnchor;
 }
 
 /**
@@ -155,6 +152,9 @@ function buildCtas(doc, ctaList, dismissAndSuppress) {
 // ─── Block entry point ────────────────────────────────────────────────────────
 
 export default function decorate(block) {
+  if (isAuthoringInstance(block)) return;
+  decorateButtonsV1(block);
+
   const [
     desktopImgRow, mobileImgRow, isActiveRow, publishDateRow, unpublishDateRow, ...buttonRows
   ] = [...block.children];
