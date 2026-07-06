@@ -99,14 +99,38 @@
           "name": "cardShortDescription",
           "label": "Card Short Description",
           "valueType": "string",
-          "filter": "promotional-details"
+          "rte": {
+            "toolbar": {
+              "insert": ["link", "unlink", "image"],
+              "sections": ["insert"]
+            },
+            "actions": {
+              "image": {
+                "wrapInPicture": true,
+                "shortcut": "Mod-Shift-I",
+                "label": "Insert Image"
+              }
+            }
+          }
         },
         {
           "component": "richtext",
           "name": "detailDescription",
           "label": "Detail Description (appears on the promotional page)",
           "valueType": "string",
-          "filter": "promotional-details"
+          "rte": {
+            "toolbar": {
+              "insert": ["link", "unlink", "image"],
+              "sections": ["insert"]
+            },
+            "actions": {
+              "image": {
+                "wrapInPicture": true,
+                "shortcut": "Mod-Shift-I",
+                "label": "Insert Image"
+              }
+            }
+          }
         },
         {
           "component": "aem-tag",
@@ -204,13 +228,25 @@
           "name": "responsibleLendingDisclaimerText",
           "label": "Disclaimer Text (appears on the promotional page)",
           "valueType": "string",
-          "filter": "promotional-details",
           "condition": {
             "!!": [
               {
                 "var": "responsibleLendingDisclaimerEnabled"
               }
             ]
+          },
+          "rte": {
+            "toolbar": {
+              "insert": ["link", "unlink", "image"],
+              "sections": ["insert"]
+            },
+            "actions": {
+              "image": {
+                "wrapInPicture": true,
+                "shortcut": "Mod-Shift-I",
+                "label": "Insert Image"
+              }
+            }
           }
         },
         {
@@ -265,66 +301,5 @@
       ]
     }
   ],
-  "filters": [
-    {
-      "id": "promotional-details",
-      "rte": {
-        "toolbar": {
-          "format": [
-            "bold",
-            "italic",
-            "underline",
-            "strike"
-          ],
-          "alignment": [
-            "left",
-            "center",
-            "right",
-            "justify"
-          ],
-          "indentation": [
-            "indent",
-            "outdent"
-          ],
-          "blocks": [
-            "paragraph",
-            "h1",
-            "h2",
-            "h3",
-            "h4",
-            "h5",
-            "h6"
-          ],
-          "list": [
-            "bullet_list",
-            "ordered_list"
-          ],
-          "insert": [
-            "link",
-            "unlink",
-            "image",
-            "special_characters"
-          ],
-          "sr_script": [
-            "superscript",
-            "subscript"
-          ],
-          "editor": [
-            "removeformat",
-            "paste_text"
-          ],
-          "sections": [
-            "format",
-            "alignment",
-            "indentation",
-            "blocks",
-            "list",
-            "insert",
-            "sr_script",
-            "editor"
-          ]
-        }
-      }
-    }
-  ]
+  "filters": []
 }

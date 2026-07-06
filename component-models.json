@@ -11867,14 +11867,50 @@
         "name": "cardShortDescription",
         "label": "Card Short Description",
         "valueType": "string",
-        "filter": "promotional-details"
+        "rte": {
+          "toolbar": {
+            "insert": [
+              "link",
+              "unlink",
+              "image"
+            ],
+            "sections": [
+              "insert"
+            ]
+          },
+          "actions": {
+            "image": {
+              "wrapInPicture": true,
+              "shortcut": "Mod-Shift-I",
+              "label": "Insert Image"
+            }
+          }
+        }
       },
       {
         "component": "richtext",
         "name": "detailDescription",
         "label": "Detail Description (appears on the promotional page)",
         "valueType": "string",
-        "filter": "promotional-details"
+        "rte": {
+          "toolbar": {
+            "insert": [
+              "link",
+              "unlink",
+              "image"
+            ],
+            "sections": [
+              "insert"
+            ]
+          },
+          "actions": {
+            "image": {
+              "wrapInPicture": true,
+              "shortcut": "Mod-Shift-I",
+              "label": "Insert Image"
+            }
+          }
+        }
       },
       {
         "component": "aem-tag",
@@ -11972,13 +12008,31 @@
         "name": "responsibleLendingDisclaimerText",
         "label": "Disclaimer Text (appears on the promotional page)",
         "valueType": "string",
-        "filter": "promotional-details",
         "condition": {
           "!!": [
             {
               "var": "responsibleLendingDisclaimerEnabled"
             }
           ]
+        },
+        "rte": {
+          "toolbar": {
+            "insert": [
+              "link",
+              "unlink",
+              "image"
+            ],
+            "sections": [
+              "insert"
+            ]
+          },
+          "actions": {
+            "image": {
+              "wrapInPicture": true,
+              "shortcut": "Mod-Shift-I",
+              "label": "Insert Image"
+            }
+          }
         }
       },
       {
