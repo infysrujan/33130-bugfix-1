@@ -22,8 +22,8 @@ const TEMPLATES_PATH = SIDEKICK_CONFIG?.templatesPath || '/tools/sidekick/blocks
 
 // Timeout constants
 const SELECTOR_TIMEOUT = 30000;
-const RENDER_TIMEOUT = 5000;
-const LAYOUT_TIMEOUT = 5000;
+const RENDER_TIMEOUT = 3000;
+const LAYOUT_TIMEOUT = 1000;
 
 async function fetchLibraryBlocks() {
   try {
