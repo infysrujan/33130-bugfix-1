@@ -12,7 +12,22 @@
     "build:json:models": "merge-json-cli -i \"models/_component-models.json\" -o \"component-models.json\"",
     "build:json:definitions": "merge-json-cli -i \"models/_component-definition.json\" -o \"component-definition.json\"",
     "build:json:filters": "merge-json-cli -i \"models/_component-filters.json\" -o \"component-filters.json\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:visual": "playwright test",
+    "test:visual:ui": "playwright test --ui",
+    "test:visual:update": "playwright test --update-snapshots",
+    "test:visual:figma": "node tools/visual-tests/figma-util.js",
+    "test:visual:report": "playwright show-report tools/visual-tests/playwright-report",
+    "test:visual:generate": "node tools/visual-tests/generate-visual-tests.js",
+    "test:visual:blocks": "playwright test blocks",
+    "test:visual:block": "playwright test",
+    "test:visual:block:update": "playwright test blocks --update-snapshots",
+    "test:visual:server": "node tools/visual-tests/start-visual-test-server.js",
+    "start": "concurrently -k \"npm run test:visual:server\" \"aem up --url https://dev--site-dev--bangkok-bank.aem.page --open /en\" --kill-others-on-fail",
+    "test:visual:docker:build": "docker compose build",
+    "test:visual:docker": "docker compose run --rm playwright",
+    "test:visual:docker:update": "docker compose run --rm playwright npx playwright test --update-snapshots",
+    "test:visual:docker:generate": "docker compose run --rm playwright node tools/visual-tests/generate-visual-tests.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +42,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "7.28.5",
     "eslint": "8.57.1",
+    "concurrently": "8.2.2",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-json": "3.1.0",
@@ -38,6 +54,8 @@
     "stylelint-config-standard": "39.0.1"
   },
   "dependencies": {
-    "i": "^0.3.7"
+    "@playwright/test": "^1.53.1",
+    "i": "^0.3.7",
+    "playwright": "^1.53.1"
   }
 }

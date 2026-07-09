@@ -12,6 +12,7 @@ import {
   loadCSS,
   getMetadata,
   toClassName,
+  loadScript,
 } from './aem.js';
 
 import {
@@ -360,6 +361,13 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   decorateOgTitle();
   decorateOgImage();
+
+  if (document.body.classList.contains('sidekick-library')) {
+    // initialize visual test
+    loadScript(`${window.hlx.codeBasePath}/tools/visual-tests/visual-test.js`);
+    loadScript(`${window.hlx.codeBasePath}/tools/visual-overlay/index.js`, { type: 'module' });
+  }
+
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
