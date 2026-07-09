@@ -103,6 +103,11 @@
   margin: 0;
 }
 
+.story-card .text-default a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .story-card .button-container {
   display: inline-block;
   margin: 0.3125rem 0.9375rem 0.3125rem 0;
