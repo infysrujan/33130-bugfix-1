@@ -26,8 +26,7 @@
     "start": "concurrently -k \"npm run test:visual:server\" \"aem up --url https://dev--site-dev--bangkok-bank.aem.page --open /en\" --kill-others-on-fail",
     "test:visual:docker:build": "docker compose build",
     "test:visual:docker": "docker compose run --rm playwright",
-    "test:visual:docker:update": "docker compose run --rm playwright npx playwright test --update-snapshots",
-    "test:visual:docker:generate": "docker compose run --rm playwright node tools/visual-tests/generate-visual-tests.js"
+    "test:visual:docker:update": "docker compose run --rm playwright npx playwright test --update-snapshots"
   },
   "repository": {
     "type": "git",

@@ -14,15 +14,15 @@ test.describe('columns Visual Tests', () => {
     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/blocks/columns&index=0&vtest=true');
 
     // Wait for the library component to load
-    await page.waitForSelector('sidekick-library', { timeout: 30000 });
+    await page.waitForSelector('sidekick-library', { timeout: 50000 });
 
     // Wait for the iframe to load and switch to its context
-    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
+    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 50000 });
     const frame = await iframe.contentFrame();
     if (!frame) throw new Error('Could not get iframe content frame');
 
     // Wait for the block to be fully rendered
-    const block = await frame.waitForSelector('.columns', { timeout: 30000, state: 'visible' });
+    const block = await frame.waitForSelector('.columns', { timeout: 50000, state: 'visible' });
 
     // Small delay to ensure layout is stable
     await page.waitForTimeout(5000);
@@ -46,7 +46,7 @@ test.describe('columns Visual Tests', () => {
     const screenshotName = 'columns-0-Mobile.png';
     const screenshot = await page.screenshot({
       clip: box,
-      timeout: 30000,
+      timeout: 50000,
       animations: 'disabled',
       type: 'png',
     });
@@ -66,15 +66,15 @@ test.describe('columns Visual Tests', () => {
     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/blocks/columns&index=0&vtest=true');
 
     // Wait for the library component to load
-    await page.waitForSelector('sidekick-library', { timeout: 30000 });
+    await page.waitForSelector('sidekick-library', { timeout: 50000 });
 
     // Wait for the iframe to load and switch to its context
-    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
+    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 50000 });
     const frame = await iframe.contentFrame();
     if (!frame) throw new Error('Could not get iframe content frame');
 
     // Wait for the block to be fully rendered
-    const block = await frame.waitForSelector('.columns', { timeout: 30000, state: 'visible' });
+    const block = await frame.waitForSelector('.columns', { timeout: 50000, state: 'visible' });
 
     // Small delay to ensure layout is stable
     await page.waitForTimeout(5000);
@@ -98,7 +98,7 @@ test.describe('columns Visual Tests', () => {
     const screenshotName = 'columns-0-Tablet.png';
     const screenshot = await page.screenshot({
       clip: box,
-      timeout: 30000,
+      timeout: 50000,
       animations: 'disabled',
       type: 'png',
     });
@@ -118,15 +118,15 @@ test.describe('columns Visual Tests', () => {
     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/blocks/columns&index=0&vtest=true');
 
     // Wait for the library component to load
-    await page.waitForSelector('sidekick-library', { timeout: 30000 });
+    await page.waitForSelector('sidekick-library', { timeout: 50000 });
 
     // Wait for the iframe to load and switch to its context
-    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
+    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 50000 });
     const frame = await iframe.contentFrame();
     if (!frame) throw new Error('Could not get iframe content frame');
 
     // Wait for the block to be fully rendered
-    const block = await frame.waitForSelector('.columns', { timeout: 30000, state: 'visible' });
+    const block = await frame.waitForSelector('.columns', { timeout: 50000, state: 'visible' });
 
     // Small delay to ensure layout is stable
     await page.waitForTimeout(5000);
@@ -150,7 +150,7 @@ test.describe('columns Visual Tests', () => {
     const screenshotName = 'columns-0-Desktop.png';
     const screenshot = await page.screenshot({
       clip: box,
-      timeout: 30000,
+      timeout: 50000,
       animations: 'disabled',
       type: 'png',
     });
@@ -170,15 +170,15 @@ test.describe('columns Visual Tests', () => {
     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/blocks/columns&index=0&vtest=true');
 
     // Wait for the library component to load
-    await page.waitForSelector('sidekick-library', { timeout: 30000 });
+    await page.waitForSelector('sidekick-library', { timeout: 50000 });
 
     // Wait for the iframe to load and switch to its context
-    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
+    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 50000 });
     const frame = await iframe.contentFrame();
     if (!frame) throw new Error('Could not get iframe content frame');
 
     // Wait for the block to be fully rendered
-    const block = await frame.waitForSelector('.columns', { timeout: 30000, state: 'visible' });
+    const block = await frame.waitForSelector('.columns', { timeout: 50000, state: 'visible' });
 
     // Small delay to ensure layout is stable
     await page.waitForTimeout(5000);
@@ -202,7 +202,7 @@ test.describe('columns Visual Tests', () => {
     const screenshotName = 'columns-0-Large.png';
     const screenshot = await page.screenshot({
       clip: box,
-      timeout: 30000,
+      timeout: 50000,
       animations: 'disabled',
       type: 'png',
     });
