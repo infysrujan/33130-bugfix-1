@@ -83,28 +83,28 @@
                   "value": "bg-truthful-blue"
                 },
                 {
-                  "name": "Truthful Dark Blue",
+                  "name": "Deep Blue",
                   "value": "bg-truthful-dark-blue"
                 },
                 {
-                  "name": "Ice Blue",
+                  "name": "bgd-blue",
                   "value": "bg-ice-blue"
                 },
                 {
-                  "name": "Grey 10",
+                  "name": "Wealth Theme BG",
                   "value": "bg-grey-10"
                 },
                 {
-                  "name": "Grey 05",
+                  "name": "bgd-grey",
                   "value": "bg-grey-05"
                 },
                 {
-                  "name": "Grey 100",
+                  "name": "Elite Theme BG",
                   "value": "bg-grey-100"
                 },
                 {
-                  "name": "Blue 01",
-                  "value": "bg-blue-01"
+                  "name": "Primary Blue S01",
+                  "value": "bg-primary-blue-s01"
                 }
               ]
             },
@@ -139,6 +139,10 @@
                 {
                   "name":"Columns 2(65-35)",
                   "value": "columns-2-65"
+                },
+                {
+                  "name":"Columns 2(25-75)",
+                  "value": "columns-2-25"
                 }
               ]
             },

@@ -66,7 +66,7 @@ export default async function componentDecorator(element, fd, container, formId)
   // decorators to ensure custom component logic executes first.
   const { ':type': type = '', fieldType } = fd;
 
-  if (type.endsWith('wizard')) {
+  if (type.endsWith('wizard') && type !== 'bbl-wizard') {
     await loadComponent('wizard', element, fd, container, formId);
   }
 
@@ -88,6 +88,10 @@ export default async function componentDecorator(element, fd, container, formId)
   // the fd:viewType value directly (matching the behaviour of accordion, rating, etc.).
   if (fd['fd:viewType'] === 'forms-menu-card' || type === 'forms-menu-card') {
     await loadComponent('forms-menu-card', element, fd, container, formId);
+  }
+
+  if (fd['fd:viewType'] === 'bbl-wizard' || type === 'bbl-wizard') {
+    await loadComponent('bblwizard', element, fd, container, formId);
   }
 
   // forms-card-list: responsive card grid container (panelcontainer base).

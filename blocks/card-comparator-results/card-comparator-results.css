@@ -4,8 +4,23 @@
 }
 
 .card-comparator-results .ccr-description :is(h1, h2, h3, h4, h5, h6) {
+  font-size: var(--bbl-font-size-h1-desktop);
   color: var(--bbl-color-black);
   line-height: 2.875rem;
+}
+
+.card-comparator-results .ccr-description p {
+  color: var(--bbl-color-grey-85);
+}
+
+/* The page title is a plain authored heading (no class) outside .ccr-description —
+   override the global default size/color directly on the real element. */
+.section.card-comparator-results-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-medium);
+  color: var(--bbl-color-black);
+  font-size: 3rem;
+  line-height: 1.2;
 }
 
 /* ── Comparison grid — scrollable on mobile (matches card-list scrollable) ── */

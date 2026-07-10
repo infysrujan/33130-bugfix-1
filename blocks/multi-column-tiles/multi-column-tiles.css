@@ -18,11 +18,7 @@
   }
 }
 
-@media (width > 87.5rem) {
-  .multi-column-tiles-container {
-    margin-inline: 0;
-  }
-}
+
 
 .multi-column-tiles {
   width: 100%;
@@ -99,10 +95,10 @@
   z-index: 1;
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-primary);
-  font-size: 1.5rem;
+  font-size: var(--bbl-font-size-h3-mobile);
   line-height: 1.375;
   letter-spacing: 0.0313rem;
-  font-weight: var(--bbl-font-weight-regular, 400);
+  font-weight: var(--bbl-font-weight-medium);
   text-align: center;
   padding-left: 18%;
   padding-right: 18%;
@@ -110,6 +106,10 @@
   margin: 0;
   transform: translateY(0);
   transition: all 0.5s;
+}
+
+.bangkok-bankm-card .multi-column-tiles-title {
+  color: var(--bbl-color-white);
 }
 
 .multi-column-tiles-tile:hover .multi-column-tiles-title,
@@ -159,7 +159,7 @@
 
 /* === Desktop and above (> 64rem) === */
 
-@media (width >= 64rem) {
+@media (width > 64rem) {
   /* All tile counts: fill full width, no horizontal scroll */
   .multi-column-tiles .multi-column-tiles-wrapper,
   .multi-column-tiles .tiles-count-2,
@@ -177,7 +177,11 @@
   }
 
   .multi-column-tiles-image {
-    height: 100vh;
+    height: 37.5rem; 
+  }
+
+  .multi-column-tiles-title {
+    font-size: var(--bbl-font-size-h3-desktop);
   }
 }
 

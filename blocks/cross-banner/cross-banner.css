@@ -53,9 +53,8 @@
   margin-bottom: 0.9375rem;
   font-family: var(--bbl-font-family-medium);
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .cross-banner-description {
@@ -178,8 +177,12 @@ body.private
 
   .cross-banner-title,
   .cross-banner-description {
-    flex: 0 0 33.25%;
-    max-width: 33.25%;
+    max-width: 21.875rem;
+    width: 100%;
+  }
+
+  .cross-banner-button {
+   margin-left: auto;
   }
 
   :is(.wealth, .private) :is(.cross-banner-title, .cross-banner-description) {

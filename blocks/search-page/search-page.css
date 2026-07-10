@@ -1,13 +1,10 @@
-body:has(.search-modal) header.is-not-overlapped :is(.mobile-top-bar, .main-nav-desktop) {
+body:has(.search-modal) header.is-not-overlapped .mobile-top-bar,
+body:has(.search-modal) header.is-not-overlapped .main-nav-desktop:not(.is-scrolled) {
   background-color: transparent;
 }
 
 body:has(.search-modal) header.is-not-overlapped ~ main {
   padding-top: 0;
-}
-
-.search-modal {
-  background: var(--bbl-color-white);
 }
 
 .search-modal .search-modal-top-block {
@@ -78,7 +75,6 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
 
 .section.full-bleed-bg .content.search-modal-pre-block {
   flex: 1;
-  background: var(--bbl-color-white);
   padding-block: var(--bbl-space-250);
   max-width: 60rem;
 }
@@ -307,6 +303,10 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
 }
 
 @media (width > 64rem) {
+   body:has(.search-page):not(:has(.main-nav-desktop.is-scrolled)) header.is-not-overlapped .login-button.primary {
+    background-color: var(--bbl-color-active-blue);
+  }
+
   .search-modal .search-modal-panel {
     width: calc((100% - 3.75rem) / 4);
   }

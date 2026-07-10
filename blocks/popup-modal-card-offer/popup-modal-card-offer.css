@@ -112,8 +112,6 @@
 }
 
 .floating-popup-inner a {
-  display: block;
-  text-align: center;
   margin: 1.875rem 0 0;
   min-width: 8.625rem;
   max-width: 8.625rem;

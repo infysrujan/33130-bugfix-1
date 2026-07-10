@@ -68,7 +68,7 @@
   outline: none;
   transition: all 0.3s ease;
   white-space: nowrap;
-	border-radius: 2rem;
+  border-radius: 2rem;
 }
 
 .rate-card .tab-header a.active,
@@ -101,7 +101,7 @@
   width: 100%;
 }
 
-.rate-card section > div {
+.rate-card section>div {
   display: none;
 }
 
@@ -111,7 +111,7 @@
   margin-bottom: 0;
 }
 
-.rate-card section > div.active {
+.rate-card section>div.active {
   display: block;
 }
 
@@ -152,21 +152,20 @@
   background: transparent;
 }
 
+/* Right-align Buy/Sell/Rate/NAV columns */
+.rate-card table thead th:not(:first-child) {
+  text-align: right;
+  width: var(--bbl-space-1000);
+}
+
 .rate-card table tbody td {
   padding: 0.3125rem 0;
   font-size: 0.875rem;
   color: var(--bbl-color-gray-121);
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-md-number);
   font-weight: 400;
   background: transparent;
   height: 2.25rem;
-}
-
-/* Right-align Buy/Sell/Rate/NAV columns */
-.rate-card table thead th:not(:first-child),
-.rate-card table tbody td:not(:first-child) {
-  text-align: center;
-
 }
 
 .rate-card table tbody td.text-right {
@@ -175,6 +174,7 @@
 
 /* Values in the rate columns (Buy/Sell/Rate/NAV) — bold & larger */
 .rate-card table tbody td:not(:first-child) {
+  text-align: right;
   font-size: 1.3125rem;
 }
 
@@ -262,63 +262,6 @@
 }
 
 /* --------------------------------------------------------------------------
-   "SEE MORE" LINK
-   Match BBL: simple text link with arrow, NOT a bordered button.
-   -------------------------------------------------------------------------- */
-.rate-card .link-primary,
-.rate-card .link-primary:any-link,
-.rate-card a.link-primary {
-  color: var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-medium);
-  font-weight: 400;
-  text-decoration: none;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  font-size: 0.9rem;
-  line-height: 1.375rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  white-space: nowrap;
-  background: transparent;
-  border: none;
-  padding: 0;
-  border-radius: 0;
-  height: auto;
-  width: auto;
-  min-height: 0;
-}
-
-.rate-card .link-primary:hover,
-.rate-card a.link-primary:hover {
-  color: var(--bbl-color-blue-90);
-  text-decoration: none;
-}
-
-.rate-card .link-primary.pull-right {
-  margin-left: auto;
-  font-size: 0.7rem;
-}
-
-/* Icon styles */
-.rate-card .icon-arrow-left {
-  font-size: 0.625rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  padding-left: 0.25rem;
-  transition: transform 0.3s ease;
-  vertical-align: middle;
-}
-
-.rate-card .link-primary:hover .icon-arrow-left {
-  transform: translateX(0.1875rem);
-}
-
-
-
-/* --------------------------------------------------------------------------
    NO-DATA STATE
    -------------------------------------------------------------------------- */
 .rate-card .no-data {
@@ -327,17 +270,6 @@
   color: var(--bbl-color-grey-70);
   font-style: italic;
   font-family: var(--bbl-font-family-medium);
-}
-
-/* --------------------------------------------------------------------------
-   ACCESSIBILITY
-   -------------------------------------------------------------------------- */
-
-/* Tab focus handled above via :focus-visible */
-
-.rate-card .link-primary:focus-visible {
-  outline: 0.125rem solid var(--bbl-color-active-blue);
-  outline-offset: 0.125rem;
 }
 
 /* ==========================================================================
@@ -350,7 +282,8 @@
     min-height: auto;
   }
 
-  .rate-card .tab-header a, .rate-card .tab-header a:any-link {
+  .rate-card .tab-header a,
+  .rate-card .tab-header a:any-link {
     padding: 0.4375rem 1rem 0.3125rem;
   }
 
@@ -359,21 +292,15 @@
     align-items: center;
     margin-top: 1.5rem;
   }
-
-  .rate-card .link-primary.pull-right {
-    margin-left: auto;
-    width: auto;
-    text-align: right;
-  }
 }
 
 /* ==========================================================================
    DESKTOP (> 64rem)
    ========================================================================== */
 @media (width > 64rem) {
-	.rate-card {
+  .rate-card {
     padding: 1.25rem 0;
-	}
+  }
 
   .rate-card .currency-info {
     max-width: 100%;
@@ -381,10 +308,10 @@
     min-height: 27.8125rem;
   }
 
-  .rate-card .tab-header a, 
-	.rate-card .tab-header a:any-link {
+  .rate-card .tab-header a,
+  .rate-card .tab-header a:any-link {
     padding: 0.4375rem 1rem 0.3125rem;
-    font-family:var(--bbl-font-family-medium);
+    font-family: var(--bbl-font-family-medium);
   }
 
   .rate-card .country-select span,
@@ -397,12 +324,16 @@
     height: 2.5625rem;
   }
 
+  .rate-card table thead th:not(:first-child) {
+    width: 4.375rem;
+  }
+
   .rate-card table tbody td:not(:first-child) {
-    padding-left: 0.625rem; 
+    padding-left: 0.625rem;
     font-size: 1.5rem;
   }
 
-  .rate-card section > .inner:first-child .default-wrap{
+  .rate-card section>.inner:first-child .default-wrap {
     position: absolute;
     bottom: -20%;
   }
@@ -411,17 +342,11 @@
     font-size: 1.5rem;
   }
 
-	.rate-card .link-primary.pull-right {
-    font-size: 0.8rem;
-	}
-}
-
 /* --------------------------------------------------------------------------
    EQUAL-HEIGHT COLUMNS — Desktop only
    Switch columns-3 section to CSS grid when rate-card is present.
    Grid rows naturally make all children equal height without height:100% propagation.
    -------------------------------------------------------------------------- */
-@media (width > 64rem) {
   .section.columns-3:has(.rate-card) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -429,7 +354,7 @@
   }
 
   /* Reset flex-specific width/flex overrides from styles.css */
-  .section.columns-3:has(.rate-card) > * {
+  .section.columns-3:has(.rate-card)>* {
     width: auto;
     flex: unset;
     min-width: 0;

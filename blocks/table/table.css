@@ -43,6 +43,10 @@
   border: 0.0625rem solid var(--bbl-color-grey-30);
 }
 
+.table table td a {
+  color: inherit;
+}
+
 /* --------------------------------------------------------------------------
    BORDER TYPE VARIANTS (specificity 0,2,3)
    -------------------------------------------------------------------------- */
@@ -174,7 +178,7 @@
 }
 
 /* Header Pastel Blue — #A1C6FF background */
-.table table.header-pastel-blue .header-row {
+.table table.header-primary-blue-s01 .header-row {
   background-color: var(--bbl-color-blue-40);
 }
 

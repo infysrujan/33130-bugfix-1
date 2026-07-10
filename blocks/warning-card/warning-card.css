@@ -68,7 +68,7 @@
 }
 
 .warning-card-description strong a {
-  font-family: Muli-Bold, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-base);
   color: var(--bbl-color-grey-85);
 }

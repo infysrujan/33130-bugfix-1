@@ -271,8 +271,9 @@ async function loadWelcomeBanner(doc) {
     return undefined;
   }
 
-  const lang = doc.documentElement.lang || 'en';
-  const path = `/${lang}/fragments/welcome-banner/welcome-banner`;
+  const configData = await fetchConfigs();
+  const path = configData?.welcomeBannerFragmentPath;
+  if (!path) return undefined;
 
   welcomeBannerLoadPromise = new Promise((resolve) => {
     document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
@@ -286,8 +287,6 @@ async function loadWelcomeBanner(doc) {
             resolve();
             return;
           }
-          const main = doc.querySelector('main');
-          [...fragment.querySelectorAll(':scope > .section')].forEach((s) => main.append(s));
           await waitForImageLoad(doc.querySelector('.welcome-banner-media img'));
           resolve();
         },

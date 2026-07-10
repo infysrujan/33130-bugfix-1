@@ -70,4 +70,19 @@
 		padding: 0;
 		width: auto;
 	}
+
+	.top-nav-text {
+		margin-left: 0.3rem;
+	}
+}
+
+@media (width > 120rem) {
+	.top-nav {
+		padding-inline: 0;
+	}
+
+	.top-nav ul {
+		max-width: var(--bbl-layout-content-max-width-1920);
+		margin: 0 auto;
+	}
 }

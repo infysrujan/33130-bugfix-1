@@ -94,7 +94,11 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
   funds.forEach((fund) => {
     const name = fund.FundName || '';
     // eslint-disable-next-line no-underscore-dangle
-    const readMoreUrl = fund._path || '#';
+    let readMoreUrl = fund.mfPageUrl?._path || '#';
+    // Remove "/content/bangkokbank" from the start of readMoreUrl, if present
+    if (readMoreUrl.startsWith('/content/bangkokbank')) {
+      readMoreUrl = readMoreUrl.replace(/^\/content\/bangkokbank/, '');
+    }
     const productId = fund.ProductID || name;
     const compareEnabled = fund.CompareButton === 'true';
 

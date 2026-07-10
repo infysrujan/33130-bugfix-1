@@ -111,10 +111,11 @@
 
 /* ── CTA ───────────────────────────────────────────────── */
 .card-cta {
-  padding: 1.25rem;
+  padding: 1.875rem 1.25rem 1.25rem;
   background: var(--bbl-color-white);
   display: flex;
   justify-content: center;
+  margin: 0;
 }
 
 .card-list-wealth .card-cta a::after {
@@ -126,8 +127,7 @@
   align-items: center;
   text-align: center;
   text-decoration: none;
-  padding: 0.3125rem 1.25rem;
-  min-height: 2.75rem;
+  padding: 0.3125rem 0;
   height: auto;
   letter-spacing: 0.05rem;
   border-radius: 0.4375rem;

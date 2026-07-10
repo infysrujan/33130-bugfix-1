@@ -1,14 +1,13 @@
 import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
+import { filterExcludeFields } from './functions.js';
 
 // Strip _exclude fields from AEM forms submit payload (afb-runtime posts via fetch internally).
+// Note: afb-runtime already filters these out before computing the payload hash, so this is a
+// safety net for any other submission path that still carries _exclude fields.
 (function installExcludeFieldsInterceptor() {
   if (window.aemFormExcludeInterceptor) return;
   window.aemFormExcludeInterceptor = true;
   const nativeFetch = window.fetch;
-
-  function filterExclude(obj) {
-    return Object.fromEntries(Object.entries(obj).filter(([k]) => !k.includes('_exclude')));
-  }
 
   window.fetch = async function fetchExcludeFilter(resource, init) {
     if (init?.method === 'POST') {
@@ -20,7 +19,7 @@ import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
             const parsed = JSON.parse(dataStr);
             const { payload } = parsed;
             if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
-              const filtered = filterExclude(payload);
+              const filtered = filterExcludeFields(payload);
               const newFormData = new FormData();
               init.body.forEach((value, key) => {
                 const newVal = key === 'data'
@@ -41,7 +40,7 @@ import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
             (k) => parsed?.[k] && typeof parsed[k] === 'object' && !Array.isArray(parsed[k]),
           );
           if (key) {
-            const newBody = JSON.stringify({ ...parsed, [key]: filterExclude(parsed[key]) });
+            const newBody = JSON.stringify({ ...parsed, [key]: filterExcludeFields(parsed[key]) });
             return nativeFetch.call(this, resource, { ...init, body: newBody });
           }
         } catch { /* not filterable JSON — pass through */ }
@@ -60,8 +59,7 @@ export function setFormPlaceholders(placeholders) {
 export function submitSuccess(e, form) {
   const { payload } = e;
   const authoredThankYouMsg = form.dataset.thankYouMsg;
-  const redirectUrl = form.dataset.redirectUrl
-    || (!authoredThankYouMsg && payload?.body?.redirectUrl);
+  const redirectUrl = form.dataset.redirectUrl || payload?.body?.redirectUrl;
   const thankYouMsg = authoredThankYouMsg || payload?.body?.thankYouMessage;
 
   const thankyouPanel = form.querySelector('fieldset[name="thankyou_visible_panel"]');
@@ -70,9 +68,7 @@ export function submitSuccess(e, form) {
     const reviewPanel = form.querySelector('fieldset[name="review_panel"]');
     if (reviewPanel) reviewPanel.dataset.visible = 'false';
     thankyouPanel.scrollIntoView?.({ behavior: 'smooth' });
-  } else if (redirectUrl) {
-    window.location.assign(encodeURI(redirectUrl));
-  } else {
+  } else if (thankYouMsg || !redirectUrl) {
     let thankYouMessage = form.parentNode.querySelector('.form-message.success-message');
     if (!thankYouMessage) {
       thankYouMessage = document.createElement('div');
@@ -85,6 +81,8 @@ export function submitSuccess(e, form) {
     if (thankYouMessage.scrollIntoView) {
       thankYouMessage.scrollIntoView({ behavior: 'smooth' });
     }
+  } else {
+    window.location.assign(encodeURI(redirectUrl));
   }
   form.setAttribute('data-submitting', 'false');
   const submitBtn = form.querySelector('button[type="submit"]');

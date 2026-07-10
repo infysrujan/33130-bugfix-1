@@ -89,7 +89,7 @@ body.mobile-app-view main > div:first-child {
 }
 
 .promotional-details .promo-detail-row-no-image .promo-detail-description {
-  text-align: center;
+  text-align: left;
 }
 
 .promotional-details .promo-detail-date {
@@ -102,6 +102,21 @@ body.mobile-app-view main > div:first-child {
   margin: 0 0 0.75rem;
   line-height: 1.125rem;
   color: var(--bbl-color-grey-85);
+}
+
+.promotional-details .promo-detail-description :is(p, li) a {
+  color: inherit;
+}
+
+.promotional-details .promo-detail-description :is(p, li) a[class] {
+  display: inline;
+  font-weight: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.promotional-details .promo-detail-description :is(p, li) a[class]::after {
+  display: none;
 }
 
 .promotional-details .promo-detail-cta {

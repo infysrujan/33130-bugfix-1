@@ -1,6 +1,6 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import { getLang, isAuthoringInstance, applyLinkTarget } from '../../scripts/bbl-decorators.js';
-import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
+import createGlobalDropdown, { attachScrollableDropdownPanel } from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
 
@@ -146,26 +146,25 @@ function createCardItem(cardRow, doc) {
   };
 
   if (actionType === 'download' && actionCells.length > 0) {
-    const dlCell = actionCells[actionCells.length - 1];
-    const { enabled: openInNewTab, toggleCell: dlToggleCell } = extractToggledLink(
-      remaining,
-      (c) => c === dlCell,
-    );
-    if (dlToggleCell) remaining = remaining.filter((c) => c !== dlToggleCell);
-    const dlAnchor = dlCell.querySelector('a');
-    if (dlToggleCell) applyLinkTarget(dlCell, 'a', openInNewTab);
-    appendDownloadLink(dlAnchor);
+    const dlCell = actionCells.filter((c) => !c.querySelector('ul')).pop()
+      ?? actionCells[actionCells.length - 1];
+    const toggle = remaining.slice(remaining.indexOf(dlCell) + 1).find(isToggleCell);
+    if (toggle) {
+      remaining = remaining.filter((c) => c !== toggle);
+      applyLinkTarget(dlCell, 'a', toggle.textContent.trim().toLowerCase() !== 'false');
+    }
+    appendDownloadLink(dlCell.querySelector('a'));
   } else if (actionType === 'multiple-download' && actionCells.length > 0) {
     const multipleCell = actionCells[actionCells.length - 1];
     const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);
     temp.querySelectorAll('a').forEach(appendDownloadLink);
   } else if (actionType === 'select-dropdown') {
-    const dropdownCell = actionCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length >= 1);
+    const labelCell = remaining.find((c) => !c.querySelector('a') && !isToggleCell(c) && c.textContent.trim());
+    const label = labelCell?.textContent.trim() || 'Select';
+    const labelIdx = remaining.indexOf(labelCell);
+    const dropdownSearch = labelIdx >= 0 ? remaining.slice(labelIdx + 1) : remaining;
+    const dropdownCell = dropdownSearch.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length >= 1);
     if (dropdownCell) {
-      const labelCellIdx = remaining.indexOf(dropdownCell) - 1;
-      const label = (labelCellIdx >= 0 && !remaining[labelCellIdx].querySelector('a'))
-        ? remaining[labelCellIdx].textContent.trim()
-        : remaining[labelCellIdx]?.textContent.trim() || 'Select';
       inner.appendChild(createGlobalDropdown(label, dropdownCell.innerHTML, doc));
     }
   } else if (actionType && actionCells.length > 0) {
@@ -278,6 +277,8 @@ function renderCardActions(target, rows, block, doc) {
   });
 
   target.appendChild(container);
+
+  if (isScrollable) attachScrollableDropdownPanel(container, doc);
 
   if (!block.dataset.menuCardActionsDecorated) {
     block.dataset.menuCardActionsDecorated = 'true';

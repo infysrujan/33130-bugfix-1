@@ -1,6 +1,7 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { createElementFromHTML, moveInstrumentation } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 
 /**
  * Format date string from API format to display format
@@ -148,43 +149,17 @@ function createTableElement(columnNames, data, dataType, sourceElement) {
 }
 
 /**
- * Create button element
+ * Returns the authored anchor from the button cell as-is,
+ * preserving classes applied by decorateButtonsV1.
  * @param {Object} buttonData - Button data from block
- * @returns {Element|null} - Button element
+ * @returns {Element|null} - Anchor element
  */
 function createButtonElement(buttonData) {
-  const {
-    link,
-    linkText,
-    linkTitle,
-    targetLink,
-    sourceElement,
-  } = buttonData;
-
-  if (!link || !linkText) {
-    return null;
-  }
-
-  const button = document.createElement('a');
-  button.className = 'link-primary white pull-right';
-  button.href = link;
-  button.title = linkTitle || linkText;
-  button.target = targetLink ? '_blank' : '_self';
-  button.textContent = linkText;
-
-  const icon = document.createElement('span');
-  icon.className = 'icon-arrow-left';
-  button.appendChild(icon);
-
-  if (targetLink) {
-    button.rel = 'noopener noreferrer';
-  }
-
-  if (sourceElement) {
-    moveInstrumentation(sourceElement, button);
-  }
-
-  return button;
+  const { sourceElement } = buttonData;
+  const a = sourceElement?.querySelector('a');
+  if (!a) return null;
+  moveInstrumentation(sourceElement, a);
+  return a;
 }
 
 /**
@@ -358,6 +333,8 @@ function activateTab(block, index) {
  * @param {Element} block - The rate card block element
  */
 export default async function decorate(block) {
+  decorateButtonsV1(block);
+
   // Fetch configs for API URLs
   const configs = await fetchConfigs();
 
@@ -382,15 +359,7 @@ export default async function decorate(block) {
     const table1ButtonDiv = divs[3];
     const table1ColumnNames = parseColumnNames(table1ColumnNamesDiv);
 
-    const table1Link = table1ButtonDiv?.querySelector('a');
-    const table1Button = {
-      link: table1Link?.href || '',
-      linkText: table1Link?.textContent.trim() || '',
-      linkTitle: table1Link?.title || '',
-      linkType: table1Link?.className.replace('button-', '') || 'tertiary',
-      targetLink: table1Link?.target === '_blank',
-      sourceElement: table1ButtonDiv,
-    };
+    const table1Button = { sourceElement: table1ButtonDiv };
 
     const tabData = {
       cardName,
@@ -410,15 +379,7 @@ export default async function decorate(block) {
       const table2ButtonDiv = divs[6];
       const table2ColumnNames = parseColumnNames(table2ColumnNamesDiv);
 
-      const table2Link = table2ButtonDiv?.querySelector('a');
-      const table2Button = {
-        link: table2Link?.href || '',
-        linkText: table2Link?.textContent.trim() || '',
-        linkTitle: table2Link?.title || '',
-        linkType: table2Link?.className.replace('button-', '') || 'tertiary',
-        targetLink: table2Link?.target === '_blank',
-        sourceElement: table2ButtonDiv,
-      };
+      const table2Button = { sourceElement: table2ButtonDiv };
 
       tabData.table2Data = {
         columnNames: table2ColumnNames,

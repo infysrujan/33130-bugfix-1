@@ -172,7 +172,7 @@
 .privacy-modal-body strong,
 .privacy-modal-body b {
   font-weight: 700;
-  font-family: Muli-Bold, sans-serif;
+  font-family: var(--bbl-font-family-medium);
 }
 
 .privacy-modal-body a {

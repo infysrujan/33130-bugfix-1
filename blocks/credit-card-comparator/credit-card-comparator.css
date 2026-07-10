@@ -70,14 +70,14 @@
   vertical-align: top;
   width: 14.875rem;
   padding: 0;
-  margin: 0 0.625rem 0 0;
+  margin: 0 0.625rem;
   position: relative;
   white-space: normal;
 }
 
 .credit-card-comparator .product-comparing + .product-comparing {
   border-left: 0.0625rem solid var(--bbl-color-grey-150);
-  margin-left: 0.625rem;
+  padding-left: 1.25rem;
 }
 
 .credit-card-comparator .product-comparing .text-small {
@@ -114,13 +114,13 @@
   top: -0.5rem;
   left: -0.25rem;
   z-index: 10;
-  width: var(--bbl-space-250);
-  height: var(--bbl-space-250);
+  width: var(--bbl-space-200);
+  height: var(--bbl-space-200);
   border-radius: var(--bbl-radius-full);
   background: var(--bbl-color-white);
   border: solid 0.0313rem var(--bbl-color-gray-300);
   color: var(--bbl-color-gray-600);
-  font-size: var(--bbl-font-size-b3);
+  font-size: var(--bbl-body-b3-size);
   font-weight: 300;
   line-height: 1.0625rem;
   text-align: center;

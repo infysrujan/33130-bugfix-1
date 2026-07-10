@@ -25,7 +25,7 @@ function buildFooterStructure(block) {
 
   // Create inner container for max-width constraint
   const innerContainer = document.createElement('div');
-  innerContainer.className = 'footer-inner content';
+  innerContainer.className = 'footer-inner';
 
   // Create row for columns
   const row = document.createElement('div');
@@ -89,7 +89,7 @@ function buildFooterStructure(block) {
   bottomBar.className = 'footer-bottom';
 
   const bottomInner = document.createElement('div');
-  bottomInner.className = 'footer-inner content';
+  bottomInner.className = 'footer-inner';
 
   // Get copyright and legal links (the <p> elements after the main <ul>)
   // Filter out paragraphs that contain <strong> tags (those are section titles)

@@ -33,11 +33,7 @@ function resolveImageUrl(card) {
 
 function resolveCardPageUrl(card) {
   // eslint-disable-next-line no-underscore-dangle
-  const raw = card._path || card.readMoreUrl || card.cardPageUrl || card.detailUrl || card.pageUrl || '';
-  if (!raw) return '';
-  if (typeof raw === 'string') return raw;
-  // eslint-disable-next-line no-underscore-dangle
-  return raw._publishUrl || raw._authorUrl || raw._path || '';
+  return card.mfPageUrl?._path || '#';
 }
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
@@ -131,7 +127,11 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
 function buildCompareCard(card, doc, labels) {
   const name = card.name || card.title || card.FundName || card.fundName || '';
   const imgSrc = resolveImageUrl(card);
-  const readMoreHref = resolveCardPageUrl(card);
+  let readMoreHref = resolveCardPageUrl(card);
+  // Remove "/content/bangkokbank" from the start of readMoreHref, if present
+  if (readMoreHref.startsWith('/content/bangkokbank')) {
+    readMoreHref = readMoreHref.replace(/^\/content\/bangkokbank/, '');
+  }
 
   const getField = (...keys) => {
     for (let i = 0; i < keys.length; i += 1) {

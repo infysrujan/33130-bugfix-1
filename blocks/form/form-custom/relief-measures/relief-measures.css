@@ -1,4 +1,25 @@
 .relief-measures-form main .section.form-container .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) .radio-wrapper {
-    flex-wrap:wrap;
-    min-width: 100%;
+  flex-wrap: wrap;
+  min-width: 100%;
+}
+
+.relief-measures-form main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) .form form .radio-group-wrapper.radio-tabs.field-wrapper {
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: 0;
+  padding-inline: 0;
+  grid-column: span 12;
+}
+
+.relief-measures-form main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) .form form .radio-group-wrapper.radio-tabs > legend.field-label {
+  width: 100%;
+  padding-inline: 0.625rem 0;
+}
+
+.relief-measures-form main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) .form form .radio-group-wrapper.radio-tabs > .radio-wrapper {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  margin: 0;
 }

@@ -276,28 +276,28 @@
                 "value": "bg-truthful-blue"
               },
               {
-                "name": "Truthful Dark Blue",
+                "name": "Deep Blue",
                 "value": "bg-truthful-dark-blue"
               },
               {
-                "name": "Ice Blue",
+                "name": "bgd-blue",
                 "value": "bg-ice-blue"
               },
               {
-                "name": "Grey 10",
+                "name": "Wealth Theme BG",
                 "value": "bg-grey-10"
               },
               {
-                "name": "Grey 05",
+                "name": "bgd-grey",
                 "value": "bg-grey-05"
               },
               {
-                "name": "Grey 100",
+                "name": "Elite Theme BG",
                 "value": "bg-grey-100"
               },
               {
-                "name": "Blue 01",
-                "value": "bg-blue-01"
+                "name": "Primary Blue S01",
+                "value": "bg-primary-blue-s01"
               }
             ]
           },
@@ -332,6 +332,10 @@
               {
                 "name": "Columns 2(65-35)",
                 "value": "columns-2-65"
+              },
+              {
+                "name": "Columns 2(25-75)",
+                "value": "columns-2-25"
               }
             ]
           },
@@ -2591,7 +2595,7 @@
       {
         "component": "aem-tag",
         "name": "cardTypes",
-        "label": "Card Types",
+        "label": "Fund Types",
         "valueType": "string",
         "condition": {
           "===": [
@@ -3383,21 +3387,6 @@
           {
             "name": "Tertiary",
             "value": "tertiary"
-          }
-        ]
-      },
-      {
-        "component": "container",
-        "name": "targetSettings",
-        "label": "Target Settings",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "targetLink",
-            "label": "Open link in new tab",
-            "description": "Enable to open the Compare button link in a new browser tab",
-            "valueType": "boolean",
-            "value": false
           }
         ]
       }
@@ -6379,6 +6368,10 @@
           {
             "name": "123,421%",
             "value": "#,###,##0%"
+          },
+          {
+            "name": "123,421,567",
+            "value": "###,###,###"
           }
         ]
       },
@@ -7925,6 +7918,64 @@
         "name": "tooltip",
         "label": "Short description",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "bbl-wizard",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Basic",
+        "name": "basic"
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Name",
+        "valueType": "string",
+        "required": true,
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^[^$].*",
+          "customErrorMsg": "Name cannot start with $"
+        }
+      },
+      {
+        "component": "text",
+        "name": "jcr:title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "visible",
+        "label": "Show Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "tab",
+        "label": "Steps",
+        "name": "steps"
+      },
+      {
+        "component": "text",
+        "name": "properties.stepTitles",
+        "label": "Step Labels",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "Label shown under each step circle, one per row. Number of rows = total steps."
+      },
+      {
+        "component": "text",
+        "name": "properties.stepPanels",
+        "label": "Step Panel Names",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "The 'name' property of the form panel for each step, one per row. Order and count must match Step Labels."
       }
     ]
   },
@@ -9926,32 +9977,6 @@
         "value": "",
         "label": "Period: Date Range",
         "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "fund-prices-table",
-    "fields": [
-      {
-        "component": "richtext",
-        "name": "tableContent",
-        "label": "Table Content",
-        "valueType": "string",
-        "value": "",
-        "rte": {
-          "toolbar": {
-            "insert": [
-              "table"
-            ],
-            "editor": [
-              "removeformat"
-            ],
-            "sections": [
-              "insert",
-              "editor"
-            ]
-          }
-        }
       }
     ]
   },
@@ -12202,8 +12227,8 @@
       {
         "component": "text",
         "name": "linkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Search Button Text",
+        "description": "Search Button label text",
         "required": true
       },
       {
@@ -12221,8 +12246,8 @@
       {
         "component": "text",
         "name": "learnMoreLinkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Learn More Button Text",
+        "description": "Learn More Button label text",
         "required": true
       },
       {
@@ -12263,11 +12288,11 @@
         "required": true
       },
       {
-        "component": "richtext",
+        "component": "text",
         "name": "modalDescription",
         "label": "Modal Description",
         "valueType": "string",
-        "required": false
+        "required": true
       }
     ]
   },
@@ -12675,8 +12700,8 @@
                 "value": "header-light-gray"
               },
               {
-                "name": "Header Pastel Blue",
-                "value": "header-pastel-blue"
+                "name": "Header Primary Blue S01",
+                "value": "header-primary-blue-s01"
               }
             ]
           },
@@ -12985,24 +13010,28 @@
                 "value": "bg-truthful-blue"
               },
               {
-                "name": "Truthful Dark Blue",
+                "name": "Deep Blue",
                 "value": "bg-truthful-dark-blue"
               },
               {
-                "name": "Ice Blue",
+                "name": "bgd-blue",
                 "value": "bg-ice-blue"
               },
               {
-                "name": "Grey 10",
+                "name": "Wealth Theme BG",
                 "value": "bg-grey-10"
               },
               {
-                "name": "Grey 05",
+                "name": "bgd-grey",
                 "value": "bg-grey-05"
               },
               {
-                "name": "Grey 100",
+                "name": "Elite Theme BG",
                 "value": "bg-grey-100"
+              },
+              {
+                "name": "Primary Blue S01",
+                "value": "bg-primary-blue-s01"
               }
             ]
           },
@@ -13033,6 +13062,10 @@
               {
                 "name": "Columns 2(50-50)",
                 "value": "columns-2-50"
+              },
+              {
+                "name": "Columns 2(65-35)",
+                "value": "columns-2-65"
               }
             ]
           },
@@ -13046,6 +13079,14 @@
               {
                 "name": "Center Title",
                 "value": "center-title"
+              },
+              {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
               },
               {
                 "name": "Center Content",

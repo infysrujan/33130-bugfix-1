@@ -144,6 +144,11 @@
   font-family: var(--bbl-font-family-looped);
 }
 
+.footer-links ul li .icon-logo-footer-2 {
+  width: 2.9375rem;
+  height: 1.9375rem;
+}
+
 /* Bottom bar (copyright, legal links) */
 .footer .footer-bottom {
   padding: 1.5625rem 0 1.875rem;
@@ -201,8 +206,6 @@
 
 @media (width > 64rem) {
   .footer .footer-inner {
-    max-width: var(--bbl-layout-content-max-width-1920);
-    margin: auto;
     border-bottom: 0.0625rem solid var(--bbl-color-white-alpha-10);
   }
 

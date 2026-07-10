@@ -368,7 +368,10 @@ function buildDesktopLayout(header, blocks) {
   const mainNavDesktop = document.createElement('div');
   mainNavDesktop.className = 'main-nav-desktop';
 
-  if (brandLogoBlock) mainNavDesktop.appendChild(brandLogoBlock);
+  const mainNavInner = document.createElement('div');
+  mainNavInner.className = 'main-nav-inner';
+
+  if (brandLogoBlock) mainNavInner.appendChild(brandLogoBlock);
 
   const mainNavRight = document.createElement('div');
   mainNavRight.className = 'main-nav-right';
@@ -378,7 +381,8 @@ function buildDesktopLayout(header, blocks) {
   if (locationBlock) mainNavRight.appendChild(locationBlock);
   if (searchBlock) mainNavRight.appendChild(searchBlock);
 
-  mainNavDesktop.appendChild(mainNavRight);
+  mainNavInner.appendChild(mainNavRight);
+  mainNavDesktop.appendChild(mainNavInner);
   header.appendChild(mainNavDesktop);
 
   ensureHeaderNavBackdrop(header);
@@ -671,7 +675,11 @@ export default async function decorate(block) {
   const main = document.querySelector('main');
   const headerSection = document.querySelector('header');
   const firstMainChild = main?.firstElementChild;
-  if (!firstMainChild || !firstMainChild.classList.contains('hero-container')) {
+  const { body } = document;
+  if (
+    (!firstMainChild || !firstMainChild.classList.contains('hero-container'))
+    && !body.classList.contains('bangkok-bankm-card')
+  ) {
     headerSection.classList.add('is-not-overlapped');
   }
 

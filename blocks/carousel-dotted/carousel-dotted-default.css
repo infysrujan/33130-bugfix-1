@@ -99,6 +99,7 @@
   width: 100%;
   background-position: center;
   transition: opacity 600ms ease;
+  height: 197px;
 }
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
@@ -133,8 +134,6 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  background-size: cover;
-  background-position: center;
 }
 
 .carousel-dotted.all-text-animation-variant .carousel-bg img {
@@ -169,6 +168,7 @@
   padding: var(--bbl-space-250);
   min-height: 12.6875rem;
   max-height: 12.6875rem;
+  box-sizing: border-box;
 }
 
 /* Without-image variation: text-only layout */
@@ -183,9 +183,9 @@
 
 .carousel-dotted .carousel-badge {
   display: inline-block;
-  font-size: 0.7875rem;
-  font-weight: var(--bbl-font-weight-medium);
-  line-height: 0.9844rem;
+  font-size: var(--bbl-text-label-tag-size);
+  font-weight: var(--bbl-text-label-tag-weight);
+  line-height: var(--bbl-text-label-tag-line-height);
   background: var(--bbl-color-blue-140);
   color: var(--bbl-color-white);
   padding: var(--bbl-space-050) 0.4375rem;
@@ -233,21 +233,19 @@
 
 .carousel-dotted .slick-dots {
   position: absolute;
-  bottom: var(--bbl-space-250);
-  left: var(--bbl-space-300);
-  right: auto;
   display: flex;
   gap: var(--bbl-space-100);
   list-style: none;
-  padding: var(--bbl-space-000);
-  margin: var(--bbl-space-000);
   z-index: 2;
   width: auto;
   height: auto;
-  max-width: calc(100% - 2 * var(--bbl-space-300));
   align-items: center;
   flex-wrap: nowrap;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
+  bottom: 10.1875rem;
+  right: 1rem;
 }
 
 .carousel-dotted.all-text-animation-variant .slick-dots {
@@ -303,11 +301,6 @@
 }
 
 /* Dot positioning variants */
-.carousel-dotted.all-with-image .slick-dots {
-  justify-content: flex-end;
-  top: 13.125rem;
-}
-
 .carousel-dotted.all-without-image {
   overflow: hidden;
 }
@@ -377,40 +370,26 @@
   font-family: var(--bbl-font-family-looped);
 }
 
-/* Remove the default SVG ::after arrow from button-tertiary */
-.carousel-dotted .button-tertiary::after {
-  display: none;
+.carousel-dotted.all-with-image .button-container,
+.carousel-dotted.all-without-image .button-container {
+  margin: 0;
 }
 
-/* Re-enable ::after with icomoon arrow for with-image and without-image slides only */
-.carousel-dotted .carousel-dotted-item.with-image .button-tertiary::after,
-.carousel-dotted .carousel-dotted-item.without-image .button-tertiary::after,
-.carousel-dotted.all-with-image .carousel-dotted-more .button-tertiary::after,
-.carousel-dotted.all-without-image .carousel-dotted-more .button-tertiary::after {
-  display: inline-block;
-  content: "\e901";
-  font-family: icomoon, sans-serif;
-  background-color: transparent;
-  mask: none;
-  font-size: 0.625rem;
-  margin-left: 1rem;
-  transition: margin-left 0.3s ease;
+.carousel-dotted.all-with-image .carousel-dotted-more .button-container a::after {
+  visibility: visible;
 }
 
-.carousel-dotted .button-tertiary {
-  transition: color 0.3s ease;
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .button-container {
+  margin-block: var(--bbl-space-300) var(--bbl-space-200);
 }
 
-.carousel-dotted .button-tertiary:hover {
-  text-decoration: none;
-  color: var(--bbl-color-blue-90);
+.carousel-dotted-item.with-image .carousel-dotted-content .button-container {
+  position: absolute;
+  bottom: 1.25rem;
 }
 
-.carousel-dotted .carousel-dotted-item.with-image .button-tertiary:hover::after,
-.carousel-dotted .carousel-dotted-item.without-image .button-tertiary:hover::after,
-.carousel-dotted.all-with-image .carousel-dotted-more .button-tertiary:hover::after,
-.carousel-dotted.all-without-image .carousel-dotted-more .button-tertiary:hover::after {
-  margin-left: 1.25rem;
+.carousel-dotted-item.with-image .carousel-dotted-more {
+  bottom: 1.25rem;
 }
 
 .carousel-item.slick-active:not(.is-active)
@@ -512,13 +491,19 @@
   min-height: unset;
 }
 
+.carousel-dotted.dots-center-inside-container.all-without-image .slick-dots {
+  transform: unset;
+  left: 1.5rem;
+  bottom: 1.25rem;
+}
+
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-title :is(h1, h2, h3, h4, h5, h6) {
-  font-family: Muli-Bold, sans-serif;
-  font-size: 1.4rem;
-  line-height: 1.3746rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-article-card-title-size);
+  line-height: var(--bbl-text-article-card-title-line-height);
   color: var(--bbl-color-black);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-text-article-card-title-weight);
   padding: var(--bbl-space-200) 0 0;
   margin-block: 0 0.625rem;
   transform: translateY(18.75rem);
@@ -528,7 +513,7 @@
 
 .bangkok-bankm-card .carousel-dotted:is(.all-hero-banner-image-carousel)
 .carousel-title :is(h1, h2, h3, h4, h5, h6) {
-  color: var(--bbl-color-white);
+  color: var(--bbl-color-black);
 }
 
 :lang(th) {
@@ -543,9 +528,10 @@
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-subtitle p{
-  font-size: 1.1375rem;
-  line-height: 1.57;
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-text-default-size);
+  line-height: var(--bbl-text-default-line-height);
+  font-weight: var(--bbl-text-default-weight);
+  font-family: var(--bbl-font-family-primary);
   overflow: hidden;
   margin: 0;
   display: -webkit-box;
@@ -554,12 +540,8 @@
 }
 
 .bangkok-bankm-card .carousel-dotted:is(.all-hero-banner-image-carousel)
-.carousel-subtitle p{
-   color: var(--bbl-color-white);
-}
-
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .button-container {
-  margin-block: var(--bbl-space-300) var(--bbl-space-200);
+.carousel-subtitle p {
+   color: var(--bbl-color-black);
 }
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
@@ -598,10 +580,10 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
   font-family: var(--bbl-font-family-medium);
-  font-size: 1.3125rem;
-  line-height: 1.4219rem;
+  font-size: var(--bbl-text-article-card-title-size);
+  line-height: var(--bbl-text-article-card-title-line-height);
   color: var(--bbl-color-black);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-text-article-card-title-weight);
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 p {
@@ -610,10 +592,10 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
   font-family: var(--bbl-font-family-primary);
-  font-size: 0.875rem;
-  line-height: 1.45;
+  font-size: var(--bbl-text-default-size);
+  line-height: var(--bbl-text-default-line-height);
   color: var(--bbl-color-grey-70);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-text-default-weight);
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default p {
@@ -718,7 +700,7 @@ p.text-large.text-light {
 
 /* Bold inline text: use Muli-Bold to match live site */
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor strong {
-  font-family: Muli-Bold, sans-serif;
+  font-family: var(--bbl-font-family-medium);
 }
 
 @media (width > 47.5rem) {
@@ -728,20 +710,22 @@ p.text-large.text-light {
 
   /* Keep with-image variant visible when slides are absolutely positioned */
   .carousel-dotted.all-with-image {
-    min-height: 25.8125rem;
-  }
-
-  .carousel-dotted .carousel-dotted-item {
-    position: absolute;
-    inset: 0;
-    display: block;
-    opacity: 0;
-    transition: opacity 400ms ease;
+    height: 100%;
   }
 
   .carousel-dotted .carousel-dotted-item.is-active {
     opacity: 1;
+    height: 100%;
+    
   }
+
+  .carousel-dotted-item.with-image .carousel-dotted-content .button-container {
+    position: unset;
+  }
+
+  .carousel-dotted.all-with-image .carousel-dotted-item.is-active {
+    min-height: 27.8125rem;
+  } 
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant) .carousel-track-wrapper {
     transition: transform 700ms cubic-bezier(0.4, 0, 0.4, 1);
@@ -788,8 +772,6 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-dotted-description {
-    font-size: 1.3125rem;
-    line-height: 1.4219rem;
     margin-bottom: var(--bbl-space-300);
   }
 
@@ -863,20 +845,24 @@ p.text-large.text-light {
     width: 100%;
   }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-title :is(h1, h2, h3, h4, h5, h6) {
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1, h2, h3, h4, h5, h6) {
     color: var(--bbl-color-white);
     padding: 0 0 0.625rem;
     margin: 0;
   }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-subtitle p{
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-subtitle p {
     color: var(--bbl-color-white);
   }
 
-  .carousel-dotted .button-tertiary.icon-arrow-left::before {
-    left: 5.3125rem;
+  .bangkok-bankm-card .carousel-dotted:is(.all-hero-banner-image-carousel)
+  .carousel-title :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--bbl-color-white);
+  }
+
+  .bangkok-bankm-card .carousel-dotted:is(.all-hero-banner-image-carousel)
+  .carousel-subtitle p {
+    color: var(--bbl-color-black);
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image,
@@ -981,16 +967,7 @@ p.text-large.text-light {
     margin-right: 1.875rem;
   }
 
-  .carousel-dotted .carousel-badge {
-    font-weight: var(--bbl-font-weight-medium);
-    font-size: 0.9rem;
-    line-height: 1.125rem;
-  }
-
   .carousel-dotted .carousel-dotted-description {
-    font-weight: var(--bbl-font-weight-regular);
-    font-size: var(--bbl-space-400);
-    line-height: var(--bbl-space-400);
     margin-bottom: var(--bbl-space-300);
   }
 
@@ -1011,11 +988,6 @@ p.text-large.text-light {
     bottom: var(--bbl-space-500);
   }
 
-  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--bbl-font-size-h3-desktop);
-    line-height: 2.875rem;
-  }
-
   :lang(th) {
     .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
       line-height: 3.75rem;
@@ -1033,12 +1005,7 @@ p.text-large.text-light {
       line-height: 1.375rem;
     }
   }
-
-  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-subtitle p {
-    font-size: 1.5rem;
-    line-height: 1.625rem;
-  }
-
+  
   .carousel-dotted.all-hero-banner-image-carousel .slick-dots {
     bottom: 4.6875rem;
   }
@@ -1051,20 +1018,11 @@ p.text-large.text-light {
     order: unset;
   }
 
-  .carousel-dotted .button-tertiary.icon-arrow-left::before {
-    left: 4.5rem;
-    font-size: 0.625rem;
-  }
-
   .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
-    font-size: 1.5rem;
-    line-height: 1.625rem;
     margin: unset;
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
-    font-size: 1rem;
-    line-height: 1.375rem;
     margin-top: 2.5rem;
   }
 
@@ -1075,4 +1033,3 @@ p.text-large.text-light {
     font-family: var(--bbl-font-family-looped);
   }
 }
-

@@ -356,23 +356,19 @@ function populateTablesInPanel(panel, byMktCode) {
  * @param {Array<{ mktvalue: string }> | undefined} rows
  */
 function appendMktValuesAsHtml(container, rows) {
-  if (!container || !Array.isArray(rows)) return;
-  let nonEmptyIndex = 0;
-  rows.forEach((r) => {
-    const html = r?.mktvalue?.trim();
-    if (!html) return;
-    // Insert a space before the very first non-empty value
-    if (nonEmptyIndex === 0) {
-      container.append(document.createTextNode(' '));
-    } else if (nonEmptyIndex === 1) { // Insert a line break before the second non-empty value
-      container.append(document.createElement('br'));
-    }
-    // Parse the HTML string and append its nodes
-    const tpl = document.createElement('template');
-    tpl.innerHTML = html;
-    container.append(tpl.content);
-    nonEmptyIndex += 1;
-  });
+  if (!container || !Array.isArray(rows)) {
+    return { heading: null, para: null };
+  }
+  const html = container.innerHTML;
+  const updatedHtml = `
+    ${html} <span>${rows[0].mktvalue.trim()}</span>
+  `;
+  container.innerHTML = updatedHtml;
+  container.classList.add('market-report-author');
+  const p = document.createElement('p');
+  p.innerHTML = rows[1].mktvalue;
+
+  return { heading: container, para: p };
 }
 
 /**
@@ -383,8 +379,9 @@ function appendMktValuesAsHtml(container, rows) {
 export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
   const row = tableWrapper.children[0];
   if (!row) return;
-  appendMktValuesAsHtml(row, tableData.FXMO);
-  wrapperDiv.appendChild(row);
+  const { heading, para } = appendMktValuesAsHtml(row, tableData.FXMO);
+  if (heading) wrapperDiv.appendChild(heading);
+  if (para) wrapperDiv.appendChild(para);
 }
 
 /**
@@ -395,8 +392,9 @@ export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
 export function populateTbmo(tableWrapper, tableData, wrapperDiv) {
   const row = tableWrapper.children[0];
   if (!row) return;
-  appendMktValuesAsHtml(row, tableData.TBMO);
-  wrapperDiv.appendChild(row);
+  const { heading, para } = appendMktValuesAsHtml(row, tableData.TBMO);
+  if (heading) wrapperDiv.appendChild(heading);
+  if (para) wrapperDiv.appendChild(para);
 }
 
 /**

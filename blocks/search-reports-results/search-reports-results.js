@@ -79,12 +79,8 @@ async function fetchAndRender(block, type, year) {
     text: '‹',
   });
   backBtn.addEventListener('click', () => {
-    if (typeof window.__previewGoBack === 'function') {
-      window.__previewGoBack();
-    } else {
-      window.history.pushState({}, '', window.location.pathname);
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    }
+    window.history.pushState({}, '', window.location.pathname);
+    window.dispatchEvent(new PopStateEvent('popstate'));
   });
   resultsHeader.append(backBtn);
   wrapper.append(resultsHeader);

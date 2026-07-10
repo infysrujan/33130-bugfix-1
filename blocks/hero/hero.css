@@ -26,6 +26,10 @@
   border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
 }
 
+.bangkok-bankm-card .hero-banner.hero-banner-simple {
+  background-color: var(--bbl-color-white);
+}
+
 .hero-banner-container {
   width: 100%;
   overflow: hidden;
@@ -64,9 +68,11 @@
   display: block;
 }
 
+
 .hero-banner-video {
   width: 100%;
   height: 100%;
+  min-height: 19.25rem;
   display: block;
   border: 0;
   object-fit: cover;
@@ -79,14 +85,18 @@
 }
 
 .hero-banner-hero-with-thumbnail-images .hero-banner-video {
-  aspect-ratio: 5/4;
-  height: auto;
   cursor: pointer;
+  height: auto;
 }
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner, .hero-banner-private-wealth-banking) .hero-banner-item {
   max-height: 21.875rem;
   height: calc((100vw - 2.5rem) / 1.3);
+}
+
+.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe),
+.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video){
+  height: auto;
 }
 
 /* ── YouTube iframe click-to-play overlay  ─────────────── */
@@ -97,6 +107,7 @@
   bottom: 6.25rem;
   z-index: 9;
   cursor: pointer;
+  pointer-events: auto;
 }
 
 /* ── Custom video controls bar ─────────────────────────────────────────────── */
@@ -116,10 +127,7 @@
   height: 6.25rem;
 }
 
-.hero-banner-video-wrapper:has(iframe.hero-banner-video) .hero-banner-video-controls,
-.hero-banner-item:has(iframe.hero-banner-video) .hero-banner-video-controls {
-  margin-bottom: 1.5625rem;
-}
+
 
 .hero-yt-not-started iframe.hero-banner-video {
   visibility: hidden;
@@ -357,7 +365,8 @@
   line-height: 1rem;
 }
 
-.hero-banner-content-inner-text {
+.hero-banner-content-inner-text p {
+  font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-text-banner-description-size);
   line-height: var(--bbl-text-banner-description-line-height);
   font-weight: var(--bbl-text-banner-description-weight);
@@ -462,6 +471,10 @@
   margin-bottom: 1.875rem;
 }
 
+.hero-banner-simple {
+  padding-bottom: 1.875rem;
+}
+
 .hero-banner-simple::after {
   display: none;
 }
@@ -509,7 +522,7 @@
   background: var(--bbl-color-black);
 }
 
-:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text {
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text p {
   color: var(--bbl-color-black);
   margin: 0;
   overflow: hidden;
@@ -523,7 +536,7 @@
   line-height: 1.7875rem;
 }
 
-.hero-banner-private-wealth-banking .hero-banner-content-inner-text {
+.hero-banner-private-wealth-banking .hero-banner-content-inner-text p{
   line-height: 1.375rem;
   padding: 0;
   margin: var(--bbl-space-100) 0 0;
@@ -555,7 +568,7 @@
   letter-spacing: -0.0125rem;
 }
 
-.hero-banner-hero-with-thumbnail-images .hero-banner-content-inner-text {
+.hero-banner-hero-with-thumbnail-images .hero-banner-content-inner-text p{
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -563,7 +576,7 @@
   -webkit-box-orient: vertical;
 }
 
-.wealth .hero-banner-simple .hero-banner-content-inner-text {
+.wealth .hero-banner-simple .hero-banner-content-inner-text p{
   font-size: var(--bbl-font-size-b2);
   line-height: 1.1812;
   padding-bottom: 0.9375rem;
@@ -595,13 +608,6 @@
 .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
   position: static;
   color: var(--bbl-color-black);
-}
-
-.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
-  position: static;
-  color: var(--bbl-color-black);
-  text-align: center;
-  padding: 0 var(--bbl-space-200);
 }
 
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-img) .hero-banner-content.content {
@@ -664,19 +670,39 @@
 }
 
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-wrapper {
-  aspect-ratio: 16 / 9;
+  height: auto;
+  min-height: 19.25rem;
   overflow: hidden;
 }
 
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) iframe {
-  height: calc(100% + var(--bbl-space-600));
-  margin-top: calc(-1.5 * var(--bbl-space-600));
+  height: 100%;
+  min-height: 19.25rem;
   pointer-events: auto;
 }
 
+.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content.content {
+  z-index: 12;
+}
+
+
 @media (width > 47.5rem) {
+  .hero-banner-video {
+    min-height: 38rem;
+  }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-wrapper {
+    min-height: 38rem;
+  }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) iframe {
+    min-height: 38rem;
+    pointer-events: none;
+  }
+
   .hero-banner-item:has(.hero-banner-video) .hero-banner-video-controls {
     z-index: 12;
+    height: 5rem;
   }
 
   .hero-banner-video-wrapper:has(iframe.hero-banner-video) .hero-banner-video-controls,
@@ -684,18 +710,12 @@
     margin-bottom: 0;
   }
 
-  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text {
+  .hero-banner-content-group .button-container a {
+    margin-bottom: 4.0625rem;
+  }
+
+  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text p {
     color: var(--bbl-color-white);
-  }
-
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content :is(h1, h2, h3, h4, h5, h6),
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner-text {
-    display: none;
-  }
-
-  .hero-banner-item-active:has(iframe) .hero-banner-content-group > :not(.button-container),
-  .hero-banner-item-active:has(video) .hero-banner-content-group > :not(.button-container) {
-    display: none;
   }
 
   .hero-banner::after {
@@ -708,29 +728,15 @@
     bottom: 1.875rem;
   }
 
+  .hero-banner-simple {
+    padding-bottom: 0;
+  }
+
   .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
     position: absolute;
     left: 0;
     right: 0;
     color: var(--bbl-color-white);
-  }
-
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    z-index: 11;
-    width: 100%;
-    padding: 0;
-    text-align: left;
-    color: var(--bbl-color-white);
-  }
-
-  .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
-    position: absolute;
-    padding: 0;
-    color: var(--bbl-color-white);
-    text-align: center;
   }
 
   .hero-banner-thumbnail-outer {
@@ -759,7 +765,7 @@
     }
   }
 
-  .wealth .hero-banner-simple .hero-banner-content-inner-text {
+  .wealth .hero-banner-simple .hero-banner-content-inner-text p {
     padding-bottom: 0;
   }
 
@@ -787,22 +793,6 @@
     min-width: 11.25rem;
   }
 
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner .button-container {
-    margin: 0;
-    padding: var(--bbl-space-150) var(--bbl-space-200);
-    justify-content: flex-start;
-  }
-
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner .button-container a {
-    margin-bottom: 6.25rem;
-  }
-
-  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) iframe {
-    height: calc(100% + var(--bbl-space-600));
-    margin-top: calc(-1 * var(--bbl-space-600));
-    pointer-events: none;
-  }
-
   .hero-banner-item.no-mobile-app-cta .hero-app-ctas {
     display: flex;
   }
@@ -810,11 +800,37 @@
   .hero-banner-item.no-mobile-app-cta .hero-app-cta-mobile-fallback {
     display: none;
   }
+
+    .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner > *:not(.hero-banner-content-group) {
+    display: none;
+  }
+
+  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-group > *:not(.button-container) {
+    display: none;
+  }
+
+  .hero-banner-item:has(.hero-banner-video-wrapper) .button-container {
+    float: left;
+  }
 }
 
 @media (width > 64rem) {
   .section.hero-container {
     margin-top: 2.5625rem;
+  }
+
+  .hero-banner-content-group .button-container a {
+    margin-bottom: 0;
+  }
+  
+  
+
+  .hero-banner-video-controls {
+    margin-bottom: 0;
+  }
+
+  .hero-banner-item:has(.hero-banner-video) .hero-banner-video-controls {
+    height: 5.625rem;
   }
 
   .hero-banner::after {
@@ -837,22 +853,14 @@
     padding: 0 var(--bbl-space-1050) 0;
   }
 
-  .section.full-bleed-bg .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
-    bottom: 4.6875rem;
-    padding: 0 var(--bbl-space-1050);
-  }
-
   .hero-banner-content-inner .button-container {
     text-align: left;
     justify-content: flex-start;
   }
 
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner .button-container {
-    padding: 0;
-  }
-
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner .button-container a {
-    margin-bottom: 0;
+  .hero-banner-item:has(.hero-banner-video-wrapper) .button-container {
+    position: relative;
+    z-index: 13;
   }
 
   .hero-banner-private-wealth-banking .hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) {
@@ -868,6 +876,10 @@
     overflow-y: clip;
     margin-inline: 0;
   }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content.content {
+  margin-bottom: 1.5625rem;
+}
 
   :lang(th) {
     .hero-banner-content :is(h1) {
@@ -920,7 +932,7 @@
   }
 
 
-  .hero-banner-content-group {
+  .hero-banner-hero-with-thumbnail-images .hero-banner-content-group {
     width: 66.6667%;
   }
 
@@ -972,8 +984,25 @@
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-video {
-    aspect-ratio: 192 / 85;
     height: 53.125rem;
+    min-height: 53.125rem;
+  }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-wrapper {
+    height: 53.125rem;
+    min-height: 53.125rem;
+    aspect-ratio: 16/9;
+    pointer-events: none;
+  }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) iframe {
+    height: 100%;
+    min-height: 53.125rem;
+  }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-wrapper iframe {
+    width: 300%;
+    margin-left: -100%;
   }
 
   :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-item {
@@ -994,39 +1023,57 @@
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) {
     width: 100%;
     overflow: hidden;
-    aspect-ratio: 16 / 9;
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper) {
     height: auto;
+    overflow: hidden;
   }
 
-  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) iframe {
-    width: 300%;
+  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner > *:not(.hero-banner-content-group) {
+    display: none;
+  }
+
+  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-group > *:not(.button-container) {
+    display: none;
+  }
+
+
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper):fullscreen .hero-banner-video-wrapper {
     height: 100%;
-    margin-left: -100%;
-    margin-top: 0;
-    pointer-events: auto;
   }
 
-  .hero-banner-video-controls {
-    margin-bottom: 0;
+  /* stylelint-disable-next-line selector-no-vendor-prefix */
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper):-webkit-full-screen .hero-banner-video-wrapper {
+    height: 100%;
   }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper):fullscreen .hero-banner-video {
+    height: 100%;
+  }
+
+  /* stylelint-disable-next-line selector-no-vendor-prefix */
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper):-webkit-full-screen .hero-banner-video {
+    height: 100%;
+  }
+
+  
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-controls {
     pointer-events: auto;
   }
 
-  .hero-banner-simple .hero-banner-content-inner-text {
+  .hero-banner-simple .hero-banner-content-inner-text p {
     color: var(--bbl-color-white);
   }
 
-  .hero-banner-private-wealth-banking .hero-banner-content-inner-text {
+  .hero-banner-private-wealth-banking .hero-banner-content-inner-text p {
     line-height: 1.625rem;
     margin: var(--bbl-space-200) 0 0;
   }
 
-  .wealth .hero-banner-simple .hero-banner-content-inner-text {
+  .wealth .hero-banner-simple .hero-banner-content-inner-text p {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.35rem;
   }
@@ -1041,6 +1088,11 @@
     justify-content: space-between;
   }
 
+  .hero-banner-item .hero-banner-content-inner {
+    min-height: 0;
+    align-items: normal;
+  }
+
   .hero-banner-private-wealth-banking .hero-banner-logo-wrapper {
     width: 16.25rem;
     height: 4.0625rem;
@@ -1051,29 +1103,49 @@
     margin-block: var(--bbl-space-600) var(--bbl-space-800);
     width: 60%;
   }
-
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content :is(h1, h2, h3, h4, h5, h6),
-  .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner-text {
-    display: none;
-  }
-
-  .hero-banner-item-active:has(iframe) .hero-banner-content-group > :not(.button-container),
-  .hero-banner-item-active:has(video) .hero-banner-content-group > :not(.button-container) {
-    display: none;
-  }
-
-  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container a {
-    margin-left: 2.9375rem;
-    margin-bottom: 1.5625rem;
-  }
-
-  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container .button-m.primary {
-    margin-left: 2.9375rem;
-    margin-bottom: 3.125rem;
-  }
-
-  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-content-inner .button-container a {
-    margin-left: 1.5625rem;
-    margin-bottom: 3.125rem;
-  }
 }
+
+/* stylelint-disable no-descending-specificity */
+
+/* ── Fullscreen: videoWrapper (DAM video same-origin) ──────────────────────── */
+.hero-banner-video-wrapper:fullscreen {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-banner-video-wrapper:fullscreen .hero-banner-video {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: unset;
+  object-fit: cover;
+}
+
+/* ── Fullscreen: bannerItem (YouTube cross-origin iframe) ──────────────────── */
+.hero-banner-item:fullscreen .hero-banner-content,
+.hero-banner-item:fullscreen .button-container {
+  display: none;
+}
+
+.hero-banner-item:fullscreen {
+  width: 100%;
+  height: 100%;
+  background: var(--bbl-color-black);
+}
+
+.hero-banner-item:fullscreen .hero-banner-video-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.hero-banner-item:fullscreen .hero-banner-video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: unset;
+  margin: 0;
+}
+
+.hero-banner-item:fullscreen:has(iframe) .hero-banner-video-controls {
+  margin-bottom: 3.0625rem;
+}
+/* stylelint-enable no-descending-specificity */

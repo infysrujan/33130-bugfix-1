@@ -380,13 +380,13 @@
 }
 
 .forex-rates .forex-rates-table thead th {
-  padding: 0.75rem 0.625rem;
+  padding: 0 0.625rem;
   font-size: var(--bbl-body-b1-size);
+  line-height: var(--bbl-body-b1-line-height);
   color: var(--bbl-color-black);
   text-align: left;
   border-bottom: 0.125rem solid var(--bbl-color-grey-20);
   white-space: normal;
-  line-height: 0.875rem;
 }
 
 .forex-rates .forex-rates-table thead th strong {
@@ -543,7 +543,7 @@
   }
 
   .forex-rates .forex-rates-table thead th {
-    padding: 0.875rem 1rem;
+    padding: 0 var(--bbl-space-250);
     line-height: 1rem; 
     white-space: nowrap;
   }

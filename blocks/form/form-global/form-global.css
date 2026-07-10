@@ -357,8 +357,14 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is
 }
 
 /* Reset margin-bottom on paragraphs inside plain-text wrappers to prevent double spacing */
-main .section.form-container .form form .plain-text-wrapper p:last-child {
+main .section.form-container .form form .plain-text-wrapper p {
   margin-bottom: 0;
+  text-align: center;
+}
+
+main .section.form-container .form form .tnc-text-decoration p{
+  margin-bottom: var(--bbl-form-margin-10);
+  text-align: left;
 }
 
 main .section.form-container .form form .plain-text-wrapper.field-text {
@@ -383,7 +389,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   border-radius: 0.4375rem;
   gap: var(--bbl-space-100);
   font-size: var(--bbl-font-size-h4-mobile);
-  font-weight: var(--form-title-font-weight);
+  font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-line-height-h4-mobile);
   cursor: pointer;
   appearance: none;
@@ -546,10 +552,6 @@ main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.
   margin: 0;
   padding: 0;
   font-size: var(--bbl-font-size-h4-mobile);
-}
-
-main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p + p {
-  margin-top: 0.625rem;
 }
 
 main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p:first-child {

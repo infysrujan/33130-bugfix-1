@@ -1,10 +1,12 @@
-import { getLang } from '../../scripts/scripts.js';
+import { getLang, moveInstrumentation } from '../../scripts/scripts.js';
 import { decorateIcons } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import createTaggedElement from '../../scripts/utils/dom.js';
-import { createModalHeader } from '../../scripts/utils/modal.js';
+import {
+  createModalHeader, showModal, hideModal, setupModalHandlers,
+} from '../../scripts/utils/modal.js';
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -30,29 +32,23 @@ function trapFocus(event, overlay) {
   }
 }
 
-const overlayTriggerMap = new WeakMap();
+let lastTrigger = null;
 
-function openModal(overlay, trigger) {
-  if (!overlay.isConnected) document.body.appendChild(overlay);
-  overlayTriggerMap.set(overlay, trigger || document.activeElement);
+function openSearchModal(overlay, trigger) {
+  lastTrigger = trigger || document.activeElement;
   document.body.classList.add('search-reports-modal-open');
+  showModal(overlay, 'search-reports-modal-visible');
   requestAnimationFrame(() => {
-    overlay.classList.add('search-reports-modal-visible');
     const focusable = getFocusableElements(overlay);
     (focusable[0] || overlay).focus();
   });
 }
 
-function closeModal(overlay) {
-  const restoreTarget = overlayTriggerMap.get(overlay);
+function closeSearchModal(overlay) {
   document.body.classList.remove('search-reports-modal-open');
-  overlay.classList.remove('search-reports-modal-visible');
-  const finishClose = () => {
-    overlay.remove();
-    if (restoreTarget && typeof restoreTarget.focus === 'function') restoreTarget.focus();
-  };
-  overlay.addEventListener('transitionend', finishClose, { once: true });
-  setTimeout(finishClose, 300);
+  hideModal(overlay, 'search-reports-modal-visible', () => {
+    if (lastTrigger?.focus) lastTrigger.focus();
+  });
 }
 
 function buildDropdown(placeholder, onChange) {
@@ -126,11 +122,15 @@ async function fetchSearchParams(searchParamsUrl) {
   return Array.isArray(parsed) ? parsed[0] : parsed;
 }
 
+// Rows 0-2 are ctaLabel/modalTitle/modalDescription (read in parseAuthoredMeta);
+// row 3 is a structural row with no corresponding model field — skip to option rows.
+const OPTION_ROWS_START = 4;
+
 function parseAuthoredOptions(rows) {
   const typeOptions = [];
   const yearOptions = [];
   let parsingYears = false;
-  rows.slice(4).forEach((row) => {
+  rows.slice(OPTION_ROWS_START).forEach((row) => {
     const cells = [...row.children];
     if (cells.length === 1 && cells[0].textContent.trim().toLowerCase() === 'years') {
       parsingYears = true;
@@ -146,22 +146,24 @@ function parseAuthoredOptions(rows) {
   return { typeOptions, yearOptions };
 }
 
-export default async function decorate(block) {
-  const rows = [...block.children];
-  const lang = getLang();
+function parseAuthoredMeta(rows, placeholders) {
+  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel || 'Search for Reports';
+  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
+  const modalDescRow = rows[2];
+  const modalDesc = modalDescRow?.firstElementChild?.textContent?.trim() || '';
+  return { ctaLabel, modalTitle, modalDesc };
+}
 
-  const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
-  const searchParamsUrl = configs.reportsSearchParamsUrl || '';
+// Remove orphan AEM UE node for modalDescription that appears outside the block in the DOM
+function removeOrphanUeNode() {
+  document.querySelectorAll('[data-aue-prop="modalDescription"],[data-aue-label="Modal Description"]').forEach((el) => {
+    if (!el.closest('.search-reports')) el.remove();
+  });
+}
 
-  const ctaLabel = placeholders.reportsCtaLabel || 'Search for Reports';
-  const modalTitle = placeholders.reportsModalTitle || 'Search Report';
-  const modalDesc = rows[2]?.firstElementChild?.innerHTML?.trim() || '';
-
-  const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
-
-  block.innerHTML = '';
-
-  // Build modal overlay
+function buildModalDom({
+  lang, ctaLabel, modalTitle, modalDesc,
+}) {
   const overlay = createTaggedElement('div', {
     className: 'search-reports-overlay',
     attrs: {
@@ -170,13 +172,11 @@ export default async function decorate(block) {
   });
   const dialog = createTaggedElement('div', { className: 'sr-dialog' });
 
-  // Header
   const closeBtn = createTaggedElement('button', { className: 'sr-close-btn', attrs: { type: 'button', 'aria-label': 'Close search modal' } });
   closeBtn.innerHTML = '<span class="icon icon-close"></span>';
   decorateIcons(closeBtn);
   const header = createModalHeader(lang, closeBtn, { headerClass: 'sr-header', logoLinkClass: 'sr-logo-link' });
 
-  // Body
   const body = createTaggedElement('div', { className: 'sr-body' });
   const titleEl = createTaggedElement('h2', { className: 'sr-title', text: modalTitle, attrs: { id: 'sr-modal-title' } });
   const titleDivider = createTaggedElement('div', { className: 'sr-title-divider' });
@@ -185,7 +185,7 @@ export default async function decorate(block) {
 
   const searchBtn = createTaggedElement('button', {
     className: 'sr-search-btn sr-search-btn-disabled',
-    text: ctaLabel === 'Search for Reports' ? 'Search' : ctaLabel,
+    text: ctaLabel,
     attrs: { type: 'button' },
   });
 
@@ -205,6 +205,71 @@ export default async function decorate(block) {
   getType = getTypeVal;
   getYear = getYearVal;
 
+  body.append(titleEl, titleDivider, descEl, typeDropdown, yearDropdown, searchBtn);
+  dialog.append(header, body);
+  overlay.append(dialog);
+
+  return {
+    overlay, dialog, closeBtn, searchBtn, getType, getYear, populateTypes, populateYears,
+  };
+}
+
+function wireModalEvents({
+  overlay, dialog, closeBtn, searchBtn, getType, getYear,
+}) {
+  searchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (searchBtn.classList.contains('sr-search-btn-disabled')) return;
+    const type = getType();
+    const year = getYear();
+    const params = new URLSearchParams({ type, year });
+    window.history.pushState({}, '', `?${params.toString()}`);
+    window.dispatchEvent(new CustomEvent('search-reports:submit', { detail: { type, year } }));
+    closeSearchModal(overlay);
+  });
+
+  closeBtn.addEventListener('click', () => closeSearchModal(overlay));
+  setupModalHandlers(overlay, dialog, () => closeSearchModal(overlay));
+  overlay.addEventListener('keydown', (e) => trapFocus(e, overlay));
+}
+
+function initFromUrlParams(overlay) {
+  const initParams = new URLSearchParams(window.location.search);
+  if (!initParams.get('type') || !initParams.get('year')) openSearchModal(overlay, null);
+
+  window.addEventListener('popstate', () => {
+    const p = new URLSearchParams(window.location.search);
+    if (!p.get('type') && !p.get('year')) openSearchModal(overlay, null);
+  });
+}
+
+export default async function decorate(block) {
+  const rows = [...block.children];
+  const lang = getLang();
+
+  const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
+  const searchParamsUrl = configs.reportsSearchParamsUrl || '';
+
+  const { ctaLabel, modalTitle, modalDesc } = parseAuthoredMeta(rows, placeholders);
+  removeOrphanUeNode();
+  const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
+
+  // Replace block with a placeholder in <main> and move block-level instrumentation to it
+  const placeholder = block.ownerDocument.createElement('div');
+  placeholder.className = 'search-reports-placeholder';
+  moveInstrumentation(block, placeholder);
+  block.replaceWith(placeholder);
+
+  const {
+    overlay, dialog, closeBtn, searchBtn, getType, getYear, populateTypes, populateYears,
+  } = buildModalDom({
+    lang, ctaLabel, modalTitle, modalDesc,
+  });
+
+  wireModalEvents({
+    overlay, dialog, closeBtn, searchBtn, getType, getYear,
+  });
+
   // Populate dropdowns from API, fallback to authored rows on failure
   fetchSearchParams(searchParamsUrl).then((data) => {
     populateTypes(data.reportTypes?.length ? data.reportTypes : typeOptions);
@@ -214,33 +279,5 @@ export default async function decorate(block) {
     populateYears(yearOptions);
   });
 
-  searchBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (searchBtn.classList.contains('sr-search-btn-disabled')) return;
-    const type = getType();
-    const year = getYear();
-    const params = new URLSearchParams({ type, year });
-    window.history.pushState({}, '', `?${params.toString()}`);
-    window.dispatchEvent(new CustomEvent('search-reports:submit', { detail: { type, year } }));
-    closeModal(overlay);
-  });
-
-  body.append(titleEl, titleDivider, descEl, typeDropdown, yearDropdown, searchBtn);
-  dialog.append(header, body);
-  overlay.append(dialog);
-
-  closeBtn.addEventListener('click', () => closeModal(overlay));
-  overlay.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { e.preventDefault(); closeModal(overlay); return; }
-    trapFocus(e, overlay);
-  });
-
-  const initParams = new URLSearchParams(window.location.search);
-  if (!initParams.get('type') || !initParams.get('year')) openModal(overlay, null);
-  window.__previewReopenModal = () => openModal(overlay, null);
-
-  window.addEventListener('popstate', () => {
-    const p = new URLSearchParams(window.location.search);
-    if (!p.get('type') && !p.get('year')) openModal(overlay, null);
-  });
+  initFromUrlParams(overlay);
 }

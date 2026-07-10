@@ -79,35 +79,13 @@
   background: transparent;
 }
 
-.welcome-banner-overlay .welcome-banner-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.welcome-banner-overlay .button-m {
   width: 100%;
   max-width: 13.125rem;
-  min-height: 2.75rem;
-  padding: var(--bbl-space-000) var(--bbl-space-250);
-  background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  text-decoration: none;
-  border-radius: 0.4375rem;
-  font-family: var(--bbl-font-family-primary);
-  font-weight: var(--bbl-font-weight-medium);
-  font-size: 0.9375rem;
-  line-height: 1.2;
-  text-align: center;
-  cursor: pointer;
   box-sizing: border-box;
   white-space: normal;
   overflow-wrap: break-word;
   flex-shrink: 0;
-}
-
-.welcome-banner-overlay .welcome-banner-cta:hover,
-.welcome-banner-overlay .welcome-banner-cta:active {
-  background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  text-decoration: none;
 }
 
 @media (width > 47.5625rem) {
@@ -133,7 +111,7 @@
     padding: var(--bbl-space-250) var(--bbl-space-200);
   }
 
-  .welcome-banner-overlay .welcome-banner-cta {
+  .welcome-banner-overlay .button-m {
     flex: 1;
     width: auto;
     max-width: 13.125rem;
@@ -157,6 +135,5 @@
   .welcome-banner-overlay .welcome-banner-cta {
     width: 15rem;
     max-width: 15rem;
-    font-size: var(--bbl-font-size-b1);
   }
 }

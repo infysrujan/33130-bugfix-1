@@ -10,16 +10,16 @@ picture.rte-inline-image img {
   object-fit: contain;
 }
 
-.default-content-wrapper :is(ol, ul) {
+.default-content-wrapper :is(ol, ul):not(:where(.footer-container) *) {
   margin: 0 0 0 var(--bbl-space-250);
   padding: 0;
 }
 
-.default-content-wrapper :is(ol, ul) li {
+.default-content-wrapper :is(ol, ul):not(:where(.footer-container) *) li {
   margin: 0 0 0.625rem var(--bbl-space-250);
 }
 
-.default-content-wrapper :is(ol, ul) li p {
+.default-content-wrapper :is(ol, ul):not(:where(.footer-container) *) li p {
   margin: 0;
 }
 
@@ -33,6 +33,6 @@ picture.rte-inline-image img {
   margin: 0;
 }
 
-.default-content-wrapper > :not(.button-container) a:any-link {
+.default-content-wrapper > :not(.button-container, .footer-container) a:any-link {
   color: inherit;
 }

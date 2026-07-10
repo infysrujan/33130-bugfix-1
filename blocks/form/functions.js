@@ -45,6 +45,15 @@ function days(endDate, startDate) {
 }
 
 /**
+ * Removes top-level fields whose key contains "_exclude" from a payload object.
+ * @param {object} obj - The payload object
+ * @returns {object} - A new object without the excluded fields
+ */
+function filterExcludeFields(obj) {
+  return Object.fromEntries(Object.entries(obj).filter(([key]) => !key.includes('_exclude')));
+}
+
+/**
  * Generates SHA256 hash of payload and returns Base64 encoded string
  *
  * @async
@@ -993,6 +1002,7 @@ export {
   fetchCsrfToken,
   addCsrfToken,
   addCustomHeader,
+  filterExcludeFields,
   generatePayloadHash,
   fetchBranchesByProvince,
   getBranchEnum,

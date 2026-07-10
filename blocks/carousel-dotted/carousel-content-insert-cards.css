@@ -92,10 +92,10 @@
   color: var(--bbl-color-white);
   padding: 0.4375rem var(--bbl-space-200) 0.3125rem;
   border-radius: 1.25rem;
-  font-size: 0.7875rem;
-  line-height: 1.29;
-  font-weight: var(--bbl-font-weight-regular);
-  font-family: var(--bbl-font-family-looped);
+  font-size: var(--bbl-text-label-tag-size);
+  line-height: var(--bbl-text-label-tag-line-height);
+  font-weight: var(--bbl-text-label-tag-weight);
+  font-family: var(--bbl-font-family-medium);
   margin: 0;
 }
 
@@ -130,9 +130,9 @@
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .title-2 {
-  font-size: 1.3125rem;
-  line-height: 1.08;
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-text-thumbnail-card-title-size);
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
+  font-weight: var(--bbl-text-thumbnail-card-title-weight);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   margin: 0;
@@ -156,10 +156,10 @@
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .content-insert-card .text-default {
-  font-size: var(--bbl-body-b1-size);
-  line-height: 1.29;
-  font-weight: var(--bbl-font-weight-regular);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: var(--bbl-text-default-size);
+  line-height: var(--bbl-text-default-line-height);
+  font-weight: var(--bbl-text-default-weight);
+  font-family: var(--bbl-font-family-primary);
   color: var(--bbl-color-grey-85);
   margin: 0;
   overflow: hidden;
@@ -258,19 +258,6 @@
   min-height: auto;
 }
 
-.carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .title-2 {
-  font-size: 1.3125rem;
-  line-height: 1.08;
-  font-weight: var(--bbl-font-weight-regular);
-  font-family: var(--bbl-font-family-medium);
-}
-
-.carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .content-insert-card .text-default {
-  font-size: var(--bbl-font-size-b2);
-  line-height: 1.29;
-  font-family: var(--bbl-font-family-looped);
-}
-
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .desc {
   margin-bottom: var(--bbl-space-150);
 }
@@ -292,29 +279,13 @@
 }
 
 @media (width > 64rem) {
-.carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .title-2 {
-  font-size: var(--bbl-heading-h5-size);
-  line-height: 1.08;
-  font-weight: var(--bbl-font-weight-regular);
-  font-family: var(--bbl-font-family-medium);
-}
-
 .intro-info .button-container{
   position: absolute;
   left: 1.25rem;
   bottom: 1.25rem;
 }
 
-.carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .content-insert-card .text-default {
-  font-size: var(--bbl-body-b1-size);
-  line-height: 1.375;
-}
-
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .btn-primary {
   font-size: var(--bbl-body-b1-size);
-}
-
-.carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .category {
-  font-size: 0.9rem;
 }
 }

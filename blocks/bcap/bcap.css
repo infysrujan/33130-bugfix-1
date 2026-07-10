@@ -84,7 +84,7 @@
 }
 
 .bcap-table.table table tr.header-row td {
-  font: 1rem Muli-Bold, Arial, sans-serif;
+  font: 1rem var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   height: 2.875rem;
   vertical-align: middle;

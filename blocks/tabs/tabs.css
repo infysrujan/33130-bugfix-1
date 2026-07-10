@@ -404,6 +404,15 @@
     max-width: 80%;
   }
 
+  .tabs.simple-tab .tabs-nav button,
+  .tabs.media-tab .tabs-nav button {
+    padding: 0;
+    margin: 0 0.9375rem;
+    min-height: var(--bbl-space-200);
+    height: unset;
+    max-height: max-content;
+    text-wrap: wrap;
+  }
 
   .tabs-nav-wrapper .tabs-nav li:last-child {
     margin: 0;
@@ -470,16 +479,6 @@
 @media (width > 64rem) {
   .tabs-nav-wrapper .tabs-nav button {
     padding: 0 0.9375rem;
-  }
-
-  .tabs.simple-tab .tabs-nav button,
-  .tabs.media-tab .tabs-nav button {
-    padding: 0;
-    margin: 0 0.9375rem;
-    min-height: var(--bbl-space-200);
-    height: unset;
-    max-height: max-content;
-    text-wrap: wrap;
   }
 
   .tabs-nav-wrapper .tabs-nav li {
@@ -590,4 +589,15 @@
   padding: var(--bbl-space-050);
   margin: 0;
   display: block;
+}
+
+/* SPACING inside TAB PANEL between different blocks except download block */
+.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+  padding-bottom: 1.5rem;
+}
+
+@media (width > 64rem) {
+  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+    padding-bottom: 2rem;
+  }
 }
