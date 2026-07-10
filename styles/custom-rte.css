@@ -24,13 +24,19 @@ picture.rte-inline-image img {
 }
 
 .default-content-wrapper .has-inline-icon {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  vertical-align: middle;
 }
 
 .default-content-wrapper .has-inline-icon > p {
   margin: 0;
+}
+
+.default-content-wrapper li:has(> p:has(picture.rte-inline-image) + p:has(picture.rte-inline-image)) > p:has(picture.rte-inline-image) {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .default-content-wrapper > :not(.button-container, .footer-container) a:any-link {

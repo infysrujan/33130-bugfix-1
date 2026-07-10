@@ -315,8 +315,18 @@ main .section.form-container.custom-forms .form form fieldset.radio-group-wrappe
 }
 
 main .section.form-container.custom-forms .form .form-message.success-message {
- color:inherit;
- background-color: transparent;
+  color: var(--bbl-color-black);
+  background-color: transparent;
+  border: none;
+  text-align: center;
+  white-space: pre-line;
+  line-height: 0.8;
+  padding: var(--bbl-space-200) var(--bbl-space-150);
+}
+
+main .section.form-container.custom-forms .form .form-message.success-message::first-line {
+  font-weight: 700;
+  color: var(--bbl-color-grey-85);
 }
 
 @media (width > 47.5rem) {
