@@ -42,6 +42,10 @@
   border: 0;
 }
 
+.video .video-embed video {
+  object-fit: cover;
+}
+
 /* Image CTA */
 .video .video-image {
   width: 100%;
