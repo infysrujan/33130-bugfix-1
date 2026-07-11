@@ -11,8 +11,18 @@
   order: 1;
 }
 
+.columns-img-col:has(+div > p) {
+  padding: 0.3125rem 0;
+}
+
 .columns > div > .columns-img-col {
   order: 0;
+}
+
+.columns-2-cols > div > div:last-child > p {
+  margin: 0;
+  padding-top: 0.3125rem;
+  line-height: 1.4612rem;
 }
 
 .columns > div > .columns-img-col img {
@@ -21,9 +31,9 @@
 
 @media (width >= 1025px) {
   .columns > div {
-    align-items: center;
+    align-items: flex-start;
     flex-direction: unset;
-    gap: 24px;
+    gap: 1.875rem;
   }
 
   .columns > div > div {
