@@ -4,13 +4,57 @@ import createGlobalDropdown, { attachScrollableDropdownPanel } from '../../scrip
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
 
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  const date = new Date(dateStr);
+// Financial Date field is authored as a masked "M/D/YYYY, h:mm AM/PM" string; any
+// segment left untouched keeps its placeholder token (mm, dd, yyyy) instead of a number.
+function extractDateParts(dateStr) {
+  const match = dateStr.match(/^(\d{1,2}|mm)\/(\d{1,2}|dd)\/(\d{4}|yyyy)/i);
+  if (!match) return null;
+
+  const [, monthToken, dayToken, yearToken] = match;
+  const month = /^\d+$/.test(monthToken) ? parseInt(monthToken, 10) : null;
+  const day = /^\d+$/.test(dayToken) ? parseInt(dayToken, 10) : null;
+  const year = /^\d+$/.test(yearToken) ? parseInt(yearToken, 10) : null;
+
+  if (!month || !year || month < 1 || month > 12) return null;
+
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const hasValidDay = day !== null && day >= 1 && day <= daysInMonth;
+
+  return { month, year, day: hasValidDay ? day : null };
+}
+
+function formatMonthYear(date) {
+  if (getLang() === 'th') {
+    return `${date.toLocaleString('th-TH', { month: 'long' })} ${date.getFullYear() + 543}`;
+  }
+  return date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+}
+
+function formatFullDate(date) {
   if (getLang() === 'th') {
     return `${date.getDate()} ${date.toLocaleString('th-TH', { month: 'long' })} ${date.getFullYear() + 543}`;
   }
   return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+
+  const parts = extractDateParts(dateStr);
+  if (parts) {
+    const { month, day, year } = parts;
+    return day
+      ? formatFullDate(new Date(year, month - 1, day))
+      : formatMonthYear(new Date(year, month - 1, 1));
+  }
+
+  const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return '';
+  return formatFullDate(date);
+}
+
+function isRecognizedDate(dateStr) {
+  return !!extractDateParts(dateStr) || !Number.isNaN(Date.parse(dateStr));
 }
 
 function isToggleCell(cell) {
@@ -87,7 +131,7 @@ function createCardItem(cardRow, doc) {
   let dateText = '';
   const lastCell = remaining[remaining.length - 1];
   const lastCellText = lastCell?.textContent?.trim() || '';
-  if (lastCellText.length >= 8 && !Number.isNaN(Date.parse(lastCellText))
+  if (lastCellText.length >= 8 && isRecognizedDate(lastCellText)
     && !lastCell?.querySelector('a')) {
     dateText = formatDate(lastCellText);
     remaining = remaining.slice(0, -1);
