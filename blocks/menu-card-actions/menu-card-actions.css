@@ -177,6 +177,7 @@
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
+  color: var(--bbl-color-grey-70);
 }
 
 .menu-card-action-description p {
@@ -262,7 +263,7 @@
 .menu-card-action-description ul li {
   padding: .2rem;
   margin: 0 0 0.625rem 0.875rem;
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-70);
   line-height: 1.4613rem;
 }
 
@@ -289,6 +290,7 @@
     font-size: 1.3125rem;
     line-height: 1.4219rem;
     font-family: var(--bbl-font-family-medium);
+    color: var(--bbl-color-black);
   }
 
 
