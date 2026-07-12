@@ -22,7 +22,6 @@
 
 .story-card .thumb {
   min-width: 100vw;
-  height: calc(100vw / 2);
   overflow: hidden;
 }
 
@@ -88,7 +87,6 @@
 }
 
 .story-card .text-default {
-  margin-bottom: 1.875rem;
   font-size: 0.875rem;
   line-height: 1.125rem;
   color: var(--bbl-color-grey-85);
@@ -133,11 +131,6 @@
 
   .story-card.image-right .thumb-full {
     flex-direction: row-reverse;
-  }
-
-  .story-card .thumb,
-  .story-card .outer {
-    height: 28.125rem;
   }
 
   .story-card .outer {
