@@ -186,7 +186,8 @@ export default async function decorate(block) {
       li.setAttribute('aria-current', 'page');
     } else {
       // Prefer the title fetched from AEM; fall back to humanising the URL segment
-      const fetchedTitle = breadcrumbTitleMap[currentPath];
+      // titleMap is keyed by full AEM content path (pagePath), not the URL pathname
+      const fetchedTitle = breadcrumbTitleMap[`/content/bangkokbank${langPrefix}${currentPath}`];
       const label = fetchedTitle
         || segment
           .replace(/-/g, ' ')
