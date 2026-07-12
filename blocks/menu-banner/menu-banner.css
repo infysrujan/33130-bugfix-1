@@ -263,3 +263,10 @@
     max-width: calc(25% - var(--bbl-space-225));
   }
 }
+
+.search-page-container~.menu-banner-container {
+  .inner{
+    max-width: 60rem;
+    margin: 0 auto;
+  }
+}
