@@ -1,21 +1,14 @@
-const ICON_MARKER_RE = /#icon(\d*)(?:-(inline|block))?/i;
+const ICON_MARKER_RE = /#icon(\d*)(?:\*(\d+))?(?:-(inline|block))?/i;
 const DCW = '.default-content-wrapper';
 
-export function decorateRteInlineImages(main) {
-  main.querySelectorAll(`${DCW} p, ${DCW} li, ${DCW} td`).forEach((el) => {
-    if (!el.innerHTML.includes('&amp;nbsp;')) return;
-    el.innerHTML = el.innerHTML.replace(/&amp;nbsp;/g, '&nbsp;');
-  });
-
-  main.querySelectorAll(`${DCW} p picture, ${DCW} li picture`)
-    .forEach((pic) => pic.classList.add('rte-inline-image'));
-
-  main.querySelectorAll(`${DCW} p`).forEach((markerP) => {
+function processIconMarkers(paragraphs) {
+  paragraphs.forEach((markerP) => {
     const match = ICON_MARKER_RE.exec(markerP.textContent);
     if (!match) return;
 
-    const [fullMatch, size] = match;
-    const px = `${parseInt(size, 10) || 40}px`;
+    const [fullMatch, widthStr, heightStr] = match;
+    const w = `${parseInt(widthStr, 10) || 40}px`;
+    const h = heightStr ? `${parseInt(heightStr, 10)}px` : w;
 
     const prev = markerP.previousElementSibling;
     const next = markerP.nextElementSibling;
@@ -27,8 +20,8 @@ export function decorateRteInlineImages(main) {
       ?? markerP.querySelector('picture.rte-inline-image');
 
     if (picture) {
-      picture.style.width = px;
-      picture.style.height = px;
+      picture.style.width = w;
+      picture.style.height = h;
 
       const segments = markerP.innerHTML.split(/<br\s*\/?>/i);
       const markerOnNewLine = segments.length > 1
@@ -46,11 +39,30 @@ export function decorateRteInlineImages(main) {
         }
       } else if (markerOnNewLine) {
         markerP.innerHTML = segments.slice(0, -1).join('<br>').trimEnd();
+      } else if (markerP.contains(picture)) {
+        markerP.innerHTML = markerP.innerHTML.replace(fullMatch, '').trimEnd();
       } else {
         markerP.remove();
       }
     }
   });
+}
+
+export function decorateIconInContainer(container) {
+  container.querySelectorAll('p picture').forEach((pic) => pic.classList.add('rte-inline-image'));
+  processIconMarkers([...container.querySelectorAll('p')]);
+}
+
+export function decorateRteInlineImages(main) {
+  main.querySelectorAll(`${DCW} p, ${DCW} li, ${DCW} td`).forEach((el) => {
+    if (!el.innerHTML.includes('&amp;nbsp;')) return;
+    el.innerHTML = el.innerHTML.replace(/&amp;nbsp;/g, '&nbsp;');
+  });
+
+  main.querySelectorAll(`${DCW} p picture, ${DCW} li picture`)
+    .forEach((pic) => pic.classList.add('rte-inline-image'));
+
+  processIconMarkers([...main.querySelectorAll(`${DCW} p`)]);
 }
 
 /**

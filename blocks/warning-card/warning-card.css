@@ -63,6 +63,10 @@
   transition: all .3s;
 }
 
+.warning-card-description .button-tertiary::after {
+  display: none;
+}
+
 .warning-card-description li {
   margin-bottom: var(--bbl-space-100);
 }
