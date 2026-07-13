@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-:root {
+ :root {
     /* site-level sizing */
     --nav-height: 64px;
     --bbl-layout-content-max-width-desktop: 1240px;
