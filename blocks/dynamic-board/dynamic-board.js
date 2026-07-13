@@ -804,9 +804,11 @@ export default async function decorate(block) {
   const isGov = authoring.boardType.toLowerCase().includes('government');
   state.api = createApiService(configs, authoring.boardType);
   state.placeholders = placeholders;
-  state.downloadUrl = isGov
+  // Relative /content/dam paths resolve directly on this domain (same as the
+  // download-file block's authored links), so no base URL needs prepending.
+  state.downloadUrl = (isGov
     ? configs?.dynamicBoardCorpBondDownloadUrl
-    : configs?.dynamicBoardBondRatesDownloadUrl;
+    : configs?.dynamicBoardBondRatesDownloadUrl) || '';
   state.isGov = isGov;
   state.isThai = language === 'th';
   state.columns = parseTableHeading(authoring.tableHeadingEl, isGov);
