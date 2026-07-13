@@ -34,6 +34,20 @@ function fmtPct(val) {
   return Number.isNaN(n) ? val : `${n.toFixed(2)}%`;
 }
 
+// Tolerates minor authoring variations like {{ SYMBOL }} or {{symbol}}, and
+// warns instead of silently 404ing when the template is missing the token.
+const SYMBOL_PLACEHOLDER = /\{\{\s*SYMBOL\s*\}\}/i;
+
+function buildDownloadHref(downloadUrl, symbol) {
+  if (!downloadUrl) return '';
+  if (!SYMBOL_PLACEHOLDER.test(downloadUrl)) {
+    // eslint-disable-next-line no-console
+    console.warn('dynamic-board: download URL is missing a {{SYMBOL}} placeholder:', downloadUrl);
+    return downloadUrl;
+  }
+  return downloadUrl.replace(SYMBOL_PLACEHOLDER, symbol.toLowerCase());
+}
+
 // ─── sort helper ──────────────────────────────────────────────────────────────
 function sortValue(rate, key) {
   if (key === 'REMAIN_TERM') return remainTermToMonths(rate.REMAIN_TERM || '00.00.00');
@@ -154,7 +168,7 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
       <td class="db-td-num">${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}</td>
       <td class="db-td-dl">
-        <a href="${state.downloadUrl.replace('{{SYMBOL}}', sym.toLowerCase())}" download aria-label="Download ${sym} factsheet">
+        <a href="${buildDownloadHref(state.downloadUrl, sym)}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
       </td>
@@ -809,6 +823,8 @@ export default async function decorate(block) {
   state.downloadUrl = (isGov
     ? configs?.dynamicBoardCorpBondDownloadUrl
     : configs?.dynamicBoardBondRatesDownloadUrl) || '';
+  // eslint-disable-next-line no-console
+  console.log('Config Download URL:', state.downloadUrl);
   state.isGov = isGov;
   state.isThai = language === 'th';
   state.columns = parseTableHeading(authoring.tableHeadingEl, isGov);
