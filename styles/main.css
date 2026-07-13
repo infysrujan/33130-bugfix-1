@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-:root {
+ :root {
     /* site-level sizing */
     --nav-height: 64px;
     --bbl-layout-content-max-width-desktop: 1240px;
@@ -216,16 +216,6 @@ main img {
 
 .section.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
     text-align: center;
-    color: var(--bbl-color-black);
-}
-
-.default-content-wrapper > p:has(picture) {
-    padding: 0;
-    margin: 0;
-}
-
-.section.center-title .default-content-wrapper p {
-    color: var(--bbl-color-grey-70);
 }
 
 .section.center-image .section-image-item {
@@ -290,7 +280,6 @@ main img {
 .section.underline-image.center-image .section-image-item::after {
     left: 50%;
     transform: translateX(-50%);
-    color: var(--bbl-color-black);
 }
 
 .section.underline-image.center-image .default-content-wrapper > p > picture::after {
