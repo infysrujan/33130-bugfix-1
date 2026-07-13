@@ -219,6 +219,11 @@ main img {
     color: var(--bbl-color-black);
 }
 
+.default-content-wrapper > p:has(picture) {
+    padding: 0;
+    margin: 0;
+}
+
 .section.center-title .default-content-wrapper p {
     color: var(--bbl-color-grey-70);
 }
