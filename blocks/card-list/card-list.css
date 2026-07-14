@@ -545,7 +545,7 @@
 
   .cards-list.cards-4 .cards-list-item,
   .cards-list.cards-1 .cards-list-item {
-    flex: 0 0 calc((100% - 3.75rem) / 3);
+    flex: 0 0 calc((100% - var(--bbl-space-500)) / 3);
   }
 
   .cards-list:is(.scrollable, .carousel) .cards-list-item {
