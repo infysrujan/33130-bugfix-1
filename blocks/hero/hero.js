@@ -136,10 +136,6 @@ function createElement(tag, ...classNames) {
  */
 function normalizeCellContent(cell, className) {
   if (!cell?.firstElementChild) return;
-  if (cell.children.length === 1) {
-    cell.firstElementChild.classList.add(className);
-    return;
-  }
   const wrapper = document.createElement('div');
   wrapper.classList.add(className);
   while (cell.firstChild) {

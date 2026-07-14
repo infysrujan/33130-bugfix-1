@@ -37,7 +37,7 @@
 .section.center-image .columns-2-cols > div:has(> .columns-img-col + .columns-img-col) {
   gap: var(--bbl-space-100);
   justify-content: center;
-  flex-direction: row;
+  flex-flow: row wrap;
 }
 
 .section.center-image .columns-3-cols > div:has(> .columns-img-col + .columns-img-col + .columns-img-col) {
