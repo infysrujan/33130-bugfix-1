@@ -202,7 +202,7 @@
 /* media query for tablet */
 @media (width > 47.5rem) {
     .contact-us main .section.form-container.custom-forms .form form {
-        & :is(.field-province-exclude, .field-branch-exclude) {
+        & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province-exclude, .field-branch-exclude) {
             grid-column: span 6;
         }
 
