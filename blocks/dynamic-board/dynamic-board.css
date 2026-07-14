@@ -657,11 +657,17 @@
 
 .dynamic-board .db-table thead tr:first-child th {
   top: 0;
+  font-size: var(--bbl-font-size-b2-desktop);
 }
 
 .dynamic-board .db-table thead tr:last-child th {
   top: 3.125rem;
   border-top: 0.0625rem solid var(--bbl-color-grey-152);
+}
+
+.dynamic-board .db-table thead tr:first-child th:nth-child(2) {
+  padding-left: 0;
+  padding-right: 1.25rem;
 }
 
 .dynamic-board .db-th-sort {
@@ -706,10 +712,11 @@
 
 .dynamic-board .db-table tbody td {
   padding: 0.625rem 0.3125rem;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-font-size-b2-desktop);
   color: var(--bbl-color-grey-70);
   vertical-align: middle;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
+  min-height: 4.6875rem;
 }
 
 .dynamic-board .db-table tbody tr:last-child td {
