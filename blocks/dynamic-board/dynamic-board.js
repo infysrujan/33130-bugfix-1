@@ -45,7 +45,11 @@ function buildDownloadHref(downloadUrl, symbol) {
     console.warn('dynamic-board: download URL is missing a {{SYMBOL}} placeholder:', downloadUrl);
     return downloadUrl;
   }
-  return downloadUrl.replace(SYMBOL_PLACEHOLDER, symbol.toLowerCase());
+  const resolved = downloadUrl.replace(SYMBOL_PLACEHOLDER, symbol.toLowerCase());
+  // A path missing its leading slash resolves relative to the current page's
+  // directory (e.g. /en/...) instead of the site root, so force it root-relative
+  // here rather than relying on every config value being typed exactly right.
+  return /^(https?:)?\//.test(resolved) ? resolved : `/${resolved}`;
 }
 
 // ─── sort helper ──────────────────────────────────────────────────────────────
