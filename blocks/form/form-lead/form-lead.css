@@ -10,6 +10,7 @@
   --bbl-form-font-size-20: 1.25rem;                  /* 20px */
   --bbl-form-font-size-21: 1.3125rem;                /* 21px */
   --bbl-form-font-size-22: 1.4rem;                   /* ~22px */
+  --bbl-form-font-size-35-2: 2.2rem;                   /* 35.2px */
   --bbl-form-font-size-44: 2.75rem;                   /* 44px */
   --bbl-form-font-size-48: 3rem;                     /* 48px */
   --bbl-form-font-size-title-mobile: 1.925rem;       /* form heading - mobile */
@@ -192,7 +193,7 @@ main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .pa
   padding: 0 0 var(--bbl-form-padding-35);
   color: var(--bbl-color-grey-140);
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h1-mobile);
+  font-size: var(--bbl-form-font-size-35-2);
   font-weight: var(--bbl-form-font-weight-bold);
   line-height: normal;
   letter-spacing: -0.0125rem;
