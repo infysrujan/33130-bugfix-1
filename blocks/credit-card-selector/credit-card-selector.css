@@ -514,7 +514,7 @@
    button hangs downward, aligned to the divider line. */
 .credit-card-selector .collapse-toggle-button {
   position: absolute;
-  bottom: 0.125rem;
+  bottom: 0.9375rem;
   right: var(--bbl-space-300);
   transform: translateY(100%);
   background: var(--bbl-color-grey-10);
