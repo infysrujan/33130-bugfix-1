@@ -233,7 +233,7 @@ function buildCardBlock(cards, doc, lang, labels) {
 
     // Title
     const titleEl = doc.createElement('div');
-    titleEl.className = 'cards-list-title';
+    titleEl.className = 'cards-list-title has-title-underline';
     const h3 = doc.createElement('h3');
     h3.textContent = primaryName;
     h3.dataset.cardId = card.cardId || card.id || '';

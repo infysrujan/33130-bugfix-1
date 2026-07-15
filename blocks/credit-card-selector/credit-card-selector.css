@@ -153,6 +153,25 @@
   flex: 0 0 8.5rem;
 }
 
+/* Lifestyle: wrap back to three-column grid — no horizontal scroll needed.
+   Switches earlier than the other tablet breakpoints to match the live site,
+   where the three-column grid is already active at narrower widths. */
+@media (width > 30rem) {
+  .credit-card-selector .option-list-three-column {
+    flex-wrap: wrap;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .credit-card-selector .option-list-three-column .option-item {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-100)) / 3);
+  }
+
+  .credit-card-selector .option-card-stacked {
+    min-height: 7.875rem;
+  }
+}
+
 /* ==========================================================================
    Mobile dropdown — Monthly Income becomes a <select> on mobile (base state)
    ========================================================================== */
@@ -224,7 +243,9 @@
   align-items: center;
   justify-content: center;
   gap: var(--bbl-space-100);
-  min-height: var(--bbl-space-700);
+
+  /* Auto height from padding + line-height (matches live site) instead of a fixed min-height */
+  padding: var(--bbl-space-200) var(--bbl-space-100);
   width: 100%;
   box-sizing: border-box;
 
@@ -285,8 +306,12 @@
 
 .credit-card-selector .option-icon-inline img {
   display: block;
-  width: var(--bbl-space-300);
-  height: var(--bbl-space-300);
+
+  /* Kept at/below the option-text line-height (1.3 * 16px = 20.8px) so the icon
+     never grows the row taller than an icon-less card — matches the live site,
+     where Monthly Income and Benefits cards are the same height. */
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
   object-fit: contain;
 }
 
@@ -306,6 +331,68 @@
   line-height: 1.3;
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-b1);
+}
+
+/* Tablet only — mobile and desktop keep the size above untouched */
+@media (width > 47.5rem) and (width <= 64rem) {
+  .section.credit-card-selector-container.central-aligned > .default-content-wrapper {
+    padding-left: 0;
+  }
+
+  .section.credit-card-selector-container .default-content-wrapper > h2:first-child {
+    font-size: 1.5rem;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .credit-card-selector .filter-group {
+    margin-bottom: var(--bbl-space-300);
+  }
+
+  .credit-card-selector .card-selector-header {
+    padding-bottom: var(--bbl-space-500);
+  }
+
+  .credit-card-selector .card-selector-content {
+    max-width: 44rem;
+    margin-inline: auto;
+  }
+
+  .credit-card-selector .filter-group-title {
+    font-size: var(--bbl-font-size-b1);
+  }
+
+  .credit-card-selector .filter-group-hint {
+    font-size: var(--bbl-font-size-b2);
+  }
+
+  .credit-card-selector .option-text {
+    font-size: var(--bbl-font-size-b2-desktop);
+  }
+
+  /* Matches live: Monthly Income / Benefits boxes keep the label on one
+     line — excludes .option-card-stacked so Lifestyle boxes are untouched. */
+  .credit-card-selector .option-card:not(.option-card-stacked) {
+    height: var(--bbl-space-700);
+    padding: var(--bbl-space-150) 0;
+    min-height: 2rem;
+  }
+
+  /* Lifestyle boxes a bit taller than the base 7.875rem (width > 30rem rule) */
+  .credit-card-selector .option-card-stacked {
+    min-height: 6rem;
+    padding-top: var(--bbl-space-150);
+    padding-bottom: var(--bbl-space-150);
+  }
+
+  .credit-card-selector .option-icon-above img {
+    width: var(--bbl-space-400);
+    height: var(--bbl-space-400);
+  }
+
+  .credit-card-selector .selector-actions {
+    padding-top: var(--bbl-space-150);
+  }
 }
 
 /* ==========================================================================
@@ -433,8 +520,8 @@
   background: var(--bbl-color-grey-10);
   cursor: pointer;
   padding: 0;
-  width: 2.75rem;
-  height: 1.75rem;
+  width: var(--bbl-space-600);
+  height: var(--bbl-space-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -494,6 +581,16 @@
   font-family: var(--bbl-font-family-primary);
   padding: var(--bbl-space-400) var(--bbl-space-200);
   background: var(--bbl-color-white);
+
+  /* Break out to the true viewport edges regardless of any ancestor padding —
+     more robust than negative-margining against the section's padding-inline
+     token, which has to be kept in sync by hand across breakpoints.
+     box-sizing: border-box is required here — with the default content-box,
+     the padding gets added on top of the 100vw content width, overshooting
+     the viewport by the padding amount. */
+  box-sizing: border-box;
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
 }
 
 /* ── Section header ────────────────────────────────────────────────────────── */
@@ -529,8 +626,8 @@
 }
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small img {
-  width: 75%;
-  height: auto;
+  width: 14.4994rem;
+  height: 9.5494rem;
   min-width: unset;
   object-fit: contain;
 }
@@ -638,6 +735,36 @@
 
 .ccs-card-list-container .cards-list.scrollable::-webkit-scrollbar {
   display: none;
+}
+
+/* ── Mobile carousel: smoother, center-snapped touch scrolling ───────────────
+   Explicitly scoped to mobile only (width <= 47.5rem). Tablet/desktop already
+   switch this list to a wrapped grid with scroll-snap-type: none at
+   width > 47.5rem, so this cannot change behavior on those breakpoints. */
+@media (width <= 47.5rem) {
+  .card-list.credit-card .cards-list.scrollable.cards-3 {
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    /* Hands horizontal drags straight to the scroller instead of waiting to
+       see if the gesture might be something else — makes touch dragging
+       feel immediate rather than laggy. */
+    touch-action: pan-x;
+    -webkit-overflow-scrolling: touch;
+
+    /* Stops an overscroll at either end from bubbling into a page scroll. */
+    overscroll-behavior-x: contain;
+  }
+
+  .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
+    /* Each card snaps centered in the scrollport, one at a time, instead of
+       aligning its start edge (the site-wide default). */
+    scroll-snap-align: center;
+
+    /* Forces every swipe to stop at the next snap point rather than flying
+       past several cards on a fast flick. */
+    scroll-snap-stop: always;
+  }
 }
 
 /* ── Scroll dots pagination — matches carousel-dotted show-arrows-dots style ─── */
@@ -763,7 +890,7 @@
 
 @media (width > 47.5rem) {
   .ccs-results {
-    padding: var(--bbl-space-600);
+    padding: var(--bbl-space-600) var(--bbl-space-800);
   }
 
   .ccs-results-title {
@@ -789,6 +916,16 @@
     gap: var(--bbl-space-300);
   }
 
+  /* Left column (Monthly Income + Benefits) naturally has more content — an
+     extra row of boxes plus a second section title — than the right column
+     (Lifestyles alone), so its 6 boxes fall short of the Rewards button's
+     bottom edge. Bumping the box height directly (rather than growing them
+     to fill leftover flex space, which overshot) closes that gap. Starting
+     estimate — adjust to match exactly once checked against the live page. */
+  .credit-card-selector .option-card-stacked {
+    min-height: 7.48rem;
+  }
+
   /* Show desktop card list for Monthly Income; hide mobile dropdown */
   .credit-card-selector .filter-options-desktop {
     display: block;
@@ -802,21 +939,6 @@
   .credit-card-selector .option-icon-above img {
     width: var(--bbl-space-600);
     height: var(--bbl-space-600);
-  }
-
-  .credit-card-selector .option-card-stacked {
-    min-height: 7.875rem;
-  }
-
-  /* Lifestyle: wrap back to three-column grid — no horizontal scroll needed */
-  .credit-card-selector .option-list-three-column {
-    flex-wrap: wrap;
-    overflow: visible;
-    padding-bottom: 0;
-  }
-
-  .credit-card-selector .option-list-three-column .option-item {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-100)) / 3);
   }
 
   /* Actions: right-aligned on tablet+ */
@@ -846,7 +968,9 @@
 
 @media (width > 64rem) {
   .ccs-results {
-    padding: var(--bbl-space-600) var(--bbl-space-200);
+    /* Slightly more padding on the right than the left biases the centered
+       title + card grid a bit to the left within the panel. */
+    padding: var(--bbl-space-600) calc(var(--bbl-space-800) + var(--bbl-space-600)) var(--bbl-space-600) var(--bbl-space-800);
   }
 
   .ccs-results-title {
@@ -874,6 +998,9 @@
 
   .credit-card-selector .card-selector-content {
     gap: var(--bbl-space-400);
+    padding-top: 1.875rem;
+    padding-left: 12.5rem;
+    padding-right: 12.5rem;
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 {
@@ -885,5 +1012,10 @@
   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
     flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 3);
     margin-bottom: var(--bbl-space-500);
+  }
+
+  .ccs-card-list-container {
+    max-width: 56rem;
+    margin-inline: auto;
   }
 }
