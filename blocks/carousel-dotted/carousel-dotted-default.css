@@ -102,6 +102,10 @@
   height: 197px;
 }
 
+.carousel-dotted.all-with-image .carousel-bg {
+  border-radius: var(--bbl-rounded-100);
+}
+
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-bg {
   overflow: hidden;

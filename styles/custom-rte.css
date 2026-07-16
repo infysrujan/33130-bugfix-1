@@ -43,6 +43,15 @@ picture.rte-inline-image img {
   vertical-align: middle;
 }
 
+.accordion-item :is(.default-content-wrapper, .table.block) table td :is(ul, ol) {
+  margin: 0 0 0 var(--bbl-space-250);
+  padding: 0;
+}
+
+.accordion-item :is(.default-content-wrapper, .table.block) table td :is(ul, ol) li {
+  margin: 0 0 0.625rem var(--bbl-space-250);
+}
+
 .default-content-wrapper > :not(.button-container, .footer-container) a:any-link {
   color: inherit;
 }

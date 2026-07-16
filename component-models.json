@@ -204,6 +204,14 @@
             "description": "Enable this to open the button link in a modal overlay. Add the fragment path in the Link field above.",
             "valueType": "boolean",
             "value": false
+          },
+          {
+            "component": "boolean",
+            "name": "enableCookieModal",
+            "label": "Open cookie modal",
+            "description": "Enable this to open the cookie settings modal. Add the cookie-modal fragment path in the Link field above.",
+            "valueType": "boolean",
+            "value": false
           }
         ]
       }

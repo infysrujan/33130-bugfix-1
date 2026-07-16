@@ -27,6 +27,7 @@
   min-height: auto;
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-gray-121);
+  margin-bottom: var(--bbl-space-250);
 }
 
 /* --------------------------------------------------------------------------
@@ -298,14 +299,11 @@
    DESKTOP (> 64rem)
    ========================================================================== */
 @media (width > 64rem) {
-  .rate-card {
-    padding: 1.25rem 0;
-  }
-
   .rate-card .currency-info {
     max-width: 100%;
     padding: 1.5rem;
-    min-height: 27.8125rem;
+    min-height: 26.125rem;
+    margin-bottom: 0;
   }
 
   .rate-card .tab-header a,
@@ -335,14 +333,14 @@
 
   .rate-card section>.inner:first-child .default-wrap {
     position: absolute;
-    bottom: -20%;
+    bottom: -16%;
   }
 
   .rate-card .percent {
     font-size: 1.5rem;
   }
 
-/* --------------------------------------------------------------------------
+  /* --------------------------------------------------------------------------
    EQUAL-HEIGHT COLUMNS — Desktop only
    Switch columns-3 section to CSS grid when rate-card is present.
    Grid rows naturally make all children equal height without height:100% propagation.
@@ -350,7 +348,18 @@
   .section.columns-3:has(.rate-card) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 30.625rem;
+
+    /* 490px */
+    column-gap: 1.3125rem;
+
+    /* 21px — gives 570px per column at design viewport */
     align-items: unset;
+  }
+
+  /* Rates and NAV tab active: allow height to grow based on content */
+  .section.columns-3:has(.rate-card .tab-header li:not(:first-child) .active) {
+    grid-template-rows: auto;
   }
 
   /* Reset flex-specific width/flex overrides from styles.css */
@@ -379,15 +388,16 @@
 
   .section.columns-3:has(.rate-card) .carousel-dotted.all-without-image {
     min-height: unset;
-    height: calc(100% - 2.5rem);
+    height: calc(100% - 0.2rem);
     overflow: hidden;
+    margin: 0;
   }
 
   /* Kill tab-state specific min-height overrides from carousel-dotted-default.css */
   .section.columns-3:has(.rate-card .tab-header li:not(:first-child) .active) .carousel-dotted.all-without-image,
   .section.columns-3:has(.rate-card .tab-header li:last-child .active) .carousel-dotted.all-without-image {
     min-height: unset;
-    height: calc(100% - 2.5rem);
+    height: calc(100% - 0.2rem);
   }
 }
 

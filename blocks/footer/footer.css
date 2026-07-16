@@ -266,7 +266,7 @@
   }
 
   .footer .footer-links li {
-    font-family: var(--bbl-font-family-medium);
+    font-family: var(--bbl-font-family-primary);
   }
 
   .footer .footer-links ul {
