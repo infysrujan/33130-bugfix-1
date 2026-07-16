@@ -1,32 +1,32 @@
 /* simple carousel section */
-
+ 
 .carousel-dotted-wrapper .simple-carousel{
   margin: auto;
   margin-top: 3.125rem;
   margin-bottom: 1.25rem;
 }
-
+ 
 .slick-dots.simple-carousel-dots{
   margin-bottom: 3.125rem;
 }
-
+ 
 .section.central-aligned.center-title.carousel-dotted-container {
   padding: var(--bbl-space-section-lg) var(--bbl-space-250) 1.875rem;
 }
-
+ 
 .card-list-modal-title {
   margin-top: 1.875rem;
   margin-bottom: 1.875rem;
   padding-bottom: 1.25rem;
 }
-
+ 
 .carousel-dotted-item.simple-carousel.item {
   width: 100% ;
   max-width: 100% ;
   flex: 1 1 100% ;
   align-self: stretch ;
 }
-
+ 
 /* stylelint-disable-next-line no-descending-specificity */
 .carousel-dotted-item.simple-carousel.item picture,
 /* stylelint-disable-next-line no-descending-specificity */
@@ -36,35 +36,47 @@
   object-fit: fill ;
   display: block ;
 }
-
+ 
 .carousel-dotted-container .default-content-wrapper {
   padding: 0 3.5rem;
 }
-
-
+ 
+ 
 .central-aligned.carousel-dotted-container .default-content-wrapper {
     max-width: var(--bbl-layout-central-aligned-max-width);
     margin: 0 auto;
 }
-
+ 
 .central-aligned.carousel-dotted-container .carousel-dotted-wrapper .carousel-dotted {
     position: relative;
     margin-bottom: 5rem;
     display: block;
 }
-
+ 
 .central-aligned.carousel-dotted-container .carousel-arrow-prev {
     position: absolute;
-    top: 40%;
+    top: 50%;
+    transform: translateY(-50%);
     left: -3.4375rem;
+}
+ 
+.central-aligned.carousel-dotted-container .carousel-dotted.show-arrows-dots:has(.simple-carousel)  .carousel-arrow-prev {
+    position: absolute;
+    left: 0;
 }
 
 .central-aligned.carousel-dotted-container .carousel-arrow-next {
     position: absolute;
     right: -3.4375rem;
-    top: 40%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.central-aligned.carousel-dotted-container .carousel-dotted.show-arrows-dots:has(.simple-carousel)  .carousel-arrow-next {
+    position: absolute;
+    right: 0;
 }
 
 .carousel-dotted .carousel-dotted-item.simple-carousel {
     margin-top: 0;
-} 
+}
