@@ -8,9 +8,7 @@
       padding: 0;
       color: var(--bbl-color-black);
       font-family: var(--bbl-font-family-medium);
-      font-size: var(--bbl-font-size-h3-mobile);
       font-weight: var(--bbl-font-weight-regular);
-      line-height: var(--bbl-line-height-h3-mobile);
       text-align: center;
     }
   }
@@ -356,8 +354,6 @@
     &.central-aligned > .default-content-wrapper {
       & h2 {
         margin: var(--bbl-space-500) 0 var(--bbl-space-300);
-        font-size: var(--bbl-font-size-h3-desktop);
-        line-height: var(--bbl-line-height-h3-desktop);
       }
     }
 

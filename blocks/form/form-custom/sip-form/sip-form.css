@@ -1,5 +1,4 @@
 .sip-form main .form-container.custom-forms .form h2 {
-  font-size: var(--bbl-form-font-size-21);
   margin: 0;
   padding: 0 0 var(--bbl-form-padding-30) 0;
   color: var(--bbl-color-black);
@@ -20,8 +19,6 @@
   &.central-aligned > .default-content-wrapper {
     & h2 {
       color: var(--bbl-color-black);
-      font-size: var(--bbl-font-size-h3-desktop);
-      line-height: var(--bbl-line-height-h4-desktop);
       padding-bottom: 1.875rem;
     }
 

@@ -14,8 +14,6 @@
         color: var(--bbl-color-black);
         font-family: var(--bbl-font-family-medium);
         font-weight: var(--bbl-font-weight-regular);
-        font-size: var(--bbl-form-font-size-22);
-        line-height: var(--bbl-form-line-height-46);
     }
 
     /* field validation / description */
@@ -206,11 +204,7 @@
             grid-column: span 6;
         }
 
-        & .field-title h2 {
-            font-size: var(--bbl-form-font-size-48);
-        }
-
-        & .field-productservices1-exclude select,
+& .field-productservices1-exclude select,
         & .field-categorydropdown-exclude select,
         & .field-categorydropdown2-exclude select {
             margin: var(--bbl-form-margin-10) 0 0;

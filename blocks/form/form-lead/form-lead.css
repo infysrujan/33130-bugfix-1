@@ -115,11 +115,6 @@ main .lead-forms .form form p {
   line-height: var(--bbl-form-line-height-1-5);
 }
 
-main .lead-forms .form form h2{
-    font-size: 0.875rem;
-    line-height: 1.1375rem;
-  }
-
 main .lead-forms.section.central-aligned > .default-content-wrapper p{
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-font-size-b1-mobile);
@@ -194,9 +189,7 @@ main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .pa
   padding: 0 0 var(--bbl-form-padding-35);
   color: var(--bbl-color-grey-140);
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-form-font-size-18);
   font-weight: var(--bbl-form-font-weight-bold);
-  line-height: 1.5rem;
   letter-spacing: -0.0125rem;
   text-align: center;
 }
@@ -945,11 +938,6 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     font-size: var(--bbl-font-size-b1-desktop);
   }
 
-  main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .page-header) {
-    font-size: var(--bbl-form-font-size-32);
-    line-height: 2.3125rem;
-  }
-
   main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
     font-size: var(--bbl-form-font-size-32);
     line-height: 2.3125rem;
@@ -961,8 +949,6 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   }
 
   main .lead-forms .form form h2{
-    font-size: var(--bbl-form-font-size-16);
-    line-height: 1.3rem;
     padding: 0 var(--bbl-form-padding-10);
   }
 

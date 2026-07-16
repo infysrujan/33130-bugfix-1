@@ -17,11 +17,9 @@ main .custom-forms .form form p {
 
 .debt-support .form-container.custom-forms .form :is(h1, h2, h3, h4, h5, h6){
   position: relative;
-  font-size: var(--bbl-form-font-size-48);
   text-align: center;
   color: var(--bbl-color-black);
   font-weight: var(--bbl-font-weight-regular);
-  line-height: 3.75rem;
   font-family: var(--bbl-font-family-medium);
   padding-bottom: 1.875rem;
   margin: 1.875rem 0;

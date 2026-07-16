@@ -53,11 +53,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     border: 0;
     text-align: left;
     letter-spacing: normal;
-    color: var(--form-fieldset-legend-color);
     font-family: var(--bbl-font-family-medium);
-    font-size: var(--form-fieldset-legend-font-size);
     font-weight: 400;
-    line-height: var(--bbl-heading-h4-line-height);
 
     &::before {
       background: none;
@@ -783,21 +780,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       line-height: var(--bbl-line-height-b1-desktop);
     }
 
-    /* Page + panel titles — desktop heading scale (live ~1.5rem) */
-    & :is(
-      h3,
-      .form form .field-title h2,
-      .form form .field-title .page-header,
-      .form form .field-title .label-header,
-      .field-title,
-      .cc-panel-item-form-title
-    ) {
-      font-size: var(--bbl-heading-h3-size);
-      font-weight: var(--bbl-heading-h3-weight);
-      line-height: var(--bbl-heading-h3-line-height);
-    }
-
-    & .form form .field-wrapper.col-6:not(.button-wrapper) {
+& .form form .field-wrapper.col-6:not(.button-wrapper) {
       grid-column: span 6;
     }
 
