@@ -7,6 +7,15 @@
   --clw-description-line-height-mobile: 1.125rem;
   --clw-benefit-line-height: 1.375;
   --clw-cta-line-height: 1.375rem;
+
+  /*
+   * .content below intentionally bleeds past its own box via negative
+   * margin-inline to reach the section edge. When the ancestor section is
+   * already full-bleed (no inset padding left to reclaim), that push
+   * overshoots the viewport; clipping it here keeps the overshoot from
+   * becoming a page-wide horizontal scrollbar.
+   */
+  overflow-x: hidden;
 }
 
 /* ── Common / Mobile-first base ────────────────────────── */
