@@ -966,8 +966,8 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   }
 
   main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
-    font-size: var(--bbl-font-size-b1-desktop);
-    line-height: var(--bbl-line-height-b3-desktop);
+    font-size: var(--bbl-form-font-size-17);
+    line-height: 1.3813rem;
   }
 
   main .lead-forms.section.central-aligned > .default-content-wrapper p{
