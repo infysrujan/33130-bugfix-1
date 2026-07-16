@@ -3,7 +3,7 @@ body:has(.search-modal) header.is-not-overlapped .main-nav-desktop:not(.is-scrol
   background-color: transparent;
 }
 
-body:has(.search-modal) header.is-not-overlapped ~ main {
+body:has(.search-modal) header.is-not-overlapped~main {
   padding-top: 0;
 }
 
@@ -303,7 +303,7 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
 }
 
 @media (width > 64rem) {
-   body:has(.search-page):not(:has(.main-nav-desktop.is-scrolled)) header.is-not-overlapped .login-button.primary {
+  body:has(.search-page):not(:has(.main-nav-desktop.is-scrolled)) header.is-not-overlapped .login-button.primary {
     background-color: var(--bbl-color-active-blue);
   }
 
@@ -353,7 +353,7 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
     padding-block: var(--bbl-space-250) 0;
   }
 
-  .section.full-bleed-bg .content.search-modal-pre-block:has(.search-modal-history:not([style*="display: none"])):not(:has(.search-modal-results-section[style*="display: block"])) {
+  .section.full-bleed-bg .content.search-modal-pre-block:has(.search-modal-history .search-modal-panel):not(:has(.search-modal-results-section[style*="display: block"])) {
     padding-block: 3.125rem 0;
   }
 
