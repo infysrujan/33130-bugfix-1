@@ -271,7 +271,7 @@ main .lead-forms .form form :is(.field-wrapper:has(select), .drop-down-wrapper)>
 }
 
 main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-form-font-weight-bold);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-1);
   margin-block: var(--bbl-space-500) 0;
