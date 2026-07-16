@@ -167,6 +167,11 @@ function handleGlobalLinkClicks() {
     try {
       const urlObj = new URL(href, window.location.href);
 
+      // Only intercept real web navigations — let mailto:, tel:, sms:, etc. behave natively
+      if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+        return;
+      }
+
       // Skip if same origin
       if (urlObj.hostname === window.location.hostname) {
         return;
@@ -271,8 +276,9 @@ async function loadWelcomeBanner(doc) {
     return undefined;
   }
 
-  const lang = doc.documentElement.lang || 'en';
-  const path = `/${lang}/fragments/welcome-banner/welcome-banner`;
+  const configData = await fetchConfigs();
+  const path = configData?.welcomeBannerFragmentPath;
+  if (!path) return undefined;
 
   welcomeBannerLoadPromise = new Promise((resolve) => {
     document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
@@ -286,8 +292,6 @@ async function loadWelcomeBanner(doc) {
             resolve();
             return;
           }
-          const main = doc.querySelector('main');
-          [...fragment.querySelectorAll(':scope > .section')].forEach((s) => main.append(s));
           await waitForImageLoad(doc.querySelector('.welcome-banner-media img'));
           resolve();
         },

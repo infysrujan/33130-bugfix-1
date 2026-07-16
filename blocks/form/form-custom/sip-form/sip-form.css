@@ -1,3 +1,21 @@
+.sip-form main .form-container.custom-forms .form h2 {
+  font-size: var(--bbl-form-font-size-21);
+  margin: 0;
+  padding: 0 0 var(--bbl-form-padding-30) 0;
+  color: var(--bbl-color-black);
+}
+
+.sip-form main .form-container.custom-forms .form h4 {
+  font-size: var(--bbl-form-font-size-14);
+  margin: 0;
+  padding: 0 0 var(--bbl-form-padding-70) 0;
+  color: var(--bbl-color-grey-85);
+}
+
+.sip-form main .form form .field-wrapper{
+  margin: 0;
+}
+
 .sip-form main .section.form-container.custom-forms {
   &.central-aligned > .default-content-wrapper {
     & h2 {

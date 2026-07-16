@@ -63,12 +63,16 @@
   transition: all .3s;
 }
 
+.warning-card-description .button-tertiary::after {
+  display: none;
+}
+
 .warning-card-description li {
   margin-bottom: var(--bbl-space-100);
 }
 
 .warning-card-description strong a {
-  font-family: Muli-Bold, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-base);
   color: var(--bbl-color-grey-85);
 }

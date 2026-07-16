@@ -93,8 +93,8 @@
   color: var(--bbl-color-black);
   margin: 0;
   position: relative;
-  padding-bottom: var(--bbl-space-250);
-  margin-bottom: var(--bbl-space-250);
+  padding-bottom: 0.9375rem;
+  margin-bottom: 0.625rem;
 }
 
 .content-insert-cards .title-2::before {
@@ -132,51 +132,8 @@
   padding-top: var(--bbl-space-250);
 }
 
-.content-insert-cards .btn-primary,
-.content-insert-cards .button-container a,
-.content-insert-cards .button-container .button {
-  display: block;
-  padding: 0 var(--bbl-space-250);
-  font-size: var(--bbl-body-b1-size);
-  line-height: 2.75rem;
-  font-weight: var(--bbl-font-weight-regular);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  color: var(--bbl-color-white);
-  background-color: var(--bbl-color-active-blue);
-  border: 0.063rem solid var(--bbl-color-active-blue);
-  border-radius: var(--bbl-rounded-100);
-  text-decoration: none;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  text-align: center;
-  width: 100%;
-  min-width: auto;
-  box-sizing: border-box;
-  letter-spacing: 0.05rem;
-  height: auto;
-}
-
-.content-insert-cards .btn-primary:hover,
-.content-insert-cards .button-container a:hover,
-.content-insert-cards .button-container .button:hover {
-  background-color: var(--bbl-color-blue-90);
-  border-color: var(--bbl-color-blue-90);
-  color: var(--bbl-color-white);
-}
-
-.content-insert-cards .btn-primary:active,
-.content-insert-cards .button-container a:active,
-.content-insert-cards .button-container .button:active {
-  background-color: var(--bbl-color-active-blue);
-  border-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-}
-
-.content-insert-cards .btn-primary:focus,
-.content-insert-cards .button-container a:focus,
-.content-insert-cards .button-container .button:focus {
-  outline: var(--bbl-space-025) solid var(--bbl-color-active-blue);
-  outline-offset: var(--bbl-space-025);
+.content-insert-card .button-m {
+  max-width: 100%;
 }
 
 @media (width > 47.5rem) {
@@ -185,7 +142,6 @@
 }
 
 .content-insert-cards .content-insert-card {
-  max-width: 73.125rem;
   margin: 0 auto;
   position: relative;
   border: none;
@@ -239,18 +195,6 @@
   margin-bottom: var(--bbl-space-150);
 }
 
-.content-insert-cards .btn-primary,
-.content-insert-cards .button-container a,
-.content-insert-cards .button-container .button {
-  font-size: var(--bbl-body-b1-size);
-  line-height: 2.75rem;
-  padding: 0 var(--bbl-space-250);
-  min-width: auto;
-  width: 100%;
-  height: auto;
-  border-radius: var(--bbl-rounded-100);
-}
-
 .content-insert-cards .button-group,
 .content-insert-cards .button-container {
   position: absolute;
@@ -266,10 +210,6 @@
 .content-insert-cards .text-default {
   font-size: var(--bbl-body-b1-size);
   line-height: 1.375;
-}
-
-.content-insert-cards .btn-primary {
-  font-size: var(--bbl-body-b1-size);
 }
 
 .content-insert-cards .category {

@@ -18,12 +18,14 @@ export function pad2(n) {
 }
 
 export function formatDisplayDate(date, monthLabels) {
-  return `${pad2(date.getDate())} ${monthLabels[date.getMonth()]} ${date.getFullYear()}`;
+  const monthShort = monthLabels[date.getMonth()]?.slice(0, 3);
+  return `${pad2(date.getDate())} ${monthShort} ${date.getFullYear()}`;
 }
 
 export function formatMaturityDate(isoStr, monthLabels) {
   const d = new Date(isoStr);
-  return `${pad2(d.getDate())} ${monthLabels[d.getMonth()]} ${String(d.getFullYear()).slice(-2)}`;
+  const monthShort = monthLabels[d.getMonth()]?.slice(0, 3);
+  return `${pad2(d.getDate())} ${monthShort} ${String(d.getFullYear()).slice(-2)}`;
 }
 
 export function formatRemainTerm(remainTerm) {

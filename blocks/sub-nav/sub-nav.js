@@ -1,5 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
+import { getParentPageUrl } from '../breadcrumb/breadcrumb.js';
 
 function escapeHtml(text) {
   const div = document.createElement('div');
@@ -105,7 +106,12 @@ export default function decorate(block) {
   backButton.className = 'sub-nav-back';
   backButton.setAttribute('aria-label', 'Go back to previous page');
   backButton.innerHTML = '<span class="sub-nav-back-circle icon-arrow-left"></span>';
-  backButton.addEventListener('click', () => {
+  backButton.addEventListener('click', async () => {
+    const parentUrl = await getParentPageUrl();
+    if (parentUrl) {
+      window.location.href = parentUrl;
+      return;
+    }
     window.history.back();
   });
 

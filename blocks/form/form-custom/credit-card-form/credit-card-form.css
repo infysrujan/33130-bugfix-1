@@ -1,0 +1,70 @@
+.credit-card-form main .section.form-container.custom-forms .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea) {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: var(--bbl-space-000);
+  padding: 0 var(--bbl-space-250);
+  border-radius: var(--bbl-radius-md);
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form input::placeholder {
+  color: var(--bbl-color-grey-40);
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form .field-callback select {
+  font-size: 0.8315rem;
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-text-primary);
+  line-height: 1.5;
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form h2 {
+  font-size: 1.625rem;
+  color: var(--bbl-color-grey-85);
+  padding-bottom: 0.3125rem;
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
+  background-color: var(--bbl-color-grey-157);
+  font-size: var(--bbl-body-b1-size);
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-color-grey-156);
+  padding: 0 0.3125rem 0.3125rem 1.25rem;
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) input[type='checkbox'] {
+  top: 0;
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form fieldset.field-terms-panel {
+  margin-bottom: 2rem;
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form .field-summary p:first-of-type {
+  margin-top: 2rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p:first-child {
+  color: var(--bbl-color-grey-85);
+}
+
+.credit-card-form main .section.form-container .form form .field-invalid :is(.field-validation-error, .field-description) {
+  padding: 0.625rem 0 0 1rem;
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form :is(.field-name, .field-surname) {
+  grid-column: span 12;
+}
+
+@media (width > 47.5rem) {
+  .credit-card-form main .section.form-container.custom-forms .form form :is(.field-name, .field-surname) {
+    grid-column: span 6;
+  }
+
+  .credit-card-form main .section.form-container.custom-forms .form form .field-callback select {
+    font-size: 0.95rem;
+  }
+}

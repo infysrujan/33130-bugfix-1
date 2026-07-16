@@ -1,4 +1,5 @@
 import { loadFragment } from '../../blocks/fragment/fragment.js';
+import { decorateIconInContainer } from '../custom-rte.js';
 
 export function createModalHeader(lang, closeBtn, {
   headerClass = 'modal-header',
@@ -241,6 +242,7 @@ export async function openModal(doc, { fragmentPath, content, dialogClass } = {}
       if (!fragment) return;
       modalBody.replaceChildren(...fragment.children);
       decorateModalContent(modalBody);
+      decorateIconInContainer(modalBody);
     } catch {
       return;
     }

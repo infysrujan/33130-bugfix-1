@@ -289,24 +289,6 @@
     ]
   },
   {
-    "id": "fund-prices-table",
-    "rte": {
-      "toolbar": {
-        "insert": [
-          "table"
-        ],
-        "editor": [
-          "removeformat"
-        ],
-        "sections": [
-          "insert",
-          "editor"
-        ]
-      }
-    },
-    "components": []
-  },
-  {
     "id": "header-section",
     "components": [
       "top-nav",
@@ -493,18 +475,24 @@
       "warning-card",
       "menu-cards",
       "carousel-dotted",
+      "menu-banner",
       "cross-banner",
       "form",
       "embed-adaptive-form",
+      "content-insert-cards",
+      "menu-card-actions",
       "download-file",
+      "teaser-with-bg-image",
       "table",
       "accordion-block",
+      "rate-card",
+      "card-list",
+      "video",
+      "stock-ticker",
+      "menu-list",
       "forex-rates",
       "forex-graph",
-      "sme-loan-calculator",
-      "table",
-      "card-list",
-      "menu-card-actions"
+      "sme-loan-calculator"
     ]
   },
   {

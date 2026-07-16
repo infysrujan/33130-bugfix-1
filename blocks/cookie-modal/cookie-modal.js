@@ -24,13 +24,29 @@ const FOCUSABLE_SELECTOR = [
 
 const COOKIE_NAME_MAP = {
   'analytic cookies': 'AnalysisCookie',
+  'analytics cookies': 'AnalysisCookie',
+  'analytic cookie': 'AnalysisCookie',
+  'analytics cookie': 'AnalysisCookie',
   'advertising cookies': 'AdvertisingCookie',
+  'advertising cookie': 'AdvertisingCookie',
 };
 
 const COOKIE_VALUE_MAP = {
   AnalysisCookie: 'Analysis',
   AdvertisingCookie: 'Advertising',
 };
+
+// Sanitizes a free-text label into a valid cookie name (no spaces or special chars).
+const toCookieName = (text) => text.replace(/[^a-zA-Z0-9]/g, '');
+
+// Resolves a label to a cookie name: exact map → keyword fallback → sanitized label.
+function resolveCookieName(labelText) {
+  const lower = labelText.toLowerCase();
+  if (COOKIE_NAME_MAP[lower]) return COOKIE_NAME_MAP[lower];
+  if (lower.includes('analytic') || lower.includes('analysis')) return 'AnalysisCookie';
+  if (lower.includes('advertis')) return 'AdvertisingCookie';
+  return toCookieName(labelText);
+}
 
 function el(tag, { className, text, attrs = {} } = {}) {
   const node = document.createElement(tag);
@@ -249,7 +265,7 @@ export default function decorate(block) {
     const cols = [...row.children];
     const labelText = cols[0]?.textContent?.trim() || '';
     const descriptionHTML = cols[1]?.innerHTML?.trim() || '';
-    const cookieName = COOKIE_NAME_MAP[labelText.toLowerCase()] || labelText;
+    const cookieName = resolveCookieName(labelText);
     const stored = getCookie(cookieName);
     const defaultEnabled = cols[2]?.textContent?.trim() === 'true';
     const isChecked = stored !== null || defaultEnabled;

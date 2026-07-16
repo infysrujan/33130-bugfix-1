@@ -63,6 +63,142 @@ function buildGraphTitle(template, currName, currFamily, fromIso, toIso) {
     .replace('{{END_DATE}}', endDate);
 }
 
+/**
+ * Print just the chart (title + legend + graph + disclaimer) in an isolated
+ * iframe, mirroring forex-rates. A bare window.print() would print the whole
+ * live page (Currency Calculator, Forward Points, footer, …).
+ * @param {HTMLElement} block
+ * @param {object} state - decorate() state; state.chartInstance holds the Chart
+ */
+function printForexGraph(block, state) {
+  const content = block.querySelector('.forex-graph-content');
+  if (!content) return;
+
+  const doc = block.ownerDocument;
+  const cloned = content.cloneNode(true);
+
+  // Keep the currency + From/To fields as read-only context; strip only the
+  // interactive/error bits (dropdown list, calendar popups, text inputs, buttons).
+  cloned.querySelectorAll('.forex-graph-error').forEach((el) => el.remove());
+  cloned.querySelectorAll(
+    '.forex-graph-dropdown-list, .forex-graph-dropdown-chevron, .forex-graph-datepicker, .forex-graph-date-input, .forex-graph-date-trigger, .forex-graph-go-btn, .forex-graph-actions',
+  ).forEach((el) => el.remove());
+
+  // <canvas> pixels do not survive cloneNode — swap in a snapshot image.
+  const canvasWrap = cloned.querySelector('.forex-graph-canvas-wrap');
+  if (canvasWrap) {
+    canvasWrap.innerHTML = '';
+    if (state.chartInstance) {
+      const img = doc.createElement('img');
+      img.src = state.chartInstance.toBase64Image();
+      img.className = 'forex-graph-print-chart';
+      canvasWrap.appendChild(img);
+    }
+  }
+
+  const logoEl = doc.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+
+  const pageTitle = doc.querySelector('h1')?.textContent?.trim() || 'Foreign Exchange Rates';
+
+  const printCss = `
+    @page { size: A4 portrait; margin: 10mm; }
+    body { font-family: sans-serif; margin: 0; padding: 0; }
+    /* Print background colors (title underline) — off by default */
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    .print-logo { margin-bottom: var(--bbl-space-075); }
+    .print-logo img { height: 1.5rem; width: auto; }
+    .print-divider { border: none; border-top: 0.0625rem solid var(--bbl-color-grey-125); margin: var(--bbl-space-075) 0 var(--bbl-space-100); }
+
+    .print-title {
+      font-size: 1.25rem; font-weight: 700; color: var(--bbl-color-black);
+      margin: 0 0 var(--bbl-space-100); padding-bottom: var(--bbl-space-075); position: relative;
+    }
+    .print-title::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 2.25rem; height: var(--bbl-space-025); background: var(--bbl-color-blue-105);
+    }
+
+    /* Read-only controls (currency + From/To) */
+    .forex-graph-control-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.4rem 0.8rem; margin-bottom: var(--bbl-space-100);
+    }
+    .forex-graph-dropdown { position: static; }
+    .forex-graph-dropdown-trigger {
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      border: 0.0625rem solid var(--bbl-color-grey-125); background: none;
+      border-radius: 0.2rem; padding: 0.15rem 0.4rem;
+      font-size: 0.5625rem; font-weight: 700; color: var(--bbl-color-black);
+    }
+    .forex-graph-date-fields { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+    .forex-graph-date-field { display: flex; align-items: center; gap: 0.25rem; flex: 0 0 auto; }
+    .forex-graph-date-label { display: inline; margin: 0; font-size: 0.5625rem; font-weight: 900; color: var(--bbl-color-black); }
+    .forex-graph-date-group { position: static; }
+    .forex-graph-date-display {
+      display: inline-block; font-size: 0.5625rem;
+      border: 0.0625rem solid var(--bbl-color-grey-125);
+      padding: 0.15rem 0.4rem; border-radius: 0.2rem;
+    }
+
+    .forex-graph-chart-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: var(--bbl-space-100); margin-bottom: var(--bbl-space-075);
+    }
+    .forex-graph-chart-title { font-size: 0.75rem; font-weight: 700; color: var(--bbl-color-black); margin: 0; }
+    .forex-graph-legend { display: flex; gap: var(--bbl-space-100); font-size: 0.625rem; font-weight: 700; }
+    .forex-graph-legend-buying { color: #002087; }
+    .forex-graph-legend-selling { color: #ff6e00; }
+
+    .forex-graph-canvas-wrap { width: 100%; }
+    .forex-graph-print-chart { display: block; width: 100%; height: auto; }
+
+    .forex-graph-disclaimer { font-size: 0.5rem; line-height: 1.4; margin-top: var(--bbl-space-100); color: #555; }
+    .forex-graph-disclaimer p { margin: 0; }
+    .forex-graph-disclaimer p:first-child { font-weight: 700; color: var(--bbl-color-black); padding-bottom: 0.2rem; }
+  `;
+
+  const printHtml = `<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>${escapeHtml(pageTitle)}</title>
+      <link rel="stylesheet" href="/styles/tokens.css">
+      <link rel="stylesheet" href="/styles/fonts.css">
+      <style>${printCss}</style>
+    </head>
+    <body>
+      <div class="print-logo">${brandLogo}</div>
+      <hr class="print-divider">
+      <h1 class="print-title">${escapeHtml(pageTitle)}</h1>
+      <div class="forex-graph block" data-block-status="loaded">
+        ${cloned.outerHTML}
+      </div>
+    </body>
+  </html>`;
+
+  const iframe = doc.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;border:none;opacity:0;';
+  doc.body.appendChild(iframe);
+
+  iframe.onload = () => {
+    setTimeout(() => {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    }, 300);
+    window.addEventListener('afterprint', () => {
+      if (doc.body.contains(iframe)) doc.body.removeChild(iframe);
+    }, { once: true });
+  };
+
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write(printHtml);
+  iframeDoc.close();
+}
+
 // eslint-disable-next-line import/no-unresolved
 const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
 
@@ -673,7 +809,7 @@ export default async function decorate(block) {
     // ── Print button ─────────────────────────────────────────────────────────
     if (printButton) {
       printButton.addEventListener('click', () => {
-        window.print();
+        printForexGraph(block, state);
       });
     }
 

@@ -1307,22 +1307,6 @@
           }
         },
         {
-          "title": "Fund Prices Table",
-          "id": "fund-prices-table",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
-                "template": {
-                  "name": "Fund Prices Table",
-                  "model": "fund-prices-table",
-                  "filter": "fund-prices-table"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "Fund Prices",
           "id": "fund-prices",
           "plugins": {

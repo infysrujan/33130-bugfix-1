@@ -94,7 +94,11 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
   funds.forEach((fund) => {
     const name = fund.FundName || '';
     // eslint-disable-next-line no-underscore-dangle
-    const readMoreUrl = fund._path || '#';
+    let readMoreUrl = fund.mfPageUrl?._path || '#';
+    // Remove "/content/bangkokbank" from the start of readMoreUrl, if present
+    if (readMoreUrl.startsWith('/content/bangkokbank')) {
+      readMoreUrl = readMoreUrl.replace(/^\/content\/bangkokbank/, '');
+    }
     const productId = fund.ProductID || name;
     const compareEnabled = fund.CompareButton === 'true';
 
@@ -168,6 +172,7 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
     buttonWrapper.className = 'cards-list-button';
     const link = doc.createElement('a');
     link.href = readMoreUrl;
+    link.className = 'button-m primary';
     link.textContent = readMoreLabel;
     buttonWrapper.appendChild(link);
     inner.appendChild(buttonWrapper);
@@ -276,7 +281,7 @@ export default async function buildMfFundCardsSlide(row, index) {
       if (h3?.dataset?.compareEnabled === 'false') return;
       const btn = doc.createElement('button');
       btn.type = 'button';
-      btn.className = 'mfr-compare-btn';
+      btn.className = 'button-m secondary mfr-compare-btn';
       btn.textContent = compareLabel;
       btn.dataset.cardName = h3?.textContent?.trim() ?? '';
       btn.dataset.cardId = h3?.dataset?.cardId ?? '';
@@ -332,6 +337,107 @@ export default async function buildMfFundCardsSlide(row, index) {
       descEl.innerHTML = descriptionHTML;
       carouselBlock.insertAdjacentElement('afterend', descEl);
     }
+  }
+
+  // ── Equalize card height across all pages ────────────────────────────────
+  // align-items: stretch (mf-fund-cards-slide.css) only equalizes the 3 cards
+  // within a single page — different pages can still have very different
+  // natural heights (varying description lengths), so the carousel visibly
+  // resized when switching dots. This measures every page's cards (forcing
+  // hidden pages visible just long enough to lay them out) and pins every
+  // card on every page to the single tallest height found, so switching
+  // dots never changes the carousel's height even when a page's content
+  // is shorter.
+  function waitForImage(img) {
+    if (img.complete) return Promise.resolve();
+    return new Promise((resolve) => {
+      img.addEventListener('load', resolve, { once: true });
+      img.addEventListener('error', resolve, { once: true });
+    });
+  }
+
+  async function equalizeCardHeights() {
+    let maxHeight = 0;
+
+    // Force every page visible+laid out for measurement unconditionally —
+    // checking getComputedStyle() to decide which pages are already hidden
+    // is unreliable here, since the CSS that hides inactive pages lives in
+    // a separate stylesheet (carousel-dotted-show-arrow-dots.css) whose load
+    // timing relative to this code isn't guaranteed. visibility (not
+    // position/display removal from flow) keeps each page in its normal
+    // grid cell so its measured width — and therefore its aspect-ratio
+    // image height — matches how it will actually render. This also makes
+    // each page's (loading="lazy") images actually start loading, since
+    // browsers don't load lazy images that are still display:none.
+    slides.forEach((slideEl) => {
+      slideEl.style.visibility = 'hidden';
+      slideEl.style.display = 'flex';
+    });
+
+    // Wait for every fund photo AND management-company logo across every
+    // page to finish loading before measuring. The logo image has no fixed
+    // size in CSS, so its real height is unknown until it loads — measuring
+    // before it does under-counts that card's true height, and since the
+    // final min-height is a floor (not a cap), that card then grows taller
+    // than its siblings later, on its own, once the logo actually loads.
+    const imgs = slides.flatMap((slideEl) => [...slideEl.querySelectorAll('img')]);
+    await Promise.all(imgs.map(waitForImage));
+
+    slides.forEach((slideEl) => {
+      slideEl.querySelectorAll('.cards-list-item').forEach((item) => {
+        item.style.removeProperty('height');
+        item.style.removeProperty('min-height');
+        maxHeight = Math.max(maxHeight, item.getBoundingClientRect().height);
+      });
+    });
+
+    slides.forEach((slideEl) => {
+      slideEl.style.removeProperty('visibility');
+      slideEl.style.removeProperty('display');
+    });
+
+    if (maxHeight > 0) {
+      slides.forEach((slideEl) => {
+        slideEl.querySelectorAll('.cards-list-item').forEach((item) => {
+          // min-height (not height): if this measurement ever comes up short for
+          // some reason, the card's own content still pushes it taller instead
+          // of being clipped/overflowing past a hard height.
+          item.style.minHeight = `${maxHeight}px`;
+        });
+      });
+    }
+  }
+
+  // Measuring too early can freeze cards at a height based on fallback-font
+  // metrics (smaller than the real web font), leaving some cards visibly
+  // short once the real font swaps in. Wait for fonts to finish loading —
+  // this doesn't block returning `slides` below, since the carousel should
+  // still appear immediately; the height pass just runs slightly later.
+  // A second pass on window 'load' catches any other late layout shifts.
+  (document.fonts?.ready ?? Promise.resolve()).then(() => {
+    requestAnimationFrame(() => equalizeCardHeights());
+  });
+  window.addEventListener('load', () => requestAnimationFrame(() => equalizeCardHeights()));
+
+  // Keep the tallest-card rule true going forward, not just at load: watch
+  // each card's actual content (title/description/logo) — not the card box
+  // itself, which would create a feedback loop since that's the element we
+  // set min-height on — and re-run the equalization whenever any of it
+  // changes size, for any reason (longer text, more pages, a window resize
+  // that reflows text to more/fewer lines, etc.). Debounced so a burst of
+  // resize events (e.g. dragging the window) only triggers one re-run.
+  if (typeof ResizeObserver !== 'undefined') {
+    let debounceTimer = null;
+    const scheduleReequalize = () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => equalizeCardHeights(), 100);
+    };
+
+    const contentObserver = new ResizeObserver(scheduleReequalize);
+    slides.forEach((slideEl) => {
+      slideEl.querySelectorAll('.cards-list-title, .cards-list-description, .cards-list-remark')
+        .forEach((el) => contentObserver.observe(el));
+    });
   }
 
   // Return array — carousel-dotted.js uses .flat() so multiple slides are handled correctly

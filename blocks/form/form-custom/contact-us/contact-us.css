@@ -1,0 +1,223 @@
+.contact-us main .section.form-container.custom-forms .form form {
+    /* subject legend */
+    & .field-subject > legend {
+        font-family: var(--bbl-font-family-primary);
+        font-weight: var(--bbl-body-b1-weight);
+        font-size: var(--bbl-form-font-size-20);
+        text-decoration: underline;
+        padding: var(--bbl-form-padding-10) 0 0;
+    }
+
+    /* field title */
+    & .field-title h2 {
+        text-align: center;
+        color: var(--bbl-color-black);
+        font-family: var(--bbl-font-family-medium);
+        font-weight: var(--bbl-font-weight-regular);
+        font-size: var(--bbl-form-font-size-22);
+        line-height: var(--bbl-form-line-height-46);
+    }
+
+    /* field validation / description */
+    & .field-invalid :is(.field-validation-error, .field-description) {
+        padding-left: var(--bbl-form-padding-16);
+        margin-top: var(--bbl-form-margin-5);
+    }
+
+    /* textarea description */
+    & fieldset.panel-wrapper.field-wrapper .field-wrapper.multiline-wrapper.field-description textarea {
+        resize: none;
+        margin: 0;
+        padding: var(--bbl-form-padding-10) var(--bbl-form-padding-20);
+        height: 12.8rem;
+    }
+
+    /* select dropdowns */
+    & .field-productservices1-exclude select,
+    & .field-categorydropdown-exclude select,
+    & .field-categorydropdown2-exclude select {
+        font-size: var(--bbl-form-font-size-15-2);
+        font-weight: var(--bbl-font-weight-medium);
+        font-family: var(--bbl-font-family-medium);
+        color: var(--bbl-color-black);
+        margin: 0;
+    }
+
+    /* transdatetimepanel */
+    & fieldset.panel-wrapper.field-transdatetimepanel {
+        row-gap: var(--bbl-form-gap-8);
+        margin: 0 var(--form-field-gap) var(--bbl-form-margin-10);
+        width: calc(100% - 2 * var(--form-field-gap));
+    }
+
+    /* subject radio group wrapper */
+    & fieldset.radio-group-wrapper.field-subject {
+        gap: 0;
+        margin-left: var(--form-field-gap);
+        margin-right: var(--form-field-gap);
+        width: calc(100% - 2 * var(--form-field-gap));
+    }
+
+    /* info panel legend */
+    & fieldset.panel-wrapper.field-info-pannel.field-wrapper > legend {
+        background-color: transparent;
+        padding: var(--bbl-form-padding-10) var(--bbl-form-padding-16) 0;
+        margin: 0;
+        text-decoration: underline;
+        color: var(--bbl-color-grey-85);
+        font-size: var(--bbl-form-font-size-20);
+        font-weight: 700;
+        font-family: var(--bbl-font-family-primary);
+    }
+
+    /* compliant non fin panel wrapper */
+    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) {
+        margin: var(--bbl-space-250) var(--form-field-gap) var(--bbl-form-margin-10);
+        width: calc(100% - 2 * var(--form-field-gap));
+    }
+
+    /* subject legend label */
+    & fieldset.radio-group-wrapper.field-subject > legend.field-label {
+        font-size: var(--bbl-form-font-size-20);
+        font-weight: 700;
+        color: var(--bbl-color-grey-85);
+        padding: var(--bbl-form-padding-10) 0 0 var(--bbl-form-padding-16);
+        font-family: var(--bbl-font-family-primary);
+    }
+
+    /* legends under panel wrappers */
+    & fieldset.panel-wrapper.field-transdatetimepanel > legend.field-label,
+    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) > legend.field-label {
+        width: max-content;
+        font-size: var(--bbl-form-font-size-16);
+        padding: var(--bbl-form-margin-5) var(--bbl-form-padding-10);
+        line-height: var(--bbl-body-b3-line-height);
+        font-weight: var(--bbl-font-weight-regular);
+    }
+
+    /* input/select in transdatetimepanel */
+    & fieldset.panel-wrapper.field-transdatetimepanel :is(input, select) {
+        font-family: var(--bbl-font-family-medium);
+        font-size: var(--bbl-form-font-size-16);
+        font-weight: 400;
+        color: var(--bbl-color-black);
+    }
+
+    /* province/branch wrappers */
+    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province-exclude, .field-branch-exclude) {
+        position: relative;
+        padding: 0;
+        margin: 0;
+        grid-column: span 12;
+    }
+
+    /* province/branch select elements */
+    & :is(.field-province-exclude, .field-branch-exclude) select {
+        box-sizing: border-box;
+        width: 100%;
+        height: 2.6389rem;
+        margin: 0;
+        font-family: var(--bbl-font-family-medium);
+        font-size: var(--bbl-form-font-size-15-2);
+        font-weight: 400;
+        color: var(--bbl-color-black);
+    }
+
+    /* province/branch validation/description */
+    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province-exclude, .field-branch-exclude) :is(.field-validation-error, .field-description) {
+        position: absolute;
+        top: var(--bbl-form-top-45);
+        left: 0;
+        z-index: 3;
+        margin: 0;
+        padding: 0;
+        text-align: left;
+    }
+
+    /* input/textarea margin bottom */
+    & .field-wrapper:not(.field-invalid) :is(input:not([type='radio'], [type='checkbox']), textarea) {
+        margin-bottom: var(--bbl-form-margin-5);
+    }
+
+    /* invalid inputs/textareas */
+    & .field-wrapper.field-invalid :is(input:not([type='radio'], [type='checkbox']), textarea) {
+        margin-bottom: 0;
+    }
+
+    /* radio label max width */
+    & .radio-group-wrapper.radio-tabs > .radio-wrapper label.field-label {
+        max-width: 7.75rem;
+    }
+
+    /* field note paragraph sizes */
+    & .field-note p {
+        font-size: var(--bbl-form-font-size-15);
+        font-weight: 400;
+        line-height: var(--bbl-form-line-height-21);
+    }
+
+    /* field-title + plain-text sub header color */
+    & .field-title + .plain-text-wrapper p {
+        color: var(--bbl-color-grey-85);
+    }
+
+    /* last paragraph margin for note and tnc */
+    & :is(.field-note, .tnc-text-decoration) > p > p:last-child {
+        margin-top: var(--bbl-form-margin-32);
+    }
+
+    /* plain text wrapper paragraphs centering */
+    & .plain-text-wrapper:not(.tnc-text-decoration, .field-note) > p > p:last-child {
+        margin-top: var(--bbl-form-margin-32);
+        text-align: center;
+    }
+
+    /* T&C first paragraph bottom margin (high specificity) */
+    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p:first-of-type,
+    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p:first-child {
+        margin-bottom: var(--bbl-form-margin-32);
+    }
+
+    /* placeholder color */
+    & input::placeholder {
+        color: var(--bbl-color-grey-40);
+    }
+
+    /* approval checkbox top position */
+    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) input[type='checkbox'] {
+        top: 0;
+    }
+
+    /* button panel margin */
+    & .field-button-panel {
+        margin-bottom: var(--bbl-form-margin-32);
+    }
+
+    /* hours/minutes on mobile */
+    & fieldset.panel-wrapper.field-transdatetimepanel > :is(.field-hours-exclude, .field-minutes-exclude) {
+        grid-column: span 6;
+    }
+}
+
+/* media query for tablet */
+@media (width > 47.5rem) {
+    .contact-us main .section.form-container.custom-forms .form form {
+        & :is(.field-province-exclude, .field-branch-exclude) {
+            grid-column: span 6;
+        }
+
+        & .field-title h2 {
+            font-size: var(--bbl-form-font-size-48);
+        }
+
+        & .field-productservices1-exclude select,
+        & .field-categorydropdown-exclude select,
+        & .field-categorydropdown2-exclude select {
+            margin: var(--bbl-form-margin-10) 0 0;
+        }
+
+        & fieldset.panel-wrapper.field-transdatetimepanel > :is(.field-hours-exclude, .field-minutes-exclude) {
+            grid-column: span 3;
+        }
+    }
+}

@@ -10,7 +10,7 @@
     h2{
       margin-top: 0;
       font-family: var(--bbl-font-family-medium);
-      font-size: var(--bbl-font-size-h2-desktop);
+      font-size: var(--bbl-form-font-size-44);
       font-weight: var(--bbl-font-weight-regular);
       color: var(--bbl-color-grey-85);
       text-align: center;
@@ -39,19 +39,6 @@
   & .form form .field-heading::before,
   & .form form .field-heading2::before {
     content: none;
-  }
-
-  & .form form .field-heading::after,
-  & .form form .field-heading2::after {
-    content: "";
-    display: block;
-    width: 50px;
-    height: 1px;
-    background-color: var(--bbl-color-grey-85);
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
   }
 
   & .form form :has(.field-citizenid) {
@@ -115,7 +102,7 @@
       padding: 0.9375rem;
       font-family: var(--bbl-font-family-primary);
       font-size: var(--bbl-font-size-h2-mobile);
-      font-weight: var(--bbl-font-weight-medium);
+      font-weight: var(--bbl-form-font-weight-bold);
       min-height: 2.75rem;
     }
   }
@@ -160,7 +147,7 @@
     border-bottom: 2px solid var(--bbl-color-gray-300);
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-h2-mobile);
-    font-weight: var(--bbl-font-weight-medium);
+    font-weight: var(--bbl-form-font-weight-bold);
     text-align: center;
     padding: 0.625rem 0.5rem;
     min-height: 3rem;
@@ -186,7 +173,7 @@
     border-bottom: 2px solid var(--bbl-color-gray-300);
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-b1-desktop);
-    font-weight: var(--bbl-font-weight-regular);
+    font-weight: var(--bbl-form-font-weight-bold);
     padding: 0.9375rem;
     min-height: 2.75rem;
     box-sizing: border-box;
@@ -216,6 +203,10 @@
     grid-column: 2;
   }
 
+  & .form form .field-bond-allocation-review .plain-text-wrapper p{
+    text-align: left;
+  }
+
   & .form form .field-bond-allocation-review .field-totalallotment > input {
     grid-column: 3;
   }
@@ -240,6 +231,10 @@
       color: var(--bbl-color-grey-85);
       line-height: var(--bbl-line-height-b1-desktop);
     }
+  }
+
+  & .form form .plain-text-wrapper p:last-child p{
+    text-align: center;
   }
 
   /* ── Bondholder number: centered inline ── */

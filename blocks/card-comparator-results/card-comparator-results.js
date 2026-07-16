@@ -195,7 +195,11 @@ function buildApplyArea(card, doc, labels, icons) {
 function buildCompareCard(card, doc, labels, icons) {
   const name = card.name || '';
   const imgSrc = resolveImageUrl(card);
-  const learnHref = resolveCardPageUrl(card);
+  let learnHref = resolveCardPageUrl(card);
+  // Remove "/content/bangkokbank" from the start of learnHref, if present
+  if (learnHref.startsWith('/content/bangkokbank')) {
+    learnHref = learnHref.replace(/^\/content\/bangkokbank/, '');
+  }
 
   const col = doc.createElement('div');
   col.className = 'ccr-card';

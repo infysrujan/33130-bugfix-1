@@ -1,6 +1,6 @@
 .breadcrumb {
   overflow: hidden;
-  padding: var(--bbl-space-250) var(--bbl-space-container-xs) 0;
+  padding: 1.3125rem 1rem 1.1875rem;
   margin: 0 auto;
   box-sizing: border-box;
   background-color: var(--bbl-bg-primary);
@@ -15,7 +15,6 @@
   margin: 0 0 var(--bbl-space-250);
   padding: var(--bbl-space-150) 0;
   height: 3.125rem;
-  padding-bottom: 0;
 }
 
 .breadcrumb ol>li {
@@ -45,7 +44,7 @@
   content: none;
 }
 
-.breadcrumb ol>li:last-child::after {
+.breadcrumb ol > li:last-child:not(:only-child)::after {
   content: "";
   height: var(--bbl-space-025);
   width: calc(50% - var(--bbl-space-200));
@@ -89,8 +88,23 @@
   color: var(--bbl-text-link);
 }
 
+[lang="th"] .breadcrumb ol>li {
+  font: 0.9rem/1.3 BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
+  color: var(--bbl-text-link);
+}
+
+[lang="th"] .breadcrumb ol>li,
+[lang="th"] .breadcrumb a {
+  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
+}
+
 .breadcrumb ol>li[aria-current="page"] {
   color: var(--bbl-text-link);
+}
+
+.breadcrumb ol>li[aria-current="page"]:hover,
+.breadcrumb ol>li a:hover {
+  color: var(--bbl-color-blue-90);
 }
 
 body.mobile-app-view .breadcrumb-wrapper,
@@ -122,7 +136,7 @@ body.mobile-app-view .breadcrumb {
 
   .breadcrumb ol>li {
     float: left;
-    padding-right: var(--bbl-space-inline-md);
+    padding-right: 0.9375rem;
   }
 
   .breadcrumb ol>li::before {
@@ -143,14 +157,4 @@ body.mobile-app-view .breadcrumb {
   .breadcrumb {
     padding: var(--bbl-space-250) 0;
   }
-}
-
-[lang="th"] .breadcrumb ol>li {
-  font: 0.9rem/1.3 BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
-  color: var(--bbl-text-link);
-}
-
-[lang="th"] .breadcrumb ol>li,
-[lang="th"] .breadcrumb a {
-  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
 }

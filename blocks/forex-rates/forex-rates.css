@@ -16,10 +16,11 @@
 
 .forex-rates .forex-rates-calendar-label {
   width: 100%;
-  font-size: var(--bbl-font-size-b2);
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-body-b1-size);
+  font-weight: var(--bbl-body-b1-weight);
+  font-family:var(--bbl-font-family-medium);
   color: var(--bbl-color-grey-85);
-  line-height: 2.75rem;
+  line-height: var(--bbl-body-b1-line-height);
 }
 
 /* ── Date group (input + calendar icon + datepicker) ───────── */
@@ -398,6 +399,14 @@
   text-align: center;
 }
 
+.forex-rates .forex-rates-table thead th:nth-child(1) {
+  width: 30%;
+}
+
+.forex-rates .forex-rates-table thead th:nth-child(2) {
+  width: 70%;
+}
+
 .forex-rates .forex-rates-table tbody tr {
   border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
   height: 3.5rem;
@@ -508,10 +517,6 @@
 /* ── Desktop: 64rem+ (1024px) ──────────────────────────────── */
 
 @media (width > 64rem) {
-  .forex-rates .forex-rates-calendar-label {
-    font-size: var(--bbl-font-size-b1);
-  }
-
   .forex-rates .forex-rates-date-text-input {
     font-size: var(--bbl-font-size-b1);
   }

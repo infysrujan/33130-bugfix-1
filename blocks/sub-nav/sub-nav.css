@@ -54,7 +54,6 @@
 .sub-nav .sub-nav-select.global-dropdown {
     min-width: 13.75rem;
     width: auto;
-    max-width: 22rem;
 }
 
 .sub-nav .sub-nav-select .global-dropdown-trigger {
@@ -92,7 +91,6 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    text-transform: capitalize;
 }
 
 .sub-nav .sub-nav-select .global-dropdown-panel li a:hover {

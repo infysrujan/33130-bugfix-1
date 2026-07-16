@@ -156,7 +156,12 @@ function formatBodyCellText(normalizedKey, row, columnKey, selectedDate) {
   }
   if (columnKey && row[columnKey] !== undefined) {
     const value = String(row[columnKey]);
-    return value === 'null' ? 'N/A' : value;
+    if (value === 'null') return 'N/A';
+    const num = parseFloat(value);
+    if (!Number.isNaN(num) && Math.abs(num) >= 1000) {
+      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+    }
+    return value;
   }
   return '';
 }
@@ -232,13 +237,28 @@ function appendRowFromData(tableElement, dataArray) {
   });
 }
 
-/** @param {HTMLElement} tableEl @param {unknown[]} fallbackFunds @param {Date} date */
-async function refreshTableFromPrices(tableEl, fallbackFunds, date) {
+function setTableLoading(loader, isLoading) {
+  if (!loader) return;
+  loader.classList.toggle('is-active', isLoading);
+  loader.setAttribute('aria-hidden', isLoading ? 'false' : 'true');
+  loader.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+}
+
+/**
+ * @param {HTMLElement} tableEl
+ * @param {unknown[]} fallbackFunds
+ * @param {Date} date
+ * @param {HTMLElement} [loader]
+ */
+async function refreshTableFromPrices(tableEl, fallbackFunds, date, loader) {
+  setTableLoading(loader, true);
   try {
     const prices = await fetchAllFundPrices(date);
     appendRowFromData(tableEl, prices);
   } catch (error) {
     appendRowFromData(tableEl, fallbackFunds);
+  } finally {
+    setTableLoading(loader, false);
   }
 }
 /**
@@ -532,6 +552,21 @@ export default async function decorate(block) {
     console.error('bcap: failed to load fund list', error);
   }
 
+  const loader = doc.createElement('div');
+  loader.className = 'loading';
+  loader.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(loader);
+
+  /** Shows table loader while getUpdateInMonthBase is fetched for the calendar. */
+  async function fetchNavEnabledDaysWithLoader(ctx) {
+    setTableLoading(loader, true);
+    try {
+      return await fetchNavEnabledDaysForMonth(ctx);
+    } finally {
+      setTableLoading(loader, false);
+    }
+  }
+
   if (dateLabel) {
     const calendarInput = doc.createElement('div');
     const input = doc.createElement('input');
@@ -544,7 +579,7 @@ export default async function decorate(block) {
     attachCalendarPicker({
       input,
       value: calendarDate,
-      fetchEnabledDays: fetchNavEnabledDaysForMonth,
+      fetchEnabledDays: fetchNavEnabledDaysWithLoader,
       onChange: (selectedDate) => {
         if (!table) return;
         if (errorMessage) {
@@ -556,12 +591,12 @@ export default async function decorate(block) {
           errorMessage.classList.add('hidden');
           errorMessage.hidden = true;
         }
-        refreshTableFromPrices(table, funds, selectedDate);
+        refreshTableFromPrices(table, funds, selectedDate, loader);
       },
     });
   }
 
-  await refreshTableFromPrices(table, funds, calendarDate);
+  await refreshTableFromPrices(table, funds, calendarDate, loader);
 
   const toolbar = doc.createElement('div');
   toolbar.className = 'bcap-toolbar';

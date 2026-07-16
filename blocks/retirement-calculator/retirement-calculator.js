@@ -360,13 +360,13 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
 
   const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-next-btn">${getString(labels, 'buttonsNextButton', 'Next')}</button>
+      <button type="button" class="button-m primary">${getString(labels, 'buttonsNextButton', 'Next')}</button>
     </div>
   `);
   container.appendChild(footer);
   block.appendChild(container);
 
-  const nextBtn = footer.querySelector('.rc-next-btn');
+  const nextBtn = footer.querySelector('.button-m.primary');
 
   const validateCrossFields = () => {
     const currentAge = currentAgeField.getValue();
@@ -549,14 +549,14 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
 
   const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-back-btn">${getString(labels, 'buttonsBackButton', 'Back')}</button>
-      <button type="button" class="rc-calculate-btn">${getString(labels, 'buttonsCalculateButton', 'Calculate')}</button>
+      <button type="button" class="button-m secondary">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+      <button type="button" class="button-m primary">${getString(labels, 'buttonsCalculateButton', 'Calculate')}</button>
     </div>
   `);
   container.appendChild(footer);
   block.appendChild(container);
 
-  const calculateBtn = footer.querySelector('.rc-calculate-btn');
+  const calculateBtn = footer.querySelector('.button-m.primary');
 
   const validateSavingsCross = () => {
     const returnRate = savingsReturnRateField.getValue();
@@ -577,7 +577,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
 
   container.addEventListener('input', () => { validateSavingsCross(); syncBtnState(); });
 
-  footer.querySelector('.rc-back-btn').addEventListener('click', onBack);
+  footer.querySelector('.button-m.secondary').addEventListener('click', onBack);
 
   calculateBtn.addEventListener('click', async () => {
     calculateBtn.disabled = true;
@@ -792,13 +792,13 @@ function renderJourney3(block, data, state, onBack) {
 
   const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-back-btn">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+      <button type="button" class="button-m secondary">${getString(labels, 'buttonsBackButton', 'Back')}</button>
     </div>
   `);
   container.appendChild(footer);
   block.appendChild(container);
 
-  footer.querySelector('.rc-back-btn').addEventListener('click', onBack);
+  footer.querySelector('.button-m.secondary').addEventListener('click', onBack);
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────────

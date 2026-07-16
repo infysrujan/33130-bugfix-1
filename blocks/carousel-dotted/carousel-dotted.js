@@ -330,6 +330,15 @@ export default async function decorate(block) {
   const slidesContentCards = slideEls.filter((s) => s.classList.contains('content-cards')).length;
   const slidesMfCardList = slideEls.filter((s) => s.classList.contains('mf-card-list-carousel-item')).length;
   const slidesMfFundCards = slideEls.filter((s) => s.classList.contains('mf-fund-cards-item')).length;
+  // Slides built by buildMfFundCardsSlide (pages of mutual-fund cards) don't set
+  // isMfCardListCarousel (that flag is only for the separate 'mf-card-list-carousel'
+  // block variant), so without this the arrow handlers below fall through to the
+  // "stop at the ends" branch instead of looping.
+  const isMfFundCardsCarousel = slidesMfFundCards > 0
+    && slidesWithImage === 0
+    && slidesWithoutImage === 0
+    && slidesHeroBanner === 0
+    && slidesTextAnimation === 0;
   const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
     && slidesWithImage === 0
     && slidesWithoutImage === 0;
@@ -486,7 +495,7 @@ export default async function decorate(block) {
     } else if (showArrows && isSimpleCarousel) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
-    } else if (isMfCardListCarousel) {
+    } else if (isMfCardListCarousel || isMfFundCardsCarousel) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
     } else {
@@ -539,7 +548,7 @@ export default async function decorate(block) {
       // Enable circular navigation for showArrowsDots variant
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
       setActive(prevIndex, 'backward');
-    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel) {
+    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel || isMfFundCardsCarousel) {
       setActive(currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1);
     } else if (currentIndex > 0) {
       setActive(currentIndex - 1, 'backward');
@@ -552,7 +561,7 @@ export default async function decorate(block) {
       // Enable circular navigation for showArrowsDots variant
       const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
       setActive(nextSlideIndex, 'forward');
-    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel) {
+    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel || isMfFundCardsCarousel) {
       setActive(currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0);
     } else if (currentIndex < slideEls.length - 1) {
       setActive(currentIndex + 1, 'forward');
@@ -648,9 +657,6 @@ export default async function decorate(block) {
   if (seeMoreLink) {
     const moreWrap = document.createElement('div');
     moreWrap.className = 'carousel-dotted-more';
-    if (seeMoreLink.classList.contains('button-tertiary')) {
-      seeMoreLink.classList.add('icon-arrow-left');
-    }
     const openInNewTab = seeMoreTargetValue === 'true' || seeMoreLink.target === '_blank';
     if (openInNewTab) seeMoreLink.setAttribute('target', '_blank');
     if (seeMoreButtonContainer) {

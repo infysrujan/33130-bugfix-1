@@ -1,7 +1,6 @@
 /* Currency Converter Expanded Block
    Mobile-first styles matching bob.css and JS structure
-   All selectors scoped under .currency-converter-expanded */
-
+   All selectors scoped under .currency-converter-expanded *
 /* Main container */
 .currency-converter-expanded .converter-expanded-container {
   width: 100%;
@@ -193,7 +192,7 @@
   padding: 0.3125rem 1.5625rem;
   margin-bottom: 0.625rem;
   border: none;
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b1-mobile);
   box-sizing: border-box;
 }
 
@@ -430,6 +429,7 @@
   margin-bottom: 0;
 }
 
+
 /* Desktop styles */
 @media (width > 47.5rem) {
   .currency-converter-expanded .guide-txt {
@@ -494,4 +494,5 @@
     line-height: 1.1206rem;
   }
 }
-    
+
+

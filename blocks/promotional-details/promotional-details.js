@@ -101,18 +101,6 @@ function readBlockData(block) {
   };
 }
 
-function formatDate(dateStr, locale = 'en-GB') {
-  if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
-}
-
-function buildDateHtml(start, end, label, locale) {
-  if (!start && !end) return '';
-  const parts = [start && formatDate(start, locale), end && formatDate(end, locale)]
-    .filter(Boolean);
-  return `<p class="promo-detail-date">${label} ${parts.join(' – ')}</p>`;
-}
-
 function buildDisclaimerHtml(enabled, text) {
   if (String(enabled || '').trim().toLowerCase() !== 'true' || !text) return '';
   return `<div class="promo-detail-disclaimer pad-top-30">${text}</div>`;
@@ -185,7 +173,7 @@ function bindImageModal(container, imageUrl, altText) {
   });
 }
 
-function renderDetails(container, data, periodLabel, locale, viewFull, registerCtaUrl) {
+function renderDetails(container, data, locale, viewFull, registerCtaUrl) {
   const title = data?.title
     ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
@@ -196,8 +184,6 @@ function renderDetails(container, data, periodLabel, locale, viewFull, registerC
     ? `<img src="${imageUrl}" alt="${cleanTitle}" loading="lazy">`
     : '';
   const description = data?.detailDescription || '';
-  const startDate = data?.promotionStartDate || '';
-  const endDate = data?.promotionEndDate || '';
   const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
   const isRegister = data?.isRegister || '';
@@ -222,7 +208,6 @@ function renderDetails(container, data, periodLabel, locale, viewFull, registerC
           ${imageColHtml}
           <div class="promo-detail-content">
             <div class="promo-detail-description">${description}</div>
-            ${buildDateHtml(startDate, endDate, periodLabel, locale)}
             ${buildRegisterCtaHtml(ctaLabel, ctaUrl)}
           </div>
         </div>
@@ -252,7 +237,6 @@ export default async function decorate(block) {
     fetchConfigs(),
   ]);
 
-  const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
   const clickToViewFull = placeholders.promoClickToViewFull || '';
   const registerCtaUrl = (configs || {}).bbmIsRegister || '';
 
@@ -268,7 +252,7 @@ export default async function decorate(block) {
       block.appendChild(previewContainer);
     }
 
-    renderDetails(previewContainer, data, periodLabel, locale, clickToViewFull, registerCtaUrl);
+    renderDetails(previewContainer, data, locale, clickToViewFull, registerCtaUrl);
 
     const hidden = document.createElement('div');
     hidden.style.display = 'none';
@@ -283,5 +267,5 @@ export default async function decorate(block) {
     return;
   }
 
-  renderDetails(block, data, periodLabel, locale, clickToViewFull, registerCtaUrl);
+  renderDetails(block, data, locale, clickToViewFull, registerCtaUrl);
 }

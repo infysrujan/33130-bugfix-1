@@ -107,9 +107,17 @@ function createCurrencyDropdown(currencies, searchPlaceholder, activeIndex = 0) 
  * @param {string} type - 'input' or 'output'
  * @param {string} searchPlaceholder - Placeholder text for search input
  * @param {number} activeIndex - Index of currency to set as active (default 0)
+ * @param {Function} [onSelect] - Callback invoked with the newly selected currency code
  * @returns {Element} - Convert group element
  */
-function createConvertGroup(label, currencies, type, searchPlaceholder, activeIndex = 0) {
+function createConvertGroup(
+  label,
+  currencies,
+  type,
+  searchPlaceholder,
+  activeIndex = 0,
+  onSelect = null,
+) {
   // Use the specified currency index
   const defaultCurrency = currencies[activeIndex] || currencies[0] || { code: 'THB', icon: '', name: 'THB' };
 
@@ -157,6 +165,7 @@ function createConvertGroup(label, currencies, type, searchPlaceholder, activeIn
       if (flag) flag.src = selectedIcon;
       if (flag) flag.alt = selectedCode;
       if (code) code.textContent = selectedCode;
+      onSelect?.(selectedCode);
 
       // Remove active class from all items and add to selected
       dropdown.querySelectorAll('li').forEach((li) => {
@@ -334,8 +343,13 @@ export default async function decorate(block) {
   const converter = mainContainer.querySelector('.converter');
   const calculateBtn = mainContainer.querySelector('#convert-btn');
 
+  // Reference to the amount group's selected-currency label, set once the amount group is created
+  let selectedCurrencyEl = null;
+
   // Create From and To groups (From uses first currency, To uses second currency)
-  const fromGroup = createConvertGroup(convertFromLabel, currencies, 'input', searchPlaceholder, 0);
+  const fromGroup = createConvertGroup(convertFromLabel, currencies, 'input', searchPlaceholder, 0, (selectedCode) => {
+    if (selectedCurrencyEl) selectedCurrencyEl.textContent = `(${selectedCode})`;
+  });
   const toGroup = createConvertGroup(convertToLabel, currencies, 'output', searchPlaceholder, 1);
 
   // Create Amount group with template
@@ -354,17 +368,15 @@ export default async function decorate(block) {
   `;
 
   const amountGroup = createElementFromHTML(amountHTML, document);
+  selectedCurrencyEl = amountGroup.querySelector('.selected-currency');
+  if (selectedCurrencyEl) {
+    selectedCurrencyEl.textContent = `(${fromGroup.querySelector('.code')?.textContent ?? ''})`;
+  }
   const amountInput = amountGroup.querySelector('#amount-from');
 
   // Format input
   amountInput?.addEventListener('input', (e) => {
-    let value = e.target?.value?.replace(/[^0-9.]/g, '') ?? '';
-
-    // Allow only one decimal point
-    const decimalCount = (value.match(/\./g) || []).length;
-    if (decimalCount > 1) {
-      value = value.substring(0, value.lastIndexOf('.'));
-    }
+    const value = e.target?.value?.replace(/[^0-9]/g, '') ?? '';
 
     if (e.target) e.target.value = formatNumberWithCommas(value);
   });
@@ -372,7 +384,7 @@ export default async function decorate(block) {
   // Prevent non-numeric characters
   amountInput?.addEventListener('keypress', (e) => {
     const char = String.fromCharCode(e.which ?? 0);
-    if (!/[0-9.]/.test(char)) {
+    if (!/[0-9]/.test(char)) {
       e.preventDefault();
     }
   });
@@ -443,8 +455,8 @@ export default async function decorate(block) {
         const cleanConvertedAmount = convertedAmount.toString().replace(/,/g, '');
         const cleanAmount = amount.replace(/,/g, '');
         const rate = parseFloat(cleanConvertedAmount) / parseFloat(cleanAmount);
-        const rateRounded = rate.toFixed(2);
-        const formattedRate = formatNumberWithCommas(rateRounded);
+        const rateTruncated = (Math.floor(rate * 100) / 100).toFixed(2);
+        const formattedRate = formatNumberWithCommas(rateTruncated);
         if (resultLine2) {
           resultLine2.innerHTML = `1<span class="from-currency"> ${fromCode} </span>${equalsToLabel}<span class="to-currency"> ${formattedRate} ${toCode}</span>`;
         }

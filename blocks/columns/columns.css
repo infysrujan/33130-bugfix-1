@@ -18,6 +18,33 @@
 .columns > div > .columns-img-col img {
   display: block;
 }
+ 
+.section.center-image .columns-2-cols .columns-img-col,
+.section.center-image .columns-3-cols .columns-img-col,
+.section.center-image .columns-3-cols > div > div:has(> p > picture) {
+  display: flex;
+  align-items:center;
+  justify-content:center;
+  flex: 0 0 auto;
+}
+
+.section.center-image .columns-3-cols > div:has(> div:nth-child(3) > p > picture) {
+  justify-content: center;
+  flex-direction: row;
+  gap: var(--bbl-space-050);
+}
+
+.section.center-image .columns-2-cols > div:has(> .columns-img-col + .columns-img-col) {
+  gap: var(--bbl-space-100);
+  justify-content: center;
+  flex-direction: row;
+}
+
+.section.center-image .columns-3-cols > div:has(> .columns-img-col + .columns-img-col + .columns-img-col) {
+  justify-content: center;
+  flex-direction: row;
+  gap: var(--bbl-space-050);
+}
 
 @media (width >= 1025px) {
   .columns > div {

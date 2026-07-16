@@ -8,6 +8,7 @@ export default function createDownloadLink(anchor, doc = document) {
 
   const link = anchorEl.cloneNode(true);
   link.classList.remove('button-tertiary');
+  link.classList.remove('button');
   link.classList.add('download-files', 'icon-download');
 
   wrapper.appendChild(link);

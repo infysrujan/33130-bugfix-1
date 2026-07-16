@@ -100,20 +100,60 @@
   margin-right: 0.25rem;
 }
 
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item img,
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item picture {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper {
+  width: 100%;
+}
+
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item {
+  width: 100%;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active {
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow {
+  box-shadow: none;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow::before {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-top-width: 0.125rem;
+  border-right-width: 0.125rem;
+  border-top-color: var(--bbl-color-grey-60);
+  border-right-color: var(--bbl-color-grey-60);
+}
+
 .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:hover {
   background-color: var(--bbl-color-white);
 }
 
 .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:active {
   background-color: var(--bbl-color-gray-300);
-}
-
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next:hover {
-  margin-left: 0.313rem;
-}
-
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev:hover {
-  margin-left: -0.313rem;
 }
 
 /* Dots */
@@ -130,25 +170,8 @@
   height: auto;
 }
 
-/* stylelint-disable-next-line no-descending-specificity */
-.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item img,
-.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item picture {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-}
-
-/* stylelint-disable-next-line no-descending-specificity */
-.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper {
-  width: 100%;
-}
-
-.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item {
-  width: 100%;
-}
-
 @media (width > 47.5rem) {
+  /* Simple image carousel: overlay arrows on image edges, dots below */
   .carousel-dotted.show-arrows-dots {
     display: grid;
     grid-template-columns: 2.5rem 1fr 2.5rem;
@@ -184,6 +207,46 @@
     width: 2.5rem;
     height: 2.5rem;
   }
+
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel) {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 0;
+    column-gap: 0;
+    position: relative;
+  }
+
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active {
+    grid-row: 1;
+    grid-column: 1;
+    display: block;
+    flex-direction: unset;
+  }
+
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow {
+    display: flex;
+    position: relative;
+    grid-row: 1;
+    grid-column: 1;
+    align-self: center;
+    z-index: 10;
+  }
+
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
+    justify-self: start;
+    margin-left: -1.25rem;
+  }
+
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
+    justify-self: end;
+    margin-right: -1.25rem;
+  }
+
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .slick-dots {
+    grid-row: 2;
+    grid-column: 1;
+  }
 }
 
 @media (width > 47.5rem) {
@@ -206,6 +269,15 @@
   .carousel-dotted.show-arrows-dots .carousel-dotted-item.with-default-image.is-active {
     display: flex;
   }
+
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel) {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 0;
+    column-gap: 0;
+    min-height: unset;
+  }
 }
 
 @media (width > 64rem) {
@@ -216,5 +288,15 @@
   .carousel-dotted.show-arrows-dots .carousel-arrow {
     width: 2.5rem;
     height: 2.5rem;
+  }
+
+    .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
+    justify-self: start;
+    margin-left: -3.45rem;
+  }
+
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
+    justify-self: end;
+    margin-right: -3.45rem;
   }
 } 

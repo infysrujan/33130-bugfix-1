@@ -56,8 +56,13 @@ export default function decorate(block) {
     moveInstrumentation(row, li);
     const a = document.createElement('a');
 
-    a.href = '#';
-    if (url) a.dataset.shareHref = url;
+    if (url) {
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    } else {
+      a.href = '#';
+    }
     a.className = `platform-${platform}`;
     a.setAttribute('aria-label', `Share on ${platform}`);
 

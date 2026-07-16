@@ -39,7 +39,7 @@
 /* ── Description (notes/disclaimer below carousel) ───────────────────────── */
 
 .mf-fund-cards-description {
-  margin: var(--bbl-space-500) auto;
+  margin-top: var(--bbl-space-1000);
   max-width: 56.25rem; /* 900px */
   padding: 0 var(--bbl-space-300);
   font-family: var(--bbl-font-family-primary);
@@ -82,10 +82,37 @@
   display: none;
 }
 
+/* ── Equal-height cards ────────────────────────────────────────────────────
+   card-list.css already sets align-items: stretch on .cards-list.scrollable,
+   but that only stretches each .cards-list-item's outer box — it doesn't by
+   itself guarantee every nested flex child fills that stretched height in
+   every browser/layout combination. Pin it down explicitly here so all 3
+   cards in a row are always the same height and the Read More/Compare
+   buttons line up, regardless of how long each fund's description is. */
+.card-list.mf-card-list .cards-list.scrollable {
+  align-items: stretch;
+}
+
+.card-list.mf-card-list .cards-list-item {
+  /* Reasonable default so cards look consistent before the JS height-
+     equalization pass (build-mf-fund-cards-slide.js) runs and raises this
+     further via inline min-height where actual content needs more room. */
+  height: auto;
+  min-height: 28rem;
+}
+
+.card-list.mf-card-list .cards-list-inner {
+  height: 100%;
+}
+
 /* ── Image area (image layout = "default") ────────────────────────────────── */
 
 .card-list.mf-card-list .cards-list-image {
-  max-height: 8.4375rem;
+  /* Matches the live site's .thumb dimensions (272 x 195px) */
+  aspect-ratio: 272 / 195;
+  height: auto;
+  max-height: none;
+  flex-shrink: 0;
   overflow: hidden;
 }
 
@@ -94,10 +121,20 @@
   height: 100%;
   min-width: unset;
   object-fit: cover;
+  object-position: top;
   display: block;
 }
 
 /* ── Logo in remark area ──────────────────────────────────────────────────── */
+
+/* .cards-list-content is a flex column (card-list.css) that stretches to fill
+   the card, with the button row pinned to the bottom via its own margin-top:
+   auto — pushing the logo down the same way keeps it directly above the
+   buttons regardless of how long the description is, instead of sitting
+   right under the description text. */
+.card-list.mf-card-list .cards-list-remark {
+  margin-top: auto;
+}
 
 .card-list.mf-card-list .cards-list-remark img.mfr-logo {
   max-width: 8.875rem;
@@ -137,11 +174,6 @@
   line-height: 1.375;
   color: var(--bbl-color-grey-70);
   margin: 0 0 0.625rem;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 10;
-  line-clamp: 10;
-  -webkit-box-orient: vertical;
   font-family: var(--bbl-font-family-primary);
 }
 
@@ -160,28 +192,6 @@
   padding: 0 1.25rem 1.25rem;
 }
 
-/* Read More — full-width solid blue (primary) */
-
-.card-list.mf-card-list .cards-list-button a {
-  display: grid;
-  align-items: center;
-  width: 100%;
-  min-height: 2.75rem;
-  height: auto;
-  padding: 0.3125rem 0;
-  box-sizing: border-box;
-  border-radius: 0.4375rem;
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1, 1rem);
-  line-height: 1.375rem;
-  text-align: center;
-  text-decoration: none;
-  transition: all 0.3s;
-}
-
 .card-list.mf-card-list .cards-list-button a::before,
 .card-list.mf-card-list .cards-list-button a::after {
   display: none;
@@ -197,26 +207,8 @@
 /* ── Compare button — sits inside .cards-list-button below Read More ──────── */
 
 .card-list.mf-card-list .mfr-compare-btn {
-  display: grid;
-  align-items: center;
-  width: 100%;
-  min-height: 2.75rem;
-  height: auto;
-  padding: 0.3125rem 0;
-  box-sizing: border-box;
-  border-radius: 0.4375rem;
-  background-color: transparent;
-  color: var(--bbl-color-active-blue);
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1, 1rem);
-  line-height: 1.375rem;
-  text-align: center;
-  cursor: pointer;
   margin-top: 0.625rem;
-  margin-left: 0;
-  transition: all 0.3s;
-}
+} 
 
 .card-list.mf-card-list .mfr-compare-btn:hover {
   background-color: var(--bbl-color-active-blue);

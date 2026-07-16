@@ -65,7 +65,7 @@ function buildErrorDiv(warningText) {
 function buildCtaButton(linkText, linkType) {
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.className = `mfc-btn-${linkType || 'primary'}`;
+  btn.className = `button-m ${linkType || 'primary'}`;
   btn.textContent = linkText;
   btn.disabled = true;
   return btn;

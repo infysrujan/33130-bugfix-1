@@ -132,6 +132,33 @@ export function createCarouselArrows(tabsNav, tabsNavWrapper) {
   requestAnimationFrame(updateArrows);
 }
 
+/*
+ * Groups a tab-panel's raw children the same way decorateSections() groups a
+ * page section: consecutive loose content (headings, paragraphs) gets wrapped
+ * in one default-content-wrapper, and every classed block div gets its own
+ * dedicated wrapper — so decorateBlock() later stamps the block's
+ * `${blockName}-wrapper` class onto a div that holds only that block.
+ */
+function groupPanelContent(contentPanel, rawFrag) {
+  const children = [...rawFrag.childNodes];
+  let wrapper = null;
+  let defaultContent = false;
+
+  children.forEach((child) => {
+    const isClassedDiv = child.nodeType === Node.ELEMENT_NODE
+      && child.tagName === 'DIV'
+      && child.className;
+
+    if (isClassedDiv || !defaultContent) {
+      wrapper = document.createElement('div');
+      defaultContent = !isClassedDiv;
+      if (defaultContent) wrapper.classList.add('default-content-wrapper');
+      contentPanel.appendChild(wrapper);
+    }
+    wrapper.appendChild(child);
+  });
+}
+
 export function createContentPanels(block, contentRows) {
   const tabsContent = document.createElement('div');
   tabsContent.className = 'tabs-content';
@@ -146,6 +173,7 @@ export function createContentPanels(block, contentRows) {
     contentPanel.setAttribute('aria-hidden', index === 0 ? 'false' : 'true');
 
     const cell = row.children[0];
+    const rawFrag = document.createDocumentFragment();
     while (cell.firstChild) {
       const child = cell.firstChild;
       // wrapTextNodes() wraps tab-cell content in <P> when the first child is a <DIV>
@@ -154,18 +182,23 @@ export function createContentPanels(block, contentRows) {
       // in its innerHTML (from nested block content like the forex disclaimer), and call
       // el.innerHTML = el.innerHTML.replace(...) — destroying the decorated block.
       // Unwrapping the <P> here removes the target before addHintPageAnchors can fire.
+      // The <P> wraps a single <DIV> that itself bundles the real flat content
+      // (heading, text, nested block) — unwrap that inner <DIV> too, so
+      // groupPanelContent sees separate items instead of one opaque node.
       if (child.nodeType === Node.ELEMENT_NODE
         && child.tagName === 'P'
         && child.firstElementChild
         && child.firstElementChild.tagName === 'DIV') {
-        while (child.firstChild) {
-          contentPanel.appendChild(child.firstChild);
+        const innerDiv = child.firstElementChild;
+        while (innerDiv.firstChild) {
+          rawFrag.appendChild(innerDiv.firstChild);
         }
         child.remove();
       } else {
-        contentPanel.appendChild(child);
+        rawFrag.appendChild(child);
       }
     }
+    groupPanelContent(contentPanel, rawFrag);
 
     tabsContent.appendChild(contentPanel);
     row.remove();
@@ -189,6 +222,7 @@ export async function loadNestedBlocks(panels) {
       if (el.dataset.blockStatus) return;
       const className = el.classList[0];
       if (className.startsWith('tab-') || className.startsWith('tabs-')) return;
+      if (className === 'default-content-wrapper') return;
       if (seen.has(el)) return;
 
       // Mark as seen and immediately decorate so subsequent panels' scans skip it.

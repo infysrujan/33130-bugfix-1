@@ -141,8 +141,16 @@
   margin-top:0
 }
 
+.accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper) {
+  margin-bottom: 1.25rem;
+}
+
 @media (width > 47.5rem) {
   .accordion-panel {
     padding: 1.25rem 1.875rem;
+  }
+  
+  .accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper) {
+    margin-bottom: 2.5rem;
   }
 }

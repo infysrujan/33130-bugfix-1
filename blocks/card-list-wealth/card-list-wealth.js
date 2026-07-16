@@ -19,7 +19,7 @@ export default function decorate(block) {
     const description = cols[3]?.textContent?.trim();
     const eyebrow = cols[4]?.textContent?.trim();
     const listEl = cols[5]?.querySelector('ul');
-    const buttonEl = cols[6]?.querySelector('a');
+    const buttonEl = cols[6]?.querySelector('p');
 
     const card = document.createElement('div');
     card.className = `card-list-wealth-card card-theme-${theme}`;
@@ -73,18 +73,21 @@ export default function decorate(block) {
     if (buttonEl) {
       const ctaDiv = document.createElement('div');
       ctaDiv.className = 'card-cta';
-      const a = document.createElement('a');
-      a.className = 'card-btn';
-      a.href = buttonEl.href || '#';
-      a.textContent = buttonEl.textContent.trim();
-      if (buttonEl.title) a.title = buttonEl.title;
-      if (buttonEl.target) a.target = buttonEl.target;
-      ctaDiv.append(a);
-      card.append(ctaDiv);
+      const link = buttonEl.querySelector('.button-container a');
+      if (link) {
+        link.classList.remove('button');
+        link.classList.add('button-m');
+        ctaDiv.append(link);
+        card.append(ctaDiv);
+      }
     }
 
+    const itemPadding = document.createElement('div');
+    itemPadding.className = 'card-list-item-padding';
+    itemPadding.append(card);
+
     moveInstrumentation(row, card);
-    content.append(card);
+    content.append(itemPadding);
   });
 
   block.append(content);

@@ -290,7 +290,7 @@ button.tertiary {
 /* Hover */
 .button-tertiary:hover {
   color: var(--bbl-color-blue-70);
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .button-tertiary:hover::after {

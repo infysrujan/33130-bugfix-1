@@ -86,11 +86,10 @@
 @media (width > 64rem) {
   .menu-cards .tips-insight-quick-access {
     gap: var(--bbl-space-300);
-    justify-content: flex-start;
   }
 
   .menu-cards .tips-insight-quick-access-item {
-    flex: 0 0 calc(32.33% - 4rem);
+    flex: calc(32.33% - 4rem);
   }
 
   .menu-cards .tips-insight-quick-access-title {

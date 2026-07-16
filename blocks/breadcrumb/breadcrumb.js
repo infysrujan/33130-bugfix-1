@@ -4,83 +4,110 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 /**
- * Fetches breadcrumb (parent page) data from the AEM pageinfo endpoint.
- * Returns an object with titleMap and currentPageData.
- * @returns {Promise<Object>} Object containing titleMap and currentPageData
+ * Converts an AEM content page path to a site URL path.
+ * e.g. /content/text/en/personal/my-family-and-me -> /en/personal/my-family-and-me
+ * @param {string} pagePath AEM page path
+ * @returns {string} Site URL path
  */
-async function fetchBreadcrumbData() {
+export function pagePathToUrl(pagePath) {
+  if (!pagePath) return '';
+  const match = pagePath.match(/^\/content\/[^/]+(\/.*)?$/);
+  return match?.[1] || pagePath;
+}
+
+/**
+ * Collects breadcrumb pages from the API response and returns them
+ * ordered root-to-leaf (ascending pageDepth).
+ * @param {Object} data API response from pageinfo.parent endpoint
+ * @returns {Array<Object>} Ordered breadcrumb page objects
+ */
+function buildBreadcrumbTrail(data) {
+  const pages = [];
+  const seen = new Set();
+
+  const addPage = (page) => {
+    if (!page) return;
+    const id = page.jcrUuid || page.pagePath;
+    if (id && seen.has(id)) return;
+    if (id) seen.add(id);
+    pages.push(page);
+  };
+
+  if (data.currentPage) {
+    addPage(data.currentPage);
+  }
+
+  let parent = data.parent || data.currentPage?.parent;
+  while (parent) {
+    addPage(parent);
+    parent = parent.parent;
+  }
+
+  return pages
+    .filter((page) => page.pageDepth > 3 && !page.hidebreadcrumb)
+    .sort((a, b) => a.pageDepth - b.pageDepth);
+}
+
+/**
+ * Fetches breadcrumb (parent page) data from the AEM pageinfo endpoint.
+ * Results are cached per pathname for the lifetime of the page.
+ * @returns {Promise<Object>} Object containing breadcrumbPages and currentPageData
+ */
+let breadcrumbDataCache = null;
+
+async function loadBreadcrumbData() {
   const configs = await fetchConfigs();
   const AEM_BASE_URL_FOR_BREADCRUMB = configs.breadcrumbAemBaseUrl;
   if (!AEM_BASE_URL_FOR_BREADCRUMB) {
-    return { titleMap: {}, currentPageData: null, homepageData: null };
+    return { breadcrumbPages: [], currentPageData: null };
   }
   try {
     const { pathname } = window.location;
     const apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}/content/bangkokbank${pathname}.pageinfo.parent.json`;
     const data = await fetchGet(apiUrl);
 
-    // Build a path-to-title map from the returned parent pages
-    const titleMap = {};
-    let currentPageData = null;
+    const currentPageData = data.currentPage || null;
+    const breadcrumbPages = buildBreadcrumbTrail(data);
 
-    // Add current page to titleMap first and store currentPageData
-    if (data.currentPage) {
-      const { pagePath, pageTitle, jcrTitle } = data.currentPage;
-      if (pagePath && (pageTitle || jcrTitle)) {
-        titleMap[pagePath] = pageTitle || jcrTitle;
-      }
-      currentPageData = data.currentPage;
-    }
-
-    // Helper function to traverse nested parent structure and collect pages
-    const collectPages = (page, pages = []) => {
-      if (page) {
-        pages.push(page);
-        if (page.parent) {
-          collectPages(page.parent, pages);
-        }
-      }
-      return pages;
-    };
-
-    // Collect all pages from nested structure
-    let allPages = [];
-    if (data.currentPage) {
-      // Handle nested structure with currentPage and parent
-      allPages = collectPages(data.currentPage);
-      if (data.parent) {
-        allPages = allPages.concat(collectPages(data.parent));
-      }
-    } else if (Array.isArray(data)) {
-      // Handle array response
-      allPages = data;
-    } else if (data && typeof data === 'object') {
-      // Handle other object shapes
-      const pages = data.pages || data.items || data.children || [];
-      allPages = pages;
-    }
-
-    // Find homepage (lang root, pageDepth === 3) to use as first breadcrumb item
-    const homepageData = allPages.find((p) => p.pageDepth === 3) || null;
-
-    // Filter pages: only include pages with pageDepth > 3 (after "en" level)
-    // and build the titleMap
-    allPages.forEach((page) => {
-      const pagePath = page.pagePath || page.path;
-      const pageTitle = page.pageTitle || page.jcrTitle || page.title;
-      const { pageDepth } = page;
-
-      // Only include pages after the "en" level (pageDepth > 3)
-      if (pagePath && pageTitle && pageDepth && pageDepth > 3) {
-        titleMap[pagePath] = pageTitle;
-      }
-    });
-    return { titleMap, currentPageData, homepageData };
+    return { breadcrumbPages, currentPageData };
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Breadcrumb data fetch error:', error);
-    return { titleMap: {}, currentPageData: null, homepageData: null };
+    return { breadcrumbPages: [], currentPageData: null };
   }
+}
+
+export async function fetchBreadcrumbData() {
+  const { pathname } = window.location;
+  if (breadcrumbDataCache?.pathname === pathname) {
+    return breadcrumbDataCache.promise;
+  }
+
+  const promise = loadBreadcrumbData();
+  breadcrumbDataCache = { pathname, promise };
+  return promise;
+}
+
+/**
+ * Resolves the URL for the next available parent page using breadcrumb API data.
+ * @returns {Promise<string|null>} Parent page URL or null if none found
+ */
+export async function getParentPageUrl() {
+  const { breadcrumbPages, currentPageData } = await fetchBreadcrumbData();
+
+  if (breadcrumbPages.length >= 2) {
+    return pagePathToUrl(breadcrumbPages[breadcrumbPages.length - 2].pagePath);
+  }
+
+  let parent = currentPageData?.parent;
+  while (parent) {
+    if (parent.pagePath) {
+      return pagePathToUrl(parent.pagePath);
+    }
+    parent = parent.parent;
+  }
+
+  return null;
 }
 
 /**
@@ -110,7 +137,26 @@ async function loadSocialIcons(block) {
 }
 
 /**
- * Builds breadcrumb navigation from the current URL path
+ * Current page label: short-title → API pageTitle → API jcrTitle.
+ * @param {Object} page
+ * @param {string} shortTitle
+ * @returns {string}
+ */
+function getCurrentPageLabel(page, shortTitle) {
+  return shortTitle || page.pageTitle || page.jcrTitle || '';
+}
+
+/**
+ * Parent page label: API pageTitle only.
+ * @param {Object} page
+ * @returns {string}
+ */
+function getParentPageLabel(page) {
+  return page.pageTitle || page.jcrTitle || '';
+}
+
+/**
+ * Builds breadcrumb navigation from fetched AEM page data
  * @param {Element} block The breadcrumb block element
  */
 export default async function decorate(block) {
@@ -129,11 +175,8 @@ export default async function decorate(block) {
   }
 
   const shortTitle = getMetadata('short-title');
-  const { title: pageTitle } = document;
 
-  // Fetch parent page titles from AEM to use as breadcrumb labels
-  const { titleMap: breadcrumbTitleMap, currentPageData } = await fetchBreadcrumbData();
-  const lang = currentPageData?.pagePath?.split('/')[3] || getLang();
+  const { breadcrumbPages, currentPageData } = await fetchBreadcrumbData();
 
   const innerContainer = document.createElement('div');
   innerContainer.className = 'inner-container content';
@@ -151,7 +194,7 @@ export default async function decorate(block) {
     block.classList.add('is-homepage');
 
     const li = document.createElement('li');
-    const homepageTitle = currentPageData.pageTitle || currentPageData.jcrTitle || 'Homepage - Bangkok Bank';
+    const homepageTitle = getCurrentPageLabel(currentPageData, shortTitle) || 'Homepage - Bangkok Bank';
     li.textContent = homepageTitle;
     li.setAttribute('aria-current', 'page');
     ol.appendChild(li);
@@ -160,46 +203,24 @@ export default async function decorate(block) {
     return;
   }
 
-  const pathSegments = window.location.pathname
-    .split('/')
-    .filter(Boolean);
-
-  const hasLangPrefix = pathSegments.length && pathSegments[0] === lang;
-  const startIndex = hasLangPrefix ? 1 : 0;
-  const langPrefix = hasLangPrefix ? `/${lang}` : '';
-
-  let currentPath = '';
-
-  for (let i = startIndex; i < pathSegments.length; i += 1) {
-    const segment = pathSegments[i];
-    currentPath += `/${segment}`;
-
+  breadcrumbPages.forEach((page, index) => {
     const li = document.createElement('li');
+    const isLast = index === breadcrumbPages.length - 1;
+    const textContent = isLast ? getCurrentPageLabel(page, shortTitle) : getParentPageLabel(page);
 
-    const isLast = i === pathSegments.length - 1;
-
+    if (!textContent) return;
     if (isLast) {
-      // Use shortTitle if available, then document.title, otherwise use pageTitle
-      li.textContent = (shortTitle || pageTitle)
-        .toLowerCase()
-        .replace(/\b\w/g, (char) => char.toUpperCase());
       li.setAttribute('aria-current', 'page');
+      li.textContent = textContent;
     } else {
-      // Prefer the title fetched from AEM; fall back to humanising the URL segment
-      const fetchedTitle = breadcrumbTitleMap[currentPath];
-      const label = fetchedTitle
-        || segment
-          .replace(/-/g, ' ')
-          .replace(/\b\w/g, (char) => char.toUpperCase());
       const link = document.createElement('a');
-      link.href = langPrefix + currentPath;
-      link.textContent = label;
+      link.href = pagePathToUrl(page.pagePath);
+      link.textContent = textContent;
       li.appendChild(link);
     }
 
     ol.appendChild(li);
-  }
+  });
 
-  // Load social-icons block through fragments
   await loadSocialIcons(block);
 }

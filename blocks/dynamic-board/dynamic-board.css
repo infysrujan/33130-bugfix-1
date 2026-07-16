@@ -89,134 +89,6 @@
   color: var(--bbl-color-active-blue);
 }
 
-/* ── Calendar popup ────────────────────────────────────────── */
-
-.dynamic-board .db-calendar {
-  position: absolute;
-  top: calc(100% + var(--bbl-space-100));
-  left: 0;
-  width: calc(100vw - var(--bbl-space-400));
-  background: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-grey-22);
-  border-radius: var(--bbl-rounded-100);
-  box-shadow: 0 var(--bbl-space-100) var(--bbl-space-400) var(--bbl-color-black-alpha-14);
-  z-index: 300;
-  padding: var(--bbl-space-200);
-  box-sizing: border-box;
-}
-
-.dynamic-board .db-cal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0 auto var(--bbl-space-150);
-  width: 92%;
-}
-
-.dynamic-board .db-cal-nav {
-  width: var(--bbl-space-400);
-  height: var(--bbl-space-400);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: 0.0625rem solid var(--bbl-color-grey-22);
-  border-radius: var(--bbl-rounded-full);
-  color: var(--bbl-color-gray-142);
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-}
-
-.dynamic-board .db-cal-nav .icon-arrow-left {
-  font-size: var(--bbl-font-size-b3);
-}
-
-.dynamic-board .db-cal-prev .icon-arrow-left {
-  transform: rotate(180deg);
-  display: inline-block;
-}
-
-.dynamic-board .db-cal-nav.is-disabled,
-.dynamic-board .db-cal-nav:disabled {
-  opacity: 0.35;
-  cursor: default;
-  pointer-events: none;
-}
-
-.dynamic-board .db-cal-nav:not(:disabled, .is-disabled):hover {
-  background: var(--bbl-color-blue-80);
-  border-color: var(--bbl-color-blue-80);
-  color: var(--bbl-color-white);
-}
-
-.dynamic-board .db-cal-title {
-  display: flex;
-  gap: var(--bbl-space-075);
-  font-size: var(--bbl-font-size-b2);
-  font-weight: 700;
-  color: var(--bbl-color-blue-105);
-}
-
-.dynamic-board .db-cal-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-.dynamic-board .db-cal-table thead th {
-  padding: var(--bbl-space-050) 0 var(--bbl-space-100);
-  font-size: var(--bbl-font-size-b2);
-  font-weight: 600;
-  color: var(--bbl-color-black);
-  text-align: center;
-}
-
-.dynamic-board .db-cal-table tbody td {
-  padding: 0.1875rem;
-  text-align: center;
-}
-
-.dynamic-board .db-cal-other {
-  visibility: hidden;
-}
-
-.dynamic-board .db-cal-day-btn,
-.dynamic-board .db-cal-day span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--bbl-space-500);
-  height: var(--bbl-space-500);
-  border-radius: var(--bbl-rounded-full);
-  font-size: 0.8125rem;
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: var(--bbl-color-gray-121);
-  transition: all 0.3s;
-}
-
-.dynamic-board .db-cal-day-btn:hover {
-  background: var(--bbl-color-blue-80);
-  color: var(--bbl-color-white);
-}
-
-.dynamic-board .db-cal-day span {
-  color: var(--bbl-color-grey-45);
-  cursor: default;
-}
-
-.dynamic-board .db-cal-selected .db-cal-day-btn {
-  background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  font-weight: 700;
-}
-
-.dynamic-board .db-cal-selected .db-cal-day-btn:hover {
-  background: var(--bbl-color-blue-90);
-}
-
 /* ── Time dropdown ─────────────────────────────────────────── */
 
 .dynamic-board .db-time-wrap {
@@ -754,7 +626,7 @@
 }
 
 .dynamic-board .db-table thead th {
-  padding: 0.625rem 0.9rem;
+  padding: 0 1.875rem 0 0.625rem;
   font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-black);
@@ -771,6 +643,10 @@
   border: none;
 }
 
+.dynamic-board .db-table thead th[rowspan='2'] {
+  height: 6.25rem;
+}
+
 .dynamic-board .db-table thead tr {
   background: var(--bbl-color-blue-9);
 }
@@ -784,7 +660,7 @@
 }
 
 .dynamic-board .db-table thead tr:last-child th {
-  top: 4.35rem;
+  top: 3.125rem;
   border-top: 0.0625rem solid var(--bbl-color-grey-152);
 }
 
@@ -808,10 +684,6 @@
   flex-shrink: 0;
 }
 
-.dynamic-board .db-th-download {
-  width: var(--bbl-space-500);
-}
-
 /* ── Table body rows ───────────────────────────────────────── */
 
 .dynamic-board .db-table tbody tr {
@@ -829,7 +701,7 @@
 }
 
 .dynamic-board .db-table tbody td {
-  padding: 0.625rem var(--bbl-space-150);
+  padding: 0.625rem 0.3125rem;
   font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-grey-70);
   vertical-align: middle;
@@ -863,15 +735,16 @@
   font-variant-numeric: tabular-nums;
 }
 
-.dynamic-board .db-td-dl {
-  width: var(--bbl-space-500);
-  text-align: center;
+.dynamic-board .db-td-maturity {
+  white-space: nowrap;
 }
 
-.dynamic-board .db-td-dl a {
+.dynamic-board .db-td-dl {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  vertical-align: middle;
+  margin-left: var(--bbl-space-150);
   color: var(--bbl-color-active-blue);
   text-decoration: none;
 }
@@ -882,11 +755,11 @@
   color: var(--bbl-color-grey-40);
 }
 
-.dynamic-board .db-td-dl a:hover {
+.dynamic-board .db-td-dl:hover {
   color: var(--bbl-color-blue-90);
 }
 
-.dynamic-board .db-td-dl a img {
+.dynamic-board .db-td-dl img {
   min-width: 1.5625rem;
   min-height: 1.5625rem;
 }
@@ -1024,27 +897,6 @@
     max-height: fit-content;
   }
 
-  .dynamic-board .db-calendar {
-    max-width: 28.75rem;
-    width: 28.75rem;
-  }
-
-  .dynamic-board .db-cal-header {
-    width: 70%;
-    margin: 0 auto var(--bbl-space-150);
-  }
-
-  .dynamic-board .db-cal-title {
-    font-size: 1.2775rem;
-  }
-
-  .dynamic-board .db-cal-day-btn,
-  .dynamic-board .db-cal-day span {
-    width: var(--bbl-space-500);
-    height: var(--bbl-space-500);
-    font-size: var(--bbl-font-size-b2);
-  }
-
   .dynamic-board .db-remarks-content {
     height: auto;
     overflow: visible;
@@ -1126,27 +978,6 @@
     font-size: var(--bbl-font-size-b1);
   }
 
-  .dynamic-board .db-calendar {
-    max-width: 33.75rem;
-    width: 33.75rem;
-  }
-
-  .dynamic-board .db-cal-title {
-    font-size: 1.46rem;
-  }
-
-  .dynamic-board .db-cal-day-btn,
-  .dynamic-board .db-cal-day span {
-    width: 2.75rem;
-    height: 2.75rem;
-    font-size: var(--bbl-font-size-b1);
-  }
-
-  .dynamic-board .db-cal-table thead th {
-    font-size: var(--bbl-font-size-b1);
-    padding-bottom: var(--bbl-space-150);
-  }
-
   .dynamic-board .db-remarks-content {
     font-size: var(--bbl-font-size-b1);
   }
@@ -1172,8 +1003,8 @@
     font-size: var(--bbl-font-size-b3);
   }
 
-  .dynamic-board .db-calendar,
-  .dynamic-board .db-mp-popup {
+  .dynamic-board .db-mp-popup,
+  .bbl-calendar-picker-popover {
     display: none;
   }
 }

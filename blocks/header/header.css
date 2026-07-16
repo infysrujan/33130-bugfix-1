@@ -1,10 +1,10 @@
 :root {
-  --header-m-height: 5rem;
-  --header-d-height: 7.78rem;
+  --header-m-height: 4.95rem;
+  --header-d-height: 7.73rem;
 }
 
 .header {
-  --nav-height: 5.375rem;
+  --nav-height: 5.25rem;
   
   position: absolute;
   top: 0;
@@ -226,7 +226,7 @@ header.is-not-overlapped .mobile-top-bar {
 
 header.is-not-overlapped ~ main {
   /* matches header height */
-  padding-top: var(--header-m-height, 5rem);
+  padding-top: var(--header-m-height, 4.95rem);
 }
 
 @media (width > 64rem) {
@@ -241,14 +241,21 @@ header.is-not-overlapped ~ main {
     pointer-events: none;
   }
 
-  /* Main nav - transparent, overlaps banner */
+  /* Main nav - full-width background container */
   .header .main-nav-desktop {
+    width: 100%;
+    max-width: none;
+    background-color: transparent;
+    transition: background-color 0.3s ease, position 0.3s ease;
+  }
+
+  .header .main-nav-inner {
+    width: 100%;
+    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.25rem 5.25rem;
-    background-color: transparent;
-    transition: background-color 0.3s ease, position 0.3s ease;
   }
 
   /* Main nav - scrolled state: fixed with dark background */
@@ -298,7 +305,7 @@ header.is-not-overlapped ~ main {
 
   header.is-not-overlapped ~ main {
     /* matches header height */
-    padding-top: var(--header-d-height, 7.78rem);
+    padding-top: var(--header-d-height, 7.73rem);
   }
 
   .header .megamenu-panel .megamenu-inner .megamenu-column-links {
@@ -307,5 +314,13 @@ header.is-not-overlapped ~ main {
 
   .header .megamenu-panel .megamenu-inner {
     display: block;
+  }
+}
+
+@media (width > 120rem) {
+  .header .main-nav-inner {
+    max-width: var(--bbl-layout-content-max-width-1920);
+    margin: 0 auto;
+    padding-inline: 0;
   }
 }

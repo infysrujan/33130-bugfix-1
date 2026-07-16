@@ -79,6 +79,52 @@ function getNavBlocks(fragment) {
   };
 }
 
+function normalizePath(path) {
+  try {
+    const { pathname } = new URL(path, document.baseURI || window.location.origin);
+    return pathname.replace(/\/$/, '') || '/';
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Sets is-highlight on a single main-nav-item; persists across megamenu close.
+ * @param {NodeListOf<Element>} mainNavBlocks
+ * @param {Element} highlightedBlock
+ */
+function highlightNavItem(mainNavBlocks, highlightedBlock) {
+  mainNavBlocks.forEach((block) => {
+    block.classList.toggle('is-highlight', block === highlightedBlock);
+  });
+}
+
+/**
+ * Marks the main-nav-item that best matches the current page URL with is-highlight.
+ * Uses longest pathname prefix match among links inside each nav block.
+ * @param {NodeListOf<Element>} mainNavBlocks
+ */
+function setCurrentPageNavHighlight(mainNavBlocks) {
+  const currentPath = normalizePath(window.location.pathname);
+  let bestMatch = null;
+  let bestMatchLength = 0;
+
+  mainNavBlocks.forEach((navBlock) => {
+    navBlock.querySelectorAll('a[href]').forEach((anchor) => {
+      const linkPath = normalizePath(anchor.getAttribute('href'));
+      if (!linkPath || linkPath === '/') return;
+      if (currentPath === linkPath || currentPath.startsWith(`${linkPath}/`)) {
+        if (linkPath.length > bestMatchLength) {
+          bestMatchLength = linkPath.length;
+          bestMatch = navBlock;
+        }
+      }
+    });
+  });
+
+  if (bestMatch) highlightNavItem(mainNavBlocks, bestMatch);
+}
+
 /**
  * Binds login panel events (button click, backdrop click, Escape, Enter/Space).
  * Call after appending the login block to the header.
@@ -171,7 +217,7 @@ function setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, getIsNavItemAct
 
 /**
  * Desktop megamenu: toggle is-active on main-nav-items, is-scrolled when open,
- * close on outside click.
+ * close on outside click. is-highlight is managed separately and persists on close.
  * @param {HTMLElement} mainNavDesktop
  * @param {NodeListOf<Element>} mainNavBlocks
  * @param {Element|null} topNavBlock
@@ -243,6 +289,7 @@ function setupDesktopMegamenuBehavior(
     // Add event listeners for megamenu interaction
     navTrigger.addEventListener('click', (e) => {
       e.preventDefault();
+      highlightNavItem(mainNavBlocks, navBlock);
       const isExpanded = navTrigger.getAttribute('aria-expanded') === 'true';
 
       document.querySelectorAll('.main-nav-trigger[aria-expanded="true"]').forEach((trigger) => {
@@ -368,7 +415,10 @@ function buildDesktopLayout(header, blocks) {
   const mainNavDesktop = document.createElement('div');
   mainNavDesktop.className = 'main-nav-desktop';
 
-  if (brandLogoBlock) mainNavDesktop.appendChild(brandLogoBlock);
+  const mainNavInner = document.createElement('div');
+  mainNavInner.className = 'main-nav-inner';
+
+  if (brandLogoBlock) mainNavInner.appendChild(brandLogoBlock);
 
   const mainNavRight = document.createElement('div');
   mainNavRight.className = 'main-nav-right';
@@ -378,10 +428,13 @@ function buildDesktopLayout(header, blocks) {
   if (locationBlock) mainNavRight.appendChild(locationBlock);
   if (searchBlock) mainNavRight.appendChild(searchBlock);
 
-  mainNavDesktop.appendChild(mainNavRight);
+  mainNavInner.appendChild(mainNavRight);
+  mainNavDesktop.appendChild(mainNavInner);
   header.appendChild(mainNavDesktop);
 
   ensureHeaderNavBackdrop(header);
+
+  setCurrentPageNavHighlight(mainNavBlocks);
 
   const desktopState = { isNavItemActive: false };
   setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, () => desktopState.isNavItemActive);
@@ -673,7 +726,8 @@ export default async function decorate(block) {
   const firstMainChild = main?.firstElementChild;
   const { body } = document;
   if (
-    (!firstMainChild || !firstMainChild.classList.contains('hero-container'))
+    (!firstMainChild || (!firstMainChild.classList.contains('hero-container')
+          && !firstMainChild.classList.contains('carousel-dotted-container')))
     && !body.classList.contains('bangkok-bankm-card')
   ) {
     headerSection.classList.add('is-not-overlapped');

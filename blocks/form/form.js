@@ -1,6 +1,8 @@
 import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
-import { emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE } from './constant.js';
+import {
+  emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE,
+} from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit } from './submit.js';
@@ -8,8 +10,11 @@ import DocBasedFormToAF from './transform.js';
 import decorateCreditCardTractApplication from './form-custom/creditcard-track-application/creditcard-track-application.js';
 import decorateBondAllocationForm from './form-custom/bond-allocation/bond-allocation.js';
 import decorateSipForm from './form-custom/sip-form/sip-form.js';
+import decorateDebtSupportForm from './form-custom/debt-support/debt-support.js';
 import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
 import decorateReliefMeasures from './form-custom/relief-measures/relief-measures.js';
+import decorateCreditCardForm from './form-custom/credit-card-form/credit-card-form.js';
+import decorateContactUsForm from './form-custom/contact-us/contact-us.js';
 import {
   checkValidation,
   createButton,
@@ -134,7 +139,7 @@ function createPlainText(fd) {
 function createImage(fd) {
   const field = createFieldWrapper(fd);
   field.id = fd?.id;
-  const imagePath = fd.value || fd.properties['fd:repoPath'] || '';
+  const imagePath = (fd.value || fd.properties['fd:repoPath'] || '').replaceAll('_', '-').toLowerCase();
   const altText = fd.altText || fd.name;
   field.append(createOptimizedPicture(imagePath, altText));
   return field;
@@ -352,8 +357,11 @@ async function createFormForAuthoring(formDef) {
   decorateCreditCardTractApplication(form);
   decorateBondAllocationForm(form);
   decorateSipForm(form);
+  decorateDebtSupportForm(form);
   decorateSmeLoanForm(form);
   decorateReliefMeasures(form);
+  decorateCreditCardForm(form);
+  decorateContactUsForm(form);
   return form;
 }
 
@@ -411,8 +419,11 @@ export async function createForm(formDef, data, source = 'aem') {
   decorateCreditCardTractApplication(form);
   decorateBondAllocationForm(form);
   decorateSipForm(form);
+  decorateDebtSupportForm(form);
   decorateSmeLoanForm(form);
   decorateReliefMeasures(form);
+  decorateCreditCardForm(form);
+  decorateContactUsForm(form);
   return {
     form,
     captcha,

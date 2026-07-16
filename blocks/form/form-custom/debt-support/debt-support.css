@@ -15,6 +15,44 @@ main .custom-forms .form form p {
   color: var(--form-label-color);
 }
 
+.debt-support .form-container.custom-forms .form :is(h1, h2, h3, h4, h5, h6){
+  position: relative;
+  font-size: var(--bbl-form-font-size-18);
+  text-align: center;
+  color: var(--bbl-color-black);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.5rem;
+  font-family: var(--bbl-font-family-medium);
+  padding-bottom: 1.875rem;
+  margin: 1.875rem 0;
+}
+
+main .section.form-container.custom-forms .form form .plain-text-wrapper p:last-child p{
+  text-align: left;
+}
+
+.debt-support .form-container.custom-forms .form :is(h1, h2, h3, h4, h5, h6)::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 0.0625rem;
+  background: var(--bbl-color-grey-150);
+  margin-left: -2.5rem;
+  left: 50%;
+  width: 5rem;
+}
+
+.debt-support main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label{
+  font-size: var(--bbl-form-font-size-18);
+  font-weight: var(--bbl-form-font-weight-bold);
+  text-align: left;
+  padding-left: var(--bbl-form-padding-10);
+}
+
+.debt-support main .section.form-container .form form .radio-group-wrapper:not(.radio-tabs, .cards) .radio-wrapper label.field-label{
+  text-align: left;
+}
+
 main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) div.form-wrapper,
 main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) div.default-content-wrapper {
   padding: 0;
@@ -78,7 +116,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
 
   & .drop-down-wrapper.field-wrapper select {
     padding-right: var(--bbl-space-500);
-    color: var(--bbl-color-black);
+    color: var(--bbl-color-grey-85);
     background: var(--form-input-background-color) url('../../../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
     font-family: var(--bbl-font-family-medium);
     font-weight: var(--bbl-body-b1-medium-weight);
@@ -139,6 +177,17 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     padding-block: 0;
   }
 
+  & .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) .radio-wrapper {
+    flex-wrap: wrap;
+    min-width: 100%;
+    padding: 0 var(--bbl-form-padding-10);
+  }
+
+  & .form form .radio-group-wrapper.align-left > legend.field-label {
+    text-align: left;
+    padding: 0 var(--bbl-form-padding-10);
+  }
+
   & .form form .field-loan-type .checkbox-group-wrapper {
     display: flex;
     flex-flow: row wrap;
@@ -179,11 +228,11 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     margin: 0;
     padding: 0.625rem 0 var(--bbl-space-075) 0.625rem;
     text-align: left;
-    font-family: var(--bbl-font-family-medium);
+    font-family: var(--bbl-font-family-primary);
     font-size: var(--form-fieldset-legend-font-size);
-    font-weight: var(--form-fieldset-legend-font-weight);
+    font-weight: var(--bbl-form-font-weight-bold);
     line-height: var(--bbl-heading-h4-line-height);
-    color: var(--form-fieldset-legend-color);
+    color: var(--bbl-color-grey-85);
     background: unset;
     text-decoration: underline;
     margin-bottom: 0.625rem;
@@ -248,6 +297,11 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
       line-height: var(--bbl-line-height-h3-desktop);
     }
 
+    & .form form :is(h1, h2, h3, h4, h5, h6) {
+      font-size: var(--bbl-form-font-size-32);
+      line-height: 2.3125rem;
+    }
+
     & .form form .field-loan-type .checkbox-group-wrapper .checkbox-wrapper {
       width: calc(50% - var(--bbl-space-150));
       padding-left: var(--bbl-space-250);
@@ -274,4 +328,25 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     }
 
   }
+}
+
+.debt-support main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) .form form .radio-group-wrapper.radio-tabs.field-wrapper {
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: 0;
+  padding-inline: 0;
+  grid-column: span 12;
+}
+
+.debt-support main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) .form form .radio-group-wrapper.radio-tabs > legend.field-label {
+  width: 100%;
+  padding-inline: 0.625rem 0;
+}
+
+.debt-support main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) .form form .radio-group-wrapper.radio-tabs > .radio-wrapper {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  margin: 0;
 }

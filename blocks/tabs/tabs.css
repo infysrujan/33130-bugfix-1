@@ -45,7 +45,7 @@
   content: "";
   position: absolute;
   background: var(--bbl-color-active-blue);
-  bottom: -1.5625rem;
+  bottom: -0.5rem;
   height: var(--bbl-space-025);
   left: 0;
   width: 0;
@@ -251,7 +251,58 @@
 }
 
 .tabs.icon-tab-carousel .tabs-nav {
+  /* Show exactly N equal columns per view. Each column is 100%/N of the row, so
+     the Nth column ends flush with the edge — there is never a partial/cropped
+     item. N is set per breakpoint below; change it to show more/fewer at once. */
+  --tabs-per-view: 3;
+
   gap: unset;
+  scroll-snap-type: x mandatory;
+}
+
+.tabs.icon-tab-carousel .tabs-nav-prev {
+  left: 0;
+}
+
+.tabs.icon-tab-carousel .tabs-nav-next {
+  right: 0;
+}
+
+/* Each slide is a fixed, equal column (--tabs-item-width) regardless of label
+   length; the label wraps within it (in its own .tabs-nav-label span, see
+   icon-tab-carousel.js) instead of stretching the column or running behind the
+   carousel arrows. */
+.tabs.icon-tab-carousel .tabs-nav button {
+  white-space: normal;
+  text-align: center;
+  flex: 0 0 calc(100% / var(--tabs-per-view));
+  min-width: 0;
+
+  /* No inline margin/gap so N columns divide the row exactly (otherwise the
+     margins push the last column past the edge and it gets clipped). */
+  margin-inline: 0;
+  box-sizing: border-box;
+  scroll-snap-align: start;
+}
+
+.tabs.icon-tab-carousel .tabs-nav button .tabs-nav-label {
+  display: block;
+  max-width: 100%;
+  margin-inline: auto;
+  overflow-wrap: break-word;
+}
+
+/* Columns per view by breakpoint (mobile shows fewer, desktop more). */
+@media (width > 47.5rem) {
+  .tabs.icon-tab-carousel .tabs-nav {
+    --tabs-per-view: 5;
+  }
+}
+
+@media (width > 64rem) {
+  .tabs.icon-tab-carousel .tabs-nav {
+    --tabs-per-view: 9;
+  }
 }
 
 .tabs.icon-tab-carousel .tabs-nav button img {
@@ -401,7 +452,7 @@
   .tabs.media-tab .tabs-nav {
     display: flex;
     justify-content: center;
-    max-width: 80%;
+    max-width: 100%;
   }
 
   .tabs.simple-tab .tabs-nav button,
@@ -412,6 +463,9 @@
     height: unset;
     max-height: max-content;
     text-wrap: wrap;
+    white-space: normal;
+    min-width: 0;
+
   }
 
   .tabs-nav-wrapper .tabs-nav li:last-child {
@@ -589,4 +643,15 @@
   padding: var(--bbl-space-050);
   margin: 0;
   display: block;
+}
+
+/* SPACING inside TAB PANEL between different blocks except download block */
+.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+  padding-bottom: 1.5rem;
+}
+
+@media (width > 64rem) {
+  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+    padding-bottom: 2rem;
+  }
 }

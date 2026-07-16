@@ -190,8 +190,11 @@ function buildCardBlock(cards, doc, lang, labels) {
     const imgSrc = resolveImageUrl(card);
     const { cardPageUrl } = card;
     // eslint-disable-next-line no-underscore-dangle
-    const learnHref = (cardPageUrl && (cardPageUrl._publishUrl || cardPageUrl._authorUrl || cardPageUrl._path)) || '';
-
+    let learnHref = (cardPageUrl && (cardPageUrl._publishUrl || cardPageUrl._authorUrl || cardPageUrl._path)) || '';
+    // Remove "/content/bangkokbank" from the start of learnHref, if present
+    if (learnHref.startsWith('/content/bangkokbank')) {
+      learnHref = learnHref.replace(/^\/content\/bangkokbank/, '');
+    }
     const isTH = lang === 'th';
     const primaryName = isTH && nameTH ? nameTH : nameEN;
     const secondaryName = isTH && nameTH ? nameEN : nameTH;

@@ -352,6 +352,9 @@ function buildAccordionPrintDocument(block) {
     .download-section .default-content-wrapper { text-align:center;}
     .download-section .default-content-wrapper h4 { font-size: 1.125rem;}
     .download-button-wrapper .download-files { background: none; box-shadow: none; padding: 0; margin: 0; }
+    .table.scroll table {min-width: unset;}
+    .download-button-wrapper .download-files {padding-right: 2.125rem;}
+    .download-files.icon-download::before, .download-files .icon-download::before {right: -0.27rem;}
   `;
 
   return `
@@ -365,6 +368,7 @@ function buildAccordionPrintDocument(block) {
       <link rel="stylesheet" href="/blocks/header/header.css">
       <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
       <link rel="stylesheet" href="/blocks/accordion-block/accordion-block.css">
+      <link rel="stylesheet" href="/blocks/table/table.css">
       <style>${printCss}</style>
     </head>
     <body class="appear">
@@ -624,9 +628,19 @@ function isDownloadFileWrapper(node) {
     && /** @type {Element} */ (node).classList.contains('download-file-wrapper');
 }
 
+/* A default-content-wrapper only counts as a title (like "January") if it starts with a heading */
 /**
- * Wraps each default-content-wrapper and its consecutive download-file-wrapper
- * siblings in a download-section container.
+ * @param {Node} node
+ * @returns {boolean}
+ */
+function wrapperHasHeading(node) {
+  return node.nodeType === Node.ELEMENT_NODE
+    && /** @type {Element} */ (node).querySelector(':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6') !== null;
+}
+
+/**
+ * Wraps each default-content-wrapper (when it starts with a heading) and its
+ * consecutive download-file-wrapper siblings in a download-section container.
  * @param {DocumentFragment} contentFrag
  */
 function groupDownloadSections(contentFrag) {
@@ -638,7 +652,7 @@ function groupDownloadSections(contentFrag) {
   let i = 0;
   while (i < nodes.length) {
     const node = nodes[i];
-    if (isDefaultContentWrapper(node)) {
+    if (isDefaultContentWrapper(node) && wrapperHasHeading(node)) {
       let j = i + 1;
       while (j < nodes.length && isDownloadFileWrapper(nodes[j])) {
         j += 1;

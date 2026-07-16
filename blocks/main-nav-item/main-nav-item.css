@@ -299,7 +299,8 @@ a.megamenu-link {
     transform: translateY(-50%) rotate(180deg);
   }
 
-  .main-nav-item.is-active .main-nav-trigger::after {
+  .main-nav-item.is-active .main-nav-trigger::after,
+  .main-nav-item.is-highlight .main-nav-trigger::after  {
     content: "";
     position: absolute;
     left: 0;

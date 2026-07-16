@@ -24,15 +24,34 @@ picture.rte-inline-image img {
 }
 
 .default-content-wrapper .has-inline-icon {
-  display: flex;
+  display: inline;
   align-items: center;
   gap: 0.5rem;
+  vertical-align: middle;
+}
+
+.default-content-wrapper .has-inline-icon p {
+    display: initial;
 }
 
 .default-content-wrapper .has-inline-icon > p {
   margin: 0;
 }
 
-.default-content-wrapper > :not(.button-container) a:any-link {
+.default-content-wrapper li:has(> p:has(picture.rte-inline-image) + p:has(picture.rte-inline-image)) > p:has(picture.rte-inline-image) {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.accordion-item :is(.default-content-wrapper, .table.block) table td :is(ul, ol) {
+  margin: 0 0 0 var(--bbl-space-250);
+  padding: 0;
+}
+
+.accordion-item :is(.default-content-wrapper, .table.block) table td :is(ul, ol) li {
+  margin: 0 0 0.625rem var(--bbl-space-250);
+}
+
+.default-content-wrapper > :not(.button-container, .footer-container) a:any-link {
   color: inherit;
 }

@@ -1,5 +1,11 @@
 @import url("../../styles/components/listing-card.css");
 
+.promo-selector-grid .listing-card-desc p {
+  display: block;
+  -webkit-line-clamp: none;
+  overflow: visible;
+}
+
 .promo-selector-grid {
   display: flex;
   flex-wrap: wrap;
@@ -130,7 +136,7 @@
   cursor: pointer;
   line-height: normal;
   font-weight: var(--bbl-font-weight-regular);
-  font-family: Muli-Bold, sans-serif;
+  font-family: var(--bbl-font-family-medium);
 }
 
 .promo-selector-option:hover,

@@ -197,7 +197,7 @@ function printForexRates(block) {
   const cloned = content.cloneNode(true);
 
   cloned.querySelectorAll(
-    '.forex-rates-print-btn, .forex-rates-go-btn, .forex-rates-datepicker, .forex-rates-time-list, .forex-rates-time-chevron',
+    '.forex-rates-print-btn, .forex-rates-go-btn, .forex-rates-datepicker, .forex-rates-time-list, .forex-rates-time-chevron, .forex-rates-date-trigger',
   ).forEach((el) => el.remove());
 
   const dateInput = cloned.querySelector('.forex-rates-date-text-input');
@@ -218,6 +218,8 @@ function printForexRates(block) {
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }
     body { font-family: sans-serif; margin: 0; padding: 0; }
+    /* Print background colors (title underline, table header shading) — off by default */
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
     /* Logo */
     .print-logo { margin-bottom: var(--bbl-space-075); }
@@ -238,8 +240,8 @@ function printForexRates(block) {
 
     /* Controls */
     .forex-rates-control-row {
-      display: flex; flex-direction: column; align-items: flex-start;
-      gap: 0.15rem; padding: 0; margin: var(--bbl-space-100) 0 var(--bbl-space-075);
+      display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;
+      gap: 0.4rem; padding: 0; margin: var(--bbl-space-100) 0 var(--bbl-space-075);
     }
     .forex-rates-calendar-label { font-size: 0.5625rem; font-weight: 900; line-height: normal; width: auto; }
     .forex-rates-date-group { display: flex; align-items: center; gap: 0.2rem; }
@@ -273,8 +275,8 @@ function printForexRates(block) {
     .forex-rates-table tbody td:last-child { border-right: none; }
     .forex-rates-table tbody tr:last-child td { border-bottom: none; }
     .forex-rates-table tbody td.is-right { text-align: right; }
-    .forex-rates-currency { display: flex; align-items: center; gap: var(--bbl-space-075); white-space: nowrap; }
-    .forex-rates-flag { width: var(--bbl-space-150); height: var(--bbl-space-150); object-fit: contain; }
+    .forex-rates-currency { display: table-cell; vertical-align: middle; white-space: nowrap; }
+    .forex-rates-flag { display: inline-block; vertical-align: middle; margin-right: var(--bbl-space-075); width: var(--bbl-space-150); height: var(--bbl-space-150); object-fit: contain; }
 
     /* Disclaimer */
     .forex-rates-disclaimer { font-size: 0.5rem; line-height: 1.4; margin-top: var(--bbl-space-075); color: #555; }

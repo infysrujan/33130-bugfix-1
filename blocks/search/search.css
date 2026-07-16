@@ -16,7 +16,7 @@
 
 .search .search-placeholder {
 	margin-left: 1.875rem;
-	font: 1rem Muli-Bold, sans-serif;
+	font: 1rem var(--bbl-font-family-medium);
 	color: var(--bbl-color-grey-130);
 }
 

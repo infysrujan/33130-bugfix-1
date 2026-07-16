@@ -8,7 +8,7 @@
   width: 100%;
   color: var(--bbl-text-primary);
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   line-height: var(--bbl-line-height-body);
   background: var(--bbl-color-white);
 }
@@ -154,7 +154,7 @@
   background: transparent;
   text-align: right;
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-text-primary);
   width: 5rem;
@@ -206,7 +206,7 @@
   min-height: 3.375rem;
   cursor: pointer;
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-text-primary);
   text-align: left;
   transition: border-color 150ms ease;
@@ -269,7 +269,7 @@
 .saving-plan-dropdown-option {
   padding: 0.625rem 0.875rem;
   cursor: pointer;
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-text-primary);
   transition: background-color 120ms ease;
 }
@@ -829,7 +829,7 @@
 
 .saving-plan-additional-list li {
   margin: 0;
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
 }
 
 .saving-plan-additional-link {
@@ -847,13 +847,13 @@
 
 .saving-plan-disclaimer-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   font-weight: var(--bbl-font-weight-medium);
   margin: 0 0 1.25rem;
 }
 
 .saving-plan-disclaimer-text {
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-text-primary);
   line-height: 1.65;
 }
@@ -925,7 +925,7 @@
 }
 
 .saving-plan-product-description {
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-color-gray-143);
   margin: 0;
   flex-grow: 1;
@@ -954,19 +954,19 @@
 /* ── default-content-wrapper (Additional Information + Disclaimer) ── */
 .saving-plan-container .default-content-wrapper {
   margin-top: 2.5rem;
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-color-black);
   line-height: 1.65rem;
 }
 
 .saving-plan-container .default-content-wrapper p {
   margin: 0 0 0.375rem;
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
 }
 
 .saving-plan-container .default-content-wrapper p > strong {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   font-weight: var(--bbl-font-weight-medium);
 }
 
@@ -1135,7 +1135,7 @@
 
   .saving-plan-slider-min,
   .saving-plan-slider-value {
-    font-size: var(--bbl-text-body-size);
+    font-size: var(--bbl-text-default-size);
   }
 
   .saving-plan-products {

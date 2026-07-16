@@ -52,7 +52,7 @@
 }
 
 .mfq-description li strong {
-  font-family: Muli-Bold, BangkokBank-Bold, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-weight: 700;
 }
 

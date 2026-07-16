@@ -60,7 +60,7 @@ function setupPanel(panel, activeCards, placeholders) {
 export default async function decorate(block) {
   const lang = getLang();
   const configs = await fetchConfigs();
-  const baseUrl = configs?.promoCardListingCardSelector || '';
+  const baseUrl = configs?.promotionalCardSelector || '';
   const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 
   const [data, placeholders] = await Promise.all([

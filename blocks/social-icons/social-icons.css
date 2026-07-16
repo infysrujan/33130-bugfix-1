@@ -22,6 +22,8 @@
 .social-icons .btn-share {
   width: 2.625rem;
   height: 2.625rem;
+  padding: 1.3125rem 0 1.1875rem;
+  box-sizing: border-box;
   background: url('../../icons/btn-share.svg') no-repeat center;
   background-size: var(--bbl-space-500);
   flex-shrink: 0;

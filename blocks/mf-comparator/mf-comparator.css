@@ -89,7 +89,6 @@
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: var(--bbl-radius-md);
   background-color: var(--bbl-color-grey-10);
 }
 
@@ -141,30 +140,6 @@
   font-family: var(--bbl-font-family-medium);
 }
 
-/* ── Compare CTA button ───────────────────────────────────────────────────── */
-
-.mf-comparator .mfc-btn-primary {
-  flex-shrink: 0;
-  background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  border: none;
-  border-radius: var(--bbl-radius-button);
-  padding: 0 var(--bbl-space-500);
-  height: 2.75rem;
-  font-size: var(--bbl-font-size-b1, 1rem);
-  font-weight: var(--bbl-font-weight-regular);
-  font-family: var(--bbl-font-family-primary);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.2s;
-  min-width: 9.6875rem;
-  width: 100%;
-}
-
-.mf-comparator .mfc-btn-primary:hover {
-  background: var(--bbl-color-blue-90);
-}
-
 .mf-comparator .mfc-btn-primary:disabled {
   background: var(--bbl-color-grey-40);
   color: var(--bbl-color-gray-600);
@@ -192,12 +167,6 @@
   .mf-comparator .inner-container {
     padding: 0 var(--bbl-space-container-md);
   }
-
-  .mf-comparator .mfc-btn-primary {
-    width: auto;
-    margin: 0 auto;
-    display: block;
-  }
 }
 
 /* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
@@ -217,10 +186,5 @@
 
   .mf-comparator .product-comparing {
     flex-shrink: 1;
-  }
-
-  .mf-comparator .mfc-btn-primary {
-    margin: 0;
-    display: inline-block;
   }
 }

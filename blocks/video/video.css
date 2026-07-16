@@ -12,6 +12,17 @@
   background-color: var(--bbl-color-black);
 }
 
+.video .video-embed video {
+  object-fit: cover;
+}
+
+/* YouTube's player letterboxes/pillarboxes internally to preserve 16:9,
+   so the embed container must match that ratio instead of using a fixed height */
+.video .video-embed:has(iframe) {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
 @media (width > 47.5rem) {
   .video .video-wrapper {
     margin: 0 auto;
@@ -66,8 +77,4 @@
 
 .video .video-image:hover img {
   opacity: 0.85;
-}
-
-.section.full-bleed-special.breadcrumb-container{
-  display: none;
 }
