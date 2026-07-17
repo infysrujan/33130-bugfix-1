@@ -387,7 +387,8 @@ function setupPanel(
     render();
   });
 
-  bindPaginationClick(paginationEl, state, render, gridEl);
+  const scrollTarget = document.querySelector('.sub-nav') || document.querySelector('.sub-nav-wrapper') || panel.closest('.tabs') || gridEl;
+  bindPaginationClick(paginationEl, state, render, scrollTarget);
 }
 
 export default async function decorate(block) {
