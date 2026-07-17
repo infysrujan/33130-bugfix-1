@@ -286,10 +286,20 @@
 }
 
 .tabs.icon-tab-carousel .tabs-nav button .tabs-nav-label {
-  display: block;
+  display: inline-block;
   max-width: 100%;
   margin-inline: auto;
   overflow-wrap: break-word;
+  border-bottom: 0.1875rem solid transparent;
+  padding-bottom: 0.25rem;
+}
+
+.tabs.icon-tab-carousel .tabs-nav button.active {
+  text-decoration: none;
+}
+
+.tabs.icon-tab-carousel .tabs-nav button.active .tabs-nav-label {
+  border-bottom-color: var(--bbl-color-active-blue);
 }
 
 /* Columns per view by breakpoint (mobile shows fewer, desktop more). */
