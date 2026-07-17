@@ -254,7 +254,7 @@ main {
   width: 5rem;
   outline: none;
   padding: 0;
-  caret-color: var(--bbl-color-sme-caret);
+  caret-color: var(--bbl-color-white);
 }
 
 .textbox-cal::placeholder {
