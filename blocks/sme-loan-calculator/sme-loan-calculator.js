@@ -594,6 +594,9 @@ export default async function decorate(block) {
     appendTd(tr, resultCell);
     fieldValues.forEach((value) => appendTd(tr, value));
     tbody.appendChild(tr);
+
+    const maxRows = 5;
+    while (tbody.children.length > maxRows) tbody.removeChild(tbody.firstElementChild);
   });
 
   // Reset form, result, and comparison table when switching simple tabs.
