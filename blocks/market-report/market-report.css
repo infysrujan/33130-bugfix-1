@@ -122,6 +122,26 @@
   float: right;
 }
 
+/* market-report-ready is added to .tabs-content by market-report.js once data loads.
+   :has(.button-container) further limits this to wrappers pairing a heading with a
+   "More" link, leaving plain wrappers (e.g. the Monetary Policy Rate heading alone) untouched. */
+.market-report-ready .default-content-wrapper:has(.button-container) {
+  display: flex;
+  justify-content: space-between;
+}
+
+.market-report-ready .default-content-wrapper:has(.button-container) a {
+  color: var(--bbl-color-black);
+}
+
+.market-report-ready .default-content-wrapper:has(.button-container) a:hover {
+  color: var(--bbl-color-blue-90);
+}
+
+.market-report-ready .default-content-wrapper:has(.button-container) a::after {
+  display: none;
+}
+
 .market-report-page p.text-small {
   font-size: 0.6875rem;
   line-height: 1.63;
