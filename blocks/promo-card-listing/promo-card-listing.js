@@ -304,6 +304,14 @@ function setupPanel(
       }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
+    let maxPerRow = 1;
+    if (window.innerWidth > 1024) {
+      maxPerRow = 4;
+    } else if (window.innerWidth > 760) {
+      maxPerRow = 2;
+    }
+    gridEl.classList.toggle('is-single-row', cards.length > 0 && cards.length <= maxPerRow);
+
     paginationEl.innerHTML = hidePagination
       ? ''
       : buildPaginationHtml(state.page, Math.ceil(total / pageSize));
