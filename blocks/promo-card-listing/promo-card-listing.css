@@ -13,8 +13,7 @@
 }
 
 .promo-selector-grid:has(.promo-selector-empty),
-.promo-selector-grid.is-single-row,
-.promo-selector-grid:has(> .listing-card-container:only-child) {
+.promo-selector-grid.is-bbm-grid {
   justify-content: center;
 }
 
@@ -165,7 +164,7 @@
     padding-inline: 0.625rem;
   }
 
-  .promo-selector-grid:has(> .listing-card-container:nth-child(-n+2):last-child) {
+  .promo-selector-grid:not(.is-bbm-grid):has(> .listing-card-container:nth-child(-n+2):last-child) {
     justify-content: center;
   }
 
@@ -282,8 +281,8 @@ body.mobile-app-view main > div:first-child {
     padding-inline: 0;
   }
 
-  /* Center single row grid (up to 4 cards on desktop). Multi-row grids remain left aligned. */
-  .promo-selector-grid:has(> .listing-card-container:nth-child(-n+4):last-child) {
+  /* Credit cards: Center first row when single row (1-4 cards). Multi-row grids (> 4 cards) remain left aligned so subsequent rows with 1, 2, or 3 cards align to left. */
+  .promo-selector-grid:not(.is-bbm-grid):has(> .listing-card-container:nth-child(-n+4):last-child) {
     justify-content: center;
   }
 
