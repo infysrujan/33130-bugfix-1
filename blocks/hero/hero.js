@@ -136,6 +136,10 @@ function createElement(tag, ...classNames) {
  */
 function normalizeCellContent(cell, className) {
   if (!cell?.firstElementChild) return;
+  if (cell.children.length === 1) {
+    cell.firstElementChild.classList.add(className);
+    return;
+  }
   const wrapper = document.createElement('div');
   wrapper.classList.add(className);
   while (cell.firstChild) {
@@ -154,225 +158,6 @@ function createThumbItem(picture, index, { strip = false, active = false } = {})
     if (img) { img.className = 'hero-banner-thumbnail-img'; img.loading = 'eager'; item.append(img); }
   }
   return item;
-}
-
-// ─── Hero row parsing helpers ────────────────────────────────────────────────
-
-function getCellText(cell) {
-  if (!cell) return '';
-  const aueValue = cell.dataset?.aueProp?.trim();
-  if (aueValue) return aueValue;
-  const nested = cell.querySelector('div, p, span, a, strong, em, h1, h2, h3, h4, h5, h6, li');
-  return nested?.textContent?.trim() || cell.textContent?.trim() || '';
-}
-
-function getCellHref(cell) {
-  return cell?.querySelector('a[href]')?.href?.trim() || '';
-}
-
-function isEmptyCell(cell) {
-  if (!cell) return true;
-  return !cell.querySelector('picture, img, video, iframe, source, a[href]')
-    && !getCellText(cell);
-}
-
-function isMimeTypeCell(cell) {
-  return /^(image|video)\/[a-z0-9.+-]+$/i.test(getCellText(cell));
-}
-
-function isBooleanCell(cell) {
-  return /^(true|false)$/i.test(getCellText(cell));
-}
-
-function getBooleanCellValue(cell) {
-  return /^true$/i.test(getCellText(cell));
-}
-
-function isTargetCell(cell) {
-  return /^_(self|blank|parent|top)$/i.test(getCellText(cell));
-}
-
-function isLinkCell(cell) {
-  return !!cell?.querySelector('a[href]');
-}
-
-function isYouTubeCell(cell) {
-  const value = getCellHref(cell) || getCellText(cell);
-  return /(?:youtube\.com|youtu\.be)/i.test(value);
-}
-
-function isVideoAssetCell(cell) {
-  const value = getAssetSrc(cell);
-  return !!cell?.querySelector('video, source[type^="video/"]')
-    || /\.(mp4|m3u8|webm)([?#].*)?$/i.test(value);
-}
-
-function isImageOnlyCell(cell) {
-  return !!cell?.querySelector('picture, img[src]')
-    && !isVideoAssetCell(cell)
-    && !cell?.querySelector('video, iframe');
-}
-
-function isPlainTextCell(cell) {
-  return !!getCellText(cell)
-    && !isBooleanCell(cell)
-    && !isTargetCell(cell)
-    && !isLinkCell(cell)
-    && !isImageOnlyCell(cell)
-    && !isVideoAssetCell(cell);
-}
-
-function hasHeadingLikeCell(cell) {
-  return !!cell?.querySelector('h1, h2, h3, h4, h5, h6');
-}
-
-function getMeaningfulCells(row) {
-  return [...row.children].filter((cell) => !isEmptyCell(cell) && !isMimeTypeCell(cell));
-}
-
-function parseHeroRow(row, variant) {
-  const cells = getMeaningfulCells(row);
-  let idx = 0;
-  let end = cells.length - 1;
-
-  const parsed = {
-    mediaType: 'images',
-    isDefault: false,
-    imageCellDesktop: null,
-    imageCellMobile: null,
-    imageAltCell: null,
-    youtubeUrlCell: null,
-    damVideoCell: null,
-    logoImageCell: null,
-    thumbImgCell: null,
-    preTitleCell: null,
-    headingCell: null,
-    bodyCells: [],
-    linkCell: null,
-    appStoreImageCell: null,
-    appStoreLinkCell: null,
-    googlePlayImageCell: null,
-    googlePlayLinkCell: null,
-    enableAppCtaMobileCell: null,
-    targetCell: null,
-  };
-
-  parsed.mediaType = getCellText(cells[idx]) || 'images';
-  idx += 1;
-
-  if (isBooleanCell(cells[idx])) {
-    parsed.isDefault = getBooleanCellValue(cells[idx]);
-    idx += 1;
-  }
-
-  if (parsed.mediaType === 'images') {
-    if (isImageOnlyCell(cells[idx])) {
-      parsed.imageCellDesktop = cells[idx];
-      idx += 1;
-    }
-    if (isImageOnlyCell(cells[idx])) {
-      parsed.imageCellMobile = cells[idx];
-      idx += 1;
-    }
-    if (isPlainTextCell(cells[idx])) {
-      parsed.imageAltCell = cells[idx];
-      idx += 1;
-    }
-  } else if (parsed.mediaType === 'bg-video') {
-    if (isYouTubeCell(cells[idx])) {
-      parsed.youtubeUrlCell = cells[idx];
-      idx += 1;
-    }
-    if (isVideoAssetCell(cells[idx])) {
-      parsed.damVideoCell = cells[idx];
-      idx += 1;
-    }
-    if (!parsed.youtubeUrlCell && isYouTubeCell(cells[idx])) {
-      parsed.youtubeUrlCell = cells[idx];
-      idx += 1;
-    }
-    if (!parsed.damVideoCell && isVideoAssetCell(cells[idx])) {
-      parsed.damVideoCell = cells[idx];
-      idx += 1;
-    }
-  }
-
-  if (isTargetCell(cells[end])) {
-    parsed.targetCell = cells[end];
-    end -= 1;
-  }
-
-  if (isBooleanCell(cells[end])) {
-    parsed.enableAppCtaMobileCell = cells[end];
-    end -= 1;
-  }
-
-  const peelStorePair = (prefix) => {
-    if (
-      end >= idx
-      && isPlainTextCell(cells[end])
-      && end - 2 >= idx
-      && isLinkCell(cells[end - 1])
-      && isImageOnlyCell(cells[end - 2])
-    ) {
-      end -= 1; // skip optional title cell
-    }
-
-    if (end >= idx + 1 && isLinkCell(cells[end]) && isImageOnlyCell(cells[end - 1])) {
-      parsed[`${prefix}LinkCell`] = cells[end];
-      parsed[`${prefix}ImageCell`] = cells[end - 1];
-      end -= 2;
-    }
-  };
-
-  peelStorePair('googlePlay');
-  peelStorePair('appStore');
-
-  const middle = cells.slice(idx, end + 1);
-
-  const leadingImageCells = [];
-  while (middle[0] && isImageOnlyCell(middle[0])) {
-    leadingImageCells.push(middle.shift());
-  }
-
-  if (variant === 'hero-with-thumbnail-images') {
-    if (leadingImageCells.length >= 2) {
-      [parsed.logoImageCell, parsed.thumbImgCell] = leadingImageCells;
-    } else if (leadingImageCells.length === 1) {
-      [parsed.thumbImgCell] = leadingImageCells;
-    }
-  } else if (leadingImageCells.length) {
-    [parsed.logoImageCell] = leadingImageCells;
-  }
-
-  for (let i = middle.length - 1; i >= 0; i -= 1) {
-    if (isLinkCell(middle[i])) {
-      [parsed.linkCell] = middle.splice(i, 1);
-      break;
-    }
-  }
-
-  if (middle[0] && hasHeadingLikeCell(middle[0])) {
-    parsed.headingCell = middle.shift();
-  } else {
-    parsed.preTitleCell = middle.shift() || null;
-    if (middle[0] && hasHeadingLikeCell(middle[0])) {
-      parsed.headingCell = middle.shift();
-    } else {
-      parsed.headingCell = middle.shift() || null;
-    }
-  }
-
-  parsed.bodyCells = middle;
-
-  return parsed;
-}
-
-function appendCellChildren(sourceCell, target) {
-  if (!sourceCell || !target) return;
-  while (sourceCell.firstChild) {
-    target.appendChild(sourceCell.firstChild);
-  }
 }
 
 // ─── Custom video controls ───────────────────────────────────────────────────
@@ -507,6 +292,8 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem, shareUrl) {
   });
   seekBar.addEventListener('input', () => { if (video.duration) video.currentTime = (seekBar.value / 1000) * video.duration; });
 
+  wireShare(bar.querySelector('.hero-ctrl-share'));
+  wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), videoWrapper);
   wireShare(bar.querySelector('.hero-ctrl-share'), shareUrl);
   wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
 }
@@ -576,6 +363,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
           playBtn.innerHTML = playing ? VI.pause : VI.play;
           playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
           if (playing) {
+            // Sync mute UI with actual player mute state
             const muted = target.isMuted();
             muteBtn.innerHTML = muted ? VI.muted : VI.volume;
             muteBtn.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
@@ -595,7 +383,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
         },
       },
     });
-    iframe.ytPlayer = player;
+    iframe.ytPlayer = player; // expose for cross-slide pause coordination
 
     playBtn.addEventListener('click', () => {
       if (player.getPlayerState() === window.YT.PlayerState.PLAYING) player.pauseVideo();
@@ -636,7 +424,11 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
+const decoratedBlocks = new WeakSet();
+
 export default async function decorate(block) {
+  if (decoratedBlocks.has(block)) return;
+  decoratedBlocks.add(block);
   const [configs] = await Promise.all([fetchConfigs(), loadHeroIcons()]);
   const ytApiSrc = configs.heroIframeApi;
   const isMobile = window.matchMedia('(width <= 47.5rem)').matches;
@@ -648,21 +440,59 @@ export default async function decorate(block) {
     thumbnailList = createElement('ul', 'hero-banner-thumbnail-list', 'content');
   }
 
-  const heroRows = [...block.children].slice(1, 9);
-  const parsedRows = heroRows.map((row) => parseHeroRow(row, variant));
+  const heroRows = [...block.children].slice(1, 8);
 
-  let defaultIndex = parsedRows.findIndex((row) => row.isDefault);
-  if (defaultIndex < 0) defaultIndex = 0;
+  // Pre-pass: find which item has isDefault checked (stored as "true" at children[1])
+  let defaultIndex = 0;
+  const hasExplicitDefault = heroRows.some((row, i) => {
+    if (row.children[1]?.textContent?.trim() === 'true') {
+      defaultIndex = i;
+      return true;
+    }
+    return false;
+  });
+  if (!hasExplicitDefault) defaultIndex = 0;
 
   heroRows.forEach((row, i) => {
-    const parsed = parsedRows[i];
     const bannerItem = createElement('li', 'hero-banner-item');
     if (i === defaultIndex) bannerItem.classList.add('hero-banner-item-active');
     bannerItem.dataset.index = i;
 
-    if (parsed.mediaType === 'bg-video') {
-      const youtubeUrl = getCellHref(parsed.youtubeUrlCell) || getCellText(parsed.youtubeUrlCell) || '';
-      const damVideoSrc = getAssetSrc(parsed.damVideoCell);
+    const mediaType = row.children[0]?.textContent?.trim() || 'images';
+
+    // col 0 = mediaType; isDefault boolean only produces a DOM cell when checked
+    let col = 1;
+    const possibleIsDefault = row.children[col]?.textContent?.trim();
+    if (possibleIsDefault === 'true' || possibleIsDefault === 'false') col += 1;
+
+    // All 5 conditional media cells are always present in the DOM (empty when unused)
+    const imageCellDesktop = row.children[col]; col += 1;
+    const imageCellMobile = row.children[col]; col += 1;
+    const imageAlt = row.children[col]; col += 1;
+    const youtubeUrlCell = row.children[col]; col += 1;
+    const damVideoCell = row.children[col]; col += 1;
+
+    const logoImageCell = row.children[col]; col += 1;
+    const thumbImgCell = row.children[col]; col += 1;
+    const preTitleCell = row.children[col]; col += 1;
+    const headingCell = row.children[col]; col += 1;
+    const textCell = row.children[col]; col += 1;
+    const linkCell = row.children[col]; col += 1;
+    const skipCell = row.children[col];
+    if (skipCell && !skipCell.textContent?.trim() && !skipCell.querySelector('picture, a[href]')) col += 1;
+    const appStoreImageCell = row.children[col]; col += 1;
+    const appStoreLinkCell = row.children[col]; col += 1;
+    const googlePlayImageCell = row.children[col]; col += 1;
+    const googlePlayLinkCell = row.children[col]; col += 1;
+    const enableAppCtaMobileCell = row.children[col]; col += 1;
+    const targetCell = row.children[col];
+    const targetValue = targetCell?.textContent?.trim() || '';
+
+    if (mediaType === 'bg-video') {
+      const youtubeUrl = youtubeUrlCell?.querySelector('a')?.href
+        || youtubeUrlCell?.textContent?.trim()
+        || '';
+      const damVideoSrc = getAssetSrc(damVideoCell);
 
       if (youtubeUrl) {
         const ytId = getYouTubeId(youtubeUrl);
@@ -707,31 +537,39 @@ export default async function decorate(block) {
         wireDAMControls(video, bar, videoWrapper, bannerItem, damVideoSrc);
 
         if (isMobile) {
+        // Start paused on mobile
           video.pause();
 
+          // Reset play button to play state since video starts paused on mobile
           const playBtn = bar.querySelector('.hero-ctrl-play');
           if (playBtn) {
             playBtn.innerHTML = VI.play;
             playBtn.setAttribute('aria-label', 'Play');
           }
 
-          const centerBtn = videoWrapper.querySelector('.hero-banner-center-play');
+          // Ensure center play button is visible initially
+          const centerBtn = videoWrapper.querySelector(
+            '.hero-banner-center-play',
+          );
+
           if (centerBtn) {
-            centerBtn.classList.remove('hero-banner-center-play-hidden');
+            centerBtn.classList.remove(
+              'hero-banner-center-play-hidden',
+            );
           }
         } else if (i === defaultIndex) {
           windowLoaded.then(() => video.play().catch(() => {}));
         }
       }
     } else {
-      const pictureDesktop = parsed.imageCellDesktop?.querySelector('picture');
-      const pictureMobile = parsed.imageCellMobile?.querySelector('picture');
+      const pictureDesktop = imageCellDesktop?.querySelector('picture');
+      const pictureMobile = imageCellMobile?.querySelector('picture');
 
       if (pictureDesktop || pictureMobile) {
         const heroPicture = createSmartImage(
           pictureDesktop,
           pictureMobile,
-          parsed.imageAltCell,
+          imageAlt,
           i === defaultIndex,
         );
         if (heroPicture) {
@@ -746,8 +584,7 @@ export default async function decorate(block) {
     }
 
     const contentInner = createElement('div', 'hero-banner-content-inner');
-
-    const logoImg = parsed.logoImageCell?.querySelector('img');
+    const logoImg = logoImageCell?.querySelector('img');
     if (logoImg) {
       logoImg.className = 'hero-banner-logo';
       const logoWrapper = createElement('div', 'hero-banner-logo-wrapper');
@@ -756,58 +593,50 @@ export default async function decorate(block) {
     }
 
     const contentGroup = createElement('div', 'hero-banner-content-group');
-
-    if (parsed.preTitleCell?.firstElementChild) {
-      const preTitleEl = parsed.preTitleCell.firstElementChild;
+    if (preTitleCell?.firstElementChild) {
+      const preTitleEl = preTitleCell.firstElementChild;
       preTitleEl.classList.add('hero-banner-pre-title');
       if (preTitleEl.firstElementChild) preTitleEl.firstElementChild.classList.add('hero-banner-pre-title');
     }
-
-    parsed.bodyCells.forEach((cell) => normalizeCellContent(cell, 'hero-banner-content-inner-text'));
-
+    normalizeCellContent(textCell, 'hero-banner-content-inner-text');
     const isAppCta = variant === 'simple-app-cta';
-    const hasButtonLink = !isAppCta && !!parsed.linkCell?.querySelector('a[href]');
-    const contentCells = [
-      parsed.preTitleCell,
-      parsed.headingCell,
-      ...parsed.bodyCells,
-      ...(hasButtonLink ? [parsed.linkCell] : []),
-    ].filter(Boolean);
-
-    contentCells.forEach((cell) => appendCellChildren(cell, contentGroup));
+    const hasButtonLink = !isAppCta && !!linkCell?.querySelector('a[href]');
+    const cells = [preTitleCell, headingCell, textCell, ...(hasButtonLink ? [linkCell] : [])];
+    cells.forEach((cell) => {
+      if (!cell) return;
+      while (cell.firstChild) {
+        contentGroup.appendChild(cell.firstChild);
+      }
+    });
 
     if (isAppCta) {
       const appCtasEl = createElement('div', 'hero-app-ctas');
-      [
-        [parsed.appStoreImageCell, parsed.appStoreLinkCell],
-        [parsed.googlePlayImageCell, parsed.googlePlayLinkCell],
-      ].forEach(([imgCell, linkCtaCell]) => {
-        const pic = imgCell?.querySelector('picture');
-        const anchor = linkCtaCell?.querySelector('a');
-        if (!pic || !anchor) return;
-        const ctaLink = document.createElement('a');
-        ctaLink.href = anchor.href;
-        ctaLink.target = '_blank';
-        ctaLink.rel = 'noopener noreferrer';
-        if (anchor.title) ctaLink.title = anchor.title;
-        ctaLink.classList.add('hero-app-cta-link');
-        ctaLink.append(pic.cloneNode(true));
-        appCtasEl.append(ctaLink);
-      });
+      [[appStoreImageCell, appStoreLinkCell], [googlePlayImageCell, googlePlayLinkCell]]
+        .forEach(([imgCell, linkCtaCell]) => {
+          const pic = imgCell?.querySelector('picture');
+          const anchor = linkCtaCell?.querySelector('a');
+          if (!pic || !anchor) return;
+          const ctaLink = document.createElement('a');
+          ctaLink.href = anchor.href;
+          ctaLink.target = '_blank';
+          ctaLink.rel = 'noopener noreferrer';
+          if (anchor.title) ctaLink.title = anchor.title;
+          ctaLink.classList.add('hero-app-cta-link');
+          ctaLink.append(pic.cloneNode(true));
+          appCtasEl.append(ctaLink);
+        });
       if (appCtasEl.children.length) contentGroup.append(appCtasEl);
 
-      const enableAppCtaMobile = getBooleanCellValue(parsed.enableAppCtaMobileCell);
+      const enableAppCtaMobile = enableAppCtaMobileCell?.textContent?.trim() === 'true';
       if (!enableAppCtaMobile) {
         bannerItem.classList.add('no-mobile-app-cta');
-        if (parsed.linkCell?.innerHTML?.trim()) {
+        if (linkCell?.innerHTML?.trim()) {
           const fallback = createElement('div', 'hero-app-cta-mobile-fallback');
-          fallback.innerHTML = parsed.linkCell.innerHTML;
+          fallback.innerHTML = linkCell.innerHTML;
           contentGroup.append(fallback);
         }
       }
     }
-
-    const targetValue = getCellText(parsed.targetCell) || '';
     if (targetValue) applyLinkTarget(contentGroup, 'a.button-m', targetValue);
 
     contentInner.append(contentGroup);
@@ -816,7 +645,7 @@ export default async function decorate(block) {
     bannerItem.append(content);
 
     if (variant === 'hero-with-thumbnail-images') {
-      const thumbPicture = parsed.thumbImgCell?.querySelector('picture');
+      const thumbPicture = thumbImgCell?.querySelector('picture');
       const cloned = thumbPicture?.cloneNode(true);
       const thumbImg = thumbPicture?.querySelector('img');
       if (thumbImg) {
