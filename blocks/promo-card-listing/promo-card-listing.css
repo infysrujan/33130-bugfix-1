@@ -181,8 +181,16 @@
     margin-inline: 0.625rem;
   }
 
+  .promo-selector-filters,
+  .promo-selector-content {
+    margin-inline: -0.625rem;
+  }
+
+  .promo-selector-grid .listing-card-container {
+    margin-inline: 0;
+  }
+
   .promo-selector-filters {
-    margin-inline: -1.25rem;
     align-items: center;
   }
 
@@ -298,6 +306,15 @@ body.mobile-app-view main > div:first-child {
 
   .promo-selector-pagination {
     margin-inline: 0.625rem;
+  }
+
+  .promo-selector-filters,
+  .promo-selector-content {
+    margin-inline: -0.625rem;
+  }
+
+  .promo-selector-grid .listing-card-container {
+    margin-inline: 0;
   }
 
   .promo-selector-filters {
