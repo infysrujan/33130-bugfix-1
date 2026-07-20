@@ -491,6 +491,57 @@
   }
 }
 
+@media print {
+  .tabs-nav-wrapper .tabs-dropdown {
+    display: none;
+  }
+
+  .tabs-nav-wrapper .tabs-nav {
+    display: table;
+    width: 100%;
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 0;
+    color: var(--bbl-color-black);
+    text-align: center;
+    list-style: none;
+  }
+
+  .tabs-nav-wrapper .tabs-nav li {
+    display: table-cell;
+    padding: 0 var(--bbl-space-100);
+  }
+
+  .tabs-nav-wrapper .tabs-nav button {
+    appearance: none;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--bbl-color-black);
+    font-family: var(--bbl-font-family-medium);
+    font-size: 0.75rem;
+    line-height: 1;
+    min-height: 0;
+    height: auto;
+    margin: 0 0.5rem;
+    padding: 0;
+    text-transform: none;
+  }
+
+  .tabs-nav-wrapper .tabs-nav button::before {
+    display: none;
+  }
+
+  .tabs-nav-wrapper .tabs-nav button.active {
+    color: var(--bbl-color-black);
+    text-decoration: underline;
+    text-decoration-color: var(--bbl-color-black);
+    text-decoration-thickness: 0.0625rem;
+    text-underline-offset: 0.125rem;
+  }
+}
+
 /* Authoring-only: carousel nav wrapper */
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav {
   position: relative;
@@ -521,7 +572,7 @@
   padding: var(--bbl-space-250) var(--bbl-space-075);
   font-size: 0.7875rem;
   line-height: 1.0631rem;
-  font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif !important;
+  font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   border: none;
   background: transparent;

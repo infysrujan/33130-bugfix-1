@@ -610,12 +610,53 @@ function printElement() {
   if (!logoEl) return;
   const brandLogo = logoEl.cloneNode(true).outerHTML;
 
-  const printWindow = window.open('', '', 'height=500,width=800');
+  const escapeHtml = (text) => text.replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }[char]));
+  const tabLabels = [...document.querySelectorAll('.tabs-nav-wrapper .tabs-nav button')]
+    .map((button) => button.textContent?.trim())
+    .filter(Boolean);
+  const printTabs = tabLabels.map((label, index) => (
+    `<button${index === 0 ? ' class="active"' : ''}>${escapeHtml(label)}</button>`
+  )).join('');
+
+  const printWindow = window.open(window.location.href, '', 'height=500,width=800');
 
   const printCss = `
     @page {
       size: A4 portrait;
       margin: 10mm; /* Standard margins for printers */
+    }
+
+    html,
+    body {
+      color: var(--bbl-color-black);
+      font-family: var(--bbl-font-family-primary, BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif);
+      font-size: 0.75rem;
+      line-height: 1.25;
+      background: var(--bbl-color-white);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    main,
+    .section,
+    .tabs-container,
+    .tabs-wrapper,
+    .table-wrapper {
+      width: 100%;
+      max-width: none;
+      margin-inline: 0;
+      padding-inline: 0;
+    }
+
+    .section > .default-content-wrapper,
+    .section .tabs-nav-wrapper {
+      display: none;
     }
 
     .header {
@@ -627,16 +668,143 @@ function printElement() {
       height: 3.125rem;
       margin-block: 3rem 1rem;
     }
+
+    .market-report-print-cover {
+      min-height: 8.75in;
+      text-align: center;
+      break-after: page;
+      page-break-after: always;
+    }
+
+    .market-report-print-cover h1 {
+      position: relative;
+      margin: 1.875rem 0 2rem;
+      color: var(--bbl-color-black);
+      font-family: var(--bbl-font-family-medium, BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif);
+      font-size: 1.875rem;
+      line-height: 1.15;
+      font-weight: 400;
+    }
+
+    .market-report-print-cover h1::after {
+      content: "";
+      display: block;
+      width: 3.25rem;
+      height: 0.0625rem;
+      margin: 0.5rem auto 0;
+      background: var(--bbl-color-black);
+    }
+
+    .market-report-print-cover p {
+      max-width: 29rem;
+      margin: 0 auto 1.5rem;
+      color: var(--bbl-color-black);
+      font-family: var(--bbl-font-family-primary, BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif);
+      font-size: 0.75rem;
+      line-height: 1.35;
+    }
+
+    .market-report-print-cover-nav button {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--bbl-color-black);
+      font-family: var(--bbl-font-family-medium, BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif);
+      font-size: 0.75rem;
+      line-height: 1;
+      margin: 0 0.625rem;
+      padding: 0;
+    }
+
+    .market-report-print-cover-nav button.active {
+      text-decoration: underline;
+      text-decoration-color: var(--bbl-color-black);
+      text-decoration-thickness: 0.0625rem;
+      text-underline-offset: 0.125rem;
+    }
       
     .tabs-dropdown {
       display: none;
     }
-    
+
     .tabs-nav-wrapper .tabs-nav {
-     display: block;
+      display: table;
+      width: 100%;
+      max-width: 80%;
+      margin: 0 auto;
+      padding: 0;
+      color: var(--bbl-color-black);
+      text-align: center;
+      list-style: none;
     }
 
-    .market-report-page a.print-button.icon-print {
+    .tabs-nav-wrapper .tabs-nav li {
+      display: table-cell;
+      padding: 0 var(--bbl-space-100);
+    }
+
+    .tabs-nav-wrapper .tabs-nav button {
+      appearance: none;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      color: var(--bbl-color-black);
+      font-family: var(--bbl-font-family-medium, BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif);
+      font-size: 0.75rem;
+      line-height: 1;
+      min-height: 0;
+      height: auto;
+      margin: 0 0.5rem;
+      padding: 0;
+      text-transform: none;
+    }
+
+    .tabs-nav-wrapper .tabs-nav button::before {
+      display: none;
+    }
+
+    .tabs-nav-wrapper .tabs-nav button.active {
+      color: var(--bbl-color-black);
+      text-decoration: underline;
+      text-decoration-color: var(--bbl-color-black);
+      text-decoration-thickness: 0.0625rem;
+      text-underline-offset: 0.125rem;
+    }
+
+    .market-report-col {
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+    }
+
+    .market-report-page-content > .market-report-col .market-report-col-left {
+      flex: 2 1 0;
+    }
+
+    .market-report-page-content > .market-report-col .market-report-col-right {
+      flex: 1 1 0;
+    }
+
+    .market-report-col-left .market-report-col > div {
+      width: 49%;
+    }
+
+    .market-report-date {
+      font-family: var(--bbl-font-family-medium, BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif);
+      font-size: 1.25rem;
+      line-height: 1.35;
+      font-weight: 400;
+      margin-bottom: 1rem;
+    }
+
+    a.print-button.icon-print,
+    .button-container,
+    form,
+    input,
+    select,
+    main button,
+    .tabs-content button {
       display: none;
     }
 
@@ -646,6 +814,20 @@ function printElement() {
 
     .table-wrapper {
       font-size: 0.75rem;
+      overflow: visible;
+    }
+
+    .table {
+      overflow: visible;
+      break-inside: auto;
+    }
+
+    .table table {
+      font-family: var(--bbl-font-family-primary, BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif);
+      font-size: 0.75rem;
+      background: var(--bbl-color-white);
+      border-collapse: collapse;
+      border-spacing: 0;
     }
 
     .market-report-page .table table tr td,
@@ -657,8 +839,34 @@ function printElement() {
       border: none;
     }
 
-    tr {
-      border-block: 0.0625rem solid var(--bbl-color-grey-30);
+    .market-report-page .table table,
+    .market-report-page .table table :is(thead, tbody, tfoot, tr) {
+      background: var(--bbl-color-white);
+    }
+
+    .market-report-page .table table tr {
+      border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
+    }
+
+    .market-report-page .table table :is(th, td) {
+      border: none;
+      border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
+      background: var(--bbl-color-white);
+    }
+
+    .market-report-page .table table tr.header-row :is(th, td),
+    .market-report-page .table table[class*="header-"] tr:first-child :is(th, td) {
+      border-top: 0.125rem solid var(--bbl-color-black);
+      border-bottom: 0.125rem solid var(--bbl-color-black);
+      background: var(--bbl-color-white);
+      font-family: var(--bbl-font-family-medium, BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif);
+      font-weight: 400;
+    }
+
+    .market-report-page .table table tr.header-row,
+    .market-report-page .table table[class*="header-"] tr:first-child {
+      border-top: 0.125rem solid var(--bbl-color-black);
+      border-bottom: 0.125rem solid var(--bbl-color-black);
     }
 
     .market-report-page .button-container {
@@ -688,11 +896,7 @@ function printElement() {
       padding-bottom: 0;
       margin-top: 0;
     }
-    
-    .market-report-col {
-      gap: 0;
-    }
-    
+
   `;
 
   const printHtml = `
@@ -700,7 +904,7 @@ function printElement() {
   <html lang="en">
     <head>
       <meta charset="utf-8"/>
-      <title>Print</title>
+      <title>Market Reports</title>
       <link rel="stylesheet" href="/styles/styles.css">
       <link rel="stylesheet" href="/styles/fonts.css">
       <link rel="stylesheet" href="/blocks/header/header.css">
@@ -724,6 +928,11 @@ function printElement() {
           </div>
         </div>
       </header>
+      <section class="market-report-print-cover">
+        <h1>Market Reports</h1>
+        <p>A daily review of the financial markets including FOREX, bonds, commodities and futures market prices, deposit and lending rates and more.</p>
+        <div class="market-report-print-cover-nav">${printTabs}</div>
+      </section>
       ${content.innerHTML.trim()}
     </body>
   </html>
@@ -744,6 +953,7 @@ function printElement() {
 
   printWindow.document.write(printHtml);
   printWindow.document.close();
+  printWindow.history.replaceState(null, '', window.location.href);
 }
 /* Create the top row of the market report */
 /**
