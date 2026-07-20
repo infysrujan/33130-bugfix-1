@@ -59,10 +59,11 @@ function waitForElement(selector, timeout = 5000) {
   });
 }
 
-// Scrolls to the .sub-nav "Back" bar (EDS equivalent of the legacy
-// .control-bar), replicating the old site's scroll-to-promotions-on-load
-// behavior. The short settle delay lets consent/martech and layout stabilize
-// so the smooth scroll isn't cancelled mid-animation.
+// Scrolls to the .sub-nav "Back" bar (EDS equivalent of the legacy .control-bar),
+// so the header and sub-nav end up stacked at the top. The header pins itself via
+// its own scroll listener (adds `is-scrolled`); that listener is lazily attached
+// and can miss a programmatic scroll, so we set the same pinned state directly.
+// The short settle delay lets consent/martech and layout stabilize.
 async function autoScrollToPromotions() {
   const found = await waitForElement('.sub-nav');
   if (!found) return;
@@ -70,10 +71,22 @@ async function autoScrollToPromotions() {
 
   const target = [...document.querySelectorAll('.sub-nav')]
     .find((el) => el.offsetParent !== null) || found;
-  const header = document.querySelector('header');
-  const isFixed = header && ['fixed', 'sticky'].includes(window.getComputedStyle(header).position);
-  const offset = isFixed ? header.offsetHeight : 0;
-  const top = target.getBoundingClientRect().top + window.scrollY - offset;
+
+  // Measure the header bar that pins (desktop main nav / mobile top bar) BEFORE
+  // pinning it (a fixed element reports offsetParent null).
+  const mainNav = document.querySelector('.header .main-nav-desktop');
+  const mobileBar = document.querySelector('.header .mobile-top-bar');
+  const bar = [mainNav, mobileBar].find((el) => el && el.getBoundingClientRect().height > 0);
+  const offset = bar ? bar.getBoundingClientRect().height : 0;
+
+  // Pin the header deterministically — same state header.js sets on scroll —
+  // so it doesn't depend on its lazily-attached scroll listener catching our
+  // programmatic scroll. The listener stays consistent for later user scrolls.
+  mainNav?.classList.add('is-scrolled');
+  mobileBar?.classList.add('is-scrolled');
+  document.querySelector('.header .top-nav')?.classList.add('is-hidden');
+
+  const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - offset);
   window.scrollTo({ top, behavior: 'smooth' });
 }
 
