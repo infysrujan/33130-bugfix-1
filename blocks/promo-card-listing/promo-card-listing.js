@@ -21,6 +21,62 @@ import {
   sortCards,
 } from '../../scripts/utils/card-helpers.js';
 
+// Returns true when the current page path matches one of the configured
+// auto-scroll path templates (comma-separated, `{lang}` placeholder), e.g.
+// `/{lang}/personal/cards/credit-cards/promotions` from `promo-autoscroll-path`.
+function isAutoScrollPage(configValue, lang) {
+  if (!configValue) return false;
+  const current = window.location.pathname.replace(/\/+$/, '').toLowerCase();
+  return String(configValue)
+    .split(',')
+    .map((p) => p.trim().replace(/\{lang\}/g, lang).replace(/\/+$/, '').toLowerCase())
+    .filter(Boolean)
+    .includes(current);
+}
+
+// Resolves with the element once `selector` exists in the DOM, or null after
+// `timeout` ms. The .sub-nav bar is injected by the subnav system, so it may
+// not exist yet when this block decorates.
+function waitForElement(selector, timeout = 5000) {
+  return new Promise((resolve) => {
+    const existing = document.querySelector(selector);
+    if (existing) {
+      resolve(existing);
+    } else {
+      const observer = new MutationObserver(() => {
+        const el = document.querySelector(selector);
+        if (el) {
+          observer.disconnect();
+          resolve(el);
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+      setTimeout(() => {
+        observer.disconnect();
+        resolve(null);
+      }, timeout);
+    }
+  });
+}
+
+// Scrolls to the .sub-nav "Back" bar (EDS equivalent of the legacy
+// .control-bar), replicating the old site's scroll-to-promotions-on-load
+// behavior. The short settle delay lets consent/martech and layout stabilize
+// so the smooth scroll isn't cancelled mid-animation.
+async function autoScrollToPromotions() {
+  const found = await waitForElement('.sub-nav');
+  if (!found) return;
+  await new Promise((resolve) => { setTimeout(resolve, 400); });
+
+  const target = [...document.querySelectorAll('.sub-nav')]
+    .find((el) => el.offsetParent !== null) || found;
+  const header = document.querySelector('header');
+  const isFixed = header && ['fixed', 'sticky'].includes(window.getComputedStyle(header).position);
+  const offset = isFixed ? header.offsetHeight : 0;
+  const top = target.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
 const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
 
 function isTopPromotionsLabel(value) {
@@ -222,49 +278,49 @@ function setupPanel(
 
   if (disableFilters) {
     panel.innerHTML = `
-      <div class="promo-selector-content pad-top-30 pad-bot-30">
-        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
-        <div class="promo-selector-pagination"></div>
-      </div>`;
+<div class="promo-selector-content pad-top-30 pad-bot-30">
+<div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
+<div class="promo-selector-pagination"></div>
+</div>`;
   } else {
     panel.innerHTML = `
-      <div class="promo-selector-filters">
-        <div class="promo-selector-filter${subDisabled ? ' is-disabled' : ''}" data-filter="subcategory">
-          <button class="promo-selector-filter-btn"${subDisabled ? ' disabled' : ''} aria-expanded="false" aria-haspopup="listbox">
-            <span class="promo-selector-filter-label">${labelCategory}</span>
-            <span class="icon-dropdown promo-selector-filter-arrow"></span>
-          </button>
-          <ul class="promo-selector-dropdown" role="listbox">
+<div class="promo-selector-filters">
+<div class="promo-selector-filter${subDisabled ? ' is-disabled' : ''}" data-filter="subcategory">
+<button class="promo-selector-filter-btn"${subDisabled ? ' disabled' : ''} aria-expanded="false" aria-haspopup="listbox">
+<span class="promo-selector-filter-label">${labelCategory}</span>
+<span class="icon-dropdown promo-selector-filter-arrow"></span>
+</button>
+<ul class="promo-selector-dropdown" role="listbox">
             ${buildSubOptions(subcategories, labelCategory)}
-          </ul>
-        </div>
-        <div class="promo-selector-filter" data-filter="cardType">
-          <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
-            <span class="promo-selector-filter-label">${labelCardType}</span>
-            <span class="icon-dropdown promo-selector-filter-arrow"></span>
-          </button>
-          <ul class="promo-selector-dropdown" role="listbox">
+</ul>
+</div>
+<div class="promo-selector-filter" data-filter="cardType">
+<button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
+<span class="promo-selector-filter-label">${labelCardType}</span>
+<span class="icon-dropdown promo-selector-filter-arrow"></span>
+</button>
+<ul class="promo-selector-dropdown" role="listbox">
             ${buildSubOptions(cardTypes, labelCardType)}
-          </ul>
-        </div>
-        <div class="promo-selector-filter" data-filter="area">
-          <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
-            <span class="promo-selector-filter-label">${labelArea}</span>
-            <span class="icon-dropdown promo-selector-filter-arrow"></span>
-          </button>
-          <ul class="promo-selector-dropdown" role="listbox">
+</ul>
+</div>
+<div class="promo-selector-filter" data-filter="area">
+<button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
+<span class="promo-selector-filter-label">${labelArea}</span>
+<span class="icon-dropdown promo-selector-filter-arrow"></span>
+</button>
+<ul class="promo-selector-dropdown" role="listbox">
             ${buildSubOptions(areas, labelArea)}
-          </ul>
-        </div>
-        <div class="promo-selector-filter-actions">
-          <div class="promo-selector-filter-action btn-reset"><button class="promo-selector-btn-reset button secondary" type="button">${labelReset}</button></div>
-          <div class="promo-selector-filter-action btn-search"><button class="promo-selector-btn-search button primary" type="button">${labelSearch}</button></div>
-        </div>
-      </div>
-      <div class="promo-selector-content pad-top-30 pad-bot-30">
-        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
-        <div class="promo-selector-pagination"></div>
-      </div>`;
+</ul>
+</div>
+<div class="promo-selector-filter-actions">
+<div class="promo-selector-filter-action btn-reset"><button class="promo-selector-btn-reset button secondary" type="button">${labelReset}</button></div>
+<div class="promo-selector-filter-action btn-search"><button class="promo-selector-btn-search button primary" type="button">${labelSearch}</button></div>
+</div>
+</div>
+<div class="promo-selector-content pad-top-30 pad-bot-30">
+<div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
+<div class="promo-selector-pagination"></div>
+</div>`;
   }
 
   const gridEl = panel.querySelector('.promo-selector-grid');
@@ -550,6 +606,16 @@ export default async function decorate(block) {
       f.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
     });
   });
+
+  // Auto-scroll to promotions on load, only for pages listed in the config
+  // sheet under `promo-autoscroll-path` (supports en/th via the {lang} token).
+  if (isAutoScrollPage(effectiveConfigs.promoAutoscrollPath, docLang)) {
+    if (document.readyState === 'complete') {
+      autoScrollToPromotions();
+    } else {
+      window.addEventListener('load', autoScrollToPromotions, { once: true });
+    }
+  }
 
   block.hidden = true;
 }
