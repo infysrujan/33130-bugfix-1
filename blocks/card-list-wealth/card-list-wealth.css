@@ -7,81 +7,29 @@
   --clw-description-line-height-mobile: 1.125rem;
   --clw-benefit-line-height: 1.375;
   --clw-cta-line-height: 1.375rem;
-
-  /*
-   * .content below intentionally bleeds past its own box via negative
-   * margin-inline to reach the section edge. When the ancestor section is
-   * already full-bleed (no inset padding left to reclaim), that push
-   * overshoots the viewport; clipping it here keeps the overshoot from
-   * becoming a page-wide horizontal scrollbar.
-   */
-  overflow-x: hidden;
 }
 
 /* ── Common / Mobile-first base ────────────────────────── */
 .card-list-wealth .content {
   display: flex;
   justify-content: flex-start;
+  gap: 1rem;
   margin: 0;
   padding: 0 1.25rem;
   margin-top: 3.125rem;
   margin-bottom: 0.625rem;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: var(--bbl-color-grey-40) transparent;
-}
-
-/*
- * .section.full-bleed-bg .content (main.css) has higher specificity
- * (3 classes vs. 2) and sets `margin: 0 auto`, silently overriding
- * margin-inline here. Matching that ancestor chain wins reliably
- * without relying on source order or !important.
- */
-.section.full-bleed-bg .card-list-wealth .content {
-  margin-inline: -0.625rem;
-}
-
-.card-list-wealth .content::-webkit-scrollbar {
-  height: 0.25rem;
-}
-
-.card-list-wealth .content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.card-list-wealth .content::-webkit-scrollbar-thumb {
-  background: var(--bbl-color-grey-40);
-  border-radius: 6.25rem;
-}
-
-.card-list-item-padding {
-  display: flex;
-  box-sizing: border-box;
-
-  /*
-   * box-sizing: border-box makes this basis the full occupied width
-   * (card + its own left/right padding), so the gutter between cards
-   * lives entirely inside the padding and doesn't need to be subtracted
-   * separately: 1.5 items (1 full + 50% peek) exactly fill the row.
-   */
-  flex: 0 0 calc(100% / 1.5);
-  scroll-snap-align: start;
-  padding: 0 0.625rem 1.25rem;
 }
 
 .card-list-wealth-card {
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
-  width: 100%;
+  flex: 0 0 calc((100% - 1rem) / 1.5);
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-bottom-left-radius: 0.4375rem;
   border-bottom-right-radius: 0.4375rem;
   background: var(--bbl-color-white);
 }
-
 
 /* ── Logo area ─────────────────────────────────────────── */
 .card-logo {
@@ -127,7 +75,7 @@
 
 .card-description {
   font-size: var(--bbl-font-size-b1-mobile);
-  line-height: 1.285rem;
+  line-height: var(--clw-description-line-height-mobile);
   margin: 0;
   color: var(--bbl-color-grey-70);
 }
@@ -145,6 +93,7 @@
 .card-benefit {
   display: flex;
   align-items: center;
+  gap: 0.625rem;
   padding: 0.625rem 0;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-40);
   font-size: var(--bbl-font-size-b1-desktop);
@@ -172,25 +121,17 @@
 .card-list-wealth .button-m.secondary {
   width: 100%;
   max-width: 100%;
-  text-align: center;
 }
 
 /* ── Tablet: > 760px ───────────────────────────────────── */
 @media (width > 47.5rem) {
   .card-list-wealth .content {
+    gap: 1.5rem;
     padding: 0 2.5rem;
   }
 
-  .card-list-item-padding {
-    /*
-     * Right at the tablet breakpoint this is "2 full cards + 50% peek of
-     * the 3rd" (100% / 2.5). Capping the growth at 19.5rem - just under the
-     * desktop per-card width - means the card stops widening before the
-     * desktop breakpoint, so the leftover space progressively reveals more
-     * of the 3rd card the wider the viewport gets, instead of jumping
-     * straight from "half visible" to "fully visible" at the breakpoint.
-     */
-    flex: 0 0 clamp(17rem, calc(100% / 2.5), 19.5rem);
+  .card-list-wealth-card {
+    flex: 0 0 calc((100% - 1.5rem) / 2);
   }
 
 }
@@ -198,29 +139,24 @@
 /* ── Desktop: > 1024px ─────────────────────────────────── */
 @media (width > 64rem) {
   .card-list-wealth .content {
-    overflow-x: visible;
-    scroll-snap-type: none;
+    gap: 2.1875rem;
+    overflow-x: unset;
+    justify-content: center;
   }
 
-  .card-list-item-padding {
-    /* 3 full cards, no scrolling: basis = 100% / 3 (border-box keeps the
-       padding-based gutter inside each item, so no gap needs subtracting) */
-    flex: 0 0 calc(100% / 3);
-    scroll-snap-align: none;
-    padding: 0 1.25rem 2.5rem;
+  .card-list-wealth-card {
+    flex-basis: 25%; 
+    min-width: 17.5rem;
   }
 
   .card-title {
     font-size: var(--bbl-font-size-h3-desktop);
+    line-height: var(--clw-title-line-height-desktop);
   }
 
   .card-description {
     font-size: var(--bbl-font-size-b1-desktop);
-    line-height: 1.285rem;
-  }
-
-  .section.full-bleed-bg .card-list-wealth .content {
-    margin-inline: -1.25rem;
+    line-height: var(--bbl-line-height-b1-desktop);
   }
 
   .card-eyebrow {

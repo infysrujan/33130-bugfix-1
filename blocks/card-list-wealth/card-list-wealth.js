@@ -82,12 +82,8 @@ export default function decorate(block) {
       }
     }
 
-    const itemPadding = document.createElement('div');
-    itemPadding.className = 'card-list-item-padding';
-    itemPadding.append(card);
-
     moveInstrumentation(row, card);
-    content.append(itemPadding);
+    content.append(card);
   });
 
   block.append(content);
