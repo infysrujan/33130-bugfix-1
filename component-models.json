@@ -11926,20 +11926,6 @@
         "value": false
       },
       {
-        "component": "boolean",
-        "name": "topPromotion",
-        "label": "Top Promotion",
-        "valueType": "boolean",
-        "value": false
-      },
-      {
-        "component": "boolean",
-        "name": "responsibleLendingDisclaimerEnabled",
-        "label": "Responsible Lending Disclaimer (appears on the promotional page)",
-        "valueType": "boolean",
-        "value": false
-      },
-      {
         "component": "richtext",
         "name": "responsibleLendingDisclaimerText",
         "label": "Disclaimer Text (appears on the promotional page)",
