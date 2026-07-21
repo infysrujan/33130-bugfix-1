@@ -11788,6 +11788,13 @@
         ]
       },
       {
+        "component": "boolean",
+        "name": "targetLink",
+        "label": "Open link in new tab",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
         "component": "text",
         "name": "promoId",
         "label": "Promo ID",
@@ -11910,13 +11917,6 @@
         "name": "ctaLink",
         "label": "Cta Link",
         "description": "Destination URL for the button"
-      },
-      {
-        "component": "boolean",
-        "name": "targetLink",
-        "label": "Open link in new tab",
-        "valueType": "boolean",
-        "value": false
       }
     ]
   },
