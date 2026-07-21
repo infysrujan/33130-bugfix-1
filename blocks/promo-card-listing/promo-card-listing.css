@@ -10,7 +10,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  margin-inline: calc(-1 * var(--bbl-space-250));
+  gap: 2.5rem;
 }
 
 .promo-selector-grid .listing-card-container {
@@ -188,12 +188,10 @@
 
   .promo-selector-filters {
     display: flex;
-    margin-inline: calc(-1 * var(--bbl-space-250));
     align-items: center;
   }
 
   .promo-selector-filter {
-    padding-inline: var(--bbl-space-250);
     width: 50%;
   }
 
@@ -310,12 +308,11 @@ body.mobile-app-view main > div:first-child {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    margin-inline: calc(-1 * var(--bbl-space-250));
+    gap: 2.5rem;
   }
 
   .promo-selector-filter {
     flex: 1 1 calc(100% / 3);
-    padding-inline: var(--bbl-space-250);
     margin-bottom: 0.625rem;
     box-sizing: border-box;
   }
