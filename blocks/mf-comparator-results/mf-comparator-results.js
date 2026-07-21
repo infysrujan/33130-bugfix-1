@@ -95,18 +95,18 @@ function getCardName(card) {
 function filterAndSortCards(allCards, selectedNames, sourcingMap) {
   const normalizedNames = selectedNames.map(norm);
 
-  const matched = allCards.filter((card) => {
-    const cardName = norm(getCardName(card));
-    return normalizedNames.some((n) => cardName.includes(n) || n.includes(cardName));
-  });
+  const findBestMatch = (n) => {
+    const exact = allCards.find((c) => norm(getCardName(c)) === n);
+    return exact ?? allCards.find((c) => {
+      const cardName = norm(getCardName(c));
+      return cardName.includes(n) || n.includes(cardName);
+    });
+  };
+
+  const matched = normalizedNames.map(findBestMatch).filter(Boolean);
 
   if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
-    return normalizedNames
-      .map((n) => matched.find((c) => {
-        const cardName = norm(getCardName(c));
-        return cardName.includes(n) || n.includes(cardName);
-      }))
-      .filter(Boolean);
+    return matched;
   }
 
   return matched.sort((a, b) => {
