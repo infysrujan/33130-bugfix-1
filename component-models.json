@@ -11944,43 +11944,14 @@
         "component": "richtext",
         "name": "responsibleLendingDisclaimerText",
         "label": "Disclaimer Text (appears on the promotional page)",
-        "valueType": "string",
-        "condition": {
-          "!!": [
-            {
-              "var": "responsibleLendingDisclaimerEnabled"
-            }
-          ]
-        }
+        "valueType": "string"
       },
       {
         "component": "select",
         "name": "isRegister",
         "label": "Is Register",
         "valueType": "string",
-        "value": "N",
-        "options": [
-          {
-            "name": "No Registration",
-            "value": "N"
-          },
-          {
-            "name": "Register",
-            "value": "Y"
-          },
-          {
-            "name": "Register with Data",
-            "value": "D"
-          }
-        ],
-        "condition": {
-          "===": [
-            {
-              "var": "promotionType"
-            },
-            "bangkok-bank-m"
-          ]
-        }
+        "value": "N"
       },
       {
         "component": "text",
