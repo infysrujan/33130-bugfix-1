@@ -11988,19 +11988,7 @@
         "label": "Register Cta Label",
         "valueType": "string",
         "value": "",
-        "required": true,
-        "condition": {
-          "!": [
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "N"
-              ]
-            }
-          ]
-        }
+        "required": true
       }
     ]
   },
