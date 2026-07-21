@@ -162,12 +162,19 @@
           "description": "Destination URL for the button"
         },
         {
+          "component": "container",
+          "name": "targetSettings",
+          "label": "Target settings",
+          "fields": [
+            {
               "component": "boolean",
               "name": "targetLink",
               "label": "Open link in new tab",
               "description": "Enable to open the button link in a new browser tab",
               "valueType": "boolean",
               "value": false
+            }
+          ]
         },
         {
           "component": "boolean",
@@ -208,7 +215,29 @@
           "name": "isRegister",
           "label": "Is Register",
           "valueType": "string",
-          "value": "N"
+          "value": "N",
+          "options": [
+            {
+              "name": "No Registration",
+              "value": "N"
+            },
+            {
+              "name": "Register",
+              "value": "Y"
+            },
+            {
+              "name": "Register with Data",
+              "value": "D"
+            }
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "promotionType"
+              },
+              "bangkok-bank-m"
+            ]
+          }
         },
         {
           "component": "text",
@@ -216,7 +245,19 @@
           "label": "Register Cta Label",
           "valueType": "string",
           "value": "",
-          "required": true
+          "required": true,
+          "condition": {
+            "!": [
+              {
+                "===": [
+                  {
+                    "var": "isRegister"
+                  },
+                  "N"
+                ]
+              }
+            ]
+          }
         }
       ]
     }
