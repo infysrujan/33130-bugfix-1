@@ -287,7 +287,15 @@ export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollT
     }
     if (changed) {
       onPageChange();
-      scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      requestAnimationFrame(() => {
+        if (scrollTarget) {
+          const header = document.querySelector('header');
+          const headerHeight = header ? header.getBoundingClientRect().height : 0;
+          const rectTop = scrollTarget.getBoundingClientRect().top;
+          const targetTop = rectTop + window.scrollY - headerHeight - 50;
+          window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+        }
+      });
     }
   });
 }
