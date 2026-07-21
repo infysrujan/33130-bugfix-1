@@ -221,15 +221,7 @@
               "name": "Register with Data",
               "value": "D"
             }
-          ],
-          "condition": {
-            "===": [
-              {
-                "var": "promotionType"
-              },
-              "bangkok-bank-m"
-            ]
-          }
+          ]
         },
         {
           "component": "text",
