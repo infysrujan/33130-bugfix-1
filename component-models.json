@@ -11917,41 +11917,6 @@
         "label": "Open link in new tab",
         "valueType": "boolean",
         "value": false
-      },
-      {
-        "component": "richtext",
-        "name": "responsibleLendingDisclaimerText",
-        "label": "Disclaimer Text (appears on the promotional page)",
-        "valueType": "string"
-      },
-      {
-        "component": "select",
-        "name": "isRegister",
-        "label": "Is Register",
-        "valueType": "string",
-        "value": "N",
-        "options": [
-          {
-            "name": "No Registration",
-            "value": "N"
-          },
-          {
-            "name": "Register",
-            "value": "Y"
-          },
-          {
-            "name": "Register with Data",
-            "value": "D"
-          }
-        ]
-      },
-      {
-        "component": "text",
-        "name": "registerCtaLabel",
-        "label": "Register Cta Label",
-        "valueType": "string",
-        "value": "",
-        "required": true
       }
     ]
   },
