@@ -193,14 +193,7 @@
           "component": "richtext",
           "name": "responsibleLendingDisclaimerText",
           "label": "Disclaimer Text (appears on the promotional page)",
-          "valueType": "string",
-          "condition": {
-            "!!": [
-              {
-                "var": "responsibleLendingDisclaimerEnabled"
-              }
-            ]
-          }
+          "valueType": "string"
         },
         {
           "component": "select",
