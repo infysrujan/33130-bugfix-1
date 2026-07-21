@@ -11919,13 +11919,6 @@
         "value": false
       },
       {
-        "component": "boolean",
-        "name": "topCategory",
-        "label": "Top Category",
-        "valueType": "boolean",
-        "value": false
-      },
-      {
         "component": "richtext",
         "name": "responsibleLendingDisclaimerText",
         "label": "Disclaimer Text (appears on the promotional page)",
