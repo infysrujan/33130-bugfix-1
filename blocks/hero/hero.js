@@ -292,8 +292,6 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem, shareUrl) {
   });
   seekBar.addEventListener('input', () => { if (video.duration) video.currentTime = (seekBar.value / 1000) * video.duration; });
 
-  wireShare(bar.querySelector('.hero-ctrl-share'));
-  wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), videoWrapper);
   wireShare(bar.querySelector('.hero-ctrl-share'), shareUrl);
   wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
 }

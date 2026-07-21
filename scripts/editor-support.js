@@ -11,6 +11,8 @@ import {
 import { decorateRichtext } from './editor-support-rte.js';
 import { decorateMain } from './scripts.js';
 
+const pendingBlockResources = new Set();
+
 async function applyChanges(event) {
   // redecorate default content and blocks on patches (in the properties rail)
   const { detail } = event;
@@ -53,15 +55,21 @@ async function applyChanges(event) {
       if (block.dataset.aueModel === 'form') {
         return true;
       } else if (newBlock) {
-        newBlock.style.display = 'none';
-        block.insertAdjacentElement('afterend', newBlock);
-        decorateButtons(newBlock);
-        decorateIcons(newBlock);
-        decorateBlock(newBlock);
-        decorateRichtext(newBlock);
-        await loadBlock(newBlock);
-        block.remove();
-        newBlock.style.display = null;
+        if (pendingBlockResources.has(blockResource)) return true;
+        pendingBlockResources.add(blockResource);
+        try {
+          newBlock.style.display = 'none';
+          block.insertAdjacentElement('afterend', newBlock);
+          decorateButtons(newBlock);
+          decorateIcons(newBlock);
+          decorateBlock(newBlock);
+          decorateRichtext(newBlock);
+          await loadBlock(newBlock);
+          block.remove();
+          newBlock.style.display = null;
+        } finally {
+          pendingBlockResources.delete(blockResource);
+        }
         return true;
       }
     } else {

@@ -11912,19 +11912,12 @@
         "description": "Destination URL for the button"
       },
       {
-        "component": "container",
-        "name": "targetSettings",
-        "label": "Target settings",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "targetLink",
-            "label": "Open link in new tab",
-            "description": "Enable to open the button link in a new browser tab",
-            "valueType": "boolean",
-            "value": false
-          }
-        ]
+        "component": "boolean",
+        "name": "targetLink",
+        "label": "Open link in new tab",
+        "description": "Enable to open the button link in a new browser tab",
+        "valueType": "boolean",
+        "value": false
       },
       {
         "component": "boolean",
