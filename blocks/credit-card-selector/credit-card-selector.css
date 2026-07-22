@@ -427,14 +427,14 @@
    button hangs downward, aligned to the divider line. */
 .credit-card-selector .collapse-toggle-button {
   position: absolute;
-  bottom: 0.125rem;
+  top: -4.25rem;
   right: var(--bbl-space-300);
   transform: translateY(100%);
   background: var(--bbl-color-grey-10);
   cursor: pointer;
   padding: 0;
-  width: 2.75rem;
-  height: 1.75rem;
+  width: 3rem;
+  height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -455,6 +455,7 @@
   display: block;
   position: relative;
   z-index: 1;
+  top: -0.0625rem;
   line-height: 1;
   transform: rotate(180deg);
   transition: transform 0.3s ease;
@@ -563,63 +564,13 @@
   gap: 0.625rem;
 }
 
-/* Learn More — full-width solid blue (primary)
-   Suppress card-list's default tertiary arrow ::before icon               */
-
-.card-list.credit-card .cards-list-button a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 2.75rem;
-  padding: 0 var(--bbl-space-200);
-  box-sizing: border-box;
-  border-radius: 0.4375rem;
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-medium);
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-  border: 0.0039rem solid var(--bbl-color-active-blue);
-}
-
 .card-list.credit-card .cards-list-button a::before,
 .card-list.credit-card .cards-list-button a::after {
   display: none;
 }
 
-.card-list.credit-card .cards-list-button a:hover {
-  background-color: var(--bbl-color-blue-90);
-  border: none;
-  text-decoration: none;
-}
-
-/* Compare — full-width outlined (secondary) */
-
 .card-list.credit-card .ccs-compare-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 100%;
-  min-height: 2.75rem;
-  padding: 0 var(--bbl-space-200);
-  box-sizing: border-box;
-  border-radius: 0.4375rem;
-  background-color: transparent;
-  color: var(--bbl-color-active-blue);
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-medium);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.card-list.credit-card .ccs-compare-btn:hover {
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
 }
 
 .card-list.credit-card .ccs-compare-btn.is-comparing {

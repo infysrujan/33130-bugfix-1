@@ -261,6 +261,7 @@ function buildCardBlock(cards, doc, lang, labels) {
     buttonWrapper.className = 'cards-list-button';
     const link = doc.createElement('a');
     link.href = learnHref;
+    link.className = 'button-m primary';
     link.textContent = labels.learnMore;
     buttonWrapper.appendChild(link);
     inner.appendChild(buttonWrapper);
@@ -278,7 +279,7 @@ function addCompareButtons(blockEl, doc, labels) {
     const item = wrapper.closest('.cards-list-item');
     const btn = doc.createElement('button');
     btn.type = 'button';
-    btn.className = 'ccs-compare-btn';
+    btn.className = 'ccs-compare-btn button-m secondary';
     btn.textContent = labels.compare;
     const h3 = item?.querySelector('h3');
     btn.dataset.cardName = h3?.textContent?.trim() ?? '';
