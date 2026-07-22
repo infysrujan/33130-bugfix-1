@@ -461,9 +461,32 @@ export default async function decorate(block) {
     const buyingData = state.chartData.map((d) => d.buyingRate);
     const sellingData = state.chartData.map((d) => d.sellingRate);
 
-    const allValues = [...buyingData, ...sellingData].filter((v) => v !== null);
-    const minVal = Math.floor(Math.min(...allValues)) - 1;
-    const maxVal = Math.ceil(Math.max(...allValues)) + 1;
+    // Fixed row-step tick selection: pick a spacing (rows between ticks) from
+    // the total row count and a target label count, then keep every
+    // `spacing`-th row starting at 0. The data is business-days-only (no
+    // weekend/holiday rows), so a constant row-step naturally produces the
+    // "mostly ~1 week, occasionally shorter/longer around holidays" cadence
+    // seen on the reference site — always closing with the most recent row
+    // as the final tick, even if that falls short of a full step.
+    const TARGET_TICK_COUNT = 18;
+    const lastIndex = labels.length - 1;
+    const tickIndices = new Set();
+    if (lastIndex >= 0) {
+      const spacing = Math.max(1, Math.round(labels.length / TARGET_TICK_COUNT));
+      const naturalTicks = [];
+      for (let idx = 0; idx <= lastIndex; idx += spacing) {
+        naturalTicks.push(idx);
+      }
+      // The final data row is always forced onto the axis. If the last
+      // natural step landed close enough to crowd it (nearer than a full
+      // spacing), drop that redundant step rather than show both.
+      const lastNatural = naturalTicks[naturalTicks.length - 1];
+      if (lastNatural !== undefined && lastIndex - lastNatural < spacing) {
+        naturalTicks.pop();
+      }
+      naturalTicks.forEach((idx) => tickIndices.add(idx));
+      tickIndices.add(lastIndex);
+    }
 
     // Plugin: draw halo on the cross-dataset point at the same index
     const crossHighlightPlugin = {
@@ -555,6 +578,9 @@ export default async function decorate(block) {
         },
         scales: {
           x: {
+            afterBuildTicks(axis) {
+              axis.ticks = axis.ticks.filter((tick) => tickIndices.has(tick.value));
+            },
             grid: {
               display: true,
               color: 'rgba(0,0,0,0.08)',
@@ -562,24 +588,20 @@ export default async function decorate(block) {
             ticks: {
               maxRotation: 45,
               minRotation: 45,
-              autoSkip: true,
-              maxTicksLimit: 6,
+              autoSkip: false,
               font: { size: 13, weight: '700' },
               color: '#000',
             },
           },
           y: {
-            min: minVal,
-            max: maxVal,
+            grace: '5%',
             grid: {
               display: true,
               color: 'rgba(0,0,0,0.08)',
             },
             ticks: {
-              stepSize: 1,
               font: { size: 13, weight: '700' },
               color: '#000',
-              callback: (value) => (Number.isInteger(value) ? value : null),
             },
           },
         },
