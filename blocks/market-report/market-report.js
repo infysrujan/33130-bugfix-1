@@ -690,10 +690,7 @@ function printElement() {
     }
 
     .market-report-print-cover {
-      min-height: 8.75in;
       text-align: center;
-      break-after: page;
-      page-break-after: always;
     }
 
     .market-report-print-cover h1 {
