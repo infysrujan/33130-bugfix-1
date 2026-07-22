@@ -191,6 +191,7 @@ function printForexRates(block) {
     .forex-rates-table tbody td {
       padding-block: 0.15rem; padding-inline: 20px; font-size: 0.5rem; height: auto; vertical-align: middle;
       border-bottom: 0.0625rem solid var(--bbl-color-black); border-right: 0.0625rem solid var(--bbl-color-black);
+      color: var(--bbl-color-black);
     }
     .forex-rates-table tbody td:last-child { border-right: none; }
     .forex-rates-table tbody tr:last-child td { border-bottom: none; }
