@@ -620,9 +620,28 @@ function applyTextSmallToTableFollowParagraphs(panel) {
 }
 
 function printElement() {
-  // Clone the container to avoid changing the DOM
-  const originalContent = document.querySelector('main');
-  const content = originalContent ? originalContent.cloneNode(true) : null;
+  // Print the section containing the market-report tabs, plus any immediately
+  // following sibling sections that belong to the report (e.g. a standalone
+  // "Remark" disclaimer section authored separately from the tabs) — but stop
+  // before global/unrelated sections like "Tools & Assistance", which are
+  // marked with data-is-subnav-section="true". Cloning the whole <main>
+  // instead pulled in every such unrelated section on the page.
+  const tabPanel = document.querySelector('[role="tabpanel"]');
+  const tabsSection = tabPanel?.closest('.section');
+
+  let content;
+  if (tabsSection) {
+    content = document.createElement('div');
+    content.appendChild(tabsSection.cloneNode(true));
+    let sibling = tabsSection.nextElementSibling;
+    while (sibling?.classList.contains('section') && sibling.dataset.isSubnavSection !== 'true') {
+      content.appendChild(sibling.cloneNode(true));
+      sibling = sibling.nextElementSibling;
+    }
+  } else {
+    const mainEl = document.querySelector('main');
+    content = mainEl ? mainEl.cloneNode(true) : null;
+  }
   if (!content) return;
 
   const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
@@ -857,22 +876,40 @@ function printElement() {
     }
 
     .market-report-page .table table,
-    .market-report-page .table table :is(thead, tbody, tfoot, tr) {
+    .market-report-page .table table :is(thead, tbody, tfoot, tr),
+    .market-report-page table,
+    .market-report-page table :is(thead, tbody, tfoot, tr) {
       background: var(--bbl-color-white);
     }
 
-    .market-report-page .table table tr {
+    .market-report-page table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+    }
+
+    .market-report-page .table table tr,
+    .market-report-page table tr {
       border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
     }
 
-    .market-report-page .table table :is(th, td) {
+    .market-report-page .table table :is(th, td),
+    .market-report-page table :is(th, td) {
       border: none;
       border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
       background: var(--bbl-color-white);
     }
 
+    /* table.css's base .zebra-light-gray rule isn't scoped to print, so it
+       still tints odd rows grey here unless explicitly cancelled. */
+    .market-report-page .table table.zebra-light-gray tr:nth-child(odd) :is(th, td),
+    .market-report-page table.zebra-light-gray tr:nth-child(odd) :is(th, td) {
+      background: var(--bbl-color-white);
+    }
+
     .market-report-page .table table tr.header-row :is(th, td),
-    .market-report-page .table table[class*="header-"] tr:first-child :is(th, td) {
+    .market-report-page .table table[class*="header-"] tr:first-child :is(th, td),
+    .market-report-page table tr:first-child :is(th, td) {
       border-top: 0.125rem solid var(--bbl-color-black);
       border-bottom: 0.125rem solid var(--bbl-color-black);
       background: var(--bbl-color-white);
@@ -881,13 +918,25 @@ function printElement() {
     }
 
     .market-report-page .table table tr.header-row,
-    .market-report-page .table table[class*="header-"] tr:first-child {
+    .market-report-page .table table[class*="header-"] tr:first-child,
+    .market-report-page table tr:first-child {
       border-top: 0.125rem solid var(--bbl-color-black);
       border-bottom: 0.125rem solid var(--bbl-color-black);
     }
 
     .market-report-page .button-container {
       display: none;
+    }
+
+    /* The disclaimer/"Remark" paragraph sits directly in .table-wrapper,
+       after (not inside) .market-report-page — force it visible as a
+       full-width block so it isn't lost to a flex/collapse context. */
+    .table-wrapper > p {
+      display: block;
+      width: 100%;
+      clear: both;
+      margin-top: 1rem;
+      color: var(--bbl-color-black);
     }
 
     .table table.header-blue tr.header-row {

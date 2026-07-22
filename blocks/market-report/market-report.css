@@ -216,13 +216,15 @@
     border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
   }
 
-  .market-report-page .table table.zebra-light-gray tr:nth-child(odd) {
-    background: var(--bbl-color-white);
-  }
-
   .market-report-page .table table :is(th, td) {
     border: none;
     border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
+    background: var(--bbl-color-white);
+  }
+
+  /* table.css's base .zebra-light-gray rule isn't scoped to print, so it
+     still tints odd rows grey here unless explicitly cancelled. */
+  .market-report-page .table table.zebra-light-gray tr:nth-child(odd) :is(th, td) {
     background: var(--bbl-color-white);
   }
 
