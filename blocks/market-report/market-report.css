@@ -202,20 +202,24 @@
     margin: 1rem 0 2rem;
   }
 
+  .market-report-page table,
   .market-report-page .table table {
     border-collapse: collapse;
     border-spacing: 0;
+    background: var(--bbl-color-white);
   }
 
-  .market-report-page .table table,
+  .market-report-page table :is(thead, tbody, tfoot, tr),
   .market-report-page .table table :is(thead, tbody, tfoot, tr) {
     background: var(--bbl-color-white);
   }
 
+  .market-report-page table tr,
   .market-report-page .table table tr {
     border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
   }
 
+  .market-report-page table :is(th, td),
   .market-report-page .table table :is(th, td) {
     border: none;
     border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
@@ -224,10 +228,12 @@
 
   /* table.css's base .zebra-light-gray rule isn't scoped to print, so it
      still tints odd rows grey here unless explicitly cancelled. */
+  .market-report-page table.zebra-light-gray tr:nth-child(odd) :is(th, td),
   .market-report-page .table table.zebra-light-gray tr:nth-child(odd) :is(th, td) {
     background: var(--bbl-color-white);
   }
 
+  .market-report-page table tr:first-child :is(th, td),
   .market-report-page .table table tr.header-row :is(th, td),
   .market-report-page .table table[class*="header-"] tr:first-child :is(th, td) {
     border-top: 0.125rem solid var(--bbl-color-black);
@@ -237,6 +243,7 @@
     font-weight: 400;
   }
 
+  .market-report-page table tr:first-child,
   .market-report-page .table table tr.header-row,
   .market-report-page .table table[class*="header-"] tr:first-child {
     border-top: 0.125rem solid var(--bbl-color-black);
