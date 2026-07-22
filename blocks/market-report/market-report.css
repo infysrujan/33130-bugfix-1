@@ -151,3 +151,98 @@
     width: 49%;
   }
 }
+
+/* Print: the desktop-only two-column split above never matches at A4 print
+   width (~44.9rem effective), so force it unconditionally for print. */
+@media print {
+  .section > .default-content-wrapper,
+  .section .tabs-nav-wrapper {
+    display: none;
+  }
+
+  .market-report-col {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+  }
+
+  .market-report-page-content > .market-report-col .market-report-col-left {
+    flex: 2 1 0;
+  }
+
+  .market-report-page-content > .market-report-col .market-report-col-right {
+    flex: 1 1 0;
+  }
+
+  .market-report-col-left .market-report-col > div {
+    width: 49%;
+  }
+
+  .market-report-date {
+    font-family: var(--bbl-font-family-medium);
+    font-size: 1.25rem;
+    line-height: 1.35;
+    font-weight: 400;
+    margin-bottom: 1rem;
+  }
+
+  a.print-button.icon-print,
+  .button-container,
+  form,
+  input,
+  select,
+  main button,
+  .tabs-content button,
+  .market-report-page a.print-button.icon-print,
+  .market-report-page .button-container {
+    display: none;
+  }
+
+  .market-report-page .table.block {
+    margin: 1rem 0 2rem;
+  }
+
+  .market-report-page .table table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  .market-report-page .table table,
+  .market-report-page .table table :is(thead, tbody, tfoot, tr) {
+    background: var(--bbl-color-white);
+  }
+
+  .market-report-page .table table tr {
+    border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
+  }
+
+  .market-report-page .table table.zebra-light-gray tr:nth-child(odd) {
+    background: var(--bbl-color-white);
+  }
+
+  .market-report-page .table table :is(th, td) {
+    border: none;
+    border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
+    background: var(--bbl-color-white);
+  }
+
+  .market-report-page .table table tr.header-row :is(th, td),
+  .market-report-page .table table[class*="header-"] tr:first-child :is(th, td) {
+    border-top: 0.125rem solid var(--bbl-color-black);
+    border-bottom: 0.125rem solid var(--bbl-color-black);
+    background: var(--bbl-color-white);
+    font-family: var(--bbl-font-family-medium);
+    font-weight: 400;
+  }
+
+  .market-report-page .table table tr.header-row,
+  .market-report-page .table table[class*="header-"] tr:first-child {
+    border-top: 0.125rem solid var(--bbl-color-black);
+    border-bottom: 0.125rem solid var(--bbl-color-black);
+  }
+
+  .market-report-page .table table tr td,
+  .market-report-page .table table[class*="header-"] tr.header-row td {
+    height: 1rem;
+  }
+}
