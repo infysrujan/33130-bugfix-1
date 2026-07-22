@@ -13,6 +13,10 @@
   gap: 2.5rem;
 }
 
+.promo-selector-grid .listing-card{
+  margin-bottom: 0;
+}
+
 .promo-selector-grid .listing-card-container {
   margin-inline: 0;
 }
@@ -52,7 +56,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding-bottom: 1.875rem;
+  padding-block: 2.5rem 1.875rem;
 }
 
 .promo-selector-pagination:empty {
@@ -170,7 +174,7 @@
 
 @media (width > 47.5rem) {
     .promo-selector-grid{
-    justify-content: space-between;
+    /* justify-content: space-between; */
     gap: 1.25rem;
   }
   
