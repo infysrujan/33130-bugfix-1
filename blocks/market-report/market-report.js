@@ -693,7 +693,11 @@ function printElement() {
       padding-inline: 0;
     }
 
-    .section > .default-content-wrapper,
+    /* Only hide the tabs section's own title/description (redundant with the
+       dedicated print cover) — not every section's default-content-wrapper,
+       which also catches unrelated sections like the standalone Remark
+       disclaimer and hides them too. */
+    .section:has([role="tabpanel"]) > .default-content-wrapper,
     .section .tabs-nav-wrapper {
       display: none;
     }
