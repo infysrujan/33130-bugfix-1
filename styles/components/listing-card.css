@@ -235,7 +235,7 @@
   }
 
   .listing-card-container {
-    width: 50%;
+    width: calc(50% - 0.625rem);
     box-sizing: border-box;
   }
 

@@ -169,6 +169,11 @@
 }
 
 @media (width > 47.5rem) {
+    .promo-selector-grid{
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+  
   .promo-selector-grid:has(.promo-selector-empty) {
     width: 50%;
     padding-inline: 0.625rem;
