@@ -35,6 +35,7 @@ function buildSearchBlob(record) {
     record.title,
     record.description,
     record.keywords,
+    record.path,
   ]
     .filter(Boolean)
     .join(' ')
