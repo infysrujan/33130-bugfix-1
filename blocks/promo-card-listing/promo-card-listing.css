@@ -6,11 +6,15 @@
   overflow: visible;
 }
 
+.promo-card-listing {
+  padding-bottom: 0;
+}
+
 .promo-selector-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 2.5rem;
+  gap: 1.25rem;
 }
 
 .promo-selector-grid .listing-card{
@@ -56,7 +60,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding-block: 2.5rem 1.875rem;
+  padding-block: 2.5rem 0;
 }
 
 .promo-selector-pagination:empty {
@@ -173,9 +177,9 @@
 }
 
 @media (width > 47.5rem) {
-    .promo-selector-grid{
+  .promo-selector-grid {
     /* justify-content: space-between; */
-    gap: 1.25rem;
+    gap: 2.50rem;
   }
   
   .promo-selector-grid:has(.promo-selector-empty) {
