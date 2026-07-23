@@ -72,7 +72,11 @@ function filterQueryIndex(records, keywords) {
   const tokens = getSearchTokens(keywords);
   return records.filter((r) => {
     const searchBlob = buildSearchBlob(r);
-    return tokens.some((t) => searchBlob.includes(t));
+    return tokens.some((t) => {
+      if (isThaiText(t)) return searchBlob.includes(t);
+      const escaped = t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return new RegExp(`\\b${escaped}\\b`).test(searchBlob);
+    });
   });
 }
 
