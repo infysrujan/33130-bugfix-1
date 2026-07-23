@@ -33,14 +33,28 @@ function isAutoScrollPage(configValue, lang) {
     .includes(current);
 }
 
-// Scroll so the target sits `gap` px below the fixed header. Measures the header
-// bar's height (0 if there's no header, e.g. app view) and scrolls to that px.
+// Scroll so the target sits `gap` px below the fixed header. First nudge the
+// page instantly past the header's fix threshold and fire a scroll event, so
+// header.js flips into its fixed state (top-nav .is-hidden, main-nav-desktop
+// .is-scrolled) and stays visible for the whole smooth scroll. Then measure the
+// header height (0 if there's no header, e.g. app view) and smooth-scroll to px.
 function scrollToPromotions(target, gap) {
   if (!target) return;
-  const bar = document.querySelector('.header .main-nav-desktop, .header .mobile-top-bar');
-  const headerHeight = bar ? bar.getBoundingClientRect().height : 0;
-  const targetTop = target.getBoundingClientRect().top + window.scrollY - headerHeight - gap;
-  window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+
+  let preScroll = 1;
+  if (window.matchMedia('(min-width: 1025px)').matches) {
+    const topNav = document.querySelector('.header .top-nav');
+    preScroll = topNav ? Math.ceil(topNav.getBoundingClientRect().height) + 1 : 1;
+  }
+  window.scrollTo({ top: preScroll, behavior: 'auto' });
+  window.dispatchEvent(new Event('scroll'));
+
+  requestAnimationFrame(() => {
+    const bar = document.querySelector('.header .main-nav-desktop, .header .mobile-top-bar');
+    const headerHeight = bar ? bar.getBoundingClientRect().height : 0;
+    const targetTop = target.getBoundingClientRect().top + window.scrollY - headerHeight - gap;
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+  });
 }
 
 const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
@@ -586,7 +600,7 @@ export default async function decorate(block) {
     const scrollTarget = tabsContainer || document.querySelector('.tabs') || promoSection;
     if (scrollTarget) {
       document.documentElement.dataset.promoAutoscrolled = '1';
-      const gap = 65; // px above the tab; tune here — no config/authoring needed
+      const gap = 150; // px above the tab; tune here — no config/authoring needed
       const run = () => scrollToPromotions(scrollTarget, gap);
       if (document.readyState === 'complete') run();
       else window.addEventListener('load', run, { once: true });
