@@ -33,28 +33,45 @@ function isAutoScrollPage(configValue, lang) {
     .includes(current);
 }
 
-// Scroll so the target sits `gap` px below the fixed header. First nudge the
-// page instantly past the header's fix threshold and fire a scroll event, so
-// header.js flips into its fixed state (top-nav .is-hidden, main-nav-desktop
-// .is-scrolled) and stays visible for the whole smooth scroll. Then measure the
-// header height (0 if there's no header, e.g. app view) and smooth-scroll to px.
+// Scroll so the target sits `gap` px below the fixed header. The header loads
+// async, so first wait for its bar to exist (its scroll listener is attached
+// with it) — otherwise a cold first load scrolls before header.js can react and
+// the header never appears. Then nudge past the header's fix threshold + fire a
+// scroll event so header.js flips into its fixed state (top-nav .is-hidden,
+// main-nav-desktop .is-scrolled) and stays visible for the whole smooth scroll,
+// measure the header height (0 if none, e.g. app view), and smooth-scroll to px.
+// Polls up to 3s, then scrolls anyway with a 0 header offset.
 function scrollToPromotions(target, gap) {
   if (!target) return;
+  const selector = '.header .main-nav-desktop, .header .mobile-top-bar';
 
-  let preScroll = 1;
-  if (window.matchMedia('(min-width: 1025px)').matches) {
-    const topNav = document.querySelector('.header .top-nav');
-    preScroll = topNav ? Math.ceil(topNav.getBoundingClientRect().height) + 1 : 1;
-  }
-  window.scrollTo({ top: preScroll, behavior: 'auto' });
-  window.dispatchEvent(new Event('scroll'));
+  const doScroll = (bar) => {
+    let preScroll = 1;
+    if (window.matchMedia('(min-width: 1025px)').matches) {
+      const topNav = document.querySelector('.header .top-nav');
+      preScroll = topNav ? Math.ceil(topNav.getBoundingClientRect().height) + 1 : 1;
+    }
+    window.scrollTo({ top: preScroll, behavior: 'auto' });
+    window.dispatchEvent(new Event('scroll'));
+    requestAnimationFrame(() => {
+      const headerHeight = bar ? bar.getBoundingClientRect().height : 0;
+      const targetTop = target.getBoundingClientRect().top + window.scrollY - headerHeight - gap;
+      window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+    });
+  };
 
-  requestAnimationFrame(() => {
-    const bar = document.querySelector('.header .main-nav-desktop, .header .mobile-top-bar');
-    const headerHeight = bar ? bar.getBoundingClientRect().height : 0;
-    const targetTop = target.getBoundingClientRect().top + window.scrollY - headerHeight - gap;
-    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
-  });
+  const deadline = Date.now() + 3000;
+  const waitForHeader = () => {
+    const bar = document.querySelector(selector);
+    if (bar) {
+      doScroll(bar);
+    } else if (Date.now() < deadline) {
+      setTimeout(waitForHeader, 100);
+    } else {
+      doScroll(null);
+    }
+  };
+  waitForHeader();
 }
 
 const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
