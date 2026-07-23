@@ -21,6 +21,28 @@ import {
   sortCards,
 } from '../../scripts/utils/card-helpers.js';
 
+// Match current path against promo-autoscroll-path config (supports {lang}).
+function isAutoScrollPage(configValue, lang) {
+  if (!configValue) return false;
+  const safeLang = String(lang || '');
+  const current = window.location.pathname.replace(/\/+$/, '').toLowerCase();
+  return String(configValue)
+    .split(',')
+    .map((p) => p.trim().replace(/\{lang\}/g, safeLang).replace(/\/+$/, '').toLowerCase())
+    .filter(Boolean)
+    .includes(current);
+}
+
+// Scroll so the target sits `gap` px below the fixed header. Measures the header
+// bar's height (0 if there's no header, e.g. app view) and scrolls to that px.
+function scrollToPromotions(target, gap) {
+  if (!target) return;
+  const bar = document.querySelector('.header .main-nav-desktop, .header .mobile-top-bar');
+  const headerHeight = bar ? bar.getBoundingClientRect().height : 0;
+  const targetTop = target.getBoundingClientRect().top + window.scrollY - headerHeight - gap;
+  window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+}
+
 const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
 
 function isTopPromotionsLabel(value) {
@@ -294,7 +316,7 @@ function setupPanel(
             const ctaPath = url.pathname + url.search + url.hash;
             cardData = { ...c, ctaLink: isInternal ? ctaPath : url.toString() };
           } catch {
-            // Keep original ctaLink if URL parsing fails completely
+            // Keep original ctaLink on parse failure.
           }
         }
         const cardOptions = buildCardOptions(cardData);
@@ -340,26 +362,31 @@ function setupPanel(
   });
 
   const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
+
   function makeSingleSelect(filterAttr, stateKey, defaultLabel) {
     panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
       opt.addEventListener('click', () => {
+        const isActive = opt.classList.contains('is-active');
         panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`)
           .forEach((o) => o.classList.remove('is-active'));
-        opt.classList.add('is-active');
-        const val = opt.dataset.value || '';
-        state[stateKey] = val;
         const labelEl = panel.querySelector(
           `[data-filter="${filterAttr}"] .promo-selector-filter-label`,
         );
-        labelEl.textContent = val || defaultLabel;
-        const filterEl = panel.querySelector(`[data-filter="${filterAttr}"]`);
-        filterEl?.classList.remove('is-open');
-        filterEl?.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
+        if (isActive) {
+          state[stateKey] = '';
+          labelEl.textContent = defaultLabel;
+        } else {
+          opt.classList.add('is-active');
+          state[stateKey] = opt.dataset.value;
+          labelEl.textContent = opt.dataset.value;
+        }
+        panel.querySelector(`[data-filter="${filterAttr}"]`).classList.remove('is-open');
         state.page = 1;
         if (isDesktop()) render();
       });
     });
   }
+
   makeSingleSelect('subcategory', 'subcategory', labelCategory);
   makeSingleSelect('cardType', 'cardType', labelCardType);
   makeSingleSelect('area', 'area', labelArea);
@@ -482,6 +509,10 @@ export default async function decorate(block) {
   const promoSection = block.closest('.section');
   if (promoSection) promoSection.classList.add('promo-card-listing-section');
 
+  // Skip autoscroll when the URL targets an anchor (don't fight deep links).
+  const autoScroll = !window.location.hash
+    && isAutoScrollPage(effectiveConfigs.promoAutoscrollPath, docLang);
+
   if (tabsContainer) {
     const tabsNav = tabsContainer.querySelector('.tabs-nav');
     const navWrapper = tabsContainer.querySelector('.tabs-nav-wrapper');
@@ -534,6 +565,7 @@ export default async function decorate(block) {
         hidePagination: disableFilters && isBbm,
         isBbm,
         isHighlightsPanel,
+        immediate: autoScroll, // render now so target height is stable before scroll
         baseUrl: promotionApi?.baseUrl,
       },
     );
@@ -545,6 +577,21 @@ export default async function decorate(block) {
       f.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
     });
   });
+
+  // Autoscroll on configured pages; guard so multiple blocks don't compete.
+  if (autoScroll && !document.documentElement.dataset.promoAutoscrolled) {
+    // Scroll to the tabs (always present when the listing renders) and stop a
+    // configurable gap above them, so they sit just below the fixed header
+    // instead of jammed against it. No dependency on any authored element.
+    const scrollTarget = tabsContainer || document.querySelector('.tabs') || promoSection;
+    if (scrollTarget) {
+      document.documentElement.dataset.promoAutoscrolled = '1';
+      const gap = 65; // px above the tab; tune here — no config/authoring needed
+      const run = () => scrollToPromotions(scrollTarget, gap);
+      if (document.readyState === 'complete') run();
+      else window.addEventListener('load', run, { once: true });
+    }
+  }
 
   block.hidden = true;
 }
