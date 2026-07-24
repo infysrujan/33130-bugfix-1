@@ -119,11 +119,6 @@
   font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   color: var(--bbl-color-grey-85);
   margin: 0;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
 }
 
 /* --- Button --- */
@@ -171,21 +166,18 @@
 
 .content-insert-cards .intro-info {
   position: absolute;
-  bottom: 1.875rem;
-  right: 1.875rem;
   top: 1.875rem;
+  right: 1.875rem;
   max-width: 15.3125rem;
   width: 15.3125rem;
   box-sizing: border-box;
   background-color: var(--bbl-color-white);
   border-radius: var(--bbl-rounded-100);
   padding: var(--bbl-space-250);
-  padding-bottom: calc(var(--bbl-space-250) + 2.75rem + var(--bbl-space-150));
   box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 15%);
   border: none;
   min-height: auto;
   justify-content: flex-start;
-  overflow: hidden;
 }
 
 .content-insert-cards .text-default {
@@ -197,15 +189,6 @@
   margin-bottom: var(--bbl-space-150);
 }
 
-.content-insert-cards .button-group,
-.content-insert-cards .button-container {
-  position: absolute;
-  left: var(--bbl-space-250);
-  right: var(--bbl-space-250);
-  bottom: var(--bbl-space-250);
-  margin: 0;
-  padding: 0;
-}
 }
 
 @media (width > 64rem) {
