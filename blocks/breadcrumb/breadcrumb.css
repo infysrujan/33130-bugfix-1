@@ -157,6 +157,10 @@ body.mobile-app-view .breadcrumb {
   .breadcrumb ol {
     margin-bottom: 20px;
   }
+
+  .breadcrumb {
+    padding-bottom: 0;
+  }
 }
 
 @media (width > 64rem) {
