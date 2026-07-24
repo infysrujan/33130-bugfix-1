@@ -71,6 +71,10 @@ function getSearchTokens(keywords) {
 
 function filterQueryIndex(records, keywords) {
   const tokens = getSearchTokens(keywords);
+  // eslint-disable-next-line no-console
+  console.log('[searchApi] tokens:', tokens, 'total records:', records.length);
+  // eslint-disable-next-line no-console
+  records.slice(0, 5).forEach((r) => console.log('[searchApi] blob sample:', buildSearchBlob(r)));
   return records.filter((r) => {
     const searchBlob = buildSearchBlob(r);
     return tokens.some((t) => {
