@@ -53,7 +53,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     border: 0;
     text-align: left;
     letter-spacing: normal;
-    color: var(--bbl-color-grey-85);
     font-family: var(--bbl-font-family-medium);
     font-weight: 400;
 
@@ -232,6 +231,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     border-radius: 0.4375rem;
     gap: var(--bbl-space-100);
     font-size: var(--bbl-font-size-h4-mobile);
+    font-weight: var(--form-title-font-weight);
     line-height: var(--bbl-line-height-h4-mobile);
     cursor: pointer;
     appearance: none;
@@ -294,10 +294,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     line-height: var(--bbl-text-default-line-height);
     color: var(--bbl-color-grey-85);
 
-    & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-']),
-    & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-']),
+    & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
+    & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
     & .field-wrapper.col-6:not(.button-wrapper, .cc-panel-item-form-title, .cc-panel-item-form-input, .cc-panel-item-form-cover),
-    & .field-wrapper.col-12:not(:is(.field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-'])) {
+    & .field-wrapper.col-12:not(:is(.field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-'])) {
       display: block;
       width: 100%;
       max-width: 100%;
@@ -776,7 +776,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
     & .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label):not(:is(.field-title *, .cc-panel-item-form-title *)),
     & .form form :is(.drop-down-wrapper, .field-wrapper:has(select)) > .field-label {
-      font-size: var(--bbl-form-font-size-15);
+      font-size: var(--form-font-size-xs);
       line-height: var(--bbl-line-height-b1-desktop);
     }
 
