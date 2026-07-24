@@ -21,7 +21,8 @@ import {
   sortCards,
 } from '../../scripts/utils/card-helpers.js';
 
-// Match current path against promo-autoscroll-path config (supports {lang}).
+// --- Autoscroll to the category subnav on configured pages -----------------
+// Gate: current path matches the promo-autoscroll-path config (supports {lang}).
 function isAutoScrollPage(configValue, lang) {
   if (!configValue) return false;
   const safeLang = String(lang || '');
@@ -33,45 +34,59 @@ function isAutoScrollPage(configValue, lang) {
     .includes(current);
 }
 
-// Scroll so the target sits `gap` px below the fixed header. The header loads
-// async, so first wait for its bar to exist (its scroll listener is attached
-// with it) — otherwise a cold first load scrolls before header.js can react and
-// the header never appears. Then nudge past the header's fix threshold + fire a
-// scroll event so header.js flips into its fixed state (top-nav .is-hidden,
-// main-nav-desktop .is-scrolled) and stays visible for the whole smooth scroll,
-// measure the header height (0 if none, e.g. app view), and smooth-scroll to px.
-// Polls up to 3s, then scrolls anyway with a 0 header offset.
-function scrollToPromotions(target, gap) {
-  if (!target) return;
-  const selector = '.header .main-nav-desktop, .header .mobile-top-bar';
+// Per-viewport scroll distance (px), widest-first — computed, not tied to any
+// component's live position. Desktop split (>=1025px) mirrors the header. Tune.
+const AUTOSCROLL_DISTANCE = [
+  { minWidth: 1025, distance: 490 },
+  { minWidth: 768, distance: 271 },
+  { minWidth: 0, distance: 465 },
+];
 
-  const doScroll = (bar) => {
-    let preScroll = 1;
-    if (window.matchMedia('(min-width: 1025px)').matches) {
-      const topNav = document.querySelector('.header .top-nav');
-      preScroll = topNav ? Math.ceil(topNav.getBoundingClientRect().height) + 1 : 1;
-    }
-    window.scrollTo({ top: preScroll, behavior: 'auto' });
-    window.dispatchEvent(new Event('scroll'));
-    requestAnimationFrame(() => {
-      const headerHeight = bar ? bar.getBoundingClientRect().height : 0;
-      const targetTop = target.getBoundingClientRect().top + window.scrollY - headerHeight - gap;
-      window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
-    });
+// Ease-in-out ("swing") scroll, mirroring the legacy jQuery.animate(_, 'slow')
+// (600ms, swing easing) — reimplemented in vanilla rAF, no dependency.
+function swingScrollTo(targetY, duration = 600) {
+  const startY = window.scrollY;
+  const diff = targetY - startY;
+  if (Math.abs(diff) < 1) return;
+  const start = performance.now();
+  const step = (now) => {
+    const p = Math.min((now - start) / duration, 1);
+    window.scrollTo(0, Math.round(startY + diff * (0.5 - Math.cos(p * Math.PI) / 2)));
+    if (p < 1) requestAnimationFrame(step);
   };
+  requestAnimationFrame(step);
+}
 
+// Keep the header visible while scrolling to the subnav. header.js loads async
+// and pins only in reaction to a scroll event, so: wait for its bar, jump past
+// its pin threshold (locks it, no flicker), force its own classes, then swing
+// to the target. Bounded ~3s; scrolls anyway if the header never appears.
+function scrollToSubnav() {
+  const match = AUTOSCROLL_DISTANCE.find((b) => window.innerWidth >= b.minWidth);
+  const top = match ? match.distance : 0;
+  if (top <= 0) return;
   const deadline = Date.now() + 3000;
-  const waitForHeader = () => {
-    const bar = document.querySelector(selector);
-    if (bar) {
-      doScroll(bar);
-    } else if (Date.now() < deadline) {
-      setTimeout(waitForHeader, 100);
-    } else {
-      doScroll(null);
+  const run = () => {
+    const header = document.querySelector('.header');
+    const desktop = window.matchMedia('(min-width: 1025px)').matches;
+    const bar = header && (desktop
+      ? header.querySelector('.main-nav-desktop')
+      : header.querySelector('.mobile-top-bar'));
+    if (!bar) {
+      if (Date.now() < deadline) requestAnimationFrame(run);
+      else swingScrollTo(top);
+      return;
     }
+    const topNav = header.querySelector('.top-nav');
+    const threshold = desktop && topNav
+      ? Math.ceil(topNav.getBoundingClientRect().height) + 1
+      : 1;
+    window.scrollTo({ top: Math.min(threshold, top), behavior: 'auto' });
+    if (desktop) topNav?.classList.add('is-hidden');
+    bar.classList.add('is-scrolled');
+    swingScrollTo(top);
   };
-  waitForHeader();
+  run();
 }
 
 const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
@@ -347,7 +362,7 @@ function setupPanel(
             const ctaPath = url.pathname + url.search + url.hash;
             cardData = { ...c, ctaLink: isInternal ? ctaPath : url.toString() };
           } catch {
-            // Keep original ctaLink on parse failure.
+            // Keep original ctaLink if URL parsing fails completely
           }
         }
         const cardOptions = buildCardOptions(cardData);
@@ -540,7 +555,8 @@ export default async function decorate(block) {
   const promoSection = block.closest('.section');
   if (promoSection) promoSection.classList.add('promo-card-listing-section');
 
-  // Skip autoscroll when the URL targets an anchor (don't fight deep links).
+  // Autoscroll only on pages listed in the promo-autoscroll-path config, and
+  // never when the URL targets an in-page anchor (respect deep links).
   const autoScroll = !window.location.hash
     && isAutoScrollPage(effectiveConfigs.promoAutoscrollPath, docLang);
 
@@ -596,7 +612,9 @@ export default async function decorate(block) {
         hidePagination: disableFilters && isBbm,
         isBbm,
         isHighlightsPanel,
-        immediate: autoScroll, // render now so target height is stable before scroll
+        // Autoscroll pages: render the active panel now so the page reaches its
+        // full height before we scroll (otherwise a short doc clamps the scroll).
+        immediate: autoScroll,
         baseUrl: promotionApi?.baseUrl,
       },
     );
@@ -609,19 +627,12 @@ export default async function decorate(block) {
     });
   });
 
-  // Autoscroll on configured pages; guard so multiple blocks don't compete.
+  // Autoscroll to the subnav (keeps the header visible). One-shot so multiple
+  // blocks don't compete; runs on load if the document isn't ready yet.
   if (autoScroll && !document.documentElement.dataset.promoAutoscrolled) {
-    // Scroll to the tabs (always present when the listing renders) and stop a
-    // configurable gap above them, so they sit just below the fixed header
-    // instead of jammed against it. No dependency on any authored element.
-    const scrollTarget = tabsContainer || document.querySelector('.tabs') || promoSection;
-    if (scrollTarget) {
-      document.documentElement.dataset.promoAutoscrolled = '1';
-      const gap = 150; // px above the tab; tune here — no config/authoring needed
-      const run = () => scrollToPromotions(scrollTarget, gap);
-      if (document.readyState === 'complete') run();
-      else window.addEventListener('load', run, { once: true });
-    }
+    document.documentElement.dataset.promoAutoscrolled = '1';
+    if (document.readyState === 'complete') scrollToSubnav();
+    else window.addEventListener('load', scrollToSubnav, { once: true });
   }
 
   block.hidden = true;
