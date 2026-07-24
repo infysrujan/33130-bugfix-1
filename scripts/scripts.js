@@ -24,7 +24,7 @@ import {
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
-import initRteAnchors, { decorateRteInlineImages } from './custom-rte.js';
+import initRteAnchors, { decorateRteInlineImages, decoratePictureLinks } from './custom-rte.js';
 
 import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
@@ -402,6 +402,7 @@ async function loadLazy(doc) {
 
   initRteAnchors(main, doc);
   decorateRteInlineImages(main);
+  decoratePictureLinks(main);
 
   const disabledSections = new Set(
     getMetadata('disable-sections', doc)

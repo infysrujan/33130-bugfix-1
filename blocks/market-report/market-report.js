@@ -245,6 +245,18 @@ function tableUsesHeaderRowClass(table) {
 }
 
 /**
+ * Prefix a positive numeric value with "+" (negative values already carry
+ * their own "-" from the API; non-numeric/zero values pass through unchanged).
+ * @param {string} value
+ * @returns {string}
+ */
+function withSign(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return value;
+  return `+${value}`;
+}
+
+/**
  * @param {HTMLTableElement} table
  * @param {string} tableId
  * @param {Array<{ mktvalue: string }> | undefined} tableData
@@ -274,6 +286,8 @@ function populateHeaderClassTable(table, tableId, tableData) {
       if (tableData[dataIndex]) {
         if (tableId === 'GTHB' || tableId === 'USTS' || tableId === 'TSB') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
+        } else if (tableId === 'WI' && j === 2) {
+          tds[j].textContent = withSign(tableData[dataIndex].mktvalue);
         } else {
           tds[j].textContent = tableData[dataIndex].mktvalue;
         }
@@ -317,13 +331,17 @@ function populateStandardLayoutTable(table, tableId, tableData) {
 
   rows.forEach((row, i) => {
     const tds = row.querySelectorAll('td');
+
     for (let j = 1; j < tds.length; j += 1) {
       const dataIndex = i * (tds.length - 1) + (j - 1);
+
       if (tableData[dataIndex]) {
         if (tableId === 'MMR' || tableId === 'USIR') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
-        } else if (tableId === 'RR') {
-          tds[j].textContent = `${tableData[dataIndex].mktvalue} Baht`;
+        } else if (tableId === 'RR' && dataIndex === 0) {
+          tds[j].textContent = tableData[dataIndex].mktvalue;
+        } else if (tableId === 'RR' && dataIndex !== 0) {
+          tds[j].textContent = `${withSign(tableData[dataIndex].mktvalue)} Baht`;
         } else {
           tds[j].textContent = tableData[dataIndex].mktvalue;
         }
@@ -589,7 +607,7 @@ function styleHeadingsBeforeButtonContainers(panel) {
 function applyTextSmallToTableFollowParagraphs(panel) {
   const followingPTags = panel.querySelectorAll('.table + p');
   followingPTags.forEach((pTag, idx) => {
-    if (idx < followingPTags.length - 1) {
+    if (idx < followingPTags.length) {
       pTag.classList.add('text-small');
     }
   });
@@ -751,7 +769,7 @@ function createMarketReportTopRow(formattedDate) {
   const topRow = document.createElement('div');
   topRow.className = 'market-report-top-row';
 
-  const dateDiv = document.createElement('div');
+  const dateDiv = document.createElement('h3');
   dateDiv.className = 'market-report-date';
   dateDiv.textContent = formattedDate;
 
@@ -852,9 +870,49 @@ function setupOthbisGthbColumns(panel) {
   });
 }
 
-export default async function decorate() {
+/**
+ * Some content authoring produces separate default-content-wrapper/table-wrapper
+ * sibling pairs (one pair per field) instead of one continuous table-wrapper
+ * holding every heading/table in document order. The rest of this file's layout
+ * logic (applyTableWrapperPageLayout, populateFxmo/populateTbmo, and the
+ * left/right split it builds) was written for — and is proven correct against —
+ * that single flat continuous shape. Rather than rewriting that proven logic,
+ * normalize the DOM to match it: merge every such wrapper's children into one
+ * new table-wrapper, in document order, before any of the existing decoration
+ * runs.
+ * @param {HTMLElement} panel
+ */
+function flattenMarketReportContent(panel) {
+  const wrappers = [...panel.querySelectorAll(':scope > .default-content-wrapper, :scope > .table-wrapper')];
+  if (wrappers.length <= 1) return;
+
+  const target = document.createElement('div');
+  target.className = 'table-wrapper';
+  wrappers[0].before(target);
+
+  wrappers.forEach((wrapper) => {
+    while (wrapper.firstChild) {
+      target.appendChild(wrapper.firstChild);
+    }
+    wrapper.remove();
+  });
+}
+
+export default async function decorate(block) {
   const panel = getFirstTabPanel();
   if (!panel) return;
+
+  // market-report always populates the page's first tab panel rather than its
+  // own block element. If a second market-report block instance exists on the
+  // same page (e.g. a leftover duplicate in authoring), it has nothing of its
+  // own to render into and would otherwise leave an empty shell behind.
+  if (panel.dataset.marketReportDecorated === 'true') {
+    block?.remove();
+    return;
+  }
+  panel.dataset.marketReportDecorated = 'true';
+
+  flattenMarketReportContent(panel);
 
   showMarketReportLoader(panel);
   try {

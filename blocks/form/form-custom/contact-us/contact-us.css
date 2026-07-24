@@ -1,41 +1,118 @@
 .contact-us main .section.form-container.custom-forms .form form {
-    /* subject legend */
-    & .field-subject > legend {
-        font-family: var(--bbl-font-family-primary);
-        font-weight: var(--bbl-body-b1-weight);
-        font-size: var(--bbl-form-font-size-20);
-        text-decoration: underline;
-        padding: var(--bbl-form-padding-10) 0 0;
-    }
-
-    /* field title */
-    & .field-title h2 {
+    /* Form Title & Subtitle */
+    & .field-title h2,
+    & :is(.field-wrapper, .plain-text-wrapper):has(h2) h2 {
         text-align: center;
         color: var(--bbl-color-black);
         font-family: var(--bbl-font-family-medium);
         font-weight: var(--bbl-font-weight-regular);
-        font-size: var(--bbl-form-font-size-22);
-        line-height: var(--bbl-form-line-height-46);
     }
 
-    /* field validation / description */
+    /* All Section Legends / Panel Headers: Grey Background Header Styling */
+    & :is(fieldset.panel-wrapper, fieldset.radio-group-wrapper)>legend:not([data-visible="false"]),
+    & .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel)>legend.field-label {
+        display: block;
+        grid-column: span 12;
+        width: 100%;
+        margin: var(--bbl-form-margin-10) 0;
+        padding: var(--bbl-form-margin-5) 0 var(--bbl-form-margin-5) var(--bbl-form-padding-16);
+        font-family: var(--bbl-font-family-primary);
+        font-size: var(--bbl-form-font-size-20);
+        font-weight: var(--bbl-font-weight-regular);
+        color: var(--bbl-text-primary);
+        background-color: var(--bbl-color-grey-10);
+        text-decoration: none;
+        text-align: left;
+        border: none;
+        border-radius: 0;
+        position: static;
+        transform: none;
+    }
+
+    /* All Input Panel Wrappers & Field Containers (excluding button panel wrappers): 100% Extreme Width Alignment */
+    & :is(.field-wrapper:not(.button-wrapper, .submit-wrapper, .reset-wrapper, .field-button-panel), .text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .date-wrapper, .multiline-wrapper, .drop-down-wrapper, fieldset.panel-wrapper:not(.field-button-panel), fieldset.radio-group-wrapper) {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    /* Panel Wrappers: Strip nested borders, curvature, and container padding */
+    & fieldset.panel-wrapper,
+    & .field-compliantnonfin-complimentpanel {
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        margin: 0 0 var(--bbl-form-margin-10);
+    }
+
+    /* Date & Time Panel Clean Reset (Robust :has(.date-wrapper) selector) */
+    & fieldset.panel-wrapper:has(.date-wrapper),
+    & fieldset.panel-wrapper.field-transdatetimepanel {
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        row-gap: var(--bbl-form-gap-8);
+    }
+
+    /* Compliment / General Panel Fieldset Reset */
+    & fieldset.panel-wrapper:not(:has(.date-wrapper)),
+    & .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) {
+        margin-bottom: 0;
+    }
+
+    & fieldset.panel-wrapper:has(.date-wrapper) > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper),
+    & fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper) {
+        position: relative;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Inputs & Selects in Date & Time Panel */
+    & fieldset.panel-wrapper:has(.date-wrapper) :is(input, select, textarea),
+    & fieldset.panel-wrapper.field-transdatetimepanel :is(input, select, textarea) {
+        font-size: var(--bbl-form-font-size-16);
+        font-weight: 400;
+        color: var(--bbl-color-black);
+        height: 2.6389rem;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* All Input Controls, Selects & Textareas: 100% Extreme Width Alignment */
+    & :is(input:not([type='radio'], [type='checkbox'], [type='submit'], [type='button'], [type='reset']), select, textarea) {
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Validation Errors & Descriptions */
     & .field-invalid :is(.field-validation-error, .field-description) {
         padding-left: var(--bbl-form-padding-16);
         margin-top: var(--bbl-form-margin-5);
     }
 
-    /* textarea description */
-    & fieldset.panel-wrapper.field-wrapper .field-wrapper.multiline-wrapper.field-description textarea {
+    /* Multiline Textarea (Description field) */
+    & fieldset.panel-wrapper.field-wrapper .field-wrapper.multiline-wrapper textarea {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        padding: var(--bbl-form-padding-10) var(--bbl-form-padding-20); /* top/bottom 10px (0.625rem), left/right 20px (1.25rem) */
         resize: none;
-        margin: 0;
-        padding: var(--bbl-form-padding-10) var(--bbl-form-padding-20);
-        height: 12.8rem;
+        margin-left: 0;
+        margin-right: 0;
+        min-height: 12.8rem;
     }
 
-    /* select dropdowns */
-    & .field-productservices1-exclude select,
-    & .field-categorydropdown-exclude select,
-    & .field-categorydropdown2-exclude select {
+    /* Generic Dropdown Select Styling */
+    & .drop-down-wrapper select {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        height: 2.6389rem;
         font-size: var(--bbl-form-font-size-15-2);
         font-weight: var(--bbl-font-weight-medium);
         font-family: var(--bbl-font-family-medium);
@@ -43,181 +120,147 @@
         margin: 0;
     }
 
-    /* transdatetimepanel */
-    & fieldset.panel-wrapper.field-transdatetimepanel {
-        row-gap: var(--bbl-form-gap-8);
-        margin: 0 var(--form-field-gap) var(--bbl-form-margin-10);
-        width: calc(100% - 2 * var(--form-field-gap));
-    }
-
-    /* subject radio group wrapper */
-    & fieldset.radio-group-wrapper.field-subject {
+    /* Radio Group & Radio Tabs Clean Alignment Reset */
+    & fieldset.radio-group-wrapper.radio-tabs {
+        display: flex;
+        flex-flow: row wrap;
         gap: 0;
-        margin-left: var(--form-field-gap);
-        margin-right: var(--form-field-gap);
-        width: calc(100% - 2 * var(--form-field-gap));
+        margin: 0 0 var(--bbl-form-margin-10);
     }
 
-    /* info panel legend */
-    & fieldset.panel-wrapper.field-info-pannel.field-wrapper > legend {
-        background-color: transparent;
-        padding: var(--bbl-form-padding-10) var(--bbl-form-padding-16) 0;
+    & .radio-group-wrapper.radio-tabs > .radio-wrapper {
+        position: relative;
+        display: flex;
+        flex: 1 1 0;
+        min-width: 0;
         margin: 0;
-        text-decoration: underline;
-        color: var(--bbl-color-grey-85);
-        font-size: var(--bbl-form-font-size-20);
-        font-weight: 700;
-        font-family: var(--bbl-font-family-primary);
+        padding: 0;
+        gap: 0;
+        align-items: center;
+        justify-content: center;
     }
 
-    /* compliant non fin panel wrapper */
-    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) {
-        margin: var(--bbl-space-250) var(--form-field-gap) var(--bbl-form-margin-10);
-        width: calc(100% - 2 * var(--form-field-gap));
+    & .radio-group-wrapper.radio-tabs > .radio-wrapper input[type='radio'] {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
     }
 
-    /* subject legend label */
-    & fieldset.radio-group-wrapper.field-subject > legend.field-label {
-        font-size: var(--bbl-form-font-size-20);
-        font-weight: 700;
-        color: var(--bbl-color-grey-85);
-        padding: var(--bbl-form-padding-10) 0 0 var(--bbl-form-padding-16);
-        font-family: var(--bbl-font-family-primary);
+    & .radio-group-wrapper.radio-tabs > .radio-wrapper label.field-label {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex: 1 1 auto;
+        flex-basis: auto;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0 var(--bbl-form-padding-10);
+        text-align: center;
+        line-height: 1.2;
     }
 
-    /* legends under panel wrappers */
-    & fieldset.panel-wrapper.field-transdatetimepanel > legend.field-label,
-    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) > legend.field-label {
-        width: max-content;
-        font-size: var(--bbl-form-font-size-16);
-        padding: var(--bbl-form-margin-5) var(--bbl-form-padding-10);
-        line-height: var(--bbl-body-b3-line-height);
-        font-weight: var(--bbl-font-weight-regular);
-    }
-
-    /* input/select in transdatetimepanel */
-    & fieldset.panel-wrapper.field-transdatetimepanel :is(input, select) {
-        font-family: var(--bbl-font-family-medium);
-        font-size: var(--bbl-form-font-size-16);
-        font-weight: 400;
-        color: var(--bbl-color-black);
-    }
-
-    /* province/branch wrappers */
-    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province-exclude, .field-branch-exclude) {
+    /* Generic Dropdown Field Wrappers inside Panels */
+    & fieldset.panel-wrapper .drop-down-wrapper {
         position: relative;
         padding: 0;
         margin: 0;
-        grid-column: span 12;
     }
 
-    /* province/branch select elements */
-    & :is(.field-province-exclude, .field-branch-exclude) select {
-        box-sizing: border-box;
+    /* Dropdown & Date/Time Validation Messages: in-flow to avoid overlapping section headers */
+    & fieldset.panel-wrapper .drop-down-wrapper :is(.field-validation-error, .field-description),
+    & fieldset.panel-wrapper:has(.date-wrapper) :is(.field-validation-error, .field-description),
+    & fieldset.panel-wrapper.field-transdatetimepanel :is(.field-validation-error, .field-description) {
+        position: static;
+        display: block;
         width: 100%;
-        height: 2.6389rem;
-        margin: 0;
-        font-family: var(--bbl-font-family-medium);
-        font-size: var(--bbl-form-font-size-15-2);
-        font-weight: 400;
-        color: var(--bbl-color-black);
-    }
-
-    /* province/branch validation/description */
-    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province-exclude, .field-branch-exclude) :is(.field-validation-error, .field-description) {
-        position: absolute;
-        top: var(--bbl-form-top-45);
-        left: 0;
-        z-index: 3;
-        margin: 0;
-        padding: 0;
+        margin-top: var(--bbl-form-margin-5);
         text-align: left;
+        z-index: auto;
     }
 
-    /* input/textarea margin bottom */
-    & .field-wrapper:not(.field-invalid) :is(input:not([type='radio'], [type='checkbox']), textarea) {
+    /* Text Fields & Field Controls */
+    & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .multiline-wrapper, .field-wrapper:not(.button-wrapper, .submit-wrapper, .reset-wrapper)):not(.field-invalid) :is(input:not([type='radio'], [type='checkbox'], [type='submit'], [type='button'], [type='reset']), textarea) {
         margin-bottom: var(--bbl-form-margin-5);
     }
 
-    /* invalid inputs/textareas */
-    & .field-wrapper.field-invalid :is(input:not([type='radio'], [type='checkbox']), textarea) {
+    & .field-wrapper:not(.field-invalid, .button-wrapper, .submit-wrapper, .reset-wrapper) select {
+        margin-bottom: var(--bbl-form-margin-5); 
+    }
+
+    & .field-wrapper.field-invalid:not(.button-wrapper, .submit-wrapper, .reset-wrapper) :is(input:not([type='radio'], [type='checkbox'], [type='submit'], [type='button'], [type='reset']), select, textarea) {
         margin-bottom: 0;
     }
 
-    /* radio label max width */
-    & .radio-group-wrapper.radio-tabs > .radio-wrapper label.field-label {
-        max-width: 7.75rem;
-    }
-
-    /* field note paragraph sizes */
-    & .field-note p {
+    /* Field Note & General Plain Text Paragraphs: Left-aligned */
+    & .plain-text-wrapper p {
         font-size: var(--bbl-form-font-size-15);
         font-weight: 400;
         line-height: var(--bbl-form-line-height-21);
+        text-align: left;
     }
 
-    /* field-title + plain-text sub header color */
-    & .field-title + .plain-text-wrapper p {
+    /* Form Subtitle (plain-text-wrapper immediately following title h2): Centered */
+    & .field-title + .plain-text-wrapper p,
+    & :is(.field-wrapper, .plain-text-wrapper):has(h2) + .plain-text-wrapper p {
         color: var(--bbl-color-grey-85);
-    }
-
-    /* last paragraph margin for note and tnc */
-    & :is(.field-note, .tnc-text-decoration) > p > p:last-child {
-        margin-top: var(--bbl-form-margin-32);
-    }
-
-    /* plain text wrapper paragraphs centering */
-    & .plain-text-wrapper:not(.tnc-text-decoration, .field-note) > p > p:last-child {
-        margin-top: var(--bbl-form-margin-32);
         text-align: center;
     }
 
-    /* T&C first paragraph bottom margin (high specificity) */
-    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p:first-of-type,
-    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p:first-child {
+    /* Paragraph Spacing */
+    & :is(.plain-text-wrapper, .tnc-text-decoration) > p > p:last-child {
+        margin-top: var(--bbl-form-margin-32);
+    }
+
+    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration>p:first-of-type,
+    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration>p>p:first-child {
         margin-bottom: var(--bbl-form-margin-32);
     }
 
-    /* placeholder color */
+    /* Placeholder Styling */
     & input::placeholder {
+        font-family: var(--bbl-font-family-primary);
+        font-weight: var(--bbl-font-weight-regular);
         color: var(--bbl-color-grey-40);
     }
 
-    /* approval checkbox top position */
+    /* Approval Checkbox Positioning */
     & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) input[type='checkbox'] {
         top: 0;
     }
 
-    /* button panel margin */
-    & .field-button-panel {
+    /* Button Panel & Buttons Alignment */
+    & fieldset.field-button-panel {
         margin-bottom: var(--bbl-form-margin-32);
+        width: 100%;
     }
 
-    /* hours/minutes on mobile */
-    & fieldset.panel-wrapper.field-transdatetimepanel > :is(.field-hours-exclude, .field-minutes-exclude) {
-        grid-column: span 6;
+    & fieldset.field-button-panel :is(.button-wrapper, .submit-wrapper, .reset-wrapper) {
+        width: auto;
     }
 }
 
-/* media query for tablet */
+/* Tablet & Desktop Viewport Styling */
 @media (width > 47.5rem) {
     .contact-us main .section.form-container.custom-forms .form form {
-        & :is(.field-province-exclude, .field-branch-exclude) {
+        /* Desktop Date & Time alignment: Date (span 6), Hours (span 3), Minutes (span 3) */
+        & fieldset.panel-wrapper:has(.date-wrapper) > :is(.date-wrapper, [class*='-date-']),
+        & fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, [class*='-date-']) {
             grid-column: span 6;
         }
 
-        & .field-title h2 {
-            font-size: var(--bbl-form-font-size-48);
-        }
-
-        & .field-productservices1-exclude select,
-        & .field-categorydropdown-exclude select,
-        & .field-categorydropdown2-exclude select {
-            margin: var(--bbl-form-margin-10) 0 0;
-        }
-
-        & fieldset.panel-wrapper.field-transdatetimepanel > :is(.field-hours-exclude, .field-minutes-exclude) {
+        & fieldset.panel-wrapper:has(.date-wrapper) > .drop-down-wrapper,
+        & fieldset.panel-wrapper.field-transdatetimepanel > .drop-down-wrapper {
             grid-column: span 3;
+        }
+
+        /* Desktop Service Branch / General Panels alignment: Province (span 6), Branch (span 6) */
+        & fieldset.panel-wrapper:not(:has(.date-wrapper)) > .drop-down-wrapper {
+            grid-column: span 6;
         }
     }
 }

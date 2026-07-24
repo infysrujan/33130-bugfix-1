@@ -8,7 +8,7 @@
 .search-reports-results .srr-results-wrapper {
   background: var(--bbl-color-white);
   min-height: 100vh;
-  padding-bottom: 3rem;
+  padding-bottom: var(--bbl-space-600);
   overflow-x: hidden;
 }
 
@@ -18,7 +18,7 @@
   background: var(--bbl-color-truthful-blue);
   display: flex;
   align-items: center;
-  padding: 1rem 2rem 1rem 4rem;
+  padding: var(--bbl-space-200) var(--bbl-space-400) var(--bbl-space-200) var(--bbl-space-800);
   flex-shrink: 0;
   box-shadow: 0 0 0 100vmax var(--bbl-color-truthful-blue);
   clip-path: inset(0 -100vmax);
@@ -31,7 +31,7 @@
   flex-shrink: 0;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: 50%;
+  border-radius: var(--bbl-radius-full);
   border: 0.0938rem solid var(--bbl-color-white-alpha-60);
   background: transparent;
   cursor: pointer;
@@ -53,7 +53,7 @@
   font-weight: var(--bbl-text-page-title-weight);
   line-height: var(--bbl-text-page-title-line-height);
   text-align: center;
-  margin: 2rem 0 1rem;
+  margin: var(--bbl-space-400) 0 var(--bbl-space-200);
   color: var(--bbl-color-gray-121);
 }
 
@@ -61,7 +61,7 @@
   width: 3rem;
   height: 0.0625rem;
   background: var(--bbl-color-grey-40);
-  margin: 0 auto 2rem;
+  margin: 0 auto var(--bbl-space-400);
 }
 
 /* List */
@@ -69,7 +69,7 @@
 .search-reports-results .srr-list {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--bbl-space-400);
   padding: 0 var(--bbl-space-container-xs);
   margin-inline: auto;
   width: 100%;
@@ -92,7 +92,7 @@
 
 .search-reports-results .download-section {
   padding: 1.875rem;
-  box-shadow: rgb(0 0 0 / 10%) 0 0 16px 0;
+  box-shadow: rgb(0 0 0 / 10%) 0 0 1rem 0;
   margin-bottom: 0;
   max-width: none;
   width: 100%;
@@ -106,15 +106,26 @@
 /* File row reuses .download-file-wrapper from accordion-block */
 
 .search-reports-results .srr-card-title {
+  position: relative;
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h5-desktop);
+  font-size: 1.5rem;
   font-weight: var(--bbl-text-card-title-weight);
-  line-height: var(--bbl-text-card-title-line-height);
+  line-height: 1.625rem;
   margin: 0 0 0.9375rem;
-  padding-bottom: 0;
+  padding: 0 0 0.9375rem;
   color: var(--bbl-color-gray-121);
   white-space: normal;
   overflow-wrap: break-word;
+}
+
+.search-reports-results .download-section > .default-content-wrapper > .srr-card-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 1.75rem;
+  height: 0.0625rem;
+  background: var(--bbl-color-black);
 }
 
 @media (width <= 47.5rem) {
@@ -130,14 +141,11 @@
 }
 
 .search-reports-results .srr-card-divider {
-  height: 0.0625rem;
-  width: 1.5rem;
-  background: var(--bbl-color-grey-40);
-  margin: 0.75rem 0 0;
+  display: none;
 }
 
 .search-reports-results .srr-card-file-row {
-  margin-top: 1rem;
+  margin-top: 0;
   overflow: hidden;
 }
 
@@ -146,9 +154,9 @@
   flex-flow: row nowrap;
   align-items: center;
   justify-content: space-between;
-  background: var(--bbl-color-ice-blue, #e6eef4);
+  background: var(--bbl-color-ice-blue);
   border: none;
-  box-shadow: rgb(221 221 221 / 50%) 0 2px 8px 0;
+  box-shadow: rgb(221 221 221 / 50%) 0 0.125rem 0.5rem 0;
   padding: 0 0.625rem 0 1.875rem;
   border-radius: 0;
   height: 2.75rem;
@@ -159,10 +167,10 @@
 .search-reports-results .srr-card-file-row .srr-file-label {
   flex: 1;
   min-width: 0;
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-default-size);
+  font-family: var(--bbl-font-family-medium);
+  font-size: 1rem;
   font-weight: var(--bbl-text-body-weight);
-  line-height: 44px;
+  line-height: 2.75rem;
   color: var(--bbl-color-grey-85);
   white-space: nowrap;
   overflow: hidden;
@@ -174,15 +182,14 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  gap: 0.25rem;
-  margin-right: 0.75rem;
+  gap: var(--bbl-space-050);
+  margin-right: var(--bbl-space-150);
 }
 
 .search-reports-results .srr-icon-btn {
-  background: none;
+  background: var(--bbl-color-ice-blue);
   border: none;
   cursor: pointer;
-  padding: 0.25rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -190,8 +197,28 @@
   height: 2rem;
   flex-shrink: 0;
   flex-grow: 0;
+  padding-bottom: 1.5rem;
+  margin-bottom: 0;
   color: var(--bbl-color-grey-85);
   text-decoration: none;
+}
+
+.search-reports-results .srr-icon-group .download-files {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  max-height: none;
+  height: 2rem;
+  line-height: normal;
+  padding: var(--bbl-space-050);
+}
+
+.search-reports-results .srr-icon-btn:focus,
+.search-reports-results .srr-icon-btn:active,
+.search-reports-results .srr-icon-btn:hover {
+  background: var(--bbl-color-ice-blue);
+  outline: none;
 }
 
 .search-reports-results .srr-icon-btn .icon {
@@ -202,12 +229,17 @@
   transition: transform 0.2s ease;
 }
 
+.search-reports-results .srr-preview-btn .icon {
+  font-size: 2rem;
+  transform: translateY(0.5625rem);
+}
+
 .search-reports-results .srr-preview-btn:hover .icon {
-  transform: scale(1.2);
+  transform: translateY(0.5625rem) scale(1.2);
 }
 
 .search-reports-results .srr-download-btn:hover .icon {
-  transform: translateY(0.1875rem);
+  transform: translateY(0.375rem);
 }
 
 /* States */
@@ -216,7 +248,7 @@
 .search-reports-results .srr-error,
 .search-reports-results .srr-loading {
   text-align: center;
-  padding: 3rem 1.5rem;
+  padding: var(--bbl-space-600) var(--bbl-space-300);
   font-size: var(--bbl-text-default-size);
   color: var(--bbl-color-grey-85);
 }
@@ -258,7 +290,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
+  padding: var(--bbl-space-200) var(--bbl-space-300);
   background: var(--bbl-color-truthful-blue);
   flex-shrink: 0;
 }
@@ -275,7 +307,7 @@
   cursor: pointer;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: 50%;
+  border-radius: var(--bbl-radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -306,7 +338,7 @@
   width: 65%;
   margin-inline: auto;
   margin-top: 6rem;
-  height: calc(100vh - 4.5rem);
+  height: calc(100vh - var(--bbl-space-900));
 }
 
 .srr-preview-overlay .srr-preview-embed iframe {
@@ -320,13 +352,13 @@
   width: 100%;
   max-width: 56rem;
   margin-inline: auto;
-  padding: 1.5rem;
+  padding: var(--bbl-space-300);
   text-align: center;
 }
 
 .srr-preview-overlay .srr-preview-download {
   display: inline-block;
-  padding: 0.75rem 3rem;
+  padding: var(--bbl-space-150) var(--bbl-space-600);
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
   border-radius: 0.4375rem;

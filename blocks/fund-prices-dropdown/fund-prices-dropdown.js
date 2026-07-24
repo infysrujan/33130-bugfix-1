@@ -45,6 +45,10 @@ function isRangeExceedsLimit(fromDate, toDate) {
   return fromDate < limitedFrom;
 }
 
+function isToBeforeFrom(fromDate, toDate) {
+  return toDate < fromDate;
+}
+
 function isWeekendOrAfterYesterday(date) {
   const day = date.getDay();
   if (day === 0 || day === 6) return true;
@@ -79,7 +83,7 @@ function fmtHistDate(ymd) {
   return `${m[3]}/${m[2]}/${m[1]}`;
 }
 
-function renderStatTables(stats, highTbody, lowTbody, rowLabels) {
+function renderStatTables(stats, highTbody, lowTbody, rowLabels, noDataLabel) {
   const rows = [
     {
       label: rowLabels[0],
@@ -109,13 +113,34 @@ function renderStatTables(stats, highTbody, lowTbody, rowLabels) {
     tbody.innerHTML = '';
   });
 
+  const allHiNA = rows.every(({ hi }) => fmtNav(hi) === 'N/A');
+  const allLoNA = rows.every(({ lo }) => fmtNav(lo) === 'N/A');
+
+  if (allHiNA) {
+    const tr = highTbody.ownerDocument.createElement('tr');
+    tr.innerHTML = `<td colspan="2" class="stat-no-data">${noDataLabel}</td>`;
+    highTbody.appendChild(tr);
+  }
+  if (allLoNA) {
+    const tr = lowTbody.ownerDocument.createElement('tr');
+    tr.innerHTML = `<td colspan="2" class="stat-no-data">${noDataLabel}</td>`;
+    lowTbody.appendChild(tr);
+  }
+
   rows.forEach(({
     label, hi, hiDate, lo, loDate,
   }) => {
-    [[highTbody, hi, hiDate], [lowTbody, lo, loDate]].forEach(([tbody, val, date]) => {
+    const targets = [
+      [highTbody, hi, hiDate, allHiNA],
+      [lowTbody, lo, loDate, allLoNA],
+    ];
+    targets.forEach(([tbody, val, date, skip]) => {
+      if (skip) return;
       const tr = tbody.ownerDocument.createElement('tr');
       const dateStr = date ? ` "${fmtHistDate(date)}"` : '';
-      tr.innerHTML = `<td>${label}${dateStr}</td><td class="stat-nav-val">${fmtNav(val)}</td>`;
+      const navStr = fmtNav(val);
+      const navDisplay = navStr === 'N/A' ? noDataLabel : navStr;
+      tr.innerHTML = `<td>${label}${dateStr}</td><td class="stat-nav-val">${navDisplay}</td>`;
       tbody.appendChild(tr);
     });
   });
@@ -319,8 +344,8 @@ function renderHistTable(tbody, history) {
     const tr = tbody.ownerDocument.createElement('tr');
     tr.innerHTML = `<td>${fmtHistDate(d.mfr_dDataDate)}</td>`
       + `<td>${fmtNav(d.mfr_fNav)}</td>`
-      + `<td>${fmtNav(d.mfr_fBuy)}</td>`
-      + `<td>${fmtNav(d.mfr_fSel)}</td>`;
+      + `<td>${fmtNav(d.mfr_fSel)}</td>`
+      + `<td>${fmtNav(d.mfr_fBuy)}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -347,9 +372,11 @@ export default async function decorate(block) {
     statRowSelected: txt('fundPricesDropdownStatSelected'),
     statRowYear: txt('fundPricesDropdownStatYear'),
     statRowInception: txt('fundPricesDropdownStatInception'),
+    noDataFound: txt('fundPricesDropdownNoData'),
     fromLabel: txt('fundPricesDropdownFrom'),
     toLabel: txt('fundPricesDropdownTo'),
     rangeError: txt('fundPricesDropdownRangeError'),
+    toBeforeFromError: txt('fundPricesDropdownToBeforeFromError'),
     period1w: txt('fundPricesDropdownPeriod1w'),
     period1m: txt('fundPricesDropdownPeriod1m'),
     period3m: txt('fundPricesDropdownPeriod3m'),
@@ -545,7 +572,7 @@ export default async function decorate(block) {
     const history = historyResult.status === 'fulfilled' ? historyResult.value : [];
     const sorted = [...history].sort((a, b) => a.mfr_dDataDate.localeCompare(b.mfr_dDataDate));
     const statLabels = [labels.statRowSelected, labels.statRowYear, labels.statRowInception];
-    renderStatTables(stats, highTbody, lowTbody, statLabels);
+    renderStatTables(stats, highTbody, lowTbody, statLabels, labels.noDataFound);
     chartSubtitle.textContent = subtitle;
     chartBeginNav.textContent = fmtNav(stats.Begin_mfr_fNav);
     chartEndNav.textContent = fmtNav(stats.End_mfr_fNav);
@@ -563,6 +590,11 @@ export default async function decorate(block) {
 
   function validateAndRenderDetail() {
     if (currentPeriod === 'DR') {
+      if (drFrom && drTo && isToBeforeFrom(drFrom, drTo)) {
+        rangeError.textContent = labels.toBeforeFromError;
+        rangeError.classList.remove('hidden');
+        return;
+      }
       if (drFrom && drTo && isRangeExceedsLimit(drFrom, drTo)) {
         rangeError.textContent = labels.rangeError;
         rangeError.classList.remove('hidden');

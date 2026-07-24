@@ -4,6 +4,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import openPdfViewer from '../../scripts/utils/pdf-viewer.js';
 import createTaggedElement from '../../scripts/utils/dom.js';
+import createDownloadLink from '../../scripts/utils/download-helpers.js';
 
 function getDownloadLabel(mimeType, placeholders = {}) {
   if (mimeType === 'application/pdf') return placeholders.reportsDownloadPdf || 'Download PDF';
@@ -48,13 +49,13 @@ function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
     iconGroup.append(previewBtn);
   }
 
-  const downloadBtn = createTaggedElement('a', {
+  const downloadAnchor = createTaggedElement('a', {
     className: 'srr-icon-btn srr-download-btn',
     attrs: {
       href: fetchPath, download: asset.name, 'aria-label': `Download ${asset.name}`, target: '_blank',
     },
   });
-  downloadBtn.append(createTaggedElement('span', { className: 'icon icon-download', attrs: { 'aria-hidden': 'true' } }));
+  const downloadBtn = createDownloadLink(downloadAnchor).querySelector('a');
   iconGroup.append(downloadBtn);
 
   downloadWrapper.append(label, iconGroup);
@@ -84,7 +85,7 @@ async function fetchAndRender(block, type, year) {
   });
   resultsHeader.append(backBtn);
   wrapper.append(resultsHeader);
-  wrapper.append(createTaggedElement('h1', { className: 'srr-page-title', text: 'Search Results' }));
+  wrapper.append(createTaggedElement('h1', { className: 'srr-page-title', text: placeholders.reportsResultsTitle }));
   wrapper.append(createTaggedElement('div', { className: 'srr-title-divider' }));
   const loading = createTaggedElement('div', { className: 'srr-loading', text: 'Loading...' });
   wrapper.append(loading);

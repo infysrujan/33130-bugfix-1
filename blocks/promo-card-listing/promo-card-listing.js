@@ -340,31 +340,26 @@ function setupPanel(
   });
 
   const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
-
   function makeSingleSelect(filterAttr, stateKey, defaultLabel) {
     panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
       opt.addEventListener('click', () => {
-        const isActive = opt.classList.contains('is-active');
         panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`)
           .forEach((o) => o.classList.remove('is-active'));
+        opt.classList.add('is-active');
+        const val = opt.dataset.value || '';
+        state[stateKey] = val;
         const labelEl = panel.querySelector(
           `[data-filter="${filterAttr}"] .promo-selector-filter-label`,
         );
-        if (isActive) {
-          state[stateKey] = '';
-          labelEl.textContent = defaultLabel;
-        } else {
-          opt.classList.add('is-active');
-          state[stateKey] = opt.dataset.value;
-          labelEl.textContent = opt.dataset.value;
-        }
-        panel.querySelector(`[data-filter="${filterAttr}"]`).classList.remove('is-open');
+        labelEl.textContent = val || defaultLabel;
+        const filterEl = panel.querySelector(`[data-filter="${filterAttr}"]`);
+        filterEl?.classList.remove('is-open');
+        filterEl?.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
         state.page = 1;
         if (isDesktop()) render();
       });
     });
   }
-
   makeSingleSelect('subcategory', 'subcategory', labelCategory);
   makeSingleSelect('cardType', 'cardType', labelCardType);
   makeSingleSelect('area', 'area', labelArea);

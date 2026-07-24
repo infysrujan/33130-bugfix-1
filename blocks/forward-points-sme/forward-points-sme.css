@@ -8,7 +8,6 @@
   align-items: center;
   gap: 0.625rem;
   row-gap: 0.625rem;
-  padding-inline: 0.625rem;
 }
 
 .forward-points-sme .fpsme-update-label {
@@ -341,7 +340,6 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding-inline: 0.625rem;
 }
 
 .forward-points-sme .fpsme-table-wrap::-webkit-scrollbar {
@@ -388,6 +386,7 @@
   font-size: 0.938rem;
   color: var(--bbl-color-gray-142);
   vertical-align: middle;
+  text-align: center;
 }
 
 .forward-points-sme .fpsme-td-right {
@@ -395,9 +394,6 @@
 }
 
 .forward-points-sme .fpsme-currency-cell {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   white-space: nowrap;
 }
 
@@ -406,6 +402,9 @@
   height: 1.1875rem;
   object-fit: contain;
   flex-shrink: 0;
+  margin-right: 0.375rem;
+  margin-bottom: -0.1875rem;
+  margin-left: -0.125rem;
 }
 
 /* ── Unit label ────────────────────────────────────────────── */
@@ -608,10 +607,6 @@
     padding: 1.2rem;
   }
 
-  .forward-points-sme .fpsme-table-wrap,
-  .forward-points-sme .fpsme-controls {
-    padding-inline: 0.625rem;
-  }
 
   .forward-points-sme .fpsme-update-label {
     width: auto;
@@ -659,11 +654,6 @@
 }
 
 @media (width > 64rem) {
-  .forward-points-sme .fpsme-table-wrap,
-  .forward-points-sme .fpsme-controls {
-    padding-inline: var(--bbl-space-250);
-  }
-
   /* Forward tables remain stacked on desktop */
   .forward-points-sme .fpsme-fwd-tables {
     flex-direction: row;
@@ -724,6 +714,10 @@
   .forward-points-sme .fpsme-datepicker {
     max-width: 33.75rem;
     width: 33.75rem;
+  }
+
+  .forward-points-sme .fpsme-flag {
+    margin-left: -0.875rem;
   }
 
   .forward-points-sme .fpsme-dp-title {

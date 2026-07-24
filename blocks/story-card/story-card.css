@@ -173,7 +173,12 @@
 /* Desktop */
 @media (width > 64rem) {
   .story-card .outer {
-    max-width: 100%;
+    max-width: 59.375rem;
+    box-sizing: border-box;
+  }
+
+  .story-card .inner {
+    padding: 0 0 0 2.25rem;
   }
 
   .story-card .sub-title-medium.line {

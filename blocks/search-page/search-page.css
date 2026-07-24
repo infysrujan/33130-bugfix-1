@@ -3,7 +3,7 @@ body:has(.search-modal) header.is-not-overlapped .main-nav-desktop:not(.is-scrol
   background-color: transparent;
 }
 
-body:has(.search-modal) header.is-not-overlapped ~ main {
+body:has(.search-modal) header.is-not-overlapped~main {
   padding-top: 0;
 }
 
@@ -90,7 +90,11 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
   font-weight: var(--bbl-font-weight-regular);
 }
 
-.section.full-bleed-bg .content.search-modal-pre-block:has(.search-modal-history:not([style*="display: none"])):not(:has(.search-modal-results-section[style*="display: block"])) {
+.section.search-page-container .content.search-modal-pre-block:not(:has(.search-modal-history .search-modal-history-title), :has(.search-modal-results-section[style*="display: block"])) {
+  padding-block: 0;
+}
+
+.section.full-bleed-bg .content.search-modal-pre-block:has(.search-modal-history .search-modal-history-title):not(:has(.search-modal-results-section[style*="display: block"])) {
   padding-block: 1.875rem 0;
 }
 
@@ -242,7 +246,20 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
   cursor: wait;
 }
 
+.search-page-container .menu-banner .desktop-tools {
+  display: none;
+}
+
+.search-page-container .menu-banner .mobile-tools {
+  padding: 1.875rem var(--bbl-space-container-xs);
+}
+
 @media (width > 47.5rem) {
+  .search-page-container .menu-banner .desktop-tools {
+    display: block;
+    padding: 1.875rem var(--bbl-space-600);
+  }
+
   .search-modal .search-modal-top-block {
     min-height: 18.75rem;
   }
@@ -266,10 +283,6 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
 
   .search-modal .search-modal-message-text {
     line-height: 1rem;
-  }
-
-  .section.full-bleed-bg .content.search-modal-pre-block:has(.search-modal-history:not([style*="display: none"])):not(:has(.search-modal-results-section[style*="display: block"])) {
-    padding-block: 0;
   }
 
   .search-modal-results-grid {
@@ -303,7 +316,7 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
 }
 
 @media (width > 64rem) {
-   body:has(.search-page):not(:has(.main-nav-desktop.is-scrolled)) header.is-not-overlapped .login-button.primary {
+  body:has(.search-page):not(:has(.main-nav-desktop.is-scrolled)) header.is-not-overlapped .login-button.primary {
     background-color: var(--bbl-color-active-blue);
   }
 
@@ -353,7 +366,7 @@ body:has(.search-modal) header.is-not-overlapped ~ main {
     padding-block: var(--bbl-space-250) 0;
   }
 
-  .section.full-bleed-bg .content.search-modal-pre-block:has(.search-modal-history:not([style*="display: none"])):not(:has(.search-modal-results-section[style*="display: block"])) {
+  .section.full-bleed-bg .content.search-modal-pre-block:has(.search-modal-history .search-modal-panel):not(:has(.search-modal-results-section[style*="display: block"])) {
     padding-block: 3.125rem 0;
   }
 

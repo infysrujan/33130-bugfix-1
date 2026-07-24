@@ -836,10 +836,19 @@ export default async function decorate(block) {
           if (!data) return;
           const rows = Array.isArray(data) ? data : [];
           if (!rows.length) return;
-          // Build CSV from all keys in the first row
-          const keys = Object.keys(rows[0]);
+          // Map raw API keys to standard CSV column names
+          const formattedRows = rows.map((r) => ({
+            Currency: r.Currency || r.Family || '',
+            Date: r.Date || [r.Ddate, r.DTime || r.Dtime].filter(Boolean).join(' '),
+            'Bank Note: Buying Rates': r['Bank Note: Buying Rates'] || r.BuyingRates || '',
+            'Bank Note: Selling Rates': r['Bank Note: Selling Rates'] || r.SellingRates || '',
+            'Buying Rates: SightBill': r['Buying Rates: SightBill'] || r.SightBill || '',
+            'Buying Rates: TT': r['Buying Rates: TT'] || r.TT || '',
+            'Selling Rates: Bill-DD-TT': r['Selling Rates: Bill-DD-TT'] || r.Bill_DD_TT || '',
+          }));
+          const keys = Object.keys(formattedRows[0]);
           const header = keys.join(',');
-          const lines = rows.map((row) => keys.map((k) => {
+          const lines = formattedRows.map((row) => keys.map((k) => {
             const val = row[k] ?? '';
             return String(val).includes(',') ? `"${val}"` : val;
           }).join(','));

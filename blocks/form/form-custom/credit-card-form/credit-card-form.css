@@ -1,3 +1,7 @@
+.credit-card-form main>.section:first-of-type {
+  padding-inline: 0;
+}
+
 .credit-card-form main .section.form-container.custom-forms .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea) {
   box-sizing: border-box;
   width: 100%;
@@ -19,10 +23,9 @@
   line-height: 1.5;
 }
 
-.credit-card-form main .section.form-container.custom-forms .form form h2 {
-  font-size: 1.625rem;
-  color: var(--bbl-color-grey-85);
+.credit-card-form main .section.form-container.custom-forms .form form :is(h1, h2, h3, h4, h5, h6) {
   padding-bottom: 0.3125rem;
+  text-align: center;
 }
 
 .credit-card-form main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
@@ -43,11 +46,14 @@
 
 .credit-card-form main .section.form-container.custom-forms .form form .field-summary p:first-of-type {
   margin-top: 2rem;
-  text-align: center;
-  line-height: 1.5;
+  text-align: left;
 }
 
-.credit-card-form main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p:first-child {
+.credit-card-form main .section.form-container.custom-forms .form form .plain-text-wrapper:is(.field-notetext) > p > p:last-of-type {
+  text-align: center;
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration>p>p:first-child {
   color: var(--bbl-color-grey-85);
 }
 
@@ -57,6 +63,10 @@
 
 .credit-card-form main .section.form-container.custom-forms .form form :is(.field-name, .field-surname) {
   grid-column: span 12;
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form ul {
+  padding: 0;
 }
 
 @media (width > 47.5rem) {

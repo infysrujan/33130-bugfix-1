@@ -126,6 +126,17 @@
   margin-top: 0;
 }
 
+/* SPACING INSIDE TAB PANEL between different blocks except download block */
+.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+  padding-bottom: 1.5rem;
+}
+
+@media (width > 64rem) {
+  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+    padding-bottom: 2rem;
+  }
+}
+
 /* Simple Tab Variant - Default */
 .tabs.simple-tab .tabs-nav {
   padding-bottom: var(--bbl-space-800);
@@ -291,10 +302,20 @@
 }
 
 .tabs.icon-tab-carousel .tabs-nav button .tabs-nav-label {
-  display: block;
+  display: inline-block;
   max-width: 100%;
   margin-inline: auto;
   overflow-wrap: break-word;
+  border-bottom: 0.1875rem solid transparent;
+  padding-bottom: 0.25rem;
+}
+
+.tabs.icon-tab-carousel .tabs-nav button.active {
+  text-decoration: none;
+}
+
+.tabs.icon-tab-carousel .tabs-nav button.active .tabs-nav-label {
+  border-bottom-color: var(--bbl-color-active-blue);
 }
 
 /* Columns per view by breakpoint (mobile shows fewer, desktop more). */
@@ -652,15 +673,4 @@
   margin: 0 auto var(--bbl-space-050);
   display: block;
   flex-shrink: 0;
-}
-
-/* SPACING inside TAB PANEL between different blocks except download block */
-.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
-  padding-bottom: 1.5rem;
-}
-
-@media (width > 64rem) {
-  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
-    padding-bottom: 2rem;
-  }
 }

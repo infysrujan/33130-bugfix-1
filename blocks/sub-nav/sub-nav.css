@@ -101,7 +101,7 @@
 .sub-nav .sub-nav-tabs {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.93rem;
     flex-shrink: 0;
 }
 

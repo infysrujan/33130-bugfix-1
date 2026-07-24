@@ -137,8 +137,8 @@
 }
 
 .card-list.mf-card-list .cards-list-remark img.mfr-logo {
-  max-width: 8.875rem;
-  margin-bottom: 1.4375rem;
+  width: auto;
+  height: auto;
 }
 
 /* ── Card title h3 ────────────────────────────────────────────────────────── */
@@ -210,15 +210,10 @@
   margin-top: 0.625rem;
 } 
 
-.card-list.mf-card-list .mfr-compare-btn:hover {
-  background-color: var(--bbl-color-active-blue);
-  border-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-}
 
 .card-list.mf-card-list .mfr-compare-btn.is-comparing {
-  background-color: var(--bbl-color-grey-10);
-  border-color: var(--bbl-color-grey-60);
+  background-color: var(--bbl-color-white);
+  border-color: var(--bbl-color-grey-20);
   color: var(--bbl-color-grey-60);
   cursor: default;
   pointer-events: none;

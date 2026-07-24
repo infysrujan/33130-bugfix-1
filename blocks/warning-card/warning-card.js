@@ -88,7 +88,7 @@ export default function decorate(block) {
 
   // Add title
   if (title) {
-    const titleElement = document.createElement('h2');
+    const titleElement = document.createElement('h3');
     titleElement.className = 'warning-card-title';
     titleElement.textContent = title;
     contentWrapper.appendChild(titleElement);

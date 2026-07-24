@@ -12,6 +12,10 @@
   overflow: hidden;
 }
 
+.hero-banner-logo-wrapper{
+  max-width:19.6875rem;
+}
+
 .hero-banner-hero-with-thumbnail-images::after {
   content: "";
   position: absolute;
@@ -459,10 +463,6 @@
 .hero-banner-simple,
 .hero-banner-simple-logo-banner {
   margin-bottom: 1.875rem;
-}
-
-.hero-banner-simple {
-  padding-bottom: 1.875rem;
 }
 
 .hero-banner-simple::after {

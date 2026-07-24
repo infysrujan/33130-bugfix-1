@@ -146,7 +146,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > legend
   font-size: var(--form-fieldset-legend-font-size);
   font-weight: var(--form-fieldset-legend-font-weight);
   line-height: var(--bbl-heading-h4-line-height);
-  color: var(--form-fieldset-legend-color);
+  color: var(--bbl-color-black);
   text-align: left;
   background: none;
   cursor: default;
@@ -208,7 +208,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio
   height: 100%;
   margin: 0;
   padding: 0 var(--bbl-space-100);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-70);
   font-size: var(--bbl-font-size-h4-mobile);
   font-weight: var(--form-label-font-weight);
   line-height: var(--bbl-line-height-h4-mobile);
@@ -359,7 +359,7 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is
 /* Reset margin-bottom on paragraphs inside plain-text wrappers to prevent double spacing */
 main .section.form-container .form form .plain-text-wrapper p {
   margin-bottom: 0;
-  text-align: left;
+  text-align: center;
 }
 
 main .section.form-container .form form .tnc-text-decoration p{
@@ -410,7 +410,6 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   pointer-events: none;
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled),
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled) {
   border: 0.0417rem solid var(--bbl-color-active-blue);
   background-color: var(--bbl-color-white);
@@ -447,10 +446,7 @@ main .section.form-container .form form .field-compliantnonfin-complimentpanel>f
   border-color: var(--bbl-color-red-130);
 }
 
-/* Invalid state layout padding override for branch panel */
-main .section.form-container .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel):has(.field-invalid) {
-  padding-bottom: var(--bbl-space-500);
-}
+
 
 /* Terms & Conditions approval panel (custom-fieldset-approval) */
 main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) {

@@ -37,7 +37,7 @@
 .section.center-image .columns-2-cols > div:has(> .columns-img-col + .columns-img-col) {
   gap: var(--bbl-space-100);
   justify-content: center;
-  flex-direction: row;
+  flex-flow: row wrap;
 }
 
 .section.center-image .columns-3-cols > div:has(> .columns-img-col + .columns-img-col + .columns-img-col) {
@@ -46,7 +46,30 @@
   gap: var(--bbl-space-050);
 }
 
-@media (width >= 1025px) {
+/* Two buttons in a 2-col row: full-width stacked on mobile/tablet, auto-width side-by-side on desktop */
+/* stylelint-disable-next-line no-descending-specificity -- unrelated selector scopes (.columns-2-cols button layout vs .section.center-image image layout) */
+.columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) > div {
+  width: 100%;
+}
+
+.columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) .button-m {
+  box-sizing: border-box;
+  width: auto;
+  max-width: 100%;
+}
+
+.columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) p.button-container {
+  margin: var(--bbl-space-250) 0 0;
+}
+
+@media (width > 47.5rem) {
+  .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) {
+    max-width: 37.5rem;
+    margin: 0 auto;
+  }
+}
+
+@media (width > 64rem) {
   .columns > div {
     align-items: center;
     flex-direction: unset;
@@ -56,5 +79,20 @@
   .columns > div > div {
     flex: 1;
     order: unset;
+  }
+
+  .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) {
+    gap: var(--bbl-space-250);
+  }
+
+  .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) > div {
+    flex: 1;
+    width: auto;
+  }
+
+  .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) .button-m {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
   }
 }

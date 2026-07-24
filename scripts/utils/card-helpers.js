@@ -216,7 +216,7 @@ export async function fetchJson(url) {
   return fetchCache[url];
 }
 
-export function buildCardHtml(card, tag, placeholders = {}, options = {}) {
+export function buildCardHtml(card, tag = {}, options = {}) {
   const { dateLine = '', logoHtml = '', footerExtra = '' } = options;
   const target = card.targetLink === 'true' ? '_blank' : '_self';
 
@@ -237,7 +237,7 @@ export function buildCardHtml(card, tag, placeholders = {}, options = {}) {
       ${dateLine ? `<p class="listing-card-date">${dateLine}</p>` : ''}
     </div>
     <div class="listing-card-footer">
-      <a href="${card.ctaLink || ''}" target="${target}" class="listing-card-cta button-m primary">${card.ctaLabel || placeholders.promoLearnMore || 'Learn More'}</a>
+      <a href="${card.ctaLink || ''}" target="${target}" class="listing-card-cta button-m primary" title="${card.ctaLabel}">${card.ctaLabel || 'Learn More'}</a>
       ${footerExtra}
     </div>
   </div>

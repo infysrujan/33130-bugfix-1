@@ -33,10 +33,10 @@
 
 .warning-card-title {
   color: var(--bbl-color-blue-130);
-  font-size: var(--bbl-heading-h4-size);
-  font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.4;
   margin: 0 0 var(--bbl-space-200);
+  font-size: var(--bbl-text-thumbnail-card-title-size);
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
+  font-weight: var(--bbl-text-thumbnail-card-title-weight);
   font-family: var(--bbl-font-family-medium);
 }
 
@@ -83,9 +83,7 @@
   }
 
   .warning-card-title {
-    font-size: 1.3125rem;
     margin-bottom: var(--bbl-space-250);
-    line-height: 1.4219rem;
   }
 
   .warning-card-description {
@@ -104,7 +102,6 @@
   }
 
   .warning-card-title {
-    font-size: 1.625rem;
     margin-bottom: var(--bbl-space-250);
   }
 

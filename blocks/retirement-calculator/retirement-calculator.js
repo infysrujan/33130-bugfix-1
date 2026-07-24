@@ -599,13 +599,18 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
     };
 
     try {
+      const userReturnRate = journey2Values.CompensationRatePct
+        ?? data.defaultSavingsReturnRate
+        ?? 3;
+      const altReturnRate = userReturnRate + 2;
+
       const payload = {
         CurrentAGE: state.journey1.currentAge,
         RetireAGE: state.journey1.retirementAge,
         SavingAGE: state.journey1.lifeExpectancy,
         ChargesRetireAmount: state.journey1.monthlyIncome,
         SavingBeginAmount: journey2Values.SavingBeginAmount,
-        CompensationRate: journey2Values.CompensationRatePct / 100,
+        CompensationRate: userReturnRate / 100,
         SavingIncRate: journey2Values.SavingIncRatePct / 100,
         SavingCurrent: journey2Values.SavingCurrentPct / 100,
         IncomeRetire: journey2Values.IncomeRetire,
@@ -621,7 +626,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
         inflationrate: data.inflationRate,
         afterretirerate: data.afterRetirementRate,
       };
-      const payload5 = { ...payload, CompensationRate: data.altCompensationRate };
+      const payload5 = { ...payload, CompensationRate: altReturnRate / 100 };
       const [apiResult1, apiResult2] = await Promise.all([
         fetchPost(apiUrl, payload),
         fetchPost(apiUrl, payload5),
@@ -696,6 +701,16 @@ function renderJourney3(block, data, state, onBack) {
       </div>
     `));
   } else {
+    const userReturnRate = state.journey2?.CompensationRatePct
+      ?? data.defaultSavingsReturnRate
+      ?? 3;
+    const altReturnRate = userReturnRate + 2;
+
+    const note1Text = getString(labels, 'stepsStep3SavingsReturnNote3', 'Based on expected annual return on savings of 3%')
+      .replace(/\d+(?:\.\d+)?%/, `${userReturnRate}%`);
+    const note2Text = getString(labels, 'stepsStep3SavingsReturnNote5', 'If you invest with an annual return of 5%')
+      .replace(/\d+(?:\.\d+)?%/, `${altReturnRate}%`);
+
     // ── Cases 2 & 3: savings cards ──
     const altCard = savingMonth2 >= 0 ? `
         <div class="rc-savings-card-alt">
@@ -704,7 +719,7 @@ function renderJourney3(block, data, state, onBack) {
             ${formatNumber(savingMonth2)} <span class="rc-savings-card-unit rc-savings-card-unit-alt">${baht}</span>
           </p>
           <p class="rc-savings-card-note rc-savings-card-note-alt">
-            ${getString(labels, 'stepsStep3SavingsReturnNote5', 'If you invest with an annual return of 5%')}
+            ${note2Text}
           </p>
         </div>` : '';
     content.appendChild(parseHTML(`
@@ -715,7 +730,7 @@ function renderJourney3(block, data, state, onBack) {
             ${formatNumber(savingMonth1)} <span class="rc-savings-card-unit">${baht}</span>
           </p>
           <p class="rc-savings-card-note">
-            ${getString(labels, 'stepsStep3SavingsReturnNote3', 'Based on expected annual return on savings of 3%')}
+            ${note1Text}
           </p>
         </div>
         ${altCard}

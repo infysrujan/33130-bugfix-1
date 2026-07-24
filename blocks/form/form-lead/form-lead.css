@@ -7,7 +7,6 @@
   --bbl-form-font-size-15-2: 0.95rem;                /* 15.2px */
   --bbl-form-font-size-16: 1rem;                     /* 16px */
   --bbl-form-font-size-17: 1.0625rem;                /* 17px */
-  --bbl-form-font-size-18: 1.125rem;                /* 18px */
   --bbl-form-font-size-20: 1.25rem;                  /* 20px */
   --bbl-form-font-size-21: 1.3125rem;                /* 21px */
   --bbl-form-font-size-22: 1.4rem;                   /* ~22px */
@@ -115,11 +114,6 @@ main .lead-forms .form form p {
   line-height: var(--bbl-form-line-height-1-5);
 }
 
-main .lead-forms .form form h2{
-    font-size: 0.875rem;
-    line-height: 1.1375rem;
-  }
-
 main .lead-forms.section.central-aligned > .default-content-wrapper p{
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-font-size-b1-mobile);
@@ -149,8 +143,8 @@ main .lead-forms div.default-content-wrapper {
 }
 
 main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  font-size: var(--bbl-form-font-size-title-mobile);
-  line-height: normal;
+  font-size: var(--bbl-form-font-size-18);
+  line-height: 1.5rem;
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-grey-140);
   letter-spacing: -0.0125rem;
@@ -192,11 +186,8 @@ main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .pa
   position: relative;
   margin: var(--bbl-space-500) 0 var(--bbl-space-300);
   padding: 0 0 var(--bbl-form-padding-35);
-  color: var(--bbl-color-grey-140);
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h1-mobile);
   font-weight: var(--bbl-form-font-weight-bold);
-  line-height: normal;
   letter-spacing: -0.0125rem;
   text-align: center;
 }
@@ -221,19 +212,8 @@ main .lead-forms .form form .field-infotext {
   margin: var(--bbl-space-500) 0 var(--bbl-space-250);
 }
 
-main .lead-forms .form form .field-form-intro.field-wrapper p {
-  text-align: center;
-}
-
-main .lead-forms .form form .field-form-intro {
-  max-width: 56.25rem;
-  width: calc(100% + 10rem);
-  margin-left: -5rem;
-  margin-right: -5rem;
-}
-
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-70);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-14);
   padding-right: 0;
@@ -241,11 +221,7 @@ main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
 }
 
 main .lead-forms .form form .plain-text-wrapper p:last-child {
-  margin-bottom: -0.125rem;
-}
-
-main .lead-forms .form form .field-other-premium + .plain-text-wrapper.field-text p > p {
-  padding-inline: var(--bbl-form-padding-10);
+  margin-bottom: 0;
 }
 
 main .lead-forms .form form .plain-text-wrapper :is(a, .custom-wffm-form) {
@@ -282,11 +258,11 @@ main .lead-forms .form form :is(.field-wrapper:has(select), .drop-down-wrapper)>
   font-size: var(--bbl-form-font-size-17);
   line-height: var(--bbl-form-line-height-1);
   font-weight: var(--bbl-form-font-weight-bold);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-black);
 }
 
 main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-form-font-weight-bold);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-1);
   margin-block: var(--bbl-space-500) 0;
@@ -305,10 +281,8 @@ main .lead-forms .form textarea {
 
 main .lead-forms .form form input,
 main .lead-forms .form form textarea,
-main .lead-forms .form form select {
-  height: 2.75rem;
-  color: var(--bbl-color-black);
-  border-radius: 0.4375rem;
+main .lead-forms .form form select{
+    height:44px;
 }
 
 main .section.form-container.lead-forms .form form select {
@@ -316,7 +290,7 @@ main .section.form-container.lead-forms .form form select {
   border-color: var(--bbl-color-grey-23);
   cursor: pointer;
   appearance: none;
-  color: var(--bbl-color-black);
+  color: var(--bbl-color-grey-70);
   margin-bottom: var(--bbl-form-margin-14);
   background: var(--bbl-color-white) url('../../../icons/dropdown.svg') no-repeat right var(--bbl-space-150) center /25px;
   font-family: var(--bbl-font-family-medium);
@@ -332,7 +306,7 @@ main .lead-forms .form form .drop-down-wrapper.field-bblprovincedropdown > .fiel
 }
 
 main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-black);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-1);
   font-weight: var(--bbl-form-font-weight-bold);
@@ -378,7 +352,7 @@ main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .tele
 
 main .lead-forms .form form .field-wrapper[class*='icon-'] input {
   margin-top: var(--bbl-form-margin-8);
-  color: var(--bbl-color-black);
+  color: var(--bbl-color-grey-70);
 }
 
 main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):has([aria-live="polite"]) input {
@@ -483,7 +457,7 @@ main .lead-forms .form form .email-wrapper::before {
   justify-content: center;
   width: var(--bbl-space-250);
   height: 1.1875rem;
-  color: var(--bbl-color-grey-150);
+  color: var(--bbl-color-grey-70);
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -963,7 +937,8 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   }
 
   main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--bbl-form-font-size-title-desktop);
+    font-size: var(--bbl-form-font-size-32);
+    line-height: 2.3125rem;
   }
 
   main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
@@ -972,13 +947,12 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   }
 
   main .lead-forms .form form h2{
-    font-size: var(--bbl-form-font-size-16);
-    line-height: 1.3rem;
+    padding: 0 var(--bbl-form-padding-10);
   }
 
   main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
-    font-size: var(--bbl-font-size-b1-desktop);
-    line-height: var(--bbl-line-height-b3-desktop);
+    font-size: var(--bbl-form-font-size-17);
+    line-height: 1.3813rem;
   }
 
   main .lead-forms.section.central-aligned > .default-content-wrapper p{

@@ -53,6 +53,25 @@ export function decorateIconInContainer(container) {
   processIconMarkers([...container.querySelectorAll('p')]);
 }
 
+export function decoratePictureLinks(container) {
+  container.querySelectorAll('p').forEach((markerP) => {
+    if (!/#imagelink/i.test(markerP.textContent.trim())) return;
+    const picture = markerP.previousElementSibling?.querySelector('picture')
+      ?? markerP.nextElementSibling?.querySelector('picture');
+    if (!picture) return;
+    markerP.remove();
+    const picP = picture.closest('p');
+    const linkP = picP.nextElementSibling ?? picP.closest('.has-inline-icon')?.nextElementSibling;
+    const anchor = linkP?.querySelector('a');
+    if (!anchor) return;
+    const link = anchor.cloneNode(false);
+    link.removeAttribute('class');
+    picture.replaceWith(link);
+    link.append(picture);
+    linkP.remove();
+  });
+}
+
 export function decorateRteInlineImages(main) {
   main.querySelectorAll(`${DCW} p, ${DCW} li, ${DCW} td`).forEach((el) => {
     if (!el.innerHTML.includes('&amp;nbsp;')) return;

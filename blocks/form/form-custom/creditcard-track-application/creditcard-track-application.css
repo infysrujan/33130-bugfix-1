@@ -53,11 +53,9 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     border: 0;
     text-align: left;
     letter-spacing: normal;
-    color: var(--form-fieldset-legend-color);
+    color: var(--bbl-color-grey-85);
     font-family: var(--bbl-font-family-medium);
-    font-size: var(--form-fieldset-legend-font-size);
     font-weight: 400;
-    line-height: var(--bbl-heading-h4-line-height);
 
     &::before {
       background: none;
@@ -234,7 +232,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     border-radius: 0.4375rem;
     gap: var(--bbl-space-100);
     font-size: var(--bbl-font-size-h4-mobile);
-    font-weight: var(--form-title-font-weight);
     line-height: var(--bbl-line-height-h4-mobile);
     cursor: pointer;
     appearance: none;
@@ -779,25 +776,11 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
     & .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label):not(:is(.field-title *, .cc-panel-item-form-title *)),
     & .form form :is(.drop-down-wrapper, .field-wrapper:has(select)) > .field-label {
-      font-size: var(--form-font-size-xs);
+      font-size: var(--bbl-form-font-size-15);
       line-height: var(--bbl-line-height-b1-desktop);
     }
 
-    /* Page + panel titles — desktop heading scale (live ~1.5rem) */
-    & :is(
-      h3,
-      .form form .field-title h2,
-      .form form .field-title .page-header,
-      .form form .field-title .label-header,
-      .field-title,
-      .cc-panel-item-form-title
-    ) {
-      font-size: var(--bbl-heading-h3-size);
-      font-weight: var(--bbl-heading-h3-weight);
-      line-height: var(--bbl-heading-h3-line-height);
-    }
-
-    & .form form .field-wrapper.col-6:not(.button-wrapper) {
+& .form form .field-wrapper.col-6:not(.button-wrapper) {
       grid-column: span 6;
     }
 

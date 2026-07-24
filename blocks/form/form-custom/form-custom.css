@@ -23,9 +23,9 @@ main .section.form-container.custom-forms .form form :is(input:not([type='radio'
   border-radius: 0.4375rem;
 }
 
-main .section.form-container.custom-forms .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea)::placeholder{
-    opacity: 1;
-    color: var(--bbl-color-grey-150);
+main .section.form-container.custom-forms .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea)::placeholder {
+  opacity: 1;
+  color: var(--bbl-color-grey-150);
 }
 
 main .section.form-container.custom-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):not(:has(label:is([class*=' icon-'], [class^='icon-'])))::before {
@@ -51,12 +51,12 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 }
 
 /* Override lead-form.css 1-column layouts to restore standard 12-column grids */
-main .section.form-container.custom-forms .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) {
+main .section.form-container.custom-forms .form form>fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) {
   grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
   width: auto;
 }
 
-main .section.form-container.custom-forms .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
+main .section.form-container.custom-forms .form form>fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
   grid-column: span 12;
 }
 
@@ -83,14 +83,14 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper:not(.h
 }
 
 /* Legend label font styles */
-main .section.form-container.custom-forms .panel-wrapper > legend.field-label {
+main .section.form-container.custom-forms .panel-wrapper>legend.field-label {
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-font-size-b3-mobile);
   font-weight: 600;
   cursor: default;
 }
 
-main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
+main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-group-wrapper)>legend.field-label {
   color: var(--bbl-color-grey-85);
   font-size: 1.25rem;
   font-weight: var(--bbl-font-weight-regular);

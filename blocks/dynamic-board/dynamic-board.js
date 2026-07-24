@@ -257,7 +257,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
           <input type="text" class="db-mp-input" id="db-mp-from" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
             value="${state.filterFrom ? formatMonthYearDisplay(state.filterFrom.month, state.filterFrom.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
-          <button type="button" class="db-mp-cal-btn" data-which="from" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''} icon-calendar"></button>
+          <button type="button" class="db-mp-cal-btn icon-calendar" data-which="from" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}></button>
           <div class="db-mp-popup" id="db-mp-popup-from" hidden></div>
         </div>
       </div>
@@ -267,7 +267,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
           <input type="text" class="db-mp-input" id="db-mp-to" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
             value="${state.filterTo ? formatMonthYearDisplay(state.filterTo.month, state.filterTo.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
-          <button type="button" class="db-mp-cal-btn" data-which="to" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''} icon-calendar"></button>
+          <button type="button" class="db-mp-cal-btn icon-calendar" data-which="to" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}></button>
           <div class="db-mp-popup" id="db-mp-popup-to" hidden></div>
         </div>
       </div>
@@ -554,6 +554,9 @@ function printElement(block) {
   const logoSrc = logoImg.currentSrc || logoImg.src;
   const brandLogo = `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoImg.alt || 'Bangkok Bank')}">`;
 
+  const pageTitle = section.querySelector('.default-content-wrapper > :is(h1, h2, h3, h4, h5, h6)')
+    ?.textContent?.trim() || document.querySelector('h1')?.textContent?.trim() || 'Print';
+
   const printWindow = window.open('', '', 'height=500,width=800');
 
   const printCss = `
@@ -753,7 +756,7 @@ function printElement(block) {
   <html lang="en">
     <head>
       <meta charset="utf-8"/>
-      <title>Print</title>
+      <title>${escapeHtml(pageTitle)}</title>
       <link rel="stylesheet" href="/styles/styles.css">
       <link rel="stylesheet" href="/styles/fonts.css">
       <link rel="stylesheet" href="/blocks/header/header.css">

@@ -1,4 +1,4 @@
-import { decorateIconInContainer } from '../../scripts/custom-rte.js';
+import { decorateIconInContainer, decoratePictureLinks } from '../../scripts/custom-rte.js';
 
 export default function decorate(block) {
   const cols = [...block.firstElementChild.children];
@@ -19,4 +19,5 @@ export default function decorate(block) {
   });
 
   decorateIconInContainer(block);
+  decoratePictureLinks(block);
 }
