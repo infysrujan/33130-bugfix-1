@@ -21,6 +21,63 @@ import {
   sortCards,
 } from '../../scripts/utils/card-helpers.js';
 
+// --- Autoscroll to the category subnav (any promotions listing in tabs) -----
+// Breathing room (px) left between the fixed header and the subnav after
+// scrolling. One value for every viewport — the header height is measured
+// separately at scroll time. Increase for more space above the subnav.
+const SUBNAV_GAP = 68;
+
+// id put on the subnav (tabs) element so the scroll can target it by id.
+const SUBNAV_ID = 'promo-subnav';
+
+// Smoothly scroll the window to targetY over `duration` ms with an ease-in-out
+// curve (slow start, fast middle, slow end).
+function swingScrollTo(targetY, duration = 600) {
+  const startY = window.scrollY;
+  const diff = targetY - startY;
+  if (Math.abs(diff) < 1) return;
+  const start = performance.now();
+  const step = (now) => {
+    const p = Math.min((now - start) / duration, 1);
+    window.scrollTo(0, Math.round(startY + diff * (0.5 - Math.cos(p * Math.PI) / 2)));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+// Scroll the subnav (looked up by id) to just below the fixed header, keeping
+// the header visible. The header loads async and pins only in reaction to a
+// scroll event, so: wait for its bar to exist, jump past its pin threshold
+// (locks it, no flicker), force its classes, then measure the subnav's live
+// position and smooth-scroll so it lands SUBNAV_GAP px below the header.
+// Bounded ~3s; skips if the header or subnav never appear.
+function scrollToSubnav(subnavId) {
+  const deadline = Date.now() + 3000;
+  const run = () => {
+    const subnav = document.getElementById(subnavId);
+    const header = document.querySelector('.header');
+    const desktop = window.matchMedia('(min-width: 1025px)').matches;
+    const bar = header && (desktop
+      ? header.querySelector('.main-nav-desktop')
+      : header.querySelector('.mobile-top-bar'));
+    if (!subnav || !bar) {
+      if (Date.now() < deadline) requestAnimationFrame(run);
+      return;
+    }
+    const topNav = header.querySelector('.top-nav');
+    const threshold = desktop && topNav
+      ? Math.ceil(topNav.getBoundingClientRect().height) + 1
+      : 1;
+    window.scrollTo({ top: threshold, behavior: 'auto' });
+    if (desktop) topNav?.classList.add('is-hidden');
+    bar.classList.add('is-scrolled');
+    const headerHeight = bar.getBoundingClientRect().height;
+    const target = subnav.getBoundingClientRect().top + window.scrollY - headerHeight - SUBNAV_GAP;
+    swingScrollTo(Math.max(0, target));
+  };
+  run();
+}
+
 const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
 
 function isTopPromotionsLabel(value) {
@@ -340,26 +397,31 @@ function setupPanel(
   });
 
   const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
+
   function makeSingleSelect(filterAttr, stateKey, defaultLabel) {
     panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
       opt.addEventListener('click', () => {
+        const isActive = opt.classList.contains('is-active');
         panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`)
           .forEach((o) => o.classList.remove('is-active'));
-        opt.classList.add('is-active');
-        const val = opt.dataset.value || '';
-        state[stateKey] = val;
         const labelEl = panel.querySelector(
           `[data-filter="${filterAttr}"] .promo-selector-filter-label`,
         );
-        labelEl.textContent = val || defaultLabel;
-        const filterEl = panel.querySelector(`[data-filter="${filterAttr}"]`);
-        filterEl?.classList.remove('is-open');
-        filterEl?.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
+        if (isActive) {
+          state[stateKey] = '';
+          labelEl.textContent = defaultLabel;
+        } else {
+          opt.classList.add('is-active');
+          state[stateKey] = opt.dataset.value;
+          labelEl.textContent = opt.dataset.value;
+        }
+        panel.querySelector(`[data-filter="${filterAttr}"]`).classList.remove('is-open');
         state.page = 1;
         if (isDesktop()) render();
       });
     });
   }
+
   makeSingleSelect('subcategory', 'subcategory', labelCategory);
   makeSingleSelect('cardType', 'cardType', labelCardType);
   makeSingleSelect('area', 'area', labelArea);
@@ -482,6 +544,13 @@ export default async function decorate(block) {
   const promoSection = block.closest('.section');
   if (promoSection) promoSection.classList.add('promo-card-listing-section');
 
+  // Autoscroll on any promotions listing rendered in tabs. The listing lives in
+  // a .section.tabs-container — that section is the subnav we scroll to.
+  // Structural (no config gate); skipped when the URL targets an in-page anchor.
+  const tabsSection = block.closest('.section.tabs-container')
+    || document.querySelector('.section.tabs-container');
+  const autoScroll = !window.location.hash && !!tabsSection;
+
   if (tabsContainer) {
     const tabsNav = tabsContainer.querySelector('.tabs-nav');
     const navWrapper = tabsContainer.querySelector('.tabs-nav-wrapper');
@@ -534,6 +603,9 @@ export default async function decorate(block) {
         hidePagination: disableFilters && isBbm,
         isBbm,
         isHighlightsPanel,
+        // Autoscroll pages: render the active panel now so the page reaches its
+        // full height before we scroll (otherwise a short doc clamps the scroll).
+        immediate: autoScroll,
         baseUrl: promotionApi?.baseUrl,
       },
     );
@@ -545,6 +617,17 @@ export default async function decorate(block) {
       f.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
     });
   });
+
+  // Autoscroll to the subnav (keeps the header visible). One-shot so multiple
+  // blocks don't compete; runs on load if the document isn't ready yet.
+  if (autoScroll && !document.documentElement.dataset.promoAutoscrolled) {
+    document.documentElement.dataset.promoAutoscrolled = '1';
+    // Tag the tabs section with a stable id, then scroll to that id.
+    if (!tabsSection.id) tabsSection.id = SUBNAV_ID;
+    const run = () => scrollToSubnav(tabsSection.id);
+    if (document.readyState === 'complete') run();
+    else window.addEventListener('load', run, { once: true });
+  }
 
   block.hidden = true;
 }
