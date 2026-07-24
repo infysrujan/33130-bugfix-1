@@ -34,16 +34,13 @@ function isAutoScrollPage(configValue, lang) {
     .includes(current);
 }
 
-// Per-viewport scroll distance (px), widest-first — computed, not tied to any
-// component's live position. Desktop split (>=1025px) mirrors the header. Tune.
-const AUTOSCROLL_DISTANCE = [
-  { minWidth: 1025, distance: 490 },
-  { minWidth: 768, distance: 271 },
-  { minWidth: 0, distance: 465 },
-];
+// Breathing room (px) left between the fixed header and the subnav after
+// scrolling. One value for every viewport — the header height is measured
+// separately at scroll time. Increase for more space above the subnav.
+const SUBNAV_GAP = 68;
 
-// Ease-in-out ("swing") scroll, mirroring the legacy jQuery.animate(_, 'slow')
-// (600ms, swing easing) — reimplemented in vanilla rAF, no dependency.
+// Smoothly scroll the window to targetY over `duration` ms with an ease-in-out
+// curve (slow start, fast middle, slow end).
 function swingScrollTo(targetY, duration = 600) {
   const startY = window.scrollY;
   const diff = targetY - startY;
@@ -57,14 +54,14 @@ function swingScrollTo(targetY, duration = 600) {
   requestAnimationFrame(step);
 }
 
-// Keep the header visible while scrolling to the subnav. header.js loads async
-// and pins only in reaction to a scroll event, so: wait for its bar, jump past
-// its pin threshold (locks it, no flicker), force its own classes, then swing
-// to the target. Bounded ~3s; scrolls anyway if the header never appears.
-function scrollToSubnav() {
-  const match = AUTOSCROLL_DISTANCE.find((b) => window.innerWidth >= b.minWidth);
-  const top = match ? match.distance : 0;
-  if (top <= 0) return;
+// Scroll the subnav to just below the fixed header, keeping the header visible.
+// The header loads async and pins only in reaction to a scroll event, so: wait
+// for its bar to exist, jump past its pin threshold (locks it, no flicker),
+// force its classes, then measure the subnav's live position and smooth-scroll
+// so it lands SUBNAV_GAP px below the header. Bounded ~3s; if the header never
+// appears we skip (its height is needed to place the subnav correctly).
+function scrollToSubnav(subnav) {
+  if (!subnav) return;
   const deadline = Date.now() + 3000;
   const run = () => {
     const header = document.querySelector('.header');
@@ -74,17 +71,18 @@ function scrollToSubnav() {
       : header.querySelector('.mobile-top-bar'));
     if (!bar) {
       if (Date.now() < deadline) requestAnimationFrame(run);
-      else swingScrollTo(top);
       return;
     }
     const topNav = header.querySelector('.top-nav');
     const threshold = desktop && topNav
       ? Math.ceil(topNav.getBoundingClientRect().height) + 1
       : 1;
-    window.scrollTo({ top: Math.min(threshold, top), behavior: 'auto' });
+    window.scrollTo({ top: threshold, behavior: 'auto' });
     if (desktop) topNav?.classList.add('is-hidden');
     bar.classList.add('is-scrolled');
-    swingScrollTo(top);
+    const headerHeight = bar.getBoundingClientRect().height;
+    const target = subnav.getBoundingClientRect().top + window.scrollY - headerHeight - SUBNAV_GAP;
+    swingScrollTo(Math.max(0, target));
   };
   run();
 }
@@ -631,8 +629,10 @@ export default async function decorate(block) {
   // blocks don't compete; runs on load if the document isn't ready yet.
   if (autoScroll && !document.documentElement.dataset.promoAutoscrolled) {
     document.documentElement.dataset.promoAutoscrolled = '1';
-    if (document.readyState === 'complete') scrollToSubnav();
-    else window.addEventListener('load', scrollToSubnav, { once: true });
+    const subnav = tabsContainer || document.querySelector('.tabs');
+    const run = () => scrollToSubnav(subnav);
+    if (document.readyState === 'complete') run();
+    else window.addEventListener('load', run, { once: true });
   }
 
   block.hidden = true;
