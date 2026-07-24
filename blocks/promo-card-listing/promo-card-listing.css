@@ -6,14 +6,27 @@
   overflow: visible;
 }
 
+.promo-card-listing {
+  padding-bottom: 0;
+}
+
 .promo-selector-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  gap: 1.25rem;
+}
+
+.promo-selector-grid .listing-card {
+  margin-bottom: 0;
+}
+
+.promo-selector-grid .listing-card-container {
+  margin-inline: 0;
 }
 
 .promo-selector-grid:has(.promo-selector-empty),
-.promo-selector-grid:has(.listing-card-container:only-child) {
+.promo-selector-grid:has(> .listing-card-container:nth-last-child(-n + 3):first-child) {
   justify-content: center;
 }
 
@@ -47,7 +60,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding-bottom: 1.875rem;
+  padding-block: 2.5rem 0;
 }
 
 .promo-selector-pagination:empty {
@@ -159,11 +172,15 @@
   width: 100%;
 }
 
-.promo-card-listing.has-preview > div[data-config-row] {
+.promo-card-listing.has-preview>div[data-config-row] {
   display: none;
 }
 
 @media (width > 47.5rem) {
+  .promo-selector-grid {
+    gap: 0 1.25rem;
+  }
+
   .promo-selector-grid:has(.promo-selector-empty) {
     width: 50%;
     padding-inline: 0.625rem;
@@ -182,12 +199,11 @@
   }
 
   .promo-selector-filters {
-    margin-inline: -1.25rem;
+    display: flex;
     align-items: center;
   }
 
   .promo-selector-filter {
-    padding-inline: 0.625rem;
     width: 50%;
   }
 
@@ -229,11 +245,11 @@ body.mobile-app-view main {
   margin-top: 0;
 }
 
-body.mobile-app-view header.is-not-overlapped ~ main {
+body.mobile-app-view header.is-not-overlapped~main {
   padding-top: 0;
 }
 
-body.mobile-app-view main > div:first-child {
+body.mobile-app-view main>div:first-child {
   margin-top: 0;
 }
 
@@ -281,6 +297,10 @@ body.mobile-app-view main > div:first-child {
 }
 
 @media (width > 64rem) {
+  .promo-selector-grid {
+    gap: 0 2.50rem;
+  }
+
   .promo-selector-grid:has(.promo-selector-empty) {
     width: unset;
     padding-inline: 0;
@@ -301,14 +321,15 @@ body.mobile-app-view main > div:first-child {
   }
 
   .promo-selector-filters {
-    flex-flow: row wrap;
-    gap: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 2.5rem;
   }
 
   .promo-selector-filter {
-    padding-inline: var(--bbl-space-250);
+    flex: 1 1 calc(100% / 3);
     margin-bottom: 0.625rem;
-    width: 33.3333%;
     box-sizing: border-box;
   }
 
@@ -330,7 +351,7 @@ body.mobile-app-view main > div:first-child {
     right: var(--bbl-space-250);
   }
 
-  body.mobile-app-view header.is-not-overlapped ~ main {
+  body.mobile-app-view header.is-not-overlapped~main {
     padding-top: 0;
   }
 

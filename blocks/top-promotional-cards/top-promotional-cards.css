@@ -16,8 +16,11 @@
   justify-content: flex-start;
 }
 
-.top-promo-grid:has(.top-promo-empty),
-.top-promo-grid:has(.listing-card-container:only-child) {
+.top-promo-grid:has(> .listing-card-container) {
+  justify-content: flex-start;
+}
+
+.top-promo-grid:has(.top-promo-empty) {
   justify-content: center;
 }
 

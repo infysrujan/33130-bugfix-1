@@ -382,7 +382,8 @@ function setupPanel(
     render();
   });
 
-  bindPaginationClick(paginationEl, state, render, gridEl);
+  const scrollTarget = panel.closest('.tabs') || gridEl;
+  bindPaginationClick(paginationEl, state, render, scrollTarget);
 }
 
 export default async function decorate(block) {

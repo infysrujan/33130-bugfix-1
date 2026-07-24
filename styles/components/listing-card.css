@@ -235,8 +235,7 @@
   }
 
   .listing-card-container {
-    width: 50%;
-    padding-inline: 0.625rem;
+    width: calc(50% - 0.625rem);
     box-sizing: border-box;
   }
 
@@ -268,9 +267,7 @@
   }
 
   .listing-card-container {
-    width: 25%;
-    padding-inline: var(--bbl-space-250);
-    padding-bottom: var(--bbl-space-500);
+    width: calc(25% - 1.875rem);
   }
 
   .listing-card-tag {
