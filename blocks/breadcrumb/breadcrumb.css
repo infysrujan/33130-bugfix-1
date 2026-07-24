@@ -155,7 +155,7 @@ body.mobile-app-view .breadcrumb {
 
 @media (width <= 767px) {
   .breadcrumb ol {
-    margin-bottom: 20px;
+    margin-bottom: 0;
     padding-bottom: 0;
   }
 
