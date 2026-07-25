@@ -32,14 +32,14 @@
 					"name": "ctaLabel",
 					"label": "CTA Label",
 					"valueType": "string",
-					"required": false
+					"required": true
 				},
 				{
 					"component": "text",
 					"name": "printCtaLabel",
 					"label": "Print CTA Label",
 					"valueType": "string",
-					"required": false
+					"required": true
 				},
 				{
 					"component": "richtext",
