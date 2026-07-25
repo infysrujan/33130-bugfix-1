@@ -168,6 +168,7 @@
 .credit-card-comparator .btn-primary:disabled {
   background: var(--bbl-color-grey-40);
   color: var(--bbl-color-gray-600);
+  opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -221,4 +222,3 @@
 .adobe-ue-edit div[data-aue-component="credit-card-comparator"] .compare-group {
   display: none;
 }
-

@@ -629,9 +629,10 @@
 }
 
 .card-list.credit-card .ccs-compare-btn.is-comparing {
-  background-color: var(--bbl-color-grey-10);
-  border-color: var(--bbl-color-grey-60);
-  color: var(--bbl-color-grey-60);
+  background-color: transparent;
+  border-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-active-blue);
+  opacity: 0.5;
   cursor: default;
   pointer-events: none;
 }
