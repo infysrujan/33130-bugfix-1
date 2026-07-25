@@ -166,27 +166,37 @@
 
 .content-insert-cards .intro-info {
   position: absolute;
-  top: 1.875rem;
+  top: 1.5rem;
   right: 1.875rem;
   max-width: 15.3125rem;
   width: 15.3125rem;
   box-sizing: border-box;
   background-color: var(--bbl-color-white);
   border-radius: var(--bbl-rounded-100);
-  padding: var(--bbl-space-250);
+  padding: var(--bbl-space-200);
   box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 15%);
   border: none;
   min-height: auto;
   justify-content: flex-start;
 }
 
+.content-insert-cards .title-2 {
+  padding-bottom: 0.625rem;
+  margin-bottom: 0.375rem;
+}
+
 .content-insert-cards .text-default {
   font-size: var(--bbl-font-size-b2);
-  line-height: 1.29;
+  line-height: 1.25;
 }
 
 .content-insert-cards .desc {
-  margin-bottom: var(--bbl-space-150);
+  margin-bottom: var(--bbl-space-100);
+}
+
+.content-insert-cards .button-group,
+.content-insert-cards .button-container {
+  padding-top: var(--bbl-space-150);
 }
 
 }
@@ -194,7 +204,7 @@
 @media (width > 64rem) {
 .content-insert-cards .text-default {
   font-size: var(--bbl-body-b1-size);
-  line-height: 1.375;
+  line-height: 1.25;
 }
 
 .content-insert-cards .category {
