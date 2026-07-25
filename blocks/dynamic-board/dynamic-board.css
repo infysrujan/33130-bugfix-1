@@ -1003,6 +1003,35 @@
   }
 }
 
+/* ── Full-bleed section: restore section-level horizontal padding ───────── */
+/* When dynamic-board is placed inside a full-bleed-bg section the section's
+   own padding-inline is 0, so the block must supply its own horizontal
+   spacing to match the standard .section padding on the live site. */
+
+.section.full-bleed-bg .dynamic-board {
+  padding-inline: var(--bbl-space-section-xs);
+}
+
+@media (width > 48rem) {
+  .section.full-bleed-bg .dynamic-board {
+    padding-inline: var(--bbl-space-section-sm);
+  }
+}
+
+@media (width > 64rem) {
+  .section.full-bleed-bg .dynamic-board {
+    padding-inline: var(--bbl-space-section-xl);
+  }
+}
+
+@media (width > 87.5rem) {
+  .section.full-bleed-bg .dynamic-board {
+    padding-inline: 0;
+    max-width: var(--bbl-layout-content-max-width-desktop);
+    margin-inline: auto;
+  }
+}
+
 /* ── Print ─────────────────────────────────────────────────── */
 
 @media print {
