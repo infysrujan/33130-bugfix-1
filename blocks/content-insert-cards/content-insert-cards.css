@@ -149,7 +149,6 @@
 }
 
 .content-insert-cards .thumb-large {
-  display: grid;
   border-radius: var(--bbl-rounded-100);
   overflow: visible;
 }
@@ -160,19 +159,15 @@
 }
 
 .content-insert-cards .thumb {
-  grid-area: 1 / 1;
   border-radius: var(--bbl-rounded-100);
   width: auto;
-  height: 100%;
-  min-height: 23.75rem;
+  height: 23.75rem;
 }
 
 .content-insert-cards .intro-info {
-  grid-area: 1 / 1;
-  align-self: start;
-  justify-self: end;
-  position: relative;
-  margin: 1.875rem 1.875rem 1.875rem 0;
+  position: absolute;
+  top: 1.875rem;
+  right: 1.875rem;
   max-width: 15.3125rem;
   width: 15.3125rem;
   box-sizing: border-box;
