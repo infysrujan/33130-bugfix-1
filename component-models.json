@@ -4023,14 +4023,14 @@
         "name": "ctaLabel",
         "label": "CTA Label",
         "valueType": "string",
-        "required": true
+        "required": false
       },
       {
         "component": "text",
         "name": "printCtaLabel",
         "label": "Print CTA Label",
         "valueType": "string",
-        "required": true
+        "required": false
       },
       {
         "component": "richtext",
