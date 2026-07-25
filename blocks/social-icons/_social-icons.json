@@ -60,6 +60,13 @@
           "label": "URL",
           "valueType": "string",
           "required": true
+        },
+        {
+          "component": "text",
+          "name": "title-text",
+          "label": "Title text",
+          "valueType": "string",
+          "required": false
         }
       ]
     }
