@@ -1200,6 +1200,12 @@
     margin-top: 0.625rem;
   }
 
+  /* nearest tag — align with status row on desktop/sidebar */
+  .locate-us .locate-us-card-nearest-tag {
+    top: 3.25rem;
+    transform: translateY(0);
+  }
+
   /* ── Pagination ── */
 
   .locate-us .locate-us-pagination {
