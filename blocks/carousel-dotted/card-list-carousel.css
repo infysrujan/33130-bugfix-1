@@ -1,289 +1,193 @@
-/* ==========================================================================
-   Credit Card Results Block
-   Renders the filtered/unfiltered card list. Talks to the Credit Card Selector
-   block purely via document-level custom events (credit-card-filter-applied /
-   credit-card-filter-reset / credit-card-compare-updated) — no DOM coupling.
-   Card rendering delegates to the card-list block decorator; only layout
-   overrides and result-specific elements are styled here.
-   ========================================================================== */
-
-.credit-card-results .ccs-source-row {
-  display: none;
+.section.central-aligned .block.all-carousel-fragment {
+  margin-inline: auto;
 }
 
-/* ── Block wrapper ──────────────────────────────────────────────────────────── */
-
-.ccs-results {
-  font-family: var(--bbl-font-family-primary);
-  padding: var(--bbl-space-400) var(--bbl-space-200);
-  background: var(--bbl-color-white);
-}
-
-/* ==========================================================================
-   card-list credit-card variation
-   Scoped so no other card-list instances are affected.
-   ========================================================================== */
-
-/* ── Image area — contain the full credit card art ───────────────────────── */
-
-.card-list.credit-card .cards-list-image.cards-list-image-x-small {
-  height: 10.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.25rem 1.25rem 0;
-  box-sizing: border-box;
-}
-
-.card-list.credit-card .cards-list-image.cards-list-image-x-small img {
-  width: 100%;
-  max-width: 14.4156rem;
-  height: 9.6875rem;
-  min-width: unset;
-  object-fit: contain;
-}
-
-/* ── Thai card name above the EN heading ─────────────────────────────────── */
-
-.card-list.credit-card .ccs-name-th {
-  font-size: var(--bbl-font-size-b2);
-  color: var(--bbl-color-grey-70);
-  margin: 0 0 var(--bbl-space-050);
-  line-height: 1.4;
-}
-
-/* ── Card title h3 ───────────────────────────────────────────────────────── */
-
-.card-list.credit-card .cards-list-title h3 {
-  font-family: var(--bbl-font-family-medium);
-  font-size: 1.5rem;
-  line-height: 1.3;
-  font-weight: var(--bbl-font-weight-medium);
-  color: var(--bbl-color-black);
-  overflow-wrap: anywhere;
-}
-
-/* ── Button area: stack Learn More above Compare, no extra padding ───────── */
-
-.card-list.credit-card .cards-list-inner .cards-list-button {
-  display: flex;
-  flex-direction: column;
-  gap: 0.625rem;
-}
-
-.card-list.credit-card .cards-list-button a::before,
-.card-list.credit-card .cards-list-button a::after {
-  display: none;
-}
-
-.card-list.credit-card .cards-list-button .button-m {
-  height: 2.75rem;
-}
-
-.card-list.credit-card .ccs-compare-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  height: 2.75rem;
-  margin: 0.625rem 0 0;
-  padding: 0.3125rem 0;
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
-  border: 0.125rem solid var(--bbl-color-active-blue);
-  border-radius: var(--bbl-rounded-100);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-body-b1-size);
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.card-list.credit-card .ccs-compare-btn.is-comparing {
-  background-color: var(--bbl-color-grey-10);
-  border-color: var(--bbl-color-grey-60);
-  color: var(--bbl-color-grey-60);
-  cursor: default;
-  pointer-events: none;
-}
-
-/* ── Mobile: hide scrollbar on credit card carousel — replaced by dots ───────── */
-
-.ccs-card-list-container .cards-list.scrollable {
-  scrollbar-width: none;
-}
-
-.ccs-card-list-container .cards-list.scrollable::-webkit-scrollbar {
-  display: none;
-}
-
-/* ── Scroll dots pagination — matches carousel-dotted show-arrows-dots style ─── */
-
-.ccs-scroll-dots {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--bbl-space-100);
-  margin-top: var(--bbl-space-150);
-  width: auto;
-  height: auto;
-}
-
-.ccs-scroll-dot {
-  appearance: none;
-  width: var(--bbl-space-100);
-  height: var(--bbl-space-100);
-  min-width: var(--bbl-space-100);
-  min-height: var(--bbl-space-100);
-  border-radius: 50%;
-  border: 0.0625rem solid var(--bbl-color-grey-40);
-  background: transparent;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  flex-shrink: 0;
+.carousel-dotted-container:has(.all-carousel-fragment)
+  .carousel-dotted-wrapper {
   overflow: hidden;
-  font-size: 0;
-  line-height: 0;
-  transition: all 180ms ease;
+  margin-inline: -0.625rem;
 }
 
-.ccs-scroll-dot.is-active {
-  width: 0.625rem;
-  height: 0.625rem;
-  background: var(--bbl-color-active-blue);
-  border-color: var(--bbl-color-active-blue);
-}
-
-/* ── Hidden cards (beyond initial 6 in unfiltered state) ────────────────────── */
-
-.ccs-hidden {
-  display: none;
-}
-
-/* ── Row-2 peek: clips container to show cards 4–6 at 50% height on desktop ─── */
-
-.ccs-card-list-container.ccs-peek {
-  overflow: hidden;
+.carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
   position: relative;
+  display: flex;
+  gap: var(--bbl-space-250);
+  align-items: stretch;
+  width: max-content;
+  min-width: 100%;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  padding-bottom: var(--bbl-space-075);
 }
 
-.ccs-card-list-container.ccs-peek::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 8rem;
-  background: linear-gradient(to bottom, transparent, var(--bbl-color-white));
-  pointer-events: none;
+.carousel-dotted.all-carousel-fragment .carousel-track-viewport {
+  width: calc(100% + (2 * var(--bbl-space-section-xs)));
+  margin-inline: calc(-1 * var(--bbl-space-section-xs));
+  overflow: hidden;
 }
 
-/* ── No-results state ─────────────────────────────────────────────────────── */
-
-.ccs-no-results {
-  padding: var(--bbl-space-600) var(--bbl-space-200);
-  text-align: center;
-  color: var(--bbl-color-grey-70);
-  font-size: var(--bbl-font-size-b1);
+.carousel-dotted.all-carousel-fragment.show-arrows-dots
+  .carousel-track-wrapper {
+  overflow: visible;
 }
 
-/* ── See more / See less toggle — JS controls display via inline style ────── */
+.carousel-fragment .card-list-wrapper {
+  display: flex;
+  height: 100%;
+}
 
-.ccs-results-toggle {
+.carousel-fragment .card-list-wrapper .card-list.block {
+  display: flex;
+  flex: 1;
+  margin-inline: 0;
+}
+
+.carousel-dotted.all-carousel-fragment .carousel-dotted-item.carousel-fragment {
+  position: relative;
+  display: block;
+  opacity: 1;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  transition: none;
+}
+
+.carousel-dotted.all-carousel-fragment
+  .carousel-dotted-item.carousel-fragment
+  :is(> .card-list-wrapper, .card-list.block, .cards-list) {
+  width: 100%;
+  max-width: 100%;
+}
+
+.carousel-dotted.all-carousel-fragment
+  .carousel-dotted-item.carousel-fragment
+  .cards-list {
+  align-items: stretch;
+  flex-wrap: nowrap;
+}
+
+.carousel-dotted.all-carousel-fragment
+  .carousel-dotted-item.carousel-fragment
+  :is(.cards-list-item, .cards-list-item-link, .cards-list-inner) {
+  align-self: stretch;
+  margin-bottom: 0;
+}
+
+.carousel-dotted.all-carousel-fragment .slick-dots li:only-child {
   display: none;
-  justify-content: center;
-  margin-top: var(--bbl-space-300);
 }
 
-.ccs-results-toggle-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--bbl-space-075);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-medium);
-  font-size: 1.2em;
-  font-weight: var(--bbl-font-weight-regular);
-  padding: var(--bbl-space-100) var(--bbl-space-200);
-  border-radius: 0.4375rem;
-  transition: background-color 0.2s ease;
+.carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.ccs-results-toggle-btn:hover {
-  background-color: var(--bbl-color-blue-10);
+.carousel-dotted.all-carousel-fragment.show-arrows-dots
+  .carousel-arrow-prev:hover {
+  transform: translateY(-50%) translateX(-0.3rem);
 }
 
-.ccs-results-toggle-btn .icon-dropdown {
-  font-size: var(--bbl-font-size-b3);
-  color: var(--bbl-color-active-blue);
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-.ccs-results-toggle-btn[aria-expanded="true"] .icon-dropdown {
-  transform: rotate(180deg);
-}
-
-/* ── Disclaimer ────────────────────────────────────────────────────────────── */
-
-.ccs-results-disclaimer {
-  margin-top: var(--bbl-space-300);
-  padding-top: var(--bbl-space-300);
-  font-size: var(--bbl-font-size-b1);
-  color: var(--bbl-color-grey-85);
-  line-height: 1.6;
+.carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow:hover {
+  background-color: unset;
+  transform: translateY(-50%) translateX(0.3rem);
 }
 
 @media (width > 47.5rem) {
-  /* Horizontal padding dropped here — the ambient .section wrapper (main.css)
-     already applies 48px of padding-inline at this breakpoint, so adding more
-     here was double-padding the content and starving the 3-card grid of the
-     width it needs. Vertical padding is kept for spacing above/below cards. */
-  .ccs-results {
-    padding: var(--bbl-space-600) 0;
+  .carousel-dotted-container:has(.all-carousel-fragment)
+    .carousel-dotted-wrapper {
+    overflow: unset;
+    margin-inline: 0;
   }
 
-  .ccs-scroll-dots {
+  .section.central-aligned .block.all-carousel-fragment {
+    margin-inline: 0;
+  }
+
+  .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
+    gap: 0;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
+    width: 100%;
+    margin-inline: 0;
+  }
+
+  .carousel-dotted.all-carousel-fragment.show-arrows-dots {
+    display: block;
+    position: relative;
+    overflow: visible;
+  }
+
+  .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
     display: none;
   }
 
-  /* display: grid guarantees exactly 3 columns regardless of container width
-     (flex just fits as many fixed-width items as the space allows, which let
-     a 4th card sneak onto the row on wider viewports). Cards are narrower
-     than their desktop size (13.5rem vs 15.5rem) so all 3 fit inside a 768px
-     tablet viewport once the .section wrapper's own padding is accounted
-     for, with no cropping or scroll. */
-  .card-list.credit-card .cards-list.scrollable.cards-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 13.5rem);
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.carousel-fragment {
+    width: 100%;
+    min-width: 100%;
+    height: auto;
+  }
+
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.carousel-fragment
+    :is(.card-list-wrapper, .card-list.block, .cards-list) {
     justify-content: center;
-    gap: var(--bbl-space-150);
-    overflow: visible;
-    scroll-snap-type: none;
   }
 
-  .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
-    scroll-snap-align: none;
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.carousel-fragment
+    .cards-list-item {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-bottom: 0;
   }
 
-  .card-list.credit-card .cards-list-inner {
-    min-height: 27rem;
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.no-scroll
+    .cards-list-item {
+    flex: 0 0 calc((100% - 2.5rem) / 3);
   }
 }
 
 @media (width > 64rem) {
-  .ccs-results {
-    padding: var(--bbl-space-600) var(--bbl-space-200);
+  .section.central-aligned .block.all-carousel-fragment {
+    margin: 0 auto;
   }
 
-  .card-list.credit-card .cards-list.scrollable.cards-3 {
-    grid-template-columns: repeat(3, 16.5rem);
-    gap: var(--bbl-space-500);
+  .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
+    width: 100%;
+    margin-inline: 0;
   }
 
-  .card-list.credit-card .cards-list-inner {
-    min-height: 28rem;
+  .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.carousel-fragment
+    .cards-list {
+    gap: 0 var(--bbl-space-500);
+  }
+
+  .carousel-dotted.all-carousel-fragment.show-arrows-dots
+    .carousel-arrow-prev {
+    left: -4.3125rem;
+  }
+
+  .carousel-dotted.all-carousel-fragment.show-arrows-dots
+    .carousel-arrow-next {
+    right: -4.3125rem;
+  }
+
+  .carousel-dotted.all-carousel-fragment
+    .carousel-dotted-item.no-scroll
+    .cards-list-item {
+    flex: 0 0 30.22%;
   }
 }

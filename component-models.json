@@ -3401,18 +3401,6 @@
     ]
   },
   {
-    "id": "credit-card-results",
-    "fields": [
-      {
-        "component": "richtext",
-        "name": "disclaimerText",
-        "value": "",
-        "label": "Disclaimer Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
     "id": "credit-card-selector",
     "fields": [
       {
@@ -3484,6 +3472,13 @@
             "value": "tertiary"
           }
         ]
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
       }
     ]
   },

@@ -1,3 +1,4 @@
+import initCardResults from './credit-card-results.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 /**
@@ -219,12 +220,10 @@ function syncActionButtonState(block, filterGroups, startOverButton, applyButton
  *   Row 3  startOverButtonText
  *   Row 4  startOverButtonTitle   — accessibility title attribute
  *   Row 5  startOverButtonType    — primary | secondary | tertiary
- *   Row 6+ credit-card-section items (subSectionTitle | rich-text list)
+ *   Row 6  disclaimerText         — richtext; forwarded to the results section
+ *   Row 7+ credit-card-section items (subSectionTitle | rich-text list)
  *
  * The main heading is authored at section level — not read from the block.
- * The results/card-list panel is a separate "Credit Card Results" block —
- * see blocks/credit-card-results — coupled only via document-level custom
- * events (credit-card-filter-applied / credit-card-filter-reset), not DOM.
  *
  * Column assignment:
  *   Sections whose title contains "lifestyle" → right column (checkbox, max 3 selections)
@@ -242,6 +241,9 @@ export default function decorate(block) {
     const otherResource = other.dataset.aueResource;
     // If both have a resource and they differ, these are different blocks — leave them alone.
     if (blockResource && otherResource && otherResource !== blockResource) return;
+    if (other.nextElementSibling?.classList.contains('ccs-results')) {
+      other.nextElementSibling.remove();
+    }
     other.remove();
   });
 
@@ -266,8 +268,12 @@ export default function decorate(block) {
 
   const rows = [...block.children];
   const readRowText = (row) => row?.querySelector('p')?.textContent?.trim() ?? '';
+  // Reads the raw HTML of a richtext value cell so formatting is preserved.
+  const readRowHtml = (row) => row?.children[1]?.innerHTML?.trim()
+    ?? row?.querySelector('p')?.outerHTML
+    ?? '';
 
-  // ── Config rows 0–5 ───────────────────────────────────────────────────────
+  // ── Config rows 0–6 ───────────────────────────────────────────────────────
   const applyButtonConfig = {
     label: readRowText(rows[0]),
     titleAttr: readRowText(rows[1]),
@@ -280,9 +286,12 @@ export default function decorate(block) {
     variant: readRowText(rows[5]),
   };
 
-  // ── Section rows 6+ ───────────────────────────────────────────────────────
+  // Row 6: disclaimerText — richtext authored in the block, forwarded to results section.
+  const disclaimerHtml = readRowHtml(rows[6]);
+
+  // ── Section rows 7+ ───────────────────────────────────────────────────────
   const filterGroups = [];
-  for (let i = 6; i < rows.length; i += 1) {
+  for (let i = 7; i < rows.length; i += 1) {
     const cells = [...rows[i].children];
     const rawTitle = cells[0]?.querySelector('p')?.textContent?.trim() ?? '';
 
@@ -494,4 +503,9 @@ export default function decorate(block) {
     const isNowCollapsed = collapsibleWrapper.classList.toggle('is-collapsed');
     collapseToggleButton.setAttribute('aria-expanded', String(!isNowCollapsed));
   });
+
+  // Inject the card results section immediately after this block in the DOM.
+  // initCardResults handles its own data fetch and all interactivity —
+  // nothing needs to be authored on the page for this to work.
+  initCardResults(block, { disclaimerHtml });
 }

@@ -183,9 +183,10 @@ function buildCardBlock(cards, doc, lang, labels) {
   const list = doc.createElement('div');
   list.className = 'cards-list scrollable center cards-3';
 
-  cards.forEach((card) => {
+  cards.forEach((card, idx) => {
     const nameEN = getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName');
     const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
+    const description = getCardField(card, 'cardDescription', 'description');
     const imgSrc = resolveImageUrl(card);
     const { cardPageUrl } = card;
     // eslint-disable-next-line no-underscore-dangle
@@ -197,6 +198,11 @@ function buildCardBlock(cards, doc, lang, labels) {
     const isTH = lang === 'th';
     const primaryName = isTH && nameTH ? nameTH : nameEN;
     const secondaryName = isTH && nameTH ? nameEN : nameTH;
+
+    if (idx === 0) {
+      // eslint-disable-next-line no-console
+      console.log('[credit-card-results] buildCardBlock | lang:', lang, '| isTH:', isTH, '| card keys:', Object.keys(card), '| nameEN:', nameEN, '| nameTH:', nameTH, '| primaryName:', primaryName);
+    }
 
     const cardEl = doc.createElement('div');
     cardEl.className = 'cards-list-item';
@@ -230,12 +236,23 @@ function buildCardBlock(cards, doc, lang, labels) {
 
     // Title
     const titleEl = doc.createElement('div');
-    titleEl.className = 'cards-list-title has-title-underline';
+    titleEl.className = 'cards-list-title';
     const h3 = doc.createElement('h3');
     h3.textContent = primaryName;
     h3.dataset.cardId = card.cardId || card.id || '';
     titleEl.appendChild(h3);
     content.appendChild(titleEl);
+
+    // Description
+    if (description && typeof description === 'string') {
+      titleEl.classList.add('has-description');
+      const descEl = doc.createElement('div');
+      descEl.className = 'cards-list-description';
+      const p = doc.createElement('p');
+      p.textContent = description;
+      descEl.appendChild(p);
+      content.appendChild(descEl);
+    }
 
     inner.appendChild(content);
 
@@ -243,7 +260,6 @@ function buildCardBlock(cards, doc, lang, labels) {
     const buttonWrapper = doc.createElement('div');
     buttonWrapper.className = 'cards-list-button';
     const link = doc.createElement('a');
-    link.className = 'button-m primary';
     link.href = learnHref;
     link.textContent = labels.learnMore;
     buttonWrapper.appendChild(link);
@@ -260,8 +276,8 @@ function buildCardBlock(cards, doc, lang, labels) {
 function addCompareButtons(blockEl, doc, labels) {
   blockEl.querySelectorAll('.cards-list-button').forEach((wrapper) => {
     const item = wrapper.closest('.cards-list-item');
-    const btn = doc.createElement('a');
-    btn.href = '#';
+    const btn = doc.createElement('button');
+    btn.type = 'button';
     btn.className = 'ccs-compare-btn';
     btn.textContent = labels.compare;
     const h3 = item?.querySelector('h3');
@@ -272,32 +288,40 @@ function addCompareButtons(blockEl, doc, labels) {
   });
 }
 
-// ── Results block DOM ──────────────────────────────────────────────────────────
+// ── Results section DOM ────────────────────────────────────────────────────────
 
-/** Build the results markup directly into this block's own root element. */
-function populateResultsBlock(block, disclaimerHtml) {
-  block.classList.add('ccs-results');
+function buildResultsSection(doc, disclaimerHtml, labels) {
+  const section = doc.createElement('div');
+  section.className = 'ccs-results';
 
-  const cardListContainer = document.createElement('div');
-  cardListContainer.className = 'ccs-card-list-container ccs-built';
-  block.appendChild(cardListContainer);
+  const header = doc.createElement('div');
+  header.className = 'ccs-results-header';
+  const title = doc.createElement('h2');
+  title.className = 'ccs-results-title';
+  title.textContent = labels.resultsTitle;
+  header.appendChild(title);
+  section.appendChild(header);
 
-  const toggleWrap = document.createElement('div');
-  toggleWrap.className = 'ccs-results-toggle ccs-built';
-  const toggleBtn = document.createElement('button');
+  const cardListContainer = doc.createElement('div');
+  cardListContainer.className = 'ccs-card-list-container';
+  section.appendChild(cardListContainer);
+
+  const toggleWrap = doc.createElement('div');
+  toggleWrap.className = 'ccs-results-toggle';
+  const toggleBtn = doc.createElement('button');
   toggleBtn.type = 'button';
   toggleBtn.className = 'ccs-results-toggle-btn';
   toggleWrap.appendChild(toggleBtn);
-  block.appendChild(toggleWrap);
+  section.appendChild(toggleWrap);
 
-  if (disclaimerHtml) {
-    const disclaimer = document.createElement('div');
-    disclaimer.className = 'ccs-results-disclaimer ccs-built';
-    disclaimer.innerHTML = disclaimerHtml;
-    block.appendChild(disclaimer);
-  }
+  const disclaimer = doc.createElement('div');
+  disclaimer.className = 'ccs-results-disclaimer';
+  disclaimer.innerHTML = disclaimerHtml;
+  section.appendChild(disclaimer);
 
-  return { cardListContainer, toggleWrap, toggleBtn };
+  return {
+    section, cardListContainer, toggleWrap, toggleBtn,
+  };
 }
 
 // ── Mobile carousel: dots + seamless loop ─────────────────────────────────────
@@ -393,6 +417,13 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels) 
   return buildDots;
 }
 
+// ── Main export ────────────────────────────────────────────────────────────────
+
+/**
+ * Build and inject the card-results section immediately after selectorBlock.
+ * @param {Element} selectorBlock
+ * @param {{ disclaimerHtml?: string }} options
+ */
 // ── Row-peek helpers ───────────────────────────────────────────────────────────
 
 // Clip the container so row 2 (cards 4–6) shows at 50% height on desktop.
@@ -421,39 +452,12 @@ function removePeek(container) {
   el.classList.remove('ccs-peek');
 }
 
-/**
- * EDS decorate entry point.
- *
- * Block row mapping (matches _credit-card-results.json model):
- *   Row 0  disclaimerText — richtext
- *
- * Renders independently of the Credit Card Selector block — the two only
- * communicate via document-level custom events (credit-card-filter-applied /
- * credit-card-filter-reset / credit-card-compare-updated), so this block can be
- * placed anywhere on the page relative to the selector.
- */
-export default async function decorate(block) {
-  // UE re-calls decorate when the block is edited — remove any previously built
-  // results markup (marked ccs-built) so re-decoration doesn't duplicate content.
-  // Matching on ccs-built rather than "not yet a source row" is required: on the
-  // very first decorate() call the authored row hasn't been marked as a source
-  // row yet, so the inverse check would delete it before its content is read.
-  [...block.children].forEach((el) => {
-    if (el.classList.contains('ccs-built')) el.remove();
-  });
-  block.classList.remove('ccs-results');
+export default async function initCardResults(selectorBlock, { disclaimerHtml = '' } = {}) {
+  // Remove any stale results sections left over from a previously decorated instance.
+  // This handles the case where UE replaced the block element but the old .ccs-results remains.
+  selectorBlock.ownerDocument.querySelectorAll('.ccs-results').forEach((el) => el.remove());
 
-  const rows = [...block.children];
-  const readRowHtml = (row) => row?.children[1]?.innerHTML?.trim()
-    ?? row?.querySelector('p')?.outerHTML
-    ?? '';
-  const disclaimerHtml = readRowHtml(rows[0]);
-
-  // Hide the authored source row via CSS class instead of removing it, so
-  // Universal Editor instrumentation on it survives re-decoration.
-  rows.forEach((row) => { row.classList.add('ccs-source-row'); });
-
-  const doc = block.ownerDocument;
+  const doc = selectorBlock.ownerDocument;
   const lang = getLang();
 
   await loadCSS(`${window.hlx.codeBasePath}/blocks/card-list/card-list.css`);
@@ -462,6 +466,7 @@ export default async function decorate(block) {
 
   const isTH = lang === 'th';
   const labels = {
+    resultsTitle: ph.cardResultsTitle || (isTH ? 'บัตรหลากหลายเหมาะกับทุกไลฟ์สไตล์' : 'A range of cards to suit all lifestyles'),
     noResultsFound: ph.cardNoResultsFound || (isTH ? 'ไม่พบผลลัพธ์' : 'No Results Found'),
     seeLess: ph.cardSeeLess || (isTH ? 'ดูน้อยลง' : 'See less'),
     seeMore: ph.cardSeeMore || (isTH ? 'ดูเพิ่มเติม' : 'See more'),
@@ -476,8 +481,9 @@ export default async function decorate(block) {
   const allCards = sortBySourcing(rawCards); // used for initial (unfiltered) display
 
   const {
-    cardListContainer, toggleWrap, toggleBtn,
-  } = populateResultsBlock(block, disclaimerHtml);
+    section, cardListContainer, toggleWrap, toggleBtn,
+  } = buildResultsSection(doc, disclaimerHtml, labels);
+  selectorBlock.insertAdjacentElement('afterend', section);
 
   // ── State ──────────────────────────────────────────────────────────────────
   let isExpanded = false;
@@ -569,7 +575,7 @@ export default async function decorate(block) {
     activeCards = await resolveFilteredCards(sheetCards, e.detail || {});
     isExpanded = false;
     render();
-    block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   // ── Filter reset ───────────────────────────────────────────────────────────
@@ -580,10 +586,9 @@ export default async function decorate(block) {
   });
 
   // ── Compare toggle ─────────────────────────────────────────────────────────
-  block.addEventListener('click', (e) => {
+  section.addEventListener('click', (e) => {
     const btn = e.target.closest('.ccs-compare-btn');
     if (!btn) return;
-    e.preventDefault();
 
     window.ccsSelectedCards = window.ccsSelectedCards || [];
     const { cardName, cardImage, cardId } = btn.dataset;
