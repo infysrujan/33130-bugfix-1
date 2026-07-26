@@ -81,7 +81,7 @@ export function decorateRteInlineImages(main) {
   main.querySelectorAll(`${DCW} p picture, ${DCW} li picture`)
     .forEach((pic) => pic.classList.add('rte-inline-image'));
 
-  processIconMarkers([...main.querySelectorAll(`${DCW} p`)]);
+  processIconMarkers([...main.querySelectorAll(`${DCW} p, ${DCW} li`)]);
 }
 
 /**
