@@ -1205,7 +1205,7 @@
 
   /* nearest tag — align with status row on desktop/sidebar */
   .locate-us .locate-us-card-nearest-tag {
-    top: 3.25rem;
+    top: 3.625rem;
     transform: translateY(0);
   }
 
