@@ -1210,7 +1210,11 @@
   }
 
   .locate-us .locate-us-map-sidebar .locate-us-card-hr {
+    height: 0.0625rem;
     margin-top: 0.625rem;
+    margin-bottom: 0.625rem;
+    width: var(--bbl-space-800);
+    background: var(--bbl-color-grey-150);
   }
 
   /* nearest tag — align with status row on desktop/sidebar */
