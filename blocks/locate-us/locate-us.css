@@ -1115,6 +1115,15 @@
     height: auto;
   }
 
+  .locate-us .locate-us-map-sidebar .locate-us-card-name {
+    font-size: 1.75rem;
+    line-height: 2rem;
+  }
+
+  .locate-us .locate-us-map-sidebar .locate-us-card-address {
+    margin-top: 0.75rem;
+  }
+
   /* border already applied to all sides per-card on all viewports */
 
   .locate-us .locate-us-card-header {
@@ -1301,11 +1310,11 @@
   }
 
   .locate-us .locate-us-map {
-    width: 75%;
+    width: 70%;
   }
 
   .locate-us .locate-us-map-sidebar {
-    width: 25%;
+    width: 30%;
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-cards {
