@@ -139,15 +139,6 @@
 }
 
 /* --------------------------------------------------------------------------
-   CELL VARIANTS — dash highlight (specificity 0,3,2)
-   -------------------------------------------------------------------------- */
-
-/* Dash Cell Highlight — #d9d9d9 background for cells containing only "-" */
-.table table.dash-cell-highlight td.cell-dash {
-  background: var(--bbl-color-grey-26);
-}
-
-/* --------------------------------------------------------------------------
    HEADER VARIANTS (specificity 0,3,3)
    -------------------------------------------------------------------------- */
 
@@ -159,7 +150,7 @@
 
 /* Header Blue — #deeaf6 background */
 .table table.header-blue tr.header-row td {
-  background: var(--bbl-color-blue-steel-dark);
+  background: var(--bbl-color-ice-blue);
 }
 
 /* Header Light Blue — #e6eef4 background */
