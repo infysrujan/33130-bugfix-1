@@ -173,6 +173,7 @@
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
+  margin-bottom: 0.625rem;
 }
 
 .menu-card-action-description p {
