@@ -215,6 +215,12 @@ main img {
     display: flow-root;
 }
 
+.section.center-content > .carousel-dotted-wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
 .section.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
     text-align: center;
 }
