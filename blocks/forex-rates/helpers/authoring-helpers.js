@@ -1,7 +1,8 @@
-function parseColumns(listElement) {
+function parseColumns(listElement, filterEmpty = true) {
   if (!listElement) return [];
   return [...listElement.querySelectorAll('li')]
-    .map((li) => li.innerHTML.trim());
+    .map((li) => li.innerHTML.trim())
+    .filter((txt) => !filterEmpty || Boolean(txt));
 }
 
 export default function parseAuthoring(block) {
@@ -11,7 +12,7 @@ export default function parseAuthoring(block) {
   const printCtaLabel = rows[2]?.textContent?.trim() || 'PRINT';
   const headingsSource = rows[3];
   const headingsList = headingsSource?.querySelector('ul');
-  let columns = parseColumns(headingsList);
+  let columns = parseColumns(headingsList, false);
   if (!columns.length && headingsSource) {
     columns = [...headingsSource.querySelectorAll('p,strong,span')]
       .map((node) => node.textContent.replace(/\s+/g, ' ').trim())
