@@ -132,7 +132,7 @@
 }
 
 .menu-card-action-inner .button-container {
-  margin-block: 0;
+  margin-block: 0.625rem 0;
   width: 100%;
 }
 
@@ -173,7 +173,6 @@
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
-  margin-bottom: 0.625rem;
 }
 
 .menu-card-action-description p {
@@ -182,9 +181,7 @@
   margin: 0;
 }
 
-.menu-card-actions-container.center-title p {
-  text-align: center;
-}
+
 
 .menu-card-action-title.has-description {
   flex-grow: 0;
