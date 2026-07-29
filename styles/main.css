@@ -402,7 +402,7 @@ main img {
  
 @media (width > 47.5rem) {
     .section.central-aligned > .default-content-wrapper {
-        margin-inline: 3rem;
+        margin-inline: 3.6rem;
     }
 }
  
@@ -410,7 +410,7 @@ main img {
     .section.central-aligned .block,
     .section.central-aligned > .default-content-wrapper {
         max-width: var(--bbl-layout-central-aligned-max-width);
-        margin: 0 auto;
+        /* margin: 0 auto; */
     }
 }
 
