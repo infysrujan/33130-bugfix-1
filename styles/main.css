@@ -410,6 +410,7 @@ main img {
     .section.central-aligned .block,
     .section.central-aligned > .default-content-wrapper {
         max-width: var(--bbl-layout-central-aligned-max-width);
+        
         /* margin: 0 auto; */
     }
 }
