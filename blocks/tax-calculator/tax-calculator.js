@@ -862,7 +862,26 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
     });
   }
 
-  footer.querySelector('.tax-calc-btn-outline').addEventListener('click', onBack);
+  const collectJourney2Values = () => {
+    const values = {};
+    groups.forEach((group) => {
+      group.fields.forEach((fieldDef) => {
+        if (fieldDef.type === 'checkbox') {
+          values[fieldDef.id] = [...block.querySelectorAll('.tax-calc-parental .tax-calc-checkbox')]
+            .map((c) => c.checked);
+        } else {
+          const input = block.querySelector(`#tc-${fieldDef.id}`);
+          values[fieldDef.id] = parseFloat(stripCommas(input.value)) || 0;
+        }
+      });
+    });
+    return values;
+  };
+
+  footer.querySelector('.tax-calc-btn-outline').addEventListener('click', () => {
+    state.journey2 = collectJourney2Values();
+    onBack();
+  });
 
   footer.querySelector('.tax-calc-btn-primary').addEventListener('click', async (e) => {
     const button = e.currentTarget;
@@ -889,18 +908,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
 
     if (!valid) return;
 
-    const values = {};
-    groups.forEach((group) => {
-      group.fields.forEach((fieldDef) => {
-        if (fieldDef.type === 'checkbox') {
-          values[fieldDef.id] = [...block.querySelectorAll('.tax-calc-parental .tax-calc-checkbox')]
-            .map((c) => c.checked);
-        } else {
-          const input = block.querySelector(`#tc-${fieldDef.id}`);
-          values[fieldDef.id] = parseFloat(stripCommas(input.value)) || 0;
-        }
-      });
-    });
+    const values = collectJourney2Values();
 
     button.classList.add('tax-calc-btn-loading');
 
@@ -1201,14 +1209,22 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
       syncInsureMax();
     }
 
-    footer.querySelector('.tax-calc-btn-outline').addEventListener('click', onBack);
-
-    recalculateButton.addEventListener('click', async () => {
+    const collectJourney3Values = () => {
       const journey3Values = {};
       investFieldDefs.forEach((fieldDef) => {
         const inputEl = block.querySelector(`#tc-${fieldDef.id}`);
         journey3Values[fieldDef.id] = parseFloat(stripCommas(inputEl?.value || '0')) || 0;
       });
+      return journey3Values;
+    };
+
+    footer.querySelector('.tax-calc-btn-outline').addEventListener('click', () => {
+      state.journey3 = collectJourney3Values();
+      onBack();
+    });
+
+    recalculateButton.addEventListener('click', async () => {
+      const journey3Values = collectJourney3Values();
 
       recalculateButton.disabled = true;
       try {
