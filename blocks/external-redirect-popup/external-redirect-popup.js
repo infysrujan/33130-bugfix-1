@@ -50,7 +50,6 @@ export default async function decorate(block) {
   const closeBtn = doc.createElement('button');
   closeBtn.className = 'external-redirect-popup-close';
   closeBtn.setAttribute('aria-label', 'Close popup');
-  closeBtn.innerHTML = '&times;';
   inner.appendChild(closeBtn);
 
   // Card body: image + text

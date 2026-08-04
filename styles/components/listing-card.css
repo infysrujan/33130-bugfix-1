@@ -192,7 +192,7 @@
 
 .listing-card-arrow:disabled {
   opacity: 0.35;
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .listing-card-arrow:hover:not(:disabled) {

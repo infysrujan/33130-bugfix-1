@@ -301,10 +301,10 @@ export function renderCards(
       }
     });
 
-    if (idx === 0) {
+    if (idx === 0 && autoSelect) {
       body.hidden = false;
       header.setAttribute('aria-expanded', 'true');
-      if (autoSelect && hasCoords) onSelect(loc);
+      if (hasCoords) onSelect(loc);
     }
 
     cardsContainer.appendChild(card);

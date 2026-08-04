@@ -231,6 +231,13 @@ button.secondary:active,
   cursor: not-allowed;
 }
 
+/* Right-click: keep hover appearance instead of active */
+.right-click-btn-state .button-m.secondary:active {
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-blue-70);
+  color: var(--bbl-color-white);
+}
+
 /* Secondary Inverted (for Dark Backgrounds) */
 .button-secondary-inverted {
   background: transparent;

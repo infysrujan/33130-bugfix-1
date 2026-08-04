@@ -15,7 +15,6 @@
 
 .ccs-results {
   font-family: var(--bbl-font-family-primary);
-  padding: var(--bbl-space-400) var(--bbl-space-200);
   background: var(--bbl-color-white);
   scroll-margin-top: var(--header-scroll-offset);
 }
@@ -29,7 +28,7 @@
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small {
   min-height: 8.9375rem;
-  max-height: 10.9375rem; 
+  max-height: 10.9375rem;
   height: calc(100vw * .12);
   display: flex;
   align-items: center;
@@ -39,10 +38,10 @@
 }
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small img {
+  max-width: 100%;
+  max-height: 100%;
   width: 100%;
-  max-width: 14.4156rem;
-  height: 9.6875rem;
-  min-width: unset;
+  height: auto;
   object-fit: cover;
 }
 
@@ -250,14 +249,6 @@
 }
 
 @media (width > 47.5rem) {
-  /* Horizontal padding dropped here — the ambient .section wrapper (main.css)
-     already applies 48px of padding-inline at this breakpoint, so adding more
-     here was double-padding the content and starving the 3-card grid of the
-     width it needs. Vertical padding is kept for spacing above/below cards. */
-  .ccs-results {
-    padding: var(--bbl-space-600) 0;
-  }
-
   .ccs-scroll-dots {
     display: none;
   }
@@ -311,5 +302,10 @@
   /* Matches the desktop grid's wider rendered width (3 × 16.5rem + 2 × gap). */
   .ccs-results-disclaimer {
     max-width: 54.5rem;
+  }
+
+  .card-list.credit-card .cards-list-image.cards-list-image-x-small img {
+    width: auto;
+    height: 100%;
   }
 }

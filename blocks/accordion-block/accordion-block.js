@@ -363,6 +363,9 @@ function buildAccordionPrintDocument(block) {
     .download-files.icon-download::before, .download-files .icon-download::before {right: -0.27rem;}
 
     .promo-detail-image { display: none !important; }
+    .promo-detail-content { display: none !important; }
+    .accordion-print-heading{ font-family: var(--bbl-font-family-primary);}
+
   `;
 
   return `

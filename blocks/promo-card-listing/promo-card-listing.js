@@ -361,9 +361,10 @@ function setupPanel(
       }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
+    const carouselNavBtnsLabels = { prevBtnLabel: placeholders.carouselPrevBtnLabel || 'Previous', nextBtnLabel: placeholders.carouselNextBtnLabel || 'Next' };
     paginationEl.innerHTML = hidePagination
       ? ''
-      : buildPaginationHtml(state.page, Math.ceil(total / pageSize));
+      : buildPaginationHtml(state.page, Math.ceil(total / pageSize), carouselNavBtnsLabels);
   }
 
   if (options.immediate) {

@@ -65,13 +65,13 @@ async function loadData() {
     labels,
     apiCalculateTax: siteConfig.taxCalculatorCalculateTaxWithReduce,
     apiCalculateSaving: siteConfig.taxCalculatorCalculateSavingTaxBySelf,
-    combinedInsuranceMax: parseFloat(siteConfig.taxCalculatorCombinedInsuranceMax) || 100000,
-    fatherInsureMax: parseFloat(siteConfig.taxCalculatorFatherInsureMax) || 15000,
-    homeInterestMax: parseFloat(siteConfig.taxCalculatorHomeInterestMax) || 100000,
-    otherDeductionsMax: parseFloat(siteConfig.taxCalculatorOtherDeductionsMax) || 1000000,
-    donateMax: parseFloat(siteConfig.taxCalculatorDonateMax) || 999999999,
-    maxChildrenCount: parseInt(siteConfig.taxCalculatorMaxChildrenCount, 10) || 10,
-    providentFundMaxPct: parseFloat(siteConfig.taxCalculatorProvidentFundMaxPct) || 15,
+    combinedInsuranceMax: parseFloat(labels.individualMaxesCombinedLifeHealthMax) || 100000,
+    fatherInsureMax: parseFloat(labels.individualMaxesParentInsurance) || 15000,
+    homeInterestMax: parseFloat(labels.individualMaxesHomeInterest) || 100000,
+    otherDeductionsMax: parseFloat(labels.individualMaxesOtherDeductions) || 1000000,
+    donateMax: parseFloat(labels.individualMaxesDonate) || 999999999,
+    maxChildrenCount: parseInt(labels.individualMaxesChildrenCount, 10) || 10,
+    providentFundMaxPct: parseFloat(labels.individualMaxesProvidentFundPercent) || 15,
   };
 }
 
@@ -161,7 +161,7 @@ function getJourney2Groups(labels, apiResponse, config) {
           id: 'NumberOfChildeBorn61OnWards',
           label: getString(labels, 'stepsStep2NumberOfChildrenAfter2561Label', 'Number of children (born in or after 2018)'),
           placeholder: `0 - ${config.maxChildrenCount}`,
-          defaultValue: 0,
+          defaultValue: parseInt(labels.defaultsNumberOfChildrenAfter2561, 10) || 0,
           maxLength: String(config.maxChildrenCount).length,
           min: 0,
           max: config.maxChildrenCount,
@@ -469,6 +469,7 @@ function buildInputField(fieldDef, savedValue) {
           name="${fieldDef.id}"
           class="tax-calc-input"
           placeholder="${displayPlaceholder}"
+          autoComplete="off"
           value="${displayVal}"
           maxlength="${maxLength}"
           ${isEmptyRange && !fieldDef.disableWhenEmpty ? 'readonly' : ''}
@@ -868,7 +869,6 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
   const healthInsureField = block.querySelector('[data-id="HealthInsure"]');
   const insureInput = block.querySelector('#tc-Insure');
   const healthInsureInput = block.querySelector('#tc-HealthInsure');
-
   if (insureInput && healthInsureInput) {
     insureInput.addEventListener('input', () => {
       const val = parseFloat(stripCommas(insureInput.value)) || 0;
@@ -883,6 +883,37 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
       const maxInsure = Math.round(apiResponse.MaxInsure);
       const newMax = Math.min(maxInsure, data.combinedInsuranceMax - val);
       if (insureField?.updateMax) insureField.updateMax(Math.max(0, newMax));
+      syncStep2ButtonState();
+    });
+  }
+
+  // Wire PensionInsure <-> ReduceRMF combined max constraint (shared RMF/SSF/PensionInsure60 cap)
+  const reduceRMFField = block.querySelector('[data-id="ReduceRMF"]');
+  const pensionInsureField = block.querySelector('[data-id="PensionInsure"]');
+  const reduceRMFInput = block.querySelector('#tc-ReduceRMF');
+  const pensionInsureInput = block.querySelector('#tc-PensionInsure');
+  if (pensionInsureInput && reduceRMFInput) {
+    pensionInsureInput.addEventListener('input', () => {
+      const pensionInsureVal = parseFloat(stripCommas(pensionInsureInput.value)) || 0;
+      const { MaxRMF, MaxRMFSSFInsure60 } = apiResponse;
+      const excess = pensionInsureVal + MaxRMF - MaxRMFSSFInsure60;
+      let newMax = MaxRMF;
+      if (pensionInsureVal + MaxRMF >= MaxRMFSSFInsure60) {
+        newMax = excess <= 0 ? 0 : MaxRMF - excess;
+      }
+      if (reduceRMFField?.updateMax) reduceRMFField.updateMax(Math.max(0, newMax));
+      syncStep2ButtonState();
+    });
+
+    reduceRMFInput.addEventListener('input', () => {
+      const rmfSavingsVal = parseFloat(stripCommas(reduceRMFInput.value)) || 0;
+      const { MaxInsure60, MaxRMFSSFInsure60 } = apiResponse;
+      const excess = rmfSavingsVal + MaxInsure60 - MaxRMFSSFInsure60;
+      let newMax = MaxInsure60;
+      if (rmfSavingsVal + MaxInsure60 >= MaxRMFSSFInsure60) {
+        newMax = excess <= 0 ? 0 : MaxInsure60 - excess;
+      }
+      if (pensionInsureField?.updateMax) pensionInsureField.updateMax(Math.max(0, newMax));
       syncStep2ButtonState();
     });
   }
@@ -1099,15 +1130,17 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   `));
 
   // ── Invest table (only when tax is payable) ──
-  const rmfPensionMax = Math.round(apiResult1.MaxRMF || 0)
-    + Math.round(apiResult1.MaxInsure60 || 0);
+  const rmfPensionMax = Math.round(apiResult1.MaxRMFSSFInsure60 || 0);
+
+  const individualMaxesThaiEsg = parseInt(labels.individualMaxesThaiEsg || '300000', 10);
+
   const notesElement = buildNotes(
     getString(labels, 'configNotesTitle', 'Notes'),
     [
       getString(labels, 'configNotesInvestmentCalculation', 'Calculate the maximum amount that you can invest according to the conditions of the Revenue Department.'),
       getString(labels, 'configNotesRmfAndPension', `* The combined amount of RMF and pension insurance premiums must not exceed ${formatNumber(rmfPensionMax)} baht`).replace('{combinedRMFPensionMax}', formatNumber(rmfPensionMax)),
       getString(labels, 'configNotesLifeAndHealthInsurance', `** The combined amount of life insurance premiums and health insurance premiums must not exceed ${formatNumber(data.combinedInsuranceMax)} baht`).replace('{combinedLifeHealthMax}', formatNumber(data.combinedInsuranceMax)),
-      getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(Math.round(apiResult1.MaxESG))} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(Math.round(apiResult1.MaxESG))),
+      getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(individualMaxesThaiEsg)} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(individualMaxesThaiEsg)),
     ],
   );
 

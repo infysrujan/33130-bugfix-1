@@ -244,7 +244,7 @@ export function buildCardHtml(card, tag = {}, placeholders = {}, options = {}) {
 </div>`;
 }
 
-export function buildPaginationHtml(current, total) {
+export function buildPaginationHtml(current, total, labels = {}) {
   if (total <= 1) return '';
 
   const show = new Set();
@@ -269,9 +269,9 @@ export function buildPaginationHtml(current, total) {
   const prevAttr = current === 1 ? ' disabled' : '';
   const nextAttr = current === total ? ' disabled' : '';
   return `
-    <button class="listing-card-arrow" data-dir="prev"${prevAttr} aria-label="Previous"><i class="icon-arrow-left" aria-hidden="true"></i></button>
+    <button class="listing-card-arrow" data-dir="prev"${prevAttr} title="${labels.prevBtnLabel}"><i class="icon-arrow-left" aria-hidden="true"></i></button>
     <div class="listing-card-pages">${inner}</div>
-    <button class="listing-card-arrow listing-card-arrow-next" data-dir="next"${nextAttr} aria-label="Next"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
+    <button class="listing-card-arrow listing-card-arrow-next" data-dir="next"${nextAttr} title="${labels.nextBtnLabel}"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
 }
 
 export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollTarget) {

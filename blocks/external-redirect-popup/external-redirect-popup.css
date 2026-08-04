@@ -61,6 +61,26 @@
   font-size: var(--bbl-font-size-h5-mobile);
   color: var(--bbl-color-gray-142);
   line-height: 1;
+
+  &::after,
+  &::before {
+      position: absolute;
+      left: 48%;
+      top: 29%;
+      content: ' ';
+      height: 16px;
+      width: 2px;
+      background-color: #606060;
+      font-size: 26px;
+  }
+
+  &::before {
+      transform: rotate(45deg);
+  }
+  
+  &::after {
+      transform: rotate(-45deg);
+  }
 }
 
 .external-redirect-popup-close:hover {

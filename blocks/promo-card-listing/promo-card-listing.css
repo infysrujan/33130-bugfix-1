@@ -121,7 +121,7 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   left: 0;
   padding: 0;
   right: 0;
-  z-index: 1;
+  z-index: 10;
   list-style: none;
   padding-bottom: 0.0625rem;
   box-sizing: border-box;

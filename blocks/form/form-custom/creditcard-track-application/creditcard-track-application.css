@@ -56,6 +56,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     color: var(--bbl-color-grey-85);
     font-family: var(--bbl-font-family-medium);
     font-weight: 400;
+    font-size: var(--bbl-heading-h3-size);
+    line-height: var(--bbl-line-height-h3-mobile);
 
     &::before {
       background: none;
@@ -160,6 +162,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     gap: var(--bbl-space-200);
     width: 100%;
     clear: both;
+    margin-bottom: 2.1875rem;
 
     & > .button-wrapper {
       display: flex;

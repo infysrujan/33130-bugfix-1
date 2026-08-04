@@ -48,7 +48,8 @@
 @media (width > 64rem) {
   .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
   .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
-    max-width: 82.5rem;
+    max-width: unset;
+    padding-inline: 9rem;
   }
 }
 
@@ -135,7 +136,7 @@
 /* Mobile / tablet: ~1.286 rem matches original site's 1.286em at this viewport */
 .credit-card-selector .filter-group-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: 1.286rem;
+  font-size: 1.13rem;
   font-weight: var(--bbl-font-weight-medium);
   color: var(--bbl-color-black);
   margin: 0;
@@ -443,10 +444,6 @@
 }
 
 @media (width > 47.5rem) {
-  .ccs-results {
-    padding: var(--bbl-space-600);
-  }
-
   .ccs-results-title {
     font-size: var(--bbl-font-size-h1-desktop);
     line-height: var(--bbl-line-height-heading-tight);

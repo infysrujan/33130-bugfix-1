@@ -454,6 +454,17 @@ if (window.LAZY_PHASE) {
   });
 }
 
+// Right-click on secondary buttons: show hover style instead of active style (Windows only)
+const isWindows = /Win/i.test(navigator.userAgentData?.platform ?? navigator.platform);
+if (isWindows) {
+  const SECONDARY_BTN_SEL = 'button.secondary, .button-m.secondary';
+  document.addEventListener('contextmenu', (e) => {
+    if (!e.target.closest(SECONDARY_BTN_SEL)) return;
+    document.body.classList.add('right-click-btn-state');
+    document.addEventListener('mouseup', () => document.body.classList.remove('right-click-btn-state'), { once: true });
+  });
+}
+
 /**
  * Returns the value of a cookie by name, or null if not set.
  * @param {string} name

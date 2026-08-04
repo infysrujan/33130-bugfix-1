@@ -15,7 +15,7 @@
     --bbl-layout-content-max-width-desktop: 1240px;
     --bbl-layout-content-max-width-1920: 1752px;
     --bbl-layout-central-aligned-max-width: 900px;
-    
+
     /* header height used for scroll-margin-top offset (mobile-first) */
     --header-scroll-offset: 5rem;
 }
@@ -305,6 +305,10 @@ main img {
     .section.underline-image .default-content-wrapper > p > img {
         padding-bottom: 1.875rem;
     }
+    
+    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child + p {
+        max-width: 65%;
+    }
 }
 
 .section.bg-truthful-blue  *,
@@ -364,10 +368,6 @@ main img {
     box-sizing: border-box;
 }
 
-.section[class*="bg-"] + .section[class*="bg-"] {
-    margin-top: -1px;
-    padding-top: 1px; /* keep visual spacing the same */
-}
 
 @media (width > 47.5rem) {
     .section.full-bleed-special {
@@ -395,13 +395,13 @@ main img {
 .section.central-aligned > .default-content-wrapper {
     margin-inline: 1rem;
 }
- 
+
 @media (width > 47.5rem) {
     .section.central-aligned > .default-content-wrapper {
         margin-inline: 3rem;
     }
 }
- 
+
 @media (width > 64rem) {
     .section.central-aligned .block,
     .section.central-aligned > .default-content-wrapper {
@@ -448,7 +448,7 @@ main img {
 }
 
 @media (width > 64rem) {
-    .section.columns-3 { 
+    .section.columns-3 {
         flex-direction: row;
     }
 
@@ -491,10 +491,10 @@ main img {
     .section.columns-2-25 > * {
         width: 68%;
     }
-    
+
     .section.columns-2-65 > *:first-child {
         flex: 0 0 65%;
-    }   
+    }
 
     .section.columns-2-75 > *:first-child {
         flex: 0 0 75%;
@@ -552,10 +552,10 @@ main img {
     .pad-top-30 {
         padding-top: 2rem;
     }
-    
+
     .pad-bot-30 {
         padding-bottom: 2rem;
-    }  
+    }
 }
 
 
