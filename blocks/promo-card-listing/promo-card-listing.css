@@ -1,5 +1,13 @@
 @import url("../../styles/components/listing-card.css");
 
+.bangkok-bankm-card :has(.section.tabs-container .tab-panel>.promo-selector-content) {
+  background-color: var(--bbl-color-white);
+}
+
+body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector-content) .tabs-nav-wrapper .tabs-nav button {
+  color: var(--bbl-color-grey-85);
+}
+
 .promo-selector-grid .listing-card-desc p {
   display: block;
   -webkit-line-clamp: none;
@@ -14,10 +22,11 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 1.25rem;
+  gap: var(--bbl-space-250);
+  padding-bottom: var(--bbl-space-250);
 }
 
-.promo-selector-grid .listing-card {
+.promo-selector-grid .listing-card{
   margin-bottom: 0;
 }
 
@@ -60,7 +69,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding-block: 2.5rem 0;
+  padding-bottom: 1.875rem;
 }
 
 .promo-selector-pagination:empty {
@@ -172,15 +181,77 @@
   width: 100%;
 }
 
-.promo-card-listing.has-preview>div[data-config-row] {
+.promo-card-listing.has-preview > div[data-config-row] {
   display: none;
+}
+
+
+body.mobile-app-view {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+body.mobile-app-view main {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+body.mobile-app-view header.is-not-overlapped ~ main {
+  padding-top: 0;
+}
+
+body.mobile-app-view main > div:first-child {
+  margin-top: 0;
+}
+
+.promo-card-listing-section .tabs-nav-wrapper {
+  position: relative;
+}
+
+.promo-card-listing-section .tabs-nav-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3.5rem;
+  height: 100%;
+  background: linear-gradient(to right, transparent, var(--bbl-bg-primary, #fff));
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.2s;
+}
+
+.promo-card-listing-section .tabs-nav-wrapper.is-scroll-end::after {
+  opacity: 0;
+}
+
+.promo-card-listing-section .tabs-nav-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3.5rem;
+  height: 100%;
+  background: linear-gradient(to left, transparent, var(--bbl-bg-primary, #fff));
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.promo-card-listing-section .tabs-nav-wrapper.is-scroll-start::before {
+  opacity: 1;
+}
+
+.promo-card-listing-section .tabs-nav {
+  padding-inline-end: 3rem;
 }
 
 @media (width > 47.5rem) {
   .promo-selector-grid {
-    gap: 0 1.25rem;
+    margin-inline: -0.625rem;
   }
-
+  
   .promo-selector-grid:has(.promo-selector-empty) {
     width: 50%;
     padding-inline: 0.625rem;
@@ -188,6 +259,10 @@
 
   .promo-selector-grid:not(.is-bbm-grid):has(> .listing-card-container:only-child) {
     justify-content: center;
+  }
+
+  .promo-selector-grid .listing-card-container {
+    padding-bottom: 0;
   }
 
   .promo-selector-empty {
@@ -235,70 +310,11 @@
   }
 }
 
-body.mobile-app-view {
-  padding-top: 0;
-  margin-top: 0;
-}
-
-body.mobile-app-view main {
-  padding-top: 0;
-  margin-top: 0;
-}
-
-body.mobile-app-view header.is-not-overlapped~main {
-  padding-top: 0;
-}
-
-body.mobile-app-view main>div:first-child {
-  margin-top: 0;
-}
-
-.promo-card-listing-section .tabs-nav-wrapper {
-  position: relative;
-}
-
-.promo-card-listing-section .tabs-nav-wrapper::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 3.5rem;
-  height: 100%;
-  background: linear-gradient(to right, transparent, var(--bbl-bg-primary, #fff));
-  pointer-events: none;
-  z-index: 1;
-  transition: opacity 0.2s;
-}
-
-.promo-card-listing-section .tabs-nav-wrapper.is-scroll-end::after {
-  opacity: 0;
-}
-
-.promo-card-listing-section .tabs-nav-wrapper::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3.5rem;
-  height: 100%;
-  background: linear-gradient(to left, transparent, var(--bbl-bg-primary, #fff));
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.promo-card-listing-section .tabs-nav-wrapper.is-scroll-start::before {
-  opacity: 1;
-}
-
-.promo-card-listing-section .tabs-nav {
-  padding-inline-end: 3rem;
-}
-
 @media (width > 64rem) {
   .promo-selector-grid {
-    gap: 0 2.50rem;
+    gap: var(--bbl-space-500);
+    margin-inline: 0;
+    padding-bottom: var(--bbl-space-500);
   }
 
   .promo-selector-grid:has(.promo-selector-empty) {
@@ -306,10 +322,6 @@ body.mobile-app-view main>div:first-child {
     padding-inline: 0;
   }
 
-  /* Non-BBM grid: center a single lone card on desktop. */
-  .promo-selector-grid:not(.is-bbm-grid):has(> .listing-card-container:only-child) {
-    justify-content: center;
-  }
 
   .promo-selector-empty {
     font-size: var(--bbl-font-size-b1);
@@ -324,7 +336,7 @@ body.mobile-app-view main>div:first-child {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    gap: 2.5rem;
+    gap: var(--bbl-space-500);
   }
 
   .promo-selector-filter {
@@ -351,7 +363,7 @@ body.mobile-app-view main>div:first-child {
     right: var(--bbl-space-250);
   }
 
-  body.mobile-app-view header.is-not-overlapped~main {
+  body.mobile-app-view header.is-not-overlapped ~ main {
     padding-top: 0;
   }
 
