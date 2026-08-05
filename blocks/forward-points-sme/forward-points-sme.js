@@ -107,11 +107,6 @@ function renderDatepicker(
   const viewMonthKey = getMonthKey(state.viewYear, state.viewMonth);
   const viewEnabledSet = new Set(state.enabledDaysByMonth[viewMonthKey] || []);
   const calendarWeeks = buildCalendarGrid(state.viewYear, state.viewMonth);
-  const maxIndex = state.maxSelectableMonth
-    ? state.maxSelectableMonth.year * 12 + state.maxSelectableMonth.month
-    : null;
-  const viewIndex = state.viewYear * 12 + state.viewMonth;
-  const nextDisabled = Boolean(maxIndex && viewIndex >= maxIndex);
   const selectedParsed = parseIsoDate(state.selectedDate);
   const now = new Date();
 
@@ -159,7 +154,7 @@ function renderDatepicker(
         <span class="fpsme-dp-month">${escapeHtml(monthLabels[state.viewMonth - 1] || '')}</span>
         <span class="fpsme-dp-year">${state.viewYear + buddhistYearOffset}</span>
       </div>
-      <button type="button" class="fpsme-dp-nav fpsme-dp-next${nextDisabled ? ' is-disabled' : ''}" aria-label="${escapeHtml(nextLabel)}"${nextDisabled ? ' disabled' : ''}><i class="icon-arrow-left" aria-hidden="true"></i></button>
+      <button type="button" class="fpsme-dp-nav fpsme-dp-next" aria-label="${escapeHtml(nextLabel)}"><i class="icon-arrow-left" aria-hidden="true"></i></button>
     </div>
     <table class="fpsme-dp-calendar">
       <thead><tr>${daysHeader}</tr></thead>
