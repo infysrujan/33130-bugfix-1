@@ -37,6 +37,9 @@
 .hero-banner-container {
   width: 100%;
   overflow: hidden;
+}
+
+.hero-banner-simple .hero-banner-container {
   background: white;
 }
 
@@ -341,15 +344,15 @@
     color: var(--bbl-color-white);
   }
 
-  .hero-banner-container {
+  .hero-banner-simple .hero-banner-container {
     background: none;
   }
 
-  .hero-banner-content-inner-text {
+  .hero-banner-simple .hero-banner-content-inner-text {
     padding-bottom: 0;
   }
 
-  .hero-banner-content-group {
+  .hero-banner-simple .hero-banner-content-group {
     padding-inline: 0;
   }
 }
@@ -396,7 +399,7 @@
   line-height: 1rem;
 }
 
-.hero-banner-content-group {
+.hero-banner-simple .hero-banner-content-group {
   padding-inline: 1rem;
 }
 
@@ -563,7 +566,7 @@
   overflow: hidden;
 }
 
-.hero-banner-content-inner-text {
+.hero-banner-simple .hero-banner-content-inner-text {
   padding-bottom: 0.9375rem;
 }
 
