@@ -154,7 +154,7 @@
 
 @media (width > 64rem) {
   .section.central-aligned .block.all-carousel-fragment {
-    margin: 0 auto;
+    margin: 0 auto 80px;
   }
 
   .carousel-dotted.all-carousel-fragment .carousel-track-viewport {
