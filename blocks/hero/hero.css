@@ -37,6 +37,7 @@
 .hero-banner-container {
   width: 100%;
   overflow: hidden;
+  background: white;
 }
 
 .hero-banner-container .hero-banner-list {
@@ -339,6 +340,18 @@
   .hero-banner-content.content {
     color: var(--bbl-color-white);
   }
+
+  .hero-banner-container {
+    background: none;
+  }
+
+  .hero-banner-content-inner-text {
+    padding-bottom: 0;
+  }
+
+  .hero-banner-content-group {
+    padding-inline: 0;
+  }
 }
 
 
@@ -381,6 +394,10 @@
   float: left;
   width: 100%;
   line-height: 1rem;
+}
+
+.hero-banner-content-group {
+  padding-inline: 1rem;
 }
 
 .hero-banner-content-inner-text p {
@@ -544,6 +561,10 @@
   color: var(--bbl-color-black);
   margin: 0;
   overflow: hidden;
+}
+
+.hero-banner-content-inner-text {
+  padding-bottom: 0.9375rem;
 }
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) {
