@@ -19,7 +19,6 @@
 
 .carousel-video .cv-main-player.active {
   opacity: 1;
-  z-index: 1;
 }
 
 .carousel-video .cv-main-player iframe {
@@ -36,6 +35,7 @@
 
 .carousel-video .cv-main-player iframe.active {
   opacity: 1;
+  z-index: 10;
 }
 
 .carousel-video .cv-carousel-section {
