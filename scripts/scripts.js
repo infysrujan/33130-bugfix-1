@@ -232,17 +232,16 @@ document.addEventListener('bbl:load-fragment', async (e) => {
  * @returns {'en'|'th'}
  */
 function getDocumentLangFromPath(pathname) {
+  const allowedLangs = ['en', 'th', 'zh', 'jp'];
   const segments = pathname.split('/').filter(Boolean);
   const first = segments[0];
 
   if (document.querySelector('[data-aue-resource]')) {
     const lang = segments[2];
-    if (lang === 'en') return 'en';
-    if (lang === 'th') return 'th';
+    if (allowedLangs.includes(lang)) return lang;
   }
 
-  if (first === 'en') return 'en';
-  if (first === 'th') return 'th';
+  if(allowedLangs.includes(first)) return first;
 
   // Check bblcorporate#lang cookie
   const cookie = document.cookie
