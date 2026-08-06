@@ -149,6 +149,11 @@ main .section.form-container.custom-forms .form :is(.field-submitcta form button
   pointer-events: none;
 }
 
+main .section.form-container.custom-forms .form :is(.field-submitcta form button[type='submit']:hover, form .submit-wrapper button:hover) {
+  background: var(--bbl-color-blue-90);
+  text-decoration: none;
+}
+
 /* Transaction Date & Time Panel Overrides (Financial & Non-Financial) */
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel {
   column-gap: var(--bbl-space-250);
