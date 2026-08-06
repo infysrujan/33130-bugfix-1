@@ -3,51 +3,123 @@ body.modal-open {
 }
 
 .modal dialog {
-  --dialog-border-radius: 16px;
+  --dialog-border-radius: 0.25rem;
 
-  overscroll-behavior: none;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: var(--dialog-border-radius);
-  width: 100vw;
+  box-shadow: 0 0.125rem 0.5rem var(--bbl-color-black-alpha-33);
+  width: calc(100vw - 2rem);
+  padding: var(--bbl-form-padding-20) var(--bbl-form-padding-30);
+  box-sizing: border-box;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-form-font-size-16);
+  color: var(--bbl-color-grey-85);
+  background-color: var(--bbl-color-white);
+  overflow: hidden;
 }
 
 .modal dialog .modal-content {
   overflow-y: auto;
   overscroll-behavior: none;
-  max-height: calc(100dvh - 60px);
+  max-height: calc(100dvh - 3.75rem);
+  padding: 0;
+  font-size: var(--bbl-form-font-size-16);
+  line-height: var(--bbl-form-line-height-1-3);
+  color: var(--bbl-color-grey-85);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-@media (width >= 600px) {
+.modal dialog .modal-content::-webkit-scrollbar {
+  display: none;
+}
+
+.modal dialog .modal-content p {
+  margin: 0;
+  padding: 0;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-form-font-size-16);
+  line-height: var(--bbl-form-line-height-1-3);
+  color: var(--bbl-color-grey-85);
+}
+
+.modal dialog .modal-content :is(b, strong) {
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+/* Modal Actions / Footer Container */
+.modal dialog :is(.modal-footer, fieldset.field-button-panel, .modal-content > fieldset, .modal-content > .field-wrapper:has(button)) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.0313rem;
+  margin-top: var(--bbl-form-padding-20);
+  margin-bottom: 0;
+  width: 100%;
+}
+
+/* Button Item Wrappers inside Modal */
+.modal dialog :is(.button-wrapper, .submit-wrapper, .reset-wrapper, .field-submitcta, .field-cancel, .field-reset) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+/* Base Modal Buttons (excluding close button) */
+.modal dialog button:not(.close-button) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 6.25rem;
+  height: 2.75rem;
+  margin: 0;
+  padding: 0 var(--bbl-form-padding-30);
+  box-sizing: border-box;
+  border-radius: var(--bbl-form-border-radius-7);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-form-font-size-16);
+  font-weight: var(--bbl-font-weight-regular);
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+/* Primary Button (Ok / Submit) */
+.modal dialog :is(button[type="submit"], button.btn-primary, .submit-wrapper button):not(.close-button) {
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border: 0.0831rem solid var(--bbl-color-active-blue);
+}
+
+/* Secondary Button (Cancel) */
+.modal dialog :is(button[type="button"], button[type="reset"], button.btn-default, button.secondary, .reset-wrapper button):not(.close-button) {
+  background-color: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+  border: 0.0831rem solid var(--bbl-color-active-blue);
+}
+
+@media (width >= 37.5rem) {
   .modal dialog {
-    padding: 30px;
-    width: 80vw;
-    max-width: 700px;
+    padding: var(--bbl-form-padding-20) var(--bbl-form-padding-30);
+    width: 100%;
+    max-width: 32.5rem;
   }
 
   .modal dialog .modal-content {
-    max-height: calc(100vh - 90px);
+    max-height: calc(100vh - 5.625rem);
   }
 }
 
 .modal dialog::backdrop {
-  background-color: rgb(0 0 0 / 50%);
+  background-color: var(--bbl-color-black-alpha-50);
 }
 
-.modal .close-button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 20px;
-  height: 100%;
-  max-height: 54px;
-  border-radius: 0 var(--dialog-border-radius) 0 0;
-  background-color: unset;
-  text-overflow: clip;
-  margin: 0;
-  border: none;
-  padding-right: 30px;
-}
-
-.modal dialog .section {
-  padding: 0;
+.modal .close-button,
+.modal dialog .close-button {
+  display: none;
 }

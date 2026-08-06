@@ -592,11 +592,6 @@ export default async function decorate(block) {
   }
 
   function buildSubtitle(fromDate, toDate) {
-    const period = PERIOD_OPTIONS.find((p) => p.code === currentPeriod)?.label ?? currentPeriod;
-    return `"${currentFund?.name}" Open-end Fund : ${period} : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
-  }
-
-  function buildPrintSubtitle(fromDate, toDate) {
     return `"${currentFund?.name}" Open-end Fund : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
   }
 
@@ -746,7 +741,7 @@ export default async function decorate(block) {
     printRoot.hidden = false;
     printRoot.querySelectorAll('.fund-prices-print-label, .fdd-back-btn').forEach((el) => el.remove());
     if (currentFromDate && currentToDate) {
-      const printSubtitle = buildPrintSubtitle(currentFromDate, currentToDate);
+      const printSubtitle = buildSubtitle(currentFromDate, currentToDate);
       printRoot.querySelectorAll('.fdd-fund-label, .chart-subtitle')
         .forEach((el) => { el.textContent = printSubtitle; });
     }

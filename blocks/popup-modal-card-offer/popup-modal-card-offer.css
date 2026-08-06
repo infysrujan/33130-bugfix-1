@@ -74,13 +74,21 @@
 }
 
 .floating-popup-body {
-  margin-top: -3.75rem;
+  margin-top: unset;
   line-height: 100%;
 }
 
+.bangkok-bankm-card .floating-popup-body {
+  margin-top: -3.75rem;
+}
+
 .floating-popup-body img {
-  margin-top: -8.125rem;
+  margin-top: -9.375rem;
   height: 15.625rem;
+}
+
+.bangkok-bankm-card .floating-popup-body img {
+  margin-top: -8.125rem;
 }
 
 .floating-popup-content {
@@ -92,7 +100,7 @@
   margin: 0;
   font-size: 1.4rem;
   font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.6406rem;
+  line-height: 1.53rem;
 }
 
 :lang(th) {
@@ -140,6 +148,7 @@
 
   .floating-popup-title :is(h1, h2, h3, h4, h5, h6) {
     font-size: 1.3125rem;
+    line-height: 1.42rem;
   }
 
   .floating-popup-description p {
@@ -155,7 +164,7 @@
 
   .floating-popup-title :is(h1, h2, h3, h4, h5, h6) {
     font-size: 1.5rem;
-    line-height: 1.875rem;
+    line-height:  1.625rem;
   }
 
 

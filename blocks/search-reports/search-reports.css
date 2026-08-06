@@ -45,7 +45,7 @@
 
 .search-reports-overlay .sr-close-btn {
   background: transparent;
-  border: 0.0938rem solid var(--bbl-color-white-alpha-60);
+  border: 0.0313rem solid var(--bbl-color-white);
   cursor: pointer;
   width: var(--bbl-space-500);
   height: var(--bbl-space-500);
@@ -59,13 +59,14 @@
 }
 
 .search-reports-overlay .sr-close-btn:hover {
-  border-color: var(--bbl-color-white);
+  box-shadow: 0 0 0.4375rem var(--bbl-color-white);
 }
 
 .search-reports-overlay .sr-close-btn .icon,
 .search-reports-overlay .sr-close-btn img {
   color: var(--bbl-color-white);
   filter: brightness(0) invert(1);
+  width: 0.75rem;
 }
 
 /* Body */

@@ -1,20 +1,17 @@
-/* ── Wrapper ─────────────────────────────────────────────────────────────── */
 .carousel-video-wrapper {
-  max-width: 56.25rem;
+  box-sizing: border-box;
   width: 100%;
   margin: auto;
 }
 
-/* ── Block positioning context ───────────────────────────────────────────── */
 .carousel-video {
   position: relative;
 }
 
-/* ── Main player ─────────────────────────────────────────────────────────── */
 .carousel-video .cv-main-player {
   position: relative;
-  width: 24.625rem;
-  height: 12.6875rem;
+  width: 100%;
+  height: calc((100vw - 2.5rem) / 1.8);
   background: var(--bbl-color-black);
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
@@ -32,14 +29,15 @@
   border: none;
   display: block;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.5s ease-in-out;
 }
 
 .carousel-video .cv-main-player iframe.active {
   opacity: 1;
+  pointer-events: auto;
 }
 
-/* ── Thumbnail carousel — mobile: nav arrows overlay on player ───────────── */
 .carousel-video .cv-carousel-section {
   position: absolute;
   top: 0;
@@ -68,18 +66,13 @@
   transition: transform 0.35s ease;
 }
 
-/* ── Thumbnails ──────────────────────────────────────────────────────────── */
 .carousel-video .cv-thumb {
-  flex: 0 0 12.0625rem;
-  width: 12.0625rem;
-  height: 7.625rem;
   padding: 0;
   margin: 0 0.3125rem;
   border: none;
   border-radius: 0;
   overflow: hidden;
   cursor: pointer;
-  background: var(--bbl-color-black);
   transition: outline-color 0.2s ease;
 }
 
@@ -89,16 +82,13 @@
   object-fit: cover;
   display: block;
   pointer-events: none;
-  border-radius: 0;
 }
-
 
 .carousel-video .cv-thumb.active {
   box-shadow: 0 0 0.625rem var(--bbl-color-black);
   opacity: 1;
 }
 
-/* ── Prev / Next buttons ─────────────────────────────────────────────────── */
 .carousel-video .cv-nav {
   position: absolute;
   top: 50%;
@@ -168,13 +158,11 @@
   margin-right: 0.1875rem;
 }
 
-/* ── Dots — hidden on mobile ─────────────────────────────────────────────── */
 .carousel-video .cv-dots {
   display: none;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
+  gap: 0.8125rem;
 }
 
 .carousel-video .cv-dot {
@@ -185,7 +173,7 @@
   border-radius: 50%;
   border: 0.0625rem solid var(--bbl-color-grey-150);
   background: transparent;
-  padding: 0;
+  padding: 0.1875rem;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease, width 0.2s ease, height 0.2s ease;
 }
@@ -203,7 +191,6 @@
   border-color: var(--bbl-color-active-blue);
 }
 
-
 @keyframes wobble-vertical {
     25% { margin-top: 0.25rem; }
     50% { margin-top: -0.125rem; }
@@ -215,9 +202,6 @@
     animation: wobble-vertical 0.75s alternate;
 }
 
-
-
-/* ── Tablet: > 760px ─────────────────────────────────────────────────────── */
 @media (width > 47.5rem) {
   .carousel-video-wrapper {
     padding: 0 2.5rem;
@@ -226,10 +210,13 @@
 
   .carousel-video .cv-main-player {
     width: 100%;
-    max-width: 35.75rem;
-    height: 25.625rem;
     aspect-ratio: unset;
+    height: calc((100vw - 1.875rem) / 1.8);
     margin: 0 auto;
+  }
+
+  .carousel-video {
+    padding: 0 3.125rem 1.875rem;
   }
 
   .carousel-video .cv-carousel-section {
@@ -238,17 +225,15 @@
     left: auto;
     right: auto;
     aspect-ratio: unset;
-    max-width: 35.75rem;
     width: 100%;
-    margin: 1.875rem auto;
+    margin: 1.875rem -0.3125rem;
     padding: 0;
     pointer-events: auto;
     z-index: auto;
   }
 
   .carousel-video .cv-thumb {
-    flex: 0 0 8.3125rem;
-    width: 8.3125rem;
+    flex: 0 0 10.0625rem;
     height: 7.625rem;
   }
 
@@ -262,11 +247,10 @@
     display: flex;
     width: 100%;
     margin: 0;
-    padding: 0.75rem 0 3.125rem;
   }
 
   .carousel-video .cv-nav {
-    top: 40%;
+    top: 50%;
     width: 2.5rem;
     height: 2.5rem;
     background: var(--bbl-color-white);
@@ -281,7 +265,6 @@
   }
 }
 
-/* ── Desktop: > 1024px ───────────────────────────────────────────────────── */
 @media (width > 64rem) {
   .carousel-video-wrapper {
     padding: 0 3rem;
@@ -289,10 +272,8 @@
   }
 
   .carousel-video .cv-main-player {
-    max-width: 50rem;
     height: 30.625rem;
     aspect-ratio: unset;
-    margin: 0 auto;
   }
 
   .carousel-video .cv-carousel-section {
@@ -301,16 +282,12 @@
   }
 
   .carousel-video .cv-thumb {
-    flex: 0 0 12rem;
-    width: 12rem;
-    height: 7.625rem;
+    flex: 0 0 11.4375rem;
   }
 
   .carousel-video .cv-track-wrap {
     margin: 0 -0.3125rem;
   }
-
-
 
   .carousel-video .cv-prev {
     left: -3.1rem;

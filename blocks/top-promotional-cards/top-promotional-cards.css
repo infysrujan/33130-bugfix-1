@@ -8,6 +8,7 @@
 
 .top-promo-view-all a {
   min-width: 13.125rem;
+  transition: all 0.2s ease-in-out;
 }
 
 .top-promo-grid {

@@ -926,8 +926,12 @@
         "name": "imageLayout",
         "label": "Image Layout",
         "valueType": "string",
-        "value": "default",
+        "value": "none",
         "options": [
+          {
+            "name": "None",
+            "value": "none"
+          },
           {
             "name": "Full",
             "value": "full"
@@ -3401,6 +3405,18 @@
     ]
   },
   {
+    "id": "credit-card-results",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "credit-card-selector",
     "fields": [
       {
@@ -3472,13 +3488,6 @@
             "value": "tertiary"
           }
         ]
-      },
-      {
-        "component": "richtext",
-        "name": "disclaimerText",
-        "value": "",
-        "label": "Disclaimer Text",
-        "valueType": "string"
       }
     ]
   },
@@ -4023,14 +4032,14 @@
         "name": "ctaLabel",
         "label": "CTA Label",
         "valueType": "string",
-        "required": true
+        "required": false
       },
       {
         "component": "text",
         "name": "printCtaLabel",
         "label": "Print CTA Label",
         "valueType": "string",
-        "required": true
+        "required": false
       },
       {
         "component": "richtext",
@@ -12301,6 +12310,12 @@
         "label": "Modal Description",
         "valueType": "string",
         "required": true
+      },
+      {
+        "component": "aem-content",
+        "name": "resultsPageUrl",
+        "label": "Results Page URL",
+        "description": "Page the user is redirected to after searching, with type/year query params appended"
       }
     ]
   },
@@ -12417,37 +12432,23 @@
     "id": "social-icon",
     "fields": [
       {
-        "component": "select",
-        "name": "platform",
-        "label": "Platform",
-        "valueType": "string",
-        "required": true,
-        "options": [
-          {
-            "name": "Facebook",
-            "value": "facebook"
-          },
-          {
-            "name": "X",
-            "value": "x"
-          },
-          {
-            "name": "Line",
-            "value": "line"
-          }
-        ]
-      },
-      {
         "component": "reference",
         "name": "icon",
-        "label": "Icon",
+        "label": "Social Icon",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "alt",
+        "label": "Platform",
         "valueType": "string",
         "required": true
       },
       {
         "component": "text",
         "name": "url",
-        "label": "URL",
+        "label": "Link",
         "valueType": "string",
         "required": true
       }
@@ -12489,31 +12490,6 @@
         "description": "Author iframe HTML, links, and supporting notes.",
         "valueType": "string",
         "value": ""
-      }
-    ]
-  },
-  {
-    "id": "social-icon",
-    "fields": [
-      {
-        "component": "reference",
-        "name": "icon",
-        "label": "Social Icon",
-        "valueType": "string",
-        "required": true
-      },
-      {
-        "component": "text",
-        "name": "alt",
-        "label": "Alt Text",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "url",
-        "label": "Link",
-        "valueType": "string",
-        "required": true
       }
     ]
   },

@@ -12,7 +12,7 @@
 }
 
 .cross-banner-image {
-  height: 23.7187rem;
+  height: calc(100vw * .5);
   overflow: hidden;
 }
 
@@ -43,10 +43,10 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .cross-banner-title {
+  color: var(--bbl-color-black);
   font-size: 1.4rem;
   font-weight: var(--bbl-font-weight-regular);
   line-height: 1.375rem;
@@ -55,6 +55,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cross-banner-description {
@@ -186,7 +187,7 @@ body.private
 
   :is(.wealth, .private) :is(.cross-banner-title, .cross-banner-description) {
     flex: 0 0 38.86%;
-    max-width: 38.86%;
+    max-width: 30.86%;
   }
 }
 

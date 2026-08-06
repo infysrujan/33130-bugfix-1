@@ -9,6 +9,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
+import truncateNameCell from '../../scripts/utils/truncate-tooltip.js';
 
 const MAX_SELECTED = 5;
 
@@ -147,6 +148,14 @@ function renderThead(thead, state) {
   row1 += '</tr>';
   row2 += '</tr>';
   thead.innerHTML = row1 + row2;
+
+  requestAnimationFrame(() => {
+    const groupHeader = thead.querySelector('.db-th-group');
+    const secondRow = thead.querySelector('tr:last-child');
+    if (groupHeader && secondRow) {
+      secondRow.style.top = `${groupHeader.getBoundingClientRect().height}px`;
+    }
+  });
 }
 
 function renderRow(rate, isSelected, state) {
@@ -160,7 +169,7 @@ function renderRow(rate, isSelected, state) {
         <input type="checkbox" class="db-row-cb" data-id="${id}" ${checked} ${disabled} aria-label="Select ${sym}">
       </td>
       <td class="db-td-symbol">${sym}</td>
-      <td class="db-td-name">${escapeHtml(state.isThai ? rate.NAME_THAI : rate.NAME_ENG)}</td>
+      ${truncateNameCell(state.isThai ? rate.NAME_THAI : rate.NAME_ENG, 'db-td-name')}
       ${state.isGov
     ? `<td class="db-td-num">${escapeHtml(rate.ISSUE_RATING || '-')}</td>
       <td class="db-td-num">${escapeHtml(rate.ISSUER_RATING || '-')}</td>`
@@ -504,8 +513,52 @@ function wireFilterEvents(
 // ─── print ────────────────────────────────────────────────────────────────────
 /** Same approach as blocks/bcap/bcap.js: print an isolated document instead of
  * the live page, so the fixed header/nav and the site's max-width layout
- * don't shrink the table or swallow the logo. */
+ * don't shrink the table or swallow the logo.
+ *
+ * COLUMN SIZING STRATEGY (print):
+ * The rule is simple and browser-enforced — ONLY the Name column may wrap;
+ * every other column stays on a single line, sized end-to-end to its content.
+ * This is achieved with table-layout: auto + white-space: nowrap on every
+ * column except Name (which is white-space: normal and absorbs the leftover
+ * width). No JS width measurement / colgroup is needed: the browser sizes each
+ * nowrap column to exactly fit its longest single-line value, and Name takes
+ * whatever remains. Tradeoff (accepted): if the combined natural width of all
+ * non-Name columns ever exceeds the page, the table could overflow, since only
+ * Name can relieve width pressure. With this board's short numeric/date values
+ * that doesn't happen at the chosen print font-size. */
 function printElement(block) {
+  // Capture real computed styles from the LIVE (un-cloned) elements before
+  // any cloning/stripping happens below. Baking these actual resolved
+  // values into printCss — instead of hardcoded rem guesses — is what makes
+  // the print date/time box and the "Updated as of" label match the live
+  // board, since it reads whatever this site's real --bbl-* tokens resolve
+  // to. NOTE: the table header background is intentionally NOT read from the
+  // live header — the client PDF wants a plain WHITE header (not the live
+  // blue tint), so that's forced to white in printCss below.
+  const liveDateInput = block.querySelector('.db-date-display');
+  const liveTimeTrigger = block.querySelector('.db-time-trigger');
+  const liveCalLabel = block.querySelector('.db-cal-label');
+  const liveHeaderTh = block.querySelector('.db-table thead th');
+
+  const cs = (el) => (el ? getComputedStyle(el) : null);
+  const headerCs = cs(liveHeaderTh);
+  const dateCs = cs(liveDateInput);
+  const timeCs = cs(liveTimeTrigger);
+  const calLabelCs = cs(liveCalLabel);
+
+  // Header text color/weight still come from live (only the *background* is
+  // forced white); black is a safe fallback matching the client PDF.
+  const headerColor = headerCs?.color || '#000000';
+  const headerFontWeight = headerCs?.fontWeight || '700';
+  const dateBorder = dateCs
+    ? `${dateCs.borderTopWidth} solid ${dateCs.borderTopColor}`
+    : '0.0625rem solid #C7C7CC';
+  const dateRadius = dateCs?.borderRadius || '0.25rem';
+  const dateColor = dateCs?.color || '#565660';
+  const timeFontWeight = timeCs?.fontWeight || '700';
+  const calLabelWeight = calLabelCs?.fontWeight || '700';
+  const calLabelColor = calLabelCs?.color || '#565660';
+
   const section = block.closest('.section') || block;
   const content = section.cloneNode(true);
 
@@ -525,11 +578,26 @@ function printElement(block) {
     '.db-td-dl',
   ].join(', ')).forEach((el) => el.remove());
 
-  // The live header's first column has colspan=2 for layout reasons the body
-  // doesn't match (only one Symbol cell), which shifts every later column
-  // out of alignment — drop it only where it's paired with rowspan=2.
-  content.querySelectorAll('.db-table thead th[rowspan="2"][colspan="2"]')
-    .forEach((th) => th.removeAttribute('colspan'));
+  // After the download link (.db-td-dl) is stripped above, the Maturity Date
+  // cell still contains the leftover whitespace/text nodes that surrounded
+  // it, which render as an empty second line — that's what pushed the date
+  // to the TOP of a too-tall cell. Collapse each maturity cell down to just
+  // its trimmed date text so the cell is exactly one line tall.
+  content.querySelectorAll('.db-td-maturity').forEach((td) => {
+    td.textContent = td.textContent.trim();
+  });
+
+  // The live header's Symbol column has colspan=2 for layout reasons the
+  // body doesn't match (only one Symbol cell, since the checkbox column is
+  // stripped above) — fixed by position (first header cell only), not by
+  // matching rowspan/colspan shape generally. Matching by shape alone could
+  // also strip a legitimate colspan from a different column further down
+  // the row if it happened to have the same rowspan="2" colspan="2" shape,
+  // which would desync the header's column count from the body's.
+  const symbolHeaderCell = content.querySelector(
+    '.db-table thead tr:first-child th:first-child[rowspan="2"][colspan="2"]',
+  );
+  if (symbolHeaderCell) symbolHeaderCell.removeAttribute('colspan');
 
   content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
 
@@ -562,7 +630,7 @@ function printElement(block) {
   const printCss = `
     @page {
       size: A4 portrait;
-      margin: 10mm;
+      margin: 8mm;
     }
 
     /* Chrome's "Background graphics" print toggle is off by default and
@@ -584,7 +652,7 @@ function printElement(block) {
     }
 
     .brand-logo.block {
-      background-color: var(--bbl-color-truthful-blue);
+      background-color: transparent;
     }
 
     .brand-logo-container {
@@ -601,12 +669,15 @@ function printElement(block) {
     }
 
     /* Scoped to the always-present .table-container rather than
-       center-title/underline-title, so it centers regardless of authoring. */
+       center-title/underline-title, so it centers regardless of authoring.
+       line-height set explicitly (1.2) — without it the two title lines
+       inherited a too-tight leading in the print popup and looked cramped. */
     .table-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
       position: relative;
       margin: 0;
-      padding: 0 0 1.875rem;
+      padding: 0 0 0.75rem;
       font-size: 2rem;
+      line-height: 1.2;
       text-align: center;
     }
 
@@ -624,42 +695,88 @@ function printElement(block) {
     }
 
     .dynamic-board {
-      margin-top: 2rem;
+      margin-top: 0.5rem;
     }
 
     /* A4's print width falls under the 47.5rem breakpoint where these are
        each width:100% (stacked), so shrink them to sit side by side. */
     .dynamic-board .db-date-wrap,
     .dynamic-board .db-time-wrap {
-      width: auto;
       flex: 0 1 auto;
     }
 
+    .dynamic-board .db-date-wrap {
+      width: 160px;
+    }
+
+    .dynamic-board .db-time-wrap {
+      width: 100px;
+    }
+
+    /* "Updated as of" label — real weight/size/color captured from the live
+       .db-cal-label, so it matches instead of being missing/unstyled. */
+    .dynamic-board .db-cal-label {
+      font-weight: ${calLabelWeight};
+      font-size: 12px;
+      color: ${calLabelColor};
+      margin-bottom: 0.375rem;
+    }
+
+    /* Date/time boxes — real border/radius/font captured from the live
+       .db-date-display and .db-time-trigger, so the bordered box shape
+       that was missing in print now actually renders. */
+    .dynamic-board .db-date-display,
+    .dynamic-board .db-time-trigger {
+      border: ${dateBorder};
+      border-radius: ${dateRadius};
+      font-size: 12px;
+      color: ${dateColor};
+      height: 2rem;
+      box-sizing: border-box;
+    }
+
+    .dynamic-board .db-time-trigger {
+      font-weight: ${timeFontWeight};
+    }
+
     .dynamic-board .db-table {
-      width: 75%;
-      /* table-layout: fixed was tried here, but it only measures the FIRST
-         header row's cells to size columns — this table's first row has
-         colspan="2" group headers (Bidding/Offering Price) whose real
-         sub-column split only exists in the second row, so fixed layout
-         can't place that split and the sub-headers overlap. table-layout:
-         auto (the default) measures every row correctly; combined with
-         overflow-wrap/word-break below and min-width:0 (already reset by
-         dynamic-board.css's own @media print block) it still shrinks to
-         fit the page instead of overflowing. */
-      border: 2px solid #EBEBEB;
-      /* Outline as a fallback outer border — it can't be partially
-         overridden by any single cell's border like border-collapse can. */
-      outline: 2px solid #EBEBEB;
-      outline-offset: -0.0625rem;
+      width: 100%;
+      /* table-layout: AUTO (not fixed). Combined with white-space: nowrap on
+         every column except Name below, the browser sizes each non-Name
+         column to exactly fit its longest single-line value (end-to-end, no
+         wrapping) and lets Name — the only wrapping column — absorb the
+         remaining width. This directly enforces the rule "only Name wraps".
+         No colgroup / JS width measurement is used. */
+      table-layout: auto;
+      /* Thin 1px outer border to match the reference PDF. Single border only,
+         no outline layered on top. */
+      border: 1px solid #EBEBEB;
       border-collapse: collapse;
-      font-size: 0.6875rem;
+      font-size: 0.625rem;
+      line-height: 1.2;
       color: #78787D;
     }
 
+    /* Default: every cell stays on ONE line (end-to-end). Name is the sole
+       exception, overridden below. */
     .dynamic-board .db-table th,
     .dynamic-board .db-table td {
+      white-space: nowrap;
+    }
+
+    /* Name is the ONLY column allowed to wrap — it takes the leftover width
+       and breaks long names onto multiple lines. min-width:0 clears the base
+       stylesheet's 12rem floor so auto layout can size it freely. */
+    .dynamic-board .db-table td.db-td-name {
+      white-space: normal;
       overflow-wrap: break-word;
       word-break: break-word;
+      min-width: 0;
+      width: 176px;
+    }
+    /* The Name header cell should also be allowed to wrap if needed. */
+    .dynamic-board .db-table thead th.db-th-name {
+      white-space: normal !important;
     }
 
     .dynamic-board .db-table thead,
@@ -671,26 +788,40 @@ function printElement(block) {
     .dynamic-board .db-table thead th,
     .dynamic-board .db-table thead tr:first-child th,
     .dynamic-board .db-table thead tr:last-child th {
-      /* Chrome's print engine frequently drops a background painted at the
+      /* Client PDF wants a plain WHITE header (not the live blue tint), so
+         force white here rather than reading the live header background.
+         Chrome's print engine frequently drops a background painted at the
          thead/tr level even with print-color-adjust: exact set globally —
-         setting it directly on each th is what actually survives printing.
-         Hard-coded hex (not var()) so it doesn't depend on the popup having
-         fully resolved the site's CSS custom properties before printing. */
-      background-color: #F1F3F9;
-      font-size: 0.6875rem;
-      font-weight: 700 !important;
+         setting it directly on each th is what actually survives printing. */
+      background-color: #FFFFFF;
+      color: ${headerColor};
+      font-size: 0.625rem;
+      font-weight: ${headerFontWeight} !important;
       height: auto;
-      padding: 0.1875rem 0.25rem;
-      border: 0.125rem solid var(--bbl-color-grey-20) !important;
+      /* Headers may wrap onto 2 lines (e.g. "Indicative Yield* (%)") — that's
+         fine and matches the reference. Tight line-height keeps the header
+         row from growing too tall. */
+      white-space: normal !important;
+      line-height: 1.15;
+      padding: 0.2rem 0.3rem;
+      vertical-align: middle;
+      /* Thin 1px borders to match the reference. */
+      border: 0.0625rem solid var(--bbl-color-grey-20) !important;
     }
 
     .dynamic-board .db-table tbody td {
-      border: 0.125rem solid var(--bbl-color-grey-20) !important;
-      border-right-color: var(--bbl-color-white) !important;
+      /* Thin 1px borders to match the reference. */
       color: black !important;
-      padding: 0.1875rem 0.25rem;
+      /* Compact rows: kill the live table's min-height: 4.6875rem floor and
+         keep padding tight so rows are only as tall as their content needs.
+         Slightly wider horizontal padding so single-line columns aren't
+         cramped edge-to-edge. */
+      padding: 0.15rem 0.3rem;
       vertical-align: middle;
-      font-size: 0.6875rem;
+      font-size: 0.625rem;
+      line-height: 1.2;
+      min-height: 0;
+      height: auto;
     }
 
     .dynamic-board .db-td-symbol {
@@ -707,14 +838,23 @@ function printElement(block) {
       background-color: #e5edf4;
     }
 
-    /* The live table strips the last header cell's border-right; restore it. */
-    .dynamic-board .db-table thead th:last-child {
-      border-right: 0.125rem solid var(--bbl-color-grey-20) !important;
-    }
-
     .dynamic-board .db-table tbody tr:nth-child(even),
     .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr {
       position: static;
+    }
+
+    /* Maturity date cell: the download icon and its leftover whitespace are
+       stripped in JS (cell collapsed to date-only text). Plain right-aligned,
+       single line, vertically centered like every other cell. */
+    .dynamic-board .db-td-maturity {
+      white-space: nowrap;
+      text-align: right;
+      vertical-align: middle;
+    }
+
+    /* Numeric cells right-align in the live sheet; keep that in print too. */
+    .dynamic-board .db-td-num {
+      text-align: right;
     }
 
     .dynamic-board .db-remarks-content {
@@ -804,14 +944,15 @@ function printElement(block) {
   // here is what causes intermittent broken print layouts (unstyled table,
   // visible remarks-shadow overlay) on a cold cache/slow network.
   const waitForStylesheets = () => Promise.all(
-    [...printWindow.document.querySelectorAll('link[rel="stylesheet"]')].map((link) => (
-      link.sheet
-        ? Promise.resolve()
-        : new Promise((resolve) => {
-          link.addEventListener('load', resolve, { once: true });
-          link.addEventListener('error', resolve, { once: true });
-        })
-    )),
+    [...printWindow.document.querySelectorAll('link[rel="stylesheet"]')].map((link) => new Promise((resolve) => {
+      if (link.sheet) { resolve(); return; }
+      link.addEventListener('load', resolve, { once: true });
+      link.addEventListener('error', () => {
+        // eslint-disable-next-line no-console
+        console.warn('dynamic-board print: stylesheet failed to load:', link.href);
+        resolve();
+      }, { once: true });
+    })),
   );
   const waitForFonts = () => printWindow.document.fonts?.ready ?? Promise.resolve();
   const timeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
@@ -822,7 +963,7 @@ function printElement(block) {
   ]).then(() => {
     printWindow.focus();
     // Double rAF: the first callback fires before the browser has applied
-    // the styles/fonts that just resolved above, so the table's auto column
+    // the styles/fonts that just resolved above, so the table's column
     // widths and the remarks-shadow removal can still reflect a stale layout
     // — waiting a second frame lets that layout pass complete before print.
     requestAnimationFrame(() => {

@@ -122,9 +122,9 @@ async function fetchSearchParams(searchParamsUrl) {
   return Array.isArray(parsed) ? parsed[0] : parsed;
 }
 
-// Rows 0-2 are ctaLabel/modalTitle/modalDescription (read in parseAuthoredMeta);
-// row 3 is a structural row with no corresponding model field — skip to option rows.
-const OPTION_ROWS_START = 4;
+// Rows 0-3 are ctaLabel/modalTitle/modalDescription/resultsPageUrl (read in parseAuthoredMeta);
+// row 4 is a structural row with no corresponding model field — skip to option rows.
+const OPTION_ROWS_START = 5;
 
 function parseAuthoredOptions(rows) {
   const typeOptions = [];
@@ -151,7 +151,10 @@ function parseAuthoredMeta(rows, placeholders) {
   const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
   const modalDescRow = rows[2];
   const modalDesc = modalDescRow?.firstElementChild?.textContent?.trim() || '';
-  return { ctaLabel, modalTitle, modalDesc };
+  const resultsPageUrl = rows[3]?.querySelector('a')?.href || window.location.pathname;
+  return {
+    ctaLabel, modalTitle, modalDesc, resultsPageUrl,
+  };
 }
 
 // Remove orphan AEM UE node for modalDescription that appears outside the block in the DOM
@@ -159,6 +162,25 @@ function removeOrphanUeNode() {
   document.querySelectorAll('[data-aue-prop="modalDescription"],[data-aue-label="Modal Description"]').forEach((el) => {
     if (!el.closest('.search-reports')) el.remove();
   });
+}
+
+// This block manages its own self-contained modal (built and shown in decorate()/
+// initFromUrlParams()). When this block is authored on a page that's opened as a
+// fragment inside another block's generic modal (e.g. story-card's data-modal),
+// the placeholder left behind ends up wrapped in that other, generic modal too,
+// producing two overlapping modals. Watch for that and discard the generic wrapper
+// since this block's own modal already provides the full experience.
+function discardGenericModalWrapper(placeholder) {
+  const observer = new MutationObserver(() => {
+    if (!placeholder.isConnected) return;
+    const genericModal = placeholder.closest('.custom-modal');
+    if (genericModal) {
+      genericModal.remove();
+      document.body.classList.remove('modal-open');
+    }
+    observer.disconnect();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 }
 
 function buildModalDom({
@@ -215,7 +237,7 @@ function buildModalDom({
 }
 
 function wireModalEvents({
-  overlay, dialog, closeBtn, searchBtn, getType, getYear,
+  overlay, dialog, closeBtn, searchBtn, getType, getYear, resultsPageUrl,
 }) {
   searchBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -223,9 +245,7 @@ function wireModalEvents({
     const type = getType();
     const year = getYear();
     const params = new URLSearchParams({ type, year });
-    window.history.pushState({}, '', `?${params.toString()}`);
-    window.dispatchEvent(new CustomEvent('search-reports:submit', { detail: { type, year } }));
-    closeSearchModal(overlay);
+    window.location.href = `${resultsPageUrl}?${params.toString()}`;
   });
 
   closeBtn.addEventListener('click', () => closeSearchModal(overlay));
@@ -250,7 +270,9 @@ export default async function decorate(block) {
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
   const searchParamsUrl = configs.reportsSearchParamsUrl || '';
 
-  const { ctaLabel, modalTitle, modalDesc } = parseAuthoredMeta(rows, placeholders);
+  const {
+    ctaLabel, modalTitle, modalDesc, resultsPageUrl,
+  } = parseAuthoredMeta(rows, placeholders);
   removeOrphanUeNode();
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
 
@@ -267,7 +289,7 @@ export default async function decorate(block) {
   });
 
   wireModalEvents({
-    overlay, dialog, closeBtn, searchBtn, getType, getYear,
+    overlay, dialog, closeBtn, searchBtn, getType, getYear, resultsPageUrl,
   });
 
   // Populate dropdowns from API, fallback to authored rows on failure
@@ -280,4 +302,5 @@ export default async function decorate(block) {
   });
 
   initFromUrlParams(overlay);
+  discardGenericModalWrapper(placeholder);
 }

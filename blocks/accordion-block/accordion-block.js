@@ -289,18 +289,28 @@ function buildAccordionPrintDocument(block) {
   }
 
   let bodyHtml;
+  const promoBlock = document.querySelector('.promotional-details');
   if (wrapperIsDirectChild) {
     const shell = document.createElement('div');
+    if (promoBlock) {
+      const promoClone = promoBlock.cloneNode(true);
+      promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
+      shell.appendChild(promoClone);
+    }
     [...container.children].forEach((child) => {
       if (child === wrapper) {
         shell.appendChild(clone);
-      } else {
+      } else if (child.classList.contains('default-content-wrapper')) {
         shell.appendChild(child.cloneNode(true));
       }
     });
     bodyHtml = shell.innerHTML;
   } else if (prependHtml) {
     bodyHtml = `${prependHtml}${clone.outerHTML}`;
+  } else if (promoBlock) {
+    const promoClone = promoBlock.cloneNode(true);
+    promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
+    bodyHtml = `${promoClone.outerHTML}${clone.outerHTML}`;
   } else {
     bodyHtml = clone.outerHTML;
   }
@@ -313,10 +323,6 @@ function buildAccordionPrintDocument(block) {
     header.setAttribute('aria-expanded', s.expanded ? 'true' : 'false');
     panel.hidden = s.hidden;
   });
-
-  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
-    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
   const docTitle = block.querySelector('.accordion-block-title')?.textContent?.trim()
     || document.querySelector('title')?.textContent
@@ -355,6 +361,11 @@ function buildAccordionPrintDocument(block) {
     .table.scroll table {min-width: unset;}
     .download-button-wrapper .download-files {padding-right: 2.125rem;}
     .download-files.icon-download::before, .download-files .icon-download::before {right: -0.27rem;}
+
+    .promo-detail-image { display: none !important; }
+    .promo-detail-content { display: none !important; }
+    .accordion-print-heading{ font-family: var(--bbl-font-family-primary);}
+
   `;
 
   return `
@@ -367,24 +378,12 @@ function buildAccordionPrintDocument(block) {
       <link rel="stylesheet" href="/styles/fonts.css">
       <link rel="stylesheet" href="/blocks/header/header.css">
       <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
+     ${promoBlock ? '<link rel="stylesheet" href="/blocks/promotional-details/promotional-details.css">' : ''}
       <link rel="stylesheet" href="/blocks/accordion-block/accordion-block.css">
       <link rel="stylesheet" href="/blocks/table/table.css">
       <style>${printCss}</style>
     </head>
     <body class="appear">
-      <header class="header-wrapper">
-        <div class="header block" data-block-status="loaded">
-          <div class="header-content">
-            <div class="main-nav-desktop">
-              <div class="brand-logo block">
-                <div class="brand-logo-container">
-                  ${brandLogo}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
       <main>
         <div class="section accordion-block-container">
           ${bodyHtml}

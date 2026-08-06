@@ -11,11 +11,6 @@ function filterCards(activeCards, tabText, isTopPromo) {
   if (isTopPromo) {
     return activeCards.filter((card) => card.topPromotion === true);
   }
-  const topCards = activeCards.filter(
-    (card) => card.topCategory === true
-      && card.category?.toLowerCase() === tabText.toLowerCase(),
-  );
-  if (topCards.length) return topCards;
   return activeCards.filter(
     (card) => card.category?.toLowerCase() === tabText.toLowerCase(),
   );

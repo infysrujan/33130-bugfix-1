@@ -32,6 +32,8 @@ export function formatRemainTerm(remainTerm) {
   const parts = remainTerm.split('.');
   const years = parseInt(parts[0], 10);
   const months = parseInt(parts[1], 10);
+  const days = parseInt(parts[2] || '0', 10);
+  if (years === 0 && months === 0) return `${days}D`;
   if (years === 0) return `${months}M`;
   if (months === 0) return `${years}Y`;
   return `${years}Y ${months}M`;
@@ -39,7 +41,10 @@ export function formatRemainTerm(remainTerm) {
 
 export function remainTermToMonths(remainTerm) {
   const parts = remainTerm.split('.');
-  return parseInt(parts[0], 10) * 12 + parseInt(parts[1], 10);
+  const years = parseInt(parts[0], 10);
+  const months = parseInt(parts[1], 10);
+  const days = parseInt(parts[2] || '0', 10);
+  return years * 12 + months + days / 30;
 }
 
 export function formatMonthYear(month, year) {

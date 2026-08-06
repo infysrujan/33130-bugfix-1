@@ -147,7 +147,8 @@
   position: absolute;
   top: calc(100% + 0.25rem);
   left: 0;
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   max-height: 15rem;
   overflow-y: auto;
   background: var(--bbl-color-white);
@@ -170,6 +171,7 @@
   font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-black);
+  white-space: nowrap;
   cursor: pointer;
 }
 

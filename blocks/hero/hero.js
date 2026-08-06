@@ -577,11 +577,11 @@ export default async function decorate(block) {
 
     const contentInner = createElement('div', 'hero-banner-content-inner');
     const logoImg = logoImageCell?.querySelector('img');
+    let logoWrapper = null;
     if (logoImg) {
       logoImg.className = 'hero-banner-logo';
-      const logoWrapper = createElement('div', 'hero-banner-logo-wrapper');
+      logoWrapper = createElement('div', 'hero-banner-logo-wrapper');
       logoWrapper.append(logoImg);
-      contentInner.append(logoWrapper);
     }
 
     const contentGroup = createElement('div', 'hero-banner-content-group');
@@ -594,11 +594,12 @@ export default async function decorate(block) {
     const isAppCta = variant === 'simple-app-cta';
     const hasButtonLink = !isAppCta && !!linkCell?.querySelector('a[href]');
     const cells = [preTitleCell, headingCell, textCell, ...(hasButtonLink ? [linkCell] : [])];
-    cells.forEach((cell) => {
+    cells.forEach((cell, idx) => {
       if (!cell) return;
       while (cell.firstChild) {
         contentGroup.appendChild(cell.firstChild);
       }
+      if (idx === 0 && logoWrapper) contentGroup.appendChild(logoWrapper);
     });
 
     if (isAppCta) {

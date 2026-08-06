@@ -433,7 +433,7 @@
     }
 
     .carousel-cta {
-        display: inline-block;
+        display: flex;
         bottom: var(--bbl-space-200);
     }
 

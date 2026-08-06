@@ -480,20 +480,20 @@
   .tabs.media-tab .tabs-nav {
     display: flex;
     justify-content: center;
+    align-items: flex-end;
     max-width: 100%;
   }
 
   .tabs.simple-tab .tabs-nav button,
   .tabs.media-tab .tabs-nav button {
     padding: 0;
-    margin: 0 0.9375rem;
+    margin: 0 1.1rem;
     min-height: var(--bbl-space-200);
     height: unset;
     max-height: max-content;
     text-wrap: wrap;
     white-space: normal;
-    min-width: 0;
-
+    line-height: var(--bbl-line-height-b3-desktop);
   }
 
   .tabs-nav-wrapper .tabs-nav li:last-child {

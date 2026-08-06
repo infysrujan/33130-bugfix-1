@@ -80,7 +80,7 @@ async function loadFundsData() {
  * Build the fund card list HTML directly, producing the same class structure
  * as card-list.js so that card-list.css applies without running card-list.js.
  */
-function buildFundCardsBlock(funds, doc, readMoreLabel) {
+function buildFundCardsBlock(funds, doc, readMoreLabel, cardsPerSlide = 3) {
   const block = doc.createElement('div');
   block.className = 'card-list mf-card-list block';
   block.dataset.blockName = 'card-list';
@@ -89,7 +89,7 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
   const getImgUrl = (val) => val?._publishUrl || (typeof val === 'string' ? val : '');
 
   const list = doc.createElement('div');
-  list.className = `cards-list scrollable center cards-3${funds.length === 1 ? ' single-card' : ''}`;
+  list.className = `cards-list scrollable center cards-${cardsPerSlide}${funds.length === 1 ? ' single-card' : ''}`;
 
   funds.forEach((fund) => {
     const name = fund.FundName || '';
@@ -193,8 +193,6 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
  *
  * Used by carousel-dotted.js when slideType === 'mfCardListCarousel'.
  */
-const CARDS_PER_SLIDE = 3;
-
 export default async function buildMfFundCardsSlide(row, index) {
   const doc = row.ownerDocument;
 
@@ -251,15 +249,16 @@ export default async function buildMfFundCardsSlide(row, index) {
     return slide;
   }
 
-  // ── Split funds into pages — sliding-window for incomplete last chunk ─────────
-  // Mirrors card-list-carousel.js: if the last chunk is smaller than CARDS_PER_SLIDE,
-  // backfill from the end so every slide shows exactly CARDS_PER_SLIDE cards.
-  // e.g. 4 funds → slide 1: [0,1,2]  slide 2: [1,2,3]
+  const tabletMinBp = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim() || '47.5rem';
+  const isMobile = window.matchMedia(`(max-width: ${tabletMinBp})`).matches;
+  const cardsPerSlide = isMobile ? 1 : 3;
+
+  // ── Split funds into pages — 1 per slide on mobile, 3 per slide on desktop ────
   const pages = [];
-  for (let i = 0; i < filteredFunds.length; i += CARDS_PER_SLIDE) {
-    const chunk = filteredFunds.slice(i, i + CARDS_PER_SLIDE);
-    if (chunk.length < CARDS_PER_SLIDE) {
-      pages.push(filteredFunds.slice(-CARDS_PER_SLIDE));
+  for (let i = 0; i < filteredFunds.length; i += cardsPerSlide) {
+    const chunk = filteredFunds.slice(i, i + cardsPerSlide);
+    if (chunk.length < cardsPerSlide && cardsPerSlide > 1) {
+      pages.push(filteredFunds.slice(-cardsPerSlide));
       break;
     }
     pages.push(chunk);
@@ -271,7 +270,7 @@ export default async function buildMfFundCardsSlide(row, index) {
     // Only move instrumentation onto the first slide
     if (pageIndex === 0) moveInstrumentation(row, slide);
 
-    const blockEl = buildFundCardsBlock(pageFunds, doc, readMoreLabel);
+    const blockEl = buildFundCardsBlock(pageFunds, doc, readMoreLabel, cardsPerSlide);
     slide.appendChild(blockEl);
 
     // Inject compare buttons
@@ -357,54 +356,38 @@ export default async function buildMfFundCardsSlide(row, index) {
   }
 
   async function equalizeCardHeights() {
-    let maxHeight = 0;
-
-    // Force every page visible+laid out for measurement unconditionally —
-    // checking getComputedStyle() to decide which pages are already hidden
-    // is unreliable here, since the CSS that hides inactive pages lives in
-    // a separate stylesheet (carousel-dotted-show-arrow-dots.css) whose load
-    // timing relative to this code isn't guaranteed. visibility (not
-    // position/display removal from flow) keeps each page in its normal
-    // grid cell so its measured width — and therefore its aspect-ratio
-    // image height — matches how it will actually render. This also makes
-    // each page's (loading="lazy") images actually start loading, since
-    // browsers don't load lazy images that are still display:none.
-    slides.forEach((slideEl) => {
-      slideEl.style.visibility = 'hidden';
-      slideEl.style.display = 'flex';
-    });
-
-    // Wait for every fund photo AND management-company logo across every
-    // page to finish loading before measuring. The logo image has no fixed
-    // size in CSS, so its real height is unknown until it loads — measuring
-    // before it does under-counts that card's true height, and since the
-    // final min-height is a floor (not a cap), that card then grows taller
-    // than its siblings later, on its own, once the logo actually loads.
-    const imgs = slides.flatMap((slideEl) => [...slideEl.querySelectorAll('img')]);
-    await Promise.all(imgs.map(waitForImage));
-
-    slides.forEach((slideEl) => {
-      slideEl.querySelectorAll('.cards-list-item').forEach((item) => {
-        item.style.removeProperty('height');
-        item.style.removeProperty('min-height');
-        maxHeight = Math.max(maxHeight, item.getBoundingClientRect().height);
-      });
-    });
-
-    slides.forEach((slideEl) => {
-      slideEl.style.removeProperty('visibility');
-      slideEl.style.removeProperty('display');
-    });
-
-    if (maxHeight > 0) {
-      slides.forEach((slideEl) => {
-        slideEl.querySelectorAll('.cards-list-item').forEach((item) => {
-          // min-height (not height): if this measurement ever comes up short for
-          // some reason, the card's own content still pushes it taller instead
-          // of being clipped/overflowing past a hard height.
-          item.style.minHeight = `${maxHeight}px`;
+    let activeSlides = [];
+    function measureAndApply() {
+      let max = 0;
+      activeSlides = Array.from(document.querySelectorAll('.mf-fund-cards-item'));
+      activeSlides.forEach((sl) => { sl.style.display = 'flex'; });
+      try {
+        activeSlides.forEach((sl) => {
+          sl.querySelectorAll('.cards-list-item').forEach((item) => {
+            item.style.removeProperty('min-height');
+            max = Math.max(max, item.getBoundingClientRect().height);
+          });
         });
-      });
+      } finally {
+        activeSlides.forEach((sl) => { sl.style.removeProperty('display'); });
+      }
+      if (max > 0) {
+        activeSlides.forEach((sl) => {
+          sl.querySelectorAll('.cards-list-item').forEach((item) => {
+            item.style.minHeight = `${max}px`;
+          });
+        });
+      }
+    }
+
+    measureAndApply();
+    activeSlides.forEach((sl) => { sl.style.display = 'flex'; });
+    const imgs = activeSlides.flatMap((sl) => [...sl.querySelectorAll('img')]);
+    try {
+      await Promise.all(imgs.map(waitForImage));
+      measureAndApply();
+    } finally {
+      activeSlides.forEach((sl) => { sl.style.removeProperty('display'); });
     }
   }
 

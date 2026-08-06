@@ -189,19 +189,24 @@ function setupLoginPanelEvents(loginBlock, options = {}) {
  */
 function setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, getIsNavItemActive) {
   let topNavHeight = 0;
+  let lastScrollY = window.scrollY;
 
   const getTopNavHeight = () => {
     if (topNavBlock) {
       topNavHeight = topNavBlock.getBoundingClientRect().height;
+      mainNavDesktop.style.setProperty('--main-nav-top', `${topNavHeight}px`);
     }
     return topNavHeight;
   };
 
-  setTimeout(getTopNavHeight, 100);
+  getTopNavHeight();
 
   const handleDesktopScroll = () => {
     const currentScrollY = window.scrollY;
     if (topNavHeight === 0) getTopNavHeight();
+
+    const isScrollingUp = currentScrollY < lastScrollY;
+    lastScrollY = currentScrollY;
 
     if (currentScrollY >= topNavHeight && topNavHeight > 0) {
       if (topNavBlock) topNavBlock.classList.add('is-hidden');
@@ -210,8 +215,13 @@ function setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, getIsNavItemAct
       if (topNavBlock) topNavBlock.classList.remove('is-hidden');
       mainNavDesktop.classList.remove('is-scrolled');
     }
+    if (isScrollingUp) {
+      if (topNavBlock) topNavBlock.classList.remove('is-hidden');
+    }
   };
-
+  if (mainNavDesktop) {
+    handleDesktopScroll();
+  }
   window.addEventListener('scroll', handleDesktopScroll, { passive: true });
 }
 
@@ -237,6 +247,7 @@ function setupDesktopMegamenuBehavior(
   const getTopNavHeight = () => {
     if (topNavBlock) {
       topNavHeight = topNavBlock.getBoundingClientRect().height;
+      mainNavDesktop.style.setProperty('--main-nav-top', `${topNavHeight}px`);
     }
     return topNavHeight;
   };
@@ -254,6 +265,7 @@ function setupDesktopMegamenuBehavior(
     releaseHeaderNavBackdrop(headerNav, NAV_BACKDROP_MEGAMENU);
     if (window.scrollY <= topNavHeight) {
       mainNavDesktop.classList.remove('is-scrolled');
+      if (topNavBlock) topNavBlock.classList.remove('is-hidden');
     }
   };
 
@@ -276,10 +288,13 @@ function setupDesktopMegamenuBehavior(
         navBlock.classList.add('is-active');
         desktopState.isNavItemActive = true;
         mainNavDesktop.classList.add('is-scrolled');
+        if (topNavBlock) topNavBlock.classList.add('is-hidden');
         acquireHeaderNavBackdrop(headerNav, NAV_BACKDROP_MEGAMENU);
-        slideDown(megamenuPanel, { duration: 1000 });
+        slideDown(megamenuPanel);
       } else {
-        slideUp(megamenuPanel, { duration: 200, onComplete: () => closeMegamenu() });
+        closeMegamenu();
+        slideUp(megamenuPanel);
+        window.scrollTo({ top: 0 });
       }
     });
 
@@ -301,8 +316,13 @@ function setupDesktopMegamenuBehavior(
         }
       });
 
-      navTrigger.setAttribute('aria-expanded', !isExpanded);
-      megamenu.setAttribute('aria-hidden', isExpanded);
+      if (!isExpanded) {
+        navTrigger.setAttribute('aria-expanded', 'true');
+        megamenu.setAttribute('aria-hidden', 'false');
+      } else {
+        navTrigger.setAttribute('aria-expanded', 'false');
+        megamenu.setAttribute('aria-hidden', 'true');
+      }
     });
 
     document.addEventListener('click', (e) => {
@@ -313,9 +333,10 @@ function setupDesktopMegamenuBehavior(
     });
 
     navTrigger.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        navTrigger.setAttribute('aria-expanded', 'false');
-        megamenu.setAttribute('aria-hidden', 'true');
+      if (e.key === 'Escape' && navBlock.classList.contains('is-active')) {
+        closeMegamenu();
+        slideUp(megamenu);
+        window.scrollTo({ top: 0 });
         navTrigger.focus();
       }
     });
@@ -437,7 +458,9 @@ function buildDesktopLayout(header, blocks) {
   setCurrentPageNavHighlight(mainNavBlocks);
 
   const desktopState = { isNavItemActive: false };
-  setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, () => desktopState.isNavItemActive);
+  document.addEventListener('header-decorated', () => {
+    setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, () => desktopState.isNavItemActive);
+  });
   const closeMegamenu = setupDesktopMegamenuBehavior(
     mainNavDesktop,
     mainNavBlocks,
@@ -720,6 +743,7 @@ export default async function decorate(block) {
   applyLayout(header, fragmentTemplate, isDesktop.matches);
 
   block.append(header);
+  document.dispatchEvent(new CustomEvent('header-decorated'));
 
   const main = document.querySelector('main');
   const headerSection = document.querySelector('header');
@@ -735,5 +759,6 @@ export default async function decorate(block) {
 
   isDesktop.addEventListener('change', () => {
     applyLayout(header, fragmentTemplate, isDesktop.matches);
+    document.dispatchEvent(new CustomEvent('header-decorated'));
   });
 }

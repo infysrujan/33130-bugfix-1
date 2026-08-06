@@ -31,15 +31,6 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function isDateRangeOver3Years(fromIso, toIso) {
-  if (!fromIso || !toIso) return false;
-  const from = new Date(fromIso);
-  const to = new Date(toIso);
-  const diffMs = to.getTime() - from.getTime();
-  const diffDays = diffMs / (1000 * 60 * 60 * 24);
-  return diffDays >= 365.25 * 3;
-}
-
 function buildGraphTitle(template, currName, currFamily, fromIso, toIso) {
   const fromParsed = parseIsoDate(fromIso);
   const toParsed = parseIsoDate(toIso);
@@ -415,12 +406,6 @@ export default async function decorate(block) {
     const toParsed = parseIsoDate(state.to.selectedDate);
     if (!fromParsed || !toParsed) return;
 
-    if (isDateRangeOver3Years(state.from.selectedDate, state.to.selectedDate)) {
-      state.error = placeholders.datepickerYearValidation || 'Date range should be between 3 years';
-      state.chartData = [];
-      return;
-    }
-
     state.error = '';
     state.loading = true;
 
@@ -436,7 +421,7 @@ export default async function decorate(block) {
         state.selectedFamily,
         language,
       );
-      state.chartData = normalizeChartData(raw);
+      state.chartData = normalizeChartData(raw, language);
     } finally {
       state.loading = false;
     }
@@ -453,11 +438,7 @@ export default async function decorate(block) {
       state.chartInstance = null;
     }
 
-    // API returns MM/DD/YYYY — reformat to DD/MM/YYYY for display
-    const labels = state.chartData.map((d) => {
-      const parts = d.date.split('/');
-      return parts.length === 3 ? `${parts[1]}/${parts[0]}/${parts[2]}` : d.date;
-    });
+    const labels = state.chartData.map((d) => d.date);
     const buyingData = state.chartData.map((d) => d.buyingRate);
     const sellingData = state.chartData.map((d) => d.sellingRate);
 
@@ -561,9 +542,9 @@ export default async function decorate(block) {
             },
             ticks: {
               maxRotation: 45,
-              minRotation: 45,
+              minRotation: 0,
               autoSkip: true,
-              maxTicksLimit: 6,
+              autoSkipPadding: 10,
               font: { size: 13, weight: '700' },
               color: '#000',
             },
@@ -912,7 +893,9 @@ export default async function decorate(block) {
         getEnabledDays(endpoints, year, month).catch(() => []),
       ]);
 
-      state.families = Array.isArray(families) ? families : [];
+      const EXCLUDED_FAMILIES = ['MMK', 'INR', 'LAK'];
+      state.families = (Array.isArray(families) ? families : [])
+        .filter((f) => !EXCLUDED_FAMILIES.includes(f.Family));
       state.selectedFamily = state.families[0]?.Family || 'USD1';
 
       // Cache enabled days for current month in both pickers

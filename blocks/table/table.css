@@ -47,6 +47,10 @@
   color: inherit;
 }
 
+.table td :is(p, ul) {
+  text-wrap: auto;
+}
+
 /* --------------------------------------------------------------------------
    BORDER TYPE VARIANTS (specificity 0,2,3)
    -------------------------------------------------------------------------- */
@@ -104,6 +108,12 @@
   background: transparent;
 }
 
+.table table tr.header-row td :is(strong, b) {
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
+}
+
 /* --------------------------------------------------------------------------
    BODY CELLS — all rows not in header (specificity 0,2,3)
    -------------------------------------------------------------------------- */
@@ -122,6 +132,17 @@
    -------------------------------------------------------------------------- */
 .table table.striped tr:nth-child(even) {
   background: var(--bbl-color-grey-10);
+}
+
+/* Size the first column to fit its own content on one line instead of
+   letting auto table-layout hand it a proportional (and often wider or
+   narrower than needed) share of the available width — remaining space
+   goes to the other columns, which can still wrap normally. white-space:
+   nowrap alone is sufficient: it makes this column's minimum content width
+   equal its full unwrapped width, so it never receives any of the extra
+   space distributed to wrappable columns — no explicit width needed. */
+.table table tr td:first-child {
+  /* white-space: nowrap; */
 }
 
 /* --------------------------------------------------------------------------

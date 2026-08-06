@@ -1,13 +1,3 @@
-/* ==========================================================================
-   MF Fund Cards Carousel Slide
-   Mirrors mf-results.css card styles, scoped to the carousel slide context.
-   Slide wrapper:  .mf-fund-cards-item
-   Card block:     .card-list.mf-card-list
-   ========================================================================== */
-
-/* ── No results message ───────────────────────────────────────────────────── */
-
-/* When no results: collapse the grid, hide arrows and dots */
 .carousel-dotted.show-arrows-dots:has(.mf-fund-cards-item.has-no-results) {
   display: block;
 }
@@ -20,7 +10,6 @@
   display: none;
 }
 
-/* Center the no-results text */
 .carousel-dotted.show-arrows-dots .mf-fund-cards-item.has-no-results {
   display: flex;
   justify-content: center;
@@ -36,11 +25,9 @@
   color: var(--bbl-color-grey-70);
 }
 
-/* ── Description (notes/disclaimer below carousel) ───────────────────────── */
-
 .mf-fund-cards-description {
-  margin-top: var(--bbl-space-1000);
-  max-width: 56.25rem; /* 900px */
+  margin: var(--bbl-space-300) auto 0 auto;
+  max-width: 56.25rem;
   padding: 0 var(--bbl-space-300);
   font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
@@ -50,7 +37,7 @@
 }
 
 .mf-fund-cards-description p {
-  margin: 0 0 10px;
+  margin: 0 0 0.625rem;
   font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
   line-height: 1.375;
@@ -60,19 +47,17 @@
 .mf-fund-cards-description ul {
   list-style: disc;
   padding-left: 0;
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem;
 }
 
 .mf-fund-cards-description li {
-  margin-bottom: 10px ;
+  margin-bottom: 0.625rem;
   font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
   line-height: 1.375;
   color: var(--bbl-color-grey-85);
-  margin-left: 20px;
+  margin-left: var(--bbl-space-250);
 }
-
-/* ── Mobile: hide scrollbar on the cards-list ─────────────────────────────── */
 
 .mf-fund-cards-item .cards-list.scrollable {
   scrollbar-width: none;
@@ -82,21 +67,11 @@
   display: none;
 }
 
-/* ── Equal-height cards ────────────────────────────────────────────────────
-   card-list.css already sets align-items: stretch on .cards-list.scrollable,
-   but that only stretches each .cards-list-item's outer box — it doesn't by
-   itself guarantee every nested flex child fills that stretched height in
-   every browser/layout combination. Pin it down explicitly here so all 3
-   cards in a row are always the same height and the Read More/Compare
-   buttons line up, regardless of how long each fund's description is. */
 .card-list.mf-card-list .cards-list.scrollable {
   align-items: stretch;
 }
 
 .card-list.mf-card-list .cards-list-item {
-  /* Reasonable default so cards look consistent before the JS height-
-     equalization pass (build-mf-fund-cards-slide.js) runs and raises this
-     further via inline min-height where actual content needs more room. */
   height: auto;
   min-height: 28rem;
 }
@@ -105,10 +80,7 @@
   height: 100%;
 }
 
-/* ── Image area (image layout = "default") ────────────────────────────────── */
-
 .card-list.mf-card-list .cards-list-image {
-  /* Matches the live site's .thumb dimensions (272 x 195px) */
   aspect-ratio: 272 / 195;
   height: auto;
   max-height: none;
@@ -125,13 +97,6 @@
   display: block;
 }
 
-/* ── Logo in remark area ──────────────────────────────────────────────────── */
-
-/* .cards-list-content is a flex column (card-list.css) that stretches to fill
-   the card, with the button row pinned to the bottom via its own margin-top:
-   auto — pushing the logo down the same way keeps it directly above the
-   buttons regardless of how long the description is, instead of sitting
-   right under the description text. */
 .card-list.mf-card-list .cards-list-remark {
   margin-top: auto;
 }
@@ -140,8 +105,6 @@
   width: auto;
   height: auto;
 }
-
-/* ── Card title h3 ────────────────────────────────────────────────────────── */
 
 .card-list.mf-card-list .cards-list-title h3 {
   font-size: 1.5rem;
@@ -156,7 +119,6 @@
   font-family: var(--bbl-font-family-medium);
 }
 
-/* Underline decoration (matches live .line::before) */
 .card-list.mf-card-list .cards-list-title h3::before {
   content: "";
   position: absolute;
@@ -167,8 +129,6 @@
   background: var(--bbl-color-grey-60);
 }
 
-/* ── Card description ─────────────────────────────────────────────────────── */
-
 .card-list.mf-card-list .cards-list-description p {
   font-size: 1rem;
   line-height: 1.375;
@@ -177,14 +137,10 @@
   font-family: var(--bbl-font-family-primary);
 }
 
-/* ── Card content area ────────────────────────────────────────────────────── */
-
 .card-list.mf-card-list .cards-list-content {
   padding: 1.25rem;
   flex-grow: 1;
 }
-
-/* ── Button area: stack Read More above Compare ───────────────────────────── */
 
 .card-list.mf-card-list .cards-list-inner .cards-list-button {
   display: flex;
@@ -204,11 +160,9 @@
   text-decoration: none;
 }
 
-/* ── Compare button — sits inside .cards-list-button below Read More ──────── */
-
 .card-list.mf-card-list .mfr-compare-btn {
   margin-top: 0.625rem;
-} 
+}
 
 
 .card-list.mf-card-list .mfr-compare-btn.is-comparing {
@@ -219,7 +173,42 @@
   pointer-events: none;
 }
 
-/* ── Tablet & desktop: 3-column wrap grid ─────────────────────────────────── */
+.card-list.mf-card-list .cards-list.single-card {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.card-list.mf-card-list .cards-list.single-card .cards-list-item {
+  flex: 0 0 100%;
+  width: 100%;
+}
+
+.carousel-dotted-container:has(.all-mf-fund-cards) .carousel-dotted-wrapper {
+  overflow: hidden;
+  margin-inline: -0.625rem;
+}
+
+.carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-track-viewport {
+  overflow: hidden;
+  width: calc(100% + (2 * var(--bbl-space-section-xs)));
+  margin-inline: calc(-1 * var(--bbl-space-section-xs));
+}
+
+.carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-track-wrapper {
+  display: flex;
+  overflow: visible;
+  width: 100%;
+  gap: var(--bbl-space-250);
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.carousel-dotted.show-arrows-dots.all-mf-fund-cards .mf-fund-cards-item {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 70%;
+}
 
 @media (width > 47.5rem) {
   .card-list.mf-card-list .cards-list.scrollable.cards-3 {
@@ -235,9 +224,45 @@
     scroll-snap-align: none;
     max-width: 17.1875rem;
   }
+
+  .card-list.mf-card-list .cards-list.scrollable.cards-3.single-card .cards-list-item {
+    margin-bottom: var(--bbl-space-250);
+  }
+
+  .carousel-dotted-container:has(.all-mf-fund-cards) .carousel-dotted-wrapper {
+    overflow: unset;
+    margin-inline: 0;
+  }
+
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow {
+    display: none;
+  }
+
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-track-viewport {
+    width: 100%;
+    margin-inline: 0;
+    grid-column: 1 / 4;
+    grid-row: 1;
+  }
+
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-track-wrapper {
+    gap: 0;
+  }
+
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .mf-fund-cards-item {
+    flex: 0 0 100%;
+  }
+
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .mf-fund-cards-item .card-list {
+    width: 100%;
+  }
 }
 
 @media (width > 64rem) {
+  .mf-fund-cards-description {
+    margin: var(--bbl-space-400) auto 0 auto;
+  }
+
   .card-list.mf-card-list .cards-list.scrollable.cards-3 {
     gap: 0 var(--bbl-space-500);
     margin-right: calc(-1 * var(--bbl-space-250));
@@ -249,50 +274,16 @@
     margin-bottom: var(--bbl-space-500);
     max-width: 17.1875rem;
   }
-}
 
-/* ── Single Card alignment overrides ─────────────────────────────────────── */
-
-.card-list.mf-card-list .cards-list.single-card {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.card-list.mf-card-list .cards-list.single-card .cards-list-item {
-  flex: 0 0 100%;
-  width: 100%;
-  max-width: 16.875rem;
-  margin: 0 auto var(--bbl-space-250) auto;
-}
-
-@media (width > 47.5rem) {
-  .card-list.mf-card-list .cards-list.scrollable.cards-3.single-card .cards-list-item {
-    margin-bottom: var(--bbl-space-250);
-  }
-}
-
-@media (width > 64rem) {
   .card-list.mf-card-list .cards-list.scrollable.cards-3.single-card .cards-list-item {
     margin-bottom: var(--bbl-space-500);
   }
-}
 
-/* ── Carousel Grid and Flex positioning overrides ────────────────────────── */
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow {
+    display: flex;
+  }
 
-@media (width > 47.5rem) {
-  /* Place the slide in Column 2 of the carousel grid */
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item.mf-fund-cards-item {
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-track-viewport {
     grid-column: 2;
-  }
-
-  /* If there are no navigation arrows (only one slide), let it span the full grid */
-  .carousel-dotted.show-arrows-dots:not(:has(.carousel-arrow)) .carousel-dotted-item.mf-fund-cards-item {
-    grid-column: 1 / -1;
-  }
-
-  /* Ensure the card list block inside the flex-row slide spans 100% width */
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item.mf-fund-cards-item .card-list {
-    width: 100%;
   }
 }

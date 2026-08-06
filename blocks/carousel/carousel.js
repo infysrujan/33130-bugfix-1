@@ -1,6 +1,6 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
-import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
+import { applyLinkTarget, decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 
 const DESKTOP_BREAKPOINT = 1025;
 
@@ -85,6 +85,7 @@ function createCarouselCard(cardElement, doc) {
   const eyebrowText = eyebrowDiv?.textContent.trim();
   const titleText = cardTitleDiv?.textContent.trim();
   const descriptionHTML = cardDescriptionDiv?.innerHTML || '';
+  if (buttonContainerDiv) decorateButtonsV1(buttonContainerDiv);
   const buttonLink = buttonContainerDiv?.querySelector('a');
 
   const contentHTML = `

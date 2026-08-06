@@ -61,12 +61,16 @@ export default function decorate(block) {
     return;
   }
 
+  // Add the `content` class to the block wrapper so it picks up the shared
+  // content-section styling (matches the markup used elsewhere).
+  block.parentElement?.classList.add('content');
+
   // Clear the block
   block.innerHTML = '';
 
   // Create inner container wrapper for layout consistency
   const innerContainer = document.createElement('div');
-  innerContainer.className = 'warning-card-inner-container content';
+  innerContainer.className = 'warning-card-inner-container';
 
   // Add icon if present
   if (icon) {

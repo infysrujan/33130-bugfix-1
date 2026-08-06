@@ -1,6 +1,6 @@
 .breadcrumb {
   overflow: hidden;
-  padding: 1.3125rem 1rem 1.1875rem;
+  padding: 1.3125rem 1rem 1.1875rem 0;
   margin: 0 auto;
   box-sizing: border-box;
   background-color: var(--bbl-bg-primary);
@@ -12,9 +12,8 @@
 
 .breadcrumb ol {
   list-style: none;
-  margin: 0 0 var(--bbl-space-250);
   padding: var(--bbl-space-150) 0;
-  height: 3.125rem;
+  margin-top: 0;
 }
 
 .breadcrumb ol>li {
@@ -59,7 +58,7 @@
 }
 
 .breadcrumb+.social-icons-wrapper {
-  padding: 0 var(--bbl-space-container-xs) var(--bbl-space-inline-md);
+  padding: 0 var(--bbl-space-container-xs) 1.1875rem 0;
   margin: 0 auto;
   max-width: 77.5rem;
   box-sizing: border-box;
@@ -128,9 +127,8 @@ body.mobile-app-view .breadcrumb {
   }
 
   .breadcrumb ol {
-    float: none;
-    margin-bottom: 0;
-    height: auto;
+    float: inline-start;
+    margin: 0 auto;
     display: block;
   }
 
@@ -155,6 +153,6 @@ body.mobile-app-view .breadcrumb {
 
 @media (width > 64rem) {
   .breadcrumb {
-    padding: var(--bbl-space-250) 0;
+    padding: 1.3125rem 0 1.1875rem;
   }
 }

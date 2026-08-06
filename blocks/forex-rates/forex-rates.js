@@ -155,7 +155,7 @@ function printForexRates(block) {
 
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }
-    body { font-family: sans-serif; margin: 0; padding: 0; }
+    body { font-family: var(--bbl-font-family-primary); margin: 0; padding: 0; }
     /* Print background colors (title underline, table header shading) — off by default */
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
@@ -197,7 +197,7 @@ function printForexRates(block) {
       min-width: 0; width: 100%; table-layout: fixed; border-collapse: collapse;
       border: 0.0625rem solid var(--bbl-color-black); font-size: 0.5rem; color: #555;
     }
-    .forex-rates-table thead tr { height: auto; background: #dce6f1; }
+    .forex-rates-table thead tr { height: auto; }
     .forex-rates-table thead th {
       padding-block: var(--bbl-space-050); padding-inline: 20px; font-size: 0.5rem; font-weight: 700;
       white-space: normal; line-height: 1.2; color: var(--bbl-color-black);

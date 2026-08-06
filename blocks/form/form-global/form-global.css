@@ -376,30 +376,7 @@ main .section.form-container .form form .plain-text-wrapper.field-text {
 
 /* Custom Form Button Sizing & Styles — panel + wrapper classes only */
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-width: 9.6875rem;
-  width: auto;
-  max-width: fit-content;
-  height: 2.75rem;
-  margin: 0;
-  padding: 0 var(--bbl-space-250);
-  box-shadow: none;
-  border-radius: 0.4375rem;
-  gap: var(--bbl-space-100);
-  font-size: var(--bbl-font-size-h4-mobile);
-  font-weight: var(--bbl-font-weight-regular);
-  line-height: var(--bbl-line-height-h4-mobile);
-  cursor: pointer;
-  appearance: none;
-}
-
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .submit-wrapper .button,
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.primary {
-  border: 0.0417rem solid transparent;
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button:disabled {
@@ -410,11 +387,12 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   pointer-events: none;
 }
 
+/* main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled),
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled) {
   border: 0.0417rem solid var(--bbl-color-active-blue);
   background-color: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
-}
+} */
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled):hover,
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled):hover {

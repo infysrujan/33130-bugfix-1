@@ -143,6 +143,11 @@
       }
     }
 
+     & .form-review-2col fieldset.panel-wrapper.field-button-panel {
+      margin-top: 1.25rem;
+      gap: 1.875rem;
+    }
+
     @media (width > 47.5rem) {
       & .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
         gap: var(--form-field-gap) 1.875rem;

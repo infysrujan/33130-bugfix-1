@@ -45,10 +45,10 @@ function readBlockConfig(block) {
 
   return {
     link,
-    linkText: readText(rows[1]) || 'Compare',
-    linkTitle: readText(rows[2]),
-    linkType: readText(rows[3]) || 'primary',
-    targetLink: readText(rows[4]) === 'true',
+    linkText: readText(rows[0]) || anchor?.textContent?.trim() || 'Compare',
+    linkTitle: readText(rows[1]) || anchor?.title?.trim() || '',
+    linkType: readText(rows[2]) || anchor?.className?.trim() || '',
+    targetLink: readText(rows[3]) === 'true' || anchor?.target === '_blank',
   };
 }
 
@@ -73,7 +73,7 @@ function buildCtaButton(linkText, linkType) {
 
 function buildComparatorDOM(block, warningText, linkText, linkType) {
   const innerContainer = document.createElement('div');
-  innerContainer.className = 'inner-container';
+  innerContainer.className = 'inner-container content';
 
   const errorDiv = buildErrorDiv(warningText);
   const compareGroup = document.createElement('div');

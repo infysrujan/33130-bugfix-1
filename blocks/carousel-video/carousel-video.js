@@ -12,6 +12,8 @@ function getYouTubeId(url) {
 }
 
 export default async function decorate(block) {
+  block.closest('.carousel-video-wrapper')?.classList.add('content');
+
   // Tell UE this block is a container that accepts carousel-video-item children.
   if (document.documentElement.classList.contains('adobe-ue-edit')) {
     block.setAttribute('data-aue-type', 'container');
@@ -79,7 +81,9 @@ export default async function decorate(block) {
   // Visibility is controlled by the .active class on each iframe.
   const iframeEls = items.map(({ id }, i) => {
     const iframeEl = document.createElement('iframe');
-    iframeEl.src = `${embedBaseUrl}${id}`;
+    const src = new URL(`${embedBaseUrl}${id}`);
+    src.searchParams.set('enablejsapi', '1');
+    iframeEl.src = src.toString();
     iframeEl.title = playerTitle;
     iframeEl.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
     iframeEl.setAttribute('allowfullscreen', '');
@@ -170,9 +174,18 @@ export default async function decorate(block) {
   block.appendChild(dotsEl);
 
   // ── State helpers ─────────────────────────────────────────────────────────
+  // Pause any iframe that isn't the active one so only one video ever plays at a time.
+  function pauseIframe(iframeEl) {
+    iframeEl.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
+  }
+
   function setActive(index) {
     activeIndex = index;
-    iframeEls.forEach((f, i) => f.classList.toggle('active', i === index));
+    iframeEls.forEach((f, i) => {
+      const isActive = i === index;
+      f.classList.toggle('active', isActive);
+      if (!isActive) pauseIframe(f);
+    });
     thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
   }

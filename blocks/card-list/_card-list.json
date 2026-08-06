@@ -308,8 +308,12 @@
           "name": "imageLayout",
           "label": "Image Layout",
           "valueType": "string",
-          "value": "default",
+          "value": "none",
           "options": [
+            {
+              "name": "None",
+              "value": "none"
+            },
             {
               "name": "Full",
               "value": "full"
