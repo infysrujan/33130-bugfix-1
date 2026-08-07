@@ -1,11 +1,186 @@
-.contact-us main .section.form-container.custom-forms .form form {
-  .modal-content>div.plain-text-wrapper {
-    margin: 1.25rem 0;
-    
-    & p {
-      font-size: var(--bbl-form-font-size-15);
-      font-weight: var(--bbl-font-weight-regular);
-      line-height: var(--bbl-form-line-height-21);
+.contact-us main .section.form-container.custom-forms .form form .field-subject>legend {
+    font-family: var(--bbl-font-family-primary);
+    font-weight: var(--bbl-body-b1-weight);
+    font-size: 1.25rem;
+    text-decoration: underline;
+    padding: 0.625rem 0 0;
+}
+
+.contact-us main .section.form-container.custom-forms .form form .field-title h2 {
+    text-align: center;
+    color: var(--bbl-color-black);
+    font-family: var(--bbl-font-family-medium);
+    font-weight: var(--bbl-font-weight-regular);
+    font-size: 1.4rem;
+    line-height: 2.875rem;
+}
+
+.contact-us main .section.form-container.custom-forms .form form .field-invalid :is(.field-validation-error, .field-description) {
+    padding-left: 1rem;
+    margin-top: 0.3125rem;
+}
+
+.contact-us main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper .field-wrapper.multiline-wrapper.field-description textarea {
+    resize: none;
+    margin: 0;
+    padding: 0.625rem 1.25rem;
+    height: 12.8rem;
+}
+
+.contact-us main .section.form-container.custom-forms .form form .field-productservices1-exclude select,
+.contact-us main .section.form-container.custom-forms .form form .field-categorydropdown-exclude select,
+.contact-us main .section.form-container.custom-forms .form form .field-categorydropdown2-exclude select {
+    font-size: 0.95rem;
+    font-weight: var(--bbl-font-weight-medium);
+    font-family: var(--bbl-font-family-medium);
+    color: var(--bbl-color-black);
+    margin: 0;
+}
+
+.contact-us main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel {
+    row-gap: 0.5rem;
+    margin: 0 var(--form-field-gap) 0.625rem;
+    width: calc(100% - 2 * var(--form-field-gap));
+}
+
+.contact-us main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject {
+    gap: 0;
+    margin-left: var(--form-field-gap);
+    margin-right: var(--form-field-gap);
+    width: calc(100% - 2 * var(--form-field-gap));
+}
+
+.contact-us main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-info-pannel.field-wrapper>legend {
+    background-color: transparent;
+    padding: 0.625rem 1rem 0;
+    margin: 0;
+    text-decoration: underline;
+    color: var(--bbl-color-grey-85);
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: var(--bbl-font-family-primary);
+}
+
+.contact-us main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) {
+    margin: var(--bbl-space-250) var(--form-field-gap) 0.625rem;
+    width: calc(100% - 2 * var(--form-field-gap));
+}
+
+.contact-us main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject>legend.field-label {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--bbl-color-grey-85);
+    padding: 0.625rem 0 0 1rem;
+    font-family: var(--bbl-font-family-primary);
+}
+
+.contact-us main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>legend.field-label,
+.contact-us main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel)>legend.field-label {
+    width: max-content;
+    font-size: 1rem;
+    padding: 0.3125rem 0.625rem;
+    line-height: var(--bbl-body-b3-line-height);
+    font-weight: var(--bbl-font-weight-regular);
+}
+
+.contact-us main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel :is(input, select) {
+    font-family: var(--bbl-font-family-medium);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--bbl-color-black);
+}
+
+.contact-us main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province-exclude, .field-branch-exclude) {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    grid-column: span 12;
+}
+
+.contact-us main .section.form-container.custom-forms .form form :is(.field-province-exclude, .field-branch-exclude) select {
+    box-sizing: border-box;
+    width: 100%;
+    height: 2.6389rem;
+    margin: 0;
+    font-family: var(--bbl-font-family-medium);
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--bbl-color-black);
+}
+
+.contact-us main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province-exclude, .field-branch-exclude) :is(.field-validation-error, .field-description) {
+    position: absolute;
+    top: 2.8125rem;
+    left: 0;
+    z-index: 3;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+.contact-us main .section.form-container.custom-forms .form form .field-wrapper:not(.field-invalid) :is(input:not([type='radio'], [type='checkbox']), textarea) {
+    margin-bottom: 0.3125rem;
+}
+
+.contact-us main .section.form-container.custom-forms .form form .field-wrapper.field-invalid :is(input:not([type='radio'], [type='checkbox']), textarea) {
+    margin-bottom: 0;
+}
+
+.contact-us main .section.form-container.custom-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
+    max-width: 7.75rem;
+}
+
+.contact-us main .section.form-container.custom-forms .form form .field-note p {
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.2891rem;
+}
+
+.contact-us main .section.form-container.custom-forms .form form .field-title+.plain-text-wrapper p {
+    color: var(--bbl-color-grey-85);
+}
+
+.contact-us main .section.form-container.custom-forms .form form :is(.field-note, .tnc-text-decoration)>p>p:last-child {
+    margin-top: 2rem;
+}
+
+.contact-us main .section.form-container.custom-forms .form form .plain-text-wrapper:not(.tnc-text-decoration, .field-note)>p>p:last-child {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.contact-us main .section.form-container.custom-forms .form form input::placeholder {
+    color: var(--bbl-color-grey-40);
+}
+
+.contact-us main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) input[type='checkbox'] {
+    top: 0;
+}
+
+.contact-us main .section.form-container.custom-forms .form form .field-button-panel {
+    margin-bottom: 2rem;
+}
+
+.contact-us main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel> :is(.field-hours-exclude, .field-minutes-exclude) {
+    grid-column: span 6;
+}
+
+@media(width > 47.5rem) {
+    .contact-us main .section.form-container.custom-forms .form form :is(.field-province-exclude, .field-branch-exclude) {
+        grid-column: span 6;
     }
-  }
+
+    .contact-us main .section.form-container.custom-forms .form form .field-title h2 {
+        font-size: var(--bbl-form-font-size-48);
+    }
+
+    .contact-us main .section.form-container.custom-forms .form form .field-productservices1-exclude select,
+    .contact-us main .section.form-container.custom-forms .form form .field-categorydropdown-exclude select,
+    .contact-us main .section.form-container.custom-forms .form form .field-categorydropdown2-exclude select {
+        margin: 0.625rem 0 0;
+    }
+
+    .contact-us main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel> :is(.field-hours-exclude, .field-minutes-exclude) {
+        grid-column: span 3;
+    }
 }
