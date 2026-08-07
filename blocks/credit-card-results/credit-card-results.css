@@ -11,6 +11,10 @@
   display: none;
 }
 
+.credit-card .cards-list:is(.scrollable, .carousel) .cards-list-item {
+  flex: 0 0 280px;
+}
+
 /* ── Block wrapper ──────────────────────────────────────────────────────────── */
 
 .ccs-results {
@@ -253,22 +257,16 @@
     display: none;
   }
 
-  /* display: grid guarantees exactly 3 columns regardless of container width
-     (flex just fits as many fixed-width items as the space allows, which let
-     a 4th card sneak onto the row on wider viewports). Cards are narrower
-     than their desktop size (13.5rem vs 15.5rem) so all 3 fit inside a 768px
-     tablet viewport once the .section wrapper's own padding is accounted
-     for, with no cropping or scroll. */
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     display: grid;
-    grid-template-columns: repeat(3, 13.5rem);
-    justify-content: center;
-    gap: var(--bbl-space-150);
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: stretch;
     overflow: visible;
     scroll-snap-type: none;
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
+    width: 100%;
     scroll-snap-align: none;
   }
 
@@ -276,12 +274,8 @@
     min-height: 27rem;
   }
 
-  /* Matches the card grid's rendered width (3 × 13.5rem cards + 2 × gap) so
-     the disclaimer's left edge lines up with the first card's left edge,
-     instead of spanning the full (wider) container. */
   .ccs-results-disclaimer {
-    max-width: 42rem;
-    margin-inline: auto;
+    margin-inline: 3rem;
   }
 }
 
@@ -291,7 +285,7 @@
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 {
-    grid-template-columns: repeat(3, 16.5rem);
+    justify-content: center;
     gap: var(--bbl-space-500);
   }
 
@@ -299,9 +293,9 @@
     min-height: 28rem;
   }
 
-  /* Matches the desktop grid's wider rendered width (3 × 16.5rem + 2 × gap). */
   .ccs-results-disclaimer {
     max-width: 54.5rem;
+    margin-inline: auto;
   }
 
   .card-list.credit-card .cards-list-image.cards-list-image-x-small img {

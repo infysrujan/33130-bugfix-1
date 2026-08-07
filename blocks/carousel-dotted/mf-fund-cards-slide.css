@@ -26,7 +26,7 @@
 }
 
 .mf-fund-cards-description {
-  margin-top: var(--bbl-space-1000);
+  margin: var(--bbl-space-300) auto 0 auto;
   max-width: 56.25rem;
   padding: 0 var(--bbl-space-300);
   font-family: var(--bbl-font-family-primary);
@@ -259,6 +259,10 @@
 }
 
 @media (width > 64rem) {
+  .mf-fund-cards-description {
+    margin: var(--bbl-space-400) auto 0 auto;
+  }
+
   .card-list.mf-card-list .cards-list.scrollable.cards-3 {
     gap: 0 var(--bbl-space-500);
     margin-right: calc(-1 * var(--bbl-space-250));

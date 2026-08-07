@@ -62,6 +62,10 @@
   box-shadow: 0 0 0.4375rem var(--bbl-color-white);
 }
 
+.search-reports-overlay .sr-close-btn:focus-visible {
+  outline: none;
+}
+
 .search-reports-overlay .sr-close-btn .icon,
 .search-reports-overlay .sr-close-btn img {
   color: var(--bbl-color-white);
@@ -248,6 +252,6 @@
 
 @media (width > 64rem) {
   .search-reports-overlay .sr-header {
-    padding: var(--bbl-space-200) var(--bbl-space-400);
+    padding: 1.56rem 1.87rem 1.56rem var(--bbl-space-1050);
   }
 }

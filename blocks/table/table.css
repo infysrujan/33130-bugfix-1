@@ -142,7 +142,7 @@
    equal its full unwrapped width, so it never receives any of the extra
    space distributed to wrappable columns — no explicit width needed. */
 .table table tr td:first-child {
-  white-space: nowrap;
+  /* white-space: nowrap; */
 }
 
 /* --------------------------------------------------------------------------

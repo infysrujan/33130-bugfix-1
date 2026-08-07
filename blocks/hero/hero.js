@@ -593,13 +593,17 @@ export default async function decorate(block) {
     normalizeCellContent(textCell, 'hero-banner-content-inner-text');
     const isAppCta = variant === 'simple-app-cta';
     const hasButtonLink = !isAppCta && !!linkCell?.querySelector('a[href]');
+    // Private/Wealth banking places the logo beside the content (logo left,
+    // content right) via the .hero-banner-content-inner flex layout, so the logo
+    // must be a sibling of the content group rather than nested inside it.
+    const logoInInner = variant === 'private-wealth-banking';
     const cells = [preTitleCell, headingCell, textCell, ...(hasButtonLink ? [linkCell] : [])];
     cells.forEach((cell, idx) => {
       if (!cell) return;
       while (cell.firstChild) {
         contentGroup.appendChild(cell.firstChild);
       }
-      if (idx === 0 && logoWrapper) contentGroup.appendChild(logoWrapper);
+      if (idx === 0 && logoWrapper && !logoInInner) contentGroup.appendChild(logoWrapper);
     });
 
     if (isAppCta) {
@@ -632,6 +636,7 @@ export default async function decorate(block) {
     }
     if (targetValue) applyLinkTarget(contentGroup, 'a.button-m', targetValue);
 
+    if (logoWrapper && logoInInner) contentInner.append(logoWrapper);
     contentInner.append(contentGroup);
     const content = createElement('div', 'hero-banner-content', 'content');
     content.append(contentInner);

@@ -39,8 +39,8 @@ function openSearchModal(overlay, trigger) {
   document.body.classList.add('search-reports-modal-open');
   showModal(overlay, 'search-reports-modal-visible');
   requestAnimationFrame(() => {
-    const focusable = getFocusableElements(overlay);
-    (focusable[0] || overlay).focus();
+    const closeBtn = overlay.querySelector('.sr-close-btn');
+    (closeBtn || overlay).focus();
   });
 }
 

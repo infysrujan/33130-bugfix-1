@@ -1,19 +1,18 @@
 .listing-card-grid {
+  gap: var(--bbl-space-250);
+  padding-bottom: var(--bbl-space-250);
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
 }
 
 .listing-card-grid:has(.listing-card-empty),
-.listing-card-grid:has(.top-promo-empty),
-.listing-card-grid:has(.listing-card-container:only-child) {
+.listing-card-grid:has(.top-promo-empty) {
   justify-content: center;
 }
 
 .listing-card-container {
   width: 100%;
-  margin: 0 -0.0625rem;
-  padding-bottom: var(--bbl-space-250);
   display: flex;
   flex-direction: column;
 }
@@ -235,8 +234,7 @@
   }
 
   .listing-card-container {
-    width: 50%;
-    padding-inline: 0.625rem;
+    width: calc(50% - 0.675rem);
     box-sizing: border-box;
   }
 
@@ -267,10 +265,13 @@
     padding-inline: 0;
   }
 
-  .listing-card-container {
-    width: 25%;
-    padding-inline: var(--bbl-space-250);
+  .listing-card-grid{
+    gap: var(--bbl-space-500);
     padding-bottom: var(--bbl-space-500);
+  }
+
+  .listing-card-container {
+    width: calc(25% - 1.875rem);
   }
 
   .listing-card-tag {

@@ -11,14 +11,11 @@
   transition: all 0.2s ease-in-out;
 }
 
-.top-promo-grid {
-  display: flex;
-  flex-wrap: wrap;
+.top-promo-grid:has(> .listing-card-container) {
   justify-content: flex-start;
 }
 
-.top-promo-grid:has(.top-promo-empty),
-.top-promo-grid:has(.listing-card-container:only-child) {
+.top-promo-grid:has(.top-promo-empty) {
   justify-content: center;
 }
 
@@ -54,8 +51,6 @@
   animation: top-promo-settle-down 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (width > 64rem) {
-  .top-promo-grid {
-    margin-inline: -1.25rem;
-  }
+body:has(.top-promo-grid) .tabs-nav {
+    margin-inline: -0.6875rem;
 }

@@ -114,9 +114,6 @@
   gap: var(--bbl-space-250) 0;
 }
 
-.all-carousel-fragment {
-  margin-bottom: var(--bbl-space-1000);
-}
 
 .carousel-dotted-item .cards-list.carousel {
   overflow: visible;

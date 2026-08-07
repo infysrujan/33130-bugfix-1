@@ -184,10 +184,12 @@
   transform: none;
   margin-top: 1.5rem;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 0.5rem;
   width: auto;
   height: auto;
+  overflow: visible;
 }
 
 @media (width > 47.5rem) {

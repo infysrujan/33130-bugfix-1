@@ -44,7 +44,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
   const statusLabel = placeholders?.statusLabel || 'Status:';
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
-  const isNearest = loc.Range === 0;
+  const isNearest = loc.isNearest === true;
 
   // ATM/ATM+ sidebar only shows name, address, and directions
   const branchStatus = !isAtm && hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
@@ -62,13 +62,13 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
       <div class="locate-us-card-body">
         <hr class="locate-us-card-hr">
         <div class="locate-us-card-detail">
+          ${isNearest ? '<span class="locate-us-card-nearest-tag"></span>' : ''}
           ${branchStatus ? `
-            ${isNearest ? '<span class="locate-us-card-nearest-tag"></span>' : ''}
             <div class="locate-us-card-row">
               <span class="locate-us-card-label"></span>
               <div class="locate-us-card-status-col">
                 <span class="locate-us-card-status"></span>
-                
+
                 ${isOpen ? '<span class="locate-us-card-hours"></span>' : ''}
               </div>
             </div>` : ''}
@@ -84,7 +84,8 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
     </article>`);
 
   card.querySelector('.locate-us-card-name').textContent = loc.BranchName;
-  if (isNearest) card.querySelector('.locate-us-card-nearest-tag').textContent = nearestLabel;
+  const nearestTag = card.querySelector('.locate-us-card-nearest-tag');
+  if (isNearest && nearestTag) nearestTag.textContent = nearestLabel;
   if (branchStatus) {
     card.querySelector('.locate-us-card-detail .locate-us-card-row .locate-us-card-label').textContent = statusLabel;
     const statusEl = card.querySelector('.locate-us-card-status');

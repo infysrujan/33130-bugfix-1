@@ -46,7 +46,7 @@
 }
 
 .cross-banner-title {
-  color: var(--bbl-text-primary);
+  color: var(--bbl-color-black);
   font-size: 1.4rem;
   font-weight: var(--bbl-font-weight-regular);
   line-height: 1.375rem;

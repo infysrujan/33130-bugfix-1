@@ -34,8 +34,8 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
       <div class="locate-us-card-body" hidden>
         <hr class="locate-us-card-hr">
         <div class="locate-us-card-detail">
+          ${isNearest ? '<span class="locate-us-card-nearest-tag"></span>' : ''}
           ${branchStatus ? `
-            ${isNearest ? '<span class="locate-us-card-nearest-tag"></span>' : ''}
             <div class="locate-us-card-row">
               <span class="locate-us-card-label"></span>
               <div class="locate-us-card-status-col">
@@ -54,7 +54,8 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
     </article>`);
 
   card.querySelector('.locate-us-card-name').textContent = loc.BranchName;
-  if (isNearest) card.querySelector('.locate-us-card-nearest-tag').textContent = nearestLabel;
+  const nearestTag = card.querySelector('.locate-us-card-nearest-tag');
+  if (isNearest && nearestTag) nearestTag.textContent = nearestLabel;
   if (branchStatus) {
     card.querySelector('.locate-us-card-detail .locate-us-card-row .locate-us-card-label').textContent = statusLabel;
     const statusEl = card.querySelector('.locate-us-card-status');
@@ -280,7 +281,7 @@ export function renderCards(
   }
 
   pageResults.forEach((loc, idx) => {
-    const isNearest = loc.Range === 0;
+    const isNearest = loc.isNearest === true;
     const card = buildAddressCard(loc, isNearest, placeholders, configs, isAtm);
     card.dataset.cardIndex = idx;
     const header = card.querySelector('.locate-us-card-header');

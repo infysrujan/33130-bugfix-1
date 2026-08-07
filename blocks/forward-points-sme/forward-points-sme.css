@@ -220,9 +220,11 @@
 
 .forward-points-sme .fpsme-dp-title {
   display: flex;
-  gap: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 700;
+  gap: 0.75rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-heading-h3-size);
+  line-height: var(--bbl-heading-h3-line-height);
+  font-weight: var(--bbl-heading-h3-weight);
   color: var(--bbl-color-blue-105);
 }
 
@@ -271,8 +273,10 @@
 
 .forward-points-sme .fpsme-dp-calendar thead th {
   padding: 0.25rem 0 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-body-b1-size);
+  line-height: var(--bbl-body-b1-line-height);
+  font-weight: var(--bbl-body-b1-weight);
   color: var(--bbl-color-black);
   text-align: center;
 }
@@ -294,7 +298,10 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: var(--bbl-rounded-full);
-  font-size: 0.8125rem;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-body-b1-size);
+  line-height: var(--bbl-body-b1-line-height);
+  font-weight: var(--bbl-body-b1-weight);
   border: none;
   background: none;
   cursor: pointer;
@@ -647,10 +654,6 @@
     margin: 1rem auto 2rem;
   }
 
-  .forward-points-sme .fpsme-dp-title {
-    font-size: 1.1rem;
-  }
-
 }
 
 @media (width > 64rem) {
@@ -721,19 +724,13 @@
     margin-left: -0.875rem;
   }
 
-  .forward-points-sme .fpsme-dp-title {
-    font-size: 1.3rem;
-  }
-
   .forward-points-sme .fpsme-dp-day-btn,
   .forward-points-sme .fpsme-dp-day-text {
     width: 2.75rem;
     height: 2.75rem;
-    font-size: 1rem;
   }
 
   .forward-points-sme .fpsme-dp-calendar thead th {
-    font-size: 1rem;
     padding-bottom: 0.75rem
   }
 

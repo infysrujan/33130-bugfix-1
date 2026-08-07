@@ -163,7 +163,7 @@ async function loadSocialIcons(block) {
  * @returns {string}
  */
 function getCurrentPageLabel(page) {
-  return page.shortTitle.trim() || page.pageTitle.trim() || page.jcrTitle.trim() || '';
+  return page.shortTitle?.trim() || page.pageTitle?.trim() || page.jcrTitle?.trim() || '';
 }
 
 /**
@@ -172,7 +172,7 @@ function getCurrentPageLabel(page) {
  * @returns {string}
  */
 function getParentPageLabel(page) {
-  return page.shortTitle.trim() || page.pageTitle.trim() || page.jcrTitle.trim() || '';
+  return page.shortTitle?.trim() || page.pageTitle?.trim() || page.jcrTitle?.trim() || '';
 }
 
 /**

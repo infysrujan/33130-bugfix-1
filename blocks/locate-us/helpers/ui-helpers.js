@@ -58,6 +58,9 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   let currentIsAtm = false;
   let currentPage = 1;
   let keywordFromSelection = false;
+  // When a "…with BeMyID" service variant is active, results are filtered to
+  // locations that support Be My ID (the API marks these with Tel === 'BeID').
+  let beMyIdActive = false;
 
   const selectServiceText = placeholders?.selectServiceText || 'Select Service';
   const enterKeywordText = placeholders?.enterKeywordText || 'Enter Keyword';
@@ -167,10 +170,15 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     mapSidebar.appendChild(remark);
   }
 
-  function showResults(allLocs) {
+  function showResults(rawLocs) {
     fragmentContainer.hidden = true;
     fragmentContainer.innerHTML = '';
     currentPage = 1;
+
+    // For a "with BeMyID" variant, keep only locations that support Be My ID.
+    const allLocs = beMyIdActive
+      ? rawLocs.filter((l) => (l.Tel || '').trim() === 'BeID')
+      : rawLocs;
 
     if (!allLocs.length) {
       resultsSection.hidden = false;
@@ -183,6 +191,14 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
     noResults.hidden = true;
     resultsSection.hidden = false;
+    // The API returns a numeric distance in `Range` (not a 0/1 flag), so the
+    // nearest branch is the one with the smallest Range. Tag it here so the
+    // card list and sidebar can show the "nearest" badge on that one only.
+    const nearest = allLocs.reduce(
+      (min, l) => (Number(l.Range) < Number(min.Range) ? l : min),
+      allLocs[0],
+    );
+    allLocs.forEach((l) => { l.isNearest = l === nearest; });
     onLocationSelect(allLocs[0]);
     // eslint-disable-next-line max-len
     renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs, currentIsAtm);
@@ -295,7 +311,12 @@ export async function buildThailandUI(container, data, placeholders, configs) {
       });
   }
 
-  async function onServiceChange(selectedService) {
+  async function onServiceChange(selectedService, opts = {}) {
+    // `beMyId`/`baseIndex` are set for the synthetic "…with BeMyID" variants,
+    // which reuse the base ATM/ATM+ service but filter results to Be My ID.
+    const { beMyId = false, baseIndex = -1 } = opts;
+    beMyIdActive = beMyId;
+
     serviceSelect.value = selectedService;
     serviceBtnText.textContent = selectedService;
     toggleServiceDropdown(false);
@@ -303,13 +324,15 @@ export async function buildThailandUI(container, data, placeholders, configs) {
       li.setAttribute('aria-selected', li.dataset.value === selectedService ? 'true' : 'false');
     });
 
-    selectedServiceCode = serviceCodeMap[selectedService] ?? configs?.locateUsDefaultServiceCode;
-
-    const serviceIdx = services.indexOf(selectedService);
-    const serviceUrlCode = serviceParamKeys[serviceIdx] || '';
+    // Resolve the service code + ATM flag from the base option when BeMyID,
+    // otherwise from the selected option itself.
+    const codeIndex = beMyId ? baseIndex : services.indexOf(selectedService);
+    const codeLabel = beMyId ? services[baseIndex] : selectedService;
+    selectedServiceCode = serviceCodeMap[codeLabel] ?? configs?.locateUsDefaultServiceCode;
+    const serviceUrlCode = serviceParamKeys[codeIndex] || '';
     currentIsAtm = serviceUrlCode.toLowerCase().includes('atm');
 
-    const isSpecial = serviceCodeMap[selectedService] === null;
+    const isSpecial = !beMyId && serviceCodeMap[selectedService] === null;
     keywordInput.disabled = isSpecial;
     keywordInput.value = '';
     keywordWrapper.hidden = isSpecial;
@@ -403,12 +426,43 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     }
   });
 
+  // Insert a synthetic "…with BeMyID" option directly below its base option
+  // (e.g. "ATM+ with BeMyID" under ATM+) and wire it to the BeMyID variant.
+  function addBeMyIdOption(baseIndex) {
+    const baseLabel = services[baseIndex];
+    const suffix = placeholders?.beMyIdLabelText || 'with BeMyID';
+    const label = `${baseLabel} ${suffix}`;
+    const items = [...serviceDropdown.querySelectorAll('.locate-us-service-item')];
+    let li = items.find((el) => el.dataset.value === label);
+    if (!li) {
+      li = document.createElement('li');
+      li.className = 'locate-us-service-item';
+      li.setAttribute('role', 'option');
+      li.textContent = label;
+      li.dataset.value = label;
+      const baseLi = items.find((el) => el.dataset.value === baseLabel);
+      if (baseLi) baseLi.after(li); else serviceDropdown.appendChild(li);
+      li.addEventListener('click', () => onServiceChange(label, { beMyId: true, baseIndex }));
+    }
+    return label;
+  }
+
   // ── Auto-select service from URL query param ────────────────────────────────
   const urlService = new URLSearchParams(window.location.search).get('service');
   if (urlService && serviceParamKeys.length) {
     const paramIndex = serviceParamKeys.indexOf(urlService);
     if (paramIndex !== -1 && services[paramIndex]) {
       onServiceChange(services[paramIndex]);
+    } else {
+      // Not a listed option — support "<base>-BeMyId" variants by creating an
+      // option below the matching base service (e.g. location-ATM-BeMyId →
+      // ATM, location-ATM-Plus-BeMyId → ATM+).
+      const baseKey = urlService.replace(/-BeMyId$/i, '');
+      const baseIndex = baseKey !== urlService ? serviceParamKeys.indexOf(baseKey) : -1;
+      if (baseIndex !== -1 && services[baseIndex]) {
+        const label = addBeMyIdOption(baseIndex);
+        onServiceChange(label, { beMyId: true, baseIndex });
+      }
     }
   }
 }

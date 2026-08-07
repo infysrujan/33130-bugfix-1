@@ -143,11 +143,7 @@ main .lead-forms div.default-content-wrapper {
 }
 
 main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  font-size: var(--bbl-form-font-size-32);
-  line-height: 1.5rem;
-  font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-grey-140);
-  letter-spacing: -0.0125rem;
   font-weight: var(--bbl-font-weight-regular);
 }
 
@@ -939,10 +935,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     font-size: var(--bbl-font-size-b1-desktop);
   }
 
-  main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--bbl-form-font-size-32);
-    line-height: 2.3125rem;
-  }
+
 
   main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
     font-size: var(--bbl-font-size-b1-desktop);

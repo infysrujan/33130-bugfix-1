@@ -135,9 +135,10 @@
 
 /* Mobile / tablet: ~1.286 rem matches original site's 1.286em at this viewport */
 .credit-card-selector .filter-group-title {
+  font-size: var(--bbl-text-thumbnail-card-title-size);
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
+  font-weight: var(--bbl-text-thumbnail-card-title-weight);
   font-family: var(--bbl-font-family-medium);
-  font-size: 1.13rem;
-  font-weight: var(--bbl-font-weight-medium);
   color: var(--bbl-color-black);
   margin: 0;
 }
@@ -537,13 +538,6 @@
   .credit-card-selector .card-selector-title {
     font-size: var(--bbl-font-size-h1-desktop);
     line-height: var(--bbl-line-height-heading-tight);
-  }
-
-  /* Desktop: section titles are 24px / black */
-  .credit-card-selector .filter-group-title {
-    font-size: var(--bbl-font-size-h3-desktop);
-    font-weight: var(--bbl-font-weight-regular);
-    color: var(--bbl-color-black);
   }
 
   .credit-card-selector .card-selector-content {

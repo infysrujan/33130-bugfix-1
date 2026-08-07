@@ -1,4 +1,4 @@
-body:has(.search-modal) header.is-not-overlapped .mobile-top-bar,
+body:has(.search-modal) header.is-not-overlapped .mobile-top-bar:not(.is-scrolled),
 body:has(.search-modal) header.is-not-overlapped .main-nav-desktop:not(.is-scrolled) {
   background-color: transparent;
 }
