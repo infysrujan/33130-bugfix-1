@@ -237,7 +237,7 @@ export function buildCardHtml(card, tag = {}, placeholders = {}, options = {}) {
       ${dateLine ? `<p class="listing-card-date">${dateLine}</p>` : ''}
     </div>
     <div class="listing-card-footer">
-      <a href="${card.ctaLink || ''}" target="${target}" class="listing-card-cta button-m primary" title="${card.ctaLabel}">${card.ctaLabel || placeholders.promoLearnMore || 'Learn More'}</a>
+      <a href="${card.ctaLink || ''}" target="${target}" class="listing-card-cta button-m primary">${card.ctaLabel || placeholders.promoLearnMore || 'Learn More'}</a>
       ${footerExtra}
     </div>
   </div>
