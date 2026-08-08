@@ -35,13 +35,15 @@ function extractCategoryFromTag(tagValue) {
 }
 
 /**
- * Loose category match that handles plural/singular differences.
+ * Category match that tolerates plural/singular differences.
  * e.g. page slug "fixed-income-funds" matches FundCategory "fixed-income-fund"
+ * Only a trailing "s" is allowed to differ — a plain substring check would
+ * wrongly match unrelated categories like "thai-esg" against "thai-esgx".
  */
 function matchesCategory(fundCategory, pageCategory) {
   const fc = norm(fundCategory);
   const pc = norm(pageCategory);
-  return fc === pc || pc.includes(fc) || fc.includes(pc);
+  return fc === pc || fc === `${pc}s` || pc === `${fc}s`;
 }
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
