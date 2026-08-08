@@ -35,14 +35,29 @@ function extractCategoryFromTag(tagValue) {
 }
 
 /**
+ * Reduce a category value to its final taxonomy segment. FundCategory
+ * arrives from the GraphQL API as a single-element array holding the full
+ * AEM tag path (e.g. ["bangkokbank:assets/mutual-funds/fund-category/thai-esg"]);
+ * page categories can be a similar tag path or a bare URL slug. Either way,
+ * extractCategoryFromTag reduces it to the last "/"- or ":"-delimited
+ * segment (a no-op if there's no delimiter).
+ */
+function normalizeCategoryValue(value) {
+  const raw = Array.isArray(value) ? value[0] : value;
+  return extractCategoryFromTag(raw || '');
+}
+
+/**
  * Category match that tolerates plural/singular differences.
  * e.g. page slug "fixed-income-funds" matches FundCategory "fixed-income-fund"
- * Only a trailing "s" is allowed to differ — a plain substring check would
- * wrongly match unrelated categories like "thai-esg" against "thai-esgx".
+ * Comparing the full untrimmed tag path against the page's bare slug would
+ * wrongly match unrelated categories — "thai-esg" is a substring of the raw
+ * path ".../fund-category/thai-esgx" — so both sides are reduced to their
+ * last segment first, then compared exactly (allowing only a trailing "s").
  */
 function matchesCategory(fundCategory, pageCategory) {
-  const fc = norm(fundCategory);
-  const pc = norm(pageCategory);
+  const fc = normalizeCategoryValue(fundCategory);
+  const pc = normalizeCategoryValue(pageCategory);
   return fc === pc || fc === `${pc}s` || pc === `${fc}s`;
 }
 
