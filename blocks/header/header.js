@@ -733,8 +733,9 @@ export default async function decorate(block) {
     const lang = getLang();
     navPath = `/${lang}/nav`;
   } else {
-    const navMeta = getMetadata('nav');
-    navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+    // const navMeta = getMetadata('nav');
+    navPath = getMetadata('nav');
+    // navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
   }
   const fragment = await loadFragment(navPath);
   if (!fragment) return;
