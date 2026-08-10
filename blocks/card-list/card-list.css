@@ -589,6 +589,12 @@
     min-height: 8.4375rem;
   }
 
+  .carousel-dotted-item .cards-list-image.cards-list-image-card {
+    aspect-ratio: 13 / 8;
+    height: auto;
+    min-height: 8.4375rem;
+  }
+
   .cards-list-image.cards-list-image-full {
     height: calc(100vw / 5);
     max-height: calc(100vw * 0.2);
