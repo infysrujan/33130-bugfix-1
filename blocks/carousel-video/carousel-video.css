@@ -26,9 +26,7 @@
   opacity: 1;
 }
 
-/* Mobile only — this wrapper only exists in the DOM below the tablet
-   breakpoint (see carousel-video.js). Iframes sit side by side and the
-   track slides horizontally on Next/Prev. */
+/* Mobile only — this wrapper only exists in the DOM below the tablet breakpoint (see carousel-video.js); slides horizontally on Next/Prev. */
 .carousel-video .cv-main-track {
   display: flex;
   width: 100%;
@@ -44,9 +42,7 @@
   display: block;
 }
 
-/* Tablet/desktop only — direct children of .cv-main-player (mobile's
-   iframes are nested one level deeper, inside .cv-main-track, so this
-   child combinator never matches them). */
+/* Tablet/desktop only — direct children of .cv-main-player; mobile's iframes are nested inside .cv-main-track, so this child combinator skips them. */
 .carousel-video .cv-main-player > iframe {
   position: absolute;
   inset: 0;
@@ -62,10 +58,7 @@
   opacity: 1;
 }
 
-/* ── Thumbnail carousel — mobile: nav arrows overlay on player ───────────── */
-/* Matches .cv-main-player's box (width + aspect ratio) exactly and is
-   centered the same way, so the Prev/Next buttons land right on the video's
-   edges instead of on the wider block container's edges. */
+/* ── Thumbnail carousel — mobile: nav arrows overlay on player. Matches .cv-main-player's box and centering exactly, so Prev/Next land on the video's edges, not the wider block container's edges. ───────────── */
 .carousel-video .cv-carousel-section {
   position: absolute;
   top: 0;
