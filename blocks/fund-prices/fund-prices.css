@@ -388,10 +388,6 @@
   color: var(--bbl-color-black);
 }
 
-body.fund-prices-search-in-header header.is-not-overlapped ~ main {
-  padding-top: calc(var(--header-m-height, 5rem) + 7.5rem);
-}
-
 .fund-prices-search-bar.is-in-header {
   box-sizing: border-box;
   width: 100%;
@@ -402,6 +398,10 @@ body.fund-prices-search-in-header header.is-not-overlapped ~ main {
   top: auto;
   z-index: 1;
   min-height: unset;
+
+  /* Override the generic `main > div { margin: 40px 16px }` default so this
+     sits flush under the header instead of leaving a gap/inset. */
+  margin: 0;
   padding: var(--bbl-space-150) var(--bbl-space-200);
   gap: 0.9375rem;
   background: var(--bbl-color-truthful-blue);
@@ -550,10 +550,6 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 
   .bbl-calendar-picker-weekdays span {
     font-size: 1rem;
-  }
-
-  body.fund-prices-search-in-header header.is-not-overlapped ~ main {
-    padding-top: calc(var(--header-d-height, 7.8125rem) + var(--bbl-space-800));
   }
 
   .fund-prices-search-bar {

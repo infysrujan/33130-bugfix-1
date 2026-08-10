@@ -870,7 +870,7 @@
 }
 
 @media (width > 64rem) {
-  .section.hero-container {
+  .section.hero-container:not(:has(.hero-banner-hero-with-thumbnail-images)) {
     margin-top: 2.5625rem;
   }
 

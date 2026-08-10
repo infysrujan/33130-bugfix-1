@@ -27,6 +27,16 @@
   flex: auto;
 }
 
+.locate-us .card-list .cards-list-item .cards-list-content h3 {
+  font-family: var(--bbl-font-family-medium);
+  font-size: 1.4375rem;
+  font-weight: var(--bbl-font-weight-medium);
+}
+
+.locate-us .card-list .cards-list-item .cards-list-button a {
+  height: 2.75rem;
+}
+
 .locate-us .cards-list-title.has-title-underline :is(h1, h2, h3, h4, h5, h6)::before {
   width: var(--bbl-space-800);
 }
@@ -216,6 +226,7 @@
 .locate-us .locate-us-keyword-search-btn:active {
   background: none;
   text-decoration: none;
+  transform: translateY(-50%);
 }
 
 .locate-us .locate-us-keyword-search-icon {
@@ -918,7 +929,7 @@
 
 .sub-nav .sub-nav-tab-btn.active {
   background-color: transparent;
-  color: rgb(255 255 255 / 65%);
+  color: rgb(129 152 204);
 }
 
 /* ─── Tablet (> 47.5rem) ──────────────────────────────────────────────────────── */

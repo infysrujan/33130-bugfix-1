@@ -284,8 +284,7 @@
 }
 
 .tax-calculator .tax-calc-notes-title {
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-gray-121);
   padding: 0 0.4375rem 0.4375rem;
 }
@@ -1083,7 +1082,6 @@
   }
 
   .tax-calculator .tax-calc-notes-title {
-    font-size: 1rem;
     margin-bottom: 0.5rem;
     padding: 0 1rem;
   }
@@ -1441,7 +1439,6 @@
   }
 
   .tax-calculator .tax-calc-notes-title {
-    font-size: 1rem;
     margin-bottom: 1rem;
     padding: 0;
   }

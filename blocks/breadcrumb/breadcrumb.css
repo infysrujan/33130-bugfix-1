@@ -1,6 +1,6 @@
 .breadcrumb {
   overflow: hidden;
-  padding: 1.3125rem 1rem 1.1875rem 0;
+  padding: 1.3125rem 0 1.1875rem;
   margin: 0 auto;
   box-sizing: border-box;
   background-color: var(--bbl-bg-primary);
@@ -72,10 +72,8 @@
 }
 
 .breadcrumb a {
-  font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
   color: var(--bbl-text-link);
   text-decoration: none;
-  font-weight: 400;
 }
 
 .breadcrumb a:hover {

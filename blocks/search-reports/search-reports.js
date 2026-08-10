@@ -198,6 +198,8 @@ function buildModalDom({
   closeBtn.innerHTML = '<span class="icon icon-close"></span>';
   decorateIcons(closeBtn);
   const header = createModalHeader(lang, closeBtn, { headerClass: 'sr-header', logoLinkClass: 'sr-logo-link' });
+  const headerWrapper = createTaggedElement('div', { className: 'sr-header-wrapper' });
+  headerWrapper.append(header);
 
   const body = createTaggedElement('div', { className: 'sr-body' });
   const titleEl = createTaggedElement('h2', { className: 'sr-title', text: modalTitle, attrs: { id: 'sr-modal-title' } });
@@ -228,7 +230,7 @@ function buildModalDom({
   getYear = getYearVal;
 
   body.append(titleEl, titleDivider, descEl, typeDropdown, yearDropdown, searchBtn);
-  dialog.append(header, body);
+  dialog.append(headerWrapper, body);
   overlay.append(dialog);
 
   return {

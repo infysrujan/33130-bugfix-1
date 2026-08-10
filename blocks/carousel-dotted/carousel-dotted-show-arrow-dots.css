@@ -350,3 +350,44 @@
     margin-right: 0;
   }
 }
+
+/* Image/text step carousel (mixed-image-slides, e.g. with-default-image or
+   with-circular-image slides): let the card expand to the full block width
+   instead of being squeezed into the 2.5rem arrow gutters, and overlay the
+   arrows outside its edge like the simple-carousel variant already does.
+   Scoped to this class combo only so other carousel-dotted variants are unaffected. */
+@media (width > 47.5rem) {
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-track-viewport {
+    grid-column: 1;
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev,
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
+    grid-column: 1;
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
+    justify-self: start;
+    margin-left: -1.25rem;
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
+    justify-self: end;
+    margin-right: -1.25rem;
+  }
+}
+
+@media (width > 64rem) {
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
+    margin-left: -3.45rem;
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
+    margin-right: -3.45rem;
+  }
+}

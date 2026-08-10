@@ -581,10 +581,10 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-article-card-title-size);
-  line-height: var(--bbl-text-article-card-title-line-height);
+  font-size: var(--bbl-text-thumbnail-card-title-size);
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
   color: var(--bbl-color-black);
-  font-weight: var(--bbl-text-article-card-title-weight);
+  font-weight: var(--bbl-text-thumbnail-card-title-weight);
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 p {
@@ -601,6 +601,11 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default p {
   margin: 0;
+}
+
+.carousel-dotted .carousel-dotted-item.with-circular-image .text-default a:hover {
+  color: var(--bbl-color-blue-90);
+  text-decoration: none;
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-brown,
@@ -629,7 +634,6 @@
 
 /* Default Image specific */
 .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb {
-  background: var(--bbl-color-grey-10);
   display: flex;
   align-items: center;
   justify-content: center;

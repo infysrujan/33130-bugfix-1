@@ -432,12 +432,12 @@ export default async function decorate(block) {
     }
 
     if (bblFundData && Array.isArray(bblFundData) && bblFundData.length > 0) {
-      apiData.bblFund = bblFundData.slice(0, 4); // Limit to 4 items
+      apiData.bblFund = bblFundData;
       apiData.bblFundDate = bblFundData[0]?.mfr_dDataDate || '';
     }
 
     if (bcapFundData && Array.isArray(bcapFundData) && bcapFundData.length > 0) {
-      apiData.bcapFund = bcapFundData.slice(0, 4); // Limit to 4 items
+      apiData.bcapFund = bcapFundData;
       apiData.bcapFundDate = bcapFundData[0]?.mfr_dDataDate || '';
     }
   } catch (error) {

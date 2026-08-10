@@ -11,6 +11,12 @@
   color: var(--bbl-color-grey-85);
 }
 
+.sip-form main .form-container.custom-forms .form button.primary:hover {
+  background: var(--bbl-color-blue-90);
+  border: none;
+  transition: none;
+}
+
 .sip-form main .form form .field-wrapper{
   margin: 0;
 }

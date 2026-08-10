@@ -13,7 +13,7 @@
   width: 100%;
   max-width: 100%;
   display: block;
-  border-radius: var(--bbl-rounded-150);
+  border-radius: 0.4375rem;
   overflow: hidden;
   border: 0.063rem solid rgb(0 0 0 / 8%);
   background-color: var(--bbl-color-white);
@@ -152,7 +152,6 @@
   border: none;
   box-shadow: none;
   background: transparent;
-  border-radius: 0;
   overflow: visible;
 }
 

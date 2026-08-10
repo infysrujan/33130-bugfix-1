@@ -263,7 +263,7 @@ function addCompareButtons(blockEl, doc, labels) {
     const btn = doc.createElement('button');
     // btn.href = '#';
     btn.classList.add('ccs-compare-btn');
-    btn.classList.add('buttom-m');
+    btn.classList.add('button-m');
     btn.classList.add('secondary');
     btn.textContent = labels.compare;
     const h3 = item?.querySelector('h3');
@@ -508,6 +508,7 @@ export default async function decorate(block) {
     container.querySelectorAll('.ccs-compare-btn').forEach((btn) => {
       const isSelected = selected.some((c) => c.name === btn.dataset.cardName);
       btn.classList.toggle('is-comparing', isSelected);
+      btn.classList.toggle('disabled', isSelected);
       btn.textContent = labels.compare;
     });
   }

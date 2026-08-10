@@ -235,6 +235,12 @@ header.is-not-overlapped ~ main {
   padding-top: var(--header-m-height, 4.95rem);
 }
 
+@media (width > 47.5rem) {
+  .header .mobile-top-bar {
+    padding: 1.25rem 3rem;
+  }
+}
+
 @media (width > 64rem) {
   /*
    * Top nav - fixed to the viewport (not just the top of the document) so it

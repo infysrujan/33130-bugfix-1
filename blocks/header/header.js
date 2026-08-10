@@ -205,7 +205,13 @@ function setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, getIsNavItemAct
     const currentScrollY = window.scrollY;
     if (topNavHeight === 0) getTopNavHeight();
 
-    const isScrollingUp = currentScrollY < lastScrollY;
+    // Wheel/trackpad scroll events don't move in a clean straight line — they
+    // wobble by a few px even during a steady downward scroll. Reacting to every
+    // such tick flips isScrollingUp back and forth, which flickers is-hidden.
+    // Ignoring sub-threshold deltas keeps direction stable across that jitter.
+    const scrollDelta = currentScrollY - lastScrollY;
+    if (Math.abs(scrollDelta) < 5) return;
+    const isScrollingUp = scrollDelta < 0;
     lastScrollY = currentScrollY;
 
     if (currentScrollY >= topNavHeight && topNavHeight > 0) {

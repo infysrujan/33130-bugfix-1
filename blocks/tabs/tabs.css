@@ -45,7 +45,7 @@
   content: "";
   position: absolute;
   background: var(--bbl-color-active-blue);
-  bottom: -0.5rem;
+  bottom: -1.5625rem;
   height: var(--bbl-space-025);
   left: 0;
   width: 0;

@@ -442,6 +442,19 @@ export default async function decorate(block) {
     const buyingData = state.chartData.map((d) => d.buyingRate);
     const sellingData = state.chartData.map((d) => d.sellingRate);
 
+    // A single-day range (From === To) yields one category, and Chart.js pins a
+    // lone category to the axis origin instead of centering it. Pad with a blank
+    // category on each side so the real one lands in the middle, like the
+    // production site.
+    if (labels.length === 1) {
+      labels.unshift('');
+      labels.push('');
+      buyingData.unshift(null);
+      buyingData.push(null);
+      sellingData.unshift(null);
+      sellingData.push(null);
+    }
+
     const allValues = [...buyingData, ...sellingData].filter((v) => v !== null);
     const minVal = Math.floor(Math.min(...allValues)) - 1;
     const maxVal = Math.ceil(Math.max(...allValues)) + 1;
@@ -537,8 +550,7 @@ export default async function decorate(block) {
         scales: {
           x: {
             grid: {
-              display: true,
-              color: 'rgba(0,0,0,0.08)',
+              display: false,
             },
             ticks: {
               maxRotation: 45,

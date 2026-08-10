@@ -165,13 +165,7 @@ function createConvertGroup(label, currencies, type, searchPlaceholder, defaultC
 
     // Format input for "From" field
     input.addEventListener('input', (e) => {
-      let value = e.target.value.replace(/[^0-9.]/g, '');
-
-      // Allow only one decimal point
-      const decimalCount = (value.match(/\./g) || []).length;
-      if (decimalCount > 1) {
-        value = value.substring(0, value.lastIndexOf('.'));
-      }
+      const value = e.target.value.replace(/[^0-9]/g, '');
 
       e.target.value = formatNumberWithCommas(value);
     });
@@ -179,7 +173,7 @@ function createConvertGroup(label, currencies, type, searchPlaceholder, defaultC
     // Prevent non-numeric characters
     input.addEventListener('keypress', (e) => {
       const char = String.fromCharCode(e.which);
-      if (!/[0-9.]/.test(char)) {
+      if (!/[0-9]/.test(char)) {
         e.preventDefault();
       }
     });

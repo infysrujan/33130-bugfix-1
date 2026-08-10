@@ -77,38 +77,9 @@
   gap: 0.625rem;
 }
 
-.card-list.credit-card .cards-list-button a::before,
-.card-list.credit-card .cards-list-button a::after {
-  display: none;
-}
-
-.card-list.credit-card .cards-list-button .button-m {
-  height: 2.75rem;
-}
-
-.card-list.credit-card .ccs-compare-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  height: 2.75rem;
-  margin: 0.625rem 0 0;
-  padding: 0.3125rem 0;
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
-  border: 0.125rem solid var(--bbl-color-active-blue);
-  border-radius: var(--bbl-rounded-100);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-body-b1-size);
-  text-decoration: none;
-  cursor: pointer;
-  width: 100%;
-}
-
+/* Locked "already comparing" state: colors come from buttons.css's
+   .button-m.secondary.disabled; only the click-through behavior lives here. */
 .card-list.credit-card .ccs-compare-btn.is-comparing {
-  background-color: var(--bbl-color-white);
-  border-color: var(--bbl-color-grey-40);
-  color: var(--bbl-color-grey-60);
   cursor: default;
   pointer-events: none;
 }

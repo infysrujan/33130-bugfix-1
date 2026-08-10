@@ -229,8 +229,6 @@ main .section.form-container.custom-forms .form form .field-compliantnonfin-comp
   margin-top: 0;
   margin-bottom: var(--bbl-space-250);
   padding: var(--bbl-space-250) var(--bbl-space-200);
-  border: 0.0625rem solid var(--bbl-color-grey-150);
-  border-radius: var(--bbl-radius-md);
 }
 
 main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel)>legend.field-label {

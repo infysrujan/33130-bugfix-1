@@ -472,7 +472,7 @@
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-h3-desktop);
   font-weight: 400;
-  line-height: 1.35;
+  line-height: 1.5rem;
   margin: 0 0 var(--bbl-space-100);
   white-space: pre-line;
   color: var(--bbl-color-white);
@@ -483,8 +483,9 @@
 }
 
 .retirement-calculator .rc-savings-card-amount {
+  font-family: var(--bbl-font-family-medium);
   font-size: 1.4rem;
-  font-weight: 600;
+  font-weight: 400;
   text-align: right;
   margin: auto 0 0 var(--bbl-space-100);
   color: var(--bbl-color-white);
@@ -495,6 +496,7 @@
 }
 
 .retirement-calculator .rc-savings-card-unit {
+  font-family: var(--bbl-font-family-looped);
   font-size: 0.6rem;
   font-weight: 400;
   color: var(--bbl-color-white);
@@ -776,6 +778,7 @@
 
   .retirement-calculator .rc-savings-card-title {
     margin: 0;
+    line-height: 1.35;
   }
 
   .retirement-calculator .rc-savings-card-amount {
@@ -990,7 +993,7 @@
   .retirement-calculator .rc-savings-card-amount {
     flex-shrink: 0;
     font-size: var(--bbl-font-size-h1-desktop);
-    font-weight: 700;
+    font-weight: 400;
     text-align: right;
     margin: auto 0 0;
     line-height: 1;
