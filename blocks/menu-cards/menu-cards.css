@@ -9,6 +9,7 @@
 
 .menu-cards .tips-insight-quick-access-item {
   flex: 0 0 calc(33% - 1.5rem);
+  min-width: 7.4rem;
   min-height: 8.125rem;
   box-sizing: border-box;
   border: 1px solid rgb(0 0 0 / 10%);

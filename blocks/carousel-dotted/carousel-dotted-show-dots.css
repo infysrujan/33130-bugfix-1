@@ -11,7 +11,7 @@
 }
 
 .section.central-aligned.center-title.carousel-dotted-container {
-  padding: var(--bbl-space-section-lg) var(--bbl-space-250) 1.875rem;
+  padding: 2.5rem 0 1.875rem;
 }
 
 .card-list-modal-title {
@@ -49,7 +49,6 @@
 
 .central-aligned.carousel-dotted-container .carousel-dotted-wrapper .carousel-dotted {
     position: relative;
-    margin-bottom: 5rem;
     display: block;
 }
 

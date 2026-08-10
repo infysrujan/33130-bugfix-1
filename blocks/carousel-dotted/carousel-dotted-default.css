@@ -218,10 +218,6 @@
 }
 
 .carousel-dotted .carousel-default-text {
-  font-family: var(--bbl-font-family-primary);
-  font-weight: var(--bbl-font-weight-regular);
-  font-size: 0.875rem;
-  line-height: 0.875rem;
   color: var(--bbl-color-grey-70);
   padding: var(--bbl-space-250) 0;
 }
@@ -325,6 +321,7 @@
   justify-content: flex-start;
   left: var(--bbl-space-300);
   right: auto;
+  bottom: var(--bbl-space-250);
 }
 
 .carousel-dotted.dots-center-inside-container .slick-dots {
@@ -584,10 +581,10 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-article-card-title-size);
-  line-height: var(--bbl-text-article-card-title-line-height);
+  font-size: var(--bbl-text-thumbnail-card-title-size);
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
   color: var(--bbl-color-black);
-  font-weight: var(--bbl-text-article-card-title-weight);
+  font-weight: var(--bbl-text-thumbnail-card-title-weight);
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 p {
@@ -604,6 +601,11 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default p {
   margin: 0;
+}
+
+.carousel-dotted .carousel-dotted-item.with-circular-image .text-default a:hover {
+  color: var(--bbl-color-blue-90);
+  text-decoration: none;
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-brown,
@@ -632,7 +634,6 @@
 
 /* Default Image specific */
 .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb {
-  background: var(--bbl-color-grey-10);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -662,7 +663,6 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
-  font-size: 1rem;
   line-height: 1.285rem;
   margin: unset;
   color: var(--bbl-color-grey-85);
@@ -689,8 +689,7 @@
 .carousel-dotted-item.with-default-image
 .caption.editor
 p.text-large.text-light {
-  font-family: Muli-Light, sans-serif;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   line-height: 1.571rem;
   margin: 0;
 }
@@ -906,31 +905,15 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default {
-    font-size: 1rem;
     line-height: 1.625rem;
     font-family: var(--bbl-font-family-primary);
     font-weight: var(--bbl-font-weight-regular);
   }
 
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
-    font-size: 1rem;
     line-height: 1.625rem;
   }
 
-  /* Step numbers desktop: Muli-Light + exact live sizes */
-  .carousel-dotted
-  .carousel-dotted-item.with-default-image
-  .caption.editor
-  .text-large.text-light p,
-  .carousel-dotted
-  .carousel-dotted-item.with-default-image
-  .caption.editor
-  p.text-large.text-light {
-    font-family: Muli-Light, sans-serif;
-    font-size: 3rem;
-    line-height: 2.875rem;
-    color: var(--bbl-color-grey-85);
-  }
 }
 
 @media (width > 64rem) {
@@ -965,6 +948,18 @@ p.text-large.text-light {
     z-index: 2;
   }
 
+  .carousel-dotted
+  .carousel-dotted-item.with-default-image
+  .caption.editor
+  .text-large.text-light p,
+  .carousel-dotted
+  .carousel-dotted-item.with-default-image
+  .caption.editor
+  p.text-large.text-light {
+    font-size: 3rem;
+    line-height: 2.875rem;
+  }
+
   .carousel-dotted .carousel-dotted-item.with-circular-image .circle-image {
     max-width: 12.5rem;
     max-height: 12.5rem;
@@ -976,12 +971,6 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-dotted-header {
-    font-weight: var(--bbl-font-weight-regular);
-    font-size: 1rem;
-    line-height: 1rem;
-  }
-
-  .carousel-dotted .carousel-default-text {
     font-weight: var(--bbl-font-weight-regular);
     font-size: 1rem;
     line-height: 1rem;

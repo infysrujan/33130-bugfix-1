@@ -19,8 +19,18 @@ function stripCommas(str) {
   return String(str ?? '').replace(/,/g, '');
 }
 
+function round2(n) {
+  return Math.round(n * 100) / 100;
+}
+
 function getString(labels, key, fallback = '') {
   return labels[key] || fallback;
+}
+
+function getInflationText(labels, data) {
+  return getString(labels, 'stepsStep2InflationNote', 'Including an inflation rate of {inflationRate}% p.a., the return on investment after retirement is assumed to be {afterRetirementRate}% p.a.')
+    .replace('{inflationRate}%', `${data.inflationRate}%`)
+    .replace('{afterRetirementRate}%', `${data.afterRetirementRate}%`);
 }
 
 // ─── Data ────────────────────────────────────────────────────────────────────────
@@ -190,14 +200,14 @@ function buildAgeField(id, label, savedValue, labels) {
 
 // ─── Money Field (J2 sections) ───────────────────────────────────────────────────
 
-function buildMoneyField(id, label, savedValue, labels) {
-  const maxMsg = `${getString(labels, 'validationMaxValueError', 'Maximum up to')} 999,999,999`;
+function buildMoneyField(id, label, savedValue, labels, { max = 999999999 } = {}) {
+  const maxMsg = `${getString(labels, 'validationMaxValueError', 'Maximum up to')} ${formatNumber(max)}`;
 
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
         <input type="text" id="rc-${id}" class="rc-field-input"
-          placeholder="0 - 999,999,999" maxlength="${formatNumber(999999999).length}" value="${formatNumber(savedValue ?? 0)}">
+          placeholder="0 - ${formatNumber(max)}" maxlength="${formatNumber(max).length}" value="${formatNumber(savedValue ?? 0)}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
       <p class="rc-field-error" id="rc-err-${id}"></p>
@@ -248,7 +258,7 @@ function buildMoneyField(id, label, savedValue, labels) {
     }
     input.setSelectionRange(newPos, newPos);
 
-    if ((parseFloat(rawVal) || 0) > 999999999) field.setError(maxMsg);
+    if ((parseFloat(rawVal) || 0) > max) field.setError(maxMsg);
     else field.setError('');
   });
 
@@ -313,14 +323,19 @@ function buildSectionHeader(title) {
 
 // ─── Progressive Reveal (J2 sections) ────────────────────────────────────────────
 
-function initProgressiveReveal(sectionEl) {
+function initProgressiveReveal(sectionEl, sectionId, state) {
   const fields = [...sectionEl.querySelectorAll('.rc-field')];
   if (fields.length <= 1) return;
+
+  state.rcExpandedSections ??= new Set();
+  if (state.rcExpandedSections.has(sectionId)) return;
+
   fields.slice(1).forEach((f) => f.classList.add('rc-field-hidden'));
   const firstInput = fields[0].querySelector('input');
   if (!firstInput) return;
   firstInput.addEventListener('focus', () => {
     fields.forEach((f) => f.classList.remove('rc-field-hidden'));
+    state.rcExpandedSections.add(sectionId);
   }, { once: true });
 }
 
@@ -465,6 +480,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   const totalNeeded = formatNumber(Math.round(j1Result.TotalChargesValue || 0));
   const monthlyAvail = formatNumber(Math.round(j1Result.FvMonthlyGoals || 0));
   const bahtUnit = getString(labels, 'commonBahtUnit', 'baht');
+  const inflationNoteText = getInflationText(labels, data);
   const summaryCard = parseHTML(`
     <div class="rc-j1-summary">
       <div class="rc-j1-summary-card">
@@ -478,7 +494,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
           <p class="rc-j1-summary-value">${monthlyAvail} <span class="rc-j1-summary-unit">${bahtUnit}</span></p>
         </div>
       </div>
-      <p class="rc-j1-summary-note">${getString(labels, 'stepsStep2InflationNote', 'Including an inflation rate of 1.5% p.a., the return on investment after retirement is assumed to be 3% p.a.')}</p>
+      <p class="rc-j1-summary-note">${inflationNoteText}</p>
     </div>
   `);
   content.appendChild(summaryCard);
@@ -497,12 +513,12 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   const savingsWrap = parseHTML('<div class="rc-section"></div>');
   savingsWrap.appendChild(buildSectionHeader(getString(labels, 'stepsStep2SavingsSection', 'Savings')));
   const currentSavingsField = buildMoneyField('currentSavings', getString(labels, 'stepsStep2CurrentSavingsLabel', 'Current savings balance'), savedValues.SavingBeginAmount, labels);
-  const savingsReturnRateField = buildPercentField('savingsReturnRate', getString(labels, 'stepsStep2SavingsExpectedReturnRateLabel', 'Expected annual return (%)'), savedValues.CompensationRatePct ?? data.defaultSavingsReturnRate, labels);
+  const savingsReturnRateField = buildPercentField('savingsReturnRate', getString(labels, 'stepsStep2SavingsExpectedReturnRateLabel', 'Expected annual return (%)'), savedValues.CompensationRatePct ?? data.defaultSavingsReturnRate, labels, { min: 0.1, max: 100 });
   const savingsIncreaseRateField = buildPercentField('savingsIncreaseRate', getString(labels, 'stepsStep2AnnualSavingsIncreaseRateLabel', 'Expected annual savings increase (%)'), savedValues.SavingIncRatePct ?? 0, labels);
   savingsWrap.appendChild(currentSavingsField);
   savingsWrap.appendChild(savingsReturnRateField);
   savingsWrap.appendChild(savingsIncreaseRateField);
-  initProgressiveReveal(savingsWrap);
+  initProgressiveReveal(savingsWrap, 'savings', state);
   content.appendChild(savingsWrap);
 
   // ── Provident Fund ──
@@ -512,25 +528,25 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   const pvdReturnRateField = buildPercentField('pvdReturnRate', getString(labels, 'stepsStep2ProvidentFundExpectedReturnRateLabel', 'Expected annual return (%)'), savedValues.CompensationRateRetirePct ?? 0, labels);
   const salaryField = buildMoneyField('salary', getString(labels, 'stepsStep2MonthlySalaryLabel', 'Current salary'), savedValues.IncomeRetire, labels);
   const salaryIncreaseField = buildPercentField('salaryIncrease', getString(labels, 'stepsStep2AnnualSalaryIncreaseRateLabel', 'Estimated annual salary increase (%)'), savedValues.IncIncomeRetirePct ?? 0, labels);
-  const pvdContribField = buildPercentField('pvdContrib', getString(labels, 'stepsStep2ProvidentFundContributionRateLabel', 'Monthly provident fund contribution (%)'), savedValues.SavingCurrentPct ?? 0, labels);
+  const pvdContribField = buildPercentField('pvdContrib', getString(labels, 'stepsStep2ProvidentFundContributionRateLabel', 'Monthly provident fund contribution (%)'), savedValues.SavingCurrentPct ?? 0, labels, { min: 0, max: 15 });
   pvdWrap.appendChild(pvdCurrentField);
   pvdWrap.appendChild(pvdReturnRateField);
   pvdWrap.appendChild(salaryField);
   pvdWrap.appendChild(salaryIncreaseField);
   pvdWrap.appendChild(pvdContribField);
-  initProgressiveReveal(pvdWrap);
+  initProgressiveReveal(pvdWrap, 'pvd', state);
   content.appendChild(pvdWrap);
 
   // ── RMF ──
   const rmfWrap = parseHTML('<div class="rc-section"></div>');
   rmfWrap.appendChild(buildSectionHeader(getString(labels, 'stepsStep2RmfSection', 'Retirement Mutual Fund (RMF)')));
-  const rmfCurrentField = buildMoneyField('rmfCurrent', getString(labels, 'stepsStep2CurrentRMFSavingsLabel', 'Current balance in RMF'), savedValues.RMFSumRetire, labels);
-  const rmfAnnualField = buildMoneyField('rmfAnnual', getString(labels, 'stepsStep2ExpectedAnnualRMFAccumulationLabel', 'Expected annual RMF contribution'), savedValues.RMFSavingRateRetire, labels);
-  const rmfReturnRateField = buildPercentField('rmfReturnRate', getString(labels, 'stepsStep2RmfExpectedReturnRateLabel', 'Expected annual return (%)'), savedValues.RMFCompensationRateRetirePct ?? 0, labels);
+  const rmfCurrentField = buildMoneyField('rmfCurrent', getString(labels, 'stepsStep2CurrentRMFSavingsLabel', 'Current balance in RMF'), savedValues.RMFSumRetire, labels, { max: 50000000 });
+  const rmfAnnualField = buildMoneyField('rmfAnnual', getString(labels, 'stepsStep2ExpectedAnnualRMFAccumulationLabel', 'Expected annual RMF contribution'), savedValues.RMFSavingRateRetire, labels, { max: 500000 });
+  const rmfReturnRateField = buildPercentField('rmfReturnRate', getString(labels, 'stepsStep2RmfExpectedReturnRateLabel', 'Expected annual return (%)'), savedValues.RMFCompensationRateRetirePct ?? 0, labels, { min: 0, max: 30 });
   rmfWrap.appendChild(rmfCurrentField);
   rmfWrap.appendChild(rmfAnnualField);
   rmfWrap.appendChild(rmfReturnRateField);
-  initProgressiveReveal(rmfWrap);
+  initProgressiveReveal(rmfWrap, 'rmf', state);
   content.appendChild(rmfWrap);
 
   // ── Lump Sum ──
@@ -542,7 +558,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   lumpSumWrap.appendChild(lumpSumField);
   lumpSumWrap.appendChild(annualInvestmentField);
   lumpSumWrap.appendChild(lumpSumReturnRateField);
-  initProgressiveReveal(lumpSumWrap);
+  initProgressiveReveal(lumpSumWrap, 'lumpSum', state);
   content.appendChild(lumpSumWrap);
 
   container.appendChild(content);
@@ -561,11 +577,12 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   const validateSavingsCross = () => {
     const returnRate = savingsReturnRateField.getValue();
     const increaseRate = savingsIncreaseRateField.getValue();
+    const crossMsg = getString(labels, 'validationAnnualSavingsIncreaseRateError', '% of annual increase in savings must be less than/equal to the expected annual return.');
     const increaseErr = block.querySelector('#rc-err-savingsIncreaseRate').textContent;
-    if (!increaseErr && increaseRate > returnRate) {
-      savingsIncreaseRateField.setError(
-        getString(labels, 'validationAnnualSavingsIncreaseRateError', '% of annual increase in savings must be less than/equal to the expected annual return.'),
-      );
+    if (increaseRate > returnRate) {
+      if (!increaseErr) savingsIncreaseRateField.setError(crossMsg);
+    } else if (increaseErr === crossMsg) {
+      savingsIncreaseRateField.setError('');
     }
   };
 
@@ -663,6 +680,7 @@ function renderJourney3(block, data, state, onBack) {
   const content = parseHTML('<div class="rc-content"></div>');
 
   // ── Summary card (same as J2) ──
+  const inflationNoteText = getInflationText(labels, data);
   const summaryCard = parseHTML(`
     <div class="rc-j1-summary">
       <div class="rc-j1-summary-card">
@@ -685,7 +703,7 @@ function renderJourney3(block, data, state, onBack) {
         </div>
       </div>
       <p class="rc-j1-summary-note">
-        ${getString(labels, 'stepsStep2InflationNote', 'Including an inflation rate of 1.5% p.a., the return on investment after retirement is assumed to be 3% p.a.')}
+        ${inflationNoteText}
       </p>
     </div>
   `);
@@ -701,37 +719,47 @@ function renderJourney3(block, data, state, onBack) {
       </div>
     `));
   } else {
-    const userReturnRate = state.journey2?.CompensationRatePct
+    const userReturnRate = round2(state.journey2?.CompensationRatePct
       ?? data.defaultSavingsReturnRate
-      ?? 3;
-    const altReturnRate = userReturnRate + 2;
+      ?? 3);
+    const altReturnRate = round2(userReturnRate + 2);
 
-    const note1Text = getString(labels, 'stepsStep3SavingsReturnNote3', 'Based on expected annual return on savings of 3%')
-      .replace(/\d+(?:\.\d+)?%/, `${userReturnRate}%`);
-    const note2Text = getString(labels, 'stepsStep3SavingsReturnNote5', 'If you invest with an annual return of 5%')
-      .replace(/\d+(?:\.\d+)?%/, `${altReturnRate}%`);
+    const note1Text = getString(labels, 'stepsStep3SavingsReturnNote3', 'Based on expected annual return on savings of {rate}%')
+      .replace('{rate}%', `${userReturnRate}%`);
+    const note2Text = getString(labels, 'stepsStep3SavingsReturnNote5', 'If you invest with an annual return of {rate}%')
+      .replace('{rate}%', `${altReturnRate}%`);
+
+    const increaseRate = round2(state.journey2?.SavingIncRatePct ?? 0);
+    const increaseRateText = getString(labels, 'stepsResultsInvestmentReturnRate', 'By increasing your annual savings by {rate}%')
+      .replace('{rate}%', `${increaseRate}%`);
 
     // ── Cases 2 & 3: savings cards ──
     const altCard = savingMonth2 >= 0 ? `
-        <div class="rc-savings-card-alt">
-          <p class="rc-savings-card-title rc-savings-card-title-alt">${getString(labels, 'stepsStep3OrSaveJustLabel', 'Or\nsave just')}</p>
-          <p class="rc-savings-card-amount rc-savings-card-amount-alt">
-            ${formatNumber(savingMonth2)} <span class="rc-savings-card-unit rc-savings-card-unit-alt">${baht}</span>
-          </p>
-          <p class="rc-savings-card-note rc-savings-card-note-alt">
-            ${note2Text}
-          </p>
+        <div class="rc-savings-card-col">
+          <div class="rc-savings-card-alt">
+            <p class="rc-savings-card-title rc-savings-card-title-alt">${getString(labels, 'stepsStep3OrSaveJustLabel', 'Or\nsave just')}</p>
+            <p class="rc-savings-card-amount rc-savings-card-amount-alt">
+              ${formatNumber(savingMonth2)} <span class="rc-savings-card-unit rc-savings-card-unit-alt">${baht}</span>
+            </p>
+            <p class="rc-savings-card-note rc-savings-card-note-alt">
+              ${note2Text}
+            </p>
+          </div>
+          <p class="rc-j1-summary-note">${increaseRateText}</p>
         </div>` : '';
     content.appendChild(parseHTML(`
       <div class="rc-savings-cards">
-        <div class="rc-savings-card-recommended">
-          <p class="rc-savings-card-title">${getString(labels, 'stepsStep3RecommendedMonthlySavingsLabel', 'Recommended\nmonthly savings')}</p>
-          <p class="rc-savings-card-amount">
-            ${formatNumber(savingMonth1)} <span class="rc-savings-card-unit">${baht}</span>
-          </p>
-          <p class="rc-savings-card-note">
-            ${note1Text}
-          </p>
+        <div class="rc-savings-card-col">
+          <div class="rc-savings-card-recommended">
+            <p class="rc-savings-card-title">${getString(labels, 'stepsStep3RecommendedMonthlySavingsLabel', 'Recommended\nmonthly savings')}</p>
+            <p class="rc-savings-card-amount">
+              ${formatNumber(savingMonth1)} <span class="rc-savings-card-unit">${baht}</span>
+            </p>
+            <p class="rc-savings-card-note">
+              ${note1Text}
+            </p>
+          </div>
+          <p class="rc-j1-summary-note">${increaseRateText}</p>
         </div>
         ${altCard}
       </div>

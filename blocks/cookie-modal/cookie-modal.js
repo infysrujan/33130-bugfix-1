@@ -268,7 +268,7 @@ export default function decorate(block) {
     const cookieName = resolveCookieName(labelText);
     const stored = getCookie(cookieName);
     const defaultEnabled = cols[2]?.textContent?.trim() === 'true';
-    const isChecked = stored !== null || defaultEnabled;
+    const isChecked = stored !== '' || defaultEnabled;
 
     return {
       labelText,

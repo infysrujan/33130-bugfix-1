@@ -39,7 +39,8 @@ export default function decorate(block) {
     const icon = cells[0].querySelector('picture, img');
     if (!icon) return;
 
-    const platform = cells[1]?.textContent.trim().toLowerCase() || '';
+    const platformName = cells[1]?.textContent.trim();
+    const platform = platformName.toLowerCase() || '';
 
     // URL is optional — read from cell[2] if present
     let url = null;
@@ -57,7 +58,7 @@ export default function decorate(block) {
     const a = document.createElement('a');
 
     if (url) {
-      a.href = url;
+      a.href = url.replace('page-url', encodeURIComponent(window.location.href));
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
     } else {
@@ -65,6 +66,7 @@ export default function decorate(block) {
     }
     a.className = `platform-${platform}`;
     a.setAttribute('aria-label', `Share on ${platform}`);
+    a.setAttribute('title', platformName);
 
     const clonedIcon = icon.cloneNode(true);
     clonedIcon.querySelectorAll('img').forEach((img) => {

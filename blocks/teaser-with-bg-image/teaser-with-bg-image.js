@@ -111,6 +111,7 @@ export default function decorate(block) {
   }
 
   if (teaserButton) {
+    teaserButton.classList.add('button-m');
     const ctaWrapper = createElementFromHTML(
       '<div class="teaser-bg-image-cta"></div>',
       doc,

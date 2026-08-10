@@ -92,19 +92,16 @@ function getCardName(card) {
   return card.name || card.title || card.FundName || card.fundName || '';
 }
 
-function filterAndSortCards(allCards, selectedNames, sourcingMap) {
+function filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap) {
   const normalizedNames = selectedNames.map(norm);
-
-  const matched = allCards.filter((card) => {
-    const cardName = norm(getCardName(card));
-    return normalizedNames.some((n) => cardName.includes(n) || n.includes(cardName));
-  });
+  const matched = allCards.filter((card) => selectedIDs.includes(card.ProductID));
 
   if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
     return normalizedNames
       .map((n) => matched.find((c) => {
         const cardName = norm(getCardName(c));
-        return cardName.includes(n) || n.includes(cardName);
+        const found = cardName === n;
+        return found;
       }))
       .filter(Boolean);
   }
@@ -213,7 +210,6 @@ function buildCompareCard(card, doc, labels) {
   fields.forEach(({
     key, label, value, isHtml,
   }) => {
-    if (!value) return;
     const dl = doc.createElement('dl');
     dl.dataset.field = key;
     const dt = doc.createElement('dt');
@@ -221,10 +217,12 @@ function buildCompareCard(card, doc, labels) {
     dt.textContent = label;
     const dd = doc.createElement('dd');
     dd.className = 'mfcr-value';
-    if (isHtml) {
-      dd.innerHTML = value;
-    } else {
-      dd.textContent = value;
+    if (value) {
+      if (isHtml) {
+        dd.innerHTML = value;
+      } else {
+        dd.textContent = value;
+      }
     }
     dl.appendChild(dt);
     dl.appendChild(dd);
@@ -369,7 +367,8 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
   }
 
   const selectedNames = cards.map((c) => c.name);
-  const sorted = filterAndSortCards(allCards, selectedNames, sourcingMap);
+  const selectedIDs = cards.map((c) => c.id);
+  const sorted = filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap);
 
   const displayCards = sorted.length > 0
     ? sorted

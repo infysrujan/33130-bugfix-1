@@ -11,7 +11,7 @@
   left: 0;
   right: 0;
   z-index: 11;
-  padding: var(--bbl-space-150) 0;
+  padding: 0.9375rem 0 0.625rem;
   background: var(--bbl-color-white);
   box-shadow: 0 0 var(--bbl-space-150) var(--bbl-color-black-alpha-20);
   opacity: 0;
@@ -27,7 +27,6 @@
 /* ── Inner container — mobile: vertical stack ─────────────────────────────── */
 
 .mf-comparator .inner-container {
-  padding: 0 var(--bbl-space-container-xs);
   display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -54,8 +53,9 @@
   align-items: center;
   width: 100%;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-150);
-  padding-bottom: var(--bbl-space-150);
+  padding: 0.9375rem 0;
   overflow-x: auto;
+  margin-bottom: 0.9375rem;
   white-space: nowrap;
 }
 
@@ -108,10 +108,8 @@
   font-size: var(--bbl-font-size-b3, 0.8125rem);
   font-weight: 300;
   line-height: 1.0625rem;
-  text-align: center;
   cursor: pointer;
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
@@ -161,11 +159,15 @@
   display: none;
 }
 
+.mf-comparator .inner-container button {
+  min-width: 100%;
+}
+
 /* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
 
 @media (width > 47.5rem) {
-  .mf-comparator .inner-container {
-    padding: 0 var(--bbl-space-container-md);
+  .mf-comparator .inner-container button {
+    min-width: 8.4375rem;
   }
 }
 
@@ -186,5 +188,9 @@
 
   .mf-comparator .product-comparing {
     flex-shrink: 1;
+  }
+
+  .mf-comparator .inner-container button {
+    min-width: 9.6875rem;
   }
 }

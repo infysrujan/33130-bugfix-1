@@ -1,73 +1,298 @@
-/* ==========================================================================
-   BBL Wizard Steps — horizontal step progress indicator
-   Breakpoints: mobile < 760px | tablet 760–1024px | desktop >= 1025px
-   ========================================================================== */
+:root {
+  --bbl-color-grey-300 :#d1d5db;
+  --bbl-margin-block-14px: 0.875rem;
+  --bbl-margin-block-15px: 0.9375rem;
+  --bbl-margin-block-10px: 0.625rem;
+  --bbl-wizard-line-height-base-mobile: 1.1375rem;
+  --bbl-wizard-line-height-error: 1.125rem;
+  --bbl-wizard-line-height-radio-mobile: 2.0125rem;
+  --bbl-wizard-line-height-base-desktop: 1.3rem;
+  --bbl-wizard-line-height-radio-desktop: 2.3rem;
+  --bbl-wizard-line-height-plain-text-desktop: 1.375rem;
+}
 
 .field-bbl-wizard {
   width: 100%;
 }
 
-/* --------------------------------------------------------------------------
-   Step track — flex row containing alternating [step] [connector] [step]
-   -------------------------------------------------------------------------- */
-
 .bbl-wizard-steps {
   display: flex;
-  align-items: flex-start; /* steps + connectors all start at top; margin-top positions connectors */
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px 16px 8px;
-  width: 100%;
+  padding: 0 var(--bbl-space-150);
+  width: 80%;
   box-sizing: border-box;
+  margin: 0 auto;
+  max-width: 31.25rem;
+  line-height: var(--bbl-wizard-line-height-base-mobile);
+  font-family: var(--bbl-font-family-medium);
 }
 
-/* --------------------------------------------------------------------------
-   Individual step — circle + label stacked vertically
-   -------------------------------------------------------------------------- */
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper:not([class*="field-form-fragment"], .field-button-panel, [class*="field-form-width"], [class*="field-css-"], :has([class*="field-form-width"])) {
+  padding-inline: var(--bbl-space-200);
+  margin-top: var(--bbl-space-250);
+  line-height: var(--bbl-wizard-line-height-base-mobile);
+  max-width: 50rem;
+  margin-inline: auto;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-740"] {
+  max-width: 46.25rem;
+  margin-inline: auto;
+  padding-inline: var(--bbl-space-200);
+}
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1):where(:not(.custom-fieldset-approval, .custom-fieldset-approval *)) {
+  width: 100%;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-900"] {
+  max-width: 56.25rem;
+  margin-inline: auto;
+  padding-inline: var(--bbl-space-200);
+}
+
+main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-900"]:has(.field-veiwplanstext) {
+  padding-bottom: 1.875rem;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-1240"] {
+  max-width: 77.5rem;
+  margin-inline: auto;
+  padding-inline: var(--bbl-space-200);
+}
+
+main .section.form-container.wizard-forms .form form > fieldset.panel-wrapper.field-wrapper:has([class*="field-form-width-1240"]) {
+  max-width: 77.5rem;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-1240"]:has(.field-cards-health) {
+  padding-bottom: var(--bbl-space-250);
+}
+
+main .section.form-container.wizard-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
+  text-align: left;
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: var(--bbl-wizard-line-height-base-mobile);
+}
+
+main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards, .horizontal) {
+  gap: 0.4375rem;
+  align-items: flex-start;
+}
+
+main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.horizontal) {
+  margin-block: var(--bbl-margin-block-15px) var(--bbl-margin-block-10px);
+}
+
+main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards, .horizontal, .field-invalid) {
+  padding-bottom: var(--bbl-space-200);
+}
+
+main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards, .horizontal) .radio-wrapper {
+  align-items: flex-start;
+  margin-left: var(--bbl-margin-block-14px);
+}
+
+main .section.wizard-forms .form form .radio-group-wrapper.horizontal .radio-wrapper:first-of-type {
+  margin-left: var(--bbl-margin-block-14px);
+  min-width: unset;
+}
+
+main .section.wizard-forms .form form label,
+main .section.wizard-forms .form form legend,
+main .section.wizard-forms .form form p,
+main .section.wizard-forms .form form .field-label {
+  color: var(--bbl-color-grey-85);
+}
+
+main .section.wizard-forms .form form p,
+main .section.wizard-forms .form form .repeat-wrapper,
+main .section.wizard-forms .form form .field-wrapper {
+  margin: 0 auto;
+}
+
+main .section.form-container.wizard-forms .form form .plain-text-wrapper p {
+  text-align: left;
+}
+
+main .section.form-container.wizard-forms .form form .field-button-panel .button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+main .section.form-container.wizard-forms .form form .plain-text-wrapper ul {
+  margin: 0 0 0 var(--bbl-space-250);
+  padding-left: 0;
+}
+
+main .section.form-container.wizard-forms .form form .plain-text-wrapper li {
+  margin: 0 0 var(--bbl-margin-block-10px) var(--bbl-space-250);
+}
+
+main .section.form-container.wizard-forms .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) .radio-wrapper {
+  min-width: unset;
+}
+
+main .section.form-container.wizard-forms .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
+  gap: 0 var(--bbl-space-500);
+  line-height: var(--bbl-wizard-line-height-radio-mobile);
+  margin-bottom: var(--bbl-margin-block-15px);
+  justify-content: unset;
+}
+
+main .section.form-container.wizard-forms .form form .field-invalid :is(.field-validation-error, .field-description) {
+  margin: 0 0 0 var(--bbl-margin-block-14px);
+  font-size: var(--bbl-font-size-b2-mobile);
+  line-height: var(--bbl-wizard-line-height-error);
+  color: var(--bbl-color-error-red, #f00);
+  align-self: flex-start;
+}
+
+main .section.form-container.wizard-forms .form form .field-wrapper.field-invalid :is(input:not([type='radio'], [type='checkbox']), select, textarea) {
+  border-color: var(--bbl-color-error-red, #f00);
+}
+
+main .section.wizard-forms .form form .radio-group-wrapper:not(.field-invalid)::after {
+  content: '';
+  display: block;
+  height: 1rem;
+  width: 100%;
+  flex-basis: 100%;
+}
+
+main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards) input[type='radio'] {
+  appearance: none;
+  box-sizing: border-box;
+  height: 1.5rem;
+  width: 1.5rem;
+  padding: 0;
+  margin-top: 0.1875rem;
+  border-radius: 50%;
+  border: 0.125rem solid var(--bbl-color-grey-40, #c8c8cc);
+  opacity: 0.2;
+  background-color: var(--bbl-color-white, #fff);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards) input[type='radio']:checked {
+  background-color: var(--bbl-color-white, #fff);
+  border-color: var(--bbl-color-active-blue, #0064ff);
+  opacity: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 12L10 15L16 8' stroke='%230064FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  background-size: 1.5rem 1.5rem;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 
 .bbl-wizard-step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  flex: 0 0 auto;
-  min-width: 80px;
-  max-width: 120px;
+  gap: var(--bbl-space-075);
+  flex: 0 0 1.5rem;
+  min-width: 0;
+  overflow: visible;
 }
 
-/* --------------------------------------------------------------------------
-   Indicator circle
-   -------------------------------------------------------------------------- */
-
 .bbl-wizard-step-indicator {
-  width: 40px;
-  height: 40px;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 16px;
-  font-weight: 600;
   line-height: 1;
   transition:
     background-color 0.25s ease,
     border-color 0.25s ease,
     color 0.25s ease;
-
-  /* Inactive (default) */
-  background-color: var(--bbl-color-white, #fff);
-  border: 2px solid var(--bbl-color-grey-40, #c8c8cc);
+  background-color: var(--bbl-color-grey-20, #e3e3e5);
+  border: 0.125rem solid var(--bbl-color-grey-20, #e3e3e5);
   color: var(--bbl-color-grey-60, #939399);
 }
 
-/* Active step — outlined blue */
 .bbl-wizard-step.is-active .bbl-wizard-step-indicator {
   background-color: var(--bbl-color-white, #fff);
   border-color: var(--bbl-color-active-blue, #0064ff);
   color: var(--bbl-color-active-blue, #0064ff);
+  transform: scale(1.1);
 }
 
-/* Completed step — filled blue + white checkmark */
+main .form-container.wizard-forms {
+  padding-inline: var(--bbl-space-section-xs);
+}
+
+main .section.form-container .wizard-forms.central-aligned .block,
+main .section.form-container.wizard-forms > .default-content-wrapper {
+  margin: 0;
+}
+
+main .section.form-container.wizard-forms.central-aligned .block,
+main .section.form-container.wizard-forms.central-aligned > .default-content-wrapper {
+  margin-top: 0;
+}
+
+main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) {
+  margin: 0;
+  width: 100%;
+  margin-bottom: var(--bbl-margin-block-10px);
+}
+
+main .section.wizard-forms .form form .field-prospectage:has(~ .field-prospectsa) {
+  margin-bottom: var(--bbl-margin-block-15px);
+}
+
+main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) > label::after {
+  content: none;
+}
+
+main .wizard-forms .form input {
+  height: 3.125rem;
+  border: 0.0625rem solid var(--bbl-color-grey-40, #c8c8cc);
+}
+
+main .section.form-container.wizard-forms .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea) {
+  margin-bottom: 0;
+  padding-inline: var(--bbl-margin-block-14px);
+}
+
+main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) input {
+  text-align: right;
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: var(--bbl-wizard-line-height-base-mobile);
+}
+
+main .section.form-container.wizard-forms .form form :is(input:not([type='radio'], [type='checkbox']), textarea)::placeholder {
+  opacity: 0.4;
+}
+
+main .section.form-container.wizard-forms .form form .field-wrapper:not(.field-invalid) :is(input:not([type='radio'], [type='checkbox']), select, textarea):is(:hover, :focus, :focus-visible, :active) {
+  border-color: var(--bbl-color-active-blue, #0064ff);
+}
+
+main .section.form-container.wizard-forms .form form label.field-label {
+  display: block;
+  margin-bottom: var(--bbl-margin-block-10px);
+}
+
+main .section.form-container.wizard-forms .form form .field-infotext {
+  margin-inline: 0;
+}
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-button-panel.field-wrapper {
+  margin: 1.875rem auto;
+}
+
+main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards, .horizontal) .radio-wrapper label {
+  line-height: var(--bbl-wizard-line-height-radio-mobile);
+  font-size: var(--bbl-text-default-size);
+  text-align: left;
+}
+
 .bbl-wizard-step.is-completed .bbl-wizard-step-indicator {
   background-color: var(--bbl-color-active-blue, #0064ff);
   border-color: var(--bbl-color-active-blue, #0064ff);
@@ -75,119 +300,166 @@
 }
 
 .bbl-wizard-step.is-completed .bbl-wizard-step-indicator svg {
-  width: 20px;
-  height: 20px;
+  width: 0.875rem;
+  height: 0.875rem;
   fill: currentcolor;
   display: block;
 }
 
-/* --------------------------------------------------------------------------
-   Step label
-   -------------------------------------------------------------------------- */
-
 .bbl-wizard-step-title {
-  font-size: 12px;
-  line-height: 1.4;
   text-align: center;
-  color: var(--bbl-color-grey-60, #939399);
+  color: var(--bbl-color-grey-85);
   transition: color 0.25s ease, font-weight 0.25s ease;
   overflow-wrap: break-word;
   hyphens: auto;
+  width: 5.625rem;
+  padding: 0 var(--bbl-space-050);
 }
-
-.bbl-wizard-step.is-active .bbl-wizard-step-title,
-.bbl-wizard-step.is-completed .bbl-wizard-step-title {
-  color: var(--bbl-color-truthful-blue, #002850);
-  font-weight: 500;
-}
-
-/* --------------------------------------------------------------------------
-   Connector line — sits between two step items in the flex row.
-   margin-top = (indicator height - connector height) / 2
-   so the 2 px line aligns with the vertical centre of the 40 px circle.
-   -------------------------------------------------------------------------- */
 
 .bbl-wizard-step-connector {
-  flex: 1 1 0;
-  min-width: 16px;
-  height: 2px;
-  margin-top: 19px; /* (40px circle − 2px line) / 2 */
-  background-color: var(--bbl-color-grey-40, #c8c8cc);
-  transition: background-color 0.25s ease;
+  flex-grow: 1;
+  min-width: 0.5rem;
+  height: 0.125rem;
+  margin-top: calc((1.5rem - 0.125rem) / 2);
+  background-color: var(--bbl-color-grey-300, #d1d5db);
+  transition: background-color 0.3s ease-in-out;
+  position: relative;
+  z-index: 1;
 }
 
-/* Connector between two completed/active steps is blue */
 .bbl-wizard-step-connector.is-completed {
   background-color: var(--bbl-color-active-blue, #0064ff);
 }
 
-/* ==========================================================================
-   Mobile — < 760px
-   ========================================================================== */
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
+  min-width: 8.4375rem;
+}
 
-@media (width < 760px) {
+main .section.form-container.wizard-forms .form form {
+  max-width: 77.5rem;
+}
+
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper:is(.field-veiwplanstext, .field-infotext2) :is(h1, h2, h3, h4, h5, h6, p),
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-infotext2 p p {
+  text-align: center;
+}
+
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
+  position: relative;
+  padding-bottom: var(--bbl-space-250);
+  margin-block: 1.875rem;
+}
+
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--bbl-space-1000);
+  height: 0.0625rem;
+  background-color: var(--bbl-color-grey-150);
+}
+
+@media (width >= 47.5rem) {
+  main .form-container.wizard-forms {
+    padding-inline: var(--bbl-space-600);
+  }
+
+  main .section.form-container.wizard-forms .form form fieldset.field-insurancerecommendationformpanel.panel-wrapper.field-wrapper {
+    margin-top: var(--bbl-space-400);
+  }
+
   .bbl-wizard-steps {
-    padding: 16px 8px 6px;
+    padding: 0;
+    height: 3.125rem;
   }
 
   .bbl-wizard-step {
-    min-width: 56px;
-    max-width: 88px;
-    gap: 6px;
-  }
-
-  .bbl-wizard-step-indicator {
-    width: 32px;
-    height: 32px;
-    font-size: 13px;
+    max-width: 7.5rem;
+    gap: var(--bbl-space-100);
   }
 
   .bbl-wizard-step.is-completed .bbl-wizard-step-indicator svg {
-    width: 16px;
-    height: 16px;
+    width: 1.25rem;
+    height: 1.25rem;
   }
 
   .bbl-wizard-step-title {
-    font-size: 10px;
+    min-width: 8.75rem;
   }
 
-  .bbl-wizard-step-connector {
-    min-width: 8px;
-    margin-top: 15px; /* (32px − 2px) / 2 */
+  main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: 1.875rem;
+  }
+
+  main .section.form-container.wizard-forms .form form :is(fieldset[class*="field-form-width-740"], fieldset[class*="field-form-width-900"], fieldset[class*="field-form-width-1240"]) {
+    padding-inline: var(--bbl-space-600);
   }
 }
 
-/* ==========================================================================
-   Desktop — >= 1025px
-   ========================================================================== */
-
-@media (width >= 1025px) {
+@media (width >= 64rem) {
   .bbl-wizard-steps {
-    padding: 28px 24px 10px;
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
-  .bbl-wizard-step {
-    min-width: 100px;
-    max-width: 148px;
-    gap: 10px;
+  main .wizard-forms .form input {
+    height: 3.625rem;
   }
 
-  .bbl-wizard-step-indicator {
-    width: 48px;
-    height: 48px;
-    font-size: 18px;
+  main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards) input[type='radio'] {
+    height: 2rem;
+    width: 2rem;
   }
 
-  .bbl-wizard-step.is-completed .bbl-wizard-step-indicator svg {
-    width: 24px;
-    height: 24px;
+  main .section.form-container.wizard-forms .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea) {
+    padding-inline: var(--bbl-space-200);
+  }
+
+  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
+    min-width: 9.6875rem;
+  }
+
+  main .section.form-container.wizard-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
+  }
+
+  main .section.form-container.wizard-forms .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
+    line-height: var(--bbl-wizard-line-height-radio-desktop);
+  }
+
+  main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards, .horizontal) .radio-wrapper label {
+    line-height: var(--bbl-wizard-line-height-radio-desktop);
+  }
+
+  main .section.form-container.custom-forms .form form .plain-text-wrapper p:last-child p {
+    line-height: var(--bbl-wizard-line-height-plain-text-desktop);
+  }
+
+  main .form-container.wizard-forms {
+    padding-inline: var(--bbl-space-1050);
+  }
+
+  main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper:not([class*="field-form-fragment"], .field-button-panel) {
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
   .bbl-wizard-step-title {
-    font-size: 13px;
+    font-size: var(--bbl-font-size-b1-desktop);
   }
 
-  .bbl-wizard-step-connector {
-    margin-top: 23px; /* (48px − 2px) / 2 */
+  main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) input {
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
+  }
+
+  main .section.form-container.wizard-forms .form form :is(fieldset[class*="field-form-width-740"], fieldset[class*="field-form-width-900"], fieldset[class*="field-form-width-1240"]) {
+    padding-inline: 0;
+  }
+
+  main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-1240"]:has(.field-cards-health) {
+    padding-bottom: var(--bbl-space-500);
   }
 }

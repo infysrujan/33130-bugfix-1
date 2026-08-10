@@ -27,7 +27,7 @@ function createMenuCard(cardElement, doc) {
   // If link exists, wrap title and image in the link
   if (linkElement) {
     const link = createElementFromHTML(
-      `<a href="${linkElement.href}"${linkElement.title ? ` title="${linkElement.title}"` : ''}></a>`,
+      `<a href="${linkElement.href}" data-skip-attr-auto-blocking="title"></a>`,
       doc,
     );
 

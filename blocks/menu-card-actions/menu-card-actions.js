@@ -133,7 +133,12 @@ function createCardItem(cardRow, doc) {
   }
 
   if (description) {
-    inner.appendChild(createElementFromHTML(`<div class="menu-card-action-description">${description}</div>`, doc));
+    const descriptionEl = createElementFromHTML(`<div class="menu-card-action-description">${description}</div>`, doc);
+    descriptionEl.querySelectorAll('a').forEach((a) => {
+      a?.setAttribute('data-skip-attr-auto-blocking', 'title');
+      a.removeAttribute('title');
+    });
+    inner.appendChild(descriptionEl);
     inner.querySelector('.menu-card-action-title')?.classList.add('has-description');
   }
 

@@ -220,9 +220,11 @@
 
 .forward-points-sme .fpsme-dp-title {
   display: flex;
-  gap: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 700;
+  gap: 0.75rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-heading-h3-size);
+  line-height: var(--bbl-heading-h3-line-height);
+  font-weight: var(--bbl-heading-h3-weight);
   color: var(--bbl-color-blue-105);
 }
 
@@ -271,8 +273,10 @@
 
 .forward-points-sme .fpsme-dp-calendar thead th {
   padding: 0.25rem 0 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-body-b1-size);
+  line-height: var(--bbl-body-b1-line-height);
+  font-weight: var(--bbl-body-b1-weight);
   color: var(--bbl-color-black);
   text-align: center;
 }
@@ -294,7 +298,10 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: var(--bbl-rounded-full);
-  font-size: 0.8125rem;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-body-b1-size);
+  line-height: var(--bbl-body-b1-line-height);
+  font-weight: var(--bbl-body-b1-weight);
   border: none;
   background: none;
   cursor: pointer;
@@ -486,9 +493,9 @@
 
 .forward-points-sme .fpsme-fwd-title p {
   margin: 0;
-  font-size: 1.375rem;
+  font-size: var(--bbl-heading-h3-size);
   font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.3;
+  line-height: var(--bbl-heading-h3-line-height);
   text-align: center;
   color: var(--bbl-color-grey-85);
 }
@@ -644,11 +651,7 @@
 
   .forward-points-sme .fpsme-dp-header {
     width: 70%;
-    margin: 0 auto 0.75rem;
-  }
-
-  .forward-points-sme .fpsme-dp-title {
-    font-size: 1.1rem;
+    margin: 1rem auto 2rem;
   }
 
 }
@@ -712,27 +715,22 @@
   }
 
   .forward-points-sme .fpsme-datepicker {
-    max-width: 33.75rem;
-    width: 33.75rem;
+    max-width: 30rem;
+    width: 30rem;
+    padding: 20px 50px;
   }
 
   .forward-points-sme .fpsme-flag {
     margin-left: -0.875rem;
   }
 
-  .forward-points-sme .fpsme-dp-title {
-    font-size: 1.3rem;
-  }
-
   .forward-points-sme .fpsme-dp-day-btn,
   .forward-points-sme .fpsme-dp-day-text {
     width: 2.75rem;
     height: 2.75rem;
-    font-size: 1rem;
   }
 
   .forward-points-sme .fpsme-dp-calendar thead th {
-    font-size: 1rem;
     padding-bottom: 0.75rem
   }
 

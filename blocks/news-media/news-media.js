@@ -64,7 +64,8 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
       }).join('')
       : `<p class="listing-card-empty">${placeholders.newsMediaNoResults || 'No results found.'}</p>`;
 
-    paginationEl.innerHTML = buildPaginationHtml(state.page, totalPages);
+    const carouselNavBtnsLabels = { prevBtnLabel: placeholders.carouselPrevBtnLabel || 'Previous', nextBtnLabel: placeholders.carouselNextBtnLabel || 'Next' };
+    paginationEl.innerHTML = buildPaginationHtml(state.page, totalPages, carouselNavBtnsLabels);
   }
   bindPaginationClick(paginationEl, state, render, gridEl);
   render();

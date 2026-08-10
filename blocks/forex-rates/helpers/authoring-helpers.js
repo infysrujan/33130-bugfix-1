@@ -1,8 +1,7 @@
 function parseColumns(listElement) {
   if (!listElement) return [];
   return [...listElement.querySelectorAll('li')]
-    .map((li) => li.innerHTML.trim())
-    .filter(Boolean);
+    .map((li) => li.innerHTML.trim());
 }
 
 export default function parseAuthoring(block) {

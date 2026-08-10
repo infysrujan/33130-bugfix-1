@@ -47,7 +47,7 @@ export default function buildSlideArrowsandDots(row, index) {
     if (titleCell && titleCell.textContent.trim()) {
       const title = document.createElement('h3');
       title.className = 'title-2';
-      title.innerHTML = titleCell.innerHTML;
+      title.textContent = titleCell.textContent.trim();
       content.append(title);
     }
 

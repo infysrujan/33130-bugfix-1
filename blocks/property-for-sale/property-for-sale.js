@@ -286,8 +286,9 @@ function setupPanel(panel, state, config) {
       applyLinkTarget(footer, '.pfs-map-btn', newTab);
     });
 
+    const carouselNavBtnsLabels = { prevBtnLabel: placeholders.carouselPrevBtnLabel || 'Previous', nextBtnLabel: placeholders.carouselNextBtnLabel || 'Next' };
     const totalPages = Math.max(1, Math.ceil(allItems.length / pageSize));
-    paginationEl.innerHTML = buildPaginationHtml(pageRef.page, totalPages);
+    paginationEl.innerHTML = buildPaginationHtml(pageRef.page, totalPages, carouselNavBtnsLabels);
   }
 
   async function render() {

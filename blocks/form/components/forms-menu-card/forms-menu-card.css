@@ -1,26 +1,20 @@
-/* ============================================================
-   Forms Menu Card — design tokens
-   ============================================================ */
 :root {
   --forms-menu-card-border-color: #e0e0e0;
-  --forms-menu-card-border-radius: 8px;
-  --forms-menu-card-padding: 24px;
-  --forms-menu-card-icon-size: 48px;
+  --forms-menu-card-border-radius: 0.5rem;
+  --forms-menu-card-padding: 1.5rem;
+  --forms-menu-card-icon-size: 3rem;
   --forms-menu-card-accent: #1473e6;
   --forms-menu-card-title-color: #2c2c2c;
-  --forms-menu-card-title-size: 18px;
-  --forms-menu-card-divider-width: 32px;
-  --forms-menu-card-divider-height: 2px;
-  --forms-menu-card-divider-gap: 12px;
+  --forms-menu-card-title-size: 1.125rem;
+  --forms-menu-card-divider-width: 2rem;
+  --forms-menu-card-divider-height: 0.125rem;
+  --forms-menu-card-divider-gap: 0.75rem;
   --forms-menu-card-desc-color: #6e6e6e;
-  --forms-menu-card-desc-size: 14px;
+  --forms-menu-card-desc-size: 0.875rem;
   --forms-menu-card-desc-line-height: 1.6;
-  --forms-menu-card-gap: 16px;
+  --forms-menu-card-gap: 1rem;
 }
 
-/* ============================================================
-   Field wrapper reset — strip plain-text default chrome
-   ============================================================ */
 .field-forms-menu-card {
   width: 100%;
   border: none;
@@ -34,56 +28,43 @@
   display: none;
 }
 
-/* ============================================================
-   Card grid — base
-   ============================================================ */
 .forms-menu-card-grid {
-  gap: var(--forms-menu-card-gap);
+  gap: var(--bbl-space-250);
   width: 100%;
 }
 
-/* ============================================================
-   Style: Default (responsive grid)
-   ============================================================ */
 .forms-menu-card-grid.menu-card-default {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr;
 }
 
-/* ============================================================
-   Style: Scrollable (horizontal scroll row)
-   ============================================================ */
 .forms-menu-card-grid.menu-card-scrollable {
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 8px;
+  padding-bottom: var(--bbl-space-100);
 }
 
-/* ============================================================
-   Individual card
-   ============================================================ */
 .forms-menu-card-item {
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border: 1px solid var(--forms-menu-card-border-color);
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--forms-menu-card-border-color);
   border-radius: var(--forms-menu-card-border-radius);
   padding: var(--forms-menu-card-padding);
 }
 
 .forms-menu-card-grid.menu-card-scrollable .forms-menu-card-item {
-  flex: 0 0 280px;
+  flex: 0 0 17.5rem;
   scroll-snap-align: start;
 }
 
-/* Icon */
 .forms-menu-card-icon {
   width: var(--forms-menu-card-icon-size);
   height: var(--forms-menu-card-icon-size);
-  margin-bottom: 16px;
+  margin-bottom: var(--bbl-space-200);
   flex-shrink: 0;
 }
 
@@ -95,7 +76,6 @@
   color: var(--forms-menu-card-accent);
 }
 
-/* SVG stroke colour for inline SVGs using currentColor */
 .forms-menu-card-icon svg path,
 .forms-menu-card-icon svg circle,
 .forms-menu-card-icon svg rect,
@@ -104,7 +84,6 @@
   stroke: var(--forms-menu-card-accent);
 }
 
-/* Title */
 .forms-menu-card-title {
   font-size: var(--forms-menu-card-title-size);
   font-weight: 700;
@@ -113,7 +92,6 @@
   margin: 0;
 }
 
-/* Divider */
 .forms-menu-card-divider {
   width: var(--forms-menu-card-divider-width);
   height: var(--forms-menu-card-divider-height);
@@ -123,7 +101,6 @@
   flex-shrink: 0;
 }
 
-/* Description */
 .forms-menu-card-description {
   font-size: var(--forms-menu-card-desc-size);
   color: var(--forms-menu-card-desc-color);
@@ -135,20 +112,18 @@
   margin: 0;
 }
 
-/* ============================================================
-   Responsive — tablet (2 columns, default only)
-   ============================================================ */
-@media (width <= 1023px) {
+@media (width > 47.5rem) {
   .forms-menu-card-grid.menu-card-default {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* ============================================================
-   Responsive — mobile (1 column, default only)
-   ============================================================ */
-@media (width <= 767px) {
+@media (width >= 64rem) {
+  .forms-menu-card-grid {
+    gap: var(--bbl-space-500);
+  }
+
   .forms-menu-card-grid.menu-card-default {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(4, 1fr);
   }
 }

@@ -56,6 +56,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     color: var(--bbl-color-grey-85);
     font-family: var(--bbl-font-family-medium);
     font-weight: 400;
+    font-size: var(--bbl-heading-h3-size);
+    line-height: var(--bbl-line-height-h3-mobile);
 
     &::before {
       background: none;
@@ -136,13 +138,13 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
   & .form form :is(p, .repeat-wrapper, .field-wrapper) {
     margin: 0;
-    gap: var(--form-field-gap) var(--form-field-vert-gap);
+    gap: 0 1.4375rem;
   }
 
   & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
     position: relative;
     clear: both;
-    margin-bottom: 2.1875rem;
+    margin-bottom: 0.625rem;
   }
 
   /* Mobile: stack half-width fields in a single column */
@@ -160,6 +162,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     gap: var(--bbl-space-200);
     width: 100%;
     clear: both;
+    margin: 1.875rem 0 2.1875rem;
+
 
     & > .button-wrapper {
       display: flex;
@@ -167,6 +171,25 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       width: auto;
       max-width: none;
       clear: none;
+    }
+  }
+
+  & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper {
+    margin: 1.875rem 0 2.1875rem;
+
+    & .button-wrapper:not(:is(.field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-'])) {
+      display: flex;
+      align-items: center;
+      margin-top: 2.5rem;
+      justify-content: center;
+    }
+
+    & .plain-text-wrapper p {
+      color: var(--bbl-color-blue-90);
+      font-weight: 700;
+      font-size: var(--bbl-font-size-h2-mobile);
+      line-height: 1.5625rem;
+      text-align: center;
     }
   }
 
@@ -294,10 +317,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     line-height: var(--bbl-text-default-line-height);
     color: var(--bbl-color-grey-85);
 
-    & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-']),
-    & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-']),
+     & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
+    & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
     & .field-wrapper.col-6:not(.button-wrapper, .cc-panel-item-form-title, .cc-panel-item-form-input, .cc-panel-item-form-cover),
-    & .field-wrapper.col-12:not(:is(.field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-'])) {
+    & .field-wrapper.col-12:not(:is(.field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-'])) {
       display: block;
       width: 100%;
       max-width: 100%;
@@ -418,6 +441,11 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           margin: 0 0 var(--bbl-space-200);
           text-align: left;
           color: var(--form-fieldset-legend-color);
+
+          p {
+            text-align: left;
+            padding-left: 0.3125rem;
+          }
         }
 
         & > .cc-panel-item-form-input-half {
@@ -454,6 +482,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         & fieldset.field-submitbuttonpanel2 {
           width: 100%;
           margin-top: var(--bbl-space-200);
+          margin-bottom: 2.1875rem;
           flex-direction: row-reverse;
           justify-content: center;
           gap: var(--bbl-space-200);
@@ -710,7 +739,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         }
 
         & > .cc-panel-item-timeline-caption {
-          top: calc(var(--timeline-height) * 0.85);
+          top: calc(var(--timeline-height) * 0.79);
           left: 38%;
           width: min(13.75rem, 58%);
           max-width: none;
@@ -752,6 +781,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       & > .field-wrapper.cc-panel-item-form-cover {
         margin-top: var(--bbl-space-150);
       }
+    }
+    
+    & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .plain-text-wrapper p {
+        font-size: var(--bbl-font-size-h4-mobile);
     }
   }
 

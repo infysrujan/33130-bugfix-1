@@ -36,31 +36,26 @@
       "id": "social-icon",
       "fields": [
         {
-          "component": "select",
-          "name": "platform",
-          "label": "Platform",
-          "valueType": "string",
-          "required": true,
-          "options": [
-            { "name": "Facebook", "value": "facebook" },
-            { "name": "X", "value": "x" },
-            { "name": "Line", "value": "line" }
-          ]
-        },
-        {
-          "component": "reference",
-          "name": "icon",
-          "label": "Icon",
-          "valueType": "string",
+					"component": "reference",
+					"name": "icon",
+					"label": "Social Icon",
+					"valueType": "string",
+					"required": true
+				},
+				{
+					"component": "text",
+					"name": "alt",
+					"label": "Platform",
+					"valueType": "string",
           "required": true
-        },
-        {
-          "component": "text",
-          "name": "url",
-          "label": "URL",
-          "valueType": "string",
-          "required": true
-        }
+				},
+				{
+					"component": "text",
+					"name": "url",
+					"label": "Link",
+					"valueType": "string",
+					"required": true
+				}
       ]
     }
   ],

@@ -54,8 +54,24 @@
 }
 
 .multi-column-tiles-link {
+  position: relative;
   display: block;
   text-decoration: none;
+}
+
+.multi-column-tiles-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgb(0 0 0 / 30%);
+  transition: background 0.3s ease;
+  pointer-events: none;
+}
+
+.multi-column-tiles-link:hover::before,
+.multi-column-tiles-tile.is-active .multi-column-tiles-link::before {
+  background: rgb(0 0 0 / 10%);
 }
 
 .multi-column-tiles-image {

@@ -2,6 +2,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
+import { MONTHS_EN, MONTHS_TH, BE_OFFSET } from '../../scripts/utils/datelang.js';
 import {
   getMonthKey,
   parseApiDate,
@@ -25,6 +26,25 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function isNextMonthDisabled(titleText, rawLang) {
+  const text = String(titleText || '').trim();
+  const lastSpace = text.lastIndexOf(' ');
+  if (lastSpace < 0) return false;
+
+  const lang = String(rawLang || '').toLowerCase().trim().startsWith('th') ? 'th' : 'en';
+  const monthName = text.slice(0, lastSpace);
+  const yearRaw = text.slice(lastSpace + 1);
+  const months = lang === 'th' ? MONTHS_TH : MONTHS_EN;
+  const monthIndex = months.indexOf(monthName);
+  let year = Number.parseInt(yearRaw, 10);
+  if (lang === 'th') year -= BE_OFFSET;
+  if (monthIndex < 0 || Number.isNaN(year)) return false;
+
+  const now = new Date();
+  return year > now.getFullYear()
+    || (year === now.getFullYear() && monthIndex >= now.getMonth());
 }
 
 function isValidSelectedDay(state) {
@@ -135,7 +155,7 @@ function printForexRates(block) {
 
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }
-    body { font-family: sans-serif; margin: 0; padding: 0; }
+    body { font-family: var(--bbl-font-family-primary); margin: 0; padding: 0; }
     /* Print background colors (title underline, table header shading) — off by default */
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
@@ -177,7 +197,7 @@ function printForexRates(block) {
       min-width: 0; width: 100%; table-layout: fixed; border-collapse: collapse;
       border: 0.0625rem solid var(--bbl-color-black); font-size: 0.5rem; color: #555;
     }
-    .forex-rates-table thead tr { height: auto; background: #dce6f1; }
+    .forex-rates-table thead tr { height: auto; }
     .forex-rates-table thead th {
       padding-block: var(--bbl-space-050); padding-inline: 20px; font-size: 0.5rem; font-weight: 700;
       white-space: normal; line-height: 1.2; color: var(--bbl-color-black);
@@ -269,7 +289,8 @@ export default async function decorate(block) {
     timeDropdownOpen: false,
   };
 
-  let calendarPicker = null;
+  let datePicker = null;
+  let navObserver = null;
 
   const render = () => {
     try {
@@ -308,7 +329,7 @@ export default async function decorate(block) {
       }
     };
 
-    const applyDateSelection = async (dateIso, shouldLoadRates = true) => {
+    const applyDateSelection = async (dateIso) => {
       const parsed = parseIsoDate(dateIso);
       if (!parsed) return false;
 
@@ -347,8 +368,7 @@ export default async function decorate(block) {
 
       render();
       if (
-        shouldLoadRates
-        && state.selectedDate
+        state.selectedDate
         && state.selectedUpdate
         && isValidSelectedDay(state)
       ) {
@@ -358,14 +378,19 @@ export default async function decorate(block) {
       return true;
     };
 
-    if (calendarPicker) {
-      calendarPicker.destroy();
-      calendarPicker = null;
+    if (navObserver) {
+      navObserver.disconnect();
+      navObserver = null;
+    }
+
+    if (datePicker) {
+      datePicker.destroy();
+      datePicker = null;
     }
 
     if (dateInput) {
       const selectedParsed = parseIsoDate(state.selectedDate);
-      const selectedAsDate = selectedParsed
+      const initialValue = selectedParsed
         ? new Date(
           Number(selectedParsed.year),
           Number(selectedParsed.month) - 1,
@@ -373,16 +398,44 @@ export default async function decorate(block) {
         )
         : null;
 
-      calendarPicker = attachCalendarPicker({
+      const existingPopovers = new Set(document.querySelectorAll('.bbl-calendar-picker-popover'));
+
+      datePicker = attachCalendarPicker({
         input: dateInput,
-        openTrigger: dateTrigger,
-        value: selectedAsDate,
-        fetchEnabledDays: ({ year, month }) => getEnabledDays(endpoints, year, month + 1),
+        value: initialValue,
+        fetchEnabledDays: async ({ year, month }) => {
+          try {
+            return await getEnabledDays(endpoints, year, month + 1);
+          } catch (e) {
+            return [];
+          }
+        },
         onChange: (selectedDate) => {
           const iso = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
           applyDateSelection(iso);
         },
       });
+
+      const popoverEl = [...document.querySelectorAll('.bbl-calendar-picker-popover')]
+        .find((el) => !existingPopovers.has(el));
+      const titleEl = popoverEl?.querySelector('.bbl-calendar-picker-title');
+      const nextBtn = popoverEl?.querySelector('.bbl-calendar-picker-nav[aria-label="Next month"]');
+
+      if (titleEl && nextBtn) {
+        const syncNextNavState = () => {
+          nextBtn.disabled = isNextMonthDisabled(titleEl.textContent, language);
+        };
+        navObserver = new MutationObserver(syncNextNavState);
+        navObserver.observe(titleEl, { childList: true, characterData: true, subtree: true });
+        syncNextNavState();
+      }
+
+      if (dateTrigger) {
+        dateTrigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          datePicker.open();
+        });
+      }
     }
 
     const toggleTimeDropdown = (open) => {

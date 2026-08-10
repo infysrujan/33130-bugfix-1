@@ -9,8 +9,8 @@
     }
 
     /* All Section Legends / Panel Headers: Grey Background Header Styling */
-    & :is(fieldset.panel-wrapper, fieldset.radio-group-wrapper)>legend:not([data-visible="false"]),
-    & .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel)>legend.field-label {
+    & :is(fieldset.panel-wrapper, fieldset.radio-group-wrapper) > legend:not([data-visible="false"]),
+    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) > legend.field-label {
         display: block;
         grid-column: span 12;
         width: 100%;
@@ -60,7 +60,7 @@
 
     /* Compliment / General Panel Fieldset Reset */
     & fieldset.panel-wrapper:not(:has(.date-wrapper)),
-    & .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) {
+    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) {
         margin-bottom: 0;
     }
 
@@ -100,7 +100,7 @@
         box-sizing: border-box;
         width: 100%;
         max-width: 100%;
-        padding: var(--bbl-form-padding-10) var(--bbl-form-padding-20); /* top/bottom 10px (0.625rem), left/right 20px (1.25rem) */
+        padding: var(--bbl-form-padding-10) var(--bbl-form-padding-20);
         resize: none;
         margin-left: 0;
         margin-right: 0;
@@ -189,7 +189,7 @@
     }
 
     & .field-wrapper:not(.field-invalid, .button-wrapper, .submit-wrapper, .reset-wrapper) select {
-        margin-bottom: var(--bbl-form-margin-5); 
+        margin-bottom: var(--bbl-form-margin-5);
     }
 
     & .field-wrapper.field-invalid:not(.button-wrapper, .submit-wrapper, .reset-wrapper) :is(input:not([type='radio'], [type='checkbox'], [type='submit'], [type='button'], [type='reset']), select, textarea) {
@@ -205,7 +205,21 @@
     }
 
     /* Form Subtitle (plain-text-wrapper immediately following title h2): Centered */
-    & .field-title + .plain-text-wrapper p,
+    & .field-title + .plain-text-wrapper p {
+        color: var(--bbl-color-grey-85);
+        text-align: center;
+    }
+
+    /* Modal Paragraph Styling */
+    & .modal .plain-text-wrapper p {
+        font-family: var(--bbl-font-family-primary);
+        color: var(--bbl-color-grey-85);
+    }
+
+    & .modal .plain-text-wrapper p + p {
+        margin: 1.25rem 0;
+    }
+
     & :is(.field-wrapper, .plain-text-wrapper):has(h2) + .plain-text-wrapper p {
         color: var(--bbl-color-grey-85);
         text-align: center;
@@ -216,8 +230,12 @@
         margin-top: var(--bbl-form-margin-32);
     }
 
-    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration>p:first-of-type,
-    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration>p>p:first-child {
+    & .modal .plain-text-wrapper > p > p:last-child {
+        margin: 1.25rem 0;
+    }
+
+    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p:first-of-type,
+    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p:first-child {
         margin-bottom: var(--bbl-form-margin-32);
     }
 

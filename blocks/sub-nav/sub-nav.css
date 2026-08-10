@@ -128,3 +128,9 @@
     outline: 0.125rem solid var(--bbl-color-white);
     outline-offset: 0.125rem;
 }
+
+@media print {
+    .sub-nav.block {
+        display: none;
+    }
+}

@@ -40,6 +40,12 @@
           "label": "Modal Description",
           "valueType": "string",
           "required": true
+        },
+        {
+          "component": "aem-content",
+          "name": "resultsPageUrl",
+          "label": "Results Page URL",
+          "description": "Page the user is redirected to after searching, with type/year query params appended"
         }
       ]
     }

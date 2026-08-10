@@ -44,7 +44,7 @@
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  padding: var(--bbl-space-100) var(--bbl-space-container-xs);
+  padding: var(--bbl-space-100) 0;
 }
 
 .mf-comparator-results .mfcr-grid::-webkit-scrollbar {
@@ -60,7 +60,8 @@
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-radius: 0.4375rem;
   overflow: hidden;
-  flex: 0 0 16.875rem;
+  flex: 1 1 0;
+  min-width: 17.50rem;
   scroll-snap-align: start;
   box-sizing: border-box;
 }
@@ -72,7 +73,8 @@
 }
 
 .mf-comparator-results .mfcr-grid.single-card .mfcr-card {
-  flex: 0 0 16.875rem;
+  flex: 1 1 0;
+  min-width: 18.75rem;
   margin: 0 auto;
 }
 
@@ -84,13 +86,16 @@
 /* ── Image area ───────────────────────────────────────────────────────────── */
 
 .mf-comparator-results .mfcr-inner {
-  height: 8.4375rem;
   overflow: hidden;
   position: relative;
   padding: 0;
   background-color: var(--bbl-color-grey-10);
   border-top-left-radius: 0.4375rem;
   border-top-right-radius: 0.4375rem;
+  height: calc(5.625rem + 75 * ((100vw - 20rem) / 1600));
+  max-height: calc(7.5rem + 60 * ((100vw - 20rem) / 1600));
+  min-height: calc(6.25rem + 50 * ((100vw - 20rem) / 1600));
+  flex-shrink: 0;
 }
 
 .mf-comparator-results .mfcr-thumb {
@@ -255,6 +260,18 @@
   border-color: var(--bbl-color-active-blue);
 }
 
+@media (width < 47.5rem) {
+  .mf-comparator-results .mfcr-card {
+    min-width: 17.50rem;
+  }
+
+  .mf-comparator-results .mfcr-inner {
+    max-height: 10.3125rem;
+    height: calc(100vw * .5);
+    min-height: 9.375rem;
+  }
+}
+
 /* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
 
 @media (width > 47.5rem) {
@@ -267,22 +284,21 @@
     scroll-snap-type: none;
     justify-content: center;
     gap: 0 var(--bbl-space-250);
-    padding: 0 var(--bbl-space-container-md);
   }
 
   .mf-comparator-results .mfcr-card {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
+    flex: 1 1 0;
+    min-width: 13.32rem;
+    max-width: 17.25rem;
     scroll-snap-align: none;
+    flex-shrink: 0;
+    flex-grow: 1;
   }
 
   /* Two cards alignment / sizing overrides */
   .mf-comparator-results .mfcr-grid.two-cards {
     justify-content: center;
-  }
-
-  .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
-    max-width: 22.5rem;
+    margin-inline: 7.125rem;
   }
 
   .mf-comparator-results .mfcr-scroll-dots {
@@ -302,12 +318,28 @@
     padding: 0 var(--bbl-space-container-xl);
   }
 
+  .mf-comparator-results .mfcr-grid.two-cards {
+    justify-content: center;
+    margin-inline: 5.5rem;
+  }
+
+
   .mf-comparator-results .mfcr-card {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+    flex: 1 1 0;
+    min-width: 18.875rem;
   }
 
   .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
-    max-width: 22.5rem;
+    flex: 1 1 0;
+    min-width: 14.75rem;
+    max-width: 17.25rem;
   }
+}
+
+@media only screen and (width >= 48rem) and (width <= 61.9375rem) {
+    .mf-comparator-results .mfcr-inner {
+      height: calc(100vw / 5);
+      min-height: 6.875rem;
+      max-height: calc(100vw * .17);
+    }
 }

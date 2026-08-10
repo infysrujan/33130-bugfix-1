@@ -11,11 +11,6 @@ function filterCards(activeCards, tabText, isTopPromo) {
   if (isTopPromo) {
     return activeCards.filter((card) => card.topPromotion === true);
   }
-  const topCards = activeCards.filter(
-    (card) => card.topCategory === true
-      && card.category?.toLowerCase() === tabText.toLowerCase(),
-  );
-  if (topCards.length) return topCards;
   return activeCards.filter(
     (card) => card.category?.toLowerCase() === tabText.toLowerCase(),
   );
@@ -49,7 +44,7 @@ function setupPanel(panel, activeCards, placeholders) {
   cards = cards.slice(0, 4);
 
   const grid = document.createElement('div');
-  grid.className = 'promo-selector-grid top-promo-grid';
+  grid.className = 'promo-selector-grid top-promo-grid listing-card-grid';
   grid.innerHTML = cards.length
     ? cards.map((card) => buildCardHtml(card, card.category || tabText, placeholders, buildCardOptions(card))).join('')
     : `<p class="top-promo-empty">${noResultsText}</p>`;

@@ -229,7 +229,7 @@ export default async function decorate(block) {
             </div>
           </div>
           <div class="search-modal-load-more" style="display:none;">
-            <button class="search-modal-load-more-button secondary">${escapeHtml(config.loadMoreLabel)}</button>
+            <button class="search-modal-load-more-button button-m secondary">${escapeHtml(config.loadMoreLabel)}</button>
           </div>
         </div>
         <div class="search-modal-container search-modal-message"></div>
@@ -347,7 +347,7 @@ export default async function decorate(block) {
       renderResults(allResults, normalized);
       searchResult.style.display = 'block';
       divLoadMore.style.display = data.showLoadMore ? 'block' : 'none';
-      showMessage(!allResults.length ? (data.noResultsMessage || config.noResultsText) : '');
+      showMessage(!allResults.length ? (config.noResultsText || data.noResultsMessage) : '');
 
       if (allResults.length) {
         saveRecentSearch(normalized, allResults);

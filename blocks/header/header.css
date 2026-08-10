@@ -5,7 +5,7 @@
 
 .header {
   --nav-height: 5.25rem;
-  
+
   position: absolute;
   top: 0;
   left: 0;
@@ -19,7 +19,8 @@
   align-items: center;
   justify-content: space-between;
   position: relative;
-  height: 2.5rem;
+  height: 5rem;
+  box-sizing: border-box;
   padding: 1.25rem 1rem;
   transition: background-color 0.3s ease;
 }
@@ -34,8 +35,13 @@
 }
 
 .header .mobile-top-bar .login-button {
-  padding-left: 0.5rem;
+  padding-inline: 0 0.25rem;
   width: auto;
+}
+
+.mobile-brand-logo {
+  width: 50%;
+  margin: 0 auto;
 }
 
 .header .hamburger-icon {
@@ -44,7 +50,7 @@
   justify-content: space-between;
   width: 1.5rem;
   height: 1.125rem;
-  padding-right: 1.375rem;
+  box-sizing: content-box;
 }
 
 .header .hamburger-icon span {
@@ -105,7 +111,7 @@
   left: 0;
 }
 
-/* Mobile nav content wrapper 
+/* Mobile nav content wrapper
 Mobile slide-out menu
 */
 .header .mobile-nav-content {
@@ -229,9 +235,25 @@ header.is-not-overlapped ~ main {
   padding-top: var(--header-m-height, 4.95rem);
 }
 
+@media (width > 47.5rem) {
+  .header .mobile-top-bar {
+    padding: 1.25rem 3rem;
+  }
+}
+
 @media (width > 64rem) {
-  /* Top nav - hides on scroll */
+  /*
+   * Top nav - fixed to the viewport (not just the top of the document) so it
+   * can be revealed again via is-hidden removal when the user scrolls up,
+   * no matter how far down the page they are.
+   */
   .header-nav>.top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    transform: translateY(0);
     transition: transform 0.3s ease, opacity 0.3s ease;
   }
 
@@ -241,12 +263,22 @@ header.is-not-overlapped ~ main {
     pointer-events: none;
   }
 
-  /* Main nav - full-width background container */
+  /*
+   * Main nav - full-width background container. Always fixed so that the
+   * top:0 <-> top:var(--main-nav-top) move (JS-set to the top-nav's measured
+   * height) is a real CSS transition instead of an unanimatable position
+   * (static <-> fixed) snap.
+   */
   .header .main-nav-desktop {
     width: 100%;
     max-width: none;
     background-color: transparent;
-    transition: background-color 0.3s ease, position 0.3s ease;
+    position: fixed;
+    top: var(--main-nav-top, 41px);
+    left: 0;
+    right: 0;
+    z-index: 101;
+    transition: background-color 0.3s ease, top 0.3s ease;
   }
 
   .header .main-nav-inner {
@@ -258,14 +290,15 @@ header.is-not-overlapped ~ main {
     padding: 1.25rem 5.25rem;
   }
 
-  /* Main nav - scrolled state: fixed with dark background */
+  /* Main nav - scrolled state: slides up to the very top with a dark background */
   .header .main-nav-desktop.is-scrolled {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 41px;
     background-color: var(--bbl-color-truthful-blue);
-    z-index: 101;
+  }
+
+  .header-nav>.top-nav.is-hidden +
+  .main-nav-desktop.is-scrolled{
+    top: 0;
   }
 
   header.is-not-overlapped .main-nav-desktop {

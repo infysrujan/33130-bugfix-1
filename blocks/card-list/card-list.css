@@ -49,14 +49,28 @@
 }
 
 .cards-list-remark p {
-  line-height: 1.124rem;
+  line-height: 0.91rem;
+  margin: 0;
+  font-size: 0.7rem;
+}
+
+:is(.cards-list-promo-tag, .cards-list-description) p {
   margin: 0;
 }
 
-.cards-list-description p {
-  line-height: var(--bbl-text-default-line-height);
-  font-size: var(--bbl-text-default-size);
-  font-weight: var(--bbl-text-default-weight);
+.cards-list-inner:has(.cards-list-remark) .cards-list-description {
+  margin-bottom: 0.625rem;
+}
+
+.cards-list-date p {
+  font-size: var(--bbl-body-b1-size);
+  line-height: 1.203rem;
+  color: var(--bbl-color-grey-85);
+  margin: 0;
+}
+
+.cards-list-promo-tag p {
+  margin: 0;
 }
 
 .cards-list-description :is(p, li) a {
@@ -86,17 +100,6 @@
   display: none;
 }
 
-.cards-list-promo-tag p {
-  margin: 0;
-}
-
-.cards-list-date p {
-  font-size: var(--bbl-body-b1-size);
-  line-height: 1.203rem;
-  color: var(--bbl-color-grey-85);
-  margin: 0;
-}
-
 .card-list-container .default-content-wrapper p {
   line-height: 1.124rem;
   margin: 0;
@@ -111,9 +114,6 @@
   gap: var(--bbl-space-250) 0;
 }
 
-.all-carousel-fragment {
-  margin-bottom: var(--bbl-space-1000);
-}
 
 .carousel-dotted-item .cards-list.carousel {
   overflow: visible;
@@ -125,16 +125,6 @@
 .cards-list-button .button{
   width: 100%;
   box-sizing: border-box;
-}
-
-.cards-list-button .cards-list-remark {
-    padding-bottom: 15px;
- 
-    p {
-        font-size: 0.8rem;
-        line-height: 1.3;
-        font-weight: var(--bbl-font-weight-regular);
-    }
 }
 
 .cards-list:is(.scrollable, .carousel) {
@@ -181,6 +171,16 @@
 .cards-list:is(.scrollable, .carousel) .cards-list-item {
   flex: 0 0 16.875rem;
   scroll-snap-align: start;
+}
+
+.cards-list:is(.scrollable, .carousel).center:not(:has(.cards-list-item + .cards-list-item)) {
+  justify-content: center;
+}
+
+@media (width <= 47.5rem) {
+  .cards-list:is(.scrollable, .carousel).center .cards-list-item {
+    scroll-snap-align: center;
+  }
 }
 
 .cards-list:is(.carousel) .cards-list-item {
@@ -281,8 +281,12 @@
 .cards-list-image:is(.cards-list-image-card, .cards-list-image-full, .cards-list-image-default) img {
   height: 100%;
   width: 100%;
-  object-fit: cover;
+  object-fit: initial;
   display: block;
+}
+
+.cards-list-image.cards-list-image-default img {
+  object-fit: cover;
 }
 
 .cards-list-image.cards-list-image-card {
@@ -293,6 +297,16 @@
 
 .cards-list-image.cards-list-image-full {
   max-height: 25.625rem;
+  min-height: 9.375rem;
+}
+
+.cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
+  max-height: 10.3125rem;
+  min-height: 9.375rem;
+}
+
+.cards-list-image.cards-list-image-full img {
+  object-fit: initial;
 }
 
 .cards-list-image.cards-list-image-default {
@@ -320,7 +334,7 @@
   padding: var(--bbl-space-250);
 }
 
-.cards-list-inner:not(:has(.cards-list-date)) .cards-list-content {
+.cards-list-inner:not(:has(.cards-list-date, .cards-list-downloads)) .cards-list-content {
   flex: 1;
 }
 
@@ -429,10 +443,10 @@
 }
 
 .card-list-modal-title {
-  font-size: 1.4rem;
-  font-weight: var(--bbl-font-family-regular);
+  font-size: var(--bbl-text-section-title-size);
+  font-weight: var(--bbl-text-section-title-weight);
   letter-spacing: -0.0125rem;
-  line-height: 1.375rem;
+  line-height: var(--bbl-text-section-title-line-height);
 }
 
 .card-list-modal-subtitle {
@@ -470,7 +484,6 @@
 
 .card-list-modal-title+.card-list-modal-text {
   margin: 0;
-  text-align: center;
   padding-bottom: 3.078rem;
   line-height: 1.124rem;
 }
@@ -496,10 +509,11 @@
 
 .cards-list-item:has(.cards-list-image-logo) .download-button-wrapper .download-files {
   padding: 0 var(--bbl-space-500) 0 var(--bbl-space-250);
-} 
+}
 
 .cards-list-button + .cards-list-date {
   padding-top: 0.625rem;
+  color: var(--bbl-color-grey-85);
 }
 
 .cards-list-button .global-dropdown {
@@ -535,15 +549,15 @@
   }
 
   .cards-list:is(.cards-1, .cards-3, .cards-4) .cards-list-item {
-    margin-bottom: var(--bbl-space-500);
+    margin-bottom: var(--bbl-space-250);
     display: flex;
   }
 
+  .cards-list.cards-4 .cards-list-item,
   .cards-list.cards-3 .cards-list-item {
     flex: 0 0 calc((100% - 2.5rem) / 3);
   }
 
-  .cards-list.cards-4 .cards-list-item,
   .cards-list.cards-1 .cards-list-item {
     flex: 0 0 calc((100% - 3.75rem) / 3);
   }
@@ -572,6 +586,7 @@
 
   .cards-list-image.cards-list-image-card {
     height: calc(100vw / 5);
+    min-height: 8.4375rem;
   }
 
   .cards-list-image.cards-list-image-full {
@@ -627,6 +642,11 @@
   .cards-list:is(.scrollable, .carousel) .global-dropdown-panel li a {
     white-space: normal;
   }
+
+  .cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
+    max-height: 9.5625rem;
+    min-height: 110px;
+  }
 }
 
 @media (width > 64rem) {
@@ -665,9 +685,13 @@
   }
 
   .cards-list-date p,
-  .cards-list-remark p,
   .cards-list-subtitle p{
     line-height: 1.375rem;
+  }
+
+  .cards-list-remark p {
+    line-height: 1.04rem;
+    font-size: 0.8rem;
   }
 
   .cards-list-description ul{
@@ -742,6 +766,11 @@
     flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 4);
   }
 
+  .cards-list:is(.cards-1, .cards-3, .cards-4) .cards-list-item {
+    margin-bottom: var(--bbl-space-500);
+    display: flex;
+  }
+
   .cards-list.scrollable.cards-4 .cards-list-item,
   .cards-list.scrollable.cards-1 .cards-list-item {
     flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 4);
@@ -764,12 +793,14 @@
   }
 
   .cards-list-image.cards-list-image-card {
+    min-height: calc(50px + 30 * ((100vw - 320px) / 1600));
     max-height: calc(8.75rem + 25 * ((100vw - 20rem) / 1600));
     height: calc(15.625rem + 60 * ((100vw - 20rem) / 1600));
   }
 
   .cards-list-image.cards-list-image-full {
     height: calc(5.625rem + 75 * ((100vw - 20rem) / 1600));
+    min-height: calc(100px + 50 * ((100vw - 320px) / 1600));
   }
 
   .cards-list-image.cards-list-image-default {
@@ -778,11 +809,6 @@
 
   .cards-list-image.cards-list-image-profile {
     height: calc(15.625rem + 60 * ((100vw - 20rem) / 1600));
-  }
-
-  .card-list-modal-title {
-    font-size: var(--bbl-font-size-h3-desktop);
-    line-height: 2.875rem;
   }
 
   .card-list-modal-title+.card-list-modal-text {
@@ -810,5 +836,13 @@
   .card-list-modal-last-title+.card-list-modal-text {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.3rem;
+  }
+
+  .modal-body .section.underline-title .card-list-modal-title+.card-list-modal-text {
+    max-width: 100%;
+  }
+
+  .cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
+    min-height: calc(100px + 50 * ((100vw - 320px) / 1600));
   }
 }

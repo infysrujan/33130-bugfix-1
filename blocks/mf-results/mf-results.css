@@ -100,70 +100,6 @@
   scroll-snap-align: none;
 }
 
-/* ── Hidden cards (beyond initial 6) ─────────────────────────────────────── */
-
-.mfr-hidden {
-  display: none;
-}
-
-/* ── Row-2 peek: clips container with gradient fade ──────────────────────── */
-
-.mfr-card-list-container.mfr-peek {
-  overflow: hidden;
-  position: relative;
-}
-
-.mfr-card-list-container.mfr-peek::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 8rem;
-  background: linear-gradient(to bottom, transparent, var(--bbl-color-white));
-  pointer-events: none;
-}
-
-/* ── See more / See less toggle ───────────────────────────────────────────── */
-
-.mfr-results-toggle {
-  display: none;
-  justify-content: center;
-  margin-top: var(--bbl-space-300);
-  margin-bottom: var(--bbl-space-layout-md);
-}
-
-.mfr-results-toggle-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--bbl-space-075);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-medium);
-  padding: var(--bbl-space-100) var(--bbl-space-200);
-  border-radius: 0.4375rem;
-  transition: background-color 0.2s ease;
-}
-
-.mfr-results-toggle-btn:hover {
-  background-color: var(--bbl-color-blue-10);
-}
-
-.mfr-results-toggle-btn .icon-dropdown {
-  font-size: var(--bbl-font-size-b3);
-  color: var(--bbl-color-active-blue);
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-.mfr-results-toggle-btn[aria-expanded="true"] .icon-dropdown {
-  transform: rotate(180deg);
-}
-
 /* ── No results ───────────────────────────────────────────────────────────── */
 
 .mfr-no-results {
@@ -194,9 +130,9 @@
   display: block;
 }
 
-/* ── Logo in remark area ─────────────────────────────────────────────────── */
+/* ── Logo in button area ─────────────────────────────────────────────────── */
 
-.card-list.mf-results .cards-list-remark img.mfr-logo {
+.card-list.mf-results .cards-list-logo img.mfr-logo {
   height: 2.5rem;
   width: 8.875rem;
   max-width: 8.875rem;

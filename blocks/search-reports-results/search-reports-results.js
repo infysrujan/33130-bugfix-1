@@ -13,6 +13,13 @@ function getDownloadLabel(mimeType, placeholders = {}) {
   return placeholders.reportsDownloadFile || 'Download File';
 }
 
+function getPreviousPagePath() {
+  const segments = window.location.pathname.split('/').filter(Boolean);
+  if (segments.length <= 1) return '/';
+  segments.pop();
+  return `/${segments.join('/')}`;
+}
+
 function sortAssets(assets, type) {
   return [...assets].sort((a, b) => {
     if (type === 'summary-statement') {
@@ -76,12 +83,11 @@ async function fetchAndRender(block, type, year) {
   const resultsHeader = createTaggedElement('div', { className: 'srr-header' });
   const backBtn = createTaggedElement('button', {
     className: 'srr-back-btn',
-    attrs: { type: 'button', 'aria-label': 'Go back' },
-    text: '‹',
+    attrs: { type: 'button', 'aria-label': 'Go back to previous page' },
   });
+  backBtn.append(createTaggedElement('span', { className: 'srr-back-btn-circle icon-arrow-left' }));
   backBtn.addEventListener('click', () => {
-    window.history.pushState({}, '', window.location.pathname);
-    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.location.href = getPreviousPagePath();
   });
   resultsHeader.append(backBtn);
   wrapper.append(resultsHeader);
@@ -128,17 +134,10 @@ export default function decorate(block) {
   const params = new URLSearchParams(window.location.search);
   const type = params.get('type') || '';
   const year = params.get('year') || '';
-
-  if (type && year) {
-    fetchAndRender(block, type, year);
-  }
+  fetchAndRender(block, type, year);
 
   window.addEventListener('popstate', () => {
     const p = new URLSearchParams(window.location.search);
     if (!p.get('type') && !p.get('year')) block.innerHTML = '';
-  });
-
-  window.addEventListener('search-reports:submit', (e) => {
-    fetchAndRender(block, e.detail.type, e.detail.year);
   });
 }

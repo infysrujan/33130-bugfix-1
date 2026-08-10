@@ -9,7 +9,7 @@
 
 .currency-converter {
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 0.4375rem;
 }
 
@@ -21,6 +21,7 @@
 /* Convert Groups (From/To Sections) */
 .currency-converter .convert-group {
   position: relative;
+  z-index: 1;
   border: 0.0625rem solid rgb(255 255 255 / 30%);
   border-radius: 0.4375rem;
   padding: var(--bbl-space-300);
@@ -29,6 +30,14 @@
   margin-right: auto;
   background-color: var(--bbl-color-truthful-dark-blue);
   height: 9.375rem;
+}
+
+.currency-converter .convert-group:first-of-type {
+  margin-bottom: var(--bbl-space-300);
+}
+
+.currency-converter .convert-group:has(.currency-dropdown.active) {
+  z-index: 20;
 }
 
 .currency-converter .convert-group::after {
@@ -323,10 +332,6 @@
 
 .currency-converter-wrapper {
   height: 100%;
-}
-
-.currency-converter .convert-group:first-of-type {
-  margin-bottom: var(--bbl-space-300);
 }
 
 @media (width > 47.5rem) {

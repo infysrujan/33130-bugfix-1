@@ -29,6 +29,13 @@ function formatNumber(value) {
 }
 
 function formatDecimal(value) {
+  if (!Number.isFinite(value)) return '0.00';
+  return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// Shows whole numbers as whole numbers and only keeps decimals the user actually entered
+// (up to 2), rather than always padding to 2 decimal places.
+function formatDecimalSmart(value) {
   if (!Number.isFinite(value)) return '0';
   return Number(value.toFixed(2)).toLocaleString('en-US', { maximumFractionDigits: 2 });
 }
@@ -465,7 +472,7 @@ function buildShellMarkup(data) {
     name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount || 10000, min: 10000, max: 1000000, step: 10000,
   })}
             ${buildSlider({
-    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || 0.5, min: 0.5, max: 40, step: 0.1,
+    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || 0.5, min: 0.5, max: 40, step: 0.25,
   })}
             ${buildSlider({
     name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, min: 0, max: 40, step: 0.1,
@@ -654,21 +661,25 @@ function syncSliderDisplays(root) {
     const min = parseFloat(input.min) || 0;
     const max = parseFloat(input.max) || 100;
     const val = parseFloat(input.value) || 0;
-    const pct = ((val - min) / (max - min)) * 100;
-    input.style.background = `linear-gradient(to right, var(--bbl-color-active-blue) ${pct}%, var(--bbl-color-grey-27) ${pct}%)`;
+    const pct = max > min ? ((val - min) / (max - min)) * 100 : 0;
+    input.style.setProperty('--saving-plan-slider-progress', `${pct}%`);
   });
 }
 
 function renderNewPlanPlaceholder(state, data, inputs) {
   const { root } = state;
-  const goalMin = inputs.goalAmount;
+  const goalMin = 10000;
   const goalMax = inputs.goalAmount * 2;
   setSliderBounds(root, 'goalAmount', {
     min: goalMin, max: goalMax, value: inputs.goalAmount, step: goalAmountStep(inputs.goalAmount),
   });
+  const goalMinEl = root.querySelector('[data-slider="goalAmount"] .saving-plan-slider-min');
+  if (goalMinEl) goalMinEl.textContent = formatNumber(inputs.goalAmount);
   setSliderBounds(root, 'annualReturn', {
-    min: 0.5, max: 40, value: inputs.annualReturn, step: 0.1,
+    min: 0.5, max: 40, value: inputs.annualReturn, step: 0.25,
   });
+  const returnMinEl = root.querySelector('[data-slider="annualReturn"] .saving-plan-slider-min');
+  if (returnMinEl) returnMinEl.textContent = formatDecimalSmart(inputs.annualReturn);
   const returnSliderEl = root.querySelector('[data-slider="annualReturn"] input');
   if (returnSliderEl) returnSliderEl.dataset.prev = inputs.annualReturn;
   setSliderBounds(root, 'annualIncrease', {
@@ -820,13 +831,46 @@ function clampToDigitCap(raw, digitCap) {
     .join('');
 }
 
-function formatFieldValue(input, decimal, digitCap) {
-  const formatter = decimal ? formatDecimal : formatNumber;
+function formatFieldValue(input, decimal, digitCap, smart) {
+  let formatter = formatNumber;
+  if (decimal) formatter = smart ? formatDecimalSmart : formatDecimal;
   const value = parseNumber(clampToDigitCap(input.value, digitCap));
   input.value = formatter(value);
 }
 
+function sanitizeDecimalInput(raw) {
+  let seenDot = false;
+  return raw
+    .split('')
+    .filter((ch) => {
+      if (ch === '.') {
+        if (seenDot) return false;
+        seenDot = true;
+        return true;
+      }
+      return /\d/.test(ch);
+    })
+    .join('');
+}
+
 function formatLive(input, decimal, digitCap) {
+  if (decimal) {
+    // Let the user freely type whole numbers and decimals (e.g. "6", "6.", "6.5")
+    // without forcing a fixed 2-decimal format on every keystroke. Full
+    // normalization to 2 decimals happens on blur via formatFieldValue.
+    const cursor = input.selectionStart;
+    const digitsBeforeCursor = (input.value.slice(0, cursor).match(/[\d.]/g) || []).length;
+    const raw = clampToDigitCap(sanitizeDecimalInput(input.value), digitCap);
+    input.value = raw;
+    let count = 0;
+    let newCursor = raw.length;
+    for (let i = 0; i < raw.length; i += 1) {
+      if (/[\d.]/.test(raw[i])) count += 1;
+      if (count === digitsBeforeCursor) { newCursor = i + 1; break; }
+    }
+    input.setSelectionRange(newCursor, newCursor);
+    return;
+  }
   const raw = clampToDigitCap(input.value, digitCap);
   const cursor = Math.min(input.selectionStart, raw.length);
   // Count digits (and dot for decimal) before cursor to restore position after reformatting.
@@ -866,7 +910,7 @@ function resetCalculator(state, data) {
   setVal('[data-field="goalAmount"] input', formatNumber(defaults.goalAmount));
   setVal('[data-field="goalPeriod"] input', formatNumber(defaults.goalPeriod));
   setVal('[data-field="balance"] input', formatNumber(defaults.balance));
-  setVal('[data-field="annualReturn"] input', defaults.annualReturn ? formatDecimal(defaults.annualReturn) : '');
+  setVal('[data-field="annualReturn"] input', defaults.annualReturn ? formatDecimalSmart(defaults.annualReturn) : '');
   setVal('[data-field="annualIncrease"] input', formatDecimal(defaults.annualIncrease));
   root.querySelectorAll('.saving-plan-field-error').forEach((el) => el.classList.remove('saving-plan-field-error'));
   root.querySelectorAll('.saving-plan-field-error-message').forEach((el) => el.remove());
@@ -983,12 +1027,13 @@ function attachHandlers(state, data) {
     if (!input) return;
     const decimal = wrap.dataset.decimal === '1';
     const digitCap = FIELD_DIGIT_CAP[wrap.dataset.field];
+    const smart = wrap.dataset.field === 'annualReturn';
     input.addEventListener('input', () => {
       formatLive(input, decimal, digitCap);
       liveUpdate();
     });
     input.addEventListener('blur', () => {
-      formatFieldValue(input, decimal, digitCap);
+      formatFieldValue(input, decimal, digitCap, smart);
       liveUpdate();
     });
   });

@@ -13,7 +13,7 @@
   width: 100%;
   max-width: 100%;
   display: block;
-  border-radius: var(--bbl-rounded-150);
+  border-radius: 0.4375rem;
   overflow: hidden;
   border: 0.063rem solid rgb(0 0 0 / 8%);
   background-color: var(--bbl-color-white);
@@ -56,6 +56,7 @@
   display: block;
   width: 100%;
   overflow: hidden;
+  height: calc((100vw) / 2);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -87,7 +88,7 @@
 /* --- Title --- */
 .content-insert-cards .title-2 {
   font-size: var(--bbl-text-thumbnail-card-title-size);
-  line-height: var(--bbl-text-thumbnail-card-title-line-height);
+  line-height: 1.2;
   font-weight: var(--bbl-text-thumbnail-card-title-weight);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
@@ -141,19 +142,23 @@
   gap: var(--bbl-space-500);
 }
 
+.section.columns-2-50 > .content-insert-cards-wrapper {
+  flex: 1;
+}
+
 .content-insert-cards .content-insert-card {
   margin: 0 auto;
   position: relative;
   border: none;
   box-shadow: none;
   background: transparent;
-  border-radius: 0;
   overflow: visible;
 }
 
 .content-insert-cards .thumb-large {
   border-radius: var(--bbl-rounded-100);
   overflow: visible;
+  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
 }
 
 .content-insert-cards .category {
@@ -165,6 +170,10 @@
   border-radius: var(--bbl-rounded-100);
   width: auto;
   height: 23.75rem;
+}
+
+.content-insert-cards .thumb:not(:has(picture, img)) {
+  width: 100%;
 }
 
 .content-insert-cards .intro-info {
@@ -179,7 +188,6 @@
   border-radius: var(--bbl-rounded-100);
   padding: var(--bbl-space-250);
   padding-bottom: calc(var(--bbl-space-250) + 2.75rem + var(--bbl-space-150));
-  box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 15%);
   border: none;
   min-height: auto;
   justify-content: flex-start;

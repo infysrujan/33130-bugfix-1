@@ -6,7 +6,9 @@ function isContactUsForm(form) {
   if (!form) return false;
 
   // createForm() runs before the form is mounted in the section wrapper.
-  return form.querySelector('.field-contact .field-main-panel') !== null;
+  // The outer fragment panel's class differs across environments
+  // (field-contact in dev, field-contactfragment in prod).
+  return form.querySelector('.field-contact, .field-contactfragment, .field-main-panel') !== null;
 }
 
 /**

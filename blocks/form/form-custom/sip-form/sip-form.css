@@ -11,6 +11,12 @@
   color: var(--bbl-color-grey-85);
 }
 
+.sip-form main .form-container.custom-forms .form button.primary:hover {
+  background: var(--bbl-color-blue-90);
+  border: none;
+  transition: none;
+}
+
 .sip-form main .form form .field-wrapper{
   margin: 0;
 }
@@ -141,6 +147,11 @@
         margin-inline: 0;
         box-sizing: border-box;
       }
+    }
+
+     & .form-review-2col fieldset.panel-wrapper.field-button-panel {
+      margin-top: 1.25rem;
+      gap: 1.875rem;
     }
 
     @media (width > 47.5rem) {

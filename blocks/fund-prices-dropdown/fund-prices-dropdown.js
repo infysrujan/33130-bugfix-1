@@ -137,16 +137,19 @@ function renderStatTables(stats, highTbody, lowTbody, rowLabels, noDataLabel) {
     targets.forEach(([tbody, val, date, skip]) => {
       if (skip) return;
       const tr = tbody.ownerDocument.createElement('tr');
-      const dateStr = date ? ` "${fmtHistDate(date)}"` : '';
       const navStr = fmtNav(val);
-      const navDisplay = navStr === 'N/A' ? noDataLabel : navStr;
+      const isNoData = navStr === 'N/A';
+      let dateStr = '';
+      if (isNoData) dateStr = ' "-"';
+      else if (date) dateStr = ` "${fmtHistDate(date)}"`;
+      const navDisplay = isNoData ? noDataLabel : navStr;
       tr.innerHTML = `<td>${label}${dateStr}</td><td class="stat-nav-val">${navDisplay}</td>`;
       tbody.appendChild(tr);
     });
   });
 }
 
-function renderChart(svgEl, history, period) {
+function renderChart(svgEl, history, period, noDataLabel) {
   svgEl.innerHTML = '';
   const doc = svgEl.ownerDocument;
   const ns = 'http://www.w3.org/2000/svg';
@@ -158,19 +161,12 @@ function renderChart(svgEl, history, period) {
     return e;
   }
 
-  if (!history || history.length < 2) {
-    el('text', {
-      x: '50%',
-      y: '50%',
-      'text-anchor': 'middle',
-      'font-size': 14,
-      fill: '#999',
-    }, svgEl).textContent = 'No data';
-    return;
-  }
+  const hasHistory = history && history.length > 0;
+  const hasData = hasHistory && history.some((d) => Number(d.mfr_fNav) !== 0);
+  const points = hasHistory ? history : [{ mfr_fNav: 0, mfr_dDataDate: '' }];
 
   const isMobileView = typeof window !== 'undefined' && window.innerWidth < 768;
-  const useRotation = period !== '1W';
+  const useRotation = hasData && period !== '1W' && points.length > 1;
   const padB = useRotation ? 70 : 40;
   const H = useRotation ? 360 : 300;
   const padL = 58;
@@ -187,14 +183,16 @@ function renderChart(svgEl, history, period) {
   const innerW = W - padL - padR;
   const innerH = H - padT - padB;
 
-  const navs = history.map((d) => d.mfr_fNav);
+  const navs = points.map((d) => d.mfr_fNav);
   const rawMin = Math.min(...navs);
   const rawMax = Math.max(...navs);
   const tickStep = 0.5;
-  const yMax = Math.ceil(rawMax);
-  const yMin = Math.floor(rawMin / tickStep) * tickStep - tickStep;
+  const yMax = hasData ? Math.ceil(rawMax) : 0.5;
+  const yMin = hasData ? Math.floor(rawMin / tickStep) * tickStep - tickStep : 0;
 
-  const xPos = (i) => padL + (i / (history.length - 1)) * innerW;
+  const xPos = (i) => (points.length > 1
+    ? padL + (i / (points.length - 1)) * innerW
+    : padL + innerW / 2);
   const yPos = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * innerH;
 
   const ticks = [];
@@ -219,15 +217,15 @@ function renderChart(svgEl, history, period) {
     }, svgEl).textContent = v.toFixed(1);
   });
 
-  const lastIdx = history.length - 1;
+  const lastIdx = points.length - 1;
   let labelSet;
   if (!useRotation) {
     // 1W: show every data point
-    labelSet = new Set(history.map((_, i) => i));
+    labelSet = new Set(points.map((_, i) => i));
   } else {
     const labelSpacing = isMobileView ? 38 : 50;
-    const maxXLabels = Math.min(history.length, Math.floor(innerW / labelSpacing));
-    const xLabelStep = Math.max(1, Math.ceil(history.length / maxXLabels));
+    const maxXLabels = Math.min(points.length, Math.floor(innerW / labelSpacing));
+    const xLabelStep = Math.max(1, Math.ceil(points.length / maxXLabels));
     const prevRegularIdx = Math.floor(lastIdx / xLabelStep) * xLabelStep;
     const pixelGap = lastIdx > 0 ? (xPos(lastIdx) - xPos(prevRegularIdx)) : Infinity;
     const tooClose = prevRegularIdx !== lastIdx && pixelGap < labelSpacing;
@@ -238,7 +236,7 @@ function renderChart(svgEl, history, period) {
     labelSet.add(lastIdx);
   }
 
-  history.forEach((d, i) => {
+  points.forEach((d, i) => {
     const x = xPos(i);
     const isLabelPoint = labelSet.has(i);
     if (isLabelPoint) {
@@ -251,8 +249,8 @@ function renderChart(svgEl, history, period) {
         'stroke-width': 1,
       }, svgEl);
       // eslint-disable-next-line no-nested-ternary
-      const anchor = useRotation ? 'end' : (i === lastIdx ? 'end' : (i === 0 ? 'start' : 'middle'));
-      const clampedX = (!useRotation && i === lastIdx) ? Math.min(x, W - 4) : x;
+      const anchor = !hasData ? 'middle' : (useRotation ? 'end' : (i === lastIdx ? 'end' : (i === 0 ? 'start' : 'middle')));
+      const clampedX = (hasData && !useRotation && i === lastIdx) ? Math.min(x, W - 4) : x;
       const txtAttrs = {
         x: clampedX,
         y: H - padB + (useRotation ? 14 : 20),
@@ -264,13 +262,13 @@ function renderChart(svgEl, history, period) {
       };
       if (useRotation) txtAttrs.transform = `rotate(-45, ${clampedX}, ${H - padB + 14})`;
       const txt = el('text', txtAttrs, svgEl);
-      txt.textContent = fmtHistDate(d.mfr_dDataDate);
+      txt.textContent = hasData ? fmtHistDate(d.mfr_dDataDate) : (noDataLabel || 'No data found');
     }
   });
 
-  const pts = history.map((d, i) => `${xPos(i)},${yPos(d.mfr_fNav)}`).join(' ');
+  const pts = points.map((d, i) => `${xPos(i)},${yPos(d.mfr_fNav)}`).join(' ');
 
-  history.forEach((d, i) => {
+  points.forEach((d, i) => {
     const cx = xPos(i);
     const cy = yPos(d.mfr_fNav);
     el('circle', {
@@ -314,38 +312,87 @@ function renderChart(svgEl, history, period) {
     'font-family': 'BangkokBank-Medium,Arial,sans-serif',
   }, tooltipG);
 
-  history.forEach((d, i) => {
-    const cx = xPos(i);
-    const cy = yPos(d.mfr_fNav);
-    const hit = el('circle', {
-      cx,
-      cy,
-      r: 14,
-      fill: 'transparent',
-      style: 'cursor:pointer',
-    }, svgEl);
-    hit.addEventListener('mouseenter', () => {
-      tooltipG.style.display = '';
-      let tx = cx + 12;
-      let ty = cy - 62;
-      if (tx + 124 > W) tx = cx - 132;
-      if (ty < 0) ty = cy + 10;
-      tooltipG.setAttribute('transform', `translate(${tx},${ty})`);
-      tooltipDate.textContent = fmtHistDate(d.mfr_dDataDate);
-      tooltipVal.textContent = fmtNav(d.mfr_fNav);
+  if (hasData) {
+    points.forEach((d, i) => {
+      const cx = xPos(i);
+      const cy = yPos(d.mfr_fNav);
+      const hit = el('circle', {
+        cx,
+        cy,
+        r: 14,
+        fill: 'transparent',
+        style: 'cursor:pointer',
+      }, svgEl);
+      hit.addEventListener('mouseenter', () => {
+        tooltipG.style.display = '';
+        let tx = cx + 12;
+        let ty = cy - 62;
+        if (tx + 124 > W) tx = cx - 132;
+        if (ty < 0) ty = cy + 10;
+        tooltipG.setAttribute('transform', `translate(${tx},${ty})`);
+        tooltipDate.textContent = fmtHistDate(d.mfr_dDataDate);
+        tooltipVal.textContent = fmtNav(d.mfr_fNav);
+      });
+      hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
     });
-    hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
-  });
+  } else {
+    const label = noDataLabel || 'No data found';
+    const textW = Math.max(60, label.length * 6.5 + 20);
+    const boxH = 30;
+    const noDataTooltipG = el('g', { style: 'display:none; pointer-events:none' }, svgEl);
+    el('rect', {
+      x: -textW / 2,
+      y: -boxH - 8,
+      width: textW,
+      height: boxH,
+      rx: 6,
+      fill: '#1a2e4a',
+    }, noDataTooltipG);
+    el('path', {
+      d: `M -5,${-8} L 5,${-8} L 0,${-2} Z`,
+      fill: '#1a2e4a',
+    }, noDataTooltipG);
+    el('text', {
+      x: 0,
+      y: -boxH / 2 - 8 + 4,
+      'text-anchor': 'middle',
+      fill: '#ffffff',
+      'font-size': 12,
+      'font-family': 'BangkokBank-Medium,Arial,sans-serif',
+    }, noDataTooltipG).textContent = label;
+
+    points.forEach((d, i) => {
+      const cx = xPos(i);
+      const cy = yPos(d.mfr_fNav);
+      const hit = el('circle', {
+        cx,
+        cy,
+        r: 14,
+        fill: 'transparent',
+        style: 'cursor:pointer',
+      }, svgEl);
+      hit.addEventListener('mouseenter', () => {
+        noDataTooltipG.style.display = '';
+        noDataTooltipG.setAttribute('transform', `translate(${cx},${cy})`);
+      });
+      hit.addEventListener('mouseleave', () => { noDataTooltipG.style.display = 'none'; });
+    });
+  }
 }
 
-function renderHistTable(tbody, history) {
+function renderHistTable(tbody, history, noDataLabel) {
   tbody.innerHTML = '';
   history.forEach((d) => {
     const tr = tbody.ownerDocument.createElement('tr');
-    tr.innerHTML = `<td>${fmtHistDate(d.mfr_dDataDate)}</td>`
-      + `<td>${fmtNav(d.mfr_fNav)}</td>`
-      + `<td>${fmtNav(d.mfr_fSel)}</td>`
-      + `<td>${fmtNav(d.mfr_fBuy)}</td>`;
+    const isNoData = fmtNav(d.mfr_fNav) === 'N/A';
+    const dateDisplay = isNoData ? '' : fmtHistDate(d.mfr_dDataDate);
+    const navDisplay = isNoData ? noDataLabel : fmtNav(d.mfr_fNav);
+    const selDisplay = isNoData ? noDataLabel : fmtNav(d.mfr_fSel);
+    const buyDisplay = isNoData ? noDataLabel : fmtNav(d.mfr_fBuy);
+    tr.innerHTML = `<td>${dateDisplay}</td>`
+      + `<td>${navDisplay}</td>`
+      + `<td>${selDisplay}</td>`
+      + `<td>${buyDisplay}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -545,11 +592,6 @@ export default async function decorate(block) {
   }
 
   function buildSubtitle(fromDate, toDate) {
-    const period = PERIOD_OPTIONS.find((p) => p.code === currentPeriod)?.label ?? currentPeriod;
-    return `"${currentFund?.name}" Open-end Fund : ${period} : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
-  }
-
-  function buildPrintSubtitle(fromDate, toDate) {
     return `"${currentFund?.name}" Open-end Fund : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
   }
 
@@ -576,13 +618,13 @@ export default async function decorate(block) {
     chartSubtitle.textContent = subtitle;
     chartBeginNav.textContent = fmtNav(stats.Begin_mfr_fNav);
     chartEndNav.textContent = fmtNav(stats.End_mfr_fNav);
-    renderChart(chartSvg, sorted, currentPeriod);
-    renderHistTable(histTbody, sorted);
+    renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
+    renderHistTable(histTbody, sorted, labels.noDataFound);
 
     if (chartSvg.chartResizeObserver) chartSvg.chartResizeObserver.disconnect();
     if (window.innerWidth < 768) {
       chartSvg.chartResizeObserver = new ResizeObserver(() => {
-        if (sorted?.length) renderChart(chartSvg, sorted, currentPeriod);
+        if (sorted?.length) renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
       });
       chartSvg.chartResizeObserver.observe(chartSvg.parentElement);
     }
@@ -699,7 +741,7 @@ export default async function decorate(block) {
     printRoot.hidden = false;
     printRoot.querySelectorAll('.fund-prices-print-label, .fdd-back-btn').forEach((el) => el.remove());
     if (currentFromDate && currentToDate) {
-      const printSubtitle = buildPrintSubtitle(currentFromDate, currentToDate);
+      const printSubtitle = buildSubtitle(currentFromDate, currentToDate);
       printRoot.querySelectorAll('.fdd-fund-label, .chart-subtitle')
         .forEach((el) => { el.textContent = printSubtitle; });
     }

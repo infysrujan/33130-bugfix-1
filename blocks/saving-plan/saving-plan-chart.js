@@ -3,7 +3,7 @@ export function buildChartLegend(labels, getIcon) {
     <div class="saving-plan-chart-legend">
       <div class="saving-plan-chart-legend-row">
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-dot" style="background:var(--sp-chart-result)"></span>
+          <span class="saving-plan-chart-legend-dot saving-plan-chart-legend-dot-result"></span>
           <span class="saving-plan-chart-legend-text">${labels.legendResult}</span>
         </span>
         <span class="saving-plan-chart-legend-item">
@@ -13,7 +13,7 @@ export function buildChartLegend(labels, getIcon) {
       </div>
       <div class="saving-plan-chart-legend-row" data-newplan-row hidden>
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-dot" style="background:var(--sp-chart-new-plan)"></span>
+          <span class="saving-plan-chart-legend-dot saving-plan-chart-legend-dot-newplan"></span>
           <span class="saving-plan-chart-legend-text">${labels.legendNewPlan}</span>
         </span>
         <span class="saving-plan-chart-legend-item">

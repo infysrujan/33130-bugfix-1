@@ -25,6 +25,7 @@ main .custom-forms .form form p {
   margin: 1.875rem 0;
 }
 
+main .section.form-container.custom-forms .form form .plain-text-wrapper.field-summary ul li,
 main .section.form-container.custom-forms .form form .plain-text-wrapper p:last-child p{
   text-align: left;
 }

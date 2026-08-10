@@ -1,12 +1,12 @@
 /* ==========================================================================
    BBL Design System - Button & Link Styles
    Uses design tokens from /styles/tokens/
-   
+
    Button Variants:
    - Primary: Filled buttons for main actions
    - Secondary: Outlined buttons for secondary actions
    - Tertiary: Text-only buttons/links
-   
+
    Sizes:
    - L (52px): Hero banners
    - M (44px): Desktop default
@@ -31,17 +31,17 @@ button,
   align-items: center;
   justify-content: center;
   gap: var(--bbl-space-100);
-  
+
   /* Typography */
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-medium);
   text-align: center;
-  
+
   /* Layout */
   border-radius: 0.4375rem;
   transition: all 0.2s ease-in-out;
   white-space: nowrap;
-  
+
   /* Ensure proper touch targets */
   min-height: 28px;
   line-height: 2.75rem;
@@ -204,6 +204,7 @@ button.secondary,
 
 /* Hover */
 .button-secondary:hover,
+button.secondary:hover,
 .button-m.secondary:hover {
   background: var(--bbl-color-active-blue);
   border-color: var(--bbl-color-blue-70);
@@ -213,8 +214,9 @@ button.secondary,
 
 /* Active/Pressed */
 .button-secondary:active,
+button.secondary:active,
 .button-m.secondary:active {
-  background: var(--bbl-color-blue-20);
+  background: var(--bbl-color-white);
   border-color: var(--bbl-color-blue-90);
   color: var(--bbl-color-blue-90);
 }
@@ -227,6 +229,13 @@ button.secondary,
   color: var(--bbl-color-grey-60);
   border-color: var(--bbl-color-grey-40);
   cursor: not-allowed;
+}
+
+/* Right-click: keep hover appearance instead of active */
+.right-click-btn-state .button-m.secondary:active {
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-blue-70);
+  color: var(--bbl-color-white);
 }
 
 /* Secondary Inverted (for Dark Backgrounds) */
@@ -254,7 +263,7 @@ button.secondary,
    ========================================================================= */
 .adobe-ue-edit .button-container > a.button,/* Authoring support: added class for better button visibility in Adobe UE */
 .button-tertiary,
-button.tertiary { 
+button.tertiary {
   background: transparent;
   color: var(--bbl-color-active-blue);
   border: none;
@@ -411,7 +420,7 @@ a.link-inverted[aria-disabled="true"] {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .button-group > button,
   .button-group > .button {
     width: 100%;
@@ -497,6 +506,14 @@ a.link-inverted[aria-disabled="true"] {
 @media (width > 64rem) {
     .download-button-wrapper .download-files {
         font-size: var(--bbl-font-size-b1);
+    }
+}
+
+/* Strip the button chrome for print (any block using .download-files: accordion-block, menu-card-actions, search-reports-results, card-list) so it renders as plain text on paper instead of a blue button */
+@media print {
+    .download-button-wrapper .download-files {
+        background: unset;
+        box-shadow: unset;
     }
 }
 
@@ -592,6 +609,20 @@ a.link-inverted[aria-disabled="true"] {
 .global-dropdown-panel li a:hover {
     color: var(--bbl-color-blue-90);
     text-decoration: none;
+}
+
+#discover-survey-results-btn {
+  justify-content: center;
+}
+
+#discover-survey-results-btn .default-content-wrapper {
+  display: flex;
+  gap: var(--bbl-space-100);
+  justify-content: center;
+
+  .button-container {
+    margin: 0;
+  }
 }
 
 @media (width > 47.5rem) {
