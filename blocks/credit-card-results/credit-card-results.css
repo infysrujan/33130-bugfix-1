@@ -259,10 +259,6 @@
 }
 
 @media (width > 64rem) {
-  .ccs-results {
-    /* padding: var(--bbl-space-600) var(--bbl-space-200); */
-  }
-
   .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6)  {
     padding-bottom: var(--bbl-space-700);
   }
