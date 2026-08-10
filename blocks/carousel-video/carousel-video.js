@@ -72,8 +72,18 @@ export default async function decorate(block) {
   let rawScrollIndex = n;
 
   // ── Main player ──────────────────────────────────────────────────────────
+  // Mobile only: iframes are wrapped in .cv-main-track, which slides
+  // horizontally on Next/Prev. Tablet/desktop keep the original structure —
+  // iframes appended straight into .cv-main-player, swapped via the
+  // opacity-based .active crossfade — untouched.
+  const isMobile = !window.matchMedia('(width > 47.5rem)').matches;
+
   const mainPlayer = document.createElement('div');
   mainPlayer.className = 'cv-main-player';
+
+  const mainTrack = document.createElement('div');
+  mainTrack.className = 'cv-main-track';
+  const iframeParent = isMobile ? mainTrack : mainPlayer;
 
   // All iframes are created upfront so they load immediately.
   // Visibility is controlled by the .active class on each iframe.
@@ -85,10 +95,15 @@ export default async function decorate(block) {
     iframeEl.setAttribute('allowfullscreen', '');
     iframeEl.setAttribute('loading', 'lazy');
     if (i === 0) iframeEl.classList.add('active');
-    mainPlayer.appendChild(iframeEl);
+    iframeParent.appendChild(iframeEl);
     return iframeEl;
   });
+  if (isMobile) mainPlayer.appendChild(mainTrack);
   block.appendChild(mainPlayer);
+
+  function updateMainSlide(index) {
+    if (isMobile) mainTrack.style.transform = `translateX(-${index * 100}%)`;
+  }
 
   // ── Thumbnail carousel ────────────────────────────────────────────────────
   const carouselSection = document.createElement('div');
@@ -175,6 +190,7 @@ export default async function decorate(block) {
     iframeEls.forEach((f, i) => f.classList.toggle('active', i === index));
     thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
+    updateMainSlide(index);
   }
 
   function getThumbWidth() {
