@@ -233,30 +233,30 @@ document.addEventListener('bbl:load-fragment', async (e) => {
  * @param {string} pathname - `window.location.pathname`
  * @returns {'en'|'th'}
  */
-function getDocumentLangFromPath(pathname) {
-  const allowedLangs = ['en', 'th', 'zh', 'jp'];
-  const segments = pathname.split('/').filter(Boolean);
-  const first = segments[0];
+// function getDocumentLangFromPath(pathname) {
+//   const allowedLangs = ['en', 'th', 'zh', 'jp'];
+//   const segments = pathname.split('/').filter(Boolean);
+//   const first = segments[0];
 
-  if (document.querySelector('[data-aue-resource]')) {
-    const lang = segments[2];
-    if (allowedLangs.includes(lang)) return lang;
-  }
+//   if (document.querySelector('[data-aue-resource]')) {
+//     const lang = segments[2];
+//     if (allowedLangs.includes(lang)) return lang;
+//   }
 
-  if(allowedLangs.includes(first)) return first;
+//   if(allowedLangs.includes(first)) return first;
 
-  // Check bblcorporate#lang cookie
-  const cookie = document.cookie
-    .split(';')
-    .map((c) => c.trim())
-    .find((c) => c.startsWith('bblcorporate#lang='));
-  if (cookie) {
-    return cookie.split('=')[1];
-  }
+//   // Check bblcorporate#lang cookie
+//   const cookie = document.cookie
+//     .split(';')
+//     .map((c) => c.trim())
+//     .find((c) => c.startsWith('bblcorporate#lang='));
+//   if (cookie) {
+//     return cookie.split('=')[1];
+//   }
 
-  // Fallback to 'th'
-  return 'th';
-}
+//   // Fallback to 'th'
+//   return 'th';
+// }
 
 function decorateOgTitle() {
   const shortTitle = getMetadata('short-title');
