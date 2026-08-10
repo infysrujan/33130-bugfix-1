@@ -56,7 +56,7 @@
 
 .carousel-video .cv-main-player > iframe.active {
   opacity: 1;
-  z-index: 100;
+  z-index: 1;
 }
 
 /* ── Thumbnail carousel — mobile: nav arrows overlay on player. Matches .cv-main-player's box and centering exactly, so Prev/Next land on the video's edges, not the wider block container's edges. ───────────── */
