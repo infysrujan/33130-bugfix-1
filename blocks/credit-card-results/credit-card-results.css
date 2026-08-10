@@ -23,6 +23,10 @@
   scroll-margin-top: var(--header-scroll-offset);
 }
 
+.credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-400);
+  }
+
 /* ==========================================================================
    card-list credit-card variation
    Scoped so no other card-list instances are affected.
@@ -228,6 +232,10 @@
     display: none;
   }
 
+  .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-600);
+  }
+
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -251,10 +259,10 @@
 }
 
 @media (width > 64rem) {
-  .ccs-results {
-    padding: var(--bbl-space-600) var(--bbl-space-200);
+  .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-700);
   }
-
+ 
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     justify-content: center;
     gap: var(--bbl-space-500);
