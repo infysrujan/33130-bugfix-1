@@ -363,7 +363,7 @@ async function loadEager(doc) {
     },
   );
 
-  document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
+  // document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
   decorateOgTitle();
