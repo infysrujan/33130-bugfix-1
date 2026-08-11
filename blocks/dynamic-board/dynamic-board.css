@@ -433,10 +433,10 @@
   position: fixed;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-22);
-  border-radius: var(--bbl-rounded-100);
+  border-radius: 0.625rem;
   box-shadow: 0 var(--bbl-space-100) var(--bbl-space-300) var(--bbl-color-black-alpha-12);
   z-index: 700;
-  padding: var(--bbl-space-200) var(--bbl-space-150) var(--bbl-space-150);
+  padding: 0.3125rem;
   box-sizing: border-box;
 }
 
@@ -447,7 +447,7 @@
 .dynamic-board .db-mp-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   margin-bottom: var(--bbl-space-100);
 }
 
@@ -473,8 +473,11 @@
 }
 
 .dynamic-board .db-mp-title {
-  font-size: var(--bbl-heading-h3-size);
-  line-height: var(--bbl-heading-h3-line-height);
+  height: auto;
+  min-height: 0;
+  width: auto;
+  font-size: 0.9625rem;
+  line-height: 1.2;
   font-weight: 700;
   color: var(--bbl-color-blue-105);
   background: none;
@@ -485,25 +488,38 @@
 
 .dynamic-board .db-mp-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--bbl-space-050);
+  grid-template-columns: repeat(3, 3.875rem);
+  grid-auto-rows: 2.625rem;
+  place-items: center;
+  gap: var(--bbl-space-025);
 }
 
 .dynamic-board .db-mp-cell {
-  height: 2.25rem;
-  font-size: var(--bbl-font-size-b2);
+  height: auto;
+  min-height: 0;
+  width: fit-content;
+  min-width: 4.2em;
+  padding: 0.3125rem 0.9375rem;
+  font-size: var(--bbl-font-size-b2-desktop);
+  line-height: 1;
   color: var(--bbl-color-grey-70);
   background: none;
   border: 0.0625rem solid transparent;
-  border-radius: var(--bbl-rounded-050);
+  border-radius: var(--bbl-rounded-400);
   cursor: pointer;
   text-align: center;
   transition: background 0.15s, color 0.15s;
-  width: fit-content;
-  padding: 0.3125rem 0.9375rem;
 }
 
 .dynamic-board .db-mp-cell:hover {
+  color: var(--bbl-color-white);
+  background-color: var(--bbl-color-blue-105);
+  border-radius: 1.5625rem;
+}
+
+/* Replace the global focus-visible outline with the pill fill (no clashing ring). */
+.dynamic-board .db-mp-cell:focus-visible {
+  outline: none;
   color: var(--bbl-color-white);
   background-color: var(--bbl-color-blue-105);
   border-radius: 1.5625rem;
