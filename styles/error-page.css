@@ -149,4 +149,8 @@ body.error-page .header .mobile-top-bar {
     max-width: 100%;
     margin: 0 auto;
   }
+
+  .error-page .footer-container .footer-bottom {
+    padding-bottom: 1.6rem;
+  }
 }
