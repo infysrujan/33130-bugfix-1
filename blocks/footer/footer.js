@@ -149,8 +149,9 @@ export default async function decorate(block) {
     const lang = getLang();
     footerPath = `/${lang}/footer`;
   } else {
-    const footerMeta = getMetadata('footer');
-    footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
+    // const footerMeta = getMetadata('footer');
+    footerPath = getMetadata('footer');
+    // footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
   }
   const fragment = await loadFragment(footerPath);
 
