@@ -249,7 +249,7 @@
 
   /* Text */
   --bbl-text-primary: var(--bbl-color-grey-100);
-  --bbl-text-secondary: var(--bbl-color-grey-70);
+  --bbl-text-secondary: var(--bbl-color-grey-90);
   --bbl-text-disabled: var(--bbl-color-grey-50);
   --bbl-text-inverse: var(--bbl-color-white);
   --bbl-text-link: var(--bbl-color-active-blue);

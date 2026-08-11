@@ -187,7 +187,7 @@
 }
 
 .carousel-description {
-    color: var(--bbl-color-grey-70);
+    color: var(--bbl-color-grey-90);
     margin: 0 0 var(--bbl-space-300);
     overflow: hidden;
     display: -webkit-box;

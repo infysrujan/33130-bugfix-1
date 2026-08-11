@@ -212,7 +212,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
       y: y + 4,
       'text-anchor': 'end',
       'font-size': 11,
-      fill: '#78787D',
+      fill: '#46464D',
       'font-family': 'BangkokBank-Regular,Arial,sans-serif',
     }, svgEl).textContent = v.toFixed(1);
   });

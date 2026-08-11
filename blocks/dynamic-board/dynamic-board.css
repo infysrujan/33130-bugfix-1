@@ -245,7 +245,7 @@
   border: none;
   font-size: var(--bbl-font-size-b2);
   font-weight: 700;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   cursor: pointer;
   white-space: nowrap;
   padding: 0;
@@ -264,7 +264,7 @@
 
 .dynamic-board .db-print-btn .icon-print {
   font-size: var(--bbl-font-size-b1);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .dynamic-board .db-print-btn:hover .icon-print {
@@ -491,7 +491,7 @@
 .dynamic-board .db-mp-cell {
   height: 2.25rem;
   font-size: var(--bbl-font-size-b2);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   background: none;
   border: 0.0625rem solid transparent;
   border-radius: var(--bbl-rounded-050);
@@ -726,7 +726,7 @@
 .dynamic-board .db-table tbody td {
   padding: 0.625rem 0.3125rem;
   font-size: var(--bbl-font-size-b1-mobile);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   vertical-align: middle;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
   min-height: 4.6875rem;

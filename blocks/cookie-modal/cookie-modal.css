@@ -212,7 +212,7 @@ body.cookie-modal-open .header {
 }
 
 .cookie-accordion-content p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-family: var(--bbl-font-family-primary);
   font-size: 0.875rem;
   font-weight: 400;

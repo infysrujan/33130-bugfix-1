@@ -754,7 +754,7 @@ function printElement(block) {
       border-collapse: collapse;
       font-size: 0.625rem;
       line-height: 1.2;
-      color: #78787D;
+      color: #46464D;
     }
 
     /* Default: every cell stays on ONE line (end-to-end). Name is the sole

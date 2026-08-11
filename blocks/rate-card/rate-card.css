@@ -232,7 +232,7 @@
    -------------------------------------------------------------------------- */
 .rate-card .text-x-small {
   font-size: 0.75rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-family: var(--bbl-font-family-looped);
 }
 
@@ -268,7 +268,7 @@
 .rate-card .no-data {
   padding: 1.5rem;
   text-align: center;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-style: italic;
   font-family: var(--bbl-font-family-medium);
 }

@@ -218,7 +218,7 @@
 }
 
 .carousel-dotted .carousel-default-text {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   padding: var(--bbl-space-250) 0;
 }
 
@@ -595,7 +595,7 @@
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-text-default-size);
   line-height: var(--bbl-text-default-line-height);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-weight: var(--bbl-text-default-weight);
 }
 
@@ -610,7 +610,7 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-brown,
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin-top: 1.25rem;
 }
 

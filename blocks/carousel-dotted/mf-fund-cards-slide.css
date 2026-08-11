@@ -22,7 +22,7 @@
   text-align: center;
   padding: var(--bbl-space-layout-xl) var(--bbl-space-container-xs);
   font-size: var(--bbl-font-size-b1, 1rem);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .mf-fund-cards-description {
@@ -132,7 +132,7 @@
 .card-list.mf-card-list .cards-list-description p {
   font-size: 1rem;
   line-height: 1.375;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin: 0 0 0.625rem;
   font-family: var(--bbl-font-family-primary);
 }

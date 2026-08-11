@@ -120,7 +120,7 @@
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: 1.285rem;
   margin: 0;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .card-eyebrow {
@@ -129,7 +129,7 @@
   font-weight: 400;
   line-height: var(--bbl-line-height-b1-mobile);
   margin: 1.25rem 0;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 /* ── Benefits list ─────────────────────────────────────── */
@@ -148,7 +148,7 @@
 
 .card-benefit span {
   font-size: var(--bbl-font-size-b1-mobile);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 /* ── CTA ───────────────────────────────────────────────── */

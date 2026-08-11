@@ -31,7 +31,7 @@ body {
     display: none;
     margin: 0;
     background-color: var(--bbl-bg-primary);
-    color: var(--bbl-color-grey-70);
+    color: var(--bbl-color-grey-90);
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-text-default-size);
     line-height: var(--bbl-text-default-line-height);

@@ -183,7 +183,7 @@
 }
 
 .currency-converter .search-currency::placeholder {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-size: 1rem;
   font-family: var(--bbl-font-family-primary);
 }

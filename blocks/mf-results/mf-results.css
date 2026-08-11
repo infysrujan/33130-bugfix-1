@@ -18,7 +18,7 @@
 .mfr-disclaimer {
   padding: 1.875rem 0;
   font-size: var(--bbl-font-size-b3, 0.8125rem);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   line-height: var(--bbl-line-height-body, 1.6);
   text-align: center;
 }
@@ -60,7 +60,7 @@
   margin: var(--bbl-space-075) 0 0;
   padding: 0;
   font-size: var(--bbl-font-size-b1);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   line-height: 1.625;
 }
 
@@ -105,7 +105,7 @@
 .mfr-no-results {
   text-align: center;
   font-size: var(--bbl-font-size-b1, 1rem);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin:0;
 }
 
@@ -180,7 +180,7 @@
 .card-list.mf-results .cards-list-description p {
   font-size: 1rem;
   line-height: 1.375;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin: 0 0 0.625rem;
   overflow: hidden;
   display: -webkit-box;

@@ -27,7 +27,7 @@
 .cards-list-subtitle p,
 .cards-list-description p {
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .cards-list-subtitle p {
