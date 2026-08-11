@@ -39,6 +39,10 @@ body.error-page .header .mobile-top-bar {
     display: none;
 }
 
+.error-page .footer-container .footer-bottom {
+    padding-bottom: 2.8125rem;
+}
+
 .error-page main .default-content-wrapper {
     text-align: center;
     padding-top:6.25rem;
