@@ -473,7 +473,8 @@
 }
 
 .dynamic-board .db-mp-title {
-  font-size: 0.9625rem;
+  font-size: var(--bbl-heading-h3-size);
+  line-height: var(--bbl-heading-h3-line-height);
   font-weight: 700;
   color: var(--bbl-color-blue-105);
   background: none;
@@ -1037,10 +1038,6 @@
 
   .dynamic-board .db-remarks-content {
     font-size: var(--bbl-font-size-b1);
-  }
-
-  .dynamic-board .db-mp-title {
-    font-size: 1.1rem;
   }
 }
 
