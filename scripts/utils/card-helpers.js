@@ -274,6 +274,24 @@ export function buildPaginationHtml(current, total, labels = {}) {
     <button class="listing-card-arrow listing-card-arrow-next" data-dir="next"${nextAttr} title="${labels.nextBtnLabel}"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
 }
 
+// Small breathing room between the fixed header and the scrolled-to grid.
+const HEADER_SCROLL_GAP = 16;
+
+/**
+ * Space (px) the fixed site header currently occupies at the top of the
+ * viewport. Measured live off the pinned bar's bottom edge so it stays correct
+ * across breakpoints and the header's scrolled state, rather than assuming a
+ * static height. Returns 0 when there is no header overlapping the top.
+ */
+function getStickyHeaderOffset() {
+  const header = document.querySelector('.header');
+  if (!header) return 0;
+  const desktop = window.matchMedia('(min-width: 1025px)').matches;
+  const bar = header.querySelector(desktop ? '.main-nav-desktop' : '.mobile-top-bar');
+  if (!bar) return 0;
+  return Math.max(0, Math.ceil(bar.getBoundingClientRect().bottom));
+}
+
 export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollTarget) {
   paginationEl?.addEventListener('click', (e) => {
     const pageBtn = e.target.closest('.listing-card-page');
@@ -291,7 +309,13 @@ export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollT
     }
     if (changed) {
       onPageChange();
-      scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (scrollTarget) {
+        // Offset the landing by the live header height so the grid appears
+        // clearly below the sticky header instead of hidden behind it.
+        // scrollIntoView honors scroll-margin-top, so set it to the measured value.
+        scrollTarget.style.scrollMarginTop = `${getStickyHeaderOffset() + HEADER_SCROLL_GAP}px`;
+        scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   });
 }
