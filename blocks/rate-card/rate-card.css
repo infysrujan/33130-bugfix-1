@@ -327,7 +327,7 @@
   }
 
   .rate-card table tbody td:not(:first-child) {
-    padding-left: 0.625rem;
+    padding-inline: 0.625rem;
     font-size: 1.5rem;
   }
 

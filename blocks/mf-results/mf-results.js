@@ -22,9 +22,6 @@ function clearSurveyAnswers() {
 }
 
 const MAX_COMPARE = 3;
-const INITIAL_VISIBLE = 6;
-const TABLET_MIN = '47.5rem';
-const DESKTOP_BREAKPOINT = `(width > ${TABLET_MIN})`;
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -205,26 +202,6 @@ function filterFundsByMatrix(funds, matchedNames) {
   });
 }
 
-// ── Peek helpers ───────────────────────────────────────────────────────────────
-
-function setPeek(container) {
-  if (!window.matchMedia(DESKTOP_BREAKPOINT).matches) return;
-  const items = [...container.querySelectorAll('.cards-list-item:not(.mfr-hidden)')];
-  if (items.length < 4) return;
-  const containerTop = container.getBoundingClientRect().top;
-  const anchorEl = items[3].querySelector('.cards-list-button')
-    || items[3].querySelector('.cards-list-description')
-    || items[3];
-  const peekHeight = Math.round(anchorEl.getBoundingClientRect().top - containerTop);
-  container.style.maxHeight = `${peekHeight}px`;
-  container.classList.add('mfr-peek');
-}
-
-function removePeek(container) {
-  container.style.maxHeight = '';
-  container.classList.remove('mfr-peek');
-}
-
 // ── Fund card DOM builder ──────────────────────────────────────────────────────
 
 /**
@@ -245,7 +222,11 @@ function buildCardBlock(funds, doc, labels) {
   funds.forEach((fund) => {
     const name = fund.FundName || '';
     // eslint-disable-next-line no-underscore-dangle
-    const readMoreUrl = fund._path || '';
+    let readMoreUrl = fund.mfPageUrl?._path || '#';
+    // Remove "/content/bangkokbank" from the start of readMoreUrl, if present
+    if (readMoreUrl.startsWith('/content/bangkokbank')) {
+      readMoreUrl = readMoreUrl.replace(/^\/content\/bangkokbank/, '');
+    }
     const productId = fund.ProductID || name;
     const compareEnabled = fund.CompareButton === 'true';
 
@@ -296,26 +277,28 @@ function buildCardBlock(funds, doc, labels) {
       content.appendChild(descEl);
     }
 
-    // Remark (logo)
+    inner.appendChild(content);
+
+    // Button
+    const buttonWrapper = doc.createElement('div');
+    buttonWrapper.className = 'cards-list-button';
+
+    // Logo prepended inside button wrapper, before the link
     if (logoSrc) {
       const remarkEl = doc.createElement('div');
-      remarkEl.className = 'cards-list-remark';
+      remarkEl.className = 'cards-list-logo';
       const logoImg = doc.createElement('img');
       logoImg.src = logoSrc;
       logoImg.alt = name;
       logoImg.loading = 'lazy';
       logoImg.className = 'mfr-logo';
       remarkEl.appendChild(logoImg);
-      content.appendChild(remarkEl);
+      buttonWrapper.appendChild(remarkEl);
     }
 
-    inner.appendChild(content);
-
-    // Button
-    const buttonWrapper = doc.createElement('div');
-    buttonWrapper.className = 'cards-list-button';
     const link = doc.createElement('a');
     link.href = readMoreUrl || '#';
+    link.className = 'button-m primary';
     link.textContent = labels.readMore;
     buttonWrapper.appendChild(link);
     inner.appendChild(buttonWrapper);
@@ -339,8 +322,9 @@ function addCompareButtons(blockEl, doc, labels) {
     if (h3?.dataset?.compareEnabled === 'false') return;
     const btn = doc.createElement('button');
     btn.type = 'button';
-    btn.className = 'mfr-compare-btn';
+    btn.className = 'mfr-compare-btn button-m secondary';
     btn.textContent = labels.compare;
+    btn.title = labels.compare;
     btn.dataset.cardName = h3?.textContent?.trim() ?? '';
     btn.dataset.cardId = h3?.dataset?.cardId ?? '';
     btn.dataset.cardImage = item?.querySelector('img')?.src ?? '';
@@ -383,8 +367,6 @@ export default async function decorate(block) {
     readMore: ph.mfReadMoreText || 'Read more',
     compare: ph.mfCompareText || 'Compare',
     noResults: ph.mfNoResultsText || 'No results found',
-    seeLess: ph.mfSeeLessText || 'See less',
-    seeMore: ph.mfSeeMoreText || 'See more',
   };
 
   // ── Build page structure ───────────────────────────────────────────────────
@@ -395,16 +377,6 @@ export default async function decorate(block) {
   const cardListContainer = doc.createElement('div');
   cardListContainer.className = 'mfr-card-list-container';
   wrapper.appendChild(cardListContainer);
-
-  // See more / See less toggle
-  const toggleWrap = doc.createElement('div');
-  toggleWrap.className = 'mfr-results-toggle';
-  toggleWrap.style.display = 'none';
-  const toggleBtn = doc.createElement('button');
-  toggleBtn.type = 'button';
-  toggleBtn.className = 'mfr-results-toggle-btn';
-  toggleWrap.appendChild(toggleBtn);
-  wrapper.appendChild(toggleWrap);
 
   // Footer CTAs: View All Categories + Start Over
   const footer = doc.createElement('div');
@@ -473,10 +445,6 @@ export default async function decorate(block) {
   // ── Fetch matrix + fund data in parallel ──────────────────────────────────
   const [matrix, allFunds] = await Promise.all([loadMatrix(), loadFundsData()]);
 
-  // ── State ──────────────────────────────────────────────────────────────────
-  let isExpanded = false;
-  let lastRenderedTotal = 0;
-
   // ── Compare state helpers ──────────────────────────────────────────────────
   function restoreCompareState() {
     const selected = window.mfsSelectedCards || [];
@@ -485,32 +453,15 @@ export default async function decorate(block) {
     });
   }
 
-  // ── Toggle label refresh ───────────────────────────────────────────────────
-  function refreshToggle(total) {
-    const canToggle = total > INITIAL_VISIBLE;
-    toggleWrap.style.display = canToggle ? 'flex' : 'none';
-    toggleBtn.innerHTML = '';
-    const labelEl = doc.createElement('span');
-    labelEl.textContent = isExpanded ? labels.seeLess : labels.seeMore;
-    const iconEl = doc.createElement('span');
-    iconEl.className = 'icon-dropdown';
-    iconEl.setAttribute('aria-hidden', 'true');
-    toggleBtn.appendChild(labelEl);
-    toggleBtn.appendChild(iconEl);
-    toggleBtn.setAttribute('aria-expanded', String(isExpanded));
-  }
-
   // ── Render fund cards ──────────────────────────────────────────────────────
   function renderCards(funds) {
     cardListContainer.innerHTML = '';
-    lastRenderedTotal = funds ? funds.length : 0;
 
     if (!funds || funds.length === 0) {
       const msg = doc.createElement('p');
       msg.className = 'mfr-no-results';
       msg.textContent = labels.noResults;
       cardListContainer.appendChild(msg);
-      refreshToggle(0);
       return;
     }
 
@@ -518,15 +469,6 @@ export default async function decorate(block) {
     cardListContainer.appendChild(blockEl);
     addCompareButtons(blockEl, doc, labels);
     restoreCompareState();
-
-    if (!isExpanded && funds.length > INITIAL_VISIBLE) {
-      [...blockEl.querySelectorAll('.cards-list-item')].forEach((item, i) => {
-        if (i >= INITIAL_VISIBLE) item.classList.add('mfr-hidden');
-      });
-      requestAnimationFrame(() => setPeek(cardListContainer));
-    }
-
-    refreshToggle(funds.length);
   }
 
   // ── Apply filter and render ────────────────────────────────────────────────
@@ -538,20 +480,6 @@ export default async function decorate(block) {
     const filteredFunds = filterFundsByMatrix(allFunds, matchedNames);
     renderCards(filteredFunds);
   }
-
-  // ── See more / See less ────────────────────────────────────────────────────
-  toggleBtn.addEventListener('click', () => {
-    isExpanded = !isExpanded;
-    [...cardListContainer.querySelectorAll('.cards-list-item')].forEach((item, i) => {
-      if (i >= INITIAL_VISIBLE) item.classList.toggle('mfr-hidden', !isExpanded);
-    });
-    if (isExpanded) {
-      removePeek(cardListContainer);
-    } else {
-      requestAnimationFrame(() => setPeek(cardListContainer));
-    }
-    refreshToggle(lastRenderedTotal);
-  });
 
   // ── Compare button click handling ──────────────────────────────────────────
   cardListContainer.addEventListener('click', (e) => {

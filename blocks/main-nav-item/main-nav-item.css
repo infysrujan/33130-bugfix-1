@@ -324,6 +324,7 @@ a.megamenu-link {
     transform: translate3d(0, 0, 0);
     max-height: calc(100vh - var(--nav-height));
     overflow: auto;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
 
   .megamenu-inner {

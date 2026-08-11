@@ -27,8 +27,6 @@ main .form button {
 }
 
 main .form button[type='button'] {
-  background: transparent;
-  color: var(--bbl-color-active-blue);
   border: 0.125rem solid var(--bbl-color-active-blue);
   font-style: normal;
 }

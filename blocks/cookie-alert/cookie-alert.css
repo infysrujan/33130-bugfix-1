@@ -69,51 +69,14 @@
   margin-top: var(--bbl-space-300);
 }
 
-.cookie-alert-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.cookie-alert-btn.button-m:is(.secondary, .primary) {
   min-width: 9.375rem;
-  padding: 0.625rem var(--bbl-space-200);
-  border: 0.063rem solid var(--bbl-color-active-blue);
-  border-radius: var(--bbl-rounded-100);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1);
-  font-weight: 500;
-  line-height: 1.375rem;
-  cursor: pointer;
-  transition:
-    background 0.2s ease-in-out,
-    color 0.2s ease-in-out,
-    border-color 0.2s ease-in-out;
-  white-space: nowrap;
+  width: unset;
 }
 
 .cookie-alert-btn:focus-visible {
   outline: 0.125rem solid var(--bbl-color-active-blue);
   outline-offset: 0.125rem;
-}
-
-.cookie-alert-btn-secondary {
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
-}
-
-.cookie-alert-btn-secondary:hover,
-.cookie-alert-btn-secondary:focus-visible {
-  background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-}
-
-.cookie-alert-btn-primary {
-  background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-}
-
-.cookie-alert-btn-primary:hover,
-.cookie-alert-btn-primary:focus-visible {
-  background: var(--bbl-color-blue-90);
-  border-color: var(--bbl-color-blue-90);
 }
 
 @media (width > 47.5rem) {
@@ -126,11 +89,3 @@
   }
 }
 
-@media (width > 64rem) {
-  .cookie-alert-btn {
-    min-width: 9.375rem;
-    padding-left: var(--bbl-space-200);
-    padding-right: var(--bbl-space-200);
-    font-size: var(--bbl-font-size-b1);
-  }
-}

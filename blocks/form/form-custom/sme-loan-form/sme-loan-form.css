@@ -8,9 +8,7 @@
       padding: 0;
       color: var(--bbl-color-black);
       font-family: var(--bbl-font-family-medium);
-      font-size: var(--bbl-font-size-h3-mobile);
       font-weight: var(--bbl-font-weight-regular);
-      line-height: var(--bbl-line-height-h3-mobile);
       text-align: center;
     }
   }
@@ -21,6 +19,17 @@
     width: 100%;
     max-width: 46.25rem;
     margin-inline: auto;
+  }
+
+  & .form form .field-wrapper:has(>.field-description) {
+    margin-bottom: 1.5rem;
+    position: relative;
+
+    & .field-description {
+      position: absolute;
+      right: 0.875rem;
+      bottom: -1rem;
+    }
   }
 
   & :is(.form-wrapper, .form.block) {
@@ -62,6 +71,22 @@
 
   & .form form input:disabled {
     background-color: var(--bbl-color-gray-151);
+  }
+
+  & .form form input[type="number"] {
+    appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        appearance: none;
+        margin: 0;
+    }
+  }
+  
+  & .form form input::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
   }
 
   & .form form select {
@@ -138,6 +163,10 @@
     }
   }
 
+  & .form form .radio-group-wrapper > legend.field-label {
+    padding: 0.625rem 0;
+  }
+
   & .form form .radio-group-wrapper.field-convenienttime:not(.radio-tabs, .cards) {
     display: flex;
     flex-flow: column nowrap;
@@ -155,7 +184,7 @@
       flex-wrap: nowrap;
       width: auto;
       max-width: 100%;
-      min-width: 8.75rem;
+      min-width: 18rem;
       margin: 0;
       justify-content: flex-start;
 
@@ -356,8 +385,6 @@
     &.central-aligned > .default-content-wrapper {
       & h2 {
         margin: var(--bbl-space-500) 0 var(--bbl-space-300);
-        font-size: var(--bbl-font-size-h3-desktop);
-        line-height: var(--bbl-line-height-h3-desktop);
       }
     }
 
@@ -367,6 +394,10 @@
       & .radio-wrapper {
         margin: 0 var(--bbl-space-250);
       }
+    }
+
+    & .form form .field-wrapper:has(>.field-description) .field-description {
+      right: 1.25rem;
     }
 
     & .form form .field-wrapper.col-4 {

@@ -23,7 +23,7 @@ export default function parseAuthoring(block) {
   // Row 5: Print CTA label
   const printCtaLabel = rows[5]?.textContent?.trim() || '';
   // Row 6: Section 2 - forward points table title (richtext — preserve line breaks)
-  const section2TableTitle = rows[6]?.firstElementChild?.innerHTML || rows[6]?.textContent?.trim() || '';
+  const section2TableTitle = rows[6]?.firstElementChild?.textContent?.trim() || rows[6]?.textContent?.trim() || '';
   // Row 7: Section 2 - table sub-title 1 (low revenue)
   const section2SubTitle1 = rows[7]?.textContent?.trim() || '';
   // Row 8: Section 2 - table sub-title 2 (mid revenue)

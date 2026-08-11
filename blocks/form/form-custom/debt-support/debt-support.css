@@ -12,21 +12,20 @@ main .custom-forms .form fieldset.radio-group-wrapper legend,
 main .custom-forms .form form p {
   font-weight: var(--form-label-font-weight);
   font-size: var(--bbl-font-size-h4-mobile);
-  color: var(--form-label-color);
+  color: var(--bbl-color-grey-70);
 }
 
 .debt-support .form-container.custom-forms .form :is(h1, h2, h3, h4, h5, h6){
   position: relative;
-  font-size: var(--bbl-form-font-size-18);
   text-align: center;
   color: var(--bbl-color-black);
   font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.5rem;
   font-family: var(--bbl-font-family-medium);
   padding-bottom: 1.875rem;
   margin: 1.875rem 0;
 }
 
+main .section.form-container.custom-forms .form form .plain-text-wrapper.field-summary ul li,
 main .section.form-container.custom-forms .form form .plain-text-wrapper p:last-child p{
   text-align: left;
 }
@@ -181,6 +180,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     flex-wrap: wrap;
     min-width: 100%;
     padding: 0 var(--bbl-form-padding-10);
+    align-items: unset;
   }
 
   & .form form .radio-group-wrapper.align-left > legend.field-label {
@@ -199,7 +199,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     & > legend.field-label {
       flex: 0 0 100%;
       width: 100%;
-      margin-top: var(--bbl-space-100);
+      margin: 0.625rem 0 0.3125rem;
       padding-left: 0.625rem;
       text-align: left;
       background: none;
@@ -214,7 +214,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
       align-items: center;
       gap: var(--bbl-space-100);
       width: 100%;
-      margin: 0;
+      margin: 0.625rem 0 0;
       padding-left: 1.25rem;
     }
 
@@ -226,7 +226,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
   /* Section legends */
   & .form form fieldset.panel-wrapper.field-wrapper > legend.field-label {
     margin: 0;
-    padding: 0.625rem 0 var(--bbl-space-075) 0.625rem;
+    padding: 0.625rem 0 0.3125rem 0.625rem;
     text-align: left;
     font-family: var(--bbl-font-family-primary);
     font-size: var(--form-fieldset-legend-font-size);
@@ -235,7 +235,6 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     color: var(--bbl-color-grey-85);
     background: unset;
     text-decoration: underline;
-    margin-bottom: 0.625rem;
   }
 
   /* Mobile: stack half-width fields in a single column */
@@ -305,7 +304,6 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     & .form form .field-loan-type .checkbox-group-wrapper .checkbox-wrapper {
       width: calc(50% - var(--bbl-space-150));
       padding-left: var(--bbl-space-250);
-      margin-bottom: 0.625rem;
 
       & label {
         font-size: var(--form-font-size-xs);

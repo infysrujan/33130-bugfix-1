@@ -1,0 +1,284 @@
+/* ==========================================================================
+   Credit Card Results Block
+   Renders the filtered/unfiltered card list. Talks to the Credit Card Selector
+   block purely via document-level custom events (credit-card-filter-applied /
+   credit-card-filter-reset / credit-card-compare-updated) — no DOM coupling.
+   Card rendering delegates to the card-list block decorator; only layout
+   overrides and result-specific elements are styled here.
+   ========================================================================== */
+
+.credit-card-results .ccs-source-row {
+  display: none;
+}
+
+.credit-card .cards-list:is(.scrollable, .carousel) .cards-list-item {
+  flex: 0 0 280px;
+}
+
+/* ── Block wrapper ──────────────────────────────────────────────────────────── */
+
+.ccs-results {
+  font-family: var(--bbl-font-family-primary);
+  background: var(--bbl-color-white);
+  scroll-margin-top: var(--header-scroll-offset);
+}
+
+.credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-400);
+  }
+
+/* ==========================================================================
+   card-list credit-card variation
+   Scoped so no other card-list instances are affected.
+   ========================================================================== */
+
+/* ── Image area — contain the full credit card art ───────────────────────── */
+
+.card-list.credit-card .cards-list-image.cards-list-image-x-small {
+  min-height: 8.9375rem;
+  max-height: 10.9375rem;
+  height: calc(100vw * .12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 1.25rem 0;
+  box-sizing: border-box;
+}
+
+.card-list.credit-card .cards-list-image.cards-list-image-x-small img {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* ── Thai card name above the EN heading ─────────────────────────────────── */
+
+.card-list.credit-card .ccs-name-th {
+  font-size: var(--bbl-font-size-b2);
+  color: var(--bbl-color-grey-70);
+  margin: 0 0 var(--bbl-space-050);
+  line-height: 1.4;
+}
+
+/* ── Card title h3 ───────────────────────────────────────────────────────── */
+
+.card-list.credit-card .cards-list-title h3 {
+  font-family: var(--bbl-font-family-medium);
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: var(--bbl-font-weight-medium);
+  color: var(--bbl-color-black);
+  overflow-wrap: anywhere;
+}
+
+/* ── Button area: stack Learn More above Compare, no extra padding ───────── */
+
+.card-list.credit-card .cards-list-inner .cards-list-button {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+/* Locked "already comparing" state: colors come from buttons.css's
+   .button-m.secondary.disabled; only the click-through behavior lives here. */
+.card-list.credit-card .ccs-compare-btn.is-comparing {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ── Mobile: hide scrollbar on credit card carousel — replaced by dots ───────── */
+
+.ccs-card-list-container .cards-list.scrollable {
+  scrollbar-width: none;
+}
+
+.ccs-card-list-container .cards-list.scrollable::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Scroll dots pagination — matches carousel-dotted show-arrows-dots style ─── */
+
+.ccs-scroll-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--bbl-space-100);
+  margin-top: var(--bbl-space-150);
+  width: auto;
+  height: auto;
+  flex-wrap: wrap;
+}
+
+.ccs-scroll-dot {
+  appearance: none;
+  width: var(--bbl-space-100);
+  height: var(--bbl-space-100);
+  min-width: var(--bbl-space-100);
+  min-height: var(--bbl-space-100);
+  border-radius: 50%;
+  border: 0.0625rem solid var(--bbl-color-grey-40);
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+  transition: all 180ms ease;
+}
+
+.ccs-scroll-dot.is-active {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+/* ── Hidden cards (beyond initial 6 in unfiltered state) ────────────────────── */
+
+.ccs-hidden {
+  display: none;
+}
+
+/* ── Row-2 peek: clips container to show cards 4–6 at 50% height on desktop ─── */
+
+.ccs-card-list-container.ccs-peek {
+  overflow: hidden;
+  position: relative;
+}
+
+.ccs-card-list-container.ccs-peek::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8rem;
+  background: linear-gradient(to bottom, transparent, var(--bbl-color-white));
+  pointer-events: none;
+}
+
+/* ── No-results state ─────────────────────────────────────────────────────── */
+
+.ccs-no-results {
+  padding: var(--bbl-space-600) var(--bbl-space-200);
+  text-align: center;
+  color: var(--bbl-color-grey-70);
+  font-size: var(--bbl-font-size-b1);
+}
+
+/* ── See more / See less toggle — JS controls display via inline style ────── */
+
+.ccs-results-toggle {
+  display: none;
+  justify-content: center;
+  margin-top: var(--bbl-space-300);
+}
+
+.ccs-results-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bbl-space-075);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-medium);
+  font-size: 1.2em;
+  font-weight: var(--bbl-font-weight-regular);
+  padding: var(--bbl-space-100) var(--bbl-space-200);
+  border-radius: 0.4375rem;
+  transition: background-color 0.2s ease;
+}
+
+/* Use the actual chevron SVG instead of the icomoon glyph — suppress the
+   shared icomoon ::before content ("icon-dropdown" is reused sitewide, so
+   this override is scoped to just this button). */
+.ccs-results-toggle-btn .icon-dropdown::before {
+  content: none;
+}
+
+.ccs-results-toggle-btn .icon-dropdown {
+  display: inline-block;
+  width: var(--bbl-space-300);
+  height: 0.875rem;
+  background-image: url('/icons/chevron-up-thin.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ccs-results-toggle-btn[aria-expanded="true"] .icon-dropdown {
+  transform: rotate(180deg);
+}
+
+/* ── Disclaimer ────────────────────────────────────────────────────────────── */
+
+.ccs-results-disclaimer {
+  margin-top: var(--bbl-space-300);
+  padding-top: var(--bbl-space-300);
+  font-size: var(--bbl-font-size-b1);
+  color: var(--bbl-color-grey-85);
+  line-height: 1.6;
+}
+
+@media (width > 47.5rem) {
+  .ccs-scroll-dots {
+    display: none;
+  }
+
+  .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-600);
+  }
+
+  .card-list.credit-card .cards-list.scrollable.cards-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: stretch;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
+    width: 100%;
+    scroll-snap-align: none;
+  }
+
+  .card-list.credit-card .cards-list-inner {
+    min-height: 27rem;
+  }
+
+  .ccs-results-disclaimer {
+    margin-inline: 3rem;
+  }
+}
+
+@media (width > 64rem) {
+  .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-700);
+  }
+ 
+  .card-list.credit-card .cards-list.scrollable.cards-3 {
+    justify-content: center;
+    gap: var(--bbl-space-500);
+  }
+
+  .card-list.credit-card .cards-list-inner {
+    min-height: 28rem;
+  }
+
+  .ccs-results-disclaimer {
+    max-width: 54.5rem;
+    margin-inline: auto;
+  }
+
+  .card-list.credit-card .cards-list-image.cards-list-image-x-small img {
+    width: auto;
+    height: 100%;
+  }
+}

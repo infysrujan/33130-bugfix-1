@@ -137,8 +137,8 @@
   color: var(--bbl-color-black);
   margin: 0;
   position: relative;
-  margin-bottom: var(--bbl-space-250);
-  padding-bottom: var(--bbl-space-250);
+  margin-bottom: 0.625rem;
+  padding-bottom: 0.9375rem;
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .title-2::before {
@@ -216,7 +216,7 @@
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .content-insert-card {
-  max-width: 73.125rem;
+  max-width: 100%;
   margin: 0 auto;
   position: relative;
   border: none;
@@ -240,6 +240,10 @@
   border-radius: var(--bbl-rounded-100);
   width: auto;
   max-height: 29.25rem;
+}
+
+.carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .smaller .thumb {
+  height: 23.75rem;
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .intro-info {
@@ -278,11 +282,12 @@
 }
 }
 
-@media (width > 64rem) {
+@media (width > 47.5rem) {
 .intro-info .button-container{
   position: absolute;
   left: 1.25rem;
   bottom: 1.25rem;
+  margin: 0;
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .btn-primary {

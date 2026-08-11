@@ -1,5 +1,5 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
-import { getLang, isAuthoringInstance, applyLinkTarget } from '../../scripts/bbl-decorators.js';
+import { getLang, isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import createGlobalDropdown, { attachScrollableDropdownPanel } from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
@@ -133,7 +133,12 @@ function createCardItem(cardRow, doc) {
   }
 
   if (description) {
-    inner.appendChild(createElementFromHTML(`<div class="menu-card-action-description">${description}</div>`, doc));
+    const descriptionEl = createElementFromHTML(`<div class="menu-card-action-description">${description}</div>`, doc);
+    descriptionEl.querySelectorAll('a').forEach((a) => {
+      a?.setAttribute('data-skip-attr-auto-blocking', 'title');
+      a.removeAttribute('title');
+    });
+    inner.appendChild(descriptionEl);
     inner.querySelector('.menu-card-action-title')?.classList.add('has-description');
   }
 
@@ -148,12 +153,16 @@ function createCardItem(cardRow, doc) {
   if (actionType === 'download' && actionCells.length > 0) {
     const dlCell = actionCells.filter((c) => !c.querySelector('ul')).pop()
       ?? actionCells[actionCells.length - 1];
-    const toggle = remaining.slice(remaining.indexOf(dlCell) + 1).find(isToggleCell);
+    const dlCellIndex = remaining.indexOf(dlCell);
+    const prevCell = dlCellIndex > 0 ? remaining[dlCellIndex - 1] : null;
+    const toggle = (prevCell && isToggleCell(prevCell)) ? prevCell
+      : remaining.slice(dlCellIndex + 1).find(isToggleCell);
+    const openInNewTab = toggle && toggle.textContent.trim().toLowerCase() !== 'false';
     if (toggle) {
       remaining = remaining.filter((c) => c !== toggle);
-      applyLinkTarget(dlCell, 'a', toggle.textContent.trim().toLowerCase() !== 'false');
     }
     appendDownloadLink(dlCell.querySelector('a'));
+    if (openInNewTab) inner.querySelector('.download-files')?.setAttribute('target', '_blank');
   } else if (actionType === 'multiple-download' && actionCells.length > 0) {
     const multipleCell = actionCells[actionCells.length - 1];
     const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);
@@ -209,15 +218,6 @@ function createCardItem(cardRow, doc) {
   return card;
 }
 
-function stripAuthoringInstrumentation(root) {
-  if (!root) return;
-  [root, ...root.querySelectorAll('*')].forEach((el) => {
-    [...el.attributes]
-      .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
-      .forEach(({ name }) => el.removeAttribute(name));
-  });
-}
-
 function removeDuplicateAuthoringBlocks(block) {
   const blockResource = block.dataset.aueResource;
   if (!blockResource) return;
@@ -269,10 +269,15 @@ function renderCardActions(target, rows, block, doc) {
 
     if (!card) return;
 
-    if (!isAuthoringInstance(block)) {
-      moveInstrumentation(row, card);
-      row.remove();
+    if (isAuthoringInstance(block)) {
+      const cellsHolder = doc.createElement('div');
+      cellsHolder.style.cssText = 'position:absolute;height:0;overflow:hidden;opacity:0;pointer-events:none;';
+      [...row.children].forEach((cell) => cellsHolder.appendChild(cell));
+      card.style.position = 'relative';
+      card.prepend(cellsHolder);
     }
+    moveInstrumentation(row, card);
+    row.remove();
     container.appendChild(card);
   });
 
@@ -303,7 +308,6 @@ export default function decorate(block) {
     block.querySelectorAll(':scope > div').forEach((row) => {
       if (!row.classList.contains('menu-card-actions-preview')) {
         row.dataset.configRow = '';
-        row.style.display = 'none';
       }
     });
 
@@ -313,7 +317,6 @@ export default function decorate(block) {
     previewContainer.innerHTML = '';
     const allRows = [...block.querySelectorAll(':scope > div[data-config-row]')];
     renderCardActions(previewContainer, allRows, block, doc);
-    stripAuthoringInstrumentation(previewContainer);
     return;
   }
 

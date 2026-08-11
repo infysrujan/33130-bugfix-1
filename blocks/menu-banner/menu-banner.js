@@ -25,7 +25,7 @@ function createMenuBannerCard(cardElement, doc) {
   // If link exists, wrap content in link
   if (linkElement) {
     const link = createElementFromHTML(
-      `<a href="${linkElement.href}" class="thumb-square"${linkElement.title ? ` title="${linkElement.title}"` : ''}></a>`,
+      `<a href="${linkElement.href}" class="thumb-square"></a>`,
       doc,
     );
 

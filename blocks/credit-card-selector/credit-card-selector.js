@@ -1,4 +1,3 @@
-import initCardResults from './credit-card-results.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 /**
@@ -220,10 +219,12 @@ function syncActionButtonState(block, filterGroups, startOverButton, applyButton
  *   Row 3  startOverButtonText
  *   Row 4  startOverButtonTitle   — accessibility title attribute
  *   Row 5  startOverButtonType    — primary | secondary | tertiary
- *   Row 6  disclaimerText         — richtext; forwarded to the results section
- *   Row 7+ credit-card-section items (subSectionTitle | rich-text list)
+ *   Row 6+ credit-card-section items (subSectionTitle | rich-text list)
  *
  * The main heading is authored at section level — not read from the block.
+ * The results/card-list panel is a separate "Credit Card Results" block —
+ * see blocks/credit-card-results — coupled only via document-level custom
+ * events (credit-card-filter-applied / credit-card-filter-reset), not DOM.
  *
  * Column assignment:
  *   Sections whose title contains "lifestyle" → right column (checkbox, max 3 selections)
@@ -241,9 +242,6 @@ export default function decorate(block) {
     const otherResource = other.dataset.aueResource;
     // If both have a resource and they differ, these are different blocks — leave them alone.
     if (blockResource && otherResource && otherResource !== blockResource) return;
-    if (other.nextElementSibling?.classList.contains('ccs-results')) {
-      other.nextElementSibling.remove();
-    }
     other.remove();
   });
 
@@ -262,18 +260,15 @@ export default function decorate(block) {
     });
     existingUI.remove();
   }
+  block.parentElement?.querySelector(':scope > .collapse-toggle-bar')?.remove();
 
   // Un-hide authored rows that were hidden by a previous decoration pass.
   [...block.children].forEach((row) => { row.classList.remove('ccs-source-row'); });
 
   const rows = [...block.children];
   const readRowText = (row) => row?.querySelector('p')?.textContent?.trim() ?? '';
-  // Reads the raw HTML of a richtext value cell so formatting is preserved.
-  const readRowHtml = (row) => row?.children[1]?.innerHTML?.trim()
-    ?? row?.querySelector('p')?.outerHTML
-    ?? '';
 
-  // ── Config rows 0–6 ───────────────────────────────────────────────────────
+  // ── Config rows 0–5 ───────────────────────────────────────────────────────
   const applyButtonConfig = {
     label: readRowText(rows[0]),
     titleAttr: readRowText(rows[1]),
@@ -286,12 +281,9 @@ export default function decorate(block) {
     variant: readRowText(rows[5]),
   };
 
-  // Row 6: disclaimerText — richtext authored in the block, forwarded to results section.
-  const disclaimerHtml = readRowHtml(rows[6]);
-
-  // ── Section rows 7+ ───────────────────────────────────────────────────────
+  // ── Section rows 6+ ───────────────────────────────────────────────────────
   const filterGroups = [];
-  for (let i = 7; i < rows.length; i += 1) {
+  for (let i = 6; i < rows.length; i += 1) {
     const cells = [...rows[i].children];
     const rawTitle = cells[0]?.querySelector('p')?.textContent?.trim() ?? '';
 
@@ -329,10 +321,10 @@ export default function decorate(block) {
   selectorContent.className = 'card-selector-content';
 
   const primaryFilterColumn = document.createElement('div');
-  primaryFilterColumn.className = 'filter-column filter-column--primary';
+  primaryFilterColumn.className = 'filter-column filter-column-primary';
 
   const lifestyleFilterColumn = document.createElement('div');
-  lifestyleFilterColumn.className = 'filter-column filter-column--lifestyle';
+  lifestyleFilterColumn.className = 'filter-column filter-column-lifestyle';
 
   filterGroups.forEach((group, index) => {
     const groupElement = buildFilterGroup(group, index);
@@ -381,12 +373,16 @@ export default function decorate(block) {
   selectorContent.appendChild(primaryFilterColumn);
   selectorContent.appendChild(lifestyleFilterColumn);
 
-  // ── Collapsible wrapper — encloses the content grid and the toggle bar ─────
+  // ── Collapsible wrapper — encloses the content grid ─────────────────────
   const collapsibleWrapper = document.createElement('div');
   collapsibleWrapper.className = 'card-selector-collapsible';
   collapsibleWrapper.appendChild(selectorContent);
 
-  // Toggle bar: always visible, sits directly below the content grid
+  block.appendChild(collapsibleWrapper);
+
+  // Toggle bar: appended to the full-width section wrapper (not the centered
+  // block) so the floating chevron's positioning context spans the section
+  // edge, matching production, rather than the narrower centered filter box.
   const toggleBar = document.createElement('div');
   toggleBar.className = 'collapse-toggle-bar';
 
@@ -396,9 +392,7 @@ export default function decorate(block) {
   collapseToggleButton.setAttribute('aria-expanded', 'true');
   collapseToggleButton.setAttribute('aria-label', 'Toggle card selector');
   toggleBar.appendChild(collapseToggleButton);
-  collapsibleWrapper.appendChild(toggleBar);
-
-  block.appendChild(collapsibleWrapper);
+  block.parentElement.appendChild(toggleBar);
 
   // ── Action buttons (inside lifestyle column, pushed to bottom) ────────────
   const selectorActions = document.createElement('div');
@@ -408,7 +402,9 @@ export default function decorate(block) {
 
   const startOverButton = document.createElement('button');
   startOverButton.type = 'button';
-  startOverButton.className = 'selector-button selector-button-secondary';
+  // startOverButton.className = 'selector-button selector-button-secondary';
+  startOverButton.classList.add('button-m');
+  startOverButton.classList.add('secondary');
   startOverButton.textContent = startOverButtonConfig.label;
   if (startOverButtonConfig.titleAttr) startOverButton.title = startOverButtonConfig.titleAttr;
   startOverButton.style.display = 'none';
@@ -418,7 +414,9 @@ export default function decorate(block) {
   const applyVariant = ALLOWED_VARIANTS.has(applyButtonConfig.variant)
     ? applyButtonConfig.variant
     : 'primary';
-  applyButton.className = `selector-button selector-button-${applyVariant}`;
+  // applyButton.className = `selector-button selector-button-${applyVariant}`;
+  applyButton.classList.add('button-m');
+  applyButton.classList.add(`${applyVariant}`);
   applyButton.textContent = applyButtonConfig.label;
   if (applyButtonConfig.titleAttr) applyButton.title = applyButtonConfig.titleAttr;
   applyButton.disabled = true;
@@ -429,7 +427,7 @@ export default function decorate(block) {
 
   // ── Event listeners ───────────────────────────────────────────────────────
 
-  startOverButton.addEventListener('click', () => {
+  function resetFilterSelections() {
     block.querySelectorAll('input').forEach((input) => { input.checked = false; });
     block.querySelectorAll('.option-card.is-selected').forEach((card) => {
       card.classList.remove('is-selected');
@@ -442,6 +440,13 @@ export default function decorate(block) {
     // Notify the results block that filters have been cleared
     document.dispatchEvent(new CustomEvent('credit-card-filter-reset'));
     syncActionButtonState(block, filterGroups, startOverButton, applyButton);
+  }
+
+  startOverButton.addEventListener('click', resetFilterSelections);
+
+  // Bfcache restore (e.g. browser Back) reinstates the exact pre-navigation DOM,
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) resetFilterSelections();
   });
 
   applyButton.addEventListener('click', () => {
@@ -501,11 +506,7 @@ export default function decorate(block) {
   // Collapse / expand the content grid
   collapseToggleButton.addEventListener('click', () => {
     const isNowCollapsed = collapsibleWrapper.classList.toggle('is-collapsed');
+    toggleBar.classList.toggle('is-collapsed', isNowCollapsed);
     collapseToggleButton.setAttribute('aria-expanded', String(!isNowCollapsed));
   });
-
-  // Inject the card results section immediately after this block in the DOM.
-  // initCardResults handles its own data fetch and all interactivity —
-  // nothing needs to be authored on the page for this to work.
-  initCardResults(block, { disclaimerHtml });
 }

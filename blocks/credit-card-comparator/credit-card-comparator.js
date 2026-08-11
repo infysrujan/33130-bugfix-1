@@ -44,13 +44,11 @@ function readBlockConfig(block) {
   const anchor = cell0?.querySelector('a');
   const link = anchor?.href ?? readCellText(rows[0]);
 
-  const textRows = rows.slice(1);
-
   return {
     link,
-    linkText: readCellText(textRows[0]) || 'Compare',
-    linkTitle: readCellText(textRows[1]),
-    linkType: readCellText(textRows[2]) || 'primary',
+    linkText: readCellText(rows[0]) || anchor?.textContent?.trim() || 'Compare',
+    linkTitle: readCellText(rows[1]) || anchor?.title?.trim() || '',
+    linkType: readCellText(rows[2]) || anchor?.className?.trim() || '',
   };
 }
 
@@ -68,7 +66,7 @@ function buildErrorDiv(warningText) {
 function buildCtaButton(linkText, linkType) {
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.className = `btn-${linkType || 'primary'}`;
+  btn.className = `button-m ${linkType || 'primary'}`;
   btn.textContent = linkText;
   btn.disabled = true;
   return btn;

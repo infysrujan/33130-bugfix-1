@@ -256,6 +256,21 @@ function inputDecorator(field, element) {
   }
 }
 
+const REVIEW_TEXT_EXCLUDED_TYPES = ['radio', 'checkbox', 'file', 'hidden', 'submit', 'button', 'image', 'range', 'color'];
+function convertToReviewText(fieldWrapper) {
+  const input = fieldWrapper?.classList?.contains('field-wrapper') && !fieldWrapper.classList.contains('panel-wrapper')
+    ? fieldWrapper.querySelector(':scope > input')
+    : null;
+  if (!input || REVIEW_TEXT_EXCLUDED_TYPES.includes(input.type)) {
+    return;
+  }
+  const text = document.createElement('p');
+  text.id = input.id;
+  text.className = 'field-review-value';
+  text.textContent = input.value;
+  input.replaceWith(text);
+}
+
 function decoratePanelContainer(panelDefinition, panelContainer) {
   if (!panelContainer) return;
 
@@ -293,8 +308,15 @@ function renderField(fd) {
   return field;
 }
 
-export async function generateFormRendition(panel, container, formId, getItems = (p) => p?.items) {
+export async function generateFormRendition(
+  panel,
+  container,
+  formId,
+  getItems = (p) => p?.items,
+  insideReviewPanel = false,
+) {
   const items = getItems(panel) || [];
+  const isReviewContext = insideReviewPanel || !!container?.classList?.contains('form-review-2col');
   const promises = items.map(async (field) => {
     field.value = field.value ?? '';
     const { fieldType } = field;
@@ -317,8 +339,11 @@ export async function generateFormRendition(panel, container, formId, getItems =
     }
     colSpanDecorator(field, element);
     if (field?.fieldType === 'panel') {
-      await generateFormRendition(field, element, formId, getItems);
+      await generateFormRendition(field, element, formId, getItems, isReviewContext);
       return element;
+    }
+    if (isReviewContext) {
+      convertToReviewText(element);
     }
     await componentDecorator(element, field, container, formId);
     return element;

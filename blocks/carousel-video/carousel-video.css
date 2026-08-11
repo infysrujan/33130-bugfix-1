@@ -5,9 +5,17 @@
   margin: auto;
 }
 
+/* Overrides the global .section.full-bleed-bg .content padding-inline at every viewport. */
+.section .carousel-video-wrapper.content {
+  padding-inline: 0;
+}
+
 /* ── Block positioning context ───────────────────────────────────────────── */
 .carousel-video {
   position: relative;
+  width: 100%;
+  max-width: 56.25rem;
+  margin-inline: auto;
 }
 
 /* ── Main player ─────────────────────────────────────────────────────────── */
@@ -15,6 +23,7 @@
   position: relative;
   width: 24.625rem;
   height: 12.6875rem;
+  margin: 0 auto;
   background: var(--bbl-color-black);
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
@@ -32,11 +41,18 @@
   border: none;
   display: block;
   opacity: 0;
+
+  /* Opacity 0 is still clickable — without this, a click can land on a
+     stacked-but-invisible iframe instead of the visible .active one, which
+     plays audio for the wrong video while the visible frame stays paused. */
+  pointer-events: none;
   transition: opacity 0.5s ease-in-out;
 }
 
 .carousel-video .cv-main-player iframe.active {
   opacity: 1;
+  z-index: 1;
+  pointer-events: auto;
 }
 
 /* ── Thumbnail carousel — mobile: nav arrows overlay on player ───────────── */
@@ -120,11 +136,11 @@
 }
 
 .carousel-video .cv-prev {
-  left: 0.75rem;
+  left: 1.75rem;
 }
 
 .carousel-video .cv-next {
-  right: 0.75rem;
+  right: 1.75rem;
 }
 
 .carousel-video .cv-nav:hover {
@@ -219,11 +235,6 @@
 
 /* ── Tablet: > 760px ─────────────────────────────────────────────────────── */
 @media (width > 47.5rem) {
-  .carousel-video-wrapper {
-    padding: 0 2.5rem;
-    margin: 0 -2.8125rem;
-  }
-
   .carousel-video .cv-main-player {
     width: 100%;
     max-width: 35.75rem;
@@ -296,7 +307,8 @@
   }
 
   .carousel-video .cv-carousel-section {
-    max-width: 49.875rem;
+    width: 50.5rem;
+    max-width: 100%;
     margin: 1.875rem auto;
   }
 

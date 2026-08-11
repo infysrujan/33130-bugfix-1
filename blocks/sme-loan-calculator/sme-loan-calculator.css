@@ -251,10 +251,10 @@ main {
   font-size: var(--bbl-font-size-15);
   font-weight: var(--bbl-font-weight-regular);
   text-align: right;
-  width: 5rem;
+  width: 6rem;
   outline: none;
   padding: 0;
-  caret-color: var(--bbl-color-sme-caret);
+  caret-color: var(--bbl-color-white);
 }
 
 .textbox-cal::placeholder {
@@ -359,7 +359,8 @@ main {
 .sme-calc-table-section {
   margin-top: 0;
   background: var(--bbl-color-white);
-  padding: 2.5rem 3rem 3rem;
+  padding-block: 2.5rem 3rem;
+  padding-inline: 1rem;
 }
 
 .sme-calc-table-heading {
@@ -368,16 +369,18 @@ main {
   font-weight: 400;
   color: var(--bbl-color-grey-100);
   margin: 0 0 2rem;
-  padding-bottom: 0;
+  padding-top: 1.5625rem;
+  padding-bottom: 1.5625rem;
 }
 
+/* Margin-top acts as the heading text's bottom padding without adding space below the rule itself. */
 .sme-calc-table-heading::after {
   content: '';
   display: block;
   width: 5rem;
   height: 0.0625rem;
   background: var(--bbl-color-grey-60);
-  margin: 1rem auto 0;
+  margin: 1.5625rem auto 0;
 }
 
 .resulttbl {
@@ -399,6 +402,7 @@ main {
   padding: 0 0.3125rem;
   text-align: center;
   line-height: 1.63;
+  vertical-align: top;
   border-bottom: 0.125rem solid var(--bbl-color-grey-125);
 }
 
@@ -406,9 +410,31 @@ main {
   border-bottom: 0.125rem solid var(--bbl-color-gray-122);
 }
 
+.tablelong.fontcomparetable thead tr:first-child .lineth {
+  white-space: nowrap;
+}
+
+.tablelong.fontcomparetable .lineth-inner {
+  display: block;
+  white-space: nowrap;
+}
+
+.tablelong.fontcomparetable th.lineth[rowspan] .lineth-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tablelong.fontcomparetable th.lineth[rowspan] .lineth-inner::after {
+  content: '';
+  flex: 1 0 auto;
+  margin: 0 -0.3125rem;
+  border-top: 0.125rem solid var(--bbl-color-gray-122);
+}
+
 .tablelong.fontcomparetable thead tr:last-child .lineth {
-  font-size: 0.8125rem;
-  color: var(--bbl-color-grey-140);
+  font-size: var(--bbl-body-b1-size);
+  color: var(--bbl-color-black);
   border-bottom: 0.125rem solid var(--bbl-color-grey-125);
 }
 
@@ -468,7 +494,7 @@ main {
 
   /* Fields remain stacked (column) at tablet — 3-column moves to desktop */
   .textbox-cal {
-    width: 4.5rem;
+    width: 5.5rem;
     font-size: var(--bbl-font-size-15);
   }
 
@@ -480,6 +506,10 @@ main {
 
   .box-textbox {
     align-items: flex-start;
+  }
+
+  .sme-calc-table-section {
+    padding-inline: 3rem;
   }
 
 }
@@ -510,5 +540,9 @@ main {
     max-width: calc((100% - 2rem) / 3);
     min-width: 12.5rem;
     width: auto;
+  }
+
+  .sme-calc-table-section {
+    padding-inline: 5.25rem;
   }
 }

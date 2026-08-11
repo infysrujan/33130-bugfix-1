@@ -2,14 +2,7 @@
   margin-inline: auto;
 }
 
-.special-fx-rates-container
-  .default-content-wrapper
-  > :is(h1, h2, h3, h4, h5, h6):first-child {
-  font-size: 1.4rem;
-  line-height: 1.3746rem;
-  font-weight: var(--bbl-font-weight-regular);
-  letter-spacing: -0.0125rem;
-}
+
 
 .special-fx-rates-disclaimer p {
   margin-block: 0 1.0625rem;
@@ -88,8 +81,7 @@
   .special-fx-rates-container
     .default-content-wrapper
     > :is(h1, h2, h3, h4, h5, h6):first-child {
-    font-size: var(--bbl-heading-h3-size);
-    line-height: 2.875rem;
+    font-size: var(--bbl-heading-h2-size);
   }
 
   .special-fx-rates-container .default-content-wrapper p {

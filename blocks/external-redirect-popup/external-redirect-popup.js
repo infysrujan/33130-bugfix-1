@@ -50,7 +50,6 @@ export default async function decorate(block) {
   const closeBtn = doc.createElement('button');
   closeBtn.className = 'external-redirect-popup-close';
   closeBtn.setAttribute('aria-label', 'Close popup');
-  closeBtn.innerHTML = '&times;';
   inner.appendChild(closeBtn);
 
   // Card body: image + text
@@ -123,7 +122,13 @@ export default async function decorate(block) {
 
   const openPopup = (url) => {
     targetUrl = url;
-    urlSpan.textContent = `"${url}"`;
+    let displayUrl = url;
+    try {
+      displayUrl = new URL(url).origin;
+    } catch (e) {
+      // Not a parseable absolute URL — fall back to showing it as-is.
+    }
+    urlSpan.textContent = `"${displayUrl}"`;
     showModal(overlay, 'external-redirect-popup-visible');
   };
 

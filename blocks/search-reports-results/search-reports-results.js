@@ -4,12 +4,20 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import openPdfViewer from '../../scripts/utils/pdf-viewer.js';
 import createTaggedElement from '../../scripts/utils/dom.js';
+import createDownloadLink from '../../scripts/utils/download-helpers.js';
 
 function getDownloadLabel(mimeType, placeholders = {}) {
   if (mimeType === 'application/pdf') return placeholders.reportsDownloadPdf || 'Download PDF';
   if (mimeType.includes('spreadsheetml') || mimeType.includes('excel')) return placeholders.reportsDownloadExcel || 'Download Excel';
   if (mimeType.includes('wordprocessingml') || mimeType.includes('msword')) return placeholders.reportsDownloadWord || 'Download Word';
   return placeholders.reportsDownloadFile || 'Download File';
+}
+
+function getPreviousPagePath() {
+  const segments = window.location.pathname.split('/').filter(Boolean);
+  if (segments.length <= 1) return '/';
+  segments.pop();
+  return `/${segments.join('/')}`;
 }
 
 function sortAssets(assets, type) {
@@ -48,13 +56,13 @@ function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
     iconGroup.append(previewBtn);
   }
 
-  const downloadBtn = createTaggedElement('a', {
+  const downloadAnchor = createTaggedElement('a', {
     className: 'srr-icon-btn srr-download-btn',
     attrs: {
       href: fetchPath, download: asset.name, 'aria-label': `Download ${asset.name}`, target: '_blank',
     },
   });
-  downloadBtn.append(createTaggedElement('span', { className: 'icon icon-download', attrs: { 'aria-hidden': 'true' } }));
+  const downloadBtn = createDownloadLink(downloadAnchor).querySelector('a');
   iconGroup.append(downloadBtn);
 
   downloadWrapper.append(label, iconGroup);
@@ -75,16 +83,15 @@ async function fetchAndRender(block, type, year) {
   const resultsHeader = createTaggedElement('div', { className: 'srr-header' });
   const backBtn = createTaggedElement('button', {
     className: 'srr-back-btn',
-    attrs: { type: 'button', 'aria-label': 'Go back' },
-    text: '‹',
+    attrs: { type: 'button', 'aria-label': 'Go back to previous page' },
   });
+  backBtn.append(createTaggedElement('span', { className: 'srr-back-btn-circle icon-arrow-left' }));
   backBtn.addEventListener('click', () => {
-    window.history.pushState({}, '', window.location.pathname);
-    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.location.href = getPreviousPagePath();
   });
   resultsHeader.append(backBtn);
   wrapper.append(resultsHeader);
-  wrapper.append(createTaggedElement('h1', { className: 'srr-page-title', text: 'Search Results' }));
+  wrapper.append(createTaggedElement('h1', { className: 'srr-page-title', text: placeholders.reportsResultsTitle }));
   wrapper.append(createTaggedElement('div', { className: 'srr-title-divider' }));
   const loading = createTaggedElement('div', { className: 'srr-loading', text: 'Loading...' });
   wrapper.append(loading);
@@ -127,17 +134,10 @@ export default function decorate(block) {
   const params = new URLSearchParams(window.location.search);
   const type = params.get('type') || '';
   const year = params.get('year') || '';
-
-  if (type && year) {
-    fetchAndRender(block, type, year);
-  }
+  fetchAndRender(block, type, year);
 
   window.addEventListener('popstate', () => {
     const p = new URLSearchParams(window.location.search);
     if (!p.get('type') && !p.get('year')) block.innerHTML = '';
-  });
-
-  window.addEventListener('search-reports:submit', (e) => {
-    fetchAndRender(block, e.detail.type, e.detail.year);
   });
 }

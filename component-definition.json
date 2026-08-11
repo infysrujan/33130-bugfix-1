@@ -540,6 +540,21 @@
           }
         },
         {
+          "title": "Credit Card Results",
+          "id": "credit-card-results",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Credit Card Results",
+                  "model": "credit-card-results"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Credit Card Selector",
           "id": "credit-card-selector",
           "plugins": {
@@ -2110,21 +2125,6 @@
                   "name": "Story Card",
                   "model": "story-card",
                   "filter": "story-card"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Social Icon",
-          "id": "social-icon",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Social Icon",
-                  "model": "social-icon"
                 }
               }
             }

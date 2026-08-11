@@ -471,7 +471,10 @@ export default async function decorate(block) {
     const textCell = row.children[col]; col += 1;
     const linkCell = row.children[col]; col += 1;
     const skipCell = row.children[col];
-    if (skipCell && !skipCell.textContent?.trim() && !skipCell.querySelector('picture, a[href]')) col += 1;
+    const isSkippable = skipCell
+      && !skipCell.querySelector('picture, a[href]')
+      && (!skipCell.textContent?.trim() || /^(true|false)$/i.test(skipCell.textContent.trim()));
+    if (isSkippable) col += 1;
     const appStoreImageCell = row.children[col]; col += 1;
     const appStoreLinkCell = row.children[col]; col += 1;
     const googlePlayImageCell = row.children[col]; col += 1;
@@ -577,11 +580,11 @@ export default async function decorate(block) {
 
     const contentInner = createElement('div', 'hero-banner-content-inner');
     const logoImg = logoImageCell?.querySelector('img');
+    let logoWrapper = null;
     if (logoImg) {
       logoImg.className = 'hero-banner-logo';
-      const logoWrapper = createElement('div', 'hero-banner-logo-wrapper');
+      logoWrapper = createElement('div', 'hero-banner-logo-wrapper');
       logoWrapper.append(logoImg);
-      contentInner.append(logoWrapper);
     }
 
     const contentGroup = createElement('div', 'hero-banner-content-group');
@@ -593,12 +596,17 @@ export default async function decorate(block) {
     normalizeCellContent(textCell, 'hero-banner-content-inner-text');
     const isAppCta = variant === 'simple-app-cta';
     const hasButtonLink = !isAppCta && !!linkCell?.querySelector('a[href]');
+    // Private/Wealth banking places the logo beside the content (logo left,
+    // content right) via the .hero-banner-content-inner flex layout, so the logo
+    // must be a sibling of the content group rather than nested inside it.
+    const logoInInner = variant === 'private-wealth-banking';
     const cells = [preTitleCell, headingCell, textCell, ...(hasButtonLink ? [linkCell] : [])];
-    cells.forEach((cell) => {
+    cells.forEach((cell, idx) => {
       if (!cell) return;
       while (cell.firstChild) {
         contentGroup.appendChild(cell.firstChild);
       }
+      if (idx === 0 && logoWrapper && !logoInInner) contentGroup.appendChild(logoWrapper);
     });
 
     if (isAppCta) {
@@ -631,6 +639,7 @@ export default async function decorate(block) {
     }
     if (targetValue) applyLinkTarget(contentGroup, 'a.button-m', targetValue);
 
+    if (logoWrapper && logoInInner) contentInner.append(logoWrapper);
     contentInner.append(contentGroup);
     const content = createElement('div', 'hero-banner-content', 'content');
     content.append(contentInner);

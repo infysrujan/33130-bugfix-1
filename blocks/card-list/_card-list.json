@@ -41,6 +41,7 @@
           "name": "cardListLayout",
           "value": "default",
           "label": "Card List Layout",
+          "description": "Choose how cards are arranged. Select 'Carousel' only when this Card List is referenced as a fragment inside a Carousel Dotted block that uses the 'Card List Carousel' slide type (Show Dots and Arrows variant). Select 'Scrollable' for a standalone horizontal scroll without dots. Select 'Stacked' for a standard multi-row grid layout.",
           "valueType": "string",
           "options": [
             {
@@ -308,8 +309,12 @@
           "name": "imageLayout",
           "label": "Image Layout",
           "valueType": "string",
-          "value": "default",
+          "value": "none",
           "options": [
+            {
+              "name": "None",
+              "value": "none"
+            },
             {
               "name": "Full",
               "value": "full"
