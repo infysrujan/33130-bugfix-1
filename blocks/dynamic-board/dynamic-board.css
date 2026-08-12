@@ -476,7 +476,7 @@
   height: auto;
   min-height: 0;
   width: auto;
-  font-size: 0.9625rem;
+  font-size: var(--bbl-heading-h3-size);
   line-height: 1.2;
   font-weight: 700;
   color: var(--bbl-color-blue-105);
