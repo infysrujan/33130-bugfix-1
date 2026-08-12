@@ -162,9 +162,7 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   color: var(--bbl-color-blue-90);
 }
 
-/* While hovering anywhere inside the open dropdown, only the option under
-   the cursor is blue — every other option, including the persistently
-   selected .is-active one, drops back to black until the hover moves on. */
+
 .promo-selector-dropdown:hover .promo-selector-option {
   color: var(--bbl-color-black);
 }
