@@ -382,9 +382,25 @@
     margin-right: -1.25rem;
   }
 
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)):has(.with-circular-image) {
+    padding-inline: var(--bbl-space-section-sm);
+  }
+
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)):has(.with-circular-image) .carousel-arrow {
     align-self: start;
     margin-top: calc((12.5rem - 2.5rem) / 2);
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)):has(.with-circular-image) .carousel-arrow-prev {
+    margin-left: -3.45rem;
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)):has(.with-circular-image) .carousel-arrow-next {
+    margin-right: -3.45rem;
+  }
+
+  .section:not(.full-bleed-bg) .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)):has(.with-default-image) {
+    padding-inline: 0;
   }
 }
 
