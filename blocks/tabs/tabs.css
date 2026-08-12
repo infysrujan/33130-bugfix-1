@@ -126,12 +126,19 @@
   margin-top: 0;
 }
 
-/* Marker relocated onto the panel's default-content-wrapper by
-   relocateCenterContent() in helpers/tabs-utils.js (moved off the section's
-   "Center Content" style). Scoped to the wrapper's first paragraph only, so
-   the intro line centers without affecting the rest of the panel. */
-.tab-panel > .default-content-wrapper.center-content > p:first-child {
-  text-align: center;
+/* The section's "Center Content" style (styles/main.css:
+   `.section.center-content .default-content-wrapper *`) centers every descendant
+   of every panel's default-content-wrapper. The section keeps that class (the
+   tab underline offset depends on it — see helpers/tabs-utils.js). Here we only
+   NARROW its reach: children after the first (tagged `center-content-reset` by
+   resetCenterContentPastFirstChild()) and everything nested inside them are
+   reset to normal flow, leaving just the wrapper's first child (the intro line)
+   centered. Specificity (5 classes) intentionally exceeds the global rule (3)
+   so it wins regardless of stylesheet load order. */
+.tabs-container.center-content .tab-panel .default-content-wrapper > .center-content-reset,
+.tabs-container.center-content .tab-panel .default-content-wrapper > .center-content-reset * {
+  text-align: initial;
+  margin: initial;
 }
 
 /* SPACING INSIDE TAB PANEL between different blocks except download block */
