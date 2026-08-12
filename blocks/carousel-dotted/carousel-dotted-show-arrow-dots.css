@@ -360,6 +360,7 @@
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) {
     grid-template-columns: 1fr;
     column-gap: 0;
+    padding-inline: var(--bbl-space-section-sm);
   }
 
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-track-viewport {
@@ -380,9 +381,18 @@
     justify-self: end;
     margin-right: -1.25rem;
   }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)):has(.with-circular-image) .carousel-arrow {
+    align-self: start;
+    margin-top: calc((12.5rem - 2.5rem) / 2);
+  }
 }
 
 @media (width > 64rem) {
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) {
+    padding-inline: var(--bbl-space-section-xl);
+  }
+
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
     margin-left: -3.45rem;
   }
