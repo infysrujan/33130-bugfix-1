@@ -156,6 +156,10 @@
     color: var(--bbl-color-blue-90);
   }
 
+  .promo-selector-dropdown:has(.promo-selector-option:not(:first-child):hover) .promo-selector-option:first-child {
+    color: var(--bbl-color-black);
+  }
+
   .promo-selector-filter-actions {
     display: flex;
     gap: var(--bbl-space-250);
