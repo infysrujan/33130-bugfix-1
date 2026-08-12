@@ -126,6 +126,14 @@
   margin-top: 0;
 }
 
+/* Marker relocated onto the panel's default-content-wrapper by
+   relocateCenterContent() in helpers/tabs-utils.js (moved off the section's
+   "Center Content" style). Scoped to the wrapper's first paragraph only, so
+   the intro line centers without affecting the rest of the panel. */
+.tab-panel > .default-content-wrapper.center-content > p:first-child {
+  text-align: center;
+}
+
 /* SPACING INSIDE TAB PANEL between different blocks except download block */
 .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
   padding-bottom: 1.5rem;
