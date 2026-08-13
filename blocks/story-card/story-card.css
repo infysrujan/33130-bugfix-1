@@ -121,6 +121,11 @@
   text-decoration: none;
 }
 
+.story-card-content .button-container .button-m {
+  min-width:  8.4375rem;
+  box-sizing: border-box;
+}
+
 /* ========================================================================
    Responsive Overrides
    ======================================================================== */
@@ -167,7 +172,6 @@
     align-items: center;
     height: 100%;
     padding: 0;
-    padding-left: 2.25rem;
   }
 }
 
@@ -189,5 +193,9 @@
   .story-card .text-default {
     font-size: 1rem;
     line-height: 1.375rem;
+  }
+
+  .story-card-content .button-container .button-m {
+    min-width: 9.688rem;
   }
 }

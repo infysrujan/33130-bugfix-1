@@ -533,6 +533,7 @@
   display: inline-block;
   padding-bottom: 0.9375rem;
   margin-bottom: 0.9375rem;
+  width:100%;
 }
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content :is(h1, h2, h3, h4, h5, h6), .hero-banner-logo-wrapper)::before {

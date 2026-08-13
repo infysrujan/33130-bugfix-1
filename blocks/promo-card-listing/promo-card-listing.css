@@ -4,7 +4,7 @@
   background-color: var(--bbl-color-white);
 }
 
-body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector-content) .tabs-nav-wrapper .tabs-nav button {
+body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector-content) .tabs-nav-wrapper .tabs-nav button:not(.active) {
   color: var(--bbl-color-grey-85);
 }
 
