@@ -53,10 +53,17 @@
 .market-report-col-left .market-report-date {
   margin: 0;
   color: var(--bbl-color-black);
-  font-size: 1.5rem;
-  line-height: 1.625rem;
+  font-size: 1.1375rem;
+  line-height: 1.2495rem;
   font-family: BangkokBank-Medium, sans-serif;
   font-weight: 400;
+}
+
+@media (width > 47.5rem) and (width <= 64rem) {
+  .market-report-col-left .market-report-date {
+    font-size: 1.3125rem;
+    line-height: 1.421875rem;
+  }
 }
 
 .market-report-written-by {
@@ -78,7 +85,7 @@
 }
 
 .market-report-page a.print-button.icon-print {
-  font: 1rem BangkokBank-Medium, sans-serif;
+  font: 0.875rem BangkokBank-Medium, sans-serif;
   color: var(--bbl-color-black);
   text-transform: uppercase;
   text-decoration: none;
@@ -152,11 +159,20 @@
 @media (width > 64rem) {
   .market-report-col {
     flex-direction: row;
-    gap: 20px;
+    gap: 1.25rem;
   }
 
   .market-report-col-left .market-report-col > div {
     width: 49%;
+  }
+
+  .market-report-col-left .market-report-date {
+    font-size: 1.5rem;
+    line-height: 1.625rem;
+  }
+
+  .market-report-page a.print-button.icon-print {
+    font-size: 1rem;
   }
 }
 
