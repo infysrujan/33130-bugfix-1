@@ -476,9 +476,9 @@
   height: auto;
   min-height: 0;
   width: auto;
-  font-size: var(--bbl-heading-h3-size);
-  line-height: 1.2;
-  font-weight: 700;
+  font-size: var(--bbl-heading-h4-size);
+  line-height: var(--bbl-heading-h4-line-height);
+  font-weight: var(--bbl-heading-h4-weight);
   color: var(--bbl-color-blue-105);
   background: none;
   border: none;
@@ -500,8 +500,9 @@
   width: fit-content;
   min-width: 4.2em;
   padding: 0.3125rem 0.9375rem;
-  font-size: var(--bbl-font-size-b2-desktop);
-  line-height: 1;
+  font-size: var(--bbl-body-b1-size);
+  line-height: var(--bbl-body-b1-line-height);
+  font-weight: var(--bbl-body-b1-weight);
   color: var(--bbl-color-grey-70);
   background: none;
   border: 0.0625rem solid transparent;
