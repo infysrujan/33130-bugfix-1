@@ -291,6 +291,10 @@ function printContent(containerEl, pageTitle, searchLabelText) {
 
   const now = new Date();
   const dateLabelText = containerEl.querySelector('.calendar-wrapper p')?.textContent?.trim();
+  // Page numbering is left to the browser's own print header/footer (see
+  // "Headers and footers" in the print dialog) rather than a custom footer —
+  // a single repeating <thead>/<tfoot> can only ever show identical content
+  // on every page, so it can't produce real per-page "n/total" text anyway.
   const printRoot = doc.createElement('div');
   printRoot.id = 'fund-prices-print-root';
   printRoot.innerHTML = `
@@ -310,29 +314,64 @@ function printContent(containerEl, pageTitle, searchLabelText) {
       <span>${selectedDate}</span>
     </div>
     <div class="fund-prices-print-table-wrap"></div>
-    <div class="fund-prices-print-footer">
-      <span>https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/Fund-Prices</span>
-      <span>1/5</span>
-    </div>
   `;
 
   const tableBlock = clone.querySelector('.fund-prices-table');
   if (tableBlock) {
     const table = tableBlock.querySelector('table');
+
+    /*
+     * Print pagination treats a rowSpan cell (the merged fund-type label)
+     * and the rows it spans as one atomic unit it won't split across a
+     * page boundary — even though each row only has its own break-inside:
+     * avoid, not the whole group. If the group doesn't entirely fit in
+     * whatever's left on the current page, the browser pushes the whole
+     * thing to a fresh page rather than filling the gap. Un-merging into
+     * one independent, unspanned cell per row (repeating the label down
+     * the column) removes any reason for the browser to group them, so
+     * rows can flow freely and fill that leftover space.
+     */
+    table?.querySelectorAll('td.merged-fund-type').forEach((cell) => {
+      const span = cell.rowSpan || 1;
+      const label = cell.textContent;
+      cell.rowSpan = 1;
+      let row = cell.closest('tr');
+      for (let i = 1; i < span; i += 1) {
+        row = row.nextElementSibling;
+        if (!row) break;
+        const repeatedCell = doc.createElement('td');
+        repeatedCell.className = 'merged-fund-type';
+        repeatedCell.textContent = label;
+        row.insertBefore(repeatedCell, row.firstChild);
+      }
+    });
+
     const headerRow = table?.querySelector('tr.header-row');
     const fifRow = [...(table?.querySelectorAll('tr') || [])].find(
       (row) => row.querySelector('td.merged-fund-type')?.textContent.trim() === 'FIF',
     );
 
     /*
-     * Keep the first printed page exactly as authored.  The rows beginning with
-     * FIF are moved to a second table whose THEAD is repeated by the browser on
-     * every continuation page.
+     * Move the header row into a real <thead> so the browser repeats it on
+     * every page this table breaks across — plain <tbody> rows don't repeat
+     * on their own. Page 1 is unaffected: the header still renders exactly
+     * where it did before, just now inside a <thead>.
+     */
+    if (table && headerRow) {
+      const thead = doc.createElement('thead');
+      thead.appendChild(headerRow);
+      table.insertBefore(thead, table.querySelector('tbody'));
+    }
+
+    /*
+     * Keep the first printed page exactly as authored. The rows beginning
+     * with FIF are moved to a second table whose THEAD is repeated by the
+     * browser on every continuation page.
      */
     if (table && headerRow && fifRow) {
       const continuationTable = table.cloneNode(false);
       const continuationColumns = doc.createElement('colgroup');
-      [15, 39, 10, 10, 10, 16].forEach((width) => {
+      [13, 39, 10, 10, 12, 16].forEach((width) => {
         const column = doc.createElement('col');
         column.style.width = `${width}%`;
         continuationColumns.appendChild(column);
@@ -362,6 +401,24 @@ function printContent(containerEl, pageTitle, searchLabelText) {
       tableBlock.appendChild(continuation);
     }
     printRoot.querySelector('.fund-prices-print-table-wrap').appendChild(tableBlock);
+  }
+
+  const disclaimer = clone.querySelector('.fund-prices-disclaimer-text');
+  if (disclaimer) {
+    // The disclaimer has no table content of its own, so it never gets the
+    // repeating datetime/title meta line that the table's continuation pages
+    // get from their thead. Add an equivalent one-off line here, grouped
+    // with the disclaimer so they always land on the same page.
+    const disclaimerGroup = doc.createElement('div');
+    disclaimerGroup.className = 'fund-prices-print-disclaimer-group';
+    const disclaimerMeta = doc.createElement('div');
+    disclaimerMeta.className = 'fund-prices-print-continuation-meta';
+    disclaimerMeta.innerHTML = `
+      <span>${formatPrintDate(now)}, ${formatPrintTime(now)}</span>
+      <span>${pageTitle}</span>
+    `;
+    disclaimerGroup.append(disclaimerMeta, disclaimer);
+    printRoot.appendChild(disclaimerGroup);
   }
 
   doc.body.classList.add('fund-prices-is-printing');

@@ -615,7 +615,16 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 }
 
 @media print {
-  @page {
+  /*
+   * Named (not the generic unnamed @page) because @page rules apply
+   * document-wide — an unnamed @page here would collide with any other
+   * block's own unnamed @page rule loaded in the same document (e.g.
+   * fund-prices-dropdown.css), and whichever stylesheet loaded later would
+   * silently win the margin/size for every print job on the page, not just
+   * this one. `page: fundpricesprint` below pins this element to this exact
+   * page box regardless of what else is loaded.
+   */
+  @page fundpricesprint {
     size: a4 portrait;
     margin: 7mm 9mm 35mm;
   }
@@ -631,10 +640,11 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 
   #fund-prices-print-root {
     display: block;
+    width: 100%;
     box-sizing: border-box;
-    position: relative;
     font-family: var(--bbl-font-family-primary);
     color: var(--bbl-color-black);
+    page: fundpricesprint;
   }
 
   #fund-prices-print-root .fund-prices-print-masthead {
@@ -730,7 +740,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     break-before: page;
   }
 
-  #fund-prices-print-root .fund-prices-print-continuation thead {
+  #fund-prices-print-root .fund-prices-table table thead {
     display: table-header-group;
   }
 
@@ -764,7 +774,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     font-weight: 700;
     font-size: 0.5625rem;
     line-height: 1.05;
-    white-space: nowrap;
+    white-space: normal;
     vertical-align: bottom;
     text-align: right;
   }
@@ -828,8 +838,16 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     text-align: left;
   }
 
+  /* "Redemption Price" is longer than "Selling Price" but shared the same
+     10% column, so it alone wrapped to two lines while its neighbors fit on
+     one. The 2% it needs is borrowed from Fund Type (below), not Open-End
+     Fund: Fund Type is a rowSpan cell shared across many rows, so a bit of
+     extra wrap there is divided across all of them — borrowing from
+     Open-End Fund instead pushed some individual fund *names* onto two
+     lines, each inflating just its own row, which shifted pagination and
+     added an extra printed page. */
   #fund-prices-print-root .fund-prices-table table tr.header-row td:first-child {
-    width: 15%;
+    width: 13%;
   }
 
   #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(2) {
@@ -837,27 +855,53 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
   }
 
   #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(3),
-  #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(4),
-  #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(5) {
+  #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(4) {
     width: 10%;
+  }
+
+  #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(5) {
+    width: 12%;
   }
 
   #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(6) {
     width: 16%;
   }
 
-  #fund-prices-print-root .fund-prices-print-footer {
+  /* break-before is reliably honored here (unlike break-inside: avoid),
+     the same technique used for .fund-prices-print-continuation above, so
+     the whole group starts its own fresh page instead of risking a split. */
+  #fund-prices-print-root .fund-prices-print-disclaimer-group {
+    break-before: page;
+    break-inside: avoid;
+  }
+
+  #fund-prices-print-root .fund-prices-print-disclaimer-group > .fund-prices-print-continuation-meta {
     display: flex;
     justify-content: space-between;
-    position: fixed;
-    right: 0;
-    bottom: 7mm;
-    left: 0;
-    padding-top: 0.5rem;
-    border-top: 0.0625rem solid var(--bbl-color-black);
+    padding: 0 0.5rem 0.375rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 0.0625rem solid var(--bbl-color-black);
     font-family: var(--bbl-font-family-primary);
+    font-weight: 700;
     font-size: 0.5rem;
-    line-height: 1;
+    line-height: 1.2;
     color: var(--bbl-color-black);
   }
+
+  #fund-prices-print-root .fund-prices-disclaimer-text {
+    display: block;
+    margin-top: 1rem;
+    padding: 0;
+    break-inside: avoid;
+  }
+
+  #fund-prices-print-root .fund-prices-disclaimer-text p,
+  #fund-prices-print-root .fund-prices-disclaimer-text li {
+    color: var(--bbl-color-black);
+    font-family: var(--bbl-font-family-primary);
+    font-size: 0.5625rem;
+    line-height: 1.38;
+    margin: 0 0 0.5625rem;
+  }
+
 }
