@@ -208,20 +208,16 @@ function buildModalDom({
   descEl.innerHTML = modalDesc;
 
   const searchBtn = createTaggedElement('button', {
-    className: 'sr-search-btn sr-search-btn-disabled',
+    className: 'button-m primary',
     text: ctaLabel,
-    attrs: { type: 'button' },
+    attrs: { type: 'button', disabled: 'true' },
   });
 
   let getType;
   let getYear;
 
   function updateSearchBtn() {
-    if (getType() && getYear()) {
-      searchBtn.classList.remove('sr-search-btn-disabled');
-    } else {
-      searchBtn.classList.add('sr-search-btn-disabled');
-    }
+    searchBtn.disabled = !(getType() && getYear());
   }
 
   const { wrapper: typeDropdown, getValue: getTypeVal, populateOptions: populateTypes } = buildDropdown('Type of report', updateSearchBtn);
@@ -243,7 +239,7 @@ function wireModalEvents({
 }) {
   searchBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (searchBtn.classList.contains('sr-search-btn-disabled')) return;
+    if (searchBtn.disabled) return;
     const type = getType();
     const year = getYear();
     const params = new URLSearchParams({ type, year });
