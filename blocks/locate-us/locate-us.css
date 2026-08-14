@@ -400,9 +400,13 @@
   position: relative;
   border: none;
   padding: var(--bbl-space-250);
-  border-bottom: 0.0625rem solid var(--bbl-color-grey-150);
+  padding-inline: 3.125rem;
   box-sizing: border-box;
   background-color: var(--bbl-color-white);
+  background-image: linear-gradient(var(--bbl-color-grey-150), var(--bbl-color-grey-150));
+  background-repeat: no-repeat;
+  background-position: left 1.875rem bottom;
+  background-size: calc(100% - (2 * var(--bbl-space-250)) - 2.3125rem) 0.0417rem;
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b1);
   font-weight: var(--bbl-font-weight-regular);
@@ -425,6 +429,7 @@
   align-items: flex-start;
   justify-content: space-between;
   padding: var(--bbl-space-200) 0;
+  padding-top: 0;
   background: none;
   flex-grow: 1;
   border: none;
@@ -440,9 +445,9 @@
 .locate-us .locate-us-card-name {
   flex: 1;
   min-width: 0;
-  font-size: 1.4375rem;
+  font-size: var(--bbl-font-size-h3-mobile);
   font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.2495rem;
+  line-height: var(--bbl-line-height-h3-mobile);
   color: var(--bbl-color-gray-121);
   font-family: var(--bbl-font-family-medium);
   margin: 0;
@@ -465,6 +470,8 @@
 .locate-us .locate-us-card-hr {
   /* border: none; */
   margin: 0 0 0.625rem;
+  margin-top: unset;
+  margin-bottom: 18px;
   padding-bottom: var(--bbl-space-000);
   width: var(--bbl-space-800);
   background: var(--bbl-color-grey-150);
@@ -1115,6 +1122,7 @@
   .locate-us .locate-us-card {
     padding: var(--bbl-space-250);
     background-color: var(--bbl-color-white);
+    background-image: none;
     border: 0.0625rem solid var(--bbl-color-gray-122);
     box-shadow: 0 0 var(--bbl-space-200) 0 var(--bbl-color-black-alpha-10);
     overflow: hidden;
