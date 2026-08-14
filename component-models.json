@@ -4019,6 +4019,34 @@
         "label": "Disclaimer Text",
         "valueType": "string",
         "required": true
+      },
+      {
+        "component": "text",
+        "name": "fromLabel",
+        "label": "From Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "toLabel",
+        "label": "To Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "buyingLabel",
+        "label": "Buying Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "sellingLabel",
+        "label": "Selling Label",
+        "valueType": "string",
+        "required": true
       }
     ]
   },

@@ -323,7 +323,7 @@ function renderBlock(
         </div>
         <div class="forex-graph-date-fields">
           <div class="forex-graph-date-field">
-            <label class="forex-graph-date-label">${escapeHtml(placeholders.fromLabel || 'From')}</label>
+            <label class="forex-graph-date-label">${escapeHtml(authoring.fromLabel)}</label>
             <div class="forex-graph-date-group forex-graph-from-group">
               <span class="forex-graph-date-display">${escapeHtml(fromDisplayDate)}</span>
               <input type="text" class="forex-graph-date-input forex-graph-from-input" inputmode="text" value="${escapeHtml(state.from.typedDate)}" aria-label="From date" data-pick="from">
@@ -332,7 +332,7 @@ function renderBlock(
             </div>
           </div>
           <div class="forex-graph-date-field">
-            <label class="forex-graph-date-label">${escapeHtml(placeholders.toLabel || 'To')}</label>
+            <label class="forex-graph-date-label">${escapeHtml(authoring.toLabel)}</label>
             <div class="forex-graph-date-group forex-graph-to-group">
               <span class="forex-graph-date-display">${escapeHtml(toDisplayDate)}</span>
               <input type="text" class="forex-graph-date-input forex-graph-to-input" inputmode="text" value="${escapeHtml(state.to.typedDate)}" aria-label="To date" data-pick="to">
@@ -353,8 +353,8 @@ function renderBlock(
       <div class="forex-graph-chart-header">
         <h5 class="forex-graph-chart-title">${escapeHtml(graphTitle)}</h5>
         <div class="forex-graph-legend">
-          <span class="forex-graph-legend-buying">${escapeHtml(placeholders.buyingLabel || 'Buying')}</span>
-          <span class="forex-graph-legend-selling">${escapeHtml(placeholders.sellingLabel || 'Selling')}</span>
+          <span class="forex-graph-legend-buying">${escapeHtml(authoring.buyingLabel)}</span>
+          <span class="forex-graph-legend-selling">${escapeHtml(authoring.sellingLabel)}</span>
         </div>
       </div>
       <div class="forex-graph-canvas-wrap">
@@ -491,7 +491,7 @@ export default async function decorate(block) {
         labels,
         datasets: [
           {
-            label: placeholders.buyingLabel || 'Buying',
+            label: authoring.buyingLabel,
             data: buyingData,
             borderColor: '#002087',
             backgroundColor: 'transparent',
@@ -506,7 +506,7 @@ export default async function decorate(block) {
             tension: 0.3,
           },
           {
-            label: placeholders.sellingLabel || 'Selling',
+            label: authoring.sellingLabel,
             data: sellingData,
             borderColor: '#ff6e00',
             backgroundColor: 'transparent',
