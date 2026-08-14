@@ -123,6 +123,14 @@
   opacity: 0.5;
 }
 
+.accordion-panel .columns p {
+  font-weight: 400;
+}
+
+.accordion-panel .columns strong {
+  font-weight: 700;
+}
+
 .accordion-panel-loaded {
   opacity: 1;
 }
@@ -141,7 +149,7 @@
   margin-top:0
 }
 
-.accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper) {
+.accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper):has(> p) {
   margin-bottom: 1.25rem;
 }
 
@@ -149,8 +157,27 @@
   .accordion-panel {
     padding: 1.25rem 1.875rem;
   }
-  
-  .accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper) {
+
+  .accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper):has(> p) {
     margin-bottom: 2.5rem;
+  }
+}
+
+@media print {
+  .accordion-panel[hidden] {
+    display: block;
+  }
+
+  .accordion-toolbar-icon,
+  .accordion-toolbar-print{
+    display: none;
+  }
+
+  .accordion-block-wrapper {
+    padding: 0 1rem;
+  }
+
+  .accordion-header::after {
+    content: '–';
   }
 }

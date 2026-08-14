@@ -167,6 +167,9 @@ export default function decorate(block) {
 
           const targetSection = sections[sectionIndex].element;
           if (targetSection) {
+            if (window.matchMedia('(width > 64rem)').matches) {
+              targetSection.style.scrollMarginTop = '5.25rem';
+            }
             targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
 

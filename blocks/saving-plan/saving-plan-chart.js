@@ -3,22 +3,24 @@ export function buildChartLegend(labels, getIcon) {
     <div class="saving-plan-chart-legend">
       <div class="saving-plan-chart-legend-row">
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-dot" style="background:var(--sp-chart-result)"></span>
+          <span class="saving-plan-chart-legend-dot saving-plan-chart-legend-dot-result"></span>
           <span class="saving-plan-chart-legend-text">${labels.legendResult}</span>
         </span>
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-icon">${getIcon('step-up')}</span>
+          <span class="saving-plan-chart-legend-icon" data-icon-original="fixed">${getIcon('step-up')}</span>
+          <span class="saving-plan-chart-legend-icon" data-icon-original="stepup" hidden>${getIcon('step-up-adjusted')}</span>
           <span class="saving-plan-chart-legend-text" data-variant-original>${labels.legendFixed}</span>
         </span>
       </div>
       <div class="saving-plan-chart-legend-row" data-newplan-row hidden>
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-dot" style="background:var(--sp-chart-new-plan)"></span>
+          <span class="saving-plan-chart-legend-dot saving-plan-chart-legend-dot-newplan"></span>
           <span class="saving-plan-chart-legend-text">${labels.legendNewPlan}</span>
         </span>
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-icon">${getIcon('step-up-adjusted')}</span>
-          <span class="saving-plan-chart-legend-text" data-variant-newplan>${labels.legendStepUpAdjusted}</span>
+          <span class="saving-plan-chart-legend-icon" data-icon-newplan="fixed">${getIcon('step-up')}</span>
+          <span class="saving-plan-chart-legend-icon" data-icon-newplan="stepup" hidden>${getIcon('step-up-adjusted')}</span>
+          <span class="saving-plan-chart-legend-text" data-variant-newplan>${labels.legendFixed}</span>
         </span>
       </div>
     </div>
@@ -114,8 +116,8 @@ function drawRoundedRect(ctx, x, y, w, h, r) {
 function drawMonthlyTag(ctx, cx, cy, line1, line2, bg) {
   const pad = 10;
   const lh = 17;
-  const boxW = 118;
-  const boxH = lh * 2 + pad * 2;
+  const boxW = 140;
+  const boxH = 47;
   const x = cx - boxW / 2;
   const y = cy - boxH / 2;
   ctx.save();
@@ -152,31 +154,48 @@ function buildChartOverlayPlugin(originalSeries, newSeries, monthly, monthlyNew,
       const { ctx, scales: { x: xScale, y: yScale } } = chart;
       const lastIdx = originalSeries.length - 1;
       const lastYear = originalSeries[lastIdx].year;
-      const tagX = xScale.getPixelForValue(1) + 44;
       const goalX = xScale.getPixelForValue(lastYear) - 6;
-      const boxH = 57;
+      const boxH = 48;
+      const boxW = 140;
+      // Monthly-savings tags: anchored near the origin (just right of the
+      // y-axis) and sitting just above the x-axis baseline.
+      const tagX = xScale.getPixelForValue(0) + boxW / 2 + 6;
+      const baseY = yScale.getPixelForValue(0);
+      // bottom box sits just above the x-axis baseline
+      const bottomTagY = baseY - boxH / 2 - 4;
 
-      const origY1 = originalSeries[1]?.value ?? originalSeries[0].value;
-      const origYPx = yScale.getPixelForValue(origY1);
-      const blueTagY = newSeries ? origYPx - boxH / 2 - 4 : origYPx;
-      drawMonthlyTag(ctx, tagX, blueTagY, monthlyLabel, formatNumber(monthly), colors.result);
+      const origVal = formatNumber(monthly);
 
       if (newSeries) {
-        const newY1 = newSeries[1]?.value ?? newSeries[0].value;
-        const newYPx = yScale.getPixelForValue(newY1);
-        const darkTagY = newYPx + boxH / 2 + 4;
-        drawMonthlyTag(ctx, tagX, darkTagY, monthlyLabel, formatNumber(monthlyNew), colors.newPlan);
+        // New-plan (dark) stacked on top, Result (light blue) on the bottom,
+        // overlapping slightly so the two boxes read as one connected pair.
+        const newVal = formatNumber(monthlyNew);
+        const overlap = 0;
+        const topTagY = bottomTagY - (boxH - overlap);
+        drawMonthlyTag(ctx, tagX, bottomTagY, monthlyLabel, origVal, colors.result);
+        drawMonthlyTag(ctx, tagX, topTagY, monthlyLabel, newVal, colors.newPlan);
+      } else {
+        drawMonthlyTag(ctx, tagX, bottomTagY, monthlyLabel, origVal, colors.result);
       }
 
       const origEndY = yScale.getPixelForValue(originalSeries[lastIdx].value);
-      const goalLabelH = 30;
       const originalGoal = formatNumber(originalSeries[lastIdx].value);
-      drawGoalLabel(ctx, goalX, origEndY - goalLabelH - 2, goalLabel, originalGoal, colors.result);
 
       if (newSeries) {
-        const newEndY = yScale.getPixelForValue(newSeries[lastIdx].value);
         const newGoal = formatNumber(newSeries[lastIdx].value);
-        drawGoalLabel(ctx, goalX, newEndY + 6, goalLabel, newGoal, colors.newPlan);
+        const yearW = xScale.getPixelForValue(lastYear) - xScale.getPixelForValue(lastYear - 1);
+        // New-plan (dark) label sits just UNDER the dark line, offset left of the
+        // end; the dark line's height at that x is interpolated from the last two
+        // points. Result (blue) label stays above the lower line end at the right.
+        const darkXFrac = 0.7;
+        const vEnd = newSeries[lastIdx].value;
+        const vPrev = newSeries[lastIdx - 1]?.value ?? vEnd;
+        const darkLineY = yScale.getPixelForValue(vEnd - (vEnd - vPrev) * darkXFrac);
+        const darkX = goalX - yearW * darkXFrac;
+        drawGoalLabel(ctx, darkX, darkLineY + 16, goalLabel, newGoal, colors.newPlan);
+        drawGoalLabel(ctx, goalX, origEndY - 8, goalLabel, originalGoal, colors.result);
+      } else {
+        drawGoalLabel(ctx, goalX, origEndY - 32, goalLabel, originalGoal, colors.result);
       }
     },
   };
@@ -189,7 +208,7 @@ function buildChartConfig(originalSeries, newSeries, labels, overlayPlugin, colo
     ...(newSeries ? newSeries.map((p) => p.value) : []),
   ];
   const dataMax = Math.max(...allValues, 1);
-  const yMax = Math.ceil((dataMax * 1.3) / 1000) * 1000;
+  const yMax = dataMax * 1.25;
 
   const datasets = [
     {
@@ -241,9 +260,25 @@ function buildChartConfig(originalSeries, newSeries, labels, overlayPlugin, colo
             color: colors.axis,
             font: { size: 12, family: 'system-ui, sans-serif' },
           },
-          grid: { display: false },
+          grid: {
+            // no vertical gridlines across the plot, but keep tick marks
+            drawOnChartArea: false,
+            drawTicks: true,
+            tickLength: 6,
+            // no tick mark at the origin (index 0); keep them for years 1..n
+            tickColor: (ctx) => (ctx.index === 0 ? 'transparent' : colors.border),
+          },
           border: { display: true, color: colors.border },
-          ticks: { color: colors.axis, font: { size: 12, family: 'system-ui, sans-serif' } },
+          ticks: {
+            color: colors.axis,
+            font: { size: 12, family: 'system-ui, sans-serif' },
+            padding: 6,
+            // hide the "0" label under the origin; keep years 1..n
+            callback(value) {
+              const label = this.getLabelForValue(value);
+              return Number(label) === 0 ? '' : label;
+            },
+          },
         },
         y: {
           min: 0,
@@ -254,18 +289,29 @@ function buildChartConfig(originalSeries, newSeries, labels, overlayPlugin, colo
             color: colors.axis,
             font: { size: 12, family: 'system-ui, sans-serif' },
           },
+          // Explicit ticks in 1.5M steps (0, 1.5M, 3M …) plus the max on top,
+          // dropping any regular tick that would crowd the max.
+          afterBuildTicks: (axis) => {
+            const top = axis.max;
+            const step = 1500000;
+            const ticks = [];
+            for (let v = 0; v < top - step / 2; v += step) ticks.push({ value: v });
+            ticks.push({ value: top });
+            axis.ticks = ticks;
+          },
           ticks: {
             callback: (val) => formatCompact(val),
             color: colors.axis,
             font: { size: 12, family: 'system-ui, sans-serif' },
-            maxTicksLimit: 5,
           },
           grid: {
             color: colors.grid,
             lineWidth: 1,
             drawTicks: false,
           },
-          border: { dash: [4, 4], display: false },
+          // dashed horizontal gridlines: the grid line dash is driven by
+          // border.dash in this Chart.js build, not grid.borderDash.
+          border: { display: false, dash: [4, 4] },
           beginAtZero: true,
         },
       },
@@ -277,6 +323,13 @@ function getSavingsVariantLabel(annualIncrease, labels) {
   return annualIncrease > 0 ? labels.legendStepUp : labels.legendFixed;
 }
 
+function setVariantIcon(root, key, isStepUp) {
+  const fixedIcon = root.querySelector(`[data-icon-${key}="fixed"]`);
+  const stepUpIcon = root.querySelector(`[data-icon-${key}="stepup"]`);
+  if (fixedIcon) fixedIcon.toggleAttribute('hidden', isStepUp);
+  if (stepUpIcon) stepUpIcon.toggleAttribute('hidden', !isStepUp);
+}
+
 function updateLegend(root, data, originalIncrease, newIncrease, hasNewPlan) {
   const originalVariant = getSavingsVariantLabel(originalIncrease, data.labels.chart);
   const newVariant = getSavingsVariantLabel(newIncrease, data.labels.chart);
@@ -284,6 +337,10 @@ function updateLegend(root, data, originalIncrease, newIncrease, hasNewPlan) {
   const newText = root.querySelector('[data-variant-newplan]');
   if (originalText) originalText.textContent = originalVariant;
   if (newText) newText.textContent = newVariant;
+  // Icon must match the text: rising (step-up) icon only when the annual
+  // increase is > 0; otherwise the flat "Fixed savings" icon.
+  setVariantIcon(root, 'original', originalIncrease > 0);
+  setVariantIcon(root, 'newplan', newIncrease > 0);
   const newplanRow = root.querySelector('[data-newplan-row]');
   if (newplanRow) newplanRow.toggleAttribute('hidden', !hasNewPlan);
 }

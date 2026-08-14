@@ -5,16 +5,32 @@
   margin: auto;
 }
 
+/* Overrides the global .section.full-bleed-bg .content padding-inline.
+   Mobile-first: 16px inline padding so the player doesn't sit flush against
+   the section edges, matching the live site. Tablet/desktop reset to
+   edge-to-edge below. */
+.section .carousel-video-wrapper.content {
+  box-sizing: border-box;
+  padding-inline: 1rem;
+}
+
 /* ── Block positioning context ───────────────────────────────────────────── */
 .carousel-video {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 56.25rem;
+  margin-inline: auto;
 }
 
 /* ── Main player ─────────────────────────────────────────────────────────── */
 .carousel-video .cv-main-player {
   position: relative;
-  width: 24.625rem;
-  height: 12.6875rem;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  overflow: hidden;
   background: var(--bbl-color-black);
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
@@ -32,22 +48,30 @@
   border: none;
   display: block;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+
+  /* Opacity 0 is still clickable — without this, a click can land on a
+     stacked-but-invisible iframe instead of the visible .active one, which
+     plays audio for the wrong video while the visible frame stays paused. */
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out, transform 0.45s ease-in-out;
 }
 
 .carousel-video .cv-main-player iframe.active {
   opacity: 1;
+  z-index: 1;
+  pointer-events: auto;
 }
 
-/* ── Thumbnail carousel — mobile: nav arrows overlay on player ───────────── */
+/* ── Thumbnail carousel — mobile: nav arrows overlay the player, centered
+   on its vertical midline ───────────────────────────────────────────────── */
 .carousel-video .cv-carousel-section {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: auto;
-  aspect-ratio: 16 / 9;
-  height: auto;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
   border: 0;
@@ -99,6 +123,10 @@
 }
 
 /* ── Prev / Next buttons ─────────────────────────────────────────────────── */
+
+/* Mobile: absolutely centered on .cv-carousel-section's vertical midline
+   (the row sitting above the player). Tablet+ (below) repositions this
+   as an overlay beside the thumbnail track instead. */
 .carousel-video .cv-nav {
   position: absolute;
   top: 50%;
@@ -119,14 +147,6 @@
   pointer-events: all;
 }
 
-.carousel-video .cv-prev {
-  left: 0.75rem;
-}
-
-.carousel-video .cv-next {
-  right: 0.75rem;
-}
-
 .carousel-video .cv-nav:hover {
   background: var(--bbl-color-grey-10);
 }
@@ -134,6 +154,14 @@
 .carousel-video .cv-prev,
 .carousel-video .cv-next {
   transition: all 0.3s ease;
+}
+
+.carousel-video .cv-prev {
+  left: 1.75rem;
+}
+
+.carousel-video .cv-next {
+  right: 1.75rem;
 }
 
 .carousel-video .cv-prev:hover {
@@ -219,9 +247,9 @@
 
 /* ── Tablet: > 760px ─────────────────────────────────────────────────────── */
 @media (width > 47.5rem) {
-  .carousel-video-wrapper {
-    padding: 0 2.5rem;
-    margin: 0 -2.8125rem;
+  .section .carousel-video-wrapper.content {
+    box-sizing: content-box;
+    padding-inline: 0;
   }
 
   .carousel-video .cv-main-player {
@@ -233,13 +261,12 @@
   }
 
   .carousel-video .cv-carousel-section {
+    display: block;
     position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    aspect-ratio: unset;
+    inset: auto;
     max-width: 35.75rem;
     width: 100%;
+    height: auto;
     margin: 1.875rem auto;
     padding: 0;
     pointer-events: auto;
@@ -266,7 +293,9 @@
   }
 
   .carousel-video .cv-nav {
+    position: absolute;
     top: 40%;
+    transform: translateY(-50%);
     width: 2.5rem;
     height: 2.5rem;
     background: var(--bbl-color-white);
@@ -296,7 +325,8 @@
   }
 
   .carousel-video .cv-carousel-section {
-    max-width: 49.875rem;
+    width: 50.5rem;
+    max-width: 100%;
     margin: 1.875rem auto;
   }
 

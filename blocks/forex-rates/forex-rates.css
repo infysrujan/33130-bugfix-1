@@ -70,6 +70,26 @@
   font-size: 1.125rem;
 }
 
+.bbl-calendar-picker-nav:hover {
+  color: var(--bbl-color-white);
+  background: var(--bbl-color-blue-80);
+}
+
+.bbl-calendar-picker-day:not(:disabled):hover {
+  background: var(--bbl-color-blue-80);
+  color: var(--bbl-color-white);
+}
+
+.bbl-calendar-picker-popover {
+  padding-inline: 3.125rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.bbl-calendar-picker-weekdays span {
+  font-size: 0.875rem;
+}
+
 /* ── Time dropdown ─────────────────────────────────────────── */
 
 .forex-rates .forex-rates-time-wrap {
@@ -127,7 +147,8 @@
   position: absolute;
   top: calc(100% + 0.25rem);
   left: 0;
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   max-height: 15rem;
   overflow-y: auto;
   background: var(--bbl-color-white);
@@ -150,6 +171,7 @@
   font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-black);
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -399,9 +421,17 @@
   .forex-rates .forex-rates-time-item {
     font-size: var(--bbl-font-size-b1);
   }
+
+  .bbl-calendar-picker-weekdays span {
+    font-size: 1rem;
+  }
 }
 
 @media print {
+  .bbl-calendar-picker-popover {
+    display: none;
+  }
+
   /* Repeat-header on multi-page print */
   .forex-rates .forex-rates-table thead {
     display: table-header-group;

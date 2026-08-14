@@ -87,7 +87,7 @@ button.login-button.primary {
 
 .login-section-subtitle {
   color: var(--bbl-color-black);
-  margin-bottom: 0;
+  margin-block: 0;
   font-size: 0.875rem;
   line-height: normal;
   position: relative;

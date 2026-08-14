@@ -102,23 +102,22 @@ body.error-page .header .mobile-top-bar {
 }
 
 .error-page main .default-content-wrapper > .button-container {
-    display: block;
-    width: 100%;
+    display: inline-flex;
+    width: auto;
     margin: 0 0 1rem;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .error-page main .default-content-wrapper .button-m.primary,
 .error-page main .default-content-wrapper .button-m.secondary {
-    display: block;
+    display: inline-flex;
     padding: 0 1.25rem;
     width: auto;
     align-content: center;
     min-width: 8.3313rem;
-    margin: 0 auto;
-}
-
-.error-page main .default-content-wrapper .button-m.secondary {
-    margin-top: 0.625rem;
+    margin: 0;
 }
 
 @media (width > 47.5rem) {
@@ -126,17 +125,6 @@ body.error-page .header .mobile-top-bar {
     width: 65%;
     max-width: 37.5rem;
     margin: 0 auto;
-  }
-
-  .error-page main .default-content-wrapper > .button-container {
-    display: inline-flex;
-    width: auto;
-  }
-
-  .error-page main .default-content-wrapper .button-m.primary,
-  .error-page main .default-content-wrapper .button-m.secondary {
-    display: inline-flex;
-    margin: 0;
   }
 }
 

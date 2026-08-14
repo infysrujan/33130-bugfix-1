@@ -659,6 +659,7 @@
         "name": "cardListLayout",
         "value": "default",
         "label": "Card List Layout",
+        "description": "Choose how cards are arranged. Select 'Carousel' only when this Card List is referenced as a fragment inside a Carousel Dotted block that uses the 'Card List Carousel' slide type (Show Dots and Arrows variant). Select 'Scrollable' for a standalone horizontal scroll without dots. Select 'Stacked' for a standard multi-row grid layout.",
         "valueType": "string",
         "options": [
           {
@@ -926,8 +927,12 @@
         "name": "imageLayout",
         "label": "Image Layout",
         "valueType": "string",
-        "value": "default",
+        "value": "none",
         "options": [
+          {
+            "name": "None",
+            "value": "none"
+          },
           {
             "name": "Full",
             "value": "full"
@@ -1318,6 +1323,10 @@
           {
             "name": "10 seconds",
             "value": "10000"
+          },
+          {
+            "name": "15 seconds",
+            "value": "15000"
           }
         ],
         "condition": {
@@ -3401,6 +3410,18 @@
     ]
   },
   {
+    "id": "credit-card-results",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "credit-card-selector",
     "fields": [
       {
@@ -3472,13 +3493,6 @@
             "value": "tertiary"
           }
         ]
-      },
-      {
-        "component": "richtext",
-        "name": "disclaimerText",
-        "value": "",
-        "label": "Disclaimer Text",
-        "valueType": "string"
       }
     ]
   },
@@ -4023,14 +4037,14 @@
         "name": "ctaLabel",
         "label": "CTA Label",
         "valueType": "string",
-        "required": true
+        "required": false
       },
       {
         "component": "text",
         "name": "printCtaLabel",
         "label": "Print CTA Label",
         "valueType": "string",
-        "required": true
+        "required": false
       },
       {
         "component": "richtext",
@@ -12301,6 +12315,12 @@
         "label": "Modal Description",
         "valueType": "string",
         "required": true
+      },
+      {
+        "component": "aem-content",
+        "name": "resultsPageUrl",
+        "label": "Results Page URL",
+        "description": "Page the user is redirected to after searching, with type/year query params appended"
       }
     ]
   },
@@ -12417,37 +12437,23 @@
     "id": "social-icon",
     "fields": [
       {
-        "component": "select",
-        "name": "platform",
-        "label": "Platform",
-        "valueType": "string",
-        "required": true,
-        "options": [
-          {
-            "name": "Facebook",
-            "value": "facebook"
-          },
-          {
-            "name": "X",
-            "value": "x"
-          },
-          {
-            "name": "Line",
-            "value": "line"
-          }
-        ]
-      },
-      {
         "component": "reference",
         "name": "icon",
-        "label": "Icon",
+        "label": "Social Icon",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "alt",
+        "label": "Platform",
         "valueType": "string",
         "required": true
       },
       {
         "component": "text",
         "name": "url",
-        "label": "URL",
+        "label": "Link",
         "valueType": "string",
         "required": true
       }
@@ -12489,31 +12495,6 @@
         "description": "Author iframe HTML, links, and supporting notes.",
         "valueType": "string",
         "value": ""
-      }
-    ]
-  },
-  {
-    "id": "social-icon",
-    "fields": [
-      {
-        "component": "reference",
-        "name": "icon",
-        "label": "Social Icon",
-        "valueType": "string",
-        "required": true
-      },
-      {
-        "component": "text",
-        "name": "alt",
-        "label": "Alt Text",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "url",
-        "label": "Link",
-        "valueType": "string",
-        "required": true
       }
     ]
   },

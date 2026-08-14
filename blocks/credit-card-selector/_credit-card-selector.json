@@ -105,13 +105,6 @@
               "value": "tertiary"
             }
           ]
-        },
-        {
-          "component": "richtext",
-          "name": "disclaimerText",
-          "value": "",
-          "label": "Disclaimer Text",
-          "valueType": "string"
         }
       ]
     },

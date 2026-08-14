@@ -323,6 +323,57 @@
   border-radius: 0.625rem;
 }
 
+/* stylelint-disable-next-line no-duplicate-selectors */
+.privacy-modal-body {
+  ol {
+    counter-reset: item;
+    list-style: none;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  li p {
+    text-indent: .2rem;
+  }
+
+  li:not(p) {
+    text-indent: .2rem;
+  }
+
+  ol>li {
+    counter-increment: item;
+    margin: 0.5em 0;
+  }
+
+  /* Level 1: "1." */
+  ol>li::marker {
+    content: counter(item) ". ";
+    font-weight: bold;
+  }
+
+  /* Level 2: "1.1." */
+  ol ol {
+    counter-reset: item;
+  }
+
+  ol ol>li::marker {
+    content: counters(item, ".");
+    counter-increment: item;
+  }
+
+  /* Level 3: "(1)" instead of continuing the dotted pattern */
+  ol ol ol {
+    counter-reset: subitem;
+  }
+
+  ol ol ol>li {
+    counter-increment: subitem;
+  }
+
+  ol ol ol>li::marker {
+    content: "(" counter(subitem) ") ";
+  }
+}
+
 @media (width > 47.5rem) {
   .privacy-modal-dialog {
     width: 50rem;

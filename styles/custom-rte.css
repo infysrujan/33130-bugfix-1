@@ -1,15 +1,3 @@
-picture.rte-inline-image {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-picture.rte-inline-image img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
 .default-content-wrapper :is(ol, ul):not(:where(.footer-container) *) {
   margin: 0 0 0 var(--bbl-space-250);
   padding: 0;
@@ -23,24 +11,42 @@ picture.rte-inline-image img {
   margin: 0;
 }
 
-.default-content-wrapper .has-inline-icon {
-  display: inline;
-  align-items: center;
-  gap: 0.5rem;
-  vertical-align: middle;
-}
-
-.default-content-wrapper .has-inline-icon p {
-    display: initial;
-}
-
-.default-content-wrapper .has-inline-icon > p {
+.default-content-wrapper p.rte-inline-image {
+  display: inline-block;
   margin: 0;
 }
 
-.default-content-wrapper li:has(> p:has(picture.rte-inline-image) + p:has(picture.rte-inline-image)) > p:has(picture.rte-inline-image) {
+.default-content-wrapper p.rte-inline-image picture {
   display: inline-block;
   vertical-align: middle;
+}
+
+.default-content-wrapper p.rte-has-icon picture {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.default-content-wrapper > p.rte-has-icon:not(.rte-image-link):has(+ p.rte-has-icon:not(.rte-image-link)),
+.default-content-wrapper > p.rte-has-icon:not(.rte-image-link) + p.rte-has-icon:not(.rte-image-link) {
+  display: inline;
+}
+
+.default-content-wrapper > p.rte-inline-image:has(picture):has(+ p.rte-inline-image:has(picture)),
+.default-content-wrapper > p.rte-inline-image:has(picture) + p.rte-inline-image:has(picture) {
+  display: inline;
+}
+
+.default-content-wrapper li:has(p.rte-has-icon) p {
+  display: inline;
+  margin: 0;
+}
+
+.default-content-wrapper li:has(p.rte-has-icon) p:has(picture) {
+  display: inline-block;
+}
+
+.default-content-wrapper li:has(> p.rte-inline-image + p.rte-inline-image) > p.rte-inline-image {
+  display: inline-block;
 }
 
 .accordion-item :is(.default-content-wrapper, .table.block) table td :is(ul, ol) {
@@ -55,3 +61,4 @@ picture.rte-inline-image img {
 .default-content-wrapper > :not(.button-container, .footer-container) a:any-link {
   color: inherit;
 }
+

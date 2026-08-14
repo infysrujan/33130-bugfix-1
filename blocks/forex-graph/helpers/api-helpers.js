@@ -84,10 +84,34 @@ export function getDownloadUrl(endpoints, sDay, sMon, sYear, eDay, eMon, eYear, 
   return endpoints.downloadRates(sDay, sMon, sYear, eDay, eMon, eYear, family, lang);
 }
 
-export function normalizeChartData(list) {
-  return (Array.isArray(list) ? list : []).map((item) => ({
-    date: String(item.Ddate || '').trim(),
-    buyingRate: parseFloat(String(item.BuyingRates || '').trim()) || null,
-    sellingRate: parseFloat(String(item.SellingRates || '').trim()) || null,
-  })).filter((item) => item.date);
+export function normalizeChartData(list, lang) {
+  return (Array.isArray(list) ? list : []).map((item) => {
+    const rawDate = String(item?.Ddate || '').trim();
+    let date = rawDate;
+
+    const [month, day, year] = rawDate.split('/');
+    if (month && day && year) {
+      if (lang === 'th') {
+        const parsed = new Date(`${month}/${day}/${year}`);
+        if (!Number.isNaN(parsed.getTime())) {
+          date = parsed.toLocaleDateString('th-TH', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+          });
+        }
+      } else {
+        date = `${day}/${month}/${year}`;
+      }
+    }
+
+    const time = String(item?.DTime || '').trim();
+    if (time) date = `${date} ${time}`;
+
+    return {
+      date,
+      buyingRate: parseFloat(String(item?.BuyingRates || '').trim()) || null,
+      sellingRate: parseFloat(String(item?.SellingRates || '').trim()) || null,
+    };
+  }).filter((item) => item.date);
 }

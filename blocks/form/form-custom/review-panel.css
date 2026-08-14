@@ -21,7 +21,8 @@
 .form-review-2col .field-wrapper:not(.panel-wrapper) > label.field-label,
 .form-review-2col .field-wrapper:not(.panel-wrapper) > input,
 .form-review-2col .field-wrapper:not(.panel-wrapper) > select,
-.form-review-2col .field-wrapper:not(.panel-wrapper) > textarea {
+.form-review-2col .field-wrapper:not(.panel-wrapper) > textarea,
+.form-review-2col .field-wrapper:not(.panel-wrapper) > .field-review-value {
   box-sizing: border-box;
   flex-shrink: 0;
   min-height: 2.75rem;
@@ -49,7 +50,8 @@
 
 .form-review-2col .field-wrapper:not(.panel-wrapper) > input,
 .form-review-2col .field-wrapper:not(.panel-wrapper) > select,
-.form-review-2col .field-wrapper:not(.panel-wrapper) > textarea {
+.form-review-2col .field-wrapper:not(.panel-wrapper) > textarea,
+.form-review-2col .field-wrapper:not(.panel-wrapper) > .field-review-value {
   width: 48%;
   padding: 0.625rem;
   background-color: var(--bbl-color-grey-157);
@@ -58,6 +60,8 @@
   font-family: var(--bbl-font-family-primary);
   pointer-events: none;
   height: auto;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 main .section.form-container.custom-forms .form .form-review-2col
@@ -72,11 +76,17 @@ main .section.form-container.custom-forms .form .form-review-2col
   background-image: none;
 }
 
+.form-review-2col .field-wrapper:not(.panel-wrapper) > .field-review-value {
+  display: block;
+}
+
 .form-review-2col .field-wrapper:not(.panel-wrapper) > textarea {
   resize: none;
   overflow: hidden;
-  height: 2.75rem;
-  white-space: nowrap;
+  min-height: 2.75rem;
+  height: auto;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .form-review-2col input[readonly],

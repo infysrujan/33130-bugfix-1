@@ -243,25 +243,22 @@ async function refreshTableFromPrices(tableBlock, fallbackFunds, date, latestMda
 
 // ─── fund-prices UI helpers ───────────────────────────────────────────────────
 
-function moveSearchBarToHeader(el, doc) {
-  const check = () => {
-    const headerNav = doc.querySelector('.header-nav');
-    if (!headerNav) return false;
-    const headerBlock = headerNav.closest('.header') || headerNav.parentElement;
-    if (!headerBlock) return false;
-    el.classList.add('is-in-header');
-    doc.body.classList.add('fund-prices-search-in-header');
-    headerBlock.appendChild(el);
-    const pageTitleEl = doc.querySelector('main .default-content-wrapper h1, main .default-content-wrapper h2');
-    if (pageTitleEl) pageTitleEl.classList.add('fund-prices-page-title');
-    return true;
-  };
-  if (check()) return;
-  const observer = new MutationObserver(() => {
-    if (check()) observer.disconnect();
+// Sits visually flush under the fixed header (own blue strip, matches header's
+// width/centering) but lives in normal <main> flow — not fixed/sticky, so it
+// scrolls away with the page instead of staying pinned with the nav.
+function placeSearchBarAtTopOfMain(el, doc) {
+  const main = doc.querySelector('main');
+  if (!main) return;
+  // Self-heal: drop any stale bar left behind by an earlier decoration pass
+  // (e.g. a re-decorate) so it can't linger as a duplicate elsewhere.
+  doc.querySelectorAll('.fund-prices-search-bar').forEach((stale) => {
+    if (stale !== el) stale.remove();
   });
-  observer.observe(doc.documentElement, { childList: true, subtree: true });
-  setTimeout(() => observer.disconnect(), 8000);
+  el.classList.add('is-in-header');
+  doc.body.classList.add('fund-prices-search-in-header');
+  main.insertBefore(el, main.firstChild);
+  const pageTitleEl = doc.querySelector('main .default-content-wrapper h1, main .default-content-wrapper h2');
+  if (pageTitleEl) pageTitleEl.classList.add('fund-prices-page-title');
 }
 
 function richTextFromRow(row) {
@@ -584,7 +581,7 @@ export default async function decorate(block) {
   /* ── Fund selector bar ── */
   const fundSelector = buildFundSelectorBar(doc, funds, searchLabel, allFundsLabel, goLabel);
   root.appendChild(fundSelector.el);
-  moveSearchBarToHeader(fundSelector.el, doc);
+  placeSearchBarAtTopOfMain(fundSelector.el, doc);
 
   /* ── Main view ── */
   const mainView = doc.createElement('div');

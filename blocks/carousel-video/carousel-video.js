@@ -12,6 +12,8 @@ function getYouTubeId(url) {
 }
 
 export default async function decorate(block) {
+  block.closest('.carousel-video-wrapper')?.classList.add('content');
+
   // Tell UE this block is a container that accepts carousel-video-item children.
   if (document.documentElement.classList.contains('adobe-ue-edit')) {
     block.setAttribute('data-aue-type', 'container');
@@ -79,7 +81,9 @@ export default async function decorate(block) {
   // Visibility is controlled by the .active class on each iframe.
   const iframeEls = items.map(({ id }, i) => {
     const iframeEl = document.createElement('iframe');
-    iframeEl.src = `${embedBaseUrl}${id}`;
+    const src = new URL(`${embedBaseUrl}${id}`);
+    src.searchParams.set('enablejsapi', '1');
+    iframeEl.src = src.toString();
     iframeEl.title = playerTitle;
     iframeEl.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
     iframeEl.setAttribute('allowfullscreen', '');
@@ -170,11 +174,55 @@ export default async function decorate(block) {
   block.appendChild(dotsEl);
 
   // ── State helpers ─────────────────────────────────────────────────────────
+  // Pause any iframe that isn't the active one so only one video ever plays at a time.
+  function pauseIframe(iframeEl) {
+    iframeEl.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
+  }
+
   function setActive(index) {
     activeIndex = index;
-    iframeEls.forEach((f, i) => f.classList.toggle('active', i === index));
+    iframeEls.forEach((f, i) => {
+      const isActive = i === index;
+      f.classList.toggle('active', isActive);
+      if (!isActive) pauseIframe(f);
+    });
     thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
+  }
+
+  // Nav-button slide effect is mobile-only; matches the tablet breakpoint in carousel-video.css.
+  const mobileMQ = window.matchMedia('(width <= 47.5rem)');
+
+  // Slides the main player horizontally between videos (mobile nav buttons only).
+  // Reuses setActive() for all state/pause bookkeeping and layers a transform
+  // choreography on top: the incoming iframe starts off-screen in the direction
+  // of travel, then both frames animate to their resting transform together.
+  function slideMainPlayer(newIndex, direction) {
+    const oldFrame = iframeEls[activeIndex];
+    const newFrame = iframeEls[newIndex];
+    if (oldFrame === newFrame) return;
+
+    const enterFrom = direction === 'next' ? '100%' : '-100%';
+    const exitTo = direction === 'next' ? '-100%' : '100%';
+
+    newFrame.style.transition = 'none';
+    newFrame.style.transform = `translateX(${enterFrom})`;
+    newFrame.getBoundingClientRect(); // force reflow so the jump isn't animated
+    newFrame.style.transition = '';
+
+    setActive(newIndex);
+
+    requestAnimationFrame(() => {
+      newFrame.style.transform = 'translateX(0)';
+      oldFrame.style.transform = `translateX(${exitTo})`;
+    });
+
+    newFrame.addEventListener('transitionend', function resetTransforms(e) {
+      if (e.propertyName !== 'transform') return;
+      newFrame.style.transform = '';
+      oldFrame.style.transform = '';
+      newFrame.removeEventListener('transitionend', resetTransforms);
+    });
   }
 
   function getThumbWidth() {
@@ -248,13 +296,21 @@ export default async function decorate(block) {
 
   prevBtn.addEventListener('click', () => {
     const newIndex = activeIndex === 0 ? n - 1 : activeIndex - 1;
-    setActive(newIndex);
+    if (mobileMQ.matches) {
+      slideMainPlayer(newIndex, 'prev');
+    } else {
+      setActive(newIndex);
+    }
     scrollBackward(newIndex);
   });
 
   nextBtn.addEventListener('click', () => {
     const newIndex = activeIndex === n - 1 ? 0 : activeIndex + 1;
-    setActive(newIndex);
+    if (mobileMQ.matches) {
+      slideMainPlayer(newIndex, 'next');
+    } else {
+      setActive(newIndex);
+    }
     scrollForward(newIndex);
   });
 

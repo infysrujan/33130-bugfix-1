@@ -49,8 +49,6 @@ export default function openPdfViewer({
   embedEl.setAttribute('title', name || 'PDF Preview');
   pdfEmbed.append(embedEl);
 
-  let pdfBlob = null;
-
   const buttonGroup = document.createElement('div');
   buttonGroup.className = `${classPrefix}-button-group`;
 
@@ -59,20 +57,13 @@ export default function openPdfViewer({
   downloadLink.textContent = downloadLabel;
   downloadLink.href = path;
   downloadLink.target = '_blank';
-  downloadLink.download = name || '';
-  downloadLink.addEventListener('click', () => {
-    if (!pdfBlob) return;
-    const blobUrl = URL.createObjectURL(pdfBlob);
-    downloadLink.href = blobUrl;
-    downloadLink.removeAttribute('target');
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-  });
+  downloadLink.rel = 'noopener';
   buttonGroup.append(downloadLink);
 
-  fetch(path)
-    .then((r) => r.blob())
+  const pdfBlobPromise = fetch(path).then((r) => r.blob());
+
+  pdfBlobPromise
     .then((blob) => {
-      pdfBlob = blob;
       const blobUrl = URL.createObjectURL(blob);
       embedEl.src = blobUrl;
       embedEl.addEventListener('load', () => URL.revokeObjectURL(blobUrl), { once: true });

@@ -19,11 +19,6 @@ export default function createCard(cardItem) {
 
   const picture = imageRow.querySelector('picture');
 
-  // Only proceed if we have a picture
-  if (!picture) {
-    return null;
-  }
-
   // Create the main card container
   const card = document.createElement('div');
   card.className = 'content-insert-card';
@@ -36,7 +31,7 @@ export default function createCard(cardItem) {
 
   const imageContainer = document.createElement('div');
   imageContainer.className = 'thumb';
-  imageContainer.appendChild(picture);
+  if (picture) imageContainer.appendChild(picture);
 
   figure.appendChild(imageContainer);
 

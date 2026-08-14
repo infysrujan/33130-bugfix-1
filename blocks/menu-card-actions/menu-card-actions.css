@@ -132,7 +132,7 @@
 }
 
 .menu-card-action-inner .button-container {
-  margin-block: 0;
+  margin-block: 0.625rem 0;
   width: 100%;
 }
 
@@ -145,7 +145,7 @@
   white-space: nowrap;
   text-align: center;
   line-height: 2.75rem;
-  margin-top: calc(var(--bbl-space-250) - 0.9375rem);
+  margin-top: var(--bbl-space-250);
 }
 
 .menu-card-action-inner .global-dropdown {
@@ -180,6 +180,7 @@
   flex-grow: 1;
   margin: 0;
 }
+
 
 .menu-card-action-title.has-description {
   flex-grow: 0;

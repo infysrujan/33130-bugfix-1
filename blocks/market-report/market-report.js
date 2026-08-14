@@ -272,7 +272,7 @@ function populateHeaderClassTable(table, tableId, tableData) {
       for (let j = 1; j < tds.length - 1; j += 1) {
         const dataIndex = i * (tds.length - 2) + (j - 1);
         if (tableData[dataIndex]) {
-          tds[j].textContent = withSign(tableData[dataIndex].mktvalue);
+          tds[j].textContent = tableData[dataIndex].mktvalue;
         }
       }
     });
@@ -286,11 +286,6 @@ function populateHeaderClassTable(table, tableId, tableData) {
       if (tableData[dataIndex]) {
         if (tableId === 'GTHB' || tableId === 'USTS' || tableId === 'TSB') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
-        } else if (tableId === 'RR' && i === 1) {
-          // Row 0 is the raw THB/USD rate — never signed. Row 1 is "Change".
-          tds[j].textContent = `${withSign(tableData[dataIndex].mktvalue)} Baht`;
-        } else if (tableId === 'RR') {
-          tds[j].textContent = `${tableData[dataIndex].mktvalue} Baht`;
         } else if (tableId === 'WI' && j === 2) {
           tds[j].textContent = withSign(tableData[dataIndex].mktvalue);
         } else {
@@ -336,18 +331,17 @@ function populateStandardLayoutTable(table, tableId, tableData) {
 
   rows.forEach((row, i) => {
     const tds = row.querySelectorAll('td');
+
     for (let j = 1; j < tds.length; j += 1) {
       const dataIndex = i * (tds.length - 1) + (j - 1);
+
       if (tableData[dataIndex]) {
         if (tableId === 'MMR' || tableId === 'USIR') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
-        } else if (tableId === 'RR' && i === 1) {
-          // Row 0 is the raw THB/USD rate — never signed. Row 1 is "Change".
+        } else if (tableId === 'RR' && dataIndex === 0) {
+          tds[j].textContent = tableData[dataIndex].mktvalue;
+        } else if (tableId === 'RR' && dataIndex !== 0) {
           tds[j].textContent = `${withSign(tableData[dataIndex].mktvalue)} Baht`;
-        } else if (tableId === 'RR') {
-          tds[j].textContent = `${tableData[dataIndex].mktvalue} Baht`;
-        } else if (tableId === 'WI' && j === 2) {
-          tds[j].textContent = withSign(tableData[dataIndex].mktvalue);
         } else {
           tds[j].textContent = tableData[dataIndex].mktvalue;
         }
@@ -401,7 +395,7 @@ function appendMktValuesAsHtml(container, rows) {
  * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
  */
 export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
-  const row = tableWrapper.children[0]
+  const row = tableWrapper.children[0];
   if (!row) return;
   const { heading, para } = appendMktValuesAsHtml(row, tableData.FXMO);
   if (heading) wrapperDiv.appendChild(heading);
@@ -414,7 +408,7 @@ export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
  * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
  */
 export function populateTbmo(tableWrapper, tableData, wrapperDiv) {
-  const row = tableWrapper.children[0]
+  const row = tableWrapper.children[0];
   if (!row) return;
   const { heading, para } = appendMktValuesAsHtml(row, tableData.TBMO);
   if (heading) wrapperDiv.appendChild(heading);
@@ -613,7 +607,7 @@ function styleHeadingsBeforeButtonContainers(panel) {
 function applyTextSmallToTableFollowParagraphs(panel) {
   const followingPTags = panel.querySelectorAll('.table + p');
   followingPTags.forEach((pTag, idx) => {
-    if (idx < followingPTags.length - 1) {
+    if (idx < followingPTags.length) {
       pTag.classList.add('text-small');
     }
   });
@@ -1035,7 +1029,7 @@ function createMarketReportTopRow(formattedDate) {
   const topRow = document.createElement('div');
   topRow.className = 'market-report-top-row';
 
-  const dateDiv = document.createElement('div');
+  const dateDiv = document.createElement('h3');
   dateDiv.className = 'market-report-date';
   dateDiv.textContent = formattedDate;
 

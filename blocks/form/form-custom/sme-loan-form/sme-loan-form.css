@@ -21,6 +21,17 @@
     margin-inline: auto;
   }
 
+  & .form form .field-wrapper:has(>.field-description) {
+    margin-bottom: 1.5rem;
+    position: relative;
+
+    & .field-description {
+      position: absolute;
+      right: 0.875rem;
+      bottom: -1rem;
+    }
+  }
+
   & :is(.form-wrapper, .form.block) {
     padding: 0;
     border-radius: unset;
@@ -60,6 +71,22 @@
 
   & .form form input:disabled {
     background-color: var(--bbl-color-gray-151);
+  }
+
+  & .form form input[type="number"] {
+    appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        appearance: none;
+        margin: 0;
+    }
+  }
+  
+  & .form form input::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
   }
 
   & .form form select {
@@ -157,7 +184,7 @@
       flex-wrap: nowrap;
       width: auto;
       max-width: 100%;
-      min-width: 8.75rem;
+      min-width: 18rem;
       margin: 0;
       justify-content: flex-start;
 
@@ -367,6 +394,10 @@
       & .radio-wrapper {
         margin: 0 var(--bbl-space-250);
       }
+    }
+
+    & .form form .field-wrapper:has(>.field-description) .field-description {
+      right: 1.25rem;
     }
 
     & .form form .field-wrapper.col-4 {

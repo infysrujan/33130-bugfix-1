@@ -91,7 +91,8 @@
       display: none;
     }
 
-    & > input {
+    & > input,
+    & > p {
       width: 100% !important;
       background-color: var(--bbl-color-blue-steel);
       border: none;
@@ -162,7 +163,8 @@
   }
 
   /* Place inputs in grid row 4 */
-  & .form form .field-bond-allocation-review .field-series > input {
+  & .form form .field-bond-allocation-review .field-series > input,
+  & .form form .field-bond-allocation-review .field-series > p {
     grid-row: 4;
     grid-column: 1;
     width: 100% !important;
@@ -180,7 +182,9 @@
   }
 
   & .form form .field-bond-allocation-review .field-totalpurchaseamount > input,
-  & .form form .field-bond-allocation-review .field-totalallotment > input {
+  & .form form .field-bond-allocation-review .field-totalpurchaseamount > p,
+  & .form form .field-bond-allocation-review .field-totalallotment > input,
+  & .form form .field-bond-allocation-review .field-totalallotment > p {
     grid-row: 4;
     width: 100% !important;
     background-color: transparent;
@@ -197,7 +201,8 @@
     padding-right: 1rem;
   }
 
-  & .form form .field-bond-allocation-review .field-totalpurchaseamount > input {
+  & .form form .field-bond-allocation-review .field-totalpurchaseamount > input,
+   & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
     grid-column: 2;
   }
 
@@ -205,7 +210,8 @@
     text-align: left;
   }
 
-  & .form form .field-bond-allocation-review .field-totalallotment > input {
+  & .form form .field-bond-allocation-review .field-totalallotment > input,
+  & .form form .field-bond-allocation-review .field-totalallotment > p {
     grid-column: 3;
   }
 
@@ -243,7 +249,7 @@
   }
 
   & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper > label.field-label {
-    width: auto;
+    width: 100%;
     flex-shrink: 1;
     background-color: transparent;
     border: none;
@@ -253,10 +259,12 @@
     color: var(--bbl-color-grey-85);
     padding-right: 0;
     white-space: nowrap;
+    justify-content: right;
   }
 
-  & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper > input {
-    width: auto;
+  & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper > input,
+  & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper > p {
+    width: 100%;
     flex-shrink: 1;
     background-color: transparent;
     border: none;
@@ -268,6 +276,7 @@
     min-height: auto;
     color: var(--bbl-color-grey-85);
     padding-left: 0.25rem;
+    display: flex;
   }
 
   /* ── infotxt / thank-you text ── */
@@ -295,6 +304,14 @@
   }
 
   @media (width < 64rem) {
+    & .form form .field-bond-allocation-review fieldset.field-successpanel {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
     & .form form .field-bond-allocation-review fieldset.field-button-panel {
       flex-direction: column;
       align-items: stretch;
