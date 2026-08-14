@@ -233,8 +233,6 @@
   /* Show arrows on tablet and desktop */
   .carousel-dotted.show-arrows-dots .carousel-arrow {
     display: flex;
-    width: 2.5rem;
-    height: 2.5rem;
   }
 
   .carousel-dotted.show-arrows-dots:has(.simple-carousel) {
@@ -273,12 +271,10 @@
 
   .central-aligned .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
     justify-self: start;
-    margin-left: 2rem;
   }
 
   .central-aligned .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
     justify-self: end;
-    margin-right: 2rem;
   }
 
   .carousel-dotted.show-arrows-dots:has(.simple-carousel) .slick-dots {
@@ -356,15 +352,39 @@
    instead of being squeezed into the 2.5rem arrow gutters, and overlay the
    arrows outside its edge like the simple-carousel variant already does.
    Scoped to this class combo only so other carousel-dotted variants are unaffected. */
+   
 @media (width > 47.5rem) {
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) {
-    grid-template-columns: 1fr;
-    column-gap: 0;
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem;
+    grid-template-rows: auto auto;
+    gap: 0 1.25rem;
+    width: 100%;
+    max-width: var(--bbl-container-max-width, 75rem);
+    margin-inline: auto;
   }
 
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-track-viewport {
-    grid-column: 1;
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
   }
+  
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel))
+    .carousel-track-wrapper {
+    width: 100%;
+    overflow: visible;
+  }
+
+   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel))
+    .carousel-arrow {
+    grid-row: 1;
+    align-self: center;
+    display: flex;
+  }
+
 
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev,
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
@@ -372,22 +392,25 @@
   }
 
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
-    justify-self: start;
-    margin-left: -1.25rem;
+    grid-column: 1;
+    justify-self: center;
+    margin: 0;
   }
 
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
-    justify-self: end;
-    margin-right: -1.25rem;
-  }
-}
-
-@media (width > 64rem) {
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
-    margin-left: -3.45rem;
+    grid-column: 3;
+    justify-self: center;
+    margin: 0;
   }
 
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
-    margin-right: -3.45rem;
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-track-wrapper .carousel-dotted-item {
+    width: 100%;
+    flex: 0 0 100%;
+    min-width: 0;
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .slick-dots {
+    grid-column: 1 / 4;
+    grid-row: 2;
   }
 }

@@ -56,12 +56,12 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    left: -3.4375rem;
+    left: -0.4375rem;
 }
 
 .central-aligned.carousel-dotted-container .carousel-arrow-next {
     position: absolute;
-    right: -3.4375rem;
+    right: -0.4375rem;
     top: 50%;
     transform: translateY(-50%);
 }
