@@ -235,13 +235,13 @@
   }
 
   .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow {
-    display: none;
+    display: flex;
   }
 
   .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-track-viewport {
     width: 100%;
     margin-inline: 0;
-    grid-column: 1 / 4;
+    grid-column: 2;
     grid-row: 1;
   }
 
