@@ -338,12 +338,10 @@
 
   .central-aligned .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
     justify-self: start;
-    margin-left: 0;
   }
 
   .central-aligned .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
     justify-self: end;
-    margin-right: 0;
   }
 }
 
