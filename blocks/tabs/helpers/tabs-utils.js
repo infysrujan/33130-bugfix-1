@@ -159,6 +159,41 @@ function groupPanelContent(contentPanel, rawFrag) {
   });
 }
 
+/**
+ * The "Center Content" section style (an EDS-authored `style` field option — see
+ * models/_section.json / blocks/tabs/_tabs.json) lands as a class on the .section
+ * wrapping this block, the same element decorateBlock() (scripts/aem.js) tags
+ * `tabs-container`. Its global rule (styles/main.css: `.section.center-content
+ * .default-content-wrapper *`) centers EVERY descendant of EVERY panel's
+ * default-content-wrapper — too broad for tabs, where only the intro line of
+ * each panel should center, not every paragraph and image.
+ *
+ * The class MUST stay on the section: the active-tab underline offset is styled
+ * by a rule keyed on `center-content`, so stripping the class from the section
+ * regresses the tab underline (it falls back to the base, much larger, gap).
+ * That was proven by diagnostics — removing it changed the underline offset from
+ * the intended tight value to the base -1.5625rem. So instead of moving the
+ * class, we leave the section untouched and only *narrow* the centering: mark
+ * every child of each panel's first default-content-wrapper AFTER the first as
+ * `center-content-reset`; tabs.css then resets the global rule's centering for
+ * those elements (and their descendants), leaving just the first child centered.
+ * This touches nothing outside the panel content — not the section, not the nav.
+ * @param {Element} block the tabs block element
+ * @param {Element[]} panels the decorated .tab-panel elements
+ */
+function resetCenterContentPastFirstChild(block, panels) {
+  const section = block.closest('.section');
+  if (!section?.classList.contains('center-content')) return;
+
+  panels.forEach((panel) => {
+    const wrapper = panel.querySelector(':scope > .default-content-wrapper');
+    if (!wrapper) return;
+    [...wrapper.children].slice(1).forEach((child) => {
+      child.classList.add('center-content-reset');
+    });
+  });
+}
+
 export function createContentPanels(block, contentRows) {
   const tabsContent = document.createElement('div');
   tabsContent.className = 'tabs-content';
@@ -204,6 +239,8 @@ export function createContentPanels(block, contentRows) {
     row.remove();
     return contentPanel;
   });
+
+  resetCenterContentPastFirstChild(block, panels);
 
   return { tabsContent, panels };
 }

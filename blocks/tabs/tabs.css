@@ -56,6 +56,15 @@
   width: 100%;
 }
 
+/* Center Content tabs keep the underline tight to the label. The base offset
+   above (-1.5625rem) leaves a large gap; here we pull it up for the
+   center-content variant only. Scoped to `.tabs-container.center-content` (both
+   classes sit on the same .section element) so it does not affect other tabs
+   instances, with specificity (3 classes) that beats the base rule (2). */
+.tabs-container.center-content .tabs-nav button::before {
+  bottom: -0.5rem;
+}
+
 .tabs-nav-wrapper .tabs-nav button.active,
 .tabs-nav-wrapper .tabs-nav button:hover {
   color: var(--bbl-color-active-blue);
@@ -124,6 +133,21 @@
 
 .tabs-content .tab-panel>p {
   margin-top: 0;
+}
+
+/* The section's "Center Content" style (styles/main.css:
+   `.section.center-content .default-content-wrapper *`) centers every descendant
+   of every panel's default-content-wrapper. The section keeps that class (the
+   tab underline offset depends on it — see helpers/tabs-utils.js). Here we only
+   NARROW its reach: children after the first (tagged `center-content-reset` by
+   resetCenterContentPastFirstChild()) and everything nested inside them are
+   reset to normal flow, leaving just the wrapper's first child (the intro line)
+   centered. Specificity (5 classes) intentionally exceeds the global rule (3)
+   so it wins regardless of stylesheet load order. */
+.tabs-container.center-content .tab-panel .default-content-wrapper > .center-content-reset,
+.tabs-container.center-content .tab-panel .default-content-wrapper > .center-content-reset * {
+  text-align: initial;
+  margin: initial;
 }
 
 /* SPACING INSIDE TAB PANEL between different blocks except download block */
