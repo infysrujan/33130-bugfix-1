@@ -218,6 +218,10 @@ main img {
     text-align: center;
 }
 
+.section.center-rte-first-child .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6, p):first-child {
+    text-align: center;
+}
+
 .section.center-image .section-image-item,
 .accordion-panel.center-image .section-image-item {
     display: block;

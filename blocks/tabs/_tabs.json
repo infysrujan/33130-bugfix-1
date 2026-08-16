@@ -270,6 +270,10 @@
                   "name": "Center Title",
                   "value": "center-title"
                 },
+                                {
+                  "name": "Center RTE First Child",
+                  "value": "center-rte-first-child"
+                },
                 {
                   "name": "Center Image",
                   "value": "center-image"
