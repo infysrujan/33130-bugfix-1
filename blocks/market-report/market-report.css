@@ -62,7 +62,7 @@
 @media (width > 47.5rem) and (width <= 64rem) {
   .market-report-col-left .market-report-date {
     font-size: 1.3125rem;
-    line-height: 1.4218rem;
+    line-height: 1.4219rem;
   }
 }
 
@@ -85,7 +85,8 @@
 }
 
 .market-report-page a.print-button.icon-print {
-  font: 0.875rem BangkokBank-Medium, sans-serif;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-black);
   text-transform: uppercase;
   text-decoration: none;
@@ -159,7 +160,7 @@
 @media (width > 64rem) {
   .market-report-col {
     flex-direction: row;
-    gap: 1.25rem;
+    gap: var(--bbl-space-250);
   }
 
   .market-report-col-left .market-report-col > div {
@@ -172,7 +173,7 @@
   }
 
   .market-report-page a.print-button.icon-print {
-    font-size: 1rem;
+    font-size: var(--bbl-font-size-b1);
   }
 }
 
