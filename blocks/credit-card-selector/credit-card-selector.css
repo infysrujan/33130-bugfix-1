@@ -178,6 +178,7 @@
 /* Default two-column layout — Benefits (and Monthly Income desktop cards) */
 .credit-card-selector .option-list .option-item {
   flex: 0 0 calc(50% - var(--bbl-space-050));
+  min-width: 0;
 }
 
 
@@ -560,12 +561,8 @@
     line-height: var(--bbl-line-height-heading-tight);
   }
 
-  /* Production keeps a fixed 192px inset on the card grid itself (measured
-     on live at both 1920px and 2560px viewports — a constant, not a
-     percentage), so the grid reads narrower than the full 1752px section
-     it sits in. Match that instead of letting the grid fill the section. */
   .credit-card-selector .card-selector-content {
     gap: var(--bbl-space-400) 3rem;
-    padding-inline: 12rem;
+    padding-inline: 9.375rem;
   }
 }
