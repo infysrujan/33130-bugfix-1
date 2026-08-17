@@ -21,7 +21,7 @@
 .mf-fund-cards-item .mfr-no-results {
   text-align: center;
   padding: var(--bbl-space-layout-xl) var(--bbl-space-container-xs);
-  font-size: var(--bbl-font-size-b1, 1rem);
+  font-size: var(--bbl-body-b1-size, 1rem);
   color: var(--bbl-color-grey-70);
 }
 

@@ -561,7 +561,7 @@
 
 /* Header row cells — match currency table <th> styling */
 .forward-points-sme .fpsme-rt-head {
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-family: var(--bbl-font-family-medium);
   font-weight: 700;
   color: var(--bbl-color-gray-142);
@@ -575,7 +575,7 @@
 
 /* Period data cells — bold to match live site */
 .forward-points-sme .fpsme-rt-period {
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-family: var(--bbl-font-family-medium);
   font-weight: 700;
   color: var(--bbl-color-gray-142);

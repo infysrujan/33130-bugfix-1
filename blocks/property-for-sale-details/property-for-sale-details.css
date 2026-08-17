@@ -206,7 +206,7 @@
   width: 10.75rem;
   text-align: left;
   font-weight: 700;
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
 }
 
 .prop-for-sale-value {

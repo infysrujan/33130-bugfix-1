@@ -244,7 +244,7 @@
 
   .forward-points-sme .fpsme-fwd-title {
     margin-bottom: 0;
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
     font-weight: bold;
     text-align: center;
     line-height: 1.3;

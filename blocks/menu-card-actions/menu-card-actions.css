@@ -377,7 +377,7 @@
   }
 
   .menu-card-action-description ul li {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
     line-height: 1.67rem;
   }
 }

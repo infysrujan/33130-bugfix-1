@@ -90,7 +90,7 @@
 .card-comparator-results .ccr-caption {
   padding: var(--bbl-space-250);
   flex-grow: 1;
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   line-height: var(--bbl-line-height-body);
   color: var(--bbl-color-grey-70);
 }
@@ -122,7 +122,7 @@
 }
 
 .card-comparator-results .ccr-label {
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   margin: 0;
@@ -148,7 +148,7 @@
   background: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-weight: var(--bbl-font-weight-regular);
   text-decoration: none;
   transition: background-color 0.2s ease;
@@ -191,7 +191,7 @@
   background: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-weight: var(--bbl-font-weight-regular);
   text-decoration: none;
   transition: background-color 0.2s ease, color 0.2s ease;

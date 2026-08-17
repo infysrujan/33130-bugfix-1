@@ -138,7 +138,7 @@
   width: 11rem;
   box-sizing: border-box;
   cursor: pointer;
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
 }
 
 .fund-prices .calendar-input::before {

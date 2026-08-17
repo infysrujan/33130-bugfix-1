@@ -226,7 +226,7 @@
   border: 0.0625rem solid var(--bbl-color-grey-30);
   border-radius: var(--bbl-radius-md);
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   color: var(--bbl-color-grey-110);
   appearance: none;
   cursor: pointer;
@@ -266,7 +266,7 @@
 
   /* Typography */
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   color: var(--bbl-color-grey-110);
   text-align: center;
   cursor: pointer;
@@ -336,7 +336,7 @@
 .credit-card-selector .option-text {
   line-height: 1.3;
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
 }
 
 /* ==========================================================================

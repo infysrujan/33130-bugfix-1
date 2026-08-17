@@ -560,7 +560,7 @@
 
 .retirement-calculator .rc-summary-label {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-weight: 400;
   color: var(--bbl-color-gray-121);
   margin: 0;
@@ -750,7 +750,7 @@
 
   .retirement-calculator .rc-field-input,
   .retirement-calculator .rc-field-label {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .retirement-calculator .rc-field-error {
@@ -918,7 +918,6 @@
   .retirement-calculator .rc-step-circle {
     width: 1.3125rem;
     height: 1.3125rem;
-    font-size: var(--bbl-font-size-b1);
   }
 
   .retirement-calculator .rc-step-connector {

@@ -263,7 +263,7 @@
 }
 
 .dynamic-board .db-print-btn .icon-print {
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   color: var(--bbl-color-grey-70);
 }
 
@@ -858,7 +858,7 @@
 .dynamic-board .db-remarks-content {
   height: 9.375rem; /* 150px — collapsed height matching BBL */
   overflow: hidden;
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   color: var(--bbl-color-grey-150);
   line-height: 1.6;
 }
@@ -1018,7 +1018,7 @@
   }
 
   .dynamic-board .db-filter-title {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .dynamic-board .db-filter-panel > .db-filter-divider:first-of-type {
@@ -1029,34 +1029,30 @@
   }
 
   .dynamic-board .db-filter-section-label {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .dynamic-board .db-filter-lbl {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .dynamic-board .db-filter-radio-row label {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .dynamic-board .db-filter-apply,
   .dynamic-board .db-filter-reset {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .dynamic-board .db-cal-label {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .dynamic-board .db-date-display,
   .dynamic-board .db-time-select,
   .dynamic-board .db-go-btn {
-    font-size: var(--bbl-font-size-b1);
-  }
-
-  .dynamic-board .db-remarks-content {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 }
 

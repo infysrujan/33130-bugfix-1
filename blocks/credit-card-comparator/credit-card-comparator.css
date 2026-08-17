@@ -151,7 +151,7 @@
   border-radius: 0.4375rem;
   padding: 0 1.25rem;
   height: 2.75rem;
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-weight: var(--bbl-font-weight-regular);
   cursor: pointer;
   white-space: nowrap;

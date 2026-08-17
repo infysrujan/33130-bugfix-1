@@ -172,7 +172,7 @@
   padding: var(--bbl-space-600) var(--bbl-space-200);
   text-align: center;
   color: var(--bbl-color-grey-70);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
 }
 
 /* ── See more / See less toggle — JS controls display via inline style ────── */
@@ -227,7 +227,7 @@
 .ccs-results-disclaimer {
   margin-top: var(--bbl-space-300);
   padding-top: var(--bbl-space-300);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   color: var(--bbl-color-grey-85);
   line-height: 1.6;
 }
