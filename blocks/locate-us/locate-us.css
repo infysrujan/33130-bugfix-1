@@ -387,10 +387,14 @@
 
 /* ── Cards ───────────────────────────────────────────────────────────────────── */
 
+.locate-us .locate-us-cards-wrapper {
+  padding-bottom: 1.25rem;
+  background-color: white;
+}
+
 .locate-us .locate-us-cards {
   display: grid;
   align-items: stretch;
-  padding: 0;
   margin: 1.875rem auto 0;
   grid-template-columns: 1fr;
 }
@@ -401,12 +405,14 @@
   border: none;
   padding: var(--bbl-space-250);
   padding-inline: 3.125rem;
+  padding-top: 1.125rem;
+  padding-bottom: 1.125rem;
   box-sizing: border-box;
   background-color: var(--bbl-color-white);
   background-image: linear-gradient(var(--bbl-color-grey-150), var(--bbl-color-grey-150));
   background-repeat: no-repeat;
   background-position: left 1.875rem bottom;
-  background-size: calc(100% - (2 * var(--bbl-space-250)) - 2.3125rem) 0.0417rem;
+  background-size: calc(100% - (2 * var(--bbl-space-250)) - 1.6125rem) 0.0417rem;
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b1);
   font-weight: var(--bbl-font-weight-regular);
@@ -430,6 +436,8 @@
   justify-content: space-between;
   padding: var(--bbl-space-200) 0;
   padding-top: 0;
+  padding-right: var(--bbl-space-300);
+  padding-bottom: 0.9375rem;
   background: none;
   flex-grow: 1;
   border: none;
@@ -440,6 +448,7 @@
 
 .locate-us .locate-us-card:has(> .locate-us-card-body[hidden]) .locate-us-card-header {
   padding: 0;
+  padding-right: var(--bbl-space-300);
 }
 
 .locate-us .locate-us-card-name {
@@ -455,11 +464,12 @@
 }
 
 .locate-us .locate-us-card-chevron {
+  position: absolute;
+  top: 1.5625rem;
+  right: 2.3125rem;
   font-size: 0.5rem;
   color: var(--bbl-color-gray-142);
   flex-shrink: 0;
-  margin-left: var(--bbl-space-100);
-  margin-top: var(--bbl-space-100);
   transition: transform 0.2s ease;
 }
 
@@ -471,15 +481,13 @@
   /* border: none; */
   margin: 0 0 0.625rem;
   margin-top: unset;
-  margin-bottom: 18px;
+  margin-bottom: 1.125rem;
   padding-bottom: var(--bbl-space-000);
   width: var(--bbl-space-800);
   background: var(--bbl-color-grey-150);
 }
 
 .locate-us .locate-us-card-detail {
-  padding-bottom: var(--bbl-space-200);
-  padding-right: 1.875rem;
   font-family: var(--bbl-font-family-primary);
 }
 
@@ -509,7 +517,7 @@
 
 .locate-us .locate-us-card-label {
   min-width: 3.75rem;
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   color: var(--bbl-color-gray-142);
   font-family: var(--bbl-font-family-primary);
   flex-shrink: 0;
@@ -527,7 +535,7 @@
 
 .locate-us .locate-us-card-status {
   color: var(--bbl-color-status-other);
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   font-family: var(--bbl-font-family-primary);
   line-height: 1.375rem;
 }
@@ -537,10 +545,11 @@
 }
 
 .locate-us .locate-us-card-hours {
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   overflow-wrap: break-word;
+  line-height: 1.125rem;
 }
 
 /* 10px spacer between status block and tel/fax — match BBL spacer row */
@@ -550,7 +559,7 @@
 
 .locate-us .locate-us-card-tel,
 .locate-us .locate-us-card-fax {
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   overflow-wrap: break-word;
@@ -560,11 +569,11 @@
   font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
-  margin-bottom: 0.625rem;
+  margin-bottom: 0;
   overflow-wrap: break-word;
   padding-right: 0.3125rem;
-  margin-top: 1rem;
-  line-height: 1.375rem;
+  margin-top: 0.625rem;
+  line-height: 1.125rem;
 }
 
 .locate-us .locate-us-card-directions {
@@ -575,7 +584,6 @@
   font-size: var(--bbl-font-size-b2);
   text-decoration: none;
   font-family: var(--bbl-font-family-primary);
-  margin-top: 0.3125rem;
   padding-left: 0;
 }
 
@@ -590,6 +598,10 @@
   background-position: center;
   flex-shrink: 0;
   padding-left: 0;
+}
+
+.locate-us .locate-us-card-footer {
+  margin-top: 1.125rem;
 }
 
 /* Disabled state — shown when the location has no coordinates */
@@ -1154,6 +1166,7 @@
 
   .locate-us .locate-us-card-header {
     padding: 0;
+    padding-right: var(--bbl-space-350);
     cursor: pointer;
     pointer-events: all;
     align-self: stretch;
@@ -1166,9 +1179,6 @@
     width: var(--bbl-space-300);
     height: var(--bbl-space-300);
     flex-shrink: 0;
-    margin-top: 0;
-    margin-left: 0;
-    margin-right: 0;
     background-image: url('../../icons/icon_nearme_disable.svg');
     background-size: contain;
     background-repeat: no-repeat;
@@ -1284,6 +1294,7 @@
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-card-header {
     padding: 0;
+    padding-right: var(--bbl-space-350);
     cursor: default;
   }
 
