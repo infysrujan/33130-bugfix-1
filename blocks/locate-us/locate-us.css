@@ -328,7 +328,6 @@
 /* ── Results section ─────────────────────────────────────────────────────────── */
 
 .locate-us .locate-us-results {
-  /* margin-top: 1.875rem; */
   padding-inline: var(--bbl-space-250);
 }
 
@@ -364,6 +363,10 @@
   padding-top: 1.875rem;
 }
 
+.locate-us-card-footer {
+  margin-top: 1.125rem;
+}
+
 .locate-us .locate-us-map {
   width: 100%;
   height: 24.375rem;
@@ -391,12 +394,23 @@
 
 /* ── Cards ───────────────────────────────────────────────────────────────────── */
 
+.locate-us .locate-us-cards-wrapper {
+  padding-bottom: 1.25rem;
+  background: white;
+  box-shadow: 0 0 var(--bbl-space-200) 0 var(--bbl-color-black-alpha-10);
+}
+
 .locate-us .locate-us-cards {
   display: grid;
   align-items: stretch;
   padding: 0;
   margin: 1.875rem auto 0;
   grid-template-columns: 1fr;
+}
+
+.locate-us .article-wrapper {
+  padding-inline: 1.875rem;
+  background: var(--bbl-color-white);
 }
 
 .locate-us .locate-us-card {
@@ -429,6 +443,7 @@
   align-items: flex-start;
   justify-content: space-between;
   padding: var(--bbl-space-200) 0;
+  padding-top: 0;
   background: none;
   flex-grow: 1;
   border: none;
@@ -444,9 +459,9 @@
 .locate-us .locate-us-card-name {
   flex: 1;
   min-width: 0;
-  font-size: 1.4375rem;
-  font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.2495rem;
+  font-size: var(--bbl-heading-h3-size);
+  font-weight: var(--bbl-heading-h3-weight);
+  line-height: var(--bbl-heading-h3-line-height);
   color: var(--bbl-color-gray-121);
   font-family: var(--bbl-font-family-medium);
   margin: 0;
@@ -457,7 +472,7 @@
   font-size: 0.5rem;
   color: var(--bbl-color-gray-142);
   flex-shrink: 0;
-  margin-left: var(--bbl-space-100);
+  margin-left: var(--bbl-space-200);
   margin-top: var(--bbl-space-100);
   transition: transform 0.2s ease;
 }
@@ -467,7 +482,6 @@
 }
 
 .locate-us .locate-us-card-hr {
-  /* border: none; */
   margin: 0 0 0.625rem;
   padding-bottom: var(--bbl-space-000);
   width: var(--bbl-space-800);
@@ -475,8 +489,6 @@
 }
 
 .locate-us .locate-us-card-detail {
-  padding-bottom: var(--bbl-space-200);
-  padding-right: 1.875rem;
   font-family: var(--bbl-font-family-primary);
 }
 
@@ -507,7 +519,7 @@
 
 .locate-us .locate-us-card-label {
   min-width: 3.75rem;
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   color: var(--bbl-color-gray-142);
   font-family: var(--bbl-font-family-primary);
   flex-shrink: 0;
@@ -525,7 +537,7 @@
 
 .locate-us .locate-us-card-status {
   color: var(--bbl-color-status-other);
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   font-family: var(--bbl-font-family-primary);
   line-height: 1.375rem;
 }
@@ -535,7 +547,7 @@
 }
 
 .locate-us .locate-us-card-hours {
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   overflow-wrap: break-word;
@@ -544,11 +556,12 @@
 /* 10px spacer between status block and tel/fax — match BBL spacer row */
 .locate-us .locate-us-card-row+.locate-us-card-row {
   margin-top: 0;
+  margin-bottom: 0;
 }
 
 .locate-us .locate-us-card-tel,
 .locate-us .locate-us-card-fax {
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   overflow-wrap: break-word;
@@ -558,11 +571,11 @@
   font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
-  margin-bottom: 0.625rem;
   overflow-wrap: break-word;
   padding-right: 0.3125rem;
-  margin-top: 1.5rem;
-  line-height: 1.375rem;
+  margin-top: 0.625rem;
+  line-height: 1.125rem;
+  margin-bottom: 0;
 }
 
 .locate-us .locate-us-card-directions {
@@ -1108,6 +1121,12 @@
 
   /* ── Cards — 3-column grid on tablet, always expanded ── */
 
+  .locate-us .locate-us-cards-wrapper {
+    padding-bottom: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
   .locate-us .locate-us-cards {
     display: grid;
     padding: 0 2.8125rem 1.875rem;
@@ -1115,6 +1134,15 @@
     gap: 1rem 2.3125rem;
     margin-top: 0;
     align-items: stretch;
+  }
+
+  .locate-us .article-wrapper {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    min-width: 0;
+    padding-inline: 0;
+    background: transparent;
   }
 
   .locate-us .locate-us-card {
@@ -1135,7 +1163,7 @@
   }
 
   /* 3 cards per row on tablet: use subgrid so all headers in a row share the same height */
-  .locate-us:has(.locate-us-results-overseas) .locate-us-card {
+  .locate-us:has(.locate-us-results-overseas) .article-wrapper {
     display: grid;
     grid-template-rows: subgrid;
     grid-row: span 2;
@@ -1238,9 +1266,12 @@
 
   /* ── Single card: center in middle column of 3-col grid ── */
 
-  .locate-us .locate-us-cards>.locate-us-card:only-child {
+  .locate-us .locate-us-cards>.article-wrapper:only-child {
     grid-column: 2;
     justify-self: center;
+  }
+
+  .locate-us .locate-us-cards>.article-wrapper:only-child .locate-us-card {
     max-width: 22.5rem;
     box-shadow: 0 var(--bbl-space-025) 1.125rem rgb(0 0 0 / 8%);
     border: none;
@@ -1311,6 +1342,12 @@
     padding-inline: var(--bbl-space-1050);
   }
 
+  .locate-us .locate-us-cards-wrapper {
+    padding-bottom: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
   .locate-us .locate-us-map {
     width: 75%;
   }
@@ -1324,28 +1361,28 @@
   }
 
   /* Single card: keep 3-col layout so grid-column: 2 still centers it */
-  .locate-us .locate-us-cards:has(> .locate-us-card:only-child) {
+  .locate-us .locate-us-cards:has(> .article-wrapper:only-child) {
     grid-template-columns: repeat(3, 1fr);
   }
 
   /* 4 cards per row on desktop */
-  .locate-us:has(.locate-us-results-overseas) .locate-us-card {
+  .locate-us:has(.locate-us-results-overseas) .article-wrapper {
     grid-row: span 2;
   }
 
   /* Center last incomplete row in the 4-column overseas grid */
-  .locate-us:has(.locate-us-results-overseas) .locate-us-cards .locate-us-card:nth-child(4n+1):nth-last-child(2) {
+  .locate-us:has(.locate-us-results-overseas) .locate-us-cards .article-wrapper:nth-child(4n+1):nth-last-child(2) {
     grid-column-start: 2;
   }
 
-  .locate-us:has(.locate-us-results-overseas) .locate-us-cards .locate-us-card:nth-child(4n+1):last-child {
+  .locate-us:has(.locate-us-results-overseas) .locate-us-cards .article-wrapper:nth-child(4n+1):last-child {
     grid-column-start: 2;
   }
 
   /* Center a leftover last row of 1 or 2 cards instead of snapping it left */
   /* stylelint-disable no-descending-specificity */
-  .locate-us .locate-us-cards .locate-us-card:nth-child(4n+1):nth-last-child(2),
-  .locate-us .locate-us-cards .locate-us-card:nth-child(4n+1):last-child {
+  .locate-us .locate-us-cards .article-wrapper:nth-child(4n+1):nth-last-child(2),
+  .locate-us .locate-us-cards .article-wrapper:nth-child(4n+1):last-child {
     grid-column-start: 2;
   }
   /* stylelint-enable no-descending-specificity */

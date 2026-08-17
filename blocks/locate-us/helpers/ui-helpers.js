@@ -110,7 +110,9 @@ export async function buildThailandUI(container, data, placeholders, configs) {
         </div>
       </div>
       <div class="locate-us-no-results" hidden></div>
-      <div class="locate-us-cards"></div>
+      <div class="locate-us-cards-wrapper">
+        <div class="locate-us-cards"></div>
+      </div>
       <nav class="locate-us-pagination" aria-label="${ariaPagination}"></nav>
     </div>
     <div class="locate-us-fragment" hidden></div>`;
@@ -550,7 +552,9 @@ export async function buildOverseasUI(container, placeholders, configs) {
     <div class="locate-us-results locate-us-results-overseas" hidden>
       <div class="locate-us-results-title"></div>
       <div class="locate-us-no-results" hidden></div>
-      <div class="locate-us-cards"></div>
+      <div class="locate-us-cards-wrapper">
+        <div class="locate-us-cards"></div>
+      </div>
       <nav class="locate-us-pagination" aria-label="${ariaPagination}"></nav>
     </div>`;
 

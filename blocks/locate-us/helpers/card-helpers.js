@@ -26,6 +26,7 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
   const fax = !isAtm && hasValue(loc.Fax) ? loc.Fax : '';
 
   const card = createEl(`
+    <div class="article-wrapper">
     <article class="locate-us-card">
       <button type="button" class="locate-us-card-header" aria-expanded="false">
         <h3 class="locate-us-card-name"></h3>
@@ -51,7 +52,8 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
           <a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>
         </div>
       </div>
-    </article>`);
+    </article>
+    </div>`);
 
   card.querySelector('.locate-us-card-name').textContent = loc.BranchName;
   const nearestTag = card.querySelector('.locate-us-card-nearest-tag');
@@ -106,6 +108,7 @@ export function buildOverseasCard(loc, placeholders) {
   const faxLabel = placeholders?.faxLabel || 'Fax:';
 
   const card = createEl(`
+    <div class="article-wrapper">
     <article class="locate-us-card">
       <button type="button" class="locate-us-card-header" aria-expanded="false">
         <h3 class="locate-us-card-name"></h3>
@@ -126,7 +129,8 @@ export function buildOverseasCard(loc, placeholders) {
           ${address ? '<p class="locate-us-card-address"></p>' : ''}
         </div>
       </div>
-    </article>`);
+    </article>
+    </div>`);
 
   card.querySelector('.locate-us-card-name').textContent = loc.BranchName;
   if (hours) {
@@ -272,7 +276,7 @@ export function renderCards(
   }
 
   function restoreOrder(activeCard) {
-    const others = [...cardsContainer.querySelectorAll('.locate-us-card')]
+    const others = [...cardsContainer.querySelectorAll('.article-wrapper')]
       .filter((c) => c !== activeCard)
       .sort((a, b) => Number(a.dataset.cardIndex) - Number(b.dataset.cardIndex));
     cardsContainer.innerHTML = '';
