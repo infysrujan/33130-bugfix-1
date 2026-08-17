@@ -10,10 +10,6 @@
    BASE / MOBILE STYLES (default)
    -------------------------------------------------------------------------- */
 
-.section:has(+ .rate-card-container) .default-content-wrapper h2 {
-  margin-block: 0;
-}
-
 /* Block container — reset EDS defaults */
 .rate-card {
   width: 100%;
@@ -331,7 +327,7 @@
   }
 
   .rate-card table tbody td:not(:first-child) {
-    padding-inline: 0.625rem;
+    padding-left: 0.625rem;
     font-size: 1.5rem;
   }
 
@@ -350,15 +346,19 @@
    Grid rows naturally make all children equal height without height:100% propagation.
    -------------------------------------------------------------------------- */
   .section.columns-3:has(.rate-card) {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 30.625rem;
+    /* display: grid; */
+
+    /* grid-template-columns: repeat(3, 1fr); */
+
+    /* grid-template-rows: 30.625rem; */
 
     /* 490px */
-    column-gap: 1.3125rem;
+
+    /* column-gap: 1.3125rem; */
 
     /* 21px — gives 570px per column at design viewport */
-    align-items: unset;
+
+    /* align-items: unset; */
   }
 
   /* Rates and NAV tab active: allow height to grow based on content */
@@ -368,9 +368,11 @@
 
   /* Reset flex-specific width/flex overrides from styles.css */
   .section.columns-3:has(.rate-card)>* {
-    width: auto;
-    flex: unset;
-    min-width: 0;
+    /* width: auto; */
+
+    /* flex: unset; */
+
+    /* min-width: 0; */
   }
 
   /* Rate-card fills its grid cell */
@@ -387,7 +389,7 @@
 
   /* Carousel fills its grid cell — overflow:hidden clips internal slide content */
   .section.columns-3:has(.rate-card) .carousel-dotted-wrapper {
-    overflow: hidden;
+    /* overflow: hidden; */
   }
 
   .section.columns-3:has(.rate-card) .carousel-dotted.all-without-image {
