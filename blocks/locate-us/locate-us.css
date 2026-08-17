@@ -390,6 +390,7 @@
 .locate-us .locate-us-cards-wrapper {
   padding-bottom: 1.25rem;
   background-color: white;
+  box-shadow: 0 0 var(--bbl-space-200) 0 var(--bbl-color-black-alpha-10);
 }
 
 .locate-us .locate-us-cards {
@@ -405,14 +406,14 @@
   border: none;
   padding: var(--bbl-space-250);
   padding-inline: 3.125rem;
-  padding-top: 1.125rem;
-  padding-bottom: 1.125rem;
+  padding-top: 20px;
+  padding-bottom: 20px;
   box-sizing: border-box;
   background-color: var(--bbl-color-white);
   background-image: linear-gradient(var(--bbl-color-grey-150), var(--bbl-color-grey-150));
   background-repeat: no-repeat;
   background-position: left 1.875rem bottom;
-  background-size: calc(100% - (2 * var(--bbl-space-250)) - 1.6125rem) 0.0417rem;
+  background-size: calc(100% - (2 * var(--bbl-space-250)) - 1.6125rem) 0.0625rem;
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b1);
   font-weight: var(--bbl-font-weight-regular);
