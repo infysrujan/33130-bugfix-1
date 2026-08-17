@@ -47,13 +47,22 @@
 }
 
 /* The global .central-aligned rule caps the wrapper/block at 900px, which
-   wraps this longer heading onto two lines — widen the cap for this section
-   instead of removing it, so content stays centered like the rest of the site. */
+   wraps this longer heading onto two lines — lift the cap for this section
+   instead of removing it outright. Gutter comes from the section's own
+   padding-inline (below) up to 1920px; beyond that, cap at the sitewide
+   1920 content width so the container stops growing, matching production. */
 @media (width > 64rem) {
   .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
   .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
-    max-width: unset;
-    padding-inline: 9rem;
+    max-width: 100%;
+  }
+}
+
+@media (width > 120rem) {
+  .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
+  .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
+    max-width: var(--bbl-layout-content-max-width-1920);
+    margin-inline: auto;
   }
 }
 
@@ -398,7 +407,7 @@
   right: 1rem;
   width: 3rem;
   height: 3rem;
-  background: #f5f5f5;
+  background: #f9f9f9;
   border-radius: var(--bbl-radius-md);
   cursor: pointer;
   display: flex;
@@ -414,7 +423,7 @@
 
 /* Chevron icon — icomoon icon-dropdown (\e902), same as filter-options-mobile */
 .credit-card-selector-wrapper .collapse-toggle-button::after {
-  content: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 8C0 3.58172 3.58172 0 8 0H40C44.4183 0 48 3.58172 48 8V40C48 44.4183 44.4183 48 40 48H8C3.58172 48 0 44.4183 0 40V8Z' fill='%23F5F5F5'/%3E%3Cpath d='M33.6001 28.7997L24.0001 19.1997L14.4001 28.7997' stroke='%230064FF' stroke-width='2.5' stroke-miterlimit='10'/%3E%3C/svg%3E%0A");
+  content: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 8C0 3.58172 3.58172 0 8 0H40C44.4183 0 48 3.58172 48 8V40C48 44.4183 44.4183 48 40 48H8C3.58172 48 0 44.4183 0 40V8Z' fill='%23F9F9F9'/%3E%3Cpath d='M33.6001 28.7997L24.0001 19.1997L14.4001 28.7997' stroke='%230064FF' stroke-width='2.5' stroke-miterlimit='10'/%3E%3C/svg%3E%0A");
   font-family: icomoon, sans-serif;
   font-size: 0.8rem;
   color: var(--bbl-color-active-blue);
@@ -538,13 +547,25 @@
     text-align: center;
   }
 
+  /* Comes after the >47.5rem override above (same selector/specificity) so
+     it actually wins the cascade at desktop widths — matches production's
+     84px section gutter instead of the tablet 48px value. */
+  .section.full-bleed-bg.credit-card-selector-container {
+    padding-inline: var(--bbl-space-section-xl);
+  }
+
   /* Desktop: large heading matches original 48px */
   .credit-card-selector .card-selector-title {
     font-size: var(--bbl-font-size-h1-desktop);
     line-height: var(--bbl-line-height-heading-tight);
   }
 
+  /* Production keeps a fixed 192px inset on the card grid itself (measured
+     on live at both 1920px and 2560px viewports — a constant, not a
+     percentage), so the grid reads narrower than the full 1752px section
+     it sits in. Match that instead of letting the grid fill the section. */
   .credit-card-selector .card-selector-content {
     gap: var(--bbl-space-400) 3rem;
+    padding-inline: 12rem;
   }
 }
