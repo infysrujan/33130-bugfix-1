@@ -406,8 +406,8 @@
   border: none;
   padding: var(--bbl-space-250);
   padding-inline: 3.125rem;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
   box-sizing: border-box;
   background-color: var(--bbl-color-white);
   background-image: linear-gradient(var(--bbl-color-grey-150), var(--bbl-color-grey-150));
