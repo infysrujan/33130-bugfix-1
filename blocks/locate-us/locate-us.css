@@ -1123,6 +1123,11 @@
 
   /* ── Cards — 3-column grid on tablet, always expanded ── */
 
+  .locate-us .locate-us-cards-wrapper {
+    background-color: transparent;
+    box-shadow: none;
+  }
+
   .locate-us .locate-us-cards {
     display: grid;
     padding: 0 2.8125rem 1.875rem;
@@ -1176,6 +1181,7 @@
   }
 
   .locate-us .locate-us-card-chevron {
+    position: unset;
     display: inline-block;
     width: var(--bbl-space-300);
     height: var(--bbl-space-300);
@@ -1320,6 +1326,11 @@
     padding: 0 var(--bbl-space-1050) 1.875rem;
   }
 
+  .locate-us .locate-us-cards-wrapper {
+    background-color: transparent;
+    box-shadow: none;
+  }
+
   .locate-us .locate-us-cards {
     grid-template-columns: repeat(4, 1fr);
     gap: 1.125rem 2.3125rem;
@@ -1448,5 +1459,9 @@
   .locate-us-fragment .cards-list {
     flex-flow: unset;
     flex-direction: unset;
+  }
+
+   .locate-us .locate-us-card-chevron  {
+    position: unset
   }
 }
