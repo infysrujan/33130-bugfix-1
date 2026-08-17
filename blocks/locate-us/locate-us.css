@@ -1350,6 +1350,19 @@
   }
   /* stylelint-enable no-descending-specificity */
 
+  /* Center exactly 3 cards while retaining the 4-column card width. */
+  .locate-us .locate-us-cards:has(> .locate-us-card:nth-child(3):last-child) {
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  .locate-us .locate-us-cards:has(> .locate-us-card:nth-child(3):last-child)>.locate-us-card {
+    grid-column: span 2;
+  }
+
+  .locate-us .locate-us-cards:has(> .locate-us-card:nth-child(3):last-child)>.locate-us-card:first-child {
+    grid-column: 2 / span 2;
+  }
+
   .locate-us .locate-us-filter-bar {
     max-width: 48%;
     margin: auto;
