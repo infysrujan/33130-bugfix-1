@@ -12,7 +12,7 @@
   --bbl-form-font-size-6: 0.375rem;                /* 6px */
 
   /* height */
-  --bbl-form-height-50: 3.125px;                  /* 50px */
+  --bbl-form-height-50: 3.125rem;                  /* 50px */
 }
 
 main .section.form-container.custom-forms:has(.cc-app-main-form) .form label,

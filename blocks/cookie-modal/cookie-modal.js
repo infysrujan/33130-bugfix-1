@@ -177,8 +177,7 @@ function openModal(overlay, trigger) {
 
   requestAnimationFrame(() => {
     overlay.classList.add('cookie-modal-visible');
-    const focusable = getFocusableElements(overlay);
-    (focusable[0] || overlay).focus();
+    overlay.focus();
   });
 }
 

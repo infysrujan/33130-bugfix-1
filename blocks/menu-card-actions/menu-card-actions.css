@@ -97,6 +97,11 @@
   transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
+.menu-card-action-item-link:hover .menu-card-action-inner {
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  box-shadow: 0.173rem 0.173rem 0 var(--bbl-color-black-alpha-17);
+}
+
 .menu-card-action-inner img {
   height: 5rem;
   width: auto;

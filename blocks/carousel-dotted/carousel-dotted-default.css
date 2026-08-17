@@ -1,3 +1,7 @@
+.section:has(+ .carousel-dotted-container .carousel-dotted.all-with-image) .default-content-wrapper h2 {
+  margin-block: 0;
+}
+
 .carousel-dotted {
   position: relative;
   height: auto;
@@ -208,10 +212,8 @@
 }
 
 .carousel-dotted .carousel-dotted-header {
-  font-family: var(--bbl-font-family-primary);
-  font-weight: var(--bbl-font-weight-regular);
-  font-size: 0.875rem;
-  line-height: 0.875rem;
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-medium);
   padding: 0 0 var(--bbl-space-250);
   border-bottom: 0.063rem solid var(--bbl-color-white-alpha-20);
   color: var(--bbl-color-grey-60);
@@ -968,12 +970,6 @@ p.text-large.text-light {
 
   .carousel-dotted .carousel-dotted-description {
     margin-bottom: var(--bbl-space-300);
-  }
-
-  .carousel-dotted .carousel-dotted-header {
-    font-weight: var(--bbl-font-weight-regular);
-    font-size: 1rem;
-    line-height: 1rem;
   }
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-content.content {

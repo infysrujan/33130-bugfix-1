@@ -1,12 +1,14 @@
 .fund-prices-dropdown {
   max-width: 100%;
   overflow-x: hidden;
+  padding: 0 var(--bbl-space-250);
+  box-sizing: border-box;
 }
 
 .fund-prices-dropdown .stat-nav-val {
   font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-85);
   text-align: right;
 }
 
@@ -121,7 +123,7 @@
   align-items: center;
   gap: var(--bbl-space-200);
   flex-wrap: wrap;
-  padding: 0 0 0.625rem;
+  padding: 0 0 1.875rem;
 }
 
 .fund-prices-dropdown .period-select-wrapper {
@@ -288,7 +290,7 @@
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  border: none;
+  border: 0.0625rem solid var(--bbl-color-grey-18);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b2);
   line-height: normal;
@@ -315,12 +317,11 @@
   border-right: none;
   border-left: none;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-18);
-  padding: 0.5rem 0.625rem;
+  padding: 0 var(--bbl-space-250);
   color: var(--bbl-color-grey-70);
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
-  height: auto;
-  min-height: 3.5rem;
+  height: 3.5rem;
   vertical-align: middle;
   white-space: normal;
   overflow-wrap: break-word;
@@ -328,7 +329,7 @@
 
 .fund-prices-dropdown .stat-table th.stat-th-nav,
 .fund-prices-dropdown .stat-table td.stat-nav-val {
-  width: 32%;
+  width: 23%;
   white-space: nowrap;
 }
 
@@ -651,10 +652,6 @@
     width: 100%;
   }
 
-  .fund-prices-dropdown .stat-table-card {
-    padding: 0 var(--bbl-space-250);
-  }
-
   .fund-prices-dropdown .stat-tables-print-row {
     flex-direction: row;
     align-items: center;
@@ -678,7 +675,18 @@
 }
 
 @media print {
-  @page {
+  /*
+   * Named (not the default unnamed @page) on purpose: this block's CSS is
+   * dynamically loaded onto the fund-prices page alongside fund-prices.css,
+   * which needs the default unnamed @page (with a large bottom margin) so
+   * Chrome renders its native print footer there. If this rule were also
+   * unnamed it would load later and win the cascade, shrinking that shared
+   * page box to 5mm and suppressing the native footer on the fund-prices
+   * print. Scoping it to #fdd-print-root via a named page keeps this block's
+   * own margins without touching the default page. The fund detail print
+   * uses its own .fdd-print-footer, so it doesn't rely on the native footer.
+   */
+  @page fddprint {
     size: a4 portrait;
     margin: 5mm;
   }
@@ -702,6 +710,7 @@
     font-size: 0.6875rem;
     padding: 0;
     position: relative;
+    page: fddprint;
   }
 
   #fdd-print-root .fdd-print-masthead {

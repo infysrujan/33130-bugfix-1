@@ -73,13 +73,9 @@ function createCardItem(cardRow, doc) {
 
   const [imageDiv, titleDiv, descDiv, actionTypeDiv] = cells;
 
-  const img = imageDiv?.querySelector('img');
   const headingEl = titleDiv?.querySelector('h1, h2, h3, h4, h5, h6');
   const titleText = titleDiv?.textContent?.trim() || '';
   const titleType = headingEl?.tagName?.toLowerCase() || 'h3';
-  const title = headingEl?.outerHTML?.trim()
-    ?? (titleText ? `<${titleType}>${titleText}</${titleType}>` : '');
-  const description = descDiv?.innerHTML?.trim() || '';
   const actionType = actionTypeDiv?.textContent?.trim().toLowerCase().replace('-button', '') || 'default';
 
   let remaining = cells.slice(4);
@@ -126,19 +122,21 @@ function createCardItem(cardRow, doc) {
   const card = createElementFromHTML('<div class="menu-card-action-item"></div>', doc);
   const inner = createElementFromHTML('<div class="menu-card-action-inner"></div>', doc);
 
-  if (img) inner.appendChild(img.cloneNode(true));
+  if (imageDiv?.querySelector('img')) inner.appendChild(imageDiv);
 
-  if (title) {
-    inner.appendChild(createElementFromHTML(`<div class="menu-card-action-title">${title}</div>`, doc));
+  if (titleText) {
+    if (!headingEl) titleDiv.innerHTML = `<${titleType}>${titleText}</${titleType}>`;
+    titleDiv.className = 'menu-card-action-title';
+    inner.appendChild(titleDiv);
   }
 
-  if (description) {
-    const descriptionEl = createElementFromHTML(`<div class="menu-card-action-description">${description}</div>`, doc);
-    descriptionEl.querySelectorAll('a').forEach((a) => {
+  if (descDiv?.innerHTML?.trim()) {
+    descDiv.className = 'menu-card-action-description';
+    descDiv.querySelectorAll('a').forEach((a) => {
       a?.setAttribute('data-skip-attr-auto-blocking', 'title');
       a.removeAttribute('title');
     });
-    inner.appendChild(descriptionEl);
+    inner.appendChild(descDiv);
     inner.querySelector('.menu-card-action-title')?.classList.add('has-description');
   }
 
@@ -154,25 +152,35 @@ function createCardItem(cardRow, doc) {
     const dlCell = actionCells.filter((c) => !c.querySelector('ul')).pop()
       ?? actionCells[actionCells.length - 1];
     const dlCellIndex = remaining.indexOf(dlCell);
-    const prevCell = dlCellIndex > 0 ? remaining[dlCellIndex - 1] : null;
-    const toggle = (prevCell && isToggleCell(prevCell)) ? prevCell
-      : remaining.slice(dlCellIndex + 1).find(isToggleCell);
-    const openInNewTab = toggle && toggle.textContent.trim().toLowerCase() !== 'false';
+    const dlLabelCell = remaining.find(
+      (c) => c !== dlCell && !isToggleCell(c) && !c.querySelector('a') && c.textContent?.trim(),
+    );
+    const toggle = remaining.slice(dlCellIndex + 1).find((c) => {
+      const text = c?.textContent?.trim().toLowerCase();
+      return text === 'true' || text === 'false';
+    });
+    const openInNewTab = toggle?.textContent?.trim().toLowerCase() === 'true';
     if (toggle) {
       remaining = remaining.filter((c) => c !== toggle);
     }
-    appendDownloadLink(dlCell.querySelector('a'));
+    const downloadAnchor = dlCell.querySelector('a');
+    if (downloadAnchor && dlLabelCell?.textContent?.trim()) {
+      downloadAnchor.textContent = dlLabelCell.textContent.trim();
+    }
+    appendDownloadLink(downloadAnchor);
     if (openInNewTab) inner.querySelector('.download-files')?.setAttribute('target', '_blank');
   } else if (actionType === 'multiple-download' && actionCells.length > 0) {
     const multipleCell = actionCells[actionCells.length - 1];
     const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);
     temp.querySelectorAll('a').forEach(appendDownloadLink);
   } else if (actionType === 'select-dropdown') {
-    const labelCell = remaining.find((c) => !c.querySelector('a') && !isToggleCell(c) && c.textContent.trim());
+    const dropdownCell = remaining.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length > 1);
+    const dropdownCellIdx = remaining.indexOf(dropdownCell);
+    const labelSearch = dropdownCellIdx > 0 ? remaining.slice(0, dropdownCellIdx) : [];
+    const labelCell = [...labelSearch].reverse().find(
+      (c) => !c.querySelector('a') && !isToggleCell(c) && c.textContent?.trim(),
+    );
     const label = labelCell?.textContent.trim() || 'Select';
-    const labelIdx = remaining.indexOf(labelCell);
-    const dropdownSearch = labelIdx >= 0 ? remaining.slice(labelIdx + 1) : remaining;
-    const dropdownCell = dropdownSearch.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length >= 1);
     if (dropdownCell) {
       inner.appendChild(createGlobalDropdown(label, dropdownCell.innerHTML, doc));
     }
@@ -225,34 +233,51 @@ function removeDuplicateAuthoringBlocks(block) {
   block.ownerDocument.querySelectorAll('.menu-card-actions.block').forEach((other) => {
     if (other === block) return;
     if (other.dataset.aueResource !== blockResource) return;
-    if (!other.classList.contains('has-preview') && !other.querySelector('.menu-card-actions-preview')) return;
+    if (!other.querySelector(':scope > .menu-card-action')) return;
     other.remove();
   });
 }
 
-function getPreviewContainer(block, doc) {
-  const previewContainers = [...block.querySelectorAll(':scope > .menu-card-actions-preview')];
-  const previewContainer = previewContainers.shift() || doc.createElement('div');
-
-  previewContainers.forEach((container) => container.remove());
-
-  previewContainer.className = 'menu-card-actions-preview';
-  if (!previewContainer.isConnected) block.appendChild(previewContainer);
-
-  return previewContainer;
+function getSourceRows(block) {
+  return [...block.children].filter((row) => !row.classList.contains('menu-card-action'));
 }
 
-function renderCardActions(target, rows, block, doc) {
-  const firstRowText = rows[0]?.textContent?.trim().toLowerCase() || '';
-  const isFirstRowLayout = rows[0]?.children.length === 1
-    && /^[a-z-]+$/.test(firstRowText)
-    && !rows[0].querySelector('a, img, h1, h2, h3, h4, h5, h6');
+function bindModalHandler(block, doc) {
+  if (block.dataset.menuCardActionsModalBound) return;
+  block.dataset.menuCardActionsModalBound = 'true';
 
-  const layoutClass = isFirstRowLayout ? firstRowText : '';
-  const isScrollable = layoutClass === 'scrollable';
-  const customClasses = layoutClass && layoutClass !== 'stacked' ? ` ${layoutClass}` : '';
+  block.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-modal]');
+    if (!trigger || !block.contains(trigger)) return;
+    const nestedLink = event.target.closest('a, [role="link"]');
+    if (nestedLink && nestedLink !== trigger) return;
+    event.preventDefault();
+    const fragmentPath = trigger.getAttribute('data-modal');
+    if (fragmentPath) openModal(doc, { fragmentPath });
+  });
+}
+
+export default function decorate(block) {
+  const isAuthoring = isAuthoringInstance(block);
+  if (block.dataset.decorated && !isAuthoring) return;
+  block.dataset.decorated = 'true';
+
+  const doc = block.ownerDocument;
+
+  if (isAuthoring) {
+    removeDuplicateAuthoringBlocks(block);
+    block.querySelectorAll(':scope > .menu-card-action').forEach((c) => c.remove());
+  }
+
+  const sourceRows = getSourceRows(block);
+  const [layoutRow, ...cardRows] = sourceRows;
+
+  const layoutText = layoutRow?.textContent?.trim().toLowerCase() || '';
+  const isScrollable = layoutText === 'scrollable';
+  const customClasses = layoutText && layoutText !== 'stacked' ? ` ${layoutText}` : '';
   const layout = isScrollable ? 'scrollable' : `stacked${customClasses}`;
-  const cardRows = isFirstRowLayout ? rows.slice(1) : rows;
+
+  const container = createElementFromHTML(`<div class="menu-card-action ${layout}"></div>`, doc);
 
   const section = block.closest('.menu-card-actions-container');
   ['text', 'image'].forEach((type, i) => {
@@ -260,66 +285,21 @@ function renderCardActions(target, rows, block, doc) {
       ?.classList.add(`default-content-wrapper-${type}`);
   });
 
-  const container = createElementFromHTML(`<div class="menu-card-action ${layout}"></div>`, doc);
-
-  if (isFirstRowLayout) rows[0].hidden = true;
+  if (layoutRow) layoutRow.hidden = true;
 
   cardRows.forEach((row) => {
     const card = createCardItem(row, doc);
-
     if (!card) return;
-
-    if (isAuthoringInstance(block)) {
-      const cellsHolder = doc.createElement('div');
-      cellsHolder.style.cssText = 'position:absolute;height:0;overflow:hidden;opacity:0;pointer-events:none;';
-      [...row.children].forEach((cell) => cellsHolder.appendChild(cell));
-      card.style.position = 'relative';
-      card.prepend(cellsHolder);
-    }
     moveInstrumentation(row, card);
     row.remove();
     container.appendChild(card);
   });
 
-  target.appendChild(container);
+  block.appendChild(container);
+
+  getSourceRows(block).filter((row) => row !== layoutRow).forEach((row) => block.appendChild(row));
 
   if (isScrollable) attachScrollableDropdownPanel(container, doc);
 
-  if (!block.dataset.menuCardActionsDecorated) {
-    block.dataset.menuCardActionsDecorated = 'true';
-    block.addEventListener('click', (event) => {
-      const trigger = event.target.closest('[data-modal]');
-      if (!trigger || !block.contains(trigger)) return;
-      const nestedLink = event.target.closest('a, [role="link"]');
-      if (nestedLink && nestedLink !== trigger) return;
-      event.preventDefault();
-      const fragmentPath = trigger.getAttribute('data-modal');
-      if (fragmentPath) openModal(doc, { fragmentPath });
-    });
-  }
-}
-
-export default function decorate(block) {
-  const doc = block.ownerDocument;
-
-  if (isAuthoringInstance(block)) {
-    removeDuplicateAuthoringBlocks(block);
-
-    block.querySelectorAll(':scope > div').forEach((row) => {
-      if (!row.classList.contains('menu-card-actions-preview')) {
-        row.dataset.configRow = '';
-      }
-    });
-
-    block.classList.add('has-preview');
-    const previewContainer = getPreviewContainer(block, doc);
-
-    previewContainer.innerHTML = '';
-    const allRows = [...block.querySelectorAll(':scope > div[data-config-row]')];
-    renderCardActions(previewContainer, allRows, block, doc);
-    return;
-  }
-
-  const allRows = [...block.children];
-  renderCardActions(block, allRows, block, doc);
+  bindModalHandler(block, doc);
 }

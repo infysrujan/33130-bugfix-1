@@ -71,9 +71,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-body-b1-size);
   font-weight: var(--bbl-body-b1-weight);
   line-height: var(--bbl-body-b1-line-height);
+}
+
+.retirement-calculator .rc-step-circle span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1;
 }
 
 .retirement-calculator .rc-step-active .rc-step-circle {
@@ -122,8 +131,7 @@
   border-radius: var(--bbl-radius-md);
   padding: 1.3125rem;
   color: var(--bbl-color-white);
-  margin-bottom: var(--bbl-space-400);
-  height: 7rem;
+  margin-bottom: var(--bbl-space-350);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -136,7 +144,7 @@
   font-weight: 400;
   margin: 0;
   white-space: pre-line;
-  line-height: 1.5rem;
+  line-height: 1.5356rem;
 }
 
 .retirement-calculator .rc-income-input-wrap {
@@ -191,6 +199,7 @@
   align-items: center;
   gap: var(--bbl-space-100);
   margin-top: var(--bbl-space-100);
+  line-height: 1.0625rem;
 }
 
 .retirement-calculator .rc-error-text {
@@ -206,6 +215,7 @@
   color: var(--bbl-color-system-green);
   text-align: right;
   flex: 1;
+  line-height: 1.3125rem;
 }
 
 /* ── Fields (J1 & J2 age/financial inputs) ────────────────── */
@@ -731,9 +741,7 @@
   }
 
   .retirement-calculator .rc-income-card {
-    padding: 1.3125rem;
     margin-bottom: var(--bbl-space-350);
-    height: 6rem;
   }
 
   .retirement-calculator .rc-income-input {
@@ -949,7 +957,7 @@
   }
 
   .retirement-calculator .rc-income-card {
-    height: 10.75rem;
+    padding: 1.5rem;
   }
 
   .retirement-calculator .rc-income-title {

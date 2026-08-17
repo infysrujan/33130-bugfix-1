@@ -615,6 +615,12 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 }
 
 @media print {
+  /*
+   * Must stay the default (unnamed) @page: Chrome only renders its native
+   * "Headers and footers" (the URL + page numbers) on the default page box.
+   * Assigning the print root to a custom named page suppressed them, so the
+   * footer disappeared even with the print-dialog option enabled.
+   */
   @page {
     size: a4 portrait;
     margin: 7mm 9mm 35mm;
@@ -730,7 +736,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     break-before: page;
   }
 
-  #fund-prices-print-root .fund-prices-print-continuation thead {
+  #fund-prices-print-root .fund-prices-table table thead {
     display: table-header-group;
   }
 
@@ -764,7 +770,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     font-weight: 700;
     font-size: 0.5625rem;
     line-height: 1.05;
-    white-space: nowrap;
+    white-space: normal;
     vertical-align: bottom;
     text-align: right;
   }
@@ -846,18 +852,18 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     width: 16%;
   }
 
-  #fund-prices-print-root .fund-prices-print-footer {
-    display: flex;
-    justify-content: space-between;
-    position: fixed;
-    right: 0;
-    bottom: 7mm;
-    left: 0;
-    padding-top: 0.5rem;
-    border-top: 0.0625rem solid var(--bbl-color-black);
-    font-family: var(--bbl-font-family-primary);
-    font-size: 0.5rem;
-    line-height: 1;
+  #fund-prices-print-root .fund-prices-disclaimer-text {
+    display: block;
+    margin-top: 1rem;
+    padding: 0;
+  }
+
+  #fund-prices-print-root .fund-prices-disclaimer-text p,
+  #fund-prices-print-root .fund-prices-disclaimer-text li {
     color: var(--bbl-color-black);
+    font-family: var(--bbl-font-family-primary);
+    font-size: 0.5625rem;
+    line-height: 1.38;
+    margin: 0 0 0.5625rem;
   }
 }

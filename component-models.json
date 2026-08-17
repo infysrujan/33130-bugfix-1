@@ -522,6 +522,10 @@
     ]
   },
   {
+    "id": "bwealth-series",
+    "fields": []
+  },
+  {
     "id": "card-comparator-results",
     "fields": [
       {
@@ -663,7 +667,7 @@
         "name": "cardListLayout",
         "value": "default",
         "label": "Card List Layout",
-        "description": "Choose how cards are arranged. Select 'Carousel' only when this Card List is referenced as a fragment inside a Carousel Dotted block that uses the 'Card List Carousel' slide type (Show Dots and Arrows variant). Select 'Scrollable' for a standalone horizontal scroll without dots. Select 'Stacked' for a standard multi-row grid layout.",
+        "description": "Select Carousel when the Card List is used as a fragment in the Card List Carousel variation of the Carousel Dotted block.",
         "valueType": "string",
         "options": [
           {

@@ -97,7 +97,6 @@
 .mf-comparator .icon-close {
   position: absolute;
   top: -0.5rem;
-  left: -0.25rem;
   z-index: 10;
   width: var(--bbl-space-250);
   height: var(--bbl-space-250);

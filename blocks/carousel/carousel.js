@@ -3,7 +3,6 @@ import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 const DESKTOP_BREAKPOINT = 1025;
-const ULTRA_WIDE_BREAKPOINT = 1920;
 const CAROUSEL_TRANSITION = 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
 
 /**
@@ -119,23 +118,14 @@ function initCarousel(track) {
   if (items.length === 0) return;
 
   let currentIndex = 0;
+  let currentTrackOffset = 0;
+  let isSliding = false;
+  let slideTimer;
   const totalItems = items.length;
 
   const carousel = track.parentElement.parentElement;
   const prevButton = carousel.querySelector('.carousel-prev');
   const nextButton = carousel.querySelector('.carousel-next');
-
-  function getContentMaxWidth() {
-    return parseInt(
-      getComputedStyle(document.documentElement)
-        .getPropertyValue('--bbl-layout-content-max-width-1920'),
-      10,
-    ) || 1752;
-  }
-
-  function isUltraWide() {
-    return window.innerWidth > ULTRA_WIDE_BREAKPOINT;
-  }
 
   function measureItemWidth(item) {
     // eslint-disable-next-line no-unused-expressions
@@ -143,39 +133,38 @@ function initCarousel(track) {
     return item.offsetWidth;
   }
 
-  function getActiveNaturalLeft(gap) {
-    let left = 0;
-    for (let i = 0; i < currentIndex; i += 1) {
-      left += measureItemWidth(items[i]) + gap;
-    }
-    return left;
+  function getActiveNaturalLeft() {
+    if (currentIndex === 0) return 0;
+
+    // The difference between the rendered card positions includes the actual
+    // flex gap and any CSS sizing, without being affected by the track's
+    // current transform.
+    return items[currentIndex].getBoundingClientRect().left
+      - items[0].getBoundingClientRect().left;
   }
 
   function getContentGridOffset() {
-    if (isUltraWide()) {
-      return Math.max(0, (window.innerWidth - getContentMaxWidth()) / 2);
-    }
+    const header = carousel.querySelector('.carousel-header');
+    if (!header) return track.offsetLeft;
 
-    const title = carousel.querySelector('.carousel-header h2');
-    return title ? parseInt(getComputedStyle(title).paddingLeft, 10) || 0 : 0;
+    const carouselRect = carousel.getBoundingClientRect();
+    const headerRect = header.getBoundingClientRect();
+    return headerRect.left - carouselRect.left;
   }
 
-  function getTrackOffset(gap) {
+  function getTrackOffset(gridOffset) {
     if (window.innerWidth < DESKTOP_BREAKPOINT) return 0;
+    if (currentIndex === 0) return 0;
 
-    const gridOffset = getContentGridOffset();
-    if (currentIndex === 0) return gridOffset;
-
-    return -getActiveNaturalLeft(gap) + gridOffset;
+    return gridOffset - getActiveNaturalLeft();
   }
 
-  function positionNavButtons(gap) {
+  function positionNavButtons(gap, activeLeft) {
     if (window.innerWidth < DESKTOP_BREAKPOINT || carousel.offsetWidth === 0) return;
 
     const carouselRect = carousel.getBoundingClientRect();
     const trackRect = track.getBoundingClientRect();
     const navTop = trackRect.top - carouselRect.top + trackRect.height / 2;
-    const gridOffset = getContentGridOffset();
     const activeWidth = measureItemWidth(items[currentIndex]);
     const buttonOffset = (button) => button.offsetWidth / 2;
 
@@ -185,13 +174,18 @@ function initCarousel(track) {
     nextButton.style.right = 'auto';
 
     if (currentIndex > 0) {
-      prevButton.style.left = `${gridOffset - gap / 2 - buttonOffset(prevButton)}px`;
+      prevButton.style.left = `${activeLeft - gap / 2 - buttonOffset(prevButton)}px`;
     }
 
     if (currentIndex < totalItems - 1) {
       const nextWidth = measureItemWidth(items[currentIndex + 1]);
-      nextButton.style.left = `${gridOffset + activeWidth + gap + nextWidth + gap / 2 - buttonOffset(nextButton)}px`;
+      nextButton.style.left = `${activeLeft + activeWidth + gap + nextWidth + gap / 2 - buttonOffset(nextButton)}px`;
     }
+  }
+
+  function finishSlide() {
+    isSliding = false;
+    clearTimeout(slideTimer);
   }
 
   function updateCarousel(animate = true) {
@@ -201,7 +195,7 @@ function initCarousel(track) {
       track.style.transition = 'none';
     }
 
-    const gap = window.innerWidth >= DESKTOP_BREAKPOINT ? 24 : 16;
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
 
     items.forEach((item, index) => {
       if (window.innerWidth >= DESKTOP_BREAKPOINT) {
@@ -215,22 +209,47 @@ function initCarousel(track) {
       // eslint-disable-next-line no-unused-expressions
       track.offsetHeight;
 
-      track.style.transform = `translateX(${getTrackOffset(gap)}px)`;
+      const gridOffset = getContentGridOffset();
+      const shouldBeFullBleed = currentIndex > 0;
+      const isFullBleed = track.classList.contains('is-sliding');
+
+      if (shouldBeFullBleed !== isFullBleed) {
+        // Keep the visible card in place while the track switches between its
+        // right-anchored initial layout and the full-bleed sliding layout.
+        track.style.transition = 'none';
+        currentTrackOffset += shouldBeFullBleed ? gridOffset : -gridOffset;
+        track.style.transform = `translateX(${currentTrackOffset}px)`;
+        track.classList.toggle('is-sliding', shouldBeFullBleed);
+        // eslint-disable-next-line no-unused-expressions
+        track.offsetHeight;
+        track.style.transition = animate ? CAROUSEL_TRANSITION : 'none';
+      }
+
+      currentTrackOffset = getTrackOffset(gridOffset);
+      track.style.transform = `translateX(${currentTrackOffset}px)`;
 
       prevButton.disabled = currentIndex === 0;
       nextButton.disabled = currentIndex >= totalItems - 1;
 
-      positionNavButtons(gap);
+      positionNavButtons(gap, gridOffset);
     };
 
     if (animate) {
+      isSliding = true;
+      clearTimeout(slideTimer);
+      slideTimer = setTimeout(finishSlide, 550);
       requestAnimationFrame(() => {
         requestAnimationFrame(applyLayout);
       });
     } else {
+      finishSlide();
       applyLayout();
     }
   }
+
+  track.addEventListener('transitionend', (event) => {
+    if (event.target === track && event.propertyName === 'transform') finishSlide();
+  });
 
   function isMobileOrTablet() {
     return window.innerWidth < DESKTOP_BREAKPOINT;
@@ -249,14 +268,14 @@ function initCarousel(track) {
   });
 
   prevButton.addEventListener('click', () => {
-    if (currentIndex > 0) {
+    if (!isSliding && currentIndex > 0) {
       currentIndex -= 1;
       updateCarousel();
     }
   });
 
   nextButton.addEventListener('click', () => {
-    if (currentIndex < totalItems - 1) {
+    if (!isSliding && currentIndex < totalItems - 1) {
       currentIndex += 1;
       updateCarousel();
     }

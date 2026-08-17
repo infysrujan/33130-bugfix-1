@@ -10,6 +10,10 @@
    BASE / MOBILE STYLES (default)
    -------------------------------------------------------------------------- */
 
+.section:has(+ .rate-card-container) .default-content-wrapper h2 {
+  margin-block: 0;
+}
+
 /* Block container — reset EDS defaults */
 .rate-card {
   width: 100%;

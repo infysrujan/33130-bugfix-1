@@ -1,5 +1,15 @@
 @import url("../../styles/components/listing-card.css");
 
+/* Pagination's scrollIntoView (card-helpers.js bindPaginationClick) targets the
+   ancestor .tabs section and relies on its scroll-margin-top: var(--header-scroll-offset).
+   The site-wide value (main.css, 5.25rem) under-shoots the real header height on
+   this listing, so override it here, scoped to promo-card-listing pages only.
+   Must live on an ancestor of .tabs (custom properties inherit down, not up) --
+   .promo-card-listing itself sits inside .tabs, so it can't be the target. */
+.section.tabs-container:has(.promo-card-listing) {
+  --header-scroll-offset: 7rem;
+}
+
 .bangkok-bankm-card :has(.section.tabs-container .tab-panel>.promo-selector-content) {
   background-color: var(--bbl-color-white);
 }

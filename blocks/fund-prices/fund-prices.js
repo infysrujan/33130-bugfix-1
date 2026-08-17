@@ -291,6 +291,10 @@ function printContent(containerEl, pageTitle, searchLabelText) {
 
   const now = new Date();
   const dateLabelText = containerEl.querySelector('.calendar-wrapper p')?.textContent?.trim();
+  // Page numbering is left to the browser's own print header/footer (see
+  // "Headers and footers" in the print dialog) rather than a custom footer —
+  // a single repeating <thead>/<tfoot> can only ever show identical content
+  // on every page, so it can't produce real per-page "n/total" text anyway.
   const printRoot = doc.createElement('div');
   printRoot.id = 'fund-prices-print-root';
   printRoot.innerHTML = `
@@ -310,10 +314,6 @@ function printContent(containerEl, pageTitle, searchLabelText) {
       <span>${selectedDate}</span>
     </div>
     <div class="fund-prices-print-table-wrap"></div>
-    <div class="fund-prices-print-footer">
-      <span>https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/Fund-Prices</span>
-      <span>1/5</span>
-    </div>
   `;
 
   const tableBlock = clone.querySelector('.fund-prices-table');
@@ -325,9 +325,21 @@ function printContent(containerEl, pageTitle, searchLabelText) {
     );
 
     /*
-     * Keep the first printed page exactly as authored.  The rows beginning with
-     * FIF are moved to a second table whose THEAD is repeated by the browser on
-     * every continuation page.
+     * Move the header row into a real <thead> so the browser repeats it on
+     * every page this table breaks across — plain <tbody> rows don't repeat
+     * on their own. Page 1 is unaffected: the header still renders exactly
+     * where it did before, just now inside a <thead>.
+     */
+    if (table && headerRow) {
+      const thead = doc.createElement('thead');
+      thead.appendChild(headerRow);
+      table.insertBefore(thead, table.querySelector('tbody'));
+    }
+
+    /*
+     * Keep the first printed page exactly as authored. The rows beginning
+     * with FIF are moved to a second table whose THEAD is repeated by the
+     * browser on every continuation page.
      */
     if (table && headerRow && fifRow) {
       const continuationTable = table.cloneNode(false);
@@ -363,6 +375,13 @@ function printContent(containerEl, pageTitle, searchLabelText) {
     }
     printRoot.querySelector('.fund-prices-print-table-wrap').appendChild(tableBlock);
   }
+
+  // Disclaimer flows naturally right after the table (the browser's native
+  // print header repeats the date/title on each page, so no injected meta
+  // line is needed, and it's allowed to split across pages like the live
+  // site does).
+  const disclaimer = clone.querySelector('.fund-prices-disclaimer-text');
+  if (disclaimer) printRoot.appendChild(disclaimer);
 
   doc.body.classList.add('fund-prices-is-printing');
   doc.body.appendChild(printRoot);

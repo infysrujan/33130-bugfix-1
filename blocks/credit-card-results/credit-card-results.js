@@ -186,6 +186,7 @@ function buildCardBlock(cards, doc, lang, labels) {
   cards.forEach((card) => {
     const nameEN = getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName');
     const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
+    const description = getCardField(card, 'cardDescription', 'description');
     const imgSrc = resolveImageUrl(card);
     const { cardPageUrl } = card;
     // eslint-disable-next-line no-underscore-dangle
@@ -236,6 +237,17 @@ function buildCardBlock(cards, doc, lang, labels) {
     h3.dataset.cardId = card.cardId || card.id || '';
     titleEl.appendChild(h3);
     content.appendChild(titleEl);
+
+    // Description
+    if (description && typeof description === 'string') {
+      titleEl.classList.add('has-description');
+      const descEl = doc.createElement('div');
+      descEl.className = 'cards-list-description';
+      const p = doc.createElement('p');
+      p.textContent = description;
+      descEl.appendChild(p);
+      content.appendChild(descEl);
+    }
 
     inner.appendChild(content);
 

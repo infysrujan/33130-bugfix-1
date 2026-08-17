@@ -745,17 +745,17 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
 
   const footer = parseHTML(`
     <div class="tax-calc-footer">
-      <button type="button" class="tax-calc-btn tax-calc-btn-primary">${getString(labels, 'buttonsNextButton', 'Next')}</button>
+      <button type="button" class="button-m primary">${getString(labels, 'buttonsNextButton', 'Next')}</button>
     </div>
   `);
   container.appendChild(footer);
   block.appendChild(container);
 
-  const primaryButton = footer.querySelector('.tax-calc-btn-primary');
+  const primaryButton = footer.querySelector('.button-m.primary');
   const syncButtonState = () => { primaryButton.disabled = !!block.querySelector('.tax-calc-field-error:not(:empty)'); };
   container.addEventListener('input', syncButtonState);
 
-  footer.querySelector('.tax-calc-btn-primary').addEventListener('click', async (e) => {
+  footer.querySelector('.button-m.primary').addEventListener('click', async (e) => {
     const button = e.currentTarget;
     let valid = true;
 
@@ -783,7 +783,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
       values[fieldDef.id] = val * fieldDef.factor;
     });
 
-    button.classList.add('tax-calc-btn-loading');
+    button.classList.add('button-loading');
 
     try {
       const payload = {
@@ -807,7 +807,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Tax calculator API error:', err);
-      button.classList.remove('tax-calc-btn-loading');
+      button.classList.remove('button-loading');
     }
   });
 }
@@ -853,14 +853,14 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
 
   const footer = parseHTML(`
     <div class="tax-calc-footer">
-      <button type="button" class="tax-calc-btn tax-calc-btn-outline">${getString(labels, 'buttonsBackButton', 'Back')}</button>
-      <button type="button" class="tax-calc-btn tax-calc-btn-primary">${getString(labels, 'buttonsCalculateButton', 'Calculate')}</button>
+      <button type="button" class="button-m secondary">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+      <button type="button" class="button-m primary">${getString(labels, 'buttonsCalculateButton', 'Calculate')}</button>
     </div>
   `);
   container.appendChild(footer);
   block.appendChild(container);
 
-  const step2PrimaryButton = footer.querySelector('.tax-calc-btn-primary');
+  const step2PrimaryButton = footer.querySelector('.button-m.primary');
   const syncStep2ButtonState = () => { step2PrimaryButton.disabled = !!block.querySelector('.tax-calc-field-error:not(:empty)'); };
   container.addEventListener('input', syncStep2ButtonState);
 
@@ -934,12 +934,12 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
     return values;
   };
 
-  footer.querySelector('.tax-calc-btn-outline').addEventListener('click', () => {
+  footer.querySelector('.button-m.secondary').addEventListener('click', () => {
     state.journey2 = collectJourney2Values();
     onBack();
   });
 
-  footer.querySelector('.tax-calc-btn-primary').addEventListener('click', async (e) => {
+  footer.querySelector('.button-m.primary').addEventListener('click', async (e) => {
     const button = e.currentTarget;
     let valid = true;
 
@@ -966,7 +966,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
 
     const values = collectJourney2Values();
 
-    button.classList.add('tax-calc-btn-loading');
+    button.classList.add('button-loading');
 
     try {
       // Robust payload construction: Merge Step 1 (state.journey1) with Step 2 (values)
@@ -1012,7 +1012,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
       // eslint-disable-next-line no-alert
       alert(getString(labels, 'errorsCalculationFailed', 'Calculation failed. Please try again.'));
     } finally {
-      button.classList.remove('tax-calc-btn-loading');
+      button.classList.remove('button-loading');
     }
   });
 }
@@ -1200,8 +1200,8 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
     const hasJourney3Values = investFieldDefs.some((fieldDef) => (journey3[fieldDef.id] || 0) > 0);
     const footer = parseHTML(`
       <div class="tax-calc-footer">
-        <button type="button" class="tax-calc-btn tax-calc-btn-outline">${getString(labels, 'buttonsBackButton', 'Back')}</button>
-        <button type="button" class="tax-calc-btn tax-calc-btn-primary" id="tc-recalculate" ${hasJourney3Values ? '' : 'disabled'}>${getString(labels, 'buttonsRecalculateButton', 'Recalculate')}</button>
+        <button type="button" class="button-m secondary">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+        <button type="button" class="button-m primary" id="tc-recalculate" ${hasJourney3Values ? '' : 'disabled'}>${getString(labels, 'buttonsRecalculateButton', 'Recalculate')}</button>
       </div>
     `);
     container.appendChild(footer);
@@ -1267,7 +1267,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
       syncInsureMax();
     }
 
-    footer.querySelector('.tax-calc-btn-outline').addEventListener('click', onBack);
+    footer.querySelector('.button-m.secondary').addEventListener('click', onBack);
 
     recalculateButton.addEventListener('click', async () => {
       const journey3Values = {};
@@ -1302,13 +1302,13 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
 
     const footer = parseHTML(`
       <div class="tax-calc-footer">
-        <button type="button" class="tax-calc-btn tax-calc-btn-primary">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+        <button type="button" class="button-m primary">${getString(labels, 'buttonsBackButton', 'Back')}</button>
       </div>
     `);
     container.appendChild(footer);
     block.appendChild(container);
 
-    footer.querySelector('.tax-calc-btn-primary').addEventListener('click', onBack);
+    footer.querySelector('.button-m.primary').addEventListener('click', onBack);
   }
 }
 

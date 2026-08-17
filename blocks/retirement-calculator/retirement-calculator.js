@@ -631,9 +631,9 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
         SavingBeginAmount: journey2Values.SavingBeginAmount,
         CompensationRate: userReturnRate / 100,
         SavingIncRate: journey2Values.SavingIncRatePct / 100,
-        SavingCurrent: journey2Values.SavingCurrentPct / 100,
+        SavingCurrent: journey2Values.PVDRetire,
         IncomeRetire: journey2Values.IncomeRetire,
-        PVDRetire: journey2Values.PVDRetire,
+        PVDRetire: journey2Values.SavingCurrentPct / 100,
         IncIncomeRetire: journey2Values.IncIncomeRetirePct / 100,
         CompensationRateRetire: journey2Values.CompensationRateRetirePct / 100,
         RMFSumRetire: journey2Values.RMFSumRetire,
@@ -734,6 +734,7 @@ function renderJourney3(block, data, state, onBack) {
     const increaseRate = round2(state.journey2?.SavingIncRatePct ?? 0);
     const increaseRateText = getString(labels, 'stepsResultsInvestmentReturnRate', 'By increasing your annual savings by {rate}%')
       .replace('{rate}%', `${increaseRate}%`);
+    const increaseRateNote = increaseRate > 0 ? `<p class="rc-j1-summary-note">${increaseRateText}</p>` : '';
 
     // ── Cases 2 & 3: savings cards ──
     const altCard = savingMonth2 >= 0 ? `
@@ -747,7 +748,7 @@ function renderJourney3(block, data, state, onBack) {
               ${note2Text}
             </p>
           </div>
-          <p class="rc-j1-summary-note">${increaseRateText}</p>
+          ${increaseRateNote}
         </div>` : '';
     content.appendChild(parseHTML(`
       <div class="rc-savings-cards">
@@ -761,7 +762,7 @@ function renderJourney3(block, data, state, onBack) {
               ${note1Text}
             </p>
           </div>
-          <p class="rc-j1-summary-note">${increaseRateText}</p>
+          ${increaseRateNote}
         </div>
         ${altCard}
       </div>

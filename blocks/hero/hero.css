@@ -770,7 +770,7 @@
   }
 
   .hero-banner-thumbnail-outer {
-    padding: 0 var(--bbl-space-600) var(--bbl-space-600);
+    padding: 0 var(--bbl-space-600) var(--bbl-space-300);
   }
 
   .hero-banner-thumbnail-list {

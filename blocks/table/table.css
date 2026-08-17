@@ -110,7 +110,7 @@
 
 .table table tr.header-row td :is(strong, b) {
   font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: 700;
   color: var(--bbl-color-grey-85);
 }
 

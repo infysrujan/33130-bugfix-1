@@ -433,10 +433,10 @@
   position: fixed;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-22);
-  border-radius: var(--bbl-rounded-100);
+  border-radius: 0.625rem;
   box-shadow: 0 var(--bbl-space-100) var(--bbl-space-300) var(--bbl-color-black-alpha-12);
   z-index: 700;
-  padding: var(--bbl-space-200) var(--bbl-space-150) var(--bbl-space-150);
+  padding: 0.3125rem;
   box-sizing: border-box;
 }
 
@@ -447,8 +447,10 @@
 .dynamic-board .db-mp-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: var(--bbl-space-100);
+  justify-content: space-evenly;
+
+  /* 3px top matches legacy header's top margin (space above "2026"). */
+  margin: 0.1875rem 0 var(--bbl-space-100);
 }
 
 .dynamic-board .db-mp-nav {
@@ -473,8 +475,12 @@
 }
 
 .dynamic-board .db-mp-title {
-  font-size: 0.9625rem;
-  font-weight: 700;
+  height: auto;
+  min-height: 0;
+  width: auto;
+  font-size: var(--bbl-heading-h4-size);
+  line-height: var(--bbl-heading-h4-line-height);
+  font-weight: var(--bbl-heading-h4-weight);
   color: var(--bbl-color-blue-105);
   background: none;
   border: none;
@@ -484,25 +490,39 @@
 
 .dynamic-board .db-mp-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--bbl-space-050);
+  grid-template-columns: repeat(3, 4.25rem);
+  grid-auto-rows: 2.9375rem;
+  place-items: center;
+  gap: 0.349rem;
 }
 
 .dynamic-board .db-mp-cell {
-  height: 2.25rem;
-  font-size: var(--bbl-font-size-b2);
+  height: auto;
+  min-height: 0;
+  width: fit-content;
+  padding: 0.3125rem 0.9375rem;
+  font-size: var(--bbl-body-b1-size);
+  line-height: var(--bbl-body-b1-line-height);
+  font-weight: var(--bbl-body-b1-weight);
   color: var(--bbl-color-grey-70);
   background: none;
-  border: 0.0625rem solid transparent;
-  border-radius: var(--bbl-rounded-050);
+  border: none;
+  border-radius: 1.5625rem;
   cursor: pointer;
   text-align: center;
   transition: background 0.15s, color 0.15s;
-  width: fit-content;
-  padding: 0.3125rem 0.9375rem;
+  margin-inline:0.175rem;
 }
 
 .dynamic-board .db-mp-cell:hover {
+  color: var(--bbl-color-white);
+  background-color: var(--bbl-color-blue-105);
+  border-radius: 1.5625rem;
+}
+
+/* Replace the global focus-visible outline with the pill fill (no clashing ring). */
+.dynamic-board .db-mp-cell:focus-visible {
+  outline: none;
   color: var(--bbl-color-white);
   background-color: var(--bbl-color-blue-105);
   border-radius: 1.5625rem;
@@ -1037,10 +1057,6 @@
 
   .dynamic-board .db-remarks-content {
     font-size: var(--bbl-font-size-b1);
-  }
-
-  .dynamic-board .db-mp-title {
-    font-size: 1.1rem;
   }
 }
 

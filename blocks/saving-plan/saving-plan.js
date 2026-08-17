@@ -88,6 +88,7 @@ function buildDataFromConfig(json, lang, placeholders, inflationRate) {
 
   const minError = L['validation-minValueError'] || '';
   const maxError = L['validation-maxValueError'] || '';
+  const configuredReturnRate = C['defaultFormValues-expectedReturnRate'];
 
   const goalKeys = [...new Set(
     Object.keys(L)
@@ -185,7 +186,9 @@ function buildDataFromConfig(json, lang, placeholders, inflationRate) {
       goalAmount: Number(C['defaultFormValues-desiredSavingAmount']) || 500000,
       goalPeriod: Number(C['defaultFormValues-yearsToSave']) || 5,
       balance: Number(C['defaultFormValues-savedAmount']) || 0,
-      annualReturn: Number(C['defaultFormValues-expectedReturnRate']) || 0.5,
+      // Explicit presence check (not `||`) so a configured 0 isn't replaced by the fallback.
+      annualReturn: configuredReturnRate !== undefined && configuredReturnRate !== ''
+        ? Number(configuredReturnRate) : 0.5,
       annualIncrease: Number(C['defaultFormValues-annualSavingIncreaseRate']) || 0,
     },
     validation: {
@@ -312,7 +315,7 @@ function buildField({
 }) {
   let formatted = '';
   if (value || value === 0) {
-    formatted = decimal ? formatDecimal(value) : formatNumber(value);
+    formatted = decimal ? formatDecimalSmart(value) : formatNumber(value);
   }
   return `
     <div class="saving-plan-field" data-field="${name}" data-decimal="${decimal ? '1' : '0'}">
@@ -423,7 +426,7 @@ function buildShellMarkup(data) {
     name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount, icon: getIcon('goal-amount'), placeholder: labels.fieldPlaceholders.goalAmount,
   })}
             ${buildField({
-    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || '', decimal: true, icon: getIcon('annual-return'), placeholder: labels.fieldPlaceholders.annualReturn,
+    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn, decimal: true, icon: getIcon('annual-return'), placeholder: labels.fieldPlaceholders.annualReturn,
   })}
             ${buildField({
     name: 'goalPeriod', label: labels.fields.goalPeriod, value: defaults.goalPeriod, icon: getIcon('goal-period'), placeholder: labels.fieldPlaceholders.goalPeriod,
@@ -474,7 +477,7 @@ function buildShellMarkup(data) {
     name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount || 10000, min: 10000, max: 1000000, step: 10000,
   })}
             ${buildSlider({
-    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || 0.5, min: 0.5, max: 40, step: 0.25,
+    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn, min: 0.5, max: 40, step: 0.25,
   })}
             ${buildSlider({
     name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, min: 0, max: 40, step: 0.1,
@@ -684,8 +687,6 @@ function renderNewPlanPlaceholder(state, data, inputs) {
   });
   const returnMinEl = root.querySelector('[data-slider="annualReturn"] .saving-plan-slider-min');
   if (returnMinEl) returnMinEl.textContent = formatDecimalSmart(inputs.annualReturn);
-  const returnSliderEl = root.querySelector('[data-slider="annualReturn"] input');
-  if (returnSliderEl) returnSliderEl.dataset.prev = inputs.annualReturn;
   setSliderBounds(root, 'annualIncrease', {
     min: 0, max: inputs.annualReturn, value: inputs.annualIncrease, step: 0.1,
   });
@@ -746,11 +747,10 @@ async function renderNewPlan(state, data, tweakInputs) {
   if (futureEl) { futureEl.innerHTML = futureText; futureEl.removeAttribute('hidden'); }
   const amountEl = root.querySelector('[data-newplan="monthly"]');
   if (amountEl) { amountEl.textContent = formatNumber(calculation.SavingMonth); amountEl.removeAttribute('hidden'); }
-  const increaseLabel = data.labels.newPlan.footnoteIncreaseTemplate
-    ? fillTemplate(
-      data.labels.newPlan.footnoteIncreaseTemplate,
-      { increase: formatDecimalSmart(tweakInputs.annualIncrease) },
-    )
+  const { footnoteIncreaseTemplate } = data.labels.newPlan;
+  const increase = formatDecimalSmart(tweakInputs.annualIncrease);
+  const increaseLabel = tweakInputs.annualIncrease > 0 && footnoteIncreaseTemplate
+    ? fillTemplate(footnoteIncreaseTemplate, { increase })
     : '';
   const returnLabel = data.labels.newPlan.footnoteReturnTemplate
     ? fillTemplate(
@@ -933,8 +933,8 @@ function resetFieldInputs(root, data) {
   setVal('[data-field="goalAmount"] input', formatNumber(defaults.goalAmount));
   setVal('[data-field="goalPeriod"] input', formatNumber(defaults.goalPeriod));
   setVal('[data-field="balance"] input', formatNumber(defaults.balance));
-  setVal('[data-field="annualReturn"] input', defaults.annualReturn ? formatDecimalSmart(defaults.annualReturn) : '');
-  setVal('[data-field="annualIncrease"] input', defaults.annualIncrease ? formatDecimalSmart(defaults.annualIncrease) : '');
+  setVal('[data-field="annualReturn"] input', formatDecimalSmart(defaults.annualReturn));
+  setVal('[data-field="annualIncrease"] input', formatDecimalSmart(defaults.annualIncrease));
   root.querySelectorAll('.saving-plan-field-error').forEach((el) => el.classList.remove('saving-plan-field-error'));
   root.querySelectorAll('.saving-plan-field-error-message').forEach((el) => el.remove());
   root.querySelectorAll('[aria-invalid="true"]').forEach((el) => el.removeAttribute('aria-invalid'));
@@ -1126,16 +1126,10 @@ function attachHandlers(state, data) {
         const returnVal = parseFloat(returnSlider.value);
         const increaseVal = parseFloat(increaseSlider.value);
         if (sliderName === 'annualReturn') {
-          // annualIncrease max always equals the current annualReturn value
-          const prevReturn = parseFloat(returnSlider.dataset.prev ?? returnVal);
-          returnSlider.dataset.prev = returnVal;
-          const delta = returnVal - prevReturn;
-          // move increase in the opposite direction by the same delta, then clamp to [0, returnVal]
-          const newIncrease = Math.min(returnVal, Math.max(0, increaseVal - delta));
+          // annualIncrease max always equals the current annualReturn value;
+          // only clamp its value down if it now exceeds that max — never push it up.
           increaseSlider.max = returnVal;
-          increaseSlider.value = newIncrease.toFixed(1);
-          const maxEl = root.querySelector('[data-slider="annualIncrease"] .saving-plan-slider-value');
-          if (maxEl) maxEl.textContent = formatDecimal(returnVal);
+          increaseSlider.value = Math.min(increaseVal, returnVal).toFixed(1);
         } else if (sliderName === 'annualIncrease' && increaseVal > returnVal) {
           increaseSlider.value = returnVal;
         }
@@ -1180,7 +1174,9 @@ export default async function decorate(block) {
 
   const calcUrl = cfg.savingPlanCalculatorUrl || '';
   const apimKey = cfg.savingPlanApimKey || '';
-  const inflationRate = parseFloat(cfg.savingPlanInflationRate) || 1.5;
+  const commonData = json.common?.data || [];
+  const inflationRateEntry = commonData.find(({ Key }) => Key === 'defaultFormValues-inflationRate');
+  const inflationRate = parseFloat(inflationRateEntry?.Value);
 
   const lang = getLang();
   const data = buildDataFromConfig(json, lang, placeholders, inflationRate);

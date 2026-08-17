@@ -472,8 +472,6 @@ a.link-inverted[aria-disabled="true"] {
     height: 2.75rem;
     text-decoration: none;
     display: block;
-    font-size: var(--bbl-font-size-b1-mobile);
-    font-weight: var(--bbl-font-weight-regular);
     font-family: var(--bbl-font-family-medium);
     line-height: 2.75rem;
     background: var(--bbl-color-ice-blue);
@@ -501,12 +499,6 @@ a.link-inverted[aria-disabled="true"] {
 .download-files.icon-download:hover::before,
 .download-files:hover .icon-download::before {
     transform: translateY(4px);
-}
-
-@media (width > 64rem) {
-    .download-button-wrapper .download-files {
-        font-size: var(--bbl-font-size-b1);
-    }
 }
 
 /* Strip the button chrome for print (any block using .download-files: accordion-block, menu-card-actions, search-reports-results, card-list) so it renders as plain text on paper instead of a blue button */

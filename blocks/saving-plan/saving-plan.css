@@ -384,6 +384,7 @@
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-h3-mobile);
   font-weight: var(--bbl-text-thumbnail-title-weight);
+  line-height: 1.5rem;
   margin: 0;
 }
 

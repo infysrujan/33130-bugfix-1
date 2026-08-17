@@ -99,6 +99,21 @@ function scaleSeriesToFuture(series, futureValue) {
   }));
 }
 
+const NICE_STEP_FRACTIONS = [
+  1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10,
+];
+
+// Rounds `raw` up to a "nice" step (e.g. 33,665 -> 35,000; 201,991 -> 250,000)
+// so the y-axis tick spacing scales with the chart's max instead of a fixed step.
+function niceStep(raw) {
+  if (!Number.isFinite(raw) || raw <= 0) return 1;
+  const exponent = Math.floor(Math.log10(raw));
+  const base = 10 ** exponent;
+  const fraction = raw / base;
+  const nice = NICE_STEP_FRACTIONS.find((f) => f >= fraction - 1e-9) || 10;
+  return nice * base;
+}
+
 function drawRoundedRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
@@ -289,11 +304,12 @@ function buildChartConfig(originalSeries, newSeries, labels, overlayPlugin, colo
             color: colors.axis,
             font: { size: 12, family: 'system-ui, sans-serif' },
           },
-          // Explicit ticks in 1.5M steps (0, 1.5M, 3M …) plus the max on top,
-          // dropping any regular tick that would crowd the max.
+          // Explicit ticks spaced by a "nice" step derived from the max (so a
+          // 50k goal gets ~20k steps and a 10M goal gets ~3.5M steps) plus the
+          // exact max on top, dropping any regular tick that would crowd it.
           afterBuildTicks: (axis) => {
             const top = axis.max;
-            const step = 1500000;
+            const step = niceStep(top / 4);
             const ticks = [];
             for (let v = 0; v < top - step / 2; v += step) ticks.push({ value: v });
             ticks.push({ value: top });

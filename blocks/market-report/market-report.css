@@ -35,6 +35,15 @@
   flex: 1 1 0;
 }
 
+.market-report-page-content > .market-report-col > .market-report-col-left .market-report-top-row > :is(h1, h2, h3, h4, h5, h6),
+.market-report-page-content > .market-report-col > .market-report-col-right > :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: 0;
+}
+
+.market-report-page-content > .market-report-col > .market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: -1px;
+}
+
 .market-report-col-left :is(h1, h2, h3, h4, h5, h6),
 .market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
   font-size: 1rem;
@@ -47,7 +56,6 @@
 .market-report-top-row {
   display: flex;
   justify-content: space-between;
-  margin-top: 0.9375rem;
 }
 
 .market-report-col-left .market-report-date {
@@ -89,7 +97,7 @@
 .market-report-page a.print-button.icon-print::before {
   position: absolute;
   right: 0;
-  top: 0.125rem;
+  top: 0.0625rem;
 }
 
 .market-report-page .table table tr td {
