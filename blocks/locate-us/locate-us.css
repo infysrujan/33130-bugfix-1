@@ -121,7 +121,8 @@
   position: absolute;
   top: calc(100% + var(--bbl-space-050));
   left: 0;
-  right: 0;
+  min-width: 100%;
+  width: max-content;
   z-index: 2;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-gray-122);
@@ -143,6 +144,7 @@
   font-weight: var(--bbl-body-b1-weight);
   line-height: var(--bbl-body-b1-line-height);
   text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .locate-us .locate-us-service-item-placeholder {
@@ -854,12 +856,11 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--bbl-space-150);
-  padding: 0.875rem var(--bbl-space-200) 0.875rem var(--bbl-space-250);
+  padding: 0.6875rem 0.9375rem 0.6875rem 1.5rem;
   background-color: var(--bbl-color-toast-error);
   border-radius: 3rem;
   pointer-events: all;
-  min-width: 16.25rem;
-  max-width: 21.25rem;
+  min-width: 16.3125rem;
 }
 
 .locate-us-toast-message {
@@ -871,13 +872,13 @@
 
 .locate-us-toast-close {
   flex-shrink: 0;
-  width: var(--bbl-space-350);
-  height: var(--bbl-space-350);
+  width: 1.875rem;
+  height: 1.875rem;
   border-radius: var(--bbl-radius-full);
   border: none;
   background-color: var(--bbl-color-white);
   color: var(--bbl-color-toast-error);
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.5rem;
   opacity: 0.8;
   cursor: pointer;
   display: flex;

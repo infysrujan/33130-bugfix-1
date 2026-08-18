@@ -9,37 +9,9 @@
 }
 
 .teaser-with-bg-image-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  font-size: 1.4rem;
-  font-weight: var(--bbl-font-family-regular);
-  line-height: 1.375rem;
   letter-spacing: -0.0125rem;
 }
 
-:lang(th) {
-  .teaser-with-bg-image-container .default-content-wrapper :is(h1) {
-    line-height: 1.875rem;
-  }
-
-  .teaser-with-bg-image-container .default-content-wrapper :is(h2) {
-    line-height: 1.5rem;
-  }
-
-  .teaser-bg-image-title :is(h1) {
-    line-height: 1.875rem;
-  }
-
-  .teaser-bg-image-title :is(h2) {
-    line-height: 1.5rem;
-  }
-
-  .teaser-bg-image-card-title :is(h1) {
-    line-height: 1.875rem;
-  }
-
-  .teaser-bg-image-card-title :is(h2) {
-    line-height: 1.5rem;
-  }
-}
 
 .teaser-bg-image-card-title :is(h1, h2, h3, h4, h5, h6)::before {
   content: "";
@@ -210,24 +182,6 @@
     margin-block: 0.625rem var(--bbl-space-250);
   }
 
-  :lang(th) {
-    .teaser-bg-image-title :is(h1) {
-      line-height: 3.75rem;
-    }
-
-    .teaser-bg-image-title :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .teaser-bg-image-title :is(h3) {
-      line-height: 2rem;
-    }
-
-    .teaser-bg-image-title :is(h4) {
-      line-height: 1.375rem;
-    }
-  }
-
   .teaser-bg-image-description p {
     line-height: 1.1243rem;
     color: var(--bbl-color-white);
@@ -261,64 +215,15 @@
 }
 
 @media (width > 64rem) {
-  .teaser-with-bg-image-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+  .teaser-bg-image-title :is(h1, h2, h3, h4, h5, h6) {
     font-size: 3rem;
     line-height: 2.875rem;
   }
 
   :lang(th) {
-    .teaser-with-bg-image-container .default-content-wrapper :is(h1) {
+    .teaser-bg-image-title :is(h1, h2, h3, h4, h5, h6) {
       line-height: 3.75rem;
     }
-
-    .teaser-with-bg-image-container .default-content-wrapper :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .teaser-with-bg-image-container .default-content-wrapper :is(h3) {
-      line-height: 2rem;
-    }
-
-    .teaser-with-bg-image-container .default-content-wrapper :is(h4) {
-      line-height: 1.375rem;
-    }
-
-    .teaser-bg-image-title :is(h1) {
-      line-height: 3.75rem;
-    }
-
-    .teaser-bg-image-title :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .teaser-bg-image-title :is(h3) {
-      line-height: 2rem;
-    }
-
-    .teaser-bg-image-title :is(h4) {
-      line-height: 1.375rem;
-    }
-
-    .teaser-bg-image-card-title :is(h1) {
-      line-height: 3.75rem;
-    }
-
-    .teaser-bg-image-card-title :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .teaser-bg-image-card-title :is(h3) {
-      line-height: 2rem;
-    }
-
-    .teaser-bg-image-card-title :is(h4) {
-      line-height: 1.375rem;
-    }
-  }
-
-  .teaser-bg-image-title :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 3rem;
-    line-height: 2.875rem;
   }
 
   .teaser-bg-image-description p {

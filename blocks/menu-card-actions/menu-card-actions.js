@@ -4,13 +4,17 @@ import createGlobalDropdown, { attachScrollableDropdownPanel } from '../../scrip
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
 
-function formatDate(dateStr) {
+function formatDate(dateStr, monthYearOnly = false) {
   if (!dateStr) return '';
   const date = new Date(dateStr);
-  if (getLang() === 'th') {
-    return `${date.getDate()} ${date.toLocaleString('th-TH', { month: 'long' })} ${date.getFullYear() + 543}`;
+  const isThai = getLang() === 'th';
+  if (isThai) {
+    const month = date.toLocaleString('th-TH', { month: 'long' });
+    const year = date.getFullYear() + 543;
+    return monthYearOnly ? `${month} ${year}` : `${date.getDate()} ${month} ${year}`;
   }
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const options = { month: 'long', year: 'numeric', ...(monthYearOnly ? {} : { day: 'numeric' }) };
+  return date.toLocaleDateString('en-GB', options);
 }
 
 function isToggleCell(cell) {
@@ -80,13 +84,19 @@ function createCardItem(cardRow, doc) {
 
   let remaining = cells.slice(4);
 
+  const isDateCell = (cell) => {
+    const text = cell?.textContent?.trim() || '';
+    return text.length >= 8 && !Number.isNaN(Date.parse(text)) && !cell?.querySelector('a');
+  };
+
   let dateText = '';
   const lastCell = remaining[remaining.length - 1];
-  const lastCellText = lastCell?.textContent?.trim() || '';
-  if (lastCellText.length >= 8 && !Number.isNaN(Date.parse(lastCellText))
-    && !lastCell?.querySelector('a')) {
-    dateText = formatDate(lastCellText);
-    remaining = remaining.slice(0, -1);
+  const hasToggle = isToggleCell(lastCell);
+  const dateCell = hasToggle ? remaining[remaining.length - 2] : lastCell;
+
+  if (isDateCell(dateCell)) {
+    dateText = formatDate(dateCell.textContent.trim(), hasToggle && lastCell.textContent.trim() === 'true');
+    remaining = remaining.slice(0, hasToggle ? -2 : -1);
   }
 
   const processLink = (selector) => {

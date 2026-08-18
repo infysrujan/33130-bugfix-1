@@ -16,6 +16,7 @@
   display: block;
   padding: 1.25rem 0;
   height: auto;
+  color: var(--bbl-color-black);
 }
 
 .main-nav-trigger-text p {
@@ -33,6 +34,7 @@
   right: 50%;
   top: 43%;
   font-size: 0.6594rem;
+  color: var(--bbl-color-black);
 }
 
 .main-nav-trigger:hover,
@@ -409,5 +411,4 @@ a.megamenu-link {
   .quick-nav-item .quick-nav-label {
     font: 1rem BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
   }
-
 }

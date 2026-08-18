@@ -144,6 +144,18 @@ function normalizeCellContent(cell, className) {
   cell.appendChild(wrapper);
 }
 
+function addDesktopBreakClass(textCell) {
+  textCell?.querySelectorAll('.hero-banner-content-inner-text p').forEach((p) => {
+    p.classList.add('hero-banner-desktop-break');
+    p.querySelectorAll('br').forEach((br) => {
+      const next = br.nextSibling;
+      if (next?.nodeType === Node.TEXT_NODE && !/^\s/.test(next.textContent)) {
+        next.textContent = ` ${next.textContent}`;
+      }
+    });
+  });
+}
+
 function createThumbItem(picture, index, { strip = false, active = false } = {}) {
   const item = createElement('li', 'hero-banner-thumbnail-item');
   if (active) item.classList.add('hero-banner-thumbnail-item-active');
@@ -594,6 +606,7 @@ export default async function decorate(block) {
       if (preTitleEl.firstElementChild) preTitleEl.firstElementChild.classList.add('hero-banner-pre-title');
     }
     normalizeCellContent(textCell, 'hero-banner-content-inner-text');
+    addDesktopBreakClass(textCell);
     const isAppCta = variant === 'simple-app-cta';
     const hasButtonLink = !isAppCta && !!linkCell?.querySelector('a[href]');
     // Private/Wealth banking places the logo beside the content (logo left,

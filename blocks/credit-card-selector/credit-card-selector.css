@@ -522,14 +522,9 @@
     scroll-snap-align: none;
   }
 
-  .credit-card-selector-wrapper .collapse-toggle-button {
-    right: 3.875rem;
-  }
-
   .section.credit-card-selector-container .default-content-wrapper> :is(h1, h2, h3, h4, h5, h6):first-child {
     text-align: center;
   }
-
 }
 
 @media (width > 64rem) {
@@ -542,6 +537,10 @@
   .credit-card-selector .card-selector-title {
     font-size: var(--bbl-font-size-h1-desktop);
     line-height: var(--bbl-line-height-heading-tight);
+  }
+
+  .credit-card-selector-wrapper .collapse-toggle-button {
+    right: 3.875rem;
   }
 
   .credit-card-selector .card-selector-content {

@@ -724,8 +724,9 @@ export function attachCalendarPicker(options) {
     if (!isOpen) openPopover();
   }
 
-  function onInputInput() {
+  function onInputInput(e) {
     if (readOnly) return;
+    if (e && e.isTrusted === false) return;
     if (!isOpen) openPopover();
     previewManualInput();
   }

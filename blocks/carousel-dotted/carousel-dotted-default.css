@@ -204,9 +204,9 @@
 
 .carousel-dotted .carousel-dotted-description {
   font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-regular);
-  font-size: 1.1375rem;
-  line-height: 1.2495rem;
+  font-weight: var(--bbl-text-article-card-title-weight);
+  font-size: var(--bbl-text-article-card-title-size);
+  line-height: var(--bbl-text-article-card-title-line-height);
   color: var(--bbl-color-black);
   margin-bottom: 1.875rem;
 }
@@ -970,6 +970,10 @@ p.text-large.text-light {
 
   .carousel-dotted .carousel-dotted-description {
     margin-bottom: var(--bbl-space-300);
+  }
+
+  :lang(th).carousel-dotted .carousel-dotted-description{
+    line-height:  2.5rem;
   }
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-content.content {

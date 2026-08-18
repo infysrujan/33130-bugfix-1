@@ -9,17 +9,17 @@ function getTextValue(value) {
   return value?.toString().trim() || '';
 }
 
-function formatMenuCardDate(dateStr) {
+function formatMenuCardDate(dateStr, monthYearOnly = false) {
   if (!dateStr) return '';
-  const lang = getLang();
   const date = new Date(dateStr);
-  if (lang === 'th') {
-    const buddhistYear = date.getFullYear() + 543;
+  const isThai = getLang() === 'th';
+  if (isThai) {
     const month = date.toLocaleString('th-TH', { month: 'long' });
-    const day = date.getDate();
-    return `${day} ${month} ${buddhistYear}`;
+    const year = date.getFullYear() + 543;
+    return monthYearOnly ? `${month} ${year}` : `${date.getDate()} ${month} ${year}`;
   }
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const options = { month: 'long', year: 'numeric', ...(monthYearOnly ? {} : { day: 'numeric' }) };
+  return date.toLocaleDateString('en-GB', options);
 }
 
 function parseBooleanFlag(value, defaultValue = false) {
@@ -82,13 +82,14 @@ function createCardListItem(cardElement, doc) {
     ? cells.length
     : (9 + downloadOffset + stubOffset) + relIdx;
 
-  const dateTextRaw = cells[cells.length - 1]?.textContent?.trim() || '';
+  const lastCellText = cells[cells.length - 1]?.textContent?.trim() || '';
+  const monthYearOnly = isBooleanLikeValue(lastCellText);
+  const dateRaw = (monthYearOnly ? cells[cells.length - 2] : cells[cells.length - 1])?.textContent?.trim() || '';
   let financialDate = '';
-  if (dateTextRaw) {
-    const parsedDate = new Date(dateTextRaw);
-    financialDate = !Number.isNaN(parsedDate.getTime())
-      ? formatMenuCardDate(dateTextRaw)
-      : dateTextRaw;
+  if (dateRaw && !Number.isNaN(new Date(dateRaw).getTime())) {
+    financialDate = formatMenuCardDate(dateRaw, monthYearOnly && parseBooleanFlag(lastCellText));
+  } else if (!monthYearOnly) {
+    financialDate = dateRaw;
   }
   const imageLayout = cells[base]?.textContent?.trim() || 'default';
   const enableTitleUnderline = parseBooleanFlag(cells[base + 1]?.textContent, false);

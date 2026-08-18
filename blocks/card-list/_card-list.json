@@ -442,6 +442,14 @@
           "name": "financialDate",
           "label": "Financial Date",
           "valueType": "string"
+        },
+        {
+          "component": "boolean",
+          "name": "showOnlyMonthYear",
+          "label": "Show Only Month and Year",
+          "description": "If enabled, only the month and year will be displayed.",
+          "valueType": "boolean",
+          "value": false
         }
       ]
     }
