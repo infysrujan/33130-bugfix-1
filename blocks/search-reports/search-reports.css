@@ -269,3 +269,16 @@
     max-width: var(--bbl-layout-content-max-width-1920);
   }
 }
+
+/* The shared heading token (--bbl-text-section-title-size) only switches to
+   its desktop value above 1024px, so an iPad-Pro-width viewport (exactly
+   1024px) renders the smaller mobile/tablet title instead of the larger one
+   shown at that width in production. Mirror the desktop value starting at
+   1024px (inclusive); real desktop widths already resolve to this same
+   value via the shared token, so this is a no-op there. */
+@media (width > 63.9375rem) {
+  .search-reports-overlay .sr-title {
+    font-size: var(--bbl-font-size-h2-desktop);
+    line-height: var(--bbl-line-height-h2-desktop);
+  }
+}
