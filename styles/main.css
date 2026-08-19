@@ -70,10 +70,22 @@ h1 {
     font-weight: var(--bbl-heading-h1-weight);
 }
 
+@media (width > 64rem) {
+  :lang(th) h1 {
+    line-height: 3.75rem;
+  }
+}
+
 h2 {
     font-size: var(--bbl-heading-h2-size);
     line-height: var(--bbl-heading-h2-line-height);
     font-weight: var(--bbl-heading-h2-weight);
+}
+
+@media (width > 64rem) {
+  :lang(th) h2 {
+    line-height: 2.5rem;
+  }
 }
 
 h3 {

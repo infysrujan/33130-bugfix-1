@@ -50,8 +50,10 @@ export default async function decorate(block) {
 
   const items = allItems.filter((item) => item.id);
   const n = items.length;
-  // Extra trailing clones needed when n < VISIBLE so every scroll position shows a full row.
-  const extraCount = Math.max(0, VISIBLE - n);
+  // Everything fits in a single view when there are VISIBLE or fewer items —
+  // no scrolling/clones needed, so thumbs are built once and centered instead.
+  const isFewItems = n > 0 && n <= VISIBLE;
+  block.classList.toggle('cv-few-items', isFewItems);
 
   block.innerHTML = '';
 
@@ -66,12 +68,6 @@ export default async function decorate(block) {
   if (n === 0) return;
 
   let activeIndex = 0;
-  // rawScrollIndex: position in the 3-set infinite track
-  // Set 0 = leading clones (positions 0..n-1)
-  // Set 1 = originals      (positions n..2n-1)
-  // Set 2 = trailing clones (positions 2n..3n-1)
-  // Start pointing at the first original so the track shows real items on load.
-  let rawScrollIndex = n;
 
   // ── Main player ──────────────────────────────────────────────────────────
   const mainPlayer = document.createElement('div');
@@ -108,6 +104,8 @@ export default async function decorate(block) {
 
   const track = document.createElement('div');
   track.className = 'cv-track';
+  // Fewer than a full row: center the thumbs with equal spacing instead of flush left.
+  if (isFewItems && n < VISIBLE) track.classList.add('cv-track-center');
 
   const nextBtn = document.createElement('button');
   nextBtn.type = 'button';
@@ -132,24 +130,32 @@ export default async function decorate(block) {
     return btn;
   }
 
-  // Leading clones (set 0)
-  const leadingClones = items.map(({ id, thumbSrc }, i) => createThumb(id, i, null, thumbSrc));
-  // Originals (set 1) — carry UE instrumentation
-  const thumbEls = items.map(({ row, id, thumbSrc }, i) => {
-    const btn = createThumb(id, i, row, thumbSrc);
-    if (i === 0) btn.classList.add('active');
-    return btn;
-  });
-  // Trailing clones (set 2)
-  const trailingClones = items.map(({ id, thumbSrc }, i) => createThumb(id, i, null, thumbSrc));
-  // Extra trailing clones to keep the visible window full when n < VISIBLE
-  const extraTrailingClones = Array.from({ length: extraCount }, (_, e) => {
-    const { id, thumbSrc } = items[e % n];
-    return createThumb(id, e % n, null, thumbSrc);
-  });
+  let thumbEls;
+  let allThumbBtns;
 
-  // All sets flattened; domI % n gives the real item index
-  const allThumbBtns = [...leadingClones, ...thumbEls, ...trailingClones, ...extraTrailingClones];
+  if (isFewItems) {
+    // n <= VISIBLE: exactly one thumb per authored item, no duplicated sets.
+    thumbEls = items.map(({ row, id, thumbSrc }, i) => {
+      const btn = createThumb(id, i, row, thumbSrc);
+      if (i === 0) btn.classList.add('active');
+      return btn;
+    });
+    allThumbBtns = thumbEls;
+  } else {
+    // Leading clones (set 0)
+    const leadingClones = items.map(({ id, thumbSrc }, i) => createThumb(id, i, null, thumbSrc));
+    // Originals (set 1) — carry UE instrumentation
+    thumbEls = items.map(({ row, id, thumbSrc }, i) => {
+      const btn = createThumb(id, i, row, thumbSrc);
+      if (i === 0) btn.classList.add('active');
+      return btn;
+    });
+    // Trailing clones (set 2)
+    const trailingClones = items.map(({ id, thumbSrc }, i) => createThumb(id, i, null, thumbSrc));
+
+    // All sets flattened; domI % n gives the real item index
+    allThumbBtns = [...leadingClones, ...thumbEls, ...trailingClones];
+  }
 
   trackWrap.appendChild(track);
   carouselSection.appendChild(prevBtn);
@@ -225,124 +231,163 @@ export default async function decorate(block) {
     });
   }
 
-  function getThumbWidth() {
-    const btn = allThumbBtns[0];
-    if (!btn) return 193;
-    if (btn.offsetWidth > 0) return btn.offsetWidth;
-    const computed = parseFloat(window.getComputedStyle(btn).width);
-    return computed > 0 ? Math.round(computed) : 193;
-  }
-
-  function scrollTrack(rawNew) {
-    rawScrollIndex = Math.max(0, Math.min(rawNew, 3 * n + extraCount - VISIBLE));
-    const w = getThumbWidth();
-    track.style.transform = `translate3d(-${rawScrollIndex * (w + THUMB_GAP)}px, 0px, 0px)`;
-  }
-
-  // Jump without triggering the CSS transition (used for seamless wrap resets).
-  function scrollTrackSilent(rawNew) {
-    rawScrollIndex = rawNew;
-    const w = getThumbWidth();
-    track.style.transition = 'none';
-    track.style.transform = `translate3d(-${rawScrollIndex * (w + THUMB_GAP)}px, 0px, 0px)`;
-    track.getBoundingClientRect(); // force reflow so the transition suppression takes effect
-    track.style.transition = '';
-  }
-
-  // Scroll so the given index lands at the first (leftmost) visible slot.
-  // Always picks the next occurrence ahead of (>=) the current position so
-  // the track only ever moves rightward (clockwise).
-  function scrollToFirst(index) {
-    const candidates = [index, n + index, 2 * n + index];
-    const ahead = candidates.filter((c) => c >= rawScrollIndex);
-    const itemRaw = ahead.length > 0 ? Math.min(...ahead) : 2 * n + index;
-    scrollTrack(itemRaw);
-  }
-
-  // Always move right (next direction) to the nearest occurrence of index.
-  function scrollForward(index) {
-    let target = rawScrollIndex + 1;
-    while (target % n !== index) target += 1;
-    scrollTrack(target);
-  }
-
-  // Always move left (prev direction) to the nearest occurrence of index.
-  function scrollBackward(index) {
-    let target = rawScrollIndex - 1;
-    while (target >= 0 && target % n !== index) target -= 1;
-    if (target < 0) target = index;
-    scrollTrack(target);
-  }
-
-  // After each animated scroll, silently reset to the original zone so there
-  // is always room to scroll in both directions (infinite loop illusion).
-  track.addEventListener('transitionend', (e) => {
-    if (e.propertyName !== 'transform') return;
-    if (rawScrollIndex < n) {
-      scrollTrackSilent(rawScrollIndex + n);
-    } else if (rawScrollIndex >= 2 * n) {
-      scrollTrackSilent(rawScrollIndex - n);
-    }
-  });
-
-  // ── Event listeners ───────────────────────────────────────────────────────
-  allThumbBtns.forEach((btn, domI) => {
-    btn.addEventListener('click', () => {
-      const realIndex = domI % n;
-      setActive(realIndex);
-      scrollToFirst(realIndex);
-    });
-  });
-
-  prevBtn.addEventListener('click', () => {
-    const newIndex = activeIndex === 0 ? n - 1 : activeIndex - 1;
-    if (mobileMQ.matches) {
-      slideMainPlayer(newIndex, 'prev');
-    } else {
-      setActive(newIndex);
-    }
-    scrollBackward(newIndex);
-  });
-
-  nextBtn.addEventListener('click', () => {
-    const newIndex = activeIndex === n - 1 ? 0 : activeIndex + 1;
-    if (mobileMQ.matches) {
-      slideMainPlayer(newIndex, 'next');
-    } else {
-      setActive(newIndex);
-    }
-    scrollForward(newIndex);
-  });
-
-  dotEls.forEach((dot, i) => {
-    dot.addEventListener('click', () => {
-      if (i === activeIndex) return;
-      const goForward = i > activeIndex;
-      setActive(i);
-      if (goForward) {
-        scrollForward(i);
-      } else {
-        scrollBackward(i);
-      }
-    });
-  });
-
   // ── Initial state ─────────────────────────────────────────────────────────
   prevBtn.disabled = n <= 1;
   nextBtn.disabled = n <= 1;
 
-  // Place the track at the start of the original set without animation.
-  // Use rAF so offsetWidth reflects the actual rendered thumb size for the
-  // current breakpoint rather than falling back to the hardcoded default.
-  requestAnimationFrame(() => {
-    scrollTrackSilent(n);
-    mainPlayer.classList.add('active');
-  });
+  if (isFewItems) {
+    // Everything is already visible — no track scrolling, just swap the active item.
+    allThumbBtns.forEach((btn, i) => {
+      btn.addEventListener('click', () => setActive(i));
+    });
 
-  // Recalculate scroll offset on resize
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => scrollTrack(rawScrollIndex), 200);
-  });
+    prevBtn.addEventListener('click', () => {
+      const newIndex = activeIndex === 0 ? n - 1 : activeIndex - 1;
+      if (mobileMQ.matches) {
+        slideMainPlayer(newIndex, 'prev');
+      } else {
+        setActive(newIndex);
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      const newIndex = activeIndex === n - 1 ? 0 : activeIndex + 1;
+      if (mobileMQ.matches) {
+        slideMainPlayer(newIndex, 'next');
+      } else {
+        setActive(newIndex);
+      }
+    });
+
+    dotEls.forEach((dot, i) => {
+      dot.addEventListener('click', () => setActive(i));
+    });
+
+    requestAnimationFrame(() => {
+      mainPlayer.classList.add('active');
+    });
+  } else {
+    // rawScrollIndex: position in the 3-set infinite track
+    // Set 0 = leading clones (positions 0..n-1)
+    // Set 1 = originals      (positions n..2n-1)
+    // Set 2 = trailing clones (positions 2n..3n-1)
+    // Start pointing at the first original so the track shows real items on load.
+    let rawScrollIndex = n;
+
+    const getThumbWidth = () => {
+      const btn = allThumbBtns[0];
+      if (!btn) return 193;
+      if (btn.offsetWidth > 0) return btn.offsetWidth;
+      const computed = parseFloat(window.getComputedStyle(btn).width);
+      return computed > 0 ? Math.round(computed) : 193;
+    };
+
+    const scrollTrack = (rawNew) => {
+      rawScrollIndex = Math.max(0, Math.min(rawNew, 3 * n - VISIBLE));
+      const w = getThumbWidth();
+      track.style.transform = `translate3d(-${rawScrollIndex * (w + THUMB_GAP)}px, 0px, 0px)`;
+    };
+
+    // Jump without triggering the CSS transition (used for seamless wrap resets).
+    const scrollTrackSilent = (rawNew) => {
+      rawScrollIndex = rawNew;
+      const w = getThumbWidth();
+      track.style.transition = 'none';
+      track.style.transform = `translate3d(-${rawScrollIndex * (w + THUMB_GAP)}px, 0px, 0px)`;
+      track.getBoundingClientRect(); // force reflow so the transition suppression takes effect
+      track.style.transition = '';
+    };
+
+    // Scroll so the given index lands at the first (leftmost) visible slot.
+    // Always picks the next occurrence ahead of (>=) the current position so
+    // the track only ever moves rightward (clockwise).
+    const scrollToFirst = (index) => {
+      const candidates = [index, n + index, 2 * n + index];
+      const ahead = candidates.filter((c) => c >= rawScrollIndex);
+      const itemRaw = ahead.length > 0 ? Math.min(...ahead) : 2 * n + index;
+      scrollTrack(itemRaw);
+    };
+
+    // Always move right (next direction) to the nearest occurrence of index.
+    const scrollForward = (index) => {
+      let target = rawScrollIndex + 1;
+      while (target % n !== index) target += 1;
+      scrollTrack(target);
+    };
+
+    // Always move left (prev direction) to the nearest occurrence of index.
+    const scrollBackward = (index) => {
+      let target = rawScrollIndex - 1;
+      while (target >= 0 && target % n !== index) target -= 1;
+      if (target < 0) target = index;
+      scrollTrack(target);
+    };
+
+    // After each animated scroll, silently reset to the original zone so there
+    // is always room to scroll in both directions (infinite loop illusion).
+    track.addEventListener('transitionend', (e) => {
+      if (e.propertyName !== 'transform') return;
+      if (rawScrollIndex < n) {
+        scrollTrackSilent(rawScrollIndex + n);
+      } else if (rawScrollIndex >= 2 * n) {
+        scrollTrackSilent(rawScrollIndex - n);
+      }
+    });
+
+    allThumbBtns.forEach((btn, domI) => {
+      btn.addEventListener('click', () => {
+        const realIndex = domI % n;
+        setActive(realIndex);
+        scrollToFirst(realIndex);
+      });
+    });
+
+    prevBtn.addEventListener('click', () => {
+      const newIndex = activeIndex === 0 ? n - 1 : activeIndex - 1;
+      if (mobileMQ.matches) {
+        slideMainPlayer(newIndex, 'prev');
+      } else {
+        setActive(newIndex);
+      }
+      scrollBackward(newIndex);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      const newIndex = activeIndex === n - 1 ? 0 : activeIndex + 1;
+      if (mobileMQ.matches) {
+        slideMainPlayer(newIndex, 'next');
+      } else {
+        setActive(newIndex);
+      }
+      scrollForward(newIndex);
+    });
+
+    dotEls.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        if (i === activeIndex) return;
+        const goForward = i > activeIndex;
+        setActive(i);
+        if (goForward) {
+          scrollForward(i);
+        } else {
+          scrollBackward(i);
+        }
+      });
+    });
+
+    // Place the track at the start of the original set without animation.
+    // Use rAF so offsetWidth reflects the actual rendered thumb size for the
+    // current breakpoint rather than falling back to the hardcoded default.
+    requestAnimationFrame(() => {
+      scrollTrackSilent(n);
+      mainPlayer.classList.add('active');
+    });
+
+    // Recalculate scroll offset on resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => scrollTrack(rawScrollIndex), 200);
+    });
+  }
 }

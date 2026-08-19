@@ -59,7 +59,7 @@
 
 .accordion-toolbar-label {
   color: var(--bbl-color-black);
-  font-size: var(  --bbl-text-accordion-size);
+  font-size: var(--bbl-text-accordion-size);
   line-height: var(--bbl-text-accordion-line-height);
   font-weight: var(--bbl-text-accordion-weight);
   font-family:var(--bbl-font-family-medium);
@@ -104,6 +104,7 @@
 
 .accordion-header::after {
   content: '+';
+  color: var(--bbl-color-black);
   flex-shrink: 0;
   margin-left: 1rem;
   font: 2rem Muli-Light, sans-serif;
@@ -138,7 +139,7 @@
 .accordion-header-title {
   flex: 1 1 0;
   min-width: 0;
-  font-size: var(  --bbl-text-accordion-size);
+  font-size: var(--bbl-text-accordion-size);
   line-height: var(--bbl-text-accordion-line-height);
   font-weight: var(--bbl-text-accordion-weight);
   color: var(--bbl-color-black);

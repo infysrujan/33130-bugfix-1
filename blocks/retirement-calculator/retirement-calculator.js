@@ -95,7 +95,7 @@ function buildIncomeCard(labels, savedValue) {
       <div class="rc-income-title">${getString(labels, 'stepsStep1MonthlyIncomeTitle', 'Monthly amount you want after retirement')}</div>
       <div class="rc-income-wrap">
         <div class="rc-income-input-wrap">
-          <input type="text" id="rc-monthlyIncome" class="rc-income-input"
+          <input type="text" id="rc-monthlyIncome" class="rc-income-input" autocomplete="off"
             placeholder="1-999,999,999" maxlength="${formatNumber(999999999).length}" value="${formatNumber(savedValue ?? 0)}">
           <span class="rc-income-unit">${getString(labels, 'commonUnit', 'baht')}</span>
         </div>

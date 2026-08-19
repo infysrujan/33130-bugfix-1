@@ -227,8 +227,8 @@ export default async function decorate(block) {
   // class). When decorate() is called on that copy, we still need to clean up the stale
   // original. The `content` class is always added during decoration, making it the
   // reliable indicator of an already-decorated block.
-  const section = block.closest('.section') || block.parentElement;
-  section.querySelectorAll('.carousel-dotted.block').forEach((other) => {
+  const scope = block.closest('.carousel-dotted-wrapper') || block.closest('.section') || block.parentElement;
+  scope.querySelectorAll('.carousel-dotted.block').forEach((other) => {
     if (other === block) return;
     if (other.classList.contains('content')) other.remove();
   });

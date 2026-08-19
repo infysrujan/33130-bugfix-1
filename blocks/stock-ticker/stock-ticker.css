@@ -1,8 +1,5 @@
 .stock-ticker-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  font-size: 1.4rem;
-  line-height: 1.3746rem;
   letter-spacing: -0.0125rem;
-  font-weight: var(--bbl-font-weight-regular);
   flex-basis: 100%;
 }
 
@@ -58,13 +55,6 @@
 }
 
 @media (width > 64rem) {
-  .stock-ticker-container
-    .default-content-wrapper
-    :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--bbl-font-size-h3-desktop);
-    line-height: 2.875rem;
-  }
-
   .stock-ticker-container .default-content-wrapper :is(p, a) {
     line-height: 1.375rem;
   }

@@ -210,6 +210,12 @@ function buildModalDom({
   headerWrapper.append(header);
 
   const body = createTaggedElement('div', { className: 'sr-body' });
+  // Something outside this codebase injects an inline margin-top/margin-bottom
+  // onto this element; strip it whenever it reappears rather than fighting it in CSS.
+  new MutationObserver(() => {
+    body.style.removeProperty('margin-top');
+    body.style.removeProperty('margin-bottom');
+  }).observe(body, { attributes: true, attributeFilter: ['style'] });
   const titleEl = createTaggedElement('h2', { className: 'sr-title', text: modalTitle, attrs: { id: 'sr-modal-title' } });
   const titleDivider = createTaggedElement('div', { className: 'sr-title-divider' });
   const descEl = createTaggedElement('div', { className: 'sr-desc' });

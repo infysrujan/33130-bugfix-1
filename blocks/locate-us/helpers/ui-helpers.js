@@ -57,6 +57,9 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   let selectedServiceCode = '';
   let currentIsAtm = false;
   let currentPage = 1;
+  // The location currently shown in the sidebar. Used so the matching card in the
+  // list keeps its active/expanded state across pagination re-renders.
+  let selectedLoc = null;
   let keywordFromSelection = false;
   // When a "…with BeMyID" service variant is active, results are filtered to
   // locations that support Be My ID (the API marks these with Tel === 'BeID').
@@ -162,6 +165,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   const fragmentContainer = container.querySelector('.locate-us-fragment');
 
   function onLocationSelect(loc) {
+    selectedLoc = loc;
     updateMapIframe(mapContainer, loc, configs);
     populateSidebar(mapSidebar, loc, placeholders, configs, currentIsAtm);
     const remark = document.createElement('p');
@@ -201,7 +205,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     allLocs.forEach((l) => { l.isNearest = l === nearest; });
     onLocationSelect(allLocs[0]);
     // eslint-disable-next-line max-len
-    renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs, currentIsAtm);
+    renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs, currentIsAtm, true, () => selectedLoc);
   }
 
   function buildProvinceList(provinces) {

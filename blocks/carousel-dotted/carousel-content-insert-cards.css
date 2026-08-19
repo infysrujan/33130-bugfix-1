@@ -22,6 +22,10 @@
   padding: 0;
 }
 
+.carousel-dotted.dots-center-outside-container.all-content-cards {
+  padding-bottom:var(--bbl-space-600);
+}
+
 .carousel-dotted.all-content-cards .slick-dots {
   bottom: var(--bbl-space-200);
   left: 50%;
@@ -48,6 +52,10 @@
 @media (width > 47.5rem) {
   .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards.is-active {
     overflow: hidden;
+  }
+
+  .carousel-dotted.dots-center-outside-container.all-content-cards {
+    padding-bottom: 0;
   }
 }
 
