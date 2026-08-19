@@ -109,6 +109,7 @@
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .thumb {
   display: block;
+  height: calc((100vw) / 2);
   width: 100%;
   overflow: hidden;
   background-size: cover;
