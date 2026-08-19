@@ -60,9 +60,10 @@ body:has(.top-promo-grid) .tabs-nav {
    still gets the tablet layout everywhere else on the site. For this
    promotions widget specifically, product wants the desktop look (4-column
    grid, larger heading, wider-spaced tabs) to start at 1024px already, so we
-   mirror the existing desktop values here at width >= 64rem, scoped only to
-   this component to avoid touching the shared breakpoint used elsewhere. */
-@media (width >= 64rem) {
+   mirror the existing desktop values here starting at 1024px (inclusive),
+   scoped only to this component to avoid touching the shared breakpoint used
+   elsewhere. */
+@media (width > 63.9375rem) {
   #credit-card-promotions {
     font-size: var(--bbl-font-size-h2-desktop);
     line-height: var(--bbl-line-height-h2-desktop);
