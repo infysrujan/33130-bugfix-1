@@ -858,10 +858,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       line-height: var(--bbl-line-height-b1-desktop);
     }
 
-    & .form form .field-wrapper.col-12:not(:is(.field-button-panel, .radio-group-wrapper, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-'])) {
-       display: grid;
-     }
-
     & .form form fieldset.panel-wrapper.field-wrapper {
       &.cc-app-approved {
         & > .cc-panel-item-timeline-step-2 {

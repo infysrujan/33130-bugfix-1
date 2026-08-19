@@ -391,7 +391,6 @@
 .locate-us .locate-us-cards {
   display: grid;
   align-items: stretch;
-  padding: 0;
   margin: 1.875rem auto 0;
   grid-template-columns: 1fr;
   padding: 0 1.25rem 1.25rem;
