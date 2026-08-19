@@ -54,3 +54,34 @@
 body:has(.top-promo-grid) .tabs-nav {
     margin-inline: -0.6875rem;
 }
+
+/* The shared design-system breakpoint only switches to the desktop treatment
+   above 1024px (width > 64rem), so an iPad-Pro-width viewport (exactly 1024px)
+   still gets the tablet layout everywhere else on the site. For this
+   promotions widget specifically, product wants the desktop look (4-column
+   grid, larger heading, wider-spaced tabs) to start at 1024px already, so we
+   mirror the existing desktop values here at width >= 64rem, scoped only to
+   this component to avoid touching the shared breakpoint used elsewhere. */
+@media (width >= 64rem) {
+  #credit-card-promotions {
+    font-size: var(--bbl-font-size-h2-desktop);
+    line-height: var(--bbl-line-height-h2-desktop);
+  }
+
+  .top-promo-grid {
+    gap: var(--bbl-space-500);
+    padding-bottom: var(--bbl-space-500);
+  }
+
+  .top-promo-grid .listing-card-container {
+    width: calc(25% - 1.875rem);
+  }
+
+  .tabs-container:has(.top-promo-grid) .tabs-nav-wrapper .tabs-nav {
+    justify-content: center;
+  }
+
+  .tabs-container:has(.top-promo-grid) .tabs-nav-wrapper .tabs-nav button {
+    margin: 0.6875rem 1.1rem;
+  }
+}
