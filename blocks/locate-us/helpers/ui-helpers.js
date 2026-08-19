@@ -609,6 +609,8 @@ export async function buildOverseasUI(container, placeholders, configs) {
       return hasValue(loc.MicroBranchHours) && validTel && address;
     });
 
+    filtered.sort((a, b) => (a.BranchName || '').localeCompare(b.BranchName || '', undefined, { sensitivity: 'base' }));
+
     if (!filtered.length) {
       resultsSection.hidden = false;
       noResults.hidden = false;
@@ -621,6 +623,88 @@ export async function buildOverseasUI(container, placeholders, configs) {
     renderOverseasPage(filtered, 1);
   }
 
+  async function selectCountry(country) {
+    selectedCountry = country;
+    keywordInput.value = country;
+    keywordFromSelection = true;
+    countryDropdown.hidden = true;
+    dropdownToggle.setAttribute('aria-expanded', 'false');
+    districtWrapper.hidden = true;
+    districtWrapper.innerHTML = '';
+
+    const [cities, locations] = await Promise.all([
+      fetchCities(selectedCountry),
+      fetchByCountryCity(selectedCountry, ''),
+    ]);
+
+    showOverseasResults(locations);
+
+    if (cities.length) {
+      const cityItems = cities.map(() => '<li class="locate-us-district-item" role="option"></li>').join('');
+      districtWrapper.innerHTML = `
+        <button type="button" class="locate-us-district-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span class="locate-us-district-btn-text"></span>
+          <span class="icon-dropdown locate-us-district-btn-icon" aria-hidden="true"></span>
+        </button>
+        <ul class="locate-us-district-dropdown" role="listbox" hidden>
+          <li class="locate-us-district-item locate-us-district-item-header" role="option"></li>
+          ${cityItems}
+        </ul>`;
+
+      const cityBtn = districtWrapper.querySelector('.locate-us-district-btn');
+      const cityBtnText = districtWrapper.querySelector('.locate-us-district-btn-text');
+      const cityDropdown = districtWrapper.querySelector('.locate-us-district-dropdown');
+
+      cityBtnText.textContent = selectCityText;
+      cityDropdown.querySelector('.locate-us-district-item-header').textContent = selectCityText;
+      cityDropdown.querySelectorAll('.locate-us-district-item:not(.locate-us-district-item-header)').forEach((cityEl, j) => {
+        cityEl.textContent = cities[j];
+        cityEl.dataset.value = cities[j];
+      });
+
+      const toggleCityDropdown = (force) => {
+        const isHidden = force !== undefined ? !force : !cityDropdown.hidden;
+        cityDropdown.hidden = isHidden;
+        cityBtn.setAttribute('aria-expanded', String(!isHidden));
+      };
+
+      cityBtn.addEventListener('click', () => toggleCityDropdown());
+      document.addEventListener('click', (e) => {
+        if (!districtWrapper.contains(e.target)) toggleCityDropdown(false);
+      });
+
+      cityDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+        cityBtnText.textContent = selectCityText;
+        cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+        toggleCityDropdown(false);
+        const countryLocations = await fetchByCountryCity(selectedCountry, '');
+        showOverseasResults(countryLocations);
+      });
+
+      cityDropdown.querySelectorAll('.locate-us-district-item:not(.locate-us-district-item-header)').forEach((cityItem) => {
+        cityItem.addEventListener('click', async () => {
+          const city = cityItem.dataset.value;
+          cityBtnText.textContent = city;
+          cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+          cityItem.classList.add('locate-us-district-item-active');
+          toggleCityDropdown(false);
+          const cityFiltered = await fetchByCountryCity(selectedCountry, city);
+          showOverseasResults(cityFiltered);
+        });
+      });
+
+      cityDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+        cityBtnText.textContent = selectCityText;
+        cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+        toggleCityDropdown(false);
+        const cityFiltered = await fetchByCountryCity(selectedCountry, '');
+        showOverseasResults(cityFiltered);
+      });
+
+      districtWrapper.hidden = false;
+    }
+  }
+
   function buildCountryList(countries) {
     countryDropdown.innerHTML = `
       <ul class="locate-us-province-list">
@@ -631,87 +715,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
     countryDropdown.querySelectorAll('.locate-us-province-item:not(.locate-us-province-item-header)')
       .forEach((li, i) => {
         li.textContent = countries[i];
-        li.addEventListener('click', async () => {
-          selectedCountry = countries[i];
-          keywordInput.value = countries[i];
-          keywordFromSelection = true;
-          countryDropdown.hidden = true;
-          dropdownToggle.setAttribute('aria-expanded', 'false');
-          districtWrapper.hidden = true;
-          districtWrapper.innerHTML = '';
-
-          const [cities, locations] = await Promise.all([
-            fetchCities(selectedCountry),
-            fetchByCountryCity(selectedCountry, ''),
-          ]);
-
-          showOverseasResults(locations);
-
-          if (cities.length) {
-            const cityItems = cities.map(() => '<li class="locate-us-district-item" role="option"></li>').join('');
-            districtWrapper.innerHTML = `
-              <button type="button" class="locate-us-district-btn" aria-haspopup="listbox" aria-expanded="false">
-                <span class="locate-us-district-btn-text"></span>
-                <span class="icon-dropdown locate-us-district-btn-icon" aria-hidden="true"></span>
-              </button>
-              <ul class="locate-us-district-dropdown" role="listbox" hidden>
-                <li class="locate-us-district-item locate-us-district-item-header" role="option"></li>
-                ${cityItems}
-              </ul>`;
-
-            const cityBtn = districtWrapper.querySelector('.locate-us-district-btn');
-            const cityBtnText = districtWrapper.querySelector('.locate-us-district-btn-text');
-            const cityDropdown = districtWrapper.querySelector('.locate-us-district-dropdown');
-
-            cityBtnText.textContent = selectCityText;
-            cityDropdown.querySelector('.locate-us-district-item-header').textContent = selectCityText;
-            cityDropdown.querySelectorAll('.locate-us-district-item:not(.locate-us-district-item-header)').forEach((cityEl, j) => {
-              cityEl.textContent = cities[j];
-              cityEl.dataset.value = cities[j];
-            });
-
-            const toggleCityDropdown = (force) => {
-              const isHidden = force !== undefined ? !force : !cityDropdown.hidden;
-              cityDropdown.hidden = isHidden;
-              cityBtn.setAttribute('aria-expanded', String(!isHidden));
-            };
-
-            cityBtn.addEventListener('click', () => toggleCityDropdown());
-            document.addEventListener('click', (e) => {
-              if (!districtWrapper.contains(e.target)) toggleCityDropdown(false);
-            });
-
-            cityDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
-              cityBtnText.textContent = selectCityText;
-              cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
-              toggleCityDropdown(false);
-              const countryLocations = await fetchByCountryCity(selectedCountry, '');
-              showOverseasResults(countryLocations);
-            });
-
-            cityDropdown.querySelectorAll('.locate-us-district-item:not(.locate-us-district-item-header)').forEach((cityItem) => {
-              cityItem.addEventListener('click', async () => {
-                const city = cityItem.dataset.value;
-                cityBtnText.textContent = city;
-                cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
-                cityItem.classList.add('locate-us-district-item-active');
-                toggleCityDropdown(false);
-                const cityFiltered = await fetchByCountryCity(selectedCountry, city);
-                showOverseasResults(cityFiltered);
-              });
-            });
-
-            cityDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
-              cityBtnText.textContent = selectCityText;
-              cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
-              toggleCityDropdown(false);
-              const cityFiltered = await fetchByCountryCity(selectedCountry, '');
-              showOverseasResults(cityFiltered);
-            });
-
-            districtWrapper.hidden = false;
-          }
-        });
+        li.addEventListener('click', () => selectCountry(countries[i]));
       });
   }
 
@@ -750,6 +754,14 @@ export async function buildOverseasUI(container, placeholders, configs) {
     if (keywordFromSelection) return;
     const keyword = keywordInput.value.trim();
     if (!keyword) return;
+
+    // If the typed text matches a country, run the country search (same as
+    // picking it from the dropdown) so results match the selection flow.
+    const matchedCountry = countriesCache.find((c) => c.toLowerCase() === keyword.toLowerCase());
+    if (matchedCountry) {
+      await selectCountry(matchedCountry);
+      return;
+    }
 
     selectedCountry = '';
     districtWrapper.hidden = true;
