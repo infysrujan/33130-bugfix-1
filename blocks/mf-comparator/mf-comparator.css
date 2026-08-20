@@ -39,7 +39,7 @@
 .mf-comparator .mfc-error {
   width: 100%;
   color: var(--bbl-color-system-red, #d32f2f);
-  font-size: var(--bbl-font-size-b2, 0.875rem);
+  font-size: var(--bbl-body-b2-size);
   font-weight: 600;
   padding-bottom: var(--bbl-space-100);
 }
@@ -104,7 +104,7 @@
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-gray-300);
   color: var(--bbl-color-gray-600);
-  font-size: var(--bbl-font-size-b3, 0.8125rem);
+  font-size: var(--bbl-body-b3-size);
   font-weight: 300;
   line-height: 1.0625rem;
   cursor: pointer;
@@ -131,7 +131,7 @@
   -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
-  font-size: var(--bbl-font-size-b3, 0.8125rem);
+  font-size: var(--bbl-body-b3-size);
   line-height: 1.375;
   margin: 0;
   font-family: var(--bbl-font-family-medium);

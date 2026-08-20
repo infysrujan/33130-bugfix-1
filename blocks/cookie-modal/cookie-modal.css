@@ -311,7 +311,7 @@ body.cookie-modal-open .header {
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-weight: 500;
   line-height: 1.375rem;
   cursor: pointer;

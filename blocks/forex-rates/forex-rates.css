@@ -43,7 +43,7 @@
   outline: none;
   box-sizing: border-box;
   appearance: none;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
 }
 
 .forex-rates .forex-rates-date-text-input:focus {
@@ -106,7 +106,7 @@
   width: 100%;
   height: 2.75rem;
   padding: 0 1rem;
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-weight: 700;
   color: var(--bbl-color-grey-85);
   background: var(--bbl-color-white);
@@ -167,7 +167,7 @@
 
 .forex-rates .forex-rates-time-item {
   padding: 0.625rem 1.25rem;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   font-weight: 700;
   color: var(--bbl-color-black);
   white-space: nowrap;
@@ -193,7 +193,7 @@
   width: 100%;
   height: 2.75rem;
   padding: 0 1.25rem;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   font-weight: 700;
   color: var(--bbl-color-white);
   background: var(--bbl-color-active-blue);
@@ -380,7 +380,7 @@
 
 @media (width > 64rem) {
   .forex-rates .forex-rates-date-text-input {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .forex-rates .forex-rates-time-trigger {
@@ -401,7 +401,7 @@
 
   .forex-rates .forex-rates-go-btn {
     flex: 0 0 6.25rem;
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
     min-width: 9.6875rem;
   }
 
@@ -419,7 +419,7 @@
   }
 
   .forex-rates .forex-rates-time-item {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .bbl-calendar-picker-weekdays span {

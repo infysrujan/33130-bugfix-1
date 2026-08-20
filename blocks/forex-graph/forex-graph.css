@@ -146,7 +146,7 @@
   outline: none;
   box-sizing: border-box;
   appearance: none;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
 }
 
 .forex-graph .forex-graph-date-input:focus {

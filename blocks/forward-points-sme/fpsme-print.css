@@ -244,7 +244,7 @@
 
   .forward-points-sme .fpsme-fwd-title {
     margin-bottom: 0;
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
     font-weight: bold;
     text-align: center;
     line-height: 1.3;
@@ -269,7 +269,7 @@
 
   .forward-points-sme .fpsme-unit {
     margin-top: var(--bbl-space-150);
-    font-size: var(--bbl-font-size-b3);
+    font-size: var(--bbl-body-b3-size);
     color: var(--bbl-color-black) !important;
     text-align: right;
   }

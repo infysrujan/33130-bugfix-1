@@ -583,7 +583,7 @@
 }
 
 .wealth .hero-banner-simple .hero-banner-content-inner-text p{
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   line-height: 1.1812;
   padding-bottom: 0.9375rem;
 }
@@ -1063,7 +1063,7 @@
   }
 
   .wealth .hero-banner-simple .hero-banner-content-inner-text p {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
     line-height: 1.35rem;
   }
 

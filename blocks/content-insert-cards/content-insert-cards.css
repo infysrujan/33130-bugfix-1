@@ -195,7 +195,7 @@
 }
 
 .content-insert-cards .text-default {
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   line-height: 1.29;
 }
 

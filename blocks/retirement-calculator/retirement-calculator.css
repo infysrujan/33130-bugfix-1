@@ -204,14 +204,14 @@
 }
 
 .retirement-calculator .rc-error-text {
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   font-weight: 600;
   color: var(--bbl-state-error);
   min-height: var(--bbl-space-250);
 }
 
 .retirement-calculator .rc-present-value {
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   font-weight: 600;
   color: var(--bbl-color-system-green);
   text-align: right;
@@ -263,7 +263,7 @@
   border: none;
   outline: none;
   box-shadow: none;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-color-gray-121);
   text-align: right;
   padding: 0 var(--bbl-space-200);
@@ -280,7 +280,7 @@
   top: 50%;
   transform: translateY(-50%);
   width: 50%;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-color-grey-60);
   pointer-events: none;
   white-space: normal;
@@ -350,7 +350,7 @@
 }
 
 .retirement-calculator .rc-j1-summary-unit {
-  font-size: var(--bbl-font-size-b3);
+  font-size: var(--bbl-body-b3-size);
   font-weight: 400;
   color: var(--bbl-color-gray-121);
 }
@@ -561,7 +561,7 @@
 
 .retirement-calculator .rc-summary-label {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-weight: 400;
   color: var(--bbl-color-gray-121);
   margin: 0;
@@ -666,7 +666,7 @@
 }
 
 .retirement-calculator .rc-progress-unit {
-  font-size: var(--bbl-font-size-b3);
+  font-size: var(--bbl-body-b3-size);
   font-weight: 500;
   line-height: normal;
   color: var(--bbl-color-black);
@@ -751,7 +751,7 @@
 
   .retirement-calculator .rc-field-input,
   .retirement-calculator .rc-field-label {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .retirement-calculator .rc-field-error {
@@ -920,7 +920,7 @@
     box-sizing: border-box;
     width: 1.5rem;
     height: 1.5rem;
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .retirement-calculator .rc-step-connector {

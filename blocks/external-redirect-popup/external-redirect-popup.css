@@ -154,7 +154,7 @@
   padding: 0 var(--bbl-space-200);
   border-radius: 0.4375rem;
   font-family: var(--bbl-font-family-primary); 
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-weight: var(--bbl-font-weight-regular);
   line-height: 1.375;
   white-space: nowrap;
@@ -265,7 +265,7 @@
   }
 
   .external-redirect-popup-description p {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
     line-height: 1.5rem;
   }
 }

@@ -513,7 +513,7 @@
 
 @media (width > 47.5rem) {
   .card-list-container .default-content-wrapper p {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .cards-list.center {
@@ -611,11 +611,11 @@
   }
 
   .card-list-modal-media+.card-list-modal-text {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .card-list-modal-last-title+.card-list-modal-text {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .cards-list-button .global-dropdown.is-open .global-dropdown-panel {
@@ -666,7 +666,7 @@
   }
 
   .card-list-container .default-content-wrapper p {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
     line-height: 1.375rem;
   }
 
@@ -784,7 +784,7 @@
   }
 
   .card-list-modal-title+.card-list-modal-text {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
     line-height: 1.375rem;
   }
 
@@ -801,12 +801,12 @@
 
   .card-list-modal-media+.card-list-modal-text {
     margin-block: 1.375rem 0;
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
     line-height: 1.375rem;
   }
 
   .card-list-modal-last-title+.card-list-modal-text {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
     line-height: 1.3rem;
   }
 
