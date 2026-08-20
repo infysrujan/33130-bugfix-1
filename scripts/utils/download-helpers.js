@@ -4,7 +4,7 @@ export default function createDownloadLink(anchor, doc = document) {
   if (!anchorEl) return null;
 
   const wrapper = doc.createElement('div');
-  wrapper.className = 'download-button-wrapper';
+  wrapper.className = 'download-button-wrapper content';
 
   const link = anchorEl.cloneNode(true);
   link.classList.remove('button-tertiary');

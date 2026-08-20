@@ -11,7 +11,6 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.625rem;
-  padding: 0 0.625rem 0 0; 
 }
 
 .forex-rates .forex-rates-calendar-label {
@@ -223,15 +222,16 @@
   margin-left: auto;
   background: none;
   border: none;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b1-size);
   color: var(--bbl-color-grey-70);
   cursor: pointer;
-  padding: 0.9375rem 0.625rem 0;
+  padding: 0.9375rem 0 0 0.625rem;
   font-weight: 700;
+  width:unset;
 }
 
 .forex-rates .forex-rates-print-btn .icon-print {
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   color: var(--bbl-color-grey-70);
 }
 
@@ -406,7 +406,7 @@
   }
 
   .forex-rates .forex-rates-print-btn {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .forex-rates .forex-rates-table thead th {

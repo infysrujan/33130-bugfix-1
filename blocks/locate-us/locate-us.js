@@ -29,7 +29,7 @@ export default async function decorate(block) {
   const data = parseBlockData(block);
   block.innerHTML = '';
 
-  const wrapper = createEl('<div class="locate-us-wrapper"></div>');
+  const wrapper = createEl('<div class="content"></div>');
   block.appendChild(wrapper);
 
   if (data.locationType === 'thailand') {

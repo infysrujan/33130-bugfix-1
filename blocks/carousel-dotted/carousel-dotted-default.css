@@ -196,7 +196,7 @@
   line-height: var(--bbl-text-label-tag-line-height);
   background: var(--bbl-color-blue-140);
   color: var(--bbl-color-white);
-  padding: var(--bbl-space-050) 0.4375rem;
+  padding: var(--bbl-space-025) var(--bbl-space-100);
   border-radius: var(--bbl-rounded-200);
   margin-bottom: 0.875rem;
   font-family: var(--bbl-font-family-looped);
@@ -204,9 +204,9 @@
 
 .carousel-dotted .carousel-dotted-description {
   font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-regular);
-  font-size: 1.1375rem;
-  line-height: 1.2495rem;
+  font-weight: var(--bbl-text-article-card-title-weight);
+  font-size: var(--bbl-text-article-card-title-size);
+  line-height: var(--bbl-text-article-card-title-line-height);
   color: var(--bbl-color-black);
   margin-bottom: 1.875rem;
 }
@@ -517,16 +517,6 @@
 .bangkok-bankm-card .carousel-dotted:is(.all-hero-banner-image-carousel)
 .carousel-title :is(h1, h2, h3, h4, h5, h6) {
   color: var(--bbl-color-black);
-}
-
-:lang(th) {
-  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
-    line-height: 1.875rem;
-  }
-
-  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
-    line-height: 1.5rem;
-  }
 }
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
@@ -968,31 +958,28 @@ p.text-large.text-light {
     margin-right: 1.875rem;
   }
 
+  .carousel-dotted .carousel-badge{
+    padding:var(--bbl-space-050) var(--bbl-space-200);
+  }
+
   .carousel-dotted .carousel-dotted-description {
     margin-bottom: var(--bbl-space-300);
+  }
+
+  :lang(th){
+  .carousel-dotted .carousel-dotted-description {
+    line-height:  2.5rem;
+    }
+
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
+  .carousel-title :is(h1, h2, h3, h4, h5, h6) {
+    line-height:  2.5rem;
+    }
   }
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-content.content {
     padding: 0 var(--bbl-space-1050);
     bottom: var(--bbl-space-500);
-  }
-
-  :lang(th) {
-    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
-      line-height: 3.75rem;
-    }
-
-    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h3) {
-      line-height: 2rem;
-    }
-
-    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h4) {
-      line-height: 1.375rem;
-    }
   }
   
   .carousel-dotted.all-hero-banner-image-carousel .slick-dots {

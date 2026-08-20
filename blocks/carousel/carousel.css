@@ -163,7 +163,7 @@
     background: var(--bbl-color-blue-140);
     font-family: var(--bbl-font-family-looped);
     display: inline-block;
-    padding: 0.25rem 0.4375rem;
+    padding: var(--bbl-space-025) var(--bbl-space-100);
     margin-bottom: 0.8125rem;
     color: var(--bbl-color-white);
     border-radius: var(--bbl-rounded-200);
@@ -275,6 +275,12 @@
         gap: var(--bbl-space-300);
     }
 
+    .carousel-eyebrow {
+        padding: var(--bbl-space-050) 0.4375rem;
+        margin-bottom: 0.875rem;
+        font-family: var(--bbl-font-family-medium);
+    }
+
     .carousel-track.is-sliding {
         width: 100%;
         margin-left: 0;
@@ -381,12 +387,6 @@
         min-height: 0;
         display: flex;
         flex-direction: column;
-    }
-
-    .carousel-eyebrow {
-        padding: var(--bbl-space-050) 0.4375rem;
-        margin-bottom: 0.875rem;
-        font-family: var(--bbl-font-family-medium);
     }
 
     .carousel-title {

@@ -21,3 +21,7 @@ export function setCookie(name, value, days) {
   document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; `
     + `expires=${expires}; path=/; SameSite=Lax`;
 }
+
+export function deleteCookie(name) {
+  document.cookie = `${name}=; Max-Age=0; path=/`;
+}

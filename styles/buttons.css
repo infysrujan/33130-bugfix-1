@@ -227,7 +227,7 @@ button.secondary:active,
 .button-m.secondary.disabled {
   background: var(--bbl-color-white);
   color: var(--bbl-color-grey-60);
-  border-color: var(--bbl-color-grey-40);
+  border-color: var(--bbl-color-grey-20);
   cursor: not-allowed;
 }
 
@@ -465,7 +465,7 @@ a.link-inverted[aria-disabled="true"] {
 }
 
 .download-button-wrapper{
-  width: 100%;
+  /* width: 100%; */
 }
 
 .download-button-wrapper .download-files {
