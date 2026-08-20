@@ -384,7 +384,7 @@
     }
 
     .carousel-eyebrow {
-        padding: var(--bbl-space-050) 0.4375rem;
+        padding:var(--bbl-space-050) var(--bbl-space-200);
         margin-bottom: 0.875rem;
         font-family: var(--bbl-font-family-medium);
     }
