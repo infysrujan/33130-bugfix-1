@@ -110,18 +110,8 @@
   text-align: center;
   flex: 1;
   white-space: normal;
-  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   text-indent: 0;
-}
-
-:lang(th) {
-  .privacy-modal-title :is(h1) {
-    line-height: 1.875rem;
-  }
-
-  .privacy-modal-title :is(h2) {
-    line-height: 1.5rem;
-  }
 }
 
 .privacy-modal-scroll-hint {
@@ -136,7 +126,7 @@
   line-height: 1.5;
   color: var(--bbl-color-grey-28);
   background-color: var(--bbl-color-grey-155);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   box-sizing: border-box;
   scrollbar-width: auto;
   scrollbar-color: auto;
@@ -261,7 +251,7 @@
   line-height: 1.14rem;
   color: var(--bbl-text-primary);
   cursor: pointer;
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
 }
 
 .privacy-modal-checkbox-row input[type='checkbox']:disabled + .privacy-modal-checkbox-label {
@@ -441,38 +431,4 @@
   .privacy-modal-checkbox-label{
     line-height: 1.3rem;
   }
-
-  :lang(th) {
-  .external-redirect-popup-title :is(h1) {
-    line-height: 3.75rem;
-  }
-
-  .external-redirect-popup-title :is(h2) {
-    line-height: 2.5rem;
-  }
-
-  .external-redirect-popup-title :is(h3) {
-    line-height: 2rem;
-  }
-
-  .external-redirect-popup-title :is(h4) {
-    line-height: 1.375rem;
-  }
-
-  .privacy-modal-title :is(h1) {
-    line-height: 3.75rem;
-  }
-
-  .privacy-modal-title :is(h2) {
-    line-height: 2.5rem;
-  }
-
-  .privacy-modal-title :is(h3) {
-    line-height: 2rem;
-  }
-
-  .privacy-modal-title :is(h4) {
-    line-height: 1.375rem;
-  }
-}
 }

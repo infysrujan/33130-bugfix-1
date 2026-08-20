@@ -1,3 +1,5 @@
+import { trackContactFormSubmit } from '../../../../scripts/analytics.js';
+
 /**
  * @param {HTMLElement | null} form
  * @returns {boolean}
@@ -5,10 +7,13 @@
 function isContactUsForm(form) {
   if (!form) return false;
 
-  // createForm() runs before the form is mounted in the section wrapper.
-  // The outer fragment panel's class differs across environments
-  // (field-contact in dev, field-contactfragment in prod).
-  return form.querySelector('.field-contact, .field-contactfragment, .field-main-panel') !== null;
+  // Generated panel/fragment class names (field-contact, field-contactfragment,
+  // field-main-panel, field-contactusfragment, ...) drift across environments
+  // and are reused by other form templates, so matching on them is unreliable.
+  // The hidden "formCode" field is an authored, form-specific identifier
+  // added for tracking/submission purposes — use that instead.
+  const formCode = form.querySelector('input[name="formCode"]')?.value;
+  return formCode?.trim().toLowerCase() === 'contactus';
 }
 
 /**
@@ -17,4 +22,5 @@ function isContactUsForm(form) {
 export default function decorateContactUsForm(form) {
   if (!isContactUsForm(form)) return;
   document.body.classList.add('contact-us');
+  form.addEventListener('submit', trackContactFormSubmit);
 }

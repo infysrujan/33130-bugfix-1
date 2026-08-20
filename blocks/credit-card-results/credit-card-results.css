@@ -62,7 +62,7 @@
 
 .card-list.credit-card .ccs-name-th {
   font-size: var(--bbl-font-size-b2);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin: 0 0 var(--bbl-space-050);
   line-height: 1.4;
 }
@@ -171,7 +171,7 @@
 .ccs-no-results {
   padding: var(--bbl-space-600) var(--bbl-space-200);
   text-align: center;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-body-b1-size);
 }
 

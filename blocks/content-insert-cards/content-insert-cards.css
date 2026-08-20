@@ -117,8 +117,8 @@
   font-size: var(--bbl-body-b1-size);
   line-height: 1.29;
   font-weight: var(--bbl-font-weight-regular);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  color: var(--bbl-color-grey-85);
+  font-family: var(--bbl-font-family-primary);
+  color: var(--bbl-color-grey-90);
   margin: 0;
   overflow: hidden;
   display: -webkit-box;

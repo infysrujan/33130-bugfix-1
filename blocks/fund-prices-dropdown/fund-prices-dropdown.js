@@ -217,7 +217,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
       y: y + 4,
       'text-anchor': 'end',
       'font-size': 11,
-      fill: '#78787D',
+      fill: '#46464D',
       'font-family': 'BangkokBank-Regular,Arial,sans-serif',
     }, svgEl).textContent = v.toFixed(1);
   });
@@ -657,13 +657,13 @@ export default async function decorate(block) {
   }
 
   /* Calendar pickers for date range */
-  attachCalendarPicker({
+  const drFromPicker = attachCalendarPicker({
     input: drFromInput,
     value: drFrom,
     isDateDisabled: isWeekendOrAfterYesterday,
     onChange: (d) => { drFrom = d; validateAndRenderDetail(); },
   });
-  attachCalendarPicker({
+  const drToPicker = attachCalendarPicker({
     input: drToInput,
     value: drTo,
     isDateDisabled: isWeekendOrAfterYesterday,
@@ -692,9 +692,11 @@ export default async function decorate(block) {
       const start = new Date(end.getFullYear(), end.getMonth(), 1);
       drFrom = start;
       drTo = end;
-      const lang = getCalendarLang();
-      drFromInput.value = formatCalendarDate(start, lang);
-      drToInput.value = formatCalendarDate(end, lang);
+      // Update through the pickers so their internal selection stays in sync with
+      // the input value (otherwise open+click-out reverts the field to the picker's
+      // stale selected date).
+      drFromPicker.setValue(start);
+      drToPicker.setValue(end);
       periodDateRangeEl.classList.remove('hidden');
       validateAndRenderDetail();
     } else {

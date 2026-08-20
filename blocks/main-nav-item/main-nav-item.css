@@ -16,6 +16,7 @@
   display: block;
   padding: 1.25rem 0;
   height: auto;
+  color: var(--bbl-color-black);
 }
 
 .main-nav-trigger-text p {
@@ -33,6 +34,7 @@
   right: 50%;
   top: 43%;
   font-size: 0.6594rem;
+  color: var(--bbl-color-black);
 }
 
 .main-nav-trigger:hover,
@@ -61,7 +63,7 @@
   text-decoration: none;
   font-weight: var(--bbl-font-weight-regular, 400);
   line-height: 1;
-  font-family: BangkokBank-Medium, sans-serif;
+  font-family: var(--bbl-font-family-medium);
 }
 
 .megamenu-home-link .icon-arrow-left {
@@ -164,7 +166,7 @@
   margin: 0;
   position: relative;
   font-size: 0.875rem;
-  font-family: BangkokBank-Medium, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-semibold, 400);
 }
 
@@ -257,7 +259,7 @@ a.megamenu-link {
 .quick-nav-item .quick-nav-label {
   margin-left: 0;
   color: var(--bbl-color-black);
-  font: 0.875rem BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
+  font: 0.875rem var(--bbl-font-family-medium);
 }
 
 @media (width > 64rem) {
@@ -407,7 +409,6 @@ a.megamenu-link {
 
   .quick-nav-item span,
   .quick-nav-item .quick-nav-label {
-    font: 1rem BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
+    font: 1rem var(--bbl-font-family-medium);
   }
-
 }

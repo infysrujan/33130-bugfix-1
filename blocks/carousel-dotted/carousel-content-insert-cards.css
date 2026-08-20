@@ -22,6 +22,10 @@
   padding: 0;
 }
 
+.carousel-dotted.dots-center-outside-container.all-content-cards {
+  padding-bottom:var(--bbl-space-600);
+}
+
 .carousel-dotted.all-content-cards .slick-dots {
   bottom: var(--bbl-space-200);
   left: 50%;
@@ -48,6 +52,10 @@
 @media (width > 47.5rem) {
   .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards.is-active {
     overflow: hidden;
+  }
+
+  .carousel-dotted.dots-center-outside-container.all-content-cards {
+    padding-bottom: 0;
   }
 }
 
@@ -101,6 +109,7 @@
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .thumb {
   display: block;
+  height: calc((100vw) / 2);
   width: 100%;
   overflow: hidden;
   background-size: cover;
@@ -178,7 +187,7 @@
   font-size: var(--bbl-body-b1-size);
   line-height: 2.75rem;
   font-weight: var(--bbl-font-weight-regular);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   color: var(--bbl-color-white);
   background-color: var(--bbl-color-active-blue);
   border: 0.063rem solid var(--bbl-color-active-blue);

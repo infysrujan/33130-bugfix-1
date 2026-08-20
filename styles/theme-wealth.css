@@ -16,6 +16,10 @@ body.wealth main :is(.button-container .button, .button) {
     }
 }
 
-body.wealth .default-content-wrapper p {
+body.wealth main .default-content-wrapper p {
     color: var(--bbl-color-grey-85);
+}
+
+body.wealth main .bg-grey-100 .default-content-wrapper p {
+    color: var(--bbl-color-white);
 }

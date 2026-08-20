@@ -41,7 +41,7 @@
   font-weight: 700;
   line-height: 1.5rem;
   text-decoration: none;
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif ;
+  font-family: var(--bbl-font-family-primary);
 }
 
 .cookie-alert-policy-link:hover,

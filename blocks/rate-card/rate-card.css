@@ -54,7 +54,11 @@
   padding: 0;
 }
 
-.rate-card .tab-header a,
+.rate-card .default-wrap > a {
+  font-size: var(--bbl-font-size-b2-desktop);
+  line-height: var(--bbl-line-height-b2-desktop);
+}
+
 .rate-card .tab-header a:any-link {
   color: var(--bbl-color-gray-121);
   font-size: var(--bbl-text-label-tag-size);
@@ -236,7 +240,7 @@
    -------------------------------------------------------------------------- */
 .rate-card .text-x-small {
   font-size: 0.75rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-family: var(--bbl-font-family-looped);
 }
 
@@ -272,7 +276,7 @@
 .rate-card .no-data {
   padding: 1.5rem;
   text-align: center;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-style: italic;
   font-family: var(--bbl-font-family-medium);
 }
@@ -331,7 +335,7 @@
   }
 
   .rate-card table tbody td:not(:first-child) {
-    padding-inline: 0.625rem;
+    padding-left: 0.625rem;
     font-size: 1.5rem;
   }
 

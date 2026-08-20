@@ -96,7 +96,7 @@
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: 1.1244rem;
   margin: 0;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .card-eyebrow {
@@ -105,7 +105,7 @@
   font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-line-height-b1-mobile);
   margin: var(--bbl-space-250) 0;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .card-benefit {
@@ -123,7 +123,7 @@
 
 .card-benefit span {
   font-size: var(--bbl-font-size-b1-mobile);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .card-cta {

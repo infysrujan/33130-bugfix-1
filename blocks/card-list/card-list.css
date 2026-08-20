@@ -1,19 +1,6 @@
-.card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  font-size: var(--bbl-text-section-title-size);
-  line-height: var(--bbl-text-section-title-line-height);
-  font-weight: var(--bbl-text-section-title-weight);
-  letter-spacing: -0.0125rem;
-}
+
 
 :lang(th) {
-  .card-list-container .default-content-wrapper :is(h1) {
-    line-height: 1.875rem;
-  }
-
-  .card-list-container .default-content-wrapper :is(h2) {
-    line-height: 1.5rem;
-  }
-
   .cards-list-title :is(h1) {
     line-height: 1.875rem;
   }
@@ -27,7 +14,7 @@
 .cards-list-subtitle p,
 .cards-list-description p {
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .cards-list-subtitle p {
@@ -153,16 +140,28 @@
   box-sizing: border-box;
   box-shadow: 0 0 1rem 0 transparent;
   position: relative;
+  border: 0.0625rem solid transparent;
+  border-radius: 0.4375rem;
+}
+
+.cards-list-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-radius: 0.4375rem;
+  pointer-events: none;
+  z-index: 1;
+  transition: border-color 0.3s ease;
+}
+
+.cards-list-item:has(.cards-list-item-link:hover)::after {
+  border-color: var(--bbl-color-active-blue);
 }
 
 .carousel .cards-list-item {
   margin-block: 0.5625rem 0;
-}
-
-.cards-list-item:has(.cards-list-item-link) {
-  border: none;
 }
 
 /* .cards-list-item:has(.cards-list-image-logo) {
@@ -202,8 +201,6 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
-  transition: border 0.3s ease, box-shadow 0.3s ease;
   border-radius: 0.4375rem;
 }
 
@@ -212,7 +209,6 @@
 }
 
 .cards-list-item-link:hover {
-  border: 0.0625rem solid var(--bbl-color-active-blue);
   text-decoration: none;
 }
 
@@ -221,6 +217,7 @@
   flex: 1;
   flex-direction: column;
   min-width: 0;
+  border-radius: 0.375rem;
 }
 
 .cards-list-image.cards-list-image-x-small {
@@ -282,8 +279,6 @@
 
 .cards-list-image.cards-list-image-card {
   max-height: 10.3125rem;
-  border-top-left-radius: 0.4375rem;
-  border-top-right-radius: 0.4375rem;
 }
 
 .cards-list-image.cards-list-image-full {
@@ -377,11 +372,11 @@
 }
 
 .section.bg-truthful-dark-blue * .cards-list-description p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-dark-blue * .cards-list-remark p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-blue * .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
@@ -389,11 +384,11 @@
 }
 
 .section.bg-truthful-blue * .cards-list-description p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-blue * .cards-list-remark p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .cards-list-title:not(.has-title-underline) :is(h1, h2, h3, h4, h5, h6) {
@@ -567,14 +562,14 @@
     flex: 0 0 16.875rem;
   }
 
-  .cards-list:not(.scrollable, .carousel) .cards-list-image:not(.cards-list-image-logo) {
-    margin-inline: -0.0625rem;
-    width: calc(100% + 0.125rem);
-  }
-
   .cards-list-image.cards-list-image-card {
     height: calc(100vw / 5);
     min-height: 8.4375rem;
+  }
+
+  .cards-list:not(.scrollable, .carousel) .cards-list-inner {
+    margin-inline: -0.0625rem;
+    width: calc(100% + 0.125rem);
   }
 
   .cards-list-image.cards-list-image-full {
@@ -639,22 +634,6 @@
 
 @media (width > 64rem) {
   :lang(th) {
-    .card-list-container .default-content-wrapper :is(h1) {
-      line-height: 3.75rem;
-    }
-
-    .card-list-container .default-content-wrapper :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .card-list-container .default-content-wrapper :is(h3) {
-      line-height: 2rem;
-    }
-
-    .card-list-container .default-content-wrapper :is(h4) {
-      line-height: 1.375rem;
-    }
-
     .cards-list-title :is(h1) {
       line-height: 3.75rem;
     }
@@ -712,6 +691,11 @@
 
   .cards-list:is(.carousel) .cards-list-item {
     flex: 0 0 16.25rem;
+  }
+
+  .cards-list:not(.scrollable, .carousel) .cards-list-inner {
+    margin-inline: unset;
+    width: unset;
   }
 
   .cards-list:is(.scrollable, .carousel).center {

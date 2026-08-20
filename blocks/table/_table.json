@@ -50,6 +50,10 @@
                 {
                   "name": "Border Bottom",
                   "value": "border-bottom"
+                },
+                {
+                  "name": "No Border Bottom",
+                  "value": "no-border-bottom"
                 }
               ]
             },
@@ -130,6 +134,10 @@
                 {
                   "name": "Dash Cell Highlight",
                   "value": "dash-cell-highlight"
+                },
+                {
+                  "name": "Highlight Bold Cells",
+                  "value": "highlight-bold-cells"
                 }
               ]
             },
@@ -164,6 +172,14 @@
               ]
             }
           ]
+        },
+        {
+          "component": "text",
+          "name": "columnWidth",
+          "label": "Column Width",
+          "valueType": "string",
+          "required": false,
+          "description": "Comma-separated width per column, in order. Accepts any CSS width value (e.g. 35%, 30px, fit-content). Use \"auto\" or leave a column blank to size it automatically."
         },
         {
           "component": "text",

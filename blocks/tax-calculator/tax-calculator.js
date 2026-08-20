@@ -18,7 +18,10 @@ const MAX_DECIMAL_DIGITS = 2;
 
 // Decimal-allowed fields display the raw value with no thousand separators
 function formatValue(val, allowDecimal) {
-  return allowDecimal ? String(val ?? 0) : formatNumber(val);
+  if (allowDecimal) return String(val ?? 0);
+  const n = parseFloat(String(val ?? '').replace(/,/g, ''));
+  if (Number.isNaN(n)) return '';
+  return formatNumber(Math.round(n));
 }
 
 // Digits and a single decimal point (max MAX_DECIMAL_DIGITS decimal places) are allowed
@@ -534,7 +537,10 @@ function buildInputField(fieldDef, savedValue) {
     }
     input.setSelectionRange(newPos, newPos);
 
-    const val = parseFloat(rawVal) || 0;
+    const val = fieldDef.allowDecimal
+      ? (parseFloat(rawVal) || 0)
+      : Math.round(parseFloat(rawVal) || 0);
+
     if (val > fieldDef.max) {
       const msg = (fieldDef.errorMsg || getString({}, 'configValidationMaxValueError', 'Maximum up to {max}'))
         .replace('{max}', formatNumber(fieldDef.max))

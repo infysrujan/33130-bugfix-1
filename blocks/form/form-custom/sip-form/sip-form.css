@@ -164,6 +164,7 @@
 
     @media (width > 47.5rem) {
       & .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
+        flex-wrap: nowrap;
         gap: var(--form-field-gap) 1.875rem;
 
         & .radio-wrapper {

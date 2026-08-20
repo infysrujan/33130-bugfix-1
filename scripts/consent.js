@@ -41,52 +41,49 @@ let consentListenerAttached = false;
  * @returns {Promise<void>}
  */
 export async function applyMarketingConsentUpdates(detail = {}) {
-  // eslint-disable-next-line prefer-const
-  let gtagPayload = DEFAULT_GTAG_MARKETING;
-  // eslint-disable-next-line prefer-const
-  let adobePayload = DEFAULT_ADOBE_MARKETING;
+  const gtagPayload = { ...DEFAULT_GTAG_MARKETING };
+  const adobePayload = { ...DEFAULT_ADOBE_MARKETING };
 
   if (detail.preferences) {
-    // TODO: Validate the logic for AdvertisingCookie and AnalysisCookie
     if (detail.preferences.AdvertisingCookie === true) {
-      // set advertising payload for gtag
       gtagPayload.ad_storage = 'granted';
       gtagPayload.ad_user_data = 'granted';
       gtagPayload.ad_personalization = 'granted';
       gtagPayload.personalization_storage = 'granted';
 
-      // set the advertising payload for adobe
       adobePayload.personalize = true;
       adobePayload.share = true;
       adobePayload.marketing = true;
     }
 
     if (detail.preferences.AnalysisCookie === true) {
-      // set the analysis payload for gtag
       gtagPayload.analytics_storage = 'granted';
-
-      // set the analysis payload for adobe
       adobePayload.collect = true;
     }
 
-    // eslint-disable-next-line no-console
-    console.debug('Consent update details', 'gtagPayload', gtagPayload, 'adobePayload', adobePayload);
+    console.debug(
+      'Consent update details',
+      'gtagPayload',
+      gtagPayload,
+      'adobePayload',
+      adobePayload,
+    );
   }
 
-  if (gtagPayload && typeof window.gtag === 'function') {
-    // eslint-disable-next-line no-console
+  if (typeof window.gtag === 'function') {
     console.debug('Updating Google Consent Mode', gtagPayload);
     gtmMartech.updateUserConsent(gtagPayload);
     firePageViewIfAnalyticsGranted(gtagPayload);
   }
 
-  if (adobePayload) {
-    // eslint-disable-next-line no-console
-    console.debug('Updating Adobe Alloy Consent', adobePayload);
-    await updateAdobeConsent(adobePayload);
-  }
+  console.debug('Updating Adobe Alloy Consent', adobePayload);
+  await updateAdobeConsent(adobePayload);
 
-  window.dispatchEvent(new CustomEvent('consent-update', { detail: { gtagPayload, adobePayload } }));
+  window.dispatchEvent(
+    new CustomEvent('consent-update', {
+      detail: { gtagPayload, adobePayload },
+    }),
+  );
 }
 
 /**

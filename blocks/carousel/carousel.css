@@ -30,8 +30,8 @@
     align-items: flex-end;
     justify-content: flex-end;
     font-weight: var(--bbl-font-weight-regular);
-    font-size: 0.7rem;
-    line-height: 0.98rem;
+    font-size: var(--bbl-text-link-primary-size);
+    line-height: var(--bbl-text-link-primary-line-height);
     color: var(--bbl-color-active-blue);
     text-decoration: none;
     position: relative;
@@ -163,7 +163,7 @@
     background: var(--bbl-color-blue-140);
     font-family: var(--bbl-font-family-looped);
     display: inline-block;
-    padding: 0.25rem 0.4375rem;
+    padding: var(--bbl-space-025) var(--bbl-space-100);
     margin-bottom: 0.8125rem;
     color: var(--bbl-color-white);
     border-radius: var(--bbl-rounded-200);
@@ -186,7 +186,7 @@
 }
 
 .carousel-description {
-    color: var(--bbl-color-grey-70);
+    color: var(--bbl-color-grey-90);
     margin: 0 0 var(--bbl-space-300);
     overflow: hidden;
     display: -webkit-box;
@@ -261,8 +261,6 @@
     }
 
     .carousel-header a {
-        font-size: 0.8rem;
-        line-height: 1.12rem;
         margin-right: 0.9375rem;
         font-family: var(--bbl-font-family-looped);
     }
@@ -384,7 +382,7 @@
     }
 
     .carousel-eyebrow {
-        padding: var(--bbl-space-050) 0.4375rem;
+        padding: var(--bbl-space-025) var(--bbl-space-100);
         margin-bottom: 0.875rem;
         font-family: var(--bbl-font-family-medium);
     }

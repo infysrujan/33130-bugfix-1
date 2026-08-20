@@ -159,6 +159,7 @@ main .lead-forms .drop-down-wrapper {
 main .section.form-container.lead-forms .form form .plain-text-wrapper.field-text {
   background-color: unset;
   padding: unset;
+  padding-top: var(--bbl-form-padding-30);
   border-radius: unset;
   font-size: unset;
 }
@@ -209,7 +210,7 @@ main .lead-forms .form form .field-infotext {
 }
 
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-14);
   padding-right: 0;
@@ -286,7 +287,7 @@ main .section.form-container.lead-forms .form form select {
   border-color: var(--bbl-color-grey-23);
   cursor: pointer;
   appearance: none;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin-bottom: var(--bbl-form-margin-14);
   background: var(--bbl-color-white) url('../../../icons/dropdown.svg') no-repeat right var(--bbl-space-150) center /25px;
   font-family: var(--bbl-font-family-medium);
@@ -348,7 +349,7 @@ main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .tele
 
 main .lead-forms .form form .field-wrapper[class*='icon-'] input {
   margin-top: var(--bbl-form-margin-8);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):has([aria-live="polite"]) input {
@@ -453,7 +454,7 @@ main .lead-forms .form form .email-wrapper::before {
   justify-content: center;
   width: var(--bbl-space-250);
   height: 1.1875rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   transform: translateY(-50%);
   pointer-events: none;
 }

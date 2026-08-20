@@ -208,7 +208,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio
   height: 100%;
   margin: 0;
   padding: 0 var(--bbl-space-100);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-h4-mobile);
   font-weight: var(--form-label-font-weight);
   line-height: var(--bbl-line-height-h4-mobile);

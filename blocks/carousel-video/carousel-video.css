@@ -92,6 +92,11 @@
   transition: transform 0.35s ease;
 }
 
+/* 3 or fewer items: center them with equal spacing instead of flush left. */
+.carousel-video .cv-track.cv-track-center {
+  justify-content: center;
+}
+
 /* ── Thumbnails ──────────────────────────────────────────────────────────── */
 .carousel-video .cv-thumb {
   flex: 0 0 12.0625rem;
@@ -294,7 +299,6 @@
 
   .carousel-video .cv-nav {
     position: absolute;
-    top: 40%;
     transform: translateY(-50%);
     width: 2.5rem;
     height: 2.5rem;
@@ -307,6 +311,11 @@
 
   .carousel-video .cv-next {
     right: -2.9rem;
+  }
+
+  /* 4 or fewer items fit in a single view — no scrolling, so hide the arrows. */
+  .carousel-video.cv-few-items .cv-nav, .carousel-video.cv-few-items .cv-dots {
+    display: none;
   }
 }
 
@@ -328,6 +337,7 @@
     width: 50.5rem;
     max-width: 100%;
     margin: 1.875rem auto;
+     margin-left: 51px;
   }
 
   .carousel-video .cv-thumb {
@@ -347,6 +357,6 @@
   }
 
   .carousel-video .cv-next {
-    right: -2.9rem;
+    right: -2.4rem;
   }
 }

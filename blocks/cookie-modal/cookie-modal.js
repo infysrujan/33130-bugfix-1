@@ -7,7 +7,7 @@
 import { createModalShell, hideModal } from '../../scripts/utils/modal.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
-import { getCookie, setCookie } from '../../scripts/utils/cookies.js';
+import { deleteCookie, getCookie, setCookie } from '../../scripts/utils/cookies.js';
 
 const COOKIE_DURATION_DAYS = 30;
 const COOKIE_CONSENT = 'ConsentAlert';
@@ -363,6 +363,8 @@ export default function decorate(block) {
       preferences[cookieName] = input.checked;
       if (input.checked) {
         setCookie(cookieName, COOKIE_VALUE_MAP[cookieName] || cookieName, COOKIE_DURATION_DAYS);
+      } else {
+        deleteCookie(cookieName);
       }
     });
 

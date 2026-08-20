@@ -12,22 +12,57 @@
 }
 
 .default-content-wrapper p.rte-inline-image {
-  display: inline-block;
+  display: inline;
   margin: 0;
 }
 
-.default-content-wrapper p.rte-inline-image picture {
+.default-content-wrapper p:is(.rte-inline-image, .rte-has-icon) picture {
   display: inline-block;
   vertical-align: middle;
 }
 
-.default-content-wrapper p.rte-has-icon picture {
+.columns p:is(.rte-has-icon, .rte-image-link, .rte-inline-image):has(picture) {
+  margin-block: 0;
+}
+
+.columns p:is(.rte-has-icon, .rte-image-link, .rte-inline-image):has(picture) picture {
+  display: flex;
+}
+
+.default-content-wrapper li:has(p:is(.rte-inline-image, .rte-has-icon)) p {
+  display: inline;
+  margin: 0;
+}
+
+.default-content-wrapper li:has(p:is(.rte-inline-image, .rte-has-icon)) p:has(picture) {
+  display: inline;
+}
+
+.table.block table td p:is(.rte-inline-image, .rte-has-icon, .rte-image-link) {
+  display: inline;
+  margin: 0;
+}
+
+.table.block table td p:is(.rte-inline-image, .rte-has-icon) picture {
   display: inline-block;
   vertical-align: middle;
 }
 
-.default-content-wrapper > p.rte-has-icon:not(.rte-image-link):has(+ p.rte-has-icon:not(.rte-image-link)),
-.default-content-wrapper > p.rte-has-icon:not(.rte-image-link) + p.rte-has-icon:not(.rte-image-link) {
+.table.block table td p.rte-has-icon + p {
+  display: inline;
+  vertical-align: middle;
+}
+
+.table.block table td p:is(.rte-has-icon, .rte-image-link, .rte-inline-image):has(picture) {
+  margin-block: 0;
+}
+
+.table.block table td li:has(p:is(.rte-inline-image, .rte-has-icon)) p {
+  display: inline;
+  margin: 0;
+}
+
+.table.block table td li:has(p:is(.rte-inline-image, .rte-has-icon)) p:has(picture) {
   display: inline;
 }
 
@@ -36,17 +71,24 @@
   display: inline;
 }
 
-.default-content-wrapper li:has(p.rte-has-icon) p {
+.default-content-wrapper > p.rte-inline-image:not(.rte-image-link):has(+ p:not(.rte-inline-image)) {
+  display: inline-block;
+  vertical-align: middle;
+  margin-block: 0;
+}
+
+.default-content-wrapper > p.rte-inline-image:not(.rte-image-link) + p:not(.rte-inline-image) {
   display: inline;
-  margin: 0;
+  vertical-align: middle;
 }
 
-.default-content-wrapper li:has(p.rte-has-icon) p:has(picture) {
-  display: inline-block;
+.default-content-wrapper > p.rte-has-icon:not(.rte-image-link):has(+ p.rte-has-icon:not(.rte-image-link)),
+.default-content-wrapper > p.rte-has-icon:not(.rte-image-link) + p.rte-has-icon:not(.rte-image-link) {
+  display: inline;
 }
 
-.default-content-wrapper li:has(> p.rte-inline-image + p.rte-inline-image) > p.rte-inline-image {
-  display: inline-block;
+.default-content-wrapper li:has(> p:is(.rte-inline-image, .rte-has-icon) + p:is(.rte-inline-image, .rte-has-icon)) > p:is(.rte-inline-image, .rte-has-icon) {
+  display: inline;
 }
 
 .accordion-item :is(.default-content-wrapper, .table.block) table td :is(ul, ol) {
@@ -61,4 +103,3 @@
 .default-content-wrapper > :not(.button-container, .footer-container) a:any-link {
   color: inherit;
 }
-

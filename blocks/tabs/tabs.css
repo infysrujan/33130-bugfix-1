@@ -602,7 +602,7 @@
   padding: var(--bbl-space-250) var(--bbl-space-075);
   font-size: 0.7875rem;
   line-height: 1.0631rem;
-  font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif !important;
+  font-family: var(--bbl-font-family-medium);
   text-transform: uppercase;
   border: none;
   background: transparent;

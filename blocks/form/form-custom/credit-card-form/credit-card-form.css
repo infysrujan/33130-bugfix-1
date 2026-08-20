@@ -48,11 +48,7 @@
   color: var(--bbl-color-grey-85);
 }
 
-.credit-card-form main .section.form-container.custom-forms .form form .field-summary p:first-of-type{
-  text-align: center;
-}
-
-.credit-card-form main .section.form-container.custom-forms .form form .plain-text-wrapper:is(.field-notetext) > p > p:last-of-type {
+.credit-card-form main .section.form-container.custom-forms .form form .plain-text-wrapper:is(.field-notetext, .field-summary) > p:not(:has(ul)) > p:last-of-type {
   text-align: center;
 }
 
@@ -70,6 +66,10 @@
 
 .credit-card-form main .section.form-container.custom-forms .form form ul {
   padding: 0;
+}
+
+.credit-card-form main .section.form-container.custom-forms .form .form-message.success-message {
+  line-height: 1;
 }
 
 @media (width > 47.5rem) {

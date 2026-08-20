@@ -192,6 +192,14 @@
   overflow: visible;
 }
 
+.carousel-dotted.show-arrows-dots .carousel-track-viewport:has(.with-default-image.carousel-dotted-item.is-active),
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-viewport:has(.with-default-image.carousel-dotted-item) {
+  box-sizing: border-box;
+  border: 0.063rem solid var(--bbl-color-black-alpha-10);
+  box-shadow: 0 0 0.625rem transparent;
+  border-radius: var(--bbl-rounded-100);
+}
+
 @media (width > 47.5rem) {
   /* Simple image carousel: overlay arrows on image edges, dots below */
   .carousel-dotted.show-arrows-dots {
@@ -223,10 +231,6 @@
 
   .carousel-dotted.show-arrows-dots .with-default-image.carousel-dotted-item.is-active,
   .carousel-dotted.show-arrows-dots.mixed-image-slides .with-default-image.carousel-dotted-item {
-    box-sizing: border-box;
-    border: 0.063rem solid var(--bbl-color-black-alpha-10);
-    box-shadow: 0 0 0.625rem transparent;
-    border-radius: var(--bbl-rounded-100);
     align-items: center;
   }
 

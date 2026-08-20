@@ -57,6 +57,13 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   let selectedServiceCode = '';
   let currentIsAtm = false;
   let currentPage = 1;
+  // The location currently shown in the sidebar. Used so the matching card in the
+  // list keeps its active/expanded state across pagination re-renders.
+  let selectedLoc = null;
+  // The province/district currently selected. Retained when the service
+  // (Branch/ATM/ATM+) dropdown changes so results stay scoped to that area.
+  let selectedProvince = '';
+  let selectedDistrict = '';
   let keywordFromSelection = false;
   // When a "…with BeMyID" service variant is active, results are filtered to
   // locations that support Be My ID (the API marks these with Tel === 'BeID').
@@ -162,6 +169,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   const fragmentContainer = container.querySelector('.locate-us-fragment');
 
   function onLocationSelect(loc) {
+    selectedLoc = loc;
     updateMapIframe(mapContainer, loc, configs);
     populateSidebar(mapSidebar, loc, placeholders, configs, currentIsAtm);
     const remark = document.createElement('p');
@@ -191,17 +199,20 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
     noResults.hidden = true;
     resultsSection.hidden = false;
-    // The API returns a numeric distance in `Range` (not a 0/1 flag), so the
-    // nearest branch is the one with the smallest Range. Tag it here so the
-    // card list and sidebar can show the "nearest" badge on that one only.
+    // The API returns a numeric distance in `Range` (km, not a 0/1 flag), so
+    // the nearest branch is the one with the smallest Range. Tag it here so the
+    // card list and sidebar can show the "nearest" badge on that one only, but
+    // only when it is actually within 5 km — farther branches get no badge.
+    const NEAREST_MAX_KM = 5;
     const nearest = allLocs.reduce(
       (min, l) => (Number(l.Range) < Number(min.Range) ? l : min),
       allLocs[0],
     );
-    allLocs.forEach((l) => { l.isNearest = l === nearest; });
+    const nearestInRange = Number(nearest.Range) <= NEAREST_MAX_KM;
+    allLocs.forEach((l) => { l.isNearest = nearestInRange && l === nearest; });
     onLocationSelect(allLocs[0]);
     // eslint-disable-next-line max-len
-    renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs, currentIsAtm);
+    renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs, currentIsAtm, true, () => selectedLoc);
   }
 
   function buildProvinceList(provinces) {
@@ -214,6 +225,8 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
     provinceDropdown.querySelector('.locate-us-province-item-header').addEventListener('click', async () => {
       keywordInput.value = '';
+      selectedProvince = '';
+      selectedDistrict = '';
       provinceDropdown.querySelectorAll('.locate-us-province-item').forEach((item) => item.classList.remove('locate-us-province-item-active'));
       provinceDropdown.hidden = true;
       dropdownToggle.setAttribute('aria-expanded', 'false');
@@ -228,6 +241,8 @@ export async function buildThailandUI(container, data, placeholders, configs) {
         li.textContent = provinces[i];
         li.addEventListener('click', async () => {
           const province = provinces[i];
+          selectedProvince = province;
+          selectedDistrict = '';
           keywordInput.value = province;
           keywordFromSelection = true;
           provinceDropdown.querySelectorAll('.locate-us-province-item').forEach((item) => item.classList.remove('locate-us-province-item-active'));
@@ -279,6 +294,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
           districtDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
             districtBtnText.textContent = selectDistrictText;
+            selectedDistrict = '';
             districtDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
             toggleDistrictDropdown(false);
             const provinceLocations = await fetchByProvince(province, '', userLat, userLng, selectedServiceCode, configs);
@@ -288,6 +304,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
           districtDropdown.querySelectorAll('.locate-us-district-item:not(.locate-us-district-item-header)').forEach((districtItem) => {
             districtItem.addEventListener('click', async () => {
               const district = districtItem.dataset.value;
+              selectedDistrict = district;
               districtBtnText.textContent = district;
               districtDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
               districtItem.classList.add('locate-us-district-item-active');
@@ -300,6 +317,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
           districtDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
             districtBtnText.textContent = selectDistrictText;
+            selectedDistrict = '';
             districtDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
             toggleDistrictDropdown(false);
             const districtLocations = await fetchByProvince(province, '', userLat, userLng, selectedServiceCode, configs);
@@ -333,17 +351,22 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     currentIsAtm = serviceUrlCode.toLowerCase().includes('atm');
 
     const isSpecial = !beMyId && serviceCodeMap[selectedService] === null;
+    // When switching between location-based services (Branch/ATM/ATM+) keep any
+    // province + district already chosen and re-scope the results to them,
+    // instead of resetting to a fresh near-me search.
+    const retainLocation = !isSpecial && Boolean(selectedProvince);
+
     keywordInput.disabled = isSpecial;
-    keywordInput.value = '';
     keywordWrapper.hidden = isSpecial;
-    districtWrapper.hidden = true;
-    districtWrapper.innerHTML = '';
     locationFilterRow.hidden = true;
     locationFilterRow.innerHTML = '';
     provinceDropdown.hidden = true;
     dropdownToggle.setAttribute('aria-expanded', 'false');
 
     if (isSpecial && specialFragmentPath) {
+      // Preserve any province/district selection (and its dropdown DOM) so
+      // returning to a location-based service restores it — the whole keyword
+      // wrapper is hidden while the special fragment is shown, so nothing shows.
       resultsSection.hidden = true;
       fragmentContainer.innerHTML = '';
       const fragment = await loadFragment(specialFragmentPath);
@@ -354,6 +377,32 @@ export async function buildThailandUI(container, data, placeholders, configs) {
       return;
     }
 
+    if (retainLocation) {
+      // Keep the province in the input and the existing district dropdown; just
+      // re-query with the new service code, preserving the district if set.
+      keywordInput.value = selectedProvince;
+      // Restore the district dropdown if it was left hidden (e.g. after the
+      // special-service fragment hid the whole keyword wrapper).
+      if (districtWrapper.innerHTML.trim()) districtWrapper.hidden = false;
+      try {
+        const args = [
+          selectedProvince, selectedDistrict, userLat, userLng, selectedServiceCode, configs,
+        ];
+        const locations = await fetchByProvince(...args);
+        showResults(locations);
+      } catch {
+        // eslint-disable-next-line no-console
+        console.error('[locate-us] Error fetching province locations');
+      }
+      return;
+    }
+
+    // No retained location: reset selection and do a fresh near-me search.
+    selectedProvince = '';
+    selectedDistrict = '';
+    keywordInput.value = '';
+    districtWrapper.hidden = true;
+    districtWrapper.innerHTML = '';
     try {
       const locations = await fetchNearMe(userLat, userLng, selectedServiceCode, configs);
       showResults(locations);
@@ -413,6 +462,10 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     }
     const keyword = keywordInput.value.trim();
     if (!keyword) return;
+
+    // A keyword search replaces any province/district filter.
+    selectedProvince = '';
+    selectedDistrict = '';
 
     try {
       const kwArgs = [userLat, userLng, keyword, '0', selectedServiceCode, configs];
@@ -598,12 +651,22 @@ export async function buildOverseasUI(container, placeholders, configs) {
     }, placeholders);
   }
 
+  // Country names (EN + TH) that are domestic, not overseas — excluded here so
+  // a keyword search never surfaces Thailand branches in the overseas locator.
+  const DOMESTIC_COUNTRIES = ['thailand', 'ประเทศไทย'];
+
   function showOverseasResults(allLocs) {
     const filtered = allLocs.filter((loc) => {
       const address = [loc.Address1, loc.Address2, loc.Address3, loc.Province, loc.Postcode].filter(Boolean).join(' ');
       const validTel = hasValue(loc.Tel) && /[\d]/.test(loc.Tel);
-      return hasValue(loc.MicroBranchHours) && validTel && address;
+      const country = (loc.Country || '').trim().toLowerCase();
+      const isDomestic = DOMESTIC_COUNTRIES.includes(country);
+      const isNonInternational = (loc.InternationalBranch || '').trim().toLowerCase() === 'x';
+      return (hasValue(loc.MicroBranchHours) && validTel && address
+        && !isDomestic) || isNonInternational;
     });
+
+    filtered.sort((a, b) => (a.BranchName || '').localeCompare(b.BranchName || '', undefined, { sensitivity: 'base' }));
 
     if (!filtered.length) {
       resultsSection.hidden = false;

@@ -106,6 +106,7 @@
 
 .bbl-calendar-picker-day:disabled {
   color: var(--bbl-color-grey-45);
+  background-color: transparent;
   cursor: not-allowed;
 }
 

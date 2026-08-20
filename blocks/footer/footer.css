@@ -108,7 +108,7 @@
   right: 0.625rem;
   top: 50%;
   transform: translateY(-50%);
-  font: 1.75rem Muli-Light, sans-serif;
+  font: 1.75rem var(--bbl-font-family-primary);
   transition: transform 0.3s ease;
 }
 

@@ -56,11 +56,18 @@ export function setFormPlaceholders(placeholders) {
   formPlaceholders = placeholders;
 }
 
-function closeModalsAndScrollTo(element) {
+function closeModalsAndScrollTo(element, { toTop = false } = {}) {
   document.querySelectorAll('dialog[open]').forEach((dialog) => {
     try { dialog.close(); } catch { /* ignore */ }
   });
   document.body.classList.remove('modal-open');
+
+  // On a successful submit the form is replaced by the thank-you content, so scroll all
+  // the way to the top of the page rather than offsetting to the element position.
+  if (toTop) {
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+    return;
+  }
 
   if (element) {
     setTimeout(() => {
@@ -87,7 +94,7 @@ export function submitSuccess(e, form) {
     thankyouPanel.dataset.visible = 'true';
     const reviewPanel = form.querySelector('fieldset[name="review_panel"]');
     if (reviewPanel) reviewPanel.dataset.visible = 'false';
-    closeModalsAndScrollTo(thankyouPanel);
+    closeModalsAndScrollTo(thankyouPanel, { toTop: true });
   } else if (thankYouMsg || !redirectUrl) {
     let thankYouMessage = form.parentNode.querySelector('.form-message.success-message');
     if (!thankYouMessage) {
@@ -98,7 +105,7 @@ export function submitSuccess(e, form) {
     // Hide the form and show only the success message
     form.style.display = 'none';
     form.parentNode.insertBefore(thankYouMessage, form);
-    closeModalsAndScrollTo(thankYouMessage);
+    closeModalsAndScrollTo(thankYouMessage, { toTop: true });
   } else {
     closeModalsAndScrollTo();
     window.location.assign(encodeURI(redirectUrl));

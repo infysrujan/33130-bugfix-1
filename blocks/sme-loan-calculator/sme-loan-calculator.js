@@ -172,17 +172,18 @@ export default async function decorate(block) {
   }
 
   // ── Field card builder ──
-  function buildFieldCard(f) {
-    const card = el('div', 'col-md-4 paddingcal');
-    const box = el('div', 'box-textbox');
+  function buildFieldCard(f, tabType) {
+    const cardClass = tabType === 'wc' ? 'sme-working-capital-fields' : 'sme-field-wrapper';
+    const card = el('div', cardClass);
+    const box = el('div', 'sme-field-text-box');
 
-    const lblCol = el('div', 'col-md-6 col-xs-6');
+    const lblCol = el('div', 'sme-first-column');
     const lbl = el('label', 'label-cal');
     lbl.setAttribute('for', f.id);
     lbl.textContent = f.label;
     lblCol.appendChild(lbl);
 
-    const inpCol = el('div', 'col-md-6 col-xs-6 alignright');
+    const inpCol = el('div', 'sme-second-column');
     const inp = el('input', 'textbox-cal');
     inp.type = 'text';
     inp.id = f.id;
@@ -197,7 +198,7 @@ export default async function decorate(block) {
     card.appendChild(box);
 
     if (f.bottomText) {
-      const bt = el('div', 'fontcondition alignright padbottom25');
+      const bt = el('div', 'sme-field-unit');
       bt.textContent = f.bottomText;
       card.appendChild(bt);
     }
@@ -299,17 +300,17 @@ export default async function decorate(block) {
 
   const dark = el('div', 'sme-calc-dark-section');
   fieldGroups.forEach((group) => {
-    const row = el('div', 'row paddingmain');
+    const row = el('div', 'sme-field-rows');
     if (group.header) {
       const hdr = el('div', 'fontcontent');
       hdr.textContent = group.header;
       row.appendChild(hdr);
     }
-    group.fields.forEach((f) => row.appendChild(buildFieldCard(f)));
+    group.fields.forEach((f) => row.appendChild(buildFieldCard(f, calcType)));
     dark.appendChild(row);
   });
 
-  const btnRow = el('div', 'row paddingmain alignc');
+  const btnRow = el('div', 'sme-calculate-wrapper');
   const calcBtn = el('button', 'sme-calc-btn');
   calcBtn.type = 'button';
   calcBtn.textContent = buttonName || placeholders.smeCalcButton || 'CALCULATE';

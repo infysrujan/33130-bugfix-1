@@ -48,7 +48,7 @@
 .market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
   font-size: 1rem;
   line-height: 1.375rem;
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-weight: 400;
   color: var(--bbl-color-grey-85);
 }
@@ -62,13 +62,13 @@
   color: var(--bbl-color-black);
   font-size: 1.5rem;
   line-height: 1.625rem;
-  font-family: BangkokBank-Medium, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-weight: 400;
 }
 
 .market-report-written-by {
   margin-block: 1.875rem;
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 .market-report-written-by p {
@@ -85,7 +85,7 @@
 }
 
 .market-report-page a.print-button.icon-print {
-  font: 1rem BangkokBank-Medium, sans-serif;
+  font: 1rem var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   text-transform: uppercase;
   text-decoration: none;
@@ -101,7 +101,7 @@
 }
 
 .market-report-page .table table tr td {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   height: 2rem;
   vertical-align: middle;
   font-size: 0.875rem;
@@ -126,7 +126,7 @@
 }
 
 .market-report-page .button-container a {
-  font: 1rem BangkokBank-Medium, sans-serif;
+  font: 1rem var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
 }
 
