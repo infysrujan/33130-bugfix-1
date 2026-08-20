@@ -36,7 +36,7 @@
 .fund-prices-disclaimer-text p,
 .fund-prices-disclaimer-text li {
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-color-grey-60);
   line-height: 1.6;
   margin-top: 0;
@@ -182,7 +182,7 @@
 }
 
 .fund-prices .fund-prices-print-label p {
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
@@ -206,7 +206,7 @@
 .fund-prices-search-bar label {
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-label-size);
+  font-size: var(--bbl-text-label-tag-size);
   white-space: nowrap;
 }
 
@@ -225,7 +225,7 @@
   background: rgb(255 255 255 / 8%);
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   cursor: pointer;
   text-align: left;
   white-space: nowrap;
@@ -357,7 +357,7 @@
   text-align: center;
   padding: 0.3rem 0;
   border-radius: var(--bbl-space-050);
-  font-size: var(--bbl-font-size-b3);
+  font-size: var(--bbl-body-b3-size);
   cursor: default;
 }
 
@@ -409,7 +409,7 @@
 
 .fund-prices-search-bar.is-in-header label {
   flex-shrink: 0;
-  font-size: var(--bbl-text-label-size);
+  font-size: var(--bbl-text-label-tag-size);
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-medium);
   margin-left: 0.625rem;
@@ -436,7 +436,7 @@
   padding: 0 2.75rem 0 1.125rem;
   border-radius: var(--bbl-space-100);
   background: transparent;
-  font-size: var(--bbl-text-body-small-size);
+  font-size: var(--bbl-text-small-size);
   font-family: var(--bbl-font-family-medium);
   border: solid 0.0625rem var(--bbl-color-grey-25);
 }
@@ -453,7 +453,7 @@
   padding: 0;
   border-radius: var(--bbl-space-100);
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
 }
 
 .hidden {
@@ -586,7 +586,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 
   .fund-prices-search-bar.is-in-header label {
     font-family: var(--bbl-font-family-medium);
-    font-size: var(--bbl-text-label-size);
+    font-size: var(--bbl-text-label-tag-size);
     font-weight: var(--bbl-font-weight-medium);
     line-height: 3rem;
   }

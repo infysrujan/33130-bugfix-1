@@ -59,7 +59,7 @@
 }
 
 .cross-banner-description {
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   line-height: 1.203rem;
   font-weight: var(--bbl-font-weight-regular);
   margin-bottom: var(--bbl-space-250);

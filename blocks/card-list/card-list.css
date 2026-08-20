@@ -513,7 +513,7 @@
 
 @media (width > 47.5rem) {
   .card-list-container .default-content-wrapper p {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .cards-list.center {
@@ -611,11 +611,11 @@
   }
 
   .card-list-modal-media+.card-list-modal-text {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .card-list-modal-last-title+.card-list-modal-text {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .cards-list-button .global-dropdown.is-open .global-dropdown-panel {

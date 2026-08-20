@@ -65,7 +65,7 @@
     text-align: left;
     padding-inline: 1.25rem 2.1875rem;
     text-transform: capitalize;
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
 }
 
 .sub-nav button.global-dropdown-trigger.icon-dropdown:hover {

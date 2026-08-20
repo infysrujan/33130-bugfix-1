@@ -424,7 +424,7 @@ body:has(.property-for-sale-container) .default-content-wrapper img {
   }
 
   .pfs-option {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .pfs-tabs-wrapper .tabs.simple-tab .tabs-nav {

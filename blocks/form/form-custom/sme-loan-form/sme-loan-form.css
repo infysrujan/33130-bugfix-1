@@ -376,7 +376,7 @@
     z-index: 1;
     width: var(--bbl-space-250);
     height: var(--bbl-space-250);
-    margin: 0.1875rem var(--bbl-space-050) var(--bbl-font-size-b2) var(--bbl-space-050);
+    margin: 0.1875rem var(--bbl-space-050) var(--bbl-body-b2-size) var(--bbl-space-050);
     flex: none;
   }
 

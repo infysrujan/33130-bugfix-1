@@ -280,7 +280,7 @@
   gap: var(--bbl-space-100);
   padding: var(--bbl-space-200) var(--bbl-space-100);
   min-height: 7rem;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
 }
 
 /* Hide the native input while keeping it keyboard / screen-reader accessible */

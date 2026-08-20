@@ -280,7 +280,7 @@ body.mobile-app-view main > div:first-child {
   }
 
   .promo-selector-empty {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .promo-selector-pagination {
@@ -297,7 +297,7 @@ body.mobile-app-view main > div:first-child {
   }
 
   .promo-selector-option {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .promo-selector-dropdown {

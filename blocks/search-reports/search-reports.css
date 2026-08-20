@@ -140,7 +140,7 @@
   padding: 0 1.875rem 0 var(--bbl-space-250);
   cursor: pointer;
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-label-size);
+  font-size: var(--bbl-text-label-tag-size);
   line-height: 2.75rem;
   background: var(--bbl-color-white);
   user-select: none;

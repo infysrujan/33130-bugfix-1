@@ -167,7 +167,7 @@ body.wealth .menu-card-action-inner {
 }
 
 .menu-card-action-description p {
-  font: var(--bbl-font-weight-regular) var(--bbl-font-size-b2)/1.1244rem var(--bbl-font-family-regular);
+  font: var(--bbl-font-weight-regular) var(--bbl-body-b2-size)/1.1244rem var(--bbl-font-family-regular);
   flex-grow: 1;
   margin: 0;
 }
@@ -280,7 +280,7 @@ body.wealth .menu-card-action-inner {
 
 
   .menu-card-action-description ul li {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 }
 

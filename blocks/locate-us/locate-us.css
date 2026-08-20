@@ -370,7 +370,7 @@
 
 .locate-us .locate-us-map-sidebar {
   padding: var(--bbl-space-250);
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
 }
@@ -381,7 +381,7 @@
 
 .locate-us .locate-us-map-remark {
   margin: var(--bbl-space-000);
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
 }
@@ -581,7 +581,7 @@
   align-items: center;
   gap: var(--bbl-space-075);
   color: var(--bbl-color-blue-90);
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   text-decoration: none;
   font-family: var(--bbl-font-family-primary);
   margin-top: 0.3125rem;
@@ -668,7 +668,7 @@
 }
 
 .locate-us .locate-us-page-nav-icon {
-  font-size: var(--bbl-font-size-b3);
+  font-size: var(--bbl-body-b3-size);
   display: inline-block;
   line-height: 1;
 }
@@ -679,7 +679,7 @@
 
 /* Ellipsis — clickable, shows input on click */
 .locate-us .locate-us-page-ellipsis {
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-color-gray-142);
   font-family: var(--bbl-font-family-primary);
   padding: var(--bbl-space-050);
@@ -697,7 +697,7 @@
   border: 0.0625rem solid var(--bbl-color-blue-90);
   border-radius: var(--bbl-radius-sm);
   text-align: center;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   font-family: var(--bbl-font-family-primary);
   color: var(--bbl-color-gray-121);
   outline: none;
@@ -882,7 +882,7 @@
 }
 
 .locate-us-toast-message {
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-primary);
   flex: 1;
@@ -913,7 +913,7 @@
   align-items: center;
   gap: var(--bbl-space-075);
   color: var(--bbl-color-blue-90);
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   text-decoration: none;
   font-family: var(--bbl-font-family-primary);
   margin-top: var(--bbl-space-075);
@@ -947,7 +947,7 @@
   border-radius: 0;
   color: var(--bbl-color-white);
   white-space: nowrap;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   letter-spacing: 0;
 }
 
@@ -1113,7 +1113,7 @@
   .locate-us .locate-us-map-remark {
     padding: var(--bbl-space-250) 0.9375rem var(--bbl-space-250) 0;
     margin: var(--bbl-space-000);
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   /* ── Cards — 3-column grid on tablet, always expanded ── */

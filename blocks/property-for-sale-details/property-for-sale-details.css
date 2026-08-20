@@ -120,7 +120,7 @@
 .prop-for-sale-nav [class^="icon-"]::before,
 .prop-for-sale-nav [class*=" icon-"]::before {
   line-height: 2.375rem;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
 }
 
 .prop-for-sale-nav:hover {

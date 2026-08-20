@@ -196,7 +196,7 @@ body.mobile-app-view main > div:first-child {
   }
 
   .promotional-details .promo-detail-description p {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .promotional-details .promo-detail-image {
@@ -205,7 +205,7 @@ body.mobile-app-view main > div:first-child {
   }
 
   .promotional-details .promo-detail-disclaimer p {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .promotional-details .promo-detail-content {
@@ -213,7 +213,7 @@ body.mobile-app-view main > div:first-child {
   }
 
   .promotional-details .promo-detail-date {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 }
 

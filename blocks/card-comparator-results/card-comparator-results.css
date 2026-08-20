@@ -220,7 +220,7 @@
 }
 
 .card-comparator-results .ccr-apply-mobile-btn {
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   white-space: nowrap;
 }
 

@@ -200,7 +200,7 @@
   position: absolute;
   top: 50%;
   display: flex;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   line-height: 2.375rem;
   color: var(--bbl-color-grey-160);
   align-items: center;
@@ -626,7 +626,7 @@
   position: absolute;
   top: 50%;
   display: flex;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   line-height: 2.375rem;
   color: var(--bbl-color-grey-160);
   align-items: center;

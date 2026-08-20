@@ -142,7 +142,7 @@
   }
 
   .floating-popup-description p {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 }
 

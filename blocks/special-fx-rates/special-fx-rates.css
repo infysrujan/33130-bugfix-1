@@ -69,11 +69,11 @@
 
 @media (width > 47.5rem) {
   .special-fx-rates-container .default-content-wrapper p {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 
   .special-fx-rates-content {
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b2-size);
   }
 }
 

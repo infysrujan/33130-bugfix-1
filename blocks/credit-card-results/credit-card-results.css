@@ -61,7 +61,7 @@
 /* ── Thai card name above the EN heading ─────────────────────────────────── */
 
 .card-list.credit-card .ccs-name-th {
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-color-grey-90);
   margin: 0 0 var(--bbl-space-050);
   line-height: 1.4;

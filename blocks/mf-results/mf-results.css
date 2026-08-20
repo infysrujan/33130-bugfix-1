@@ -17,7 +17,7 @@
 
 .mfr-disclaimer {
   padding: 1.875rem 0;
-  font-size: var(--bbl-font-size-b3, 0.8125rem);
+  font-size: var(--bbl-body-b3-size);
   color: var(--bbl-color-grey-90);
   line-height: var(--bbl-line-height-body, 1.6);
   text-align: center;
@@ -104,7 +104,7 @@
 
 .mfr-no-results {
   text-align: center;
-  font-size: var(--bbl-body-b1-size, 1rem);
+  font-size: var(--bbl-body-b1-size);
   color: var(--bbl-color-grey-90);
   margin:0;
 }
@@ -270,7 +270,7 @@
 
 @media (width > 47.5rem) {
   .mfr-cta {
-    font-size: var(--bbl-body-b1-size, 1rem);
+    font-size: var(--bbl-body-b1-size);
   }
 
   .mf-results-container .default-content-wrapper p {
