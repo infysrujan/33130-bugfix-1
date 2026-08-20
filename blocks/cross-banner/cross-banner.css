@@ -33,12 +33,12 @@
 .cross-banner-badge {
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-white);
-  line-height: 1.203rem;
-  font-size: 0.7875rem;
-  font-weight: var(--bbl-font-weight-medium);
+  line-height: var(--bbl-text-label-tag-line-height);
+  font-size: var(--bbl-text-label-tag-size);
+  font-weight: var(--bbl-text-label-tag-weight);
   margin: 0 var(--bbl-space-150) 0.625rem 0;
   background: var(--bbl-color-blue-140);
-  padding: var(--bbl-space-050) 0.4375rem;
+  padding: var(--bbl-space-025) var(--bbl-space-100);
   border-radius: var(--bbl-rounded-200);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -156,10 +156,9 @@ body.private
   }
 
   .cross-banner-badge {
-    font-size: 0.9rem;
-    line-height: 1.375rem;
     margin: 0;
     text-align: center;
+    padding:var(--bbl-space-050) var(--bbl-space-200);
   }
 
   .cross-banner-title {

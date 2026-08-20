@@ -2,6 +2,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { trackLinkClick } from '../../scripts/analytics.js';
 
 const MOBILE_MQ = `(width <= ${
   getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-mobile-max').trim()
@@ -693,4 +694,16 @@ export default async function decorate(block) {
   block.replaceChildren(wrapper);
   changeBanner(block);
   lazyLoadThumbnails(block);
+
+  block.addEventListener('click', (event) => {
+    const button = event.target.closest('.button-m.primary');
+    if (!button) return;
+    console.log('Hero banner CTA clicked');
+    trackLinkClick(
+      event,
+      button,
+      'hero-banner-cta',
+      'hero-banner',
+    );
+  });
 }

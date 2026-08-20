@@ -13,6 +13,9 @@
 
   /* height */
   --bbl-form-height-50: 3.125rem;                  /* 50px */
+
+  /* margin */
+  --bbl-form-margin-35: 2.1875rem                  /* 35px */
 }
 
 main .section.form-container.custom-forms:has(.cc-app-main-form) .form label,
@@ -211,6 +214,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       justify-content: center;
     }
 
+     & .field-disclaimer {
+        margin: var(--bbl-space-200) 0;
+     }
+
     & .plain-text-wrapper p {
       color: var(--bbl-color-blue-90);
       font-weight: 700;
@@ -236,6 +243,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
  & .form form :is(.drop-down-wrapper, .panel-wrapper.field-wrapper:has(select)) > legend.field-label {
     margin-bottom: 0.625rem;
+    background: transparent;
   }
 
   & .form form .cc-app-main-form :is(.field-wrapper label, .field-wrapper .field-label) {
@@ -539,6 +547,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         .cc-app-notfound
       ) {
         position: relative;
+        display: flex;
+        flex-wrap: wrap;
         width: 100%;
         max-width: var(--cc-timeline-panel-width);
         margin-inline: auto;
@@ -632,6 +642,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           justify-content: center;
           width: 100%;
           margin-top: calc(var(--timeline-height) + var(--bbl-space-250));
+          margin-bottom: var(--bbl-space-400);
           z-index: 2;
           max-width: none;
         }
@@ -747,7 +758,9 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         }
 
         & > .cc-panel-item-callback-actions {
+          display: flex;
           margin-top: var(--bbl-space-200);
+          margin-bottom: var(--bbl-form-margin-35);
         }
       }
 
@@ -792,6 +805,13 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         max-width: 100%;
       }
     }
+  }
+
+  & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .field-disclaimer .plain-text-wrapper p {
+    color: var(--bbl-color-grey-85);
+    text-align: left;
+    font-size: var(--form-font-size-xs);
+    line-height: var(--bbl-text-default-line-height);
   }
 
   @media (width < 64rem) {
@@ -858,7 +878,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       line-height: var(--bbl-line-height-b1-desktop);
     }
 
-    & .form form .field-wrapper.col-12:not(:is(.field-button-panel, .radio-group-wrapper, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-'])) {
+    & .form form .field-wrapper.col-12:not(:is(.field-button-panel, .radio-group-wrapper, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-'])) .field-branch-applied {
        display: grid;
      }
 

@@ -481,6 +481,13 @@
   font-weight: 700;
 }
 
+/* ── Section underline width override ─────────────────────── */
+
+body:has(.forex-graph-wrapper) .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+body:has(.forex-graph-wrapper) .section.underline-image .section-image-item::after {
+  width: 40px;
+}
+
 /* ── Tablet: 47.5rem+ (760px) ──────────────────────────────── */
 
 @media (width > 47.5rem) {

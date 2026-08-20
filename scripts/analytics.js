@@ -98,6 +98,7 @@ export function trackPageView() {
 // TODO: Should all the links be tracked? Is this triggered on all link clicks?
 export function trackLinkClick(event, element, fallback = '', linkType = 'other') {
   event.preventDefault();
+  console.log('trackLinkClick', element, fallback, linkType);
   const href = element.getAttribute('href');
   const urlPath = href === '#' ? fallback : href;
   window.adobeDataLayer.push({
@@ -167,7 +168,7 @@ export function trackContactFormSubmit(event) {
   ensureCdpGlobal();
   refreshCdpData();
   window.cdp.track.contactFormSubmit = trackContactFormSubmit;
-
+  console.log('trackContactFormSubmit:::::::::::::::::::::::', event);
   // Aligned on internal PII policy and no sanitization necessary.
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const form = event.currentTarget;

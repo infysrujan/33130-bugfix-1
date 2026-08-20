@@ -113,21 +113,11 @@
 
 .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
   margin: 0;
-  font-family: BangkokBank-Bold, 'BBL Sans', BangkokBank-Regular, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-size: var(--external-redirect-popup-title-font-size);
   line-height: 1.4219rem;
   color: var(--bbl-color-truthful-blue);
-  font-weight: 400;
-}
-
-:lang(th) {
-  .external-redirect-popup-title :is(h1) {
-    line-height: 1.4219rem;
-  }
-
-  .external-redirect-popup-title :is(h2) {
-    line-height: 1.4219rem;
-  }
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 /* Description — mobile-first: smaller base, larger on tablet+ */
@@ -277,11 +267,5 @@
   .external-redirect-popup-description p {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.5rem;
-  }
-
-  :lang(th) {
-    .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
-      line-height: 2.5rem;
-    }
   }
 }

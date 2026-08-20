@@ -24,3 +24,7 @@
   height: 0.0625rem;
   background-color: var(--bbl-color-grey-150);
 }
+
+.full-bleed-bg .accordion-block .download-button-wrapper.content{
+  padding-inline: 0;
+}

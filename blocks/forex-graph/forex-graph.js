@@ -452,8 +452,8 @@ export default async function decorate(block) {
     }
 
     const allValues = [...buyingData, ...sellingData].filter((v) => v !== null);
-    const minVal = Math.floor(Math.min(...allValues)) - 1;
-    const maxVal = Math.ceil(Math.max(...allValues)) + 1;
+    const minVal = Math.min(...allValues) - 0.5;
+    const maxVal = Math.ceil(Math.max(...allValues));
 
     // Plugin: draw halo on the cross-dataset point at the same index
     const crossHighlightPlugin = {
@@ -488,13 +488,20 @@ export default async function decorate(block) {
         const { ctx, chartArea } = chart;
         const meta = chart.getDatasetMeta(0);
         if (!meta || !meta.data.length) return;
+        // Mobile (below 47.5rem), tablet (47.5rem-64rem), and desktop (above
+        // 64rem) viewports each need the line pulled up shorter than the x
+        // scale's bottom by a different amount.
+        const isMobile = window.innerWidth <= 760;
+        const isTablet = window.innerWidth > 760 && window.innerWidth <= 1024;
+        const lineOffset = (isMobile && 50) || (isTablet && 30) || 20;
+        const lineBottom = chart.scales.x.bottom - lineOffset;
         ctx.save();
         ctx.strokeStyle = 'rgba(0,0,0,0.08)';
         ctx.lineWidth = 1;
         meta.data.forEach((point) => {
           ctx.beginPath();
           ctx.moveTo(point.x, chartArea.top);
-          ctx.lineTo(point.x, chartArea.bottom);
+          ctx.lineTo(point.x, lineBottom);
           ctx.stroke();
         });
         ctx.restore();

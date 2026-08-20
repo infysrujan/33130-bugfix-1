@@ -36,6 +36,12 @@
   color: var(--bbl-color-grey-85);
 }
 
+/* Column Width variant: authored widths (colgroup, set in JS) only take effect
+   with a fixed layout — table-layout: auto only treats them as a soft hint. */
+.table table.fixed-column-widths {
+  table-layout: fixed;
+}
+
 /* --------------------------------------------------------------------------
    BORDERS — default on all cells (specificity 0,1,3)
    -------------------------------------------------------------------------- */
@@ -203,6 +209,25 @@
   background-color: var(--bbl-color-blue-40);
 }
 
+/* Highlight Bold Cells — background for any cell containing a <strong>,
+   matching whichever Header variant is also applied to the table. No
+   background is applied when no matching Header variant is set. */
+.table table.highlight-bold-cells.header-blue td:has(strong) {
+  background: var(--bbl-color-blue-steel-dark);
+}
+
+.table table.highlight-bold-cells.header-light-blue td:has(strong) {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.highlight-bold-cells.header-light-gray td:has(strong) {
+  background: var(--bbl-color-grey-19);
+}
+
+.table table.highlight-bold-cells.header-primary-blue-s01 td:has(strong) {
+  background: var(--bbl-color-blue-40);
+}
+
 /* --------------------------------------------------------------------------
    CELL VARIANTS — center aligned (specificity 0,3,3)
    -------------------------------------------------------------------------- */
@@ -211,6 +236,15 @@
 .table table.cells-center-aligned tr:not(.header-row) td {
   text-align: center;
   vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
+   BORDER TYPE VARIANTS — last row (specificity 0,3,3)
+   -------------------------------------------------------------------------- */
+
+/* No Border Bottom — remove the bottom border from the last row only */
+.table table.no-border-bottom tr:last-child td {
+  border-bottom: none;
 }
 
 /* --------------------------------------------------------------------------

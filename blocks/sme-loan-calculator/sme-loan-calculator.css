@@ -49,7 +49,12 @@ main {
   font-size: 0.6875rem;
   line-height: 1.63;
   margin-top: 0;
-  padding: 1.5rem 3rem;
+}
+
+main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-title) .default-content-wrapper {
+  padding-inline: 0.625rem;
+  padding-top: 1.5625rem;
+  padding-bottom: 1.5625rem;
 }
 
 /* ── Hide tab dropdown ────────────────────────────────────── */
@@ -207,7 +212,7 @@ main {
   flex: 1;
   border: 0.0625rem solid var(--bbl-color-sme-field-border);
   border-radius: 0.5rem;
-  padding: 0.875rem 1.25rem 0.75rem;
+  padding: 0.875rem 1.25rem;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -251,7 +256,6 @@ main {
   font-size: var(--bbl-font-size-15);
   font-weight: var(--bbl-font-weight-regular);
   text-align: right;
-  width: 6rem;
   outline: none;
   padding: 0;
   caret-color: var(--bbl-color-white);
@@ -263,7 +267,7 @@ main {
 
 /* ── Bottom text under each field (Baht, Month, % per year) ─ */
 .sme-loan-calculator .fontcondition {
-  font-size: 1rem;
+  font-size: 0.6875rem;
   color: var(--bbl-color-grey-150);
   margin-top: 0.375rem;
   line-height: 1.4;
@@ -307,7 +311,7 @@ main {
 .sme-calc-result-label {
   display: block;
   font-size: 1.3125rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-white);
   letter-spacing: 0.01em;
   line-height: 1.625rem;
@@ -341,11 +345,13 @@ main {
   border: none;
   border-radius: 0.5rem;
   min-width: 11.125rem;
-  height: 3.125rem;
+  height: 2.75rem;
   padding: 0;
+  padding-top: 0.0625rem;
+  padding-bottom: 0.0625rem;
+  padding-inline: 0.375rem;
   font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: var(--bbl-font-weight-regular);
   cursor: pointer;
   text-transform: uppercase;
   transition: background-color 0.2s;
@@ -359,28 +365,28 @@ main {
 .sme-calc-table-section {
   margin-top: 0;
   background: var(--bbl-color-white);
-  padding-block: 2.5rem 3rem;
   padding-inline: 1rem;
 }
 
 .sme-calc-table-heading {
   text-align: center;
   font-size: 1.75rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-100);
   margin: 0 0 2rem;
   padding-top: 1.5625rem;
   padding-bottom: 1.5625rem;
+  padding-inline: 1.5625rem;
 }
 
 /* Margin-top acts as the heading text's bottom padding without adding space below the rule itself. */
 .sme-calc-table-heading::after {
   content: '';
   display: block;
-  width: 5rem;
+  min-width: 21.4375rem;
   height: 0.0625rem;
   background: var(--bbl-color-grey-60);
-  margin: 1.5625rem auto 0;
+  margin: 2.4375rem auto 0;
 }
 
 .resulttbl {
@@ -458,7 +464,7 @@ main {
 /* ── Tablet and above ─────────────────────────────────────── */
 @media (width > 47.5rem) {
   .section:not(.tabs-container, .center-title) .default-content-wrapper p {
-    font-size: var(--bbl-font-size-b1-mobile);
+    font-size: 0.6875rem;
   }
 
   .section.tabs-container .tabs.simple-tab .tabs-nav-wrapper {
@@ -544,5 +550,14 @@ main {
 
   .sme-calc-table-section {
     padding-inline: 5.25rem;
+  }
+
+  main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-title) .default-content-wrapper {
+    padding-inline: 0;
+  }
+
+  .sme-calc-table-heading::after {
+    width: 5.3125rem;
+    min-width: 0;
   }
 }

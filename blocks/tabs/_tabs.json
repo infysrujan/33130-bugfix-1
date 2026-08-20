@@ -298,6 +298,138 @@
               ]
             }
           ]
+        },
+        {
+          "component": "multiselect",
+          "name": "parent-container-style",
+          "label": "Parent Container Style",
+          "description": "Style classes applied to the section wrapping all tabs (read from the first tab)",
+          "valueType": "string",
+          "required": false,
+          "options": [
+            {
+              "name": "Section type",
+              "children": [
+                {
+                  "name": "Central Aligned",
+                  "value": "central-aligned"
+                },
+                {
+                  "name": "Full Bleed Special",
+                  "value": "full-bleed-special"
+                },
+                {
+                  "name": "Full Bleed Background",
+                  "value": "full-bleed-bg"
+                }
+              ]
+            },
+            {
+              "name": "Background Color",
+              "children": [
+                {
+                  "name": "Truthful Blue",
+                  "value": "bg-truthful-blue"
+                },
+                {
+                  "name": "Deep Blue",
+                  "value": "bg-truthful-dark-blue"
+                },
+                {
+                  "name": "bgd-blue",
+                  "value": "bg-ice-blue"
+                },
+                {
+                  "name": "Wealth Theme BG",
+                  "value": "bg-grey-10"
+                },
+                {
+                  "name": "bgd-grey",
+                  "value": "bg-grey-05"
+                },
+                {
+                  "name": "Elite Theme BG",
+                  "value": "bg-grey-100"
+                },
+                {
+                  "name": "Primary Blue S01",
+                  "value": "bg-primary-blue-s01"
+                }
+              ]
+            },
+            {
+              "name": "Padding",
+              "children": [
+                {
+                  "name": "Padding Top",
+                  "value": "pad-top-30"
+                },
+                {
+                  "name": "Padding Bottom",
+                  "value": "pad-bot-30"
+                }
+              ]
+            },
+            {
+              "name": "Layout",
+              "children": [
+                {
+                  "name": "Columns 3",
+                  "value": "columns-3"
+                },
+                {
+                  "name": "Columns 2(75-25)",
+                  "value": "columns-2-75"
+                },
+                {
+                  "name": "Columns 2(50-50)",
+                  "value": "columns-2-50"
+                },
+                {
+                  "name":"Columns 2(65-35)",
+                  "value": "columns-2-65"
+                }
+              ]
+            },
+            {
+              "name": "Style",
+              "children": [
+                {
+                  "name": "Underline Title",
+                  "value": "underline-title"
+                },
+                {
+                  "name": "Center Title",
+                  "value": "center-title"
+                },
+                {
+                  "name": "Center Image",
+                  "value": "center-image"
+                },
+                {
+                  "name": "Underline Image",
+                  "value": "underline-image"
+                },
+                {
+                  "name": "Center Content",
+                  "value": "center-content"
+                }
+              ]
+            },
+            {
+              "name": "Theme",
+              "children": [
+                {
+                  "name": "Background Wealth",
+                  "value": "background-wealth"
+                },
+                {
+                  "name": "Background Private Banking",
+                  "value": "background-privatebanking"
+                }
+              ]
+            }
+          ]
         }
       ]
     }

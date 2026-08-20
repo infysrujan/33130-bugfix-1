@@ -15,6 +15,7 @@
     --bbl-layout-content-max-width-desktop: 1240px;
     --bbl-layout-content-max-width-1920: 1752px;
     --bbl-layout-central-aligned-max-width: 900px;
+    --bbl-layout-content-max-width-exception-wealth: 1440px;
 
     /* header height used for scroll-margin-top offset (mobile-first) */
     --header-scroll-offset: 5rem;
@@ -226,45 +227,55 @@ main img {
     display: flow-root;
 }
 
-.section.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+.section.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
+.tab-panel.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
     text-align: center;
 }
 
 .section.center-image .section-image-item,
-.accordion-panel.center-image .section-image-item {
+.accordion-panel.center-image .section-image-item,
+.tab-panel.center-image .section-image-item {
     display: block;
     text-align: center;
 }
 
 .section.center-image .default-content-wrapper > p:has(>picture),
-.accordion-panel.center-image .default-content-wrapper > p:has(>picture) {
+.accordion-panel.center-image .default-content-wrapper > p:has(>picture),
+.tab-panel.center-image .default-content-wrapper > p:has(>picture) {
     text-align: center;
 }
 
 .section.center-image .default-content-wrapper > p > picture,
 .section.center-image .default-content-wrapper > p > img,
 .accordion-panel.center-image .default-content-wrapper > p > picture,
-.accordion-panel.center-image .default-content-wrapper > p > img {
+.accordion-panel.center-image .default-content-wrapper > p > img,
+.tab-panel.center-image .default-content-wrapper > p > picture,
+.tab-panel.center-image .default-content-wrapper > p > img {
     display: inline-block;
     max-width: 100%;
 }
 
 .section.center-image .section-image-item :is(picture, img),
-.accordion-panel.center-image .section-image-item :is(picture, img) {
+.accordion-panel.center-image .section-image-item :is(picture, img),
+.tab-panel.center-image .section-image-item :is(picture, img) {
     display: block;
     margin-inline: auto;
     max-width: 100%;
 }
 
 .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
-.section.underline-image .section-image-item {
+.section.underline-image .section-image-item,
+.tab-panel.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
+.tab-panel.underline-image .section-image-item {
     position: relative;
     padding-bottom: var(--bbl-space-250);
     margin: 1.875rem 0;
 }
 
 .section.underline-image .default-content-wrapper > p > picture,
-.section.underline-image .default-content-wrapper > p > img {
+.section.underline-image .default-content-wrapper > p > img,
+.tab-panel.underline-image .default-content-wrapper > p > picture,
+.tab-panel.underline-image .default-content-wrapper > p > img {
     position: relative;
     display: inline-block;
     padding-bottom: 1.875rem;
@@ -273,7 +284,9 @@ main img {
 }
 
 .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
-.section.underline-image .section-image-item::after {
+.section.underline-image .section-image-item::after,
+.tab-panel.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+.tab-panel.underline-image .section-image-item::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -283,7 +296,8 @@ main img {
     background-color: var(--bbl-color-grey-150);
 }
 
-.section.underline-image .default-content-wrapper > p > picture::after {
+.section.underline-image .default-content-wrapper > p > picture::after,
+.tab-panel.underline-image .default-content-wrapper > p > picture::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -294,12 +308,15 @@ main img {
 }
 
 .section.underline-title.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
-.section.underline-image.center-image .section-image-item::after {
+.section.underline-image.center-image .section-image-item::after,
+.tab-panel.underline-title.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+.tab-panel.underline-image.center-image .section-image-item::after {
     left: 50%;
     transform: translateX(-50%);
 }
 
-.section.underline-image.center-image .default-content-wrapper > p > picture::after {
+.section.underline-image.center-image .default-content-wrapper > p > picture::after,
+.tab-panel.underline-image.center-image .default-content-wrapper > p > picture::after {
     left: 50%;
     transform: translateX(-50%);
 }
@@ -311,30 +328,39 @@ main img {
 
 @media (width > 47.5rem) {
     .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
-    .section.underline-image .section-image-item {
+    .section.underline-image .section-image-item,
+    .tab-panel.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
+    .tab-panel.underline-image .section-image-item {
         padding-bottom: 1.875rem;
     }
 
     .section.underline-image .default-content-wrapper > p > picture,
-    .section.underline-image .default-content-wrapper > p > img {
+    .section.underline-image .default-content-wrapper > p > img,
+    .tab-panel.underline-image .default-content-wrapper > p > picture,
+    .tab-panel.underline-image .default-content-wrapper > p > img {
         padding-bottom: var(--bbl-space-500);
     }
 }
 
 @media (width > 64rem) {
     .section.underline-image .default-content-wrapper > p > picture,
-    .section.underline-image .default-content-wrapper > p > img {
+    .section.underline-image .default-content-wrapper > p > img,
+    .tab-panel.underline-image .default-content-wrapper > p > picture,
+    .tab-panel.underline-image .default-content-wrapper > p > img {
         padding-bottom: 1.875rem;
     }
 }
 
 .section.bg-truthful-blue  *,
-.section.bg-truthful-dark-blue  *{
+.section.bg-truthful-dark-blue  *,
+.tab-panel.bg-truthful-blue  *,
+.tab-panel.bg-truthful-dark-blue  *{
     color: var(--bbl-color-white);
 }
 
 .section.center-content .default-content-wrapper *,
-.accordion-panel.center-content .default-content-wrapper *  {
+.accordion-panel.center-content .default-content-wrapper *,
+.tab-panel.center-content .default-content-wrapper *  {
     text-align: center;
     margin: auto;
 }
@@ -342,35 +368,44 @@ main img {
 /* =========================================================================
    SECTION-FULL-BLEED-BG - Global Styles
    ========================================================================= */
-.section.full-bleed-bg {
+.section.full-bleed-bg,
+.tab-panel.full-bleed-bg {
     max-width: 100%;
     padding-inline: 0;
     margin: 0 auto;
 }
 
 .section.full-bleed-bg .content,
-.section.full-bleed-bg .default-content-wrapper {
+.section.full-bleed-bg .default-content-wrapper,
+.tab-panel.full-bleed-bg .content,
+.tab-panel.full-bleed-bg .default-content-wrapper {
     padding-inline: var(--bbl-space-section-xs);
     margin: 0 auto;
 }
 
 @media (width > 47.5rem) {
     .section.full-bleed-bg .content,
-    .section.full-bleed-bg .default-content-wrapper {
+    .section.full-bleed-bg .default-content-wrapper,
+    .tab-panel.full-bleed-bg .content,
+    .tab-panel.full-bleed-bg .default-content-wrapper {
         padding-inline: var(--bbl-space-section-sm);
     }
 }
 
 @media (width > 64rem) {
     .section.full-bleed-bg .content,
-    .section.full-bleed-bg .default-content-wrapper {
+    .section.full-bleed-bg .default-content-wrapper,
+    .tab-panel.full-bleed-bg .content,
+    .tab-panel.full-bleed-bg .default-content-wrapper {
         padding-inline: var(--bbl-space-section-xl);
     }
 }
 
 @media (width > 120rem) {
     .section.full-bleed-bg .content,
-    .section.full-bleed-bg .default-content-wrapper {
+    .section.full-bleed-bg .default-content-wrapper,
+    .tab-panel.full-bleed-bg .content,
+    .tab-panel.full-bleed-bg .default-content-wrapper {
         max-width: var(--bbl-layout-content-max-width-1920);
         padding-inline: 0;
     }
@@ -379,7 +414,8 @@ main img {
 /* =========================================================================
    SECTION-FULL-BLEED-SPECIAL - Global Styles
    ========================================================================= */
-.section.full-bleed-special {
+.section.full-bleed-special,
+.tab-panel.full-bleed-special {
     width: 100%;
     padding-inline: var(--bbl-space-section-xs);
     margin: 0 auto;
@@ -388,20 +424,23 @@ main img {
 
 
 @media (width > 47.5rem) {
-    .section.full-bleed-special {
+    .section.full-bleed-special,
+    .tab-panel.full-bleed-special {
         padding-inline: var(--bbl-space-section-sm);
     }
 }
 
 @media (width > 64rem) {
-    .section.full-bleed-special {
+    .section.full-bleed-special,
+    .tab-panel.full-bleed-special {
         max-width: 100%;
         padding-inline:  var(--bbl-space-section-xl);
     }
 }
 
 @media (width > 120rem) {
-    .section.full-bleed-special {
+    .section.full-bleed-special,
+    .tab-panel.full-bleed-special {
         max-width: var(--bbl-layout-content-max-width-1920);
         padding-inline: 0;
     }
@@ -412,37 +451,65 @@ main img {
    ========================================================================= */
 @media (width > 64rem) {
     .section.central-aligned .block,
-    .section.central-aligned > .default-content-wrapper {
+    .section.central-aligned > .default-content-wrapper,
+    .tab-panel.central-aligned .block,
+    .tab-panel.central-aligned > .default-content-wrapper {
         max-width: var(--bbl-layout-central-aligned-max-width);
         margin: 0 auto;
     }
 }
 
 /* =========================================================================
+   SECTION- FULL BLEED + CENTRAL-ALIGNED - Global Styles
+   ========================================================================= */
+@media (width > 64rem) {
+    .section.full-bleed-bg.central-aligned .content {
+        padding: 0;
+    }
+}
+
+/* =========================================================================
+    EXCEPTIONAL CONTAINER WIDTH FOR FULL BLEED SECTIONS 
+========================================================================= */
+.full-bleed-bg.card-list-wealth-container .content{
+    max-width: var(--bbl-layout-content-max-width-exception-wealth);
+}
+ 
+.full-bleed-bg.card-list-container .content,
+.full-bleed-bg.menu-card-actions-container .content,
+.full-bleed-bg.teaser-with-bg-image-container .content {
+    max-width: var(--bbl-layout-content-max-width-desktop);
+}
+ 
+/* =========================================================================
    SECTION-COLUMNS - Global Styles
    ========================================================================= */
 .section.columns-3,
-.accordion-panel.columns-3 {
+.accordion-panel.columns-3,
+.tab-panel.columns-3 {
     display: flex;
     gap: var(--bbl-space-layout-sm);
     flex-direction: column;
 }
 
 .section.columns-2-75,
-.accordion-panel.columns-2-75 {
+.accordion-panel.columns-2-75,
+.tab-panel.columns-2-75 {
     display: flex;
     flex-direction: column;
 }
 
 .section.columns-2-50,
-.accordion-panel.columns-2-50 {
+.accordion-panel.columns-2-50,
+.tab-panel.columns-2-50 {
     display: flex;
     flex-direction: column;
     gap:var(--bbl-space-300);
 }
 
 .section.columns-2-65,
-.accordion-panel.columns-2-65 {
+.accordion-panel.columns-2-65,
+.tab-panel.columns-2-65 {
     display: flex;
     flex-direction: column;
 }
@@ -456,41 +523,48 @@ main img {
 
 @media (width > 47.5rem) {
     .section.columns-2-50,
-    .accordion-panel.columns-2-50 {
+    .accordion-panel.columns-2-50,
+    .tab-panel.columns-2-50 {
     flex-direction: row;
     }
 }
 
 @media (width > 64rem) {
     .section.columns-3,
-    .accordion-panel.columns-3 {
+    .accordion-panel.columns-3,
+    .tab-panel.columns-3 {
         flex-direction: row;
     }
 
     .section.columns-3  > *,
-    .accordion-panel.columns-3  > * {
+    .accordion-panel.columns-3  > *,
+    .tab-panel.columns-3  > * {
         width: 33%;
         flex: 1;
     }
 
     .section.columns-2-50,
-    .accordion-panel.columns-2-50 {
+    .accordion-panel.columns-2-50,
+    .tab-panel.columns-2-50 {
         flex-direction: row;
         gap:var(--bbl-space-400);
     }
 
     .section.columns-2-50 > *,
-    .accordion-panel.columns-2-50 > * {
+    .accordion-panel.columns-2-50 > *,
+    .tab-panel.columns-2-50 > * {
         flex: 1;
     }
 
     .section.columns-2-65,
-    .accordion-panel.columns-2-65 {
+    .accordion-panel.columns-2-65,
+    .tab-panel.columns-2-65 {
         flex-direction: row;
     }
 
     .section.columns-2-75,
-    .accordion-panel.columns-2-75 {
+    .accordion-panel.columns-2-75,
+    .tab-panel.columns-2-75 {
         flex-direction: row;
     }
 
@@ -500,13 +574,15 @@ main img {
     }
 
     .section.columns-2-65 > *,
-    .accordion-panel.columns-2-65 > * {
+    .accordion-panel.columns-2-65 > *,
+    .tab-panel.columns-2-65 > * {
         padding-inline: var(--bbl-space-250);
         flex: 1;
     }
 
     .section.columns-2-75 > *,
-    .accordion-panel.columns-2-75 > * {
+    .accordion-panel.columns-2-75 > *,
+    .tab-panel.columns-2-75 > * {
         padding-inline: var(--bbl-space-250);
         flex: 1;
     }
@@ -517,12 +593,14 @@ main img {
     }
 
     .section.columns-2-65 > *:first-child,
-    .accordion-panel.columns-2-65 > *:first-child {
+    .accordion-panel.columns-2-65 > *:first-child,
+    .tab-panel.columns-2-65 > *:first-child {
         flex: 0 0 65%;
     }
 
     .section.columns-2-75 > *:first-child,
-    .accordion-panel.columns-2-75 > *:first-child {
+    .accordion-panel.columns-2-75 > *:first-child,
+    .tab-panel.columns-2-75 > *:first-child {
         flex: 0 0 75%;
     }
 

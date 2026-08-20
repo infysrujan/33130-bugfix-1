@@ -198,4 +198,10 @@
   .story-card-content .button-container .button-m {
     min-width: 9.688rem;
   }
+
+  :lang(th){
+    .story-card .title-1 {
+      line-height: 2.5rem;
+    }
+  }
 }
