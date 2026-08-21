@@ -23,8 +23,17 @@
 }
 
 .teaser-bg-image-bg {
+  position: relative;
   width: 100%;
   overflow: hidden;
+}
+
+.teaser-bg-image-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bbl-color-black-alpha-10);
+  pointer-events: none;
 }
 
 .teaser-bg-image-bg img {
@@ -161,14 +170,6 @@
   .teaser-bg-image-content {
     position: relative;
     z-index: 2;
-  }
-
-  .teaser-bg-image-bg::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--bbl-color-black-alpha-10);
-    pointer-events: none;
   }
 
   .teaser-bg-image-title :is(h1, h2, h3, h4, h5, h6) {
