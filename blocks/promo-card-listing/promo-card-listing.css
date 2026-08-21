@@ -7,9 +7,11 @@
    Must live on an ancestor of .tabs (custom properties inherit down, not up) --
    setupPanel() writes the filters/content markup directly into the .tab-panel
    (see promo-card-listing.js), so there is no .promo-card-listing wrapper between
-   .tab-panel and .promo-selector-content to target instead. */
+   .tab-panel and .promo-selector-content to target instead.
+   Mobile needs a taller offset (7.5rem) than tablet/desktop (7rem, set in the
+   width > 47.5rem block below). */
 .section.tabs-container:has(.tab-panel > .promo-selector-content) {
-  --header-scroll-offset: 7rem;
+  --header-scroll-offset: 7.5rem;
 }
 
 .bangkok-bankm-card :has(.section.tabs-container .tab-panel>.promo-selector-content) {
@@ -268,6 +270,10 @@ body.mobile-app-view main > div:first-child {
 
 
 @media (width > 47.5rem) {
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) {
+    --header-scroll-offset: 7rem;
+  }
+
   .promo-selector-grid:has(.promo-selector-empty) {
     width: 50%;
     padding-inline: 0.625rem;

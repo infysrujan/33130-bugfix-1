@@ -76,6 +76,10 @@
   color: inherit;
 }
 
+.listing-card-desc strong {
+  font-weight: var(--bbl-font-weight-regular);
+}
+
 .listing-card-desc :is(p, li) a[class] {
   display: inline;
   font-weight: inherit;
