@@ -114,6 +114,31 @@ function findAnchorAfterMarker(markerNode) {
   return null;
 }
 
+function decorateTableBoldLinks(table) {
+  table.querySelectorAll('a').forEach((a) => {
+    const parent = a.parentElement;
+    if (!parent) return;
+    const isBoldLink = (
+      (
+        parent.tagName === 'STRONG'
+        && parent.childNodes.length === 1
+        && parent.firstElementChild === a
+      )
+      || (
+        a.childNodes.length === 1
+        && a.firstElementChild?.tagName === 'STRONG'
+      )
+    );
+    if (!isBoldLink) return;
+    a.classList.add('button-m');
+    a.classList.add('primary');
+    const buttonContainer = parent.tagName === 'P'
+      ? parent
+      : parent.parentElement;
+    buttonContainer?.classList.add('button-container');
+  });
+}
+
 async function transformDownloadMarkers(root) {
   const downloadBlocks = [];
   const candidates = [...root.querySelectorAll('*')];
@@ -347,6 +372,7 @@ export default async function decorate(block) {
     markHeaderRows(parentTable);
     applyMixedBlueHeader(parentTable);
     highlightDashCells(parentTable);
+    decorateTableBoldLinks(parentTable);
     moveInstrumentation(rows[tableRowIndex], parentTable);
     block.textContent = '';
     block.append(parentTable);
@@ -364,7 +390,7 @@ export default async function decorate(block) {
   markHeaderRows(parentTable);
   applyMixedBlueHeader(parentTable);
   highlightDashCells(parentTable);
-
+  decorateTableBoldLinks(parentTable);
   moveInstrumentation(rows[tableRowIndex], parentTable);
 
   block.textContent = '';
