@@ -377,15 +377,16 @@
   padding-bottom: 0;
 }
 
-/* Toggle bar: positioning container appended to the full-width section
-   wrapper (not the centered block) so the chevron's positioning context
-   spans the section edge. Reserves 50px of real flow height — matching the
-   legacy site's #collapsible-container.collapsed — so the floating chevron
-   button (top: 0.625rem, height: 3rem) has enough clearance without relying
-   on the section's own (author-togglable) bottom padding. */
+/* Toggle bar: zero-height positioning container, appended to the full-width
+   section wrapper (not the centered block) so the chevron's positioning
+   context spans the section edge. margin-bottom reserves clearance after
+   the floating chevron (top: 0.625rem, height: 3rem) so the next section
+   doesn't start underneath it, without shifting the bar's own top edge —
+   which would push the chevron away from the boundary it hangs off of. */
 .credit-card-selector-wrapper .collapse-toggle-bar {
   position: relative;
-  height: 3.125rem;
+  height: 0;
+  margin-bottom: 3.625rem;
   background: transparent;
 }
 
