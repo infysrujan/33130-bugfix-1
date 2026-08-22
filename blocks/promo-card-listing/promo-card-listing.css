@@ -8,10 +8,10 @@
    setupPanel() writes the filters/content markup directly into the .tab-panel
    (see promo-card-listing.js), so there is no .promo-card-listing wrapper between
    .tab-panel and .promo-selector-content to target instead.
-   Mobile needs a taller offset (7.5rem) than tablet/desktop (7rem, set in the
+   Mobile needs a taller offset (9.4rem) than tablet/desktop (7rem, set in the
    width > 47.5rem block below). */
 .section.tabs-container:has(.tab-panel > .promo-selector-content) {
-  --header-scroll-offset: 7.5rem;
+  --header-scroll-offset: 9.4rem;
 }
 
 .bangkok-bankm-card :has(.section.tabs-container .tab-panel>.promo-selector-content) {
