@@ -327,6 +327,10 @@ function renderChart(svgEl, history, period, noDataLabel) {
     'font-family': "'BBL Sans Medium', 'BangkokBank-Medium', Tahoma, Helvetica, Arial, sans-serif",
   }, tooltipG);
 
+  const canHover = typeof window !== 'undefined'
+    && window.matchMedia
+    && window.matchMedia('(hover: hover)').matches;
+
   if (hasData) {
     points.forEach((d, i) => {
       const cx = xPos(i);
@@ -348,8 +352,10 @@ function renderChart(svgEl, history, period, noDataLabel) {
         tooltipDate.textContent = fmtHistDate(d.mfr_dDataDate);
         tooltipVal.textContent = fmtNav(d.mfr_fNav);
       };
-      hit.addEventListener('mouseenter', showTooltip);
-      hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
+      if (canHover) {
+        hit.addEventListener('mouseenter', showTooltip);
+        hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
+      }
       hit.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(); });
     });
   } else {
@@ -392,8 +398,10 @@ function renderChart(svgEl, history, period, noDataLabel) {
         noDataTooltipG.style.display = '';
         noDataTooltipG.setAttribute('transform', `translate(${cx},${cy})`);
       };
-      hit.addEventListener('mouseenter', showNoDataTooltip);
-      hit.addEventListener('mouseleave', () => { noDataTooltipG.style.display = 'none'; });
+      if (canHover) {
+        hit.addEventListener('mouseenter', showNoDataTooltip);
+        hit.addEventListener('mouseleave', () => { noDataTooltipG.style.display = 'none'; });
+      }
       hit.addEventListener('click', (e) => { e.stopPropagation(); showNoDataTooltip(); });
     });
   }
