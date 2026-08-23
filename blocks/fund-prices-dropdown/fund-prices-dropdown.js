@@ -154,7 +154,7 @@ function renderStatTables(stats, highTbody, lowTbody, rowLabels, noDataLabel) {
   });
 }
 
-function renderChart(svgEl, history, period, noDataLabel) {
+function renderChart(svgEl, history, noDataLabel) {
   svgEl.innerHTML = '';
   const doc = svgEl.ownerDocument;
   const ns = 'http://www.w3.org/2000/svg';
@@ -170,23 +170,39 @@ function renderChart(svgEl, history, period, noDataLabel) {
   const hasData = hasHistory && history.some((d) => Number(d.mfr_fNav) !== 0);
   const points = hasHistory ? history : [{ mfr_fNav: 0, mfr_dDataDate: '' }];
 
-  const isMobileView = typeof window !== 'undefined' && window.innerWidth < 768;
-  const useRotation = hasData && period !== '1W' && points.length > 1;
+  const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1280;
+  const isMobileView = viewportWidth < 768;
+  const isTabletView = viewportWidth >= 768 && viewportWidth <= 1024;
+  const useRotation = hasData && points.length > 1;
   const padB = useRotation ? 70 : 40;
-  const H = useRotation ? 360 : 300;
-  const padL = 58;
-  const padR = useRotation ? 20 : 8;
+  let H = 236;
+  if (useRotation) H = 360;
+  else if (isTabletView) H = 323;
+  const padL = isMobileView ? 30 : 58;
+  let padR = 8;
+  if (isMobileView) padR = 0;
+  else if (useRotation) padR = 20;
   const padT = 20;
   const chartWrap = svgEl.parentElement;
   const wrapStyle = chartWrap ? getComputedStyle(chartWrap) : null;
   const wrapPadH = wrapStyle
     ? parseFloat(wrapStyle.paddingLeft) + parseFloat(wrapStyle.paddingRight)
     : 0;
-  const W = isMobileView ? Math.max((chartWrap?.clientWidth || 400) - wrapPadH, 280) : 940;
+  const W = (isMobileView || isTabletView)
+    ? Math.max((chartWrap?.clientWidth || 400) - wrapPadH, 280)
+    : 940;
   svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svgEl.style.minWidth = '';
   const innerW = W - padL - padR;
   const innerH = H - padT - padB;
+
+  el('rect', {
+    x: 0,
+    y: 0,
+    width: W,
+    height: H,
+    fill: '#fff',
+  }, svgEl);
 
   const navs = points.map((d) => d.mfr_fNav);
   const rawMin = Math.min(...navs);
@@ -216,29 +232,26 @@ function renderChart(svgEl, history, period, noDataLabel) {
       x: padL - 8,
       y: y + 4,
       'text-anchor': 'end',
-      'font-size': 11,
+      'font-size': 12,
       fill: '#46464D',
-      'font-family': 'BangkokBank-Regular,Arial,sans-serif',
+      'font-family': "'BBL Sans', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif",
     }, svgEl).textContent = v.toFixed(1);
   });
 
   const lastIdx = points.length - 1;
   let labelSet;
   if (!useRotation) {
-    // 1W: show every data point
+    // A single data point has no label-crowding risk.
     labelSet = new Set(points.map((_, i) => i));
   } else {
-    const labelSpacing = isMobileView ? 38 : 50;
-    const maxXLabels = Math.min(points.length, Math.floor(innerW / labelSpacing));
-    const xLabelStep = Math.max(1, Math.ceil(points.length / maxXLabels));
-    const prevRegularIdx = Math.floor(lastIdx / xLabelStep) * xLabelStep;
-    const pixelGap = lastIdx > 0 ? (xPos(lastIdx) - xPos(prevRegularIdx)) : Infinity;
-    const tooClose = prevRegularIdx !== lastIdx && pixelGap < labelSpacing;
+    const labelSpacing = 50;
+    const maxXLabels = points.length <= 7
+      ? Math.min(3, points.length)
+      : Math.max(2, Math.min(points.length, Math.floor(innerW / labelSpacing) + 1));
     labelSet = new Set();
-    for (let i = 0; i <= lastIdx; i += xLabelStep) {
-      if (!tooClose || i !== prevRegularIdx) labelSet.add(i);
+    for (let k = 0; k < maxXLabels; k += 1) {
+      labelSet.add(Math.round((k * lastIdx) / (maxXLabels - 1)));
     }
-    labelSet.add(lastIdx);
   }
 
   points.forEach((d, i) => {
@@ -256,16 +269,17 @@ function renderChart(svgEl, history, period, noDataLabel) {
       // eslint-disable-next-line no-nested-ternary
       const anchor = !hasData ? 'middle' : (useRotation ? 'end' : (i === lastIdx ? 'end' : (i === 0 ? 'start' : 'middle')));
       const clampedX = (hasData && !useRotation && i === lastIdx) ? Math.min(x, W - 4) : x;
+      const labelX = useRotation && i === 0 ? clampedX + 28 : clampedX;
       const txtAttrs = {
-        x: clampedX,
+        x: labelX,
         y: H - padB + (useRotation ? 14 : 20),
         'text-anchor': anchor,
-        'font-size': 11,
-        fill: '#002850',
-        'font-weight': 'bold',
-        'font-family': 'BangkokBank-Bold,Arial,sans-serif',
+        'font-size': 12,
+        fill: '#46464D',
+        'font-weight': '500',
+        'font-family': "'BBL Sans Medium', 'BangkokBank-Medium', Tahoma, Helvetica, Arial, sans-serif",
       };
-      if (useRotation) txtAttrs.transform = `rotate(-45, ${clampedX}, ${H - padB + 14})`;
+      if (useRotation) txtAttrs.transform = `rotate(-45, ${labelX}, ${H - padB + 14})`;
       const txt = el('text', txtAttrs, svgEl);
       txt.textContent = hasData ? fmtHistDate(d.mfr_dDataDate) : (noDataLabel || 'No data found');
     }
@@ -306,15 +320,15 @@ function renderChart(svgEl, history, period, noDataLabel) {
     x: 10,
     y: 20,
     fill: '#b0c4d8',
-    'font-size': 11,
-    'font-family': 'BangkokBank-Regular,Arial,sans-serif',
+    'font-size': 12,
+    'font-family': "'BBL Sans', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif",
   }, tooltipG);
   const tooltipVal = el('text', {
     x: 10,
     y: 42,
     fill: '#ffffff',
     'font-size': 15,
-    'font-family': 'BangkokBank-Medium,Arial,sans-serif',
+    'font-family': "'BBL Sans Medium', 'BangkokBank-Medium', Tahoma, Helvetica, Arial, sans-serif",
   }, tooltipG);
 
   if (hasData) {
@@ -328,7 +342,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
         fill: 'transparent',
         style: 'cursor:pointer',
       }, svgEl);
-      hit.addEventListener('mouseenter', () => {
+      const showTooltip = () => {
         tooltipG.style.display = '';
         let tx = cx + 12;
         let ty = cy - 62;
@@ -337,8 +351,10 @@ function renderChart(svgEl, history, period, noDataLabel) {
         tooltipG.setAttribute('transform', `translate(${tx},${ty})`);
         tooltipDate.textContent = fmtHistDate(d.mfr_dDataDate);
         tooltipVal.textContent = fmtNav(d.mfr_fNav);
-      });
+      };
+      hit.addEventListener('mouseenter', showTooltip);
       hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
+      hit.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(); });
     });
   } else {
     const label = noDataLabel || 'No data found';
@@ -363,7 +379,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
       'text-anchor': 'middle',
       fill: '#ffffff',
       'font-size': 12,
-      'font-family': 'BangkokBank-Medium,Arial,sans-serif',
+      'font-family': "'BBL Sans Medium', 'BangkokBank-Medium', Tahoma, Helvetica, Arial, sans-serif",
     }, noDataTooltipG).textContent = label;
 
     points.forEach((d, i) => {
@@ -376,11 +392,13 @@ function renderChart(svgEl, history, period, noDataLabel) {
         fill: 'transparent',
         style: 'cursor:pointer',
       }, svgEl);
-      hit.addEventListener('mouseenter', () => {
+      const showNoDataTooltip = () => {
         noDataTooltipG.style.display = '';
         noDataTooltipG.setAttribute('transform', `translate(${cx},${cy})`);
-      });
+      };
+      hit.addEventListener('mouseenter', showNoDataTooltip);
       hit.addEventListener('mouseleave', () => { noDataTooltipG.style.display = 'none'; });
+      hit.addEventListener('click', (e) => { e.stopPropagation(); showNoDataTooltip(); });
     });
   }
 }
@@ -623,16 +641,14 @@ export default async function decorate(block) {
     chartSubtitle.textContent = subtitle;
     chartBeginNav.textContent = fmtHeaderNav(stats.Begin_mfr_fNav);
     chartEndNav.textContent = fmtHeaderNav(stats.End_mfr_fNav);
-    renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
+    renderChart(chartSvg, sorted, labels.noDataFound);
     renderHistTable(histTbody, sorted, labels.noDataFound);
 
     if (chartSvg.chartResizeObserver) chartSvg.chartResizeObserver.disconnect();
-    if (window.innerWidth < 768) {
-      chartSvg.chartResizeObserver = new ResizeObserver(() => {
-        if (sorted?.length) renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
-      });
-      chartSvg.chartResizeObserver.observe(chartSvg.parentElement);
-    }
+    chartSvg.chartResizeObserver = new ResizeObserver(() => {
+      if (sorted?.length) renderChart(chartSvg, sorted, labels.noDataFound);
+    });
+    chartSvg.chartResizeObserver.observe(chartSvg.parentElement);
   }
 
   function validateAndRenderDetail() {
