@@ -154,7 +154,7 @@ function renderStatTables(stats, highTbody, lowTbody, rowLabels, noDataLabel) {
   });
 }
 
-function renderChart(svgEl, history, noDataLabel) {
+function renderChart(svgEl, history, period, noDataLabel) {
   svgEl.innerHTML = '';
   const doc = svgEl.ownerDocument;
   const ns = 'http://www.w3.org/2000/svg';
@@ -172,12 +172,9 @@ function renderChart(svgEl, history, noDataLabel) {
 
   const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1280;
   const isMobileView = viewportWidth < 768;
-  const isTabletView = viewportWidth >= 768 && viewportWidth <= 1024;
-  const useRotation = hasData && points.length > 1;
+  const useRotation = hasData && period !== '1W' && points.length > 1;
   const padB = useRotation ? 70 : 40;
-  let H = 236;
-  if (useRotation) H = 360;
-  else if (isTabletView) H = 323;
+  const H = isMobileView ? 236 : 335;
   const padL = isMobileView ? 30 : 58;
   let padR = 8;
   if (isMobileView) padR = 0;
@@ -188,9 +185,7 @@ function renderChart(svgEl, history, noDataLabel) {
   const wrapPadH = wrapStyle
     ? parseFloat(wrapStyle.paddingLeft) + parseFloat(wrapStyle.paddingRight)
     : 0;
-  const W = (isMobileView || isTabletView)
-    ? Math.max((chartWrap?.clientWidth || 400) - wrapPadH, 280)
-    : 940;
+  const W = Math.max((chartWrap?.clientWidth || 400) - wrapPadH, 280);
   svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svgEl.style.minWidth = '';
   const innerW = W - padL - padR;
@@ -239,9 +234,9 @@ function renderChart(svgEl, history, noDataLabel) {
   });
 
   const lastIdx = points.length - 1;
+  const needsLabelThinning = hasData && points.length > 1 && (useRotation || isMobileView);
   let labelSet;
-  if (!useRotation) {
-    // A single data point has no label-crowding risk.
+  if (!needsLabelThinning) {
     labelSet = new Set(points.map((_, i) => i));
   } else {
     const labelSpacing = 50;
@@ -269,7 +264,8 @@ function renderChart(svgEl, history, noDataLabel) {
       // eslint-disable-next-line no-nested-ternary
       const anchor = !hasData ? 'middle' : (useRotation ? 'end' : (i === lastIdx ? 'end' : (i === 0 ? 'start' : 'middle')));
       const clampedX = (hasData && !useRotation && i === lastIdx) ? Math.min(x, W - 4) : x;
-      const labelX = useRotation && i === 0 ? clampedX + 28 : clampedX;
+      const firstLabelShift = Math.max(0, 50 - padL);
+      const labelX = useRotation && i === 0 ? clampedX + firstLabelShift : clampedX;
       const txtAttrs = {
         x: labelX,
         y: H - padB + (useRotation ? 14 : 20),
@@ -641,12 +637,12 @@ export default async function decorate(block) {
     chartSubtitle.textContent = subtitle;
     chartBeginNav.textContent = fmtHeaderNav(stats.Begin_mfr_fNav);
     chartEndNav.textContent = fmtHeaderNav(stats.End_mfr_fNav);
-    renderChart(chartSvg, sorted, labels.noDataFound);
+    renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
     renderHistTable(histTbody, sorted, labels.noDataFound);
 
     if (chartSvg.chartResizeObserver) chartSvg.chartResizeObserver.disconnect();
     chartSvg.chartResizeObserver = new ResizeObserver(() => {
-      if (sorted?.length) renderChart(chartSvg, sorted, labels.noDataFound);
+      if (sorted?.length) renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
     });
     chartSvg.chartResizeObserver.observe(chartSvg.parentElement);
   }

@@ -238,7 +238,7 @@
       }
 
       .fund-prices-dropdown .chart-wrap {
-        padding: 1.875rem 0.9375rem 0;
+        padding: 1.875rem 1.25rem 0;
         background: var(--bbl-color-white);
       }
 
@@ -501,7 +501,7 @@
       background: var(--bbl-color-white);
       border: 0.0781rem solid var(--bbl-color-grey-18);
       border-radius: var(--bbl-space-050);
-      padding: 2.5rem 2.5rem 1.25rem;
+      padding: 2.5rem 1.25rem 1.25rem;
       margin-bottom: 1.875rem;
     }
 
@@ -512,6 +512,13 @@
       flex-wrap: wrap;
       gap: var(--bbl-space-100);
       margin-bottom: var(--bbl-space-150);
+      padding-left: 3.625rem;
+    }
+
+    @media (width < 47.5rem) {
+      .fund-prices-dropdown .chart-header {
+        padding-left: 0;
+      }
     }
 
     .fund-prices-dropdown .chart-subtitle {
@@ -575,6 +582,10 @@
 
       .fund-prices-dropdown .fdd-period-bar {
         margin-left: calc(var(--bbl-space-250) * -1);
+      }
+
+      .fund-prices-dropdown .fdd-chart-panel {
+        margin-inline: calc(var(--bbl-space-250) * -1);
       }
 
       .fund-prices-dropdown .stat-tables-print-row {
