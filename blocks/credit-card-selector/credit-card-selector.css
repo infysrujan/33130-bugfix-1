@@ -353,10 +353,6 @@
   padding-top: var(--bbl-space-250);
 }
 
-.credit-card-selector .selector-actions .button-m.primary {
-  cursor: default;
-}
-
 /* ==========================================================================
    Collapsible — wrapper, content transition, toggle button
    ========================================================================== */
