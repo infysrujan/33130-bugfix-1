@@ -1,391 +1,690 @@
-@import url("../../styles/components/listing-card.css");
-
-/* Pagination's scrollIntoView (card-helpers.js bindPaginationClick) targets the
-   ancestor .tabs section and relies on its scroll-margin-top: var(--header-scroll-offset).
-   The site-wide value (main.css, 5.25rem) under-shoots the real header height on
-   this listing, so override it here, scoped to promo-card-listing pages only.
-   Must live on an ancestor of .tabs (custom properties inherit down, not up) --
-   setupPanel() writes the filters/content markup directly into the .tab-panel
-   (see promo-card-listing.js), so there is no .promo-card-listing wrapper between
-   .tab-panel and .promo-selector-content to target instead. */
-.section.tabs-container:has(.tab-panel > .promo-selector-content) {
-  --header-scroll-offset: 7rem;
+/* Tab Block Core Styles */
+.tabs-container {
+  max-width: 79.5rem;
+  margin: 0 auto;
 }
 
-.bangkok-bankm-card :has(.section.tabs-container .tab-panel>.promo-selector-content) {
-  background-color: var(--bbl-color-white);
+/* Tab Navigation Base */
+.tabs-nav-wrapper::before,
+.tabs-nav-wrapper::after {
+  display: table;
+  content: "";
 }
 
-body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector-content) .tabs-nav-wrapper .tabs-nav button:not(.active) {
-  color: var(--bbl-color-grey-85);
+.tabs-nav-wrapper::after {
+  clear: both;
 }
 
-.promo-selector-grid .listing-card-desc p {
-  display: block;
-  -webkit-line-clamp: none;
-  overflow: visible;
+/* Mobile First: Hide tabs navigation on mobile by default */
+.tabs-nav-wrapper .tabs-nav {
+  display: none;
+  padding: 0 0 var(--bbl-space-300);
+  color: var(--bbl-color-active-blue);
+  text-align: center;
+  max-width: 100%;
+  margin: 0 auto;
+  list-style: none;
 }
 
-.promo-card-listing {
-  padding-bottom: 0;
-}
-
-.promo-selector-grid .listing-card{
-  margin-bottom: 0;
-}
-
-.promo-selector-grid .listing-card-container {
-  margin-inline: 0;
-}
-
-.promo-selector-grid:has(.promo-selector-empty),
-.promo-selector-grid:has(> .listing-card-container:nth-last-child(-n + 3):first-child) {
-  justify-content: center;
-}
-
-/* BBM grid: always center all rows, including partial ones. */
-.promo-selector-grid.is-bbm-grid {
-  justify-content: center;
-}
-
-.promo-selector-logos {
-  display: flex;
-  gap: var(--bbl-space-075);
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.promo-selector-logo {
-  height: 1.25rem;
+.tabs-nav-wrapper .tabs-nav button {
+  position: relative;
+  display: inline-block;
+  color: var(--bbl-color-black);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0 var(--bbl-space-100);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-tab-header-size);
+  line-height: var(--bbl-text-tab-header-line-height);
+  font-weight:var(--bbl-text-tab-header-weight);
   width: auto;
 }
 
-.promo-selector-empty {
-  text-align: center;
-  color: var(--bbl-color-grey-85);
-  font-weight: var(--bbl-font-weight-regular);
-  margin: 0;
-  line-height: 1.124rem;
+.tabs-nav-wrapper .tabs-nav button::before {
+  content: "";
+  position: absolute;
+  background: var(--bbl-color-active-blue);
+  bottom: -1.5625rem;
+  height: var(--bbl-space-025);
+  left: 0;
+  width: 0;
+  transition: all 0.3s;
 }
 
-.promo-selector-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  padding-bottom: 1.875rem;
-}
-
-.promo-selector-pagination:empty {
-  display: none;
-}
-
-.promo-selector-filters {
-  display: flex;
-  flex-direction: column;
-  gap: 0.625rem;
-}
-
-.promo-selector-filter {
-  position: relative;
+.tabs-nav-wrapper .tabs-nav button.active::before {
   width: 100%;
 }
 
-.promo-selector-filter-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  vertical-align: middle;
-  width: 100%;
-  height: 2.75rem;
-  gap: 0.625rem;
-  padding: 0 1.875rem 0 var(--bbl-space-250);
-  border: 0.0625rem solid var(--bbl-color-grey-25);
+.tabs-nav-wrapper .tabs-nav button.active,
+.tabs-nav-wrapper .tabs-nav button:hover {
+  color: var(--bbl-color-active-blue);
+}
+
+/* Tab Dropdown - visible on mobile */
+.tabs-nav-wrapper .tabs-dropdown {
+  width: 14.375rem;
+  height: 2.9375rem;
+  margin: 0 auto 1.5625rem;
   border-radius: 0.4375rem;
   background: var(--bbl-color-white);
-  font-size: 0.831rem;
-  font-family: var(--bbl-font-family-medium);
-  cursor: pointer;
-  color: var(--bbl-color-grey-85);
+  border: solid 0.0625rem var(--bbl-color-black);
+  position: relative;
   text-align: left;
-  box-sizing: border-box;
+  margin-top: 1.875rem;
 }
 
-.promo-selector-filter-btn:hover {
-  border-color: var(--bbl-color-blue-90);
+.tabs-nav-wrapper .tabs-dropdown:hover,
+.tabs-nav-wrapper .tabs-dropdown:focus-within,
+.tabs-nav-wrapper .tabs-dropdown:active {
+  border-color: var(--bbl-color-black);
 }
 
-.promo-selector-filter-label {
-  flex: 1;
-  line-height: 2.75rem;
-  height: 2.75rem;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.promo-selector-filter-arrow {
-  font-size: 0.375rem;
-  flex-shrink: 0;
-}
-
-.promo-selector-filter.is-disabled .promo-selector-filter-label {
-  color: var(--bbl-color-grey-60);
-}
-
-
-.promo-selector-dropdown {
-  display: none;
+.tabs-nav-wrapper .tabs-dropdown::after {
+  content: "\e902";
+  display: inline-block;
   position: absolute;
-  left: 0;
-  padding: 0;
-  right: 0;
-  z-index: 10;
-  list-style: none;
-  padding-bottom: 0.0625rem;
-  box-sizing: border-box;
-  background: var(--bbl-color-white);
-  box-shadow: 0 0 var(--bbl-space-050) 0 var(--bbl-color-black-alpha-5);
-  border: solid 0.0625rem var(--bbl-color-gray-122);
-  border-radius: var(--bbl-rounded-100);
-  margin-block: 0.3125rem 0;
-  max-height: 9.375rem;
-  overflow-y: auto;
+  right: var(--bbl-space-250);
+  top: 55%;
+  transform: translateY(-50%);
+  color: var(--bbl-color-blue-105);
+  font: 0.5rem icomoon, sans-serif;
 }
 
-.promo-selector-filter.is-open .promo-selector-dropdown {
+.tabs-nav-wrapper .tabs-dropdown select {
+  color: var(--bbl-color-black);
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  text-align: left;
+  padding: 0 2.1875rem 0 var(--bbl-space-250);
+  border: 0;
+  background: transparent;
+  position: relative;
+  appearance: none;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-tab-header-size);
+  line-height: var(--bbl-text-tab-header-line-height);
+  font-weight:var(--bbl-text-tab-header-weight);
+  cursor: pointer;
+}
+
+.tabs-nav-wrapper .tabs-dropdown select:focus {
+  outline: none;
+}
+
+/* Tab Content Areas - mobile first */
+.tabs-content .tab-panel {
+  display: none;
+}
+
+.tabs-content .tab-panel.active {
   display: block;
 }
 
-.promo-selector-option {
-  color: var(--bbl-color-black);
-  padding: 0.625rem 1.875rem;
-  cursor: pointer;
-  line-height: normal;
-  font-weight: var(--bbl-font-weight-regular);
-  font-family: var(--bbl-font-family-medium);
+.tabs-content .tab-panel>p {
+  margin-top: 0;
 }
 
-.promo-selector-option.is-active {
-  color: var(--bbl-color-blue-90);
+/* SPACING INSIDE TAB PANEL between different blocks except download block */
+.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper, :has(.merge-tables)):has(+ *) {
+  padding-bottom: 1.5rem;
 }
 
-.promo-selector-option:hover {
-  color: var(--bbl-color-blue-90);
+@media (width > 64rem) {
+  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper, :has(.merge-tables)):has(+ *) {
+    padding-bottom: 2rem;
+  }
 }
 
-/* While hovering anywhere inside the open dropdown, only the option under
-   the cursor is blue — every other option, including the persistently
-   selected .is-active one, drops back to black until the hover moves on. */
-.promo-selector-dropdown:hover .promo-selector-option {
-  color: var(--bbl-color-black);
+/* Simple Tab Variant - Default */
+.tabs.simple-tab .tabs-nav {
+  padding-bottom: var(--bbl-space-800);
+  margin-top: 1.875rem;
 }
 
-.promo-selector-dropdown:hover .promo-selector-option:hover {
-  color: var(--bbl-color-blue-90);
-}
-
-.promo-selector-filter-actions {
-  display: flex;
-  gap: var(--bbl-space-250);
-  margin-bottom: 0.625rem;
-}
-
-.promo-selector-filter-action {
+/* Media Tab Variant - with Images */
+.tabs.media-tab .tabs-images {
+  margin-bottom: var(--bbl-space-400);
+  position: relative;
   width: 100%;
 }
 
-.promo-selector-filter-actions .button {
-  flex: 1;
-  width: 100%;
-}
-
-.promo-card-listing.has-preview > div[data-config-row] {
+.tabs.media-tab .tabs-images>div {
   display: none;
+  width: 100%;
 }
 
-
-body.mobile-app-view {
-  padding-top: 0;
-  margin-top: 0;
+.tabs.media-tab .tabs-images>div.active {
+  display: block;
+  display: flex;
+  justify-content: center;
 }
 
-body.mobile-app-view main {
-  padding-top: 0;
-  margin-top: 0;
+.tabs.media-tab .tabs-images img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-width: fit-content;
+  max-height: fit-content;
 }
 
-body.mobile-app-view header.is-not-overlapped ~ main {
-  padding-top: 0;
-}
+/* ========================================================================
+   CAROUSEL VARIANTS: simple-tab-carousel & icon-tab-carousel
+   ======================================================================== */
 
-body.mobile-app-view main > div:first-child {
-  margin-top: 0;
-}
-
-.promo-card-listing-section .tabs-nav-wrapper {
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav-wrapper {
   position: relative;
 }
 
-.promo-card-listing-section .tabs-nav-wrapper::after {
-  content: "";
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav {
+  display: flex;
+  gap: 0.9375rem;
+  padding: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav.is-dragging {
+  user-select: none;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) :is(.tabs-nav-prev, .tabs-nav-next) {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 3.5rem;
-  height: 100%;
-  background: linear-gradient(to right, transparent, var(--bbl-bg-primary, #fff));
+  top: 50%;
+  display: flex;
+  font-size: var(--bbl-font-size-b2);
+  line-height: 2.375rem;
+  color: var(--bbl-color-grey-160);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  width: var(--bbl-space-500);
+  height: var(--bbl-space-500);
+  border: 0.0625rem solid var(--bbl-color-white-alpha-158-70);
+  border-radius: 50%;
+  background: var(--bbl-color-white);
+  box-shadow: 0 0 var(--bbl-space-050) 0 transparent;
+  z-index: 2;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav-prev {
+  left: -0.875rem;
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav-next {
+  right: -0.875rem;
+  transform: translateY(-50%);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) :is(.tabs-nav-prev, .tabs-nav-next):hover {
+  border-color: var(--bbl-color-grey-150);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) :is(.tabs-nav-prev, .tabs-nav-next):active {
+  background: var(--bbl-color-gray-300);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) :is(.tabs-nav-prev, .tabs-nav-next).hidden {
+  visibility: hidden;
   pointer-events: none;
-  z-index: 1;
-  transition: opacity 0.2s;
 }
 
-.promo-card-listing-section .tabs-nav-wrapper.is-scroll-end::after {
-  opacity: 0;
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button {
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin: 0.6875rem;
+  color: var(--bbl-color-grey-85);
+  height: unset;
+  padding: var(--bbl-space-250) var(--bbl-space-075);
+  text-transform: uppercase;
 }
 
-.promo-card-listing-section .tabs-nav-wrapper::before {
-  content: "";
-  position: absolute;
-  top: 0;
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button::before {
+  display: none;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button.active {
+  text-decoration: underline;
+  color: var(--bbl-color-active-blue);
+  text-decoration-color: var(--bbl-color-active-blue);
+  text-decoration-thickness: 0.1875rem;
+  text-underline-offset: var(--bbl-space-base);
+}
+
+.tabs.icon-tab-carousel .tabs-nav {
+  /* Show exactly N equal columns per view. Each column is 100%/N of the row, so
+     the Nth column ends flush with the edge — there is never a partial/cropped
+     item. N is set per breakpoint below; change it to show more/fewer at once. */
+  --tabs-per-view: 3;
+
+  gap: unset;
+  align-items: flex-start;
+  scroll-snap-type: x mandatory;
+}
+
+@media (width > 64rem) {
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel :is(.tabs-nav-prev, .tabs-nav-next) {
+    top: 5.81rem;
+  }
+
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel .tabs-nav-prev {
+    left: -0.875rem;
+  }
+
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel .tabs-nav-next {
+    right: -0.875rem;
+  }
+}
+
+.tabs.icon-tab-carousel .tabs-nav-prev {
   left: 0;
-  width: 3.5rem;
-  height: 100%;
-  background: linear-gradient(to left, transparent, var(--bbl-bg-primary, #fff));
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.2s;
 }
 
-.promo-card-listing-section .tabs-nav-wrapper.is-scroll-start::before {
-  opacity: 1;
+.tabs.icon-tab-carousel .tabs-nav-next {
+  right: 0;
 }
 
-.promo-card-listing-section .tabs-nav {
-  padding-inline-end: 3rem;
+/* Each slide is a fixed, equal column (--tabs-item-width) regardless of label
+   length; the label wraps within it (in its own .tabs-nav-label span, see
+   icon-tab-carousel.js) instead of stretching the column or running behind the
+   carousel arrows. */
+.tabs.icon-tab-carousel .tabs-nav button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  white-space: normal;
+  text-align: center;
+  flex: 0 0 calc(100% / var(--tabs-per-view));
+  min-width: 0;
+
+  /* No inline margin/gap so N columns divide the row exactly (otherwise the
+     margins push the last column past the edge and it gets clipped). */
+  margin-inline: 0;
+  box-sizing: border-box;
+  scroll-snap-align: start;
 }
 
-.promo-card-listing-section .tabs.icon-tab-carousel .tabs-nav {
-  scroll-padding-inline: calc(var(--bbl-space-500) + var(--bbl-space-150));
+.tabs.icon-tab-carousel .tabs-nav button .tabs-nav-label {
+  display: inline-block;
+  max-width: 100%;
+  margin-inline: auto;
+  overflow-wrap: break-word;
+  border-bottom: 0.1875rem solid transparent;
+  padding-bottom: 0.25rem;
 }
 
+.tabs.icon-tab-carousel .tabs-nav button.active {
+  text-decoration: none;
+}
 
+.tabs.icon-tab-carousel .tabs-nav button.active .tabs-nav-label {
+  border-bottom-color: var(--bbl-color-active-blue);
+}
+
+/* Columns per view by breakpoint (mobile shows fewer, desktop more). */
 @media (width > 47.5rem) {
-  .promo-selector-grid:has(.promo-selector-empty) {
-    width: 50%;
-    padding-inline: 0.625rem;
-  }
-
-  .promo-selector-grid:not(.is-bbm-grid):has(> .listing-card-container:only-child) {
-    justify-content: center;
-  }
-
-  .promo-selector-grid .listing-card-container {
-    padding-bottom: 0;
-  }
-
-  .promo-selector-empty {
-    font-size: var(--bbl-font-size-b2);
-  }
-
-  .promo-selector-pagination {
-    margin-inline: 0.625rem;
-  }
-
-  .promo-selector-filters {
-    display: flex;
-    align-items: center;
-  }
-
-  .promo-selector-filter {
-    width: 50%;
-  }
-
-  .promo-selector-option {
-    font-size: var(--bbl-font-size-b2);
-  }
-
-  .promo-selector-dropdown {
-    max-height: 13.75rem;
-    left: 0;
-    right: 0;
-  }
-
-  .promo-selector-filter-actions {
-    gap: 0;
-    width: 50%;
-  }
-
-  .promo-selector-filter-action {
-    padding-inline: var(--bbl-space-250);
-    width: 50%;
-    box-sizing: border-box;
-  }
-
-  .promo-selector-filter-actions .button {
-    width: 100%;
-    box-sizing: border-box;
-    min-width: unset;
+  .tabs.icon-tab-carousel .tabs-nav {
+    --tabs-per-view: 5;
   }
 }
 
 @media (width > 64rem) {
-  .promo-selector-grid:has(.promo-selector-empty) {
-    width: unset;
-    padding-inline: 0;
+  .tabs.icon-tab-carousel .tabs-nav {
+    --tabs-per-view: 9;
+  }
+}
+
+.tabs.icon-tab-carousel .tabs-nav button img {
+  width: 3.75rem;
+  box-sizing: border-box;
+  height: 3.75rem;
+  object-fit: contain;
+  padding: var(--bbl-space-050);
+  margin: 0 auto var(--bbl-space-050);
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Tiled Tab Variant (with Icons) - Mobile First */
+.tabs.tiled-tab .tabs-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--bbl-space-200);
+  overflow-x: hidden;
+  margin: 1.875rem 0;
+  justify-content: center;
+  align-items: stretch;
+  list-style: none;
+  padding: 0 var(--bbl-space-200);
+
+}
+
+.tabs.tiled-tab .tabs-nav-wrapper .tabs-dropdown {
+  display: none;
+}
+
+.tabs.tiled-tab .tabs-nav li {
+  display: flex;
+  min-width: 6.25rem;
+  box-sizing: border-box;
+  margin-bottom: var(--bbl-space-250);
+  padding: 0;
+}
+
+.tabs.tiled-tab .tabs-nav button {
+  display: flex;
+  padding: var(--bbl-space-200);
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bbl-space-100);
+  flex: 1;
+  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
+  border-radius: var(--bbl-space-100);
+  color: var(--bbl-color-black);
+  text-decoration: none;
+  box-sizing: border-box;
+  justify-content: flex-start;
+  text-align: center;
+  width: 100%;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  min-height: 7.5rem;
+  font-size: 0.9844rem;
+  line-height: 1.2797rem;
+  margin-bottom: 0.3125rem;
+}
+
+.tabs.tiled-tab .tabs-nav button:hover {
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  box-shadow: 0.3125rem 0.3125rem 0 0 var(--bbl-color-blue-105-alpha-17);
+  color: var(--bbl-color-blue-90);
+}
+
+.tabs.tiled-tab .tabs-nav button::before {
+  display: none;
+}
+
+.tabs.tiled-tab .tabs-nav button img {
+  width: var(--bbl-space-400);
+  height: var(--bbl-space-400);
+  margin-bottom: 0.9375rem;
+  display: block;
+}
+
+.tabs.tiled-tab .tabs-nav button.active {
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  box-shadow: 0.3125rem 0.3125rem 0 0 var(--bbl-color-blue-105-alpha-17);
+  color: var(--bbl-color-active-blue);
+}
+
+.tabs.tiled-tab .tabs-nav button.active:hover {
+  color: var(--bbl-color-blue-90);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button:hover {
+  color: var(--bbl-color-blue-90);
+}
+
+/* Left-aligned Tab Variant */
+.tabs-container.left .tabs-nav-wrapper .tabs-nav,
+.tabs-container.left .tabs-nav-wrapper .tabs-dropdown {
+  text-align: left;
+}
+
+.tabs-container.left .tabs-nav-wrapper .tabs-nav {
+  display: block;
+}
+
+.tabs-container.left .tabs-nav-wrapper .tabs-nav li {
+  display: inline-block;
+}
+
+.tabs-container.left .tabs-nav-wrapper .tabs-nav button::before {
+  bottom: -0.9375rem;
+}
+
+.tabs-container.left .tabs-nav-wrapper .tabs-dropdown {
+  margin-left: 0;
+}
+
+/* Tab content spacing */
+.tabs-content {
+  clear: both;
+}
+
+.tabs-content .tab-panel .wrapper {
+  padding-top: 0;
+}
+
+.tabs-content .tab-panel .inner-container {
+  padding: 0;
+}
+
+/* ========================================================================
+   MEDIA QUERIES - Mobile First Approach
+   BOB Standard Breakpoints: 768px (Tablet), 1025px (Desktop)
+   ======================================================================== */
+
+/* Tablet (>= 768px) */
+@media (width > 47.5rem) {
+  /* Show tabs navigation */
+  .tabs-nav-wrapper .tabs-nav {
+    display: table;
   }
 
-  .promo-selector-empty {
-    font-size: var(--bbl-font-size-b1);
-    line-height: 1rem;
+  .tabs-nav-wrapper .tabs-nav li {
+    margin-right: 0;
+    padding: 0 var(--bbl-space-100);
+    display: table-cell;
   }
 
-  .promo-selector-pagination {
-    margin-inline: 0.625rem;
-  }
-
-  .promo-selector-filters {
+  .tabs.simple-tab .tabs-nav,
+  .tabs.media-tab .tabs-nav {
     display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    max-width: 100%;
+  }
+
+  .tabs.simple-tab .tabs-nav button,
+  .tabs.media-tab .tabs-nav button {
+    padding: 0;
+    margin: 0 1.1rem;
+    min-height: var(--bbl-space-200);
+    height: unset;
+    max-height: max-content;
+    text-wrap: wrap;
+    white-space: normal;
+    line-height: var(--bbl-line-height-b3-desktop);
+  }
+
+  .tabs-nav-wrapper .tabs-nav li:last-child {
+    margin: 0;
+  }
+
+  /* Hide dropdown */
+  .tabs-nav-wrapper .tabs-dropdown {
+    display: none;
+  }
+
+  /* Tiled Tab Flex Layout */
+  .tabs.tiled-tab .tabs-nav-wrapper {
+    padding: 0 var(--bbl-space-1050);
+    margin: 0 auto 1.875rem;
+    max-width: 67rem;
+  }
+
+  .tabs.tiled-tab .tabs-nav {
+    display: flex;
+    align-items: stretch;
+    gap: var(--bbl-space-300);
+    overflow-x: auto;
     flex-flow: row nowrap;
-    align-items: center;
-    gap: var(--bbl-space-500);
+    justify-content: flex-start;
   }
 
-  .promo-selector-filter {
-    flex: 1 1 calc(100% / 3);
-    margin-bottom: 0.625rem;
-    box-sizing: border-box;
+  .tabs.tiled-tab .tabs-nav li {
+    flex: 1;
+    flex-shrink: 1;
+    flex-grow: 1;
+    min-width: calc(15.625rem + 3.125 * ((100vw - 47.5rem) / 100));
   }
 
-  .promo-selector-filter-actions {
-    display: none;
+  .tabs.tiled-tab .tabs-nav button {
+    padding: 0.9375rem;
+    font-size: var(--bbl-font-size-h5-desktop);
+    line-height: 1.3rem;
+    min-width: 16.875rem;
+    margin-bottom: var(--bbl-space-250);
   }
 
-  .promo-selector-filter-btn {
-    font-size: 0.95rem;
+  .tabs.tiled-tab .tabs-nav button img {
+    width: var(--bbl-space-600);
+    height: var(--bbl-space-600);
   }
 
-  .promo-selector-option {
-    font-size: var(--bbl-font-size-b1);
+  .tabs.media-tab .tabs-nav-wrapper .tabs-nav {
+    padding: 0 0 var(--bbl-space-700);
   }
 
-  .promo-selector-dropdown {
-    max-height: 13.75rem;
-    left: 0;
-    right: 0;
+  /* Full-width Tab Layout */
+  .tabs.full-tab .tabs-nav-wrapper .tabs-nav {
+    display: table;
+    width: 100%;
   }
 
-  body.mobile-app-view header.is-not-overlapped ~ main {
-    padding-top: 0;
+  .tabs.full-tab .tabs-nav-wrapper .tabs-nav li {
+    text-align: left;
+    display: table-cell;
+  }
+}
+
+/* Desktop (>= 1025px) */
+@media (width > 64rem) {
+  .tabs-nav-wrapper .tabs-nav button {
+    padding: 0 0.9375rem;
   }
 
-  .promo-card-listing-section .tabs-nav-wrapper::before,
-  .promo-card-listing-section .tabs-nav-wrapper::after {
-    display: none;
+  .tabs-nav-wrapper .tabs-nav li {
+    padding: 0 0.9375rem;
   }
 
-  .promo-card-listing-section .tabs-nav {
-    padding-inline-end: 0;
+  .tabs.tiled-tab .tabs-nav li {
+    max-width: 18.75rem;
   }
+}
+
+/* Authoring-only: carousel nav wrapper */
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav {
+  position: relative;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav .tabs-nav {
+  display: flex;
+  gap: 0.9375rem;
+  padding: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav .tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav .tabs-nav button {
+  position: relative;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin: 0.6875rem;
+  color: var(--bbl-color-grey-85);
+  height: unset;
+  padding: var(--bbl-space-250) var(--bbl-space-075);
+  font-size: 0.7875rem;
+  line-height: 1.0631rem;
+  font-family: var(--bbl-font-family-medium);
+  text-transform: uppercase;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: max-content;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav .tabs-nav button.active {
+  text-decoration: underline;
+  color: var(--bbl-color-active-blue);
+  text-decoration-color: var(--bbl-color-active-blue);
+  text-decoration-thickness: 0.1875rem;
+  text-underline-offset: var(--bbl-space-base);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav :is(.tabs-nav-prev, .tabs-nav-next) {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  font-size: var(--bbl-font-size-b2);
+  line-height: 2.375rem;
+  color: var(--bbl-color-grey-160);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  width: var(--bbl-space-500);
+  height: var(--bbl-space-500);
+  border: 0.0625rem solid var(--bbl-color-white-alpha-158-70);
+  border-radius: 50%;
+  background: var(--bbl-color-white);
+  box-shadow: 0 0 var(--bbl-space-050) 0 transparent;
+  z-index: 2;
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav .tabs-nav-prev {
+  left: -0.875rem;
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav .tabs-nav-next {
+  right: -0.875rem;
+  transform: translateY(-50%);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav :is(.tabs-nav-prev, .tabs-nav-next):hover {
+  border-color: var(--bbl-color-grey-150);
+}
+
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav :is(.tabs-nav-prev, .tabs-nav-next).hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.tabs.icon-tab-carousel .tabs-authoring-carousel-nav .tabs-nav {
+  gap: unset;
+}
+
+.tabs.icon-tab-carousel .tabs-authoring-carousel-nav .tabs-nav button img {
+  width: 3.75rem;
+  box-sizing: border-box;
+  height: 3.75rem;
+  padding: var(--bbl-space-050);
+  margin: 0 auto var(--bbl-space-050);
+  display: block;
+  flex-shrink: 0;
 }
