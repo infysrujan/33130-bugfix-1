@@ -215,27 +215,20 @@ function parseCalendarDatePartial(text, lang, referenceDate = null) {
 }
 
 function positionPopover(trigger, popover, doc) {
+  const view = doc.defaultView;
   const rect = trigger.getBoundingClientRect();
-  const { bottom, left: rectLeft, top } = rect;
   const margin = 8;
-  popover.style.top = `${bottom + margin}px`;
-  let left = rectLeft;
-  const vw = doc.defaultView.innerWidth;
+  let viewportLeft = rect.left;
+  popover.style.top = `${rect.bottom + view.scrollY + margin}px`;
   popover.style.visibility = 'hidden';
-  popover.style.left = `${left}px`;
+  popover.style.left = `${viewportLeft + view.scrollX}px`;
   // measure after in DOM
   requestAnimationFrame(() => {
     const pw = popover.offsetWidth;
-    if (left + pw > vw - margin) {
-      left = Math.max(margin, vw - margin - pw);
-      popover.style.left = `${left}px`;
-    }
-    const vh = doc.defaultView.innerHeight;
-    const ph = popover.offsetHeight;
-    let popTop = bottom + margin;
-    if (popTop + ph > vh - margin && top - margin - ph > margin) {
-      popTop = top - margin - ph;
-      popover.style.top = `${popTop}px`;
+    const vw = view.innerWidth;
+    if (viewportLeft + pw > vw - margin) {
+      viewportLeft = Math.max(margin, vw - margin - pw);
+      popover.style.left = `${viewportLeft + view.scrollX}px`;
     }
     popover.style.visibility = '';
   });
@@ -701,7 +694,6 @@ export function attachCalendarPicker(options) {
   doc.addEventListener('click', onDocClick);
   doc.addEventListener('keydown', onKeydown);
   doc.defaultView.addEventListener('resize', onReposition);
-  doc.defaultView.addEventListener('scroll', onReposition, true);
 
   input.setAttribute('aria-haspopup', 'dialog');
   input.setAttribute('aria-expanded', 'false');
@@ -785,7 +777,6 @@ export function attachCalendarPicker(options) {
       doc.removeEventListener('click', onDocClick);
       doc.removeEventListener('keydown', onKeydown);
       doc.defaultView.removeEventListener('resize', onReposition);
-      doc.defaultView.removeEventListener('scroll', onReposition, true);
       popover.remove();
     },
     getValue() {
