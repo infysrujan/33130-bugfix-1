@@ -266,6 +266,10 @@ body.mobile-app-view main > div:first-child {
   padding-inline-end: 3rem;
 }
 
+.promo-card-listing-section .tabs.icon-tab-carousel .tabs-nav {
+  scroll-padding-inline: calc(var(--bbl-space-500) + var(--bbl-space-150));
+}
+
 
 @media (width > 47.5rem) {
   .promo-selector-grid:has(.promo-selector-empty) {
@@ -304,8 +308,8 @@ body.mobile-app-view main > div:first-child {
 
   .promo-selector-dropdown {
     max-height: 13.75rem;
-    left: 0.625rem;
-    right: 0.625rem;
+    left: 0;
+    right: 0;
   }
 
   .promo-selector-filter-actions {
@@ -368,8 +372,8 @@ body.mobile-app-view main > div:first-child {
 
   .promo-selector-dropdown {
     max-height: 13.75rem;
-    left: var(--bbl-space-250);
-    right: var(--bbl-space-250);
+    left: 0;
+    right: 0;
   }
 
   body.mobile-app-view header.is-not-overlapped ~ main {
