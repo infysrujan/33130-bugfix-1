@@ -190,8 +190,43 @@ function printForexGraph(block, state) {
   iframeDoc.close();
 }
 
+// Pinned to an exact version (not a floating "@4" range) so every environment
+// loads byte-identical Chart.js — a floating range can resolve to different
+// minor/patch releases per browser/CDN cache, silently changing tick layout.
 // eslint-disable-next-line import/no-unresolved
-const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
+const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4.5.1/+esm';
+
+// Fixed index step for x-axis labels: every Nth data point, independent of
+// canvas width/DPI/zoom/Chart.js version. Chart.js's autoSkip alone decides
+// tick count from rendered pixel width and font metrics, so the same data
+// can show very different label density on different screens — sampling by
+// a fixed index step keeps the axis identical everywhere. The step itself
+// still varies by breakpoint (mobile/tablet/desktop), matching production.
+function getXAxisTickStep() {
+  const width = window.innerWidth;
+  if (width <= 760) return 19; // mobile (<=47.5rem)
+  if (width <= 1024) return 11; // tablet (47.5rem-64rem)
+  return 4; // desktop (>64rem)
+}
+
+/**
+ * Picks a fixed-step subset of category indices [0..count-1] for x-axis
+ * ticks, always ending on the true last index so the axis never stops short
+ * of the final data point.
+ * @param {number} count - total number of categories (data points)
+ * @param {number} step - keep every `step`-th index
+ * @returns {number[]} indices to show as ticks
+ */
+function selectTickIndices(count, step) {
+  if (count <= step) return Array.from({ length: count }, (_, i) => i);
+  const indices = [];
+  for (let i = 0; i < count; i += step) indices.push(i);
+  const lastIndex = count - 1;
+  if (indices[indices.length - 1] !== lastIndex) {
+    indices[indices.length - 1] = lastIndex;
+  }
+  return indices;
+}
 
 async function loadChartJs() {
   if (window.ForexChart) return window.ForexChart;
@@ -480,25 +515,29 @@ export default async function decorate(block) {
       },
     };
 
-    // Plugin: draw a vertical gridline at every data point, not just the
-    // (auto-skipped) labeled ticks, so the grid lines up with each point.
+    // Plugin: draw a vertical gridline only at the labeled (post-autoSkip)
+    // ticks, so the grid lines up one-to-one with the dates shown on the axis.
     const pointGridPlugin = {
       id: 'pointGrid',
       beforeDatasetsDraw(chart) {
         const { ctx, chartArea } = chart;
         const meta = chart.getDatasetMeta(0);
-        if (!meta || !meta.data.length) return;
-        // Mobile (below 47.5rem), tablet (47.5rem-64rem), and desktop (above
-        // 64rem) viewports each need the line pulled up shorter than the x
-        // scale's bottom by a different amount.
+        const xTicks = chart.scales.x.ticks;
+        if (!meta || !meta.data.length || !xTicks.length) return;
+        // When labels are flat (no rotation), let the lines run all the way
+        // to the true plot boundary so they touch the horizontal axis.
+        // Rotated labels keep the previous pulled-up offset so the lines
+        // don't cut into the diagonal text.
+        const isFlat = chart.scales.x.labelRotation === 0;
         const isMobile = window.innerWidth <= 760;
-        const isTablet = window.innerWidth > 760 && window.innerWidth <= 1024;
-        const lineOffset = (isMobile && 50) || (isTablet && 30) || 20;
-        const lineBottom = chart.scales.x.bottom - lineOffset;
+        const lineOffset = isMobile ? 50 : 47;
+        const lineBottom = isFlat ? chartArea.bottom : chart.scales.x.bottom - lineOffset;
         ctx.save();
         ctx.strokeStyle = 'rgba(0,0,0,0.08)';
         ctx.lineWidth = 1;
-        meta.data.forEach((point) => {
+        xTicks.forEach((tick) => {
+          const point = meta.data[tick.value];
+          if (!point) return;
           ctx.beginPath();
           ctx.moveTo(point.x, chartArea.top);
           ctx.lineTo(point.x, lineBottom);
@@ -576,11 +615,17 @@ export default async function decorate(block) {
             grid: {
               display: false,
             },
+            // Category scale builds one tick per data point by default; replace
+            // that with a fixed-step subset so the shown dates are deterministic
+            // (data-driven) instead of depending on canvas width/DPI/autoSkip.
+            afterBuildTicks: (axis) => {
+              const indices = selectTickIndices(labels.length, getXAxisTickStep());
+              axis.ticks = indices.map((value) => ({ value }));
+            },
             ticks: {
               maxRotation: 45,
               minRotation: 0,
-              autoSkip: true,
-              autoSkipPadding: 10,
+              autoSkip: false,
               font: { size: 13, weight: '700' },
               color: '#000',
             },
