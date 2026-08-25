@@ -190,17 +190,16 @@ function printForexGraph(block, state) {
   iframeDoc.close();
 }
 
-// eslint-disable-next-line import/no-unresolved
-const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
-
 async function loadChartJs() {
-  if (window.ForexChart) return window.ForexChart;
-  // eslint-disable-next-line import/no-unresolved
-  const module = await import(/* webpackIgnore: true */ CHARTJS_ESM);
-  const { Chart, registerables } = module;
-  Chart.register(...registerables);
-  window.ForexChart = Chart;
-  return Chart;
+  if (window.Chart) return window.Chart;
+  await new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = '/scripts/vendor/chart.umd.js';
+    script.onload = resolve;
+    script.onerror = resolve;
+    document.head.appendChild(script);
+  });
+  return window.Chart || null;
 }
 
 function renderDatepicker(pick, pickerState, monthLabels, dayLabels, buddhistYearOffset) {
@@ -428,6 +427,7 @@ export default async function decorate(block) {
     if (!canvas || !state.chartData.length) return;
 
     const Chart = await loadChartJs();
+    if (!Chart) return;
 
     if (state.chartInstance) {
       state.chartInstance.destroy();
@@ -480,25 +480,22 @@ export default async function decorate(block) {
       },
     };
 
-    // Plugin: draw a vertical gridline at every data point, not just the
-    // (auto-skipped) labeled ticks, so the grid lines up with each point.
+    // Plugin: draw a vertical gridline only at the labeled (auto-skipped)
+    // x-axis ticks, matching the live site instead of one line per data point.
     const pointGridPlugin = {
       id: 'pointGrid',
       beforeDatasetsDraw(chart) {
-        const { ctx, chartArea } = chart;
+        const { ctx, chartArea, scales } = chart;
+        const xScale = scales.x;
         const meta = chart.getDatasetMeta(0);
-        if (!meta || !meta.data.length) return;
-        // Mobile (below 47.5rem), tablet (47.5rem-64rem), and desktop (above
-        // 64rem) viewports each need the line pulled up shorter than the x
-        // scale's bottom by a different amount.
-        const isMobile = window.innerWidth <= 760;
-        const isTablet = window.innerWidth > 760 && window.innerWidth <= 1024;
-        const lineOffset = (isMobile && 50) || (isTablet && 30) || 20;
-        const lineBottom = chart.scales.x.bottom - lineOffset;
+        if (!xScale || !meta || !meta.data.length) return;
+        const lineBottom = chartArea.bottom + 10;
         ctx.save();
         ctx.strokeStyle = 'rgba(0,0,0,0.08)';
         ctx.lineWidth = 1;
-        meta.data.forEach((point) => {
+        xScale.ticks.forEach((tick) => {
+          const point = meta.data[tick.value];
+          if (!point) return;
           ctx.beginPath();
           ctx.moveTo(point.x, chartArea.top);
           ctx.lineTo(point.x, lineBottom);
