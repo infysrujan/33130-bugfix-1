@@ -580,7 +580,7 @@ export default async function decorate(block) {
         let raw = inp.value.replace(/,/g, '');
 
         let limit = 9;
-        if (f.id === 'n') limit = 3;  
+        if (f.id === 'n') limit = 3;
         else if (f.id === 'A') limit = 8;
         else if (f.id === 'H' || f.id === 'C' || f.id === 'F') limit = 6;
 
