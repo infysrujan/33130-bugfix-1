@@ -125,7 +125,33 @@ function updateFilterBtn(btn, state) {
   btn.classList.toggle('is-active', isActive);
 }
 
-function renderThead(thead, state) {
+// Group header ("Bidding Price"/"Offering Price") and the pinned selected
+// rows are position:sticky at a `top` computed from a sibling's measured
+// height, not a fixed CSS value, because that height depends on the
+// (web-font-dependent) text wrapping. If it's measured before the custom
+// font swaps in, the offset goes stale and the sticky rows drift out of
+// place once actually scrolled — call this again once fonts are ready.
+function syncStickyOffsets(thead, tbodySel) {
+  const groupHeader = thead.querySelector('.db-th-group');
+  const secondRow = thead.querySelector('tr:last-child');
+  if (groupHeader && secondRow) {
+    // position:sticky lives on the <th> cells, not the <tr>. The offset must
+    // be written to the cells themselves — writing it to the (non-sticky) row
+    // has no effect, leaving the sub-headers stuck at the stale CSS-fallback
+    // offset so they ride up over the "Bidding Price" group header on scroll.
+    const top = `${groupHeader.getBoundingClientRect().height}px`;
+    secondRow.querySelectorAll('th').forEach((th) => { th.style.top = top; });
+  }
+  if (!tbodySel) return;
+  const theadH = thead.getBoundingClientRect().height;
+  let offset = theadH;
+  tbodySel.querySelectorAll('tr').forEach((tr) => {
+    tr.style.top = `${offset}px`;
+    offset += tr.getBoundingClientRect().height;
+  });
+}
+
+function renderThead(thead, state, tbodySel) {
   let row1 = '<tr>';
   let row2 = '<tr>';
   state.columns.forEach((col) => {
@@ -149,13 +175,7 @@ function renderThead(thead, state) {
   row2 += '</tr>';
   thead.innerHTML = row1 + row2;
 
-  requestAnimationFrame(() => {
-    const groupHeader = thead.querySelector('.db-th-group');
-    const secondRow = thead.querySelector('tr:last-child');
-    if (groupHeader && secondRow) {
-      secondRow.style.top = `${groupHeader.getBoundingClientRect().height}px`;
-    }
-  });
+  requestAnimationFrame(() => syncStickyOffsets(thead, tbodySel));
 }
 
 function renderRow(rate, isSelected, state) {
@@ -206,14 +226,7 @@ function renderTable(tbodySel, tbodyAll, state) {
   tbodySel.innerHTML = selRates.map((r) => renderRow(r, true, state)).join('');
   tbodyAll.innerHTML = unsel.map((r) => renderRow(r, false, state)).join('');
   const thead = tbodySel.closest('table')?.querySelector('thead');
-  if (thead) {
-    const theadH = thead.getBoundingClientRect().height;
-    let offset = theadH;
-    tbodySel.querySelectorAll('tr').forEach((tr) => {
-      tr.style.top = `${offset}px`;
-      offset += tr.getBoundingClientRect().height;
-    });
-  }
+  if (thead) syncStickyOffsets(thead, tbodySel);
 }
 
 // ─── month picker ─────────────────────────────────────────────────────────────
@@ -493,7 +506,7 @@ function wireFilterEvents(
     try {
       await loadFilteredRates(state);
       state.selectedIds = [];
-      renderThead(thead, state);
+      renderThead(thead, state, tbodySel);
       renderTable(tbodySel, tbodyAll, state);
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -1081,7 +1094,21 @@ export default async function decorate(block) {
   const tbodySel = block.querySelector('#db-tbody-sel');
   const tbodyAll = block.querySelector('#db-tbody-all');
 
-  renderThead(thead, state);
+  renderThead(thead, state, tbodySel);
+
+  // The second header row and the pinned selected rows are position:sticky at
+  // a `top` measured from the rendered header height. That height isn't stable
+  // at first paint — it grows when the table first becomes visible, when the
+  // web font swaps in and rewraps a header (e.g. "Indicative Yield* (%)" onto
+  // two lines), or when the viewport resizes and columns re-wrap. If the
+  // offset isn't re-measured after those, the sub-header row rides up over the
+  // "Bidding Price"/"Offering Price" group header on scroll. A ResizeObserver
+  // on the (never-recreated) thead re-syncs the offset whenever its box
+  // changes — setting a sticky `top` doesn't alter the box, so this can't loop.
+  if (typeof ResizeObserver !== 'undefined') {
+    const stickyObserver = new ResizeObserver(() => syncStickyOffsets(thead, tbodySel));
+    stickyObserver.observe(thead);
+  }
 
   // ── initial data load ──
   try {
@@ -1100,7 +1127,7 @@ export default async function decorate(block) {
     state.rates = Array.isArray(latestRates) ? latestRates : [];
 
     renderTimeDropdown(timeListEl, timeLabelEl, state);
-    renderThead(thead, state);
+    renderThead(thead, state, tbodySel);
     renderTable(tbodySel, tbodyAll, state);
   } catch (err) {
     // eslint-disable-next-line no-console
@@ -1186,7 +1213,7 @@ export default async function decorate(block) {
     if (state.sortKey === key) state.sortAsc = !state.sortAsc;
     else { state.sortKey = key; state.sortAsc = true; }
     state.sortUserSet = true;
-    renderThead(thead, state);
+    renderThead(thead, state, tbodySel);
     renderTable(tbodySel, tbodyAll, state);
   });
 
@@ -1245,7 +1272,7 @@ export default async function decorate(block) {
     state.sortAsc = true;
     state.sortUserSet = false;
     updateFilterBtn(filterBtn, state);
-    renderThead(thead, state);
+    renderThead(thead, state, tbodySel);
     try {
       await loadRates(state);
       state.selectedIds = [];

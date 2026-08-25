@@ -167,6 +167,15 @@
   width: var(--bbl-space-1000);
 }
 
+/* Exchange "Buy" header only — left-aligned with left padding. The Buy column
+   is the 2nd cell in the 3-column exchange table; :not(:last-child) excludes
+   the single rate column of the 2-column Rates/NAV tables, which stays
+   right-aligned. */
+.rate-card table thead th:nth-child(2):not(:last-child) {
+  text-align: left;
+  padding-left: 0.625rem;
+}
+
 .rate-card table tbody td {
   padding: 0.3125rem 0;
   font-size: var(--bbl-text-default-size);
@@ -185,6 +194,13 @@
 .rate-card table tbody td:not(:first-child) {
   text-align: right;
   font-size: 1.3125rem;
+}
+
+/* Exchange "Buy" column values only — extra right padding. Same structural
+   targeting as the Buy header above; Sell and the 2-column Rates/NAV tables
+   keep their existing padding. */
+.rate-card table tbody td:nth-child(2):not(:last-child) {
+  padding-right: 0.625rem;
 }
 
 /* --------------------------------------------------------------------------
@@ -300,6 +316,7 @@
     flex-direction: row;
     align-items: center;
     margin-top: 1.5rem;
+    padding-bottom: 1.5625rem;
   }
 }
 
