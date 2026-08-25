@@ -462,7 +462,7 @@ export default async function decorate(block) {
 
     // Scenario 4: decimal fields with value > 100 — red highlight only, no message
     fields.forEach((f) => {
-      if (f.valueType === 'decimal' && getVal(f.id) > 100) {
+      if (f.valueType === 'decimal' && getVal(f.id) >= 100) {
         block.querySelector(`#${f.id}`)?.classList.add('input-error');
         hasError = true;
       }
@@ -534,13 +534,14 @@ export default async function decorate(block) {
     inp.addEventListener('blur', () => {
       const v = parseFloat(inp.value.replace(/,/g, ''));
       if (!Number.isFinite(v)) {
-        if (isRateField) inp.value = '0.000';
+        if (isRateField) inp.value = '0';
         else inp.value = decimal ? '0.00' : '0';
+      } else if (isRateField) {
+        inp.value = inp.value.replace(/,/g, '').replace(/\.$/, '');
       } else {
-        const decPlaces = isRateField ? 3 : 2;
         inp.value = decimal
-          ? v.toLocaleString('en-US', { minimumFractionDigits: decPlaces, maximumFractionDigits: decPlaces })
-          : Math.round(v).toLocaleString('en-US');
+          ? v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: false })
+          : String(Math.round(v));
       }
     });
 
@@ -550,11 +551,8 @@ export default async function decorate(block) {
         touchedDecimalFields.add(f.id);
 
         let maxBefore = 9;
-        let maxAfter = 2;
-        if (isRateField) {
-          maxBefore = 2;
-          maxAfter = 3;
-        } else if (f.id === 'H' || f.id === 'C' || f.id === 'F') {
+        const maxAfter = 2;
+        if (f.id === 'H' || f.id === 'C' || f.id === 'F') {
           maxBefore = 6;
         } else if (f.id === 'A') {
           maxBefore = 8;
@@ -563,9 +561,14 @@ export default async function decorate(block) {
         }
 
         const parts = inp.value.replace(/,/g, '').split('.');
-        if (parts[0].length > maxBefore) parts[0] = parts[0].slice(0, maxBefore);
-        if (parts[1] && parts[1].length > maxAfter) parts[1] = parts[1].slice(0, maxAfter);
-        const newValue = parts.join('.');
+        let newValue;
+        if (isRateField) {
+          newValue = parts.join('.').slice(0, 6);
+        } else {
+          if (parts[0].length > maxBefore) parts[0] = parts[0].slice(0, maxBefore);
+          if (parts[1] && parts[1].length > maxAfter) parts[1] = parts[1].slice(0, maxAfter);
+          newValue = parts.join('.');
+        }
 
         if (inp.value !== newValue) {
           const pos = inp.selectionStart;
@@ -577,14 +580,14 @@ export default async function decorate(block) {
         let raw = inp.value.replace(/,/g, '');
 
         let limit = 9;
-        if (f.id === 'n') limit = 3;
+        if (f.id === 'n') limit = 3;  
         else if (f.id === 'A') limit = 8;
         else if (f.id === 'H' || f.id === 'C' || f.id === 'F') limit = 6;
 
         if (raw.length > limit) raw = raw.slice(0, limit);
         const num = parseInt(raw, 10);
         if (!Number.isNaN(num)) {
-          const formatted = num.toLocaleString('en-US');
+          const formatted = String(num);
           const delta = formatted.length - inp.value.length;
           inp.value = formatted;
           inp.setSelectionRange(pos + delta, pos + delta);
