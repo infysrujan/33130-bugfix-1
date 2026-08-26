@@ -889,7 +889,9 @@
     width: auto;
     height: auto;
     border: none;
-    padding: 0;
+    border-bottom: 0.125rem solid transparent;
+    border-radius: 0 0 0.0625rem 0.0625rem;
+    padding: 0 0 0.3125rem;
     background: none;
     color: var(--bbl-color-black);
     font-family: var(--bbl-font-family-primary);
@@ -901,6 +903,11 @@
   #fdd-print-root .tab-btn::before,
   #fdd-print-root .tab-btn::after {
     display: none;
+  }
+
+  #fdd-print-root .tab-btn.active {
+    color: var(--bbl-color-active-blue);
+    border-bottom-color: var(--bbl-color-active-blue);
   }
 
   #fdd-print-root .fdd-chart-panel.hidden,
