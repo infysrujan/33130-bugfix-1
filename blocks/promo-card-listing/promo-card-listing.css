@@ -200,6 +200,17 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   min-width: 100%;
 }
 
+/* Touch taps fake :hover and it sticks until the user taps elsewhere, making the
+   secondary Reset button flash solid blue (looks like a primary button) after use. */
+@media (hover: none), (pointer: coarse) {
+  .promo-selector-btn-reset.button-m.secondary:hover {
+    background: transparent;
+    border-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-active-blue);
+    text-decoration: none;
+  }
+}
+
 .promo-card-listing.has-preview > div[data-config-row] {
   display: none;
 }
