@@ -156,10 +156,33 @@ function processImageLinks(paragraphs) {
   });
 }
 
+function processStyleMarkers(paragraphs) {
+  const PAD_LEFT_RE = /#padleft(\d+)/i;
+  const INDENT_RE = /#indent(\d*)/i;
+  paragraphs.forEach((p) => {
+    const padMatch = PAD_LEFT_RE.exec(p.textContent);
+    if (padMatch) {
+      p.style.paddingLeft = `${parseInt(padMatch[1], 10)}px`;
+      p.classList.add('rte-pad-left');
+    }
+    const indentMatch = INDENT_RE.exec(p.textContent);
+    if (indentMatch) {
+      p.style.textIndent = `${parseInt(indentMatch[1], 10) || 40}px`;
+      p.classList.add('rte-paragraph-indent');
+    }
+    if (!padMatch && !indentMatch) return;
+    const tw = document.createTreeWalker(p, NodeFilter.SHOW_TEXT);
+    for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+      n.nodeValue = n.nodeValue.replace(PAD_LEFT_RE, '').replace(INDENT_RE, '');
+    }
+  });
+}
+
 function runRteMarkers(paragraphs) {
   processInlineImageMarkers(paragraphs);
   processIconMarkers(paragraphs);
   processImageLinks(paragraphs);
+  processStyleMarkers(paragraphs);
   paragraphs.forEach((p) => {
     if (!p.isConnected) return;
     if (p.classList.contains('rte-inline-image') && !p.querySelector('picture, img')) {

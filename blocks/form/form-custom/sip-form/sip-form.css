@@ -30,24 +30,8 @@
 }
 
 .sip-form main .section.form-container.custom-forms {
-
   & .field-thankyou-visible-panel .field-subtext h4 {
     padding-bottom: 0.9375rem;
-  }
-
-  & .field-thankyou-visible-panel .field-icon {
-    justify-content: center;
-
-    & .field-checkedicon {
-      margin-top: 0.625rem;
-      justify-content: center;
-
-      & + .plain-text-wrapper p {
-        color: var(--bbl-color-grey-90);
-        font-size: var(--bbl-font-size-h3-desktop);
-        font-weight: normal;
-      }
-    }
   }
 
   &.central-aligned > .default-content-wrapper {
@@ -218,6 +202,21 @@
 
       & fieldset.panel-wrapper > .checkbox-group-wrapper .checkbox-wrapper {
         width: calc(50% - var(--bbl-space-200));
+      }
+    }
+  }
+
+  & .field-thankyou-visible-panel .field-icon {
+    justify-content: center;
+
+    & .field-checkedicon {
+      margin-top: 0.625rem;
+      justify-content: center;
+
+      & + .plain-text-wrapper p {
+        color: var(--bbl-color-grey-90);
+        font-size: var(--bbl-font-size-h3-desktop);
+        font-weight: normal;
       }
     }
   }
