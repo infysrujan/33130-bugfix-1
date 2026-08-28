@@ -1,0 +1,329 @@
+/* blocks/form/components/datepicker/datepicker.css */
+
+.date-wrapper .date-picker {
+  --dp-accent: var(--bbl-color-active-blue, #1a56db);
+  --dp-accent-contrast: #fff;
+  --dp-text: var(--bbl-color-grey-85, #1a1a1a);
+  --dp-muted: var(--bbl-color-grey-60, #6b7280);
+  --dp-border: var(--bbl-color-grey-150, #d1d5db);
+  --dp-border-strong: #9ca3af;
+  --dp-surface: var(--bbl-color-white, #fff);
+  --dp-surface-hover: var(--bbl-color-grey-10, #f3f4f6);
+  --dp-radius: 0.4375rem;
+
+  position: relative;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.date-picker * {
+  box-sizing: border-box;
+}
+
+.date-picker-disabled {
+  opacity: 0.55;
+}
+
+/* ---- field row ---- */
+.date-picker-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 0.0625rem solid var(--dp-border);
+  border-radius: var(--dp-radius);
+  background: var(--dp-surface);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.date-picker-field:hover {
+  border-color: var(--dp-border-strong);
+}
+
+.date-picker:focus-within .date-picker-field {
+  border-color: var(--dp-accent);
+  box-shadow: 0 0 0 0.1875rem rgb(26 86 219 / 35%);
+}
+
+main .section.form-container .form form .date-wrapper .date-picker-display {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: 16px;
+  color: var(--dp-text);
+  padding: 0.6875rem 0.25rem 0.6875rem 0.875rem;
+  caret-color: transparent;
+  cursor: pointer;
+}
+
+.date-picker-display::placeholder {
+  color: var(--dp-muted);
+}
+
+.date-picker-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--dp-muted);
+  cursor: pointer;
+  padding: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+}
+
+.date-picker-trigger:hover {
+  color: var(--dp-text);
+}
+
+.date-picker-trigger:disabled {
+  cursor: not-allowed;
+}
+
+/* ---- panel ---- */
+.date-picker-panel[hidden] {
+  display: none;
+}
+
+.date-picker-backdrop {
+  display: none;
+}
+
+.date-picker-sheet {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 0.375rem);
+  left: 0;
+  width: 100%;
+  min-width: 21.25rem;
+  background: var(--dp-surface);
+  border: 0.0625rem solid var(--dp-border);
+  border-radius: 0.25rem;
+  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 10%);
+  padding: 1rem 1.25rem;
+  animation: date-picker-pop-in 0.12s ease-out;
+}
+
+.date-picker-panel-flip .date-picker-sheet {
+  top: auto;
+  bottom: calc(100% + 0.375rem);
+}
+
+@keyframes date-picker-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.date-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 0.0625rem solid var(--dp-border);
+}
+
+.date-picker-nav-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.date-picker-nav {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 0.25rem;
+  color: var(--dp-text);
+  cursor: pointer;
+}
+
+.date-picker-nav:disabled {
+  color: var(--dp-border-strong);
+  cursor: not-allowed;
+}
+
+.date-picker-nav:hover:not(:disabled) {
+  background: var(--dp-surface-hover);
+}
+
+.date-picker-month-label {
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--dp-text);
+}
+
+.date-picker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--dp-muted);
+  text-align: center;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.date-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem 0;
+}
+
+.date-picker-cell {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.date-picker-cell-empty {
+  background: transparent;
+}
+
+.date-picker-day {
+  width: 100%;
+  height: 100%;
+  min-height: 3rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.1875rem;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--dp-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.date-picker-day:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 0.1875rem rgb(26 86 219 / 35%);
+}
+
+.date-picker-day:hover:not(:disabled) {
+  background: var(--dp-surface-hover);
+}
+
+.date-picker-day-today {
+  font-weight: 700;
+  color: var(--dp-accent);
+}
+
+.date-picker-day-selected {
+  background: var(--dp-text);
+  color: var(--dp-surface);
+  font-weight: 600;
+  border-radius: 0.25rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: 0 auto;
+}
+
+.date-picker-day-selected.date-picker-day-today {
+  color: var(--dp-surface);
+}
+
+/* Grey-out only — no strikethrough. Applies to any day outside the
+   current min/max, whether authored on the field or pushed in later by
+   a rule via the subscribe hook / updateDateConstraints(). */
+.date-picker-day-disabled {
+  color: var(--dp-border-strong);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+.date-picker-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.375rem;
+  padding-top: 0.375rem;
+}
+
+.date-picker-clear,
+.date-picker-today {
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  color: var(--dp-accent);
+  cursor: pointer;
+  padding: 0.25rem 0.375rem;
+  border-radius: 0.25rem;
+}
+
+.date-picker-clear:hover,
+.date-picker-today:hover {
+  background: var(--dp-surface-hover);
+}
+
+/* ---- iOS / narrow-viewport bottom sheet ---- */
+@media (width <= 40rem) {
+  .date-picker-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgb(17 24 39 / 40%);
+    z-index: 39;
+  }
+
+  .date-picker-sheet {
+    position: fixed;
+    z-index: 40;
+    inset: auto 0 0;
+    width: auto;
+    max-width: none;
+    border-radius: 1rem 1rem 0 0;
+    border-bottom: none;
+    box-shadow: 0 -0.75rem 1.875rem rgb(0 0 0 / 20%);
+    padding: 0.875rem 1rem calc(0.875rem + env(safe-area-inset-bottom, 0px));
+    animation: date-picker-sheet-up 0.18s ease-out;
+  }
+
+  .date-picker-panel-flip .date-picker-sheet {
+    inset: auto 0 0;
+  }
+
+  .date-picker-day {
+    min-height: 2.625rem;
+  }
+}
+
+@keyframes date-picker-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+body.date-picker-scroll-lock {
+  overflow: hidden;
+  touch-action: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .date-picker-sheet {
+    animation: none;
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "definitions": [
+    {
+      "title": "Date Picker",
+      "id": "date-picker",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/fd/components/form/datepicker/v1/datepicker",
+            "template": {
+              "jcr:title": "Date Picker",
+              "fieldType": "date-input",
+              "fd:viewType": "date-picker"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "date-picker",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Basic",
+          "name": "basic"
+        },
+        {
+          "...": "../form-common/_basic-input-placeholder-fields.json#/fields"
+        },
+        {
+          "component": "date-time",
+          "name": "default",
+          "label": "Default Value",
+          "valueType": "date"
+        },
+        {
+          "component": "text",
+          "name": "customClassName",
+          "label": "Custom CSS Class Name",
+          "description": "Space-separated CSS class names applied to this date field's wrapper.",
+          "valueType": "string"
+        },
+        {
+          "component": "tab",
+          "label": "Validation",
+          "name": "validation"
+        },
+        {
+          "...": "../form-common/_date-validation-fields.json#/fields"
+        },
+        {
+          "component": "tab",
+          "label": "Formats",
+          "name": "formats"
+        },
+        {
+          "component": "select",
+          "label": "Display Format",
+          "name": "displayFormat",
+          "valueType": "string",
+          "value": "MMMM d, y",
+          "description": "How the selected date is shown to the user, e.g. \"August 5, 2026\".",
+          "options": [
+            { "name": "August 5, 2026", "value": "MMMM d, y" },
+            { "name": "Aug 5, 2026", "value": "MMM d, y" },
+            { "name": "05/08/2026 (DD/MM/YYYY)", "value": "dd/MM/yyyy" },
+            { "name": "2026-08-05 (ISO 8601)", "value": "yyyy-MM-dd" }
+          ]
+        },
+        {
+          "component": "select",
+          "label": "Submit Value Format",
+          "name": "valueFormat",
+          "valueType": "string",
+          "value": "MMMM d, y",
+          "description": "Format of the date value sent on form submission. Matches Display Format by default per current requirement (submitted as \"August 5, 2026\").",
+          "options": [
+            { "name": "August 5, 2026", "value": "MMMM d, y" },
+            { "name": "Aug 5, 2026", "value": "MMM d, y" },
+            { "name": "05/08/2026 (DD/MM/YYYY)", "value": "dd/MM/yyyy" },
+            { "name": "2026-08-05 (ISO 8601)", "value": "yyyy-MM-dd" }
+          ]
+        },
+        {
+          "...": "../form-common/_help-container.json#/fields"
+        }
+      ]
+    }
+  ]
+}

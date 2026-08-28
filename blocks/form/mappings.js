@@ -82,6 +82,12 @@ export default async function componentDecorator(element, fd, container, formId)
   ) {
     await loadComponent('double-key-dropdown', element, fd, container, formId);
   }
+  // date-picker: fd:viewType carries the short component name.
+  if (
+    fd['fd:viewType'] === 'date-picker' && !getOOTBComponents().includes(type)
+  ) {
+    await loadComponent('date', element, fd, container, formId);
+  }
 
   // forms-menu-card: display-only card grid rendered inside an Adaptive Form.
   // Some AEM runtime versions expose the component via fd:viewType; others set :type to
