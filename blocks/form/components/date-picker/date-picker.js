@@ -104,8 +104,8 @@ export default async function decorate(fieldWrapper, fd, _container, formId) {
   const displayFormat = fd.displayFormat || 'MMMM d, y';
   const valueFormat = fd.valueFormat || displayFormat;
 
-  let minDate = parseISO(fd.minimumDate);
-  let maxDate = parseISO(fd.maximumDate);
+  let minDate = parseISO(fd.minimum) || parseISO(fd.minimumDate);
+  let maxDate = parseISO(fd.maximum) || parseISO(fd.maximumDate);
   let selected = parseISO(fd.value) || parseISO(fd.default) || null;
 
   const ui = buildMarkup();
@@ -135,11 +135,6 @@ export default async function decorate(fieldWrapper, fd, _container, formId) {
   let viewYear = seed.getFullYear();
   let viewMonth = seed.getMonth();
 
-  // The functions below (commit, onOutsideClick, onPanelKeydown, openPanel,
-  // closePanel) reference each other in a closure cycle — closePanel removes
-  // listeners for onOutsideClick/onPanelKeydown, and those two call closePanel
-  // in turn. No linear declaration order satisfies no-use-before-define for
-  // all of them; function declarations hoist, so this is safe at runtime.
   /* eslint-disable no-use-before-define */
   function isDisallowed(date) {
     if (minDate && date < minDate) return true;
@@ -319,7 +314,6 @@ export default async function decorate(fieldWrapper, fd, _container, formId) {
   renderDisplay();
   renderCalendar();
 
-  // Manual/test hook — same effect as a rule update.
   fieldWrapper.updateDateConstraints = ({ minimum, maximum } = {}) => {
     if (minimum !== undefined) minDate = minimum ? parseISO(minimum) : null;
     if (maximum !== undefined) maxDate = maximum ? parseISO(maximum) : null;
@@ -335,7 +329,6 @@ export default async function decorate(fieldWrapper, fd, _container, formId) {
     if (disabled) closePanel();
   }
 
-  // Rule-engine hook — same subscribe pattern as double-key-dropdown.js.
   if (formId) {
     subscribe(fieldWrapper, formId, (el, model, eventType, payload) => {
       if (eventType === 'register') return;
