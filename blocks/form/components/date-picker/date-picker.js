@@ -1,5 +1,5 @@
 /**
- * date component — blocks/form/components/date/date.js
+ * date-picker component — blocks/form/components/date-picker/date-picker.js
  * Loaded via mappings.js when fd['fd:viewType'] === 'date-picker'.
  * Custom-rendered calendar (not native <input type="date">) so iOS Safari
  * works reliably and out-of-range days can be visually greyed out.
@@ -64,34 +64,34 @@ function buildMarkup() {
   const root = document.createElement('div');
   root.className = 'date-picker';
   root.innerHTML = `
-    <div class="date-picker__field">
-      <input type="text" class="date-picker__display" readonly inputmode="none" autocomplete="off"
+    <div class="date-picker-field">
+      <input type="text" class="date-picker-display" readonly inputmode="none" autocomplete="off"
         aria-haspopup="dialog" aria-expanded="false" />
-      <button type="button" class="date-picker__trigger" aria-label="Open calendar">
+      <button type="button" class="date-picker-trigger" aria-label="Open calendar">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
           <path fill="currentColor" d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1.5A2.5 2.5 0 0 1 22 6.5v13A2.5 2.5 0 0 1 19.5 22h-15A2.5 2.5 0 0 1 2 19.5v-13A2.5 2.5 0 0 1 4.5 4H6V3a1 1 0 0 1 1-1Zm13 9H4v8.5c0 .28.22.5.5.5h15a.5.5 0 0 0 .5-.5V11ZM6 6H4.5a.5.5 0 0 0-.5.5V9h16V6.5a.5.5 0 0 0-.5-.5H18v1a1 1 0 1 1-2 0V6H8v1a1 1 0 1 1-2 0V6Z"/>
         </svg>
       </button>
     </div>
-    <div class="date-picker__panel" role="dialog" aria-modal="true" hidden>
-      <div class="date-picker__backdrop"></div>
-      <div class="date-picker__sheet">
-        <div class="date-picker__header">
-          <span class="date-picker__month-label"></span>
-          <span class="date-picker__nav-group">
-            <button type="button" class="date-picker__nav date-picker__nav--prev" aria-label="Previous month">
+    <div class="date-picker-panel" role="dialog" aria-modal="true" hidden>
+      <div class="date-picker-backdrop"></div>
+      <div class="date-picker-sheet">
+        <div class="date-picker-header">
+          <span class="date-picker-month-label"></span>
+          <span class="date-picker-nav-group">
+            <button type="button" class="date-picker-nav date-picker-nav-prev" aria-label="Previous month">
               <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 8l-6 6 1.4 1.4L12 10.8l4.6 4.6L18 14z"/></svg>
             </button>
-            <button type="button" class="date-picker__nav date-picker__nav--next" aria-label="Next month">
+            <button type="button" class="date-picker-nav date-picker-nav-next" aria-label="Next month">
               <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 16l6-6-1.4-1.4L12 13.2l-4.6-4.6L6 10z"/></svg>
             </button>
           </span>
         </div>
-        <div class="date-picker__weekdays">${WEEKDAY_SHORT.map((d) => `<span>${d}</span>`).join('')}</div>
-        <div class="date-picker__grid" role="grid"></div>
-        <div class="date-picker__footer">
-          <button type="button" class="date-picker__clear">Clear</button>
-          <button type="button" class="date-picker__today">Today</button>
+        <div class="date-picker-weekdays">${WEEKDAY_SHORT.map((d) => `<span>${d}</span>`).join('')}</div>
+        <div class="date-picker-grid" role="grid"></div>
+        <div class="date-picker-footer">
+          <button type="button" class="date-picker-clear">Clear</button>
+          <button type="button" class="date-picker-today">Today</button>
         </div>
       </div>
     </div>
@@ -109,19 +109,18 @@ export default async function decorate(fieldWrapper, fd, _container, formId) {
   let selected = parseISO(fd.value) || parseISO(fd.default) || null;
 
   const ui = buildMarkup();
-  const displayInput = ui.querySelector('.date-picker__display');
-  const trigger = ui.querySelector('.date-picker__trigger');
-  const panel = ui.querySelector('.date-picker__panel');
-  const backdrop = ui.querySelector('.date-picker__backdrop');
-  const sheet = ui.querySelector('.date-picker__sheet');
-  const monthLabel = ui.querySelector('.date-picker__month-label');
-  const prevBtn = ui.querySelector('.date-picker__nav--prev');
-  const nextBtn = ui.querySelector('.date-picker__nav--next');
-  const grid = ui.querySelector('.date-picker__grid');
-  const todayBtn = ui.querySelector('.date-picker__today');
-  const clearBtn = ui.querySelector('.date-picker__clear');
+  const displayInput = ui.querySelector('.date-picker-display');
+  const trigger = ui.querySelector('.date-picker-trigger');
+  const panel = ui.querySelector('.date-picker-panel');
+  const backdrop = ui.querySelector('.date-picker-backdrop');
+  const sheet = ui.querySelector('.date-picker-sheet');
+  const monthLabel = ui.querySelector('.date-picker-month-label');
+  const prevBtn = ui.querySelector('.date-picker-nav-prev');
+  const nextBtn = ui.querySelector('.date-picker-nav-next');
+  const grid = ui.querySelector('.date-picker-grid');
+  const todayBtn = ui.querySelector('.date-picker-today');
+  const clearBtn = ui.querySelector('.date-picker-clear');
 
-  // Actual submitted input — holds the formatted string, e.g. "August 5, 2026".
   const submitInput = document.createElement('input');
   submitInput.type = 'hidden';
   submitInput.id = fd.id;
@@ -180,17 +179,17 @@ export default async function decorate(fieldWrapper, fd, _container, formId) {
       const dayNum = i - startOffset + 1;
       const inMonth = dayNum >= 1 && dayNum <= daysInMonth;
       if (!inMonth) {
-        cells.push('<span class="date-picker__cell date-picker__cell--empty"></span>');
+        cells.push('<span class="date-picker-cell date-picker-cell-empty"></span>');
       } else {
         const cellDate = new Date(viewYear, viewMonth, dayNum);
         const disallowed = isDisallowed(cellDate);
         const isSelected = sameDay(cellDate, selected);
         const isToday = sameDay(cellDate, today);
-        const classes = ['date-picker__cell', 'date-picker__day'];
-        if (isSelected) classes.push('date-picker__day--selected');
-        if (isToday) classes.push('date-picker__day--today');
+        const classes = ['date-picker-cell', 'date-picker-day'];
+        if (isSelected) classes.push('date-picker-day-selected');
+        if (isToday) classes.push('date-picker-day-today');
         if (disallowed) {
-          classes.push('date-picker__day--disabled');
+          classes.push('date-picker-day-disabled');
         }
         cells.push(
           `<button type="button" class="${classes.join(' ')}" data-date="${toISO(cellDate)}"
@@ -230,11 +229,11 @@ export default async function decorate(fieldWrapper, fd, _container, formId) {
 
   function positionPanel() {
     if (window.matchMedia('(max-width: 640px)').matches) return;
-    const fieldRect = ui.querySelector('.date-picker__field').getBoundingClientRect();
+    const fieldRect = ui.querySelector('.date-picker-field').getBoundingClientRect();
     const sheetHeight = sheet.offsetHeight;
     const spaceBelow = window.innerHeight - fieldRect.bottom;
     const flip = spaceBelow < sheetHeight + 16 && fieldRect.top > sheetHeight + 16;
-    panel.classList.toggle('date-picker__panel--flip', flip);
+    panel.classList.toggle('date-picker-panel-flip', flip);
   }
 
   function onOutsideClick(e) {
@@ -248,7 +247,7 @@ export default async function decorate(fieldWrapper, fd, _container, formId) {
       return;
     }
     const active = document.activeElement;
-    if (!active || !active.classList.contains('date-picker__day')) return;
+    if (!active || !active.classList.contains('date-picker-day')) return;
     const deltaMap = {
       ArrowLeft: -1,
       ArrowRight: 1,
@@ -281,9 +280,9 @@ export default async function decorate(fieldWrapper, fd, _container, formId) {
     document.body.classList.add('date-picker-scroll-lock');
     requestAnimationFrame(() => {
       positionPanel();
-      const focusTarget = grid.querySelector('.date-picker__day--selected')
-        || grid.querySelector('.date-picker__day--today')
-        || grid.querySelector('.date-picker__day:not(:disabled)');
+      const focusTarget = grid.querySelector('.date-picker-day-selected')
+        || grid.querySelector('.date-picker-day-today')
+        || grid.querySelector('.date-picker-day:not(:disabled)');
       focusTarget?.focus();
     });
   }
@@ -332,7 +331,7 @@ export default async function decorate(fieldWrapper, fd, _container, formId) {
   function setDisabled(disabled) {
     trigger.disabled = disabled;
     displayInput.disabled = disabled;
-    ui.classList.toggle('date-picker--disabled', disabled);
+    ui.classList.toggle('date-picker-disabled', disabled);
     if (disabled) closePanel();
   }
 
