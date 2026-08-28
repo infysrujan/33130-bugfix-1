@@ -44,6 +44,9 @@
     },
     {
       "...": "./components/bblwizard/_bblwizard.json#/definitions"
+    },
+    {
+      "...": "./components/date-picker/_date-picker.json#/definitions"
     }
   ],
   "models": [
@@ -126,7 +129,7 @@
         "forms-card-list",
         "forms-card-list-item",
         "bbl-wizard",
-        "datepicker"
+        "date-picker"
       ]
     },
     {
