@@ -622,6 +622,17 @@ export async function buildOverseasUI(container, placeholders, configs) {
   const cardsContainer = container.querySelector('.locate-us-cards');
   const paginationEl = container.querySelector('.locate-us-pagination');
 
+  // Move the active card to the top of the list (mobile accordion only, matching
+  // the Thailand list). On tablet/desktop the cards are a grid, so keep order.
+  function restoreOrder(activeCard) {
+    const others = [...cardsContainer.querySelectorAll('.locate-us-card')]
+      .filter((c) => c !== activeCard)
+      .sort((a, b) => Number(a.dataset.cardIndex) - Number(b.dataset.cardIndex));
+    cardsContainer.innerHTML = '';
+    cardsContainer.appendChild(activeCard);
+    others.forEach((c) => cardsContainer.appendChild(c));
+  }
+
   function renderOverseasPage(allLocs, page) {
     cardsContainer.innerHTML = '';
     const start = (page - 1) * CARDS_PER_PAGE;
@@ -637,6 +648,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
         if (!isExpanded) {
           body.hidden = false;
           header.setAttribute('aria-expanded', 'true');
+          if (!window.matchMedia('(width > 47.5rem)').matches) restoreOrder(card);
         }
       });
       if (idx === 0) {

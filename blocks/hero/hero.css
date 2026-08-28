@@ -400,6 +400,14 @@
   display: none;
 }
 
+.hero-banner-content-inner-text p.hero-banner-desktop-break {
+  display: inline;
+}
+
+.hero-banner-content :is(h1, h2, h3, h4, h5, h6).hero-banner-desktop-break br {
+  display: none;
+}
+
 .hero-banner-content-inner .button-container {
   margin: 2.0625rem 0 0;
   text-align: center;
@@ -787,6 +795,10 @@
   }
 
   .hero-banner-content-inner-text p.hero-banner-desktop-break br {
+    display: block;
+  }
+
+  .hero-banner-content :is(h1, h2, h3, h4, h5, h6).hero-banner-desktop-break br {
     display: block;
   }
 

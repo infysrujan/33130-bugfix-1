@@ -1,0 +1,288 @@
+{
+  "th": {
+    "common": {
+      "title": "วางแผนลงทุนเพื่อเป้าหมาย",
+      "Subtitle": "เพิ่มโอกาสสู่ความมั่นคงทางการเงิน แค่เริ่มวางแผนลงทุนรายเดือน!",
+      "calculateButton": "คำนวณ",
+      "unit": "บาท",
+      "yearUnit": "ปี",
+      "percentUnit": "%",
+      "backButton": "ย้อนกลับ",
+      "nextButton": "ถัดไป",
+      "noteText": "*จำนวนเงินในอนาคตของเงินที่ต้องการ หลังคำนวณเงินเฟ้อ {inflationRate}% ต่อปีแล้ว",
+      "noteincreasedSavingMonthly": "โดยออมเงินเพิ่มขึ้นปีละ {annualSavingIncreaseRate}<br/>",
+      "noterecommendSavingMonthly": "และอัตราผลตอบแทนที่คาดหวังอยู่ที่ {expectedReturnRate}% ต่อปี",
+      "step1Title": "คำนวณเงินลงทุนต่อเดือน",
+      "step2Title": "ข้อมูลสำหรับคำนวณเงินออม",
+      "rightCardTitle": "จะเป็นเจ้าของบ้านในฝัน!",
+      "loadingCardData": "กำลังโหลดข้อมูล...",
+      "learnMore": "เรียนรู้เพิ่มเติม",
+      "toHaveMoney": "เพื่อมีเงิน {money} {unit}ในอีก {years} ปีข้างหน้า",
+      "clearButton": "ล้างข้อมูล",
+      "calculateButtonText": "คำนวณ",
+      "resultsTitle": "ผลการคำนวณ",
+      "loadingCalculationResults": "กำลังโหลดผลการคำนวณ...",
+      "additionalCalculationResultsTitle": "ผลการคำนวณเพิ่มเติม",
+      "loadingTexts": "กำลังโหลดข้อความ...",
+      "allCategory": "ทั้งหมด",
+      "recommendedFundsTitle": "เริ่มต้นลงทุนให้ได้ตามเป้าหมายผ่านการลงทุนในกองทุนรวมได้ง่ายๆ",
+      "recommendedFundsSubtitle": "กองทุนที่แนะนำ",
+      "oneTimeInvestmentLabel": "ลงทุนรายครั้ง",
+      "factSheetLabel": "หนังสือชี้ชวนส่วนสรุปข้อมูลสำคัญ",
+      "viewDetailsLabel": "ดูรายละเอียด",
+      "adjustCalculationTitle": "ลองปรับแผนเพื่อดูความแตกต่างได้เลย",
+      "newCalculationResultsTitle": "แผนออมเงินใหม่",
+      "sliderTooltip": "ล้อเลื่อนเมาส์เพื่อปรับค่า"
+    },
+    "validation": {
+      "minValueError": "ต่ำสุดได้ไม่เกิน {min}",
+      "maxValueError": "สูงสุดได้ไม่เกิน {max}",
+      "percentageError": "ค่าเปอร์เซ็นต์ต้องอยู่ระหว่าง 0-100",
+      "requiredField": "กรุณากรอกข้อมูล",
+      "minYearsToSave": "จำนวนปีที่จะออมต้องไม่น้อยกว่า 1 ปี",
+      "maxYearsToSave": "จำนวนปีที่จะออมต้องไม่มากกว่า 30 ปี",
+      "minDesiredSavingAmount": "เงินออมที่ต้องการต้องไม่น้อยกว่า 0",
+      "maxDesiredSavingAmount": "เงินออมที่ต้องการต้องไม่มากกว่า 999,999,999,999",
+      "annualSavingIncreaseRateError": "%การออมเพิ่มขึ้นปีละ ต้องน้อยกว่า/เท่ากับ ผลตอบแทนต่อปีที่คาดหวัง"
+    },
+    "inputs": {
+      "savingGoal": "เลือกเป้าหมายการลงทุน",
+      "desiredSavingAmount": "จำนวนเงินเป้าหมาย (บาท)",
+      "yearsToSave": "ระยะเวลาเป้าหมาย (ปี)",
+      "savedAmount": "มีเงินออมไว้แล้ว (บาท)",
+      "expectedReturnRate": "อัตราผลตอบแทนต่อปีที่คาดหวัง (%)",
+      "annualSavingIncreaseRate": "ต้องการออมเงินเพิ่มขึ้นปีละ (%)"
+    },
+    "results": {
+      "futureValue": "เงินออมในอนาคต",
+      "savingMonth": "เงินที่ต้องออมต่อเดือน",
+      "recommendSavingMonthly": "แนะนำให้ลงทุนเดือนละ",
+      "increasedSavingMonthly": "แนะนำให้ลงทุนเดือนละ",
+      "noSavingRequired": "<p class='font-h5-medium mb-4 !font-bbl-medium'>ยินดีด้วย</p>คุณสามารถบรรลุเป้าหมายนี้ได้โดยไม่ต้องออมเงินเพิ่ม",
+      "graph": {
+        "originalFutureValue": "มูลค่าเงินออมในอนาคตเดิม",
+        "originalMonthlySavings": "เงินออมรายเดือนเดิม",
+        "newFutureValue": "มูลค่าเงินออมในอนาคตใหม่",
+        "newMonthlySavings": "เงินออมรายเดือนใหม่",
+        "monthPrefix": "เดือนที่",
+        "yearPrefix": "ปีที่",
+        "legendTitle": "คำอธิบายกราฟ",
+        "originalCalculationLabel": "ผลการคำนวณ",
+        "newCalculationLabel": "แผนออมเงินใหม่",
+        "monthlySavingLabel": "ลงทุนเดือนละ",
+        "savingGoalLabel": "เงินลงทุนเป้าหมาย",
+        "savingIncreasedSteppedLabel": "ออมเพิ่มขึ้น แบบขั้นบันได",
+        "constantSavingLabel": "ออมคงที่",
+        "yAxisLabel": "จำนวนเงิน (บาท)",
+        "xAxisLabel": "ปี"
+      }
+    },
+    "cards": [
+      {
+        "id": "1",
+        "category": "แต่งงาน",
+        "imageUrl": "/MobileServices/B-Wealth-Series/images/Wedding.svg",
+        "title": "สอนทำงบการเงินง่าย ๆ อ่านจบทำตามได้เลย",
+        "backgroundColor": "#F7EBFF",
+        "description": "อ่านเพิ่มเติม",
+        "link": "https://www.bangkokbank.com/th/personal/insurance/education-insurance"
+      },
+      {
+        "id": "2",
+        "category": "ซื้อบ้าน",
+        "imageUrl": "/MobileServices/B-Wealth-Series/images/Home.svg",
+        "title": "บริหารหนี้อย่างมีแบบแผน ชีวิตคล่องตัวขึ้น",
+        "backgroundColor": "#E4F7E8",
+        "description": "อ่านเพิ่มเติม",
+        "link": "https://www.bangkokbank.com/th/personal/loans/home-loans"
+      },
+      {
+        "id": "3",
+        "category": "ซื้อรถ",
+        "imageUrl": "/MobileServices/B-Wealth-Series/images/Car.svg",
+        "title": "เปลี่ยนเป็นคนใหม่ ด้วยวินัยทางการเงินที่ดี",
+        "backgroundColor": "#E8F1FF",
+        "description": "อ่านเพิ่มเติม",
+        "link": "https://www.bangkokbank.com/th/personal/car-loans"
+      },
+      {
+        "id": "4",
+        "category": "อื่นๆ",
+        "imageUrl": "/MobileServices/B-Wealth-Series/images/Other.svg",
+        "title": "How to เก็บ? ไม่ว่าจะเกิด Gen ไหนก็มีเงินเก็บได้ตามสไตล์ของตัวเอง",
+        "backgroundColor": "#F5F5F5",
+        "description": "อ่านเพิ่มเติม",
+        "link": "https://www.bangkokbank.com/th/personal/investments"
+      }
+    ],
+    "savingGoals": [
+      {
+        "id": "1",
+        "value": "แต่งงาน",
+        "label": "แต่งงาน"
+      },
+      {
+        "id": "2",
+        "value": "ซื้อบ้าน",
+        "label": "ซื้อบ้าน"
+      },
+      {
+        "id": "3",
+        "value": "ซื้อรถ",
+        "label": "ซื้อรถ"
+      },
+      {
+        "id": "4",
+        "value": "อื่น ๆ",
+        "label": "อื่น ๆ"
+      }
+    ]
+  },
+  "en": {
+    "common": {
+      "title": "Plan your savings goal",
+      "Subtitle": "Build long-term financial security through monthly investing ",
+      "calculateButton": "Calculate",
+      "unit": "baht",
+      "yearUnit": "Year",
+      "percentUnit": "%",
+      "backButton": "Back",
+      "nextButton": "Next",
+      "noteText": "*Including inflation rate of {inflationRate}% p.a. ",
+      "noteincreasedSavingMonthly": "Increase savings each year by {annualSavingIncreaseRate}<br/>",
+      "noterecommendSavingMonthly": "and expected annual return {expectedReturnRate}%",
+      "step1Title": "Calculate your monthly investment",
+      "step2Title": "Information for savings calculation",
+      "rightCardTitle": "Achieve your dream home!",
+      "loadingCardData": "Loading data...",
+      "learnMore": "Learn More",
+      "toHaveMoney": "You will have {money} {unit} in {years} year(s)",
+      "clearButton": "Clear",
+      "calculateButtonText": "Calculate",
+      "resultsTitle": "Result",
+      "loadingCalculationResults": "Loading calculation results...",
+      "additionalCalculationResultsTitle": "Additional Calculation Results",
+      "loadingTexts": "Loading texts...",
+      "allCategory": "All",
+      "recommendedFundsTitle": "Define your investment goal to get tailored fund recommendations",
+      "recommendedFundsSubtitle": "Fund recommendations",
+      "oneTimeInvestmentLabel": "One-time investment",
+      "factSheetLabel": "Fact Sheet",
+      "viewDetailsLabel": "Read more",
+      "adjustCalculationTitle": "Let's tweak your plan to see the difference",
+      "newCalculationResultsTitle": "New savings plan",
+      "sliderTooltip": "Scroll mouse to adjust value"
+    },
+    "validation": {
+      "minValueError": "Minimum must not exceed {min}",
+      "maxValueError": "Maximum up to {max}",
+      "percentageError": "Between 0-100",
+      "requiredField": "Please fill in the information",
+      "minYearsToSave": "Years to save must not be less than 1 year",
+      "maxYearsToSave": "Years to save must not be greater than 30 years",
+      "minDesiredSavingAmount": "Desired saving amount must not be less than 0",
+      "maxDesiredSavingAmount": "Desired saving amount must not be greater than 999,999,999,999",
+      "annualSavingIncreaseRateError": "Annual saving increase rate must not be greater than expected annual return rate"
+    },
+    "inputs": {
+      "savingGoal": "Investment goal",
+      "desiredSavingAmount": "Goal amount (baht)",
+      "yearsToSave": "Goal period (year)",
+      "savedAmount": "Current savings balance (baht)",
+      "expectedReturnRate": "Expected annual return (%)",
+      "annualSavingIncreaseRate": "Expected annual savings increase (%)"
+    },
+    "results": {
+      "futureValue": "Future savings value",
+      "savingMonth": "Monthly savings required",
+      "recommendSavingMonthly": "You need to invest each month",
+      "increasedSavingMonthly": "You need to invest each month",
+      "noSavingRequired": "<p class='font-h5-medium mb-4 !font-bbl-medium'>Congratulations!</p>You meet this target without having to save more",
+      "graph": {
+        "originalFutureValue": "Original future value",
+        "originalMonthlySavings": "Original monthly investment",
+        "newFutureValue": "New future value",
+        "newMonthlySavings": "New monthly investment",
+        "monthPrefix": "Month",
+        "yearPrefix": "Year",
+        "legendTitle": "Graph Legend",
+        "originalCalculationLabel": "Result",
+        "newCalculationLabel": "New savings plan",
+        "monthlySavingLabel": "Monthly investment",
+        "savingGoalLabel": "Goal amount",
+        "savingIncreasedSteppedLabel": "Step-up savings",
+        "constantSavingLabel": "Fixed savings",
+        "yAxisLabel": "Amount (baht)",
+        "xAxisLabel": "Year(s)"
+      }
+    },
+    "cards": [
+      {
+        "id": "1",
+        "category": "Marriage",
+        "imageUrl": "/MobileServices/B-Wealth-Series/images/Wedding.svg",
+        "title": "Let’s create financial statements step by step",
+        "backgroundColor": "#F7EBFF",
+        "description": "Read more",
+        "link": "https://www.bangkokbank.com/en/personal/insurance/education-insurance"
+      },
+      {
+        "id": "2",
+        "category": "New house",
+        "imageUrl": "/MobileServices/B-Wealth-Series/images/Home.svg",
+        "title": "Manage debt smartly for peace of mind",
+        "backgroundColor": "#E4F7E8",
+        "description": "Read more",
+        "link": "https://www.bangkokbank.com/en/personal/loans/home-loans"
+      },
+      {
+        "id": "3",
+        "category": "New car",
+        "imageUrl": "/MobileServices/B-Wealth-Series/images/Car.svg",
+        "title": "Be a new you with effective money habits",
+        "backgroundColor": "#E8F1FF",
+        "description": "Read more",
+        "link": "https://www.bangkokbank.com/en/personal/car-loans"
+      },
+      {
+        "id": "4",
+        "category": "Other",
+        "imageUrl": "/MobileServices/B-Wealth-Series/images/Other.svg",
+        "title": "How to save money wisely? Easy tips for everyone",
+        "backgroundColor": "#F5F5F5",
+        "description": "Read more",
+        "link": "https://www.bangkokbank.com/en/personal/loans/home-loans"
+      }
+    ],
+    "savingGoals": [
+      {
+        "id": "1",
+        "value": "Marriage",
+        "label": "Marriage"
+      },
+      {
+        "id": "2",
+        "value": "New house",
+        "label": "New house"
+      },
+      {
+        "id": "3",
+        "value": "New car",
+        "label": "New car"
+      },
+      {
+        "id": "4",
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  "defaultFormValues": {
+    "savingGoal": "",
+    "desiredSavingAmount": 500000,
+    "yearsToSave": 5,
+    "savedAmount": 0.1,
+    "expectedReturnRate": 0.5,
+    "annualSavingIncreaseRate": 0
+  }
+}

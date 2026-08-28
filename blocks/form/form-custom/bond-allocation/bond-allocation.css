@@ -5,6 +5,13 @@
 
     & ::after{
       content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3.125rem;
+      height: 0.125rem;
+      background-color: var(--bbl-color-grey-85);
     }
 
     h2{
@@ -126,7 +133,7 @@
     border-bottom: 2px solid var(--bbl-color-gray-300);
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-h2-mobile);
-    font-weight: var(--bbl-font-weight-medium);
+    font-weight: var(--bbl-form-font-weight-bold);
     text-align: left;
     padding: 0.9375rem;
     min-height: 3rem;
@@ -206,6 +213,10 @@
   & .form form .field-bond-allocation-review .field-totalpurchaseamount > input,
    & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
     grid-column: 2;
+  }
+
+  & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
+    padding-right: 1.875rem;
   }
 
   & .form form .field-bond-allocation-review .plain-text-wrapper p{
@@ -338,4 +349,19 @@
       order: -1;
     }
   }
+
+  & .form form .field-bond-allocation-notfound .plain-text-wrapper p:last-child p {
+    text-align: left;
+  }
+  
+  & .form form .field-loadingtext + fieldset.panel-wrapper.field-button-panel.field-wrapper {
+    justify-content: space-between;
+    padding: 0 1.375rem;
+    
+    @media (width > 47.5rem) {
+      justify-content: center;
+      padding: 0;
+    }
+  }
+
 }

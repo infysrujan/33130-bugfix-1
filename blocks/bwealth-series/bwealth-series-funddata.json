@@ -1,0 +1,249 @@
+{
+  "debug_SourcePath": "/sitecore/content/Home/Bangkok Bank/Essentials/Datasources/Rich Text Sections/FinCal/B-Wealth Series/ExpectedReturnFundMap",
+  "fundMap": {
+    "3": [
+      "B-WEALTHC",
+      "B-WEALTHM"
+    ],
+    "4": [
+      "B-WEALTHM",
+      "B-WEALTHC"
+    ],
+    "5": [
+      "B-WEALTHB",
+      "B-WEALTHM"
+    ],
+    "6": [
+      "B-WEALTHD",
+      "B-WEALTHB"
+    ],
+    "7": [
+      "B-WEALTHG",
+      "B-WEALTHD"
+    ]
+  },
+  "Header": "Start your monthly investment journey today",
+  "Subtitle": "Build long-term financial security through monthly investing ",
+  "Remark": "<div class=\"editor\">\n&nbsp;</div>",
+  "RemarkMain": "<div class=\"editor\">\n&nbsp;\n<p><strong><span>Disclaimer</span></strong></p>\n<ul style=\"margin-top: 0cm; list-style-type: disc;\">\n    <ul style=\"margin-top: 0cm; list-style-type: disc;\">\n        <li><span>This Financial Calculator is merely a tool to help estimate various financial goals. The calculation formulas are based on personal financial planning principles. However, the information and formulas used may not be fully comprehensive due to limitations in data input. Therefore, this Financial Calculator cannot be used as official evidence or a guaranteed reference for achieving any financial goal.</span></li>\n        <li><span>This Financial Calculator is not a transaction form and cannot be used as evidence or supporting documentation for any transactions with Bangkok Bank.</span></li>\n    </ul>\n</ul>\n</div>",
+  "RemarkSuggest": "<div class=\"editor\">\n<ul style=\"list-style-type: disc;\">\n    <strong style=\"display: block; margin-bottom: 10px;\">Notes</strong>\n    <ul style=\"list-style-type: disc;\">\n        <li style=\"list-style-type: disc;\">Investments are not deposits and they carry the risk that investors may not receive their money back in full when the investment is redeemed (the principal is not guaranteed).</li>\n        <li style=\"list-style-type: disc;\">Investors are strongly advised to study the product characteristics including the prospectus, fund policy, return conditions, risks, and fund performance before deciding to invest.</li>\n        <li style=\"list-style-type: disc;\">The off-shore investment funds have no currency risk-protection policy for most, if not all, of their value. The currency risk policy is at the discretion of the Management Company. Investors may experience currency losses or profits or receive a return less than their initial investment.</li>\n    </ul>\n    <div style=\"background-color: #eaf4ff; text-align: center; padding: 10px;\">\n    <p>For more information, or to request a prospectus, please contact</p>\n    <p>Bangkok Bank Call Center 1333 or 0 2645 5555 www.bangkokbank.com</p>\n    <p>BBL Asset Management, call 0 2674 6488 and press 8 www.bblam.co.th</p>\n    </div>\n</ul>\n</div>",
+  "expectedReturn": {
+    "3": "Low risk, expected return of approximately 3% per year",
+    "4": "Moderately low risk, expected return of approximately 4% per year",
+    "5": "Moderately high risk, expected return of approximately 5% per year",
+    "6": "High risk,  expected return of approximately 6% per year",
+    "7": "Very high risk, expected return of approximately 7% per year"
+  },
+  "modalLabels": {
+    "Header1": "Summary",
+    "Warning": "Notes: You are leaving this website to invest",
+    "Summary": "Goal Summary",
+    "Warning_sub_1": " {0}  fund via Regularly investing through DCA through Bangkok Bank Mobile Banking or one-time investment.",
+    "GoalName": "Investment Goal",
+    "TargetAmount": "Goal amount",
+    "MonthlyInvestment": "Monthly investment",
+    "InvestmentPeriod": "Investment period",
+    "Header2": "Regularly investing through DCA",
+    "Seemore": "One-time investment",
+    "or": "or",
+    "baht": "(baht)",
+    "years": "Goal period (years)"
+  },
+  "deepLinkX": "https://bblmobile.onelink.me/xJQX?deep_link_value=mutual_fund_detail&deep_link_sub1={0}&af_dp=bblonelink%3A%2F%2Fmutual_fund_detail&is_retargeting=true&af_reengagement_window=30d&af_click_lookback=7d&openExternalBrowser=1&pid=pws_cal_mf",
+  "funds": [
+    {
+      "itemName": "BASIA",
+      "itemPath": "/sitecore/content/Home/Bangkok Bank/Essentials/Datasources/Rich Text Sections/FinCal/B-Wealth Series/ExpectedReturnFundMap/BAC",
+      "fundName": "BASIA (MB)",
+      "imageUrl": "",
+      "fundDetails": {
+        "Risk_nbsp_level": "level 5 (High risk)",
+        "Fund_type": "Fund type XX",
+        "Investment_policy": "Investment policy XX",
+        "Dividend_payment_policyicy": "The fund is fully hedged."
+      },
+      "factSheetUrl": "",
+      "FixLinkX": "https://bblmobile.onelink.me/xJQX?af_web_dp=https%3A%2F%2Fwww.bangkokbank.com%2Fth-TH%2FPersonal%2FDigital-Banking%2FBualuang-mBanking%2FHow-to-Use%2FMutual-Funds&af_xp=social&is_retargeting=true&af_reengagement_window=30d&deep_link_value=mutual_fund_detail&af_dp=bblonelink%3A%2F%2Fmutual_fund_detail&af_click_lookback=7d&deep_link_sub1=BTRS&openExternalBrowser=1&pid=All_Media",
+      "header": "Fund Highlights",
+      "remark": "",
+      "infographic": "",
+      "components": [
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/benefits/icon-funds.svg",
+          "teaserTitle": "Loans",
+          "teaserDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        }
+      ]
+    },
+    {
+      "itemName": "B-WEALTHB",
+      "itemPath": "/sitecore/content/Home/Bangkok Bank/Essentials/Datasources/Rich Text Sections/FinCal/B-Wealth Series/ExpectedReturnFundMap/B-WEALTHB",
+      "fundName": "Bualuang Wealth Balanced Fund",
+      "imageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/financial-calculator/investment-plan/banner/03-b-wealthb.jpg",
+      "fundDetails": {
+        "Risk_level": "5 (Moderate to high risk)",
+        "Fund_type": "Mixed Fund",
+        "Investment_policy": "Diversified investments, with risk assets up to 60% of the NAV.",
+        "Dividend_payment_policy": "No."
+      },
+      "factSheetUrl": "https://www.bangkokbank.com/-/media/files/personal/save-and-invest/mutual-funds/fact-sheet/b-wealthb_factsheet_en.pdf",
+      "FixLinkX": "https://bblmobile.onelink.me/xJQX?af_web_dp=https%3A%2F%2Fwww.bangkokbank.com%2Fth-TH%2FPersonal%2FDigital-Banking%2FBualuang-mBanking%2FHow-to-Use%2FMutual-Funds&af_xp=social&is_retargeting=true&af_reengagement_window=30d&deep_link_value=mutual_fund_detail&af_dp=bblonelink%3A%2F%2Fmutual_fund_detail&af_click_lookback=7d&deep_link_sub1=B-WEALTHB&openExternalBrowser=1&pid=All_Media",
+      "header": "Fund Highlights",
+      "remark": "",
+      "infographic": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/financial-calculator/investment-plan/infographic/b-wealthb.jpg",
+      "components": [
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80-bangkok-bank-m/4-bbm-main_80x80px.svg",
+          "teaserTitle": "Easy",
+          "teaserDescription": "Managed by a fund manager who adjusts the portfolio for you."
+        },
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80_benefit-and-highlight/10.svg",
+          "teaserTitle": "Comprehensive",
+          "teaserDescription": "Invests across a wide range of assets to enhance return potential."
+        },
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80_benefit-and-highlight/21.svg",
+          "teaserTitle": "In the B-WEALTH Series",
+          "teaserDescription": "Featuring five funds from BBLAM, the Series  brings together the expertise of global fund management partners, and BBLAM."
+        }
+      ]
+    },
+    {
+      "itemName": "B-WEALTHC",
+      "itemPath": "/sitecore/content/Home/Bangkok Bank/Essentials/Datasources/Rich Text Sections/FinCal/B-Wealth Series/ExpectedReturnFundMap/B-WEALTHC",
+      "fundName": "Bualuang Wealth Conservative Fund ",
+      "imageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/financial-calculator/investment-plan/banner/01-b-wealthc.jpg",
+      "fundDetails": {
+        "Risk_level": "5 (Moderate to high risk)",
+        "Fund_type": "Mixed Fund",
+        "Investment_policy": "Diversified investments, with risk assets up to 20% of the NAV",
+        "Dividend_payment_policy": "No"
+      },
+      "factSheetUrl": "https://www.bangkokbank.com/-/media/files/personal/save-and-invest/mutual-funds/fact-sheet/b-wealthc_factsheet_en.pdf",
+      "FixLinkX": "https://bblmobile.onelink.me/xJQX?af_web_dp=https%3A%2F%2Fwww.bangkokbank.com%2Fth-TH%2FPersonal%2FDigital-Banking%2FBualuang-mBanking%2FHow-to-Use%2FMutual-Funds&af_xp=social&is_retargeting=true&af_reengagement_window=30d&deep_link_value=mutual_fund_detail&af_dp=bblonelink%3A%2F%2Fmutual_fund_detail&af_click_lookback=7d&deep_link_sub1=B-WEALTHC&openExternalBrowser=1&pid=All_Media",
+      "header": "Fund Highlights",
+      "remark": "",
+      "infographic": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/financial-calculator/investment-plan/infographic/b-wealthc.jpg",
+      "components": [
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80-bangkok-bank-m/4-bbm-main_80x80px.svg",
+          "teaserTitle": "Easy",
+          "teaserDescription": "Managed by a fund manager who adjusts the portfolio for you."
+        },
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80_benefit-and-highlight/10.svg",
+          "teaserTitle": "Comprehensive",
+          "teaserDescription": "Invests across a wide range of assets to enhance return potential."
+        },
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80_benefit-and-highlight/21.svg",
+          "teaserTitle": "In the B-WEALTH Series",
+          "teaserDescription": "Featuring five funds from BBLAM, the Series  brings together the expertise of global fund management partners, and BBLAM."
+        }
+      ]
+    },
+    {
+      "itemName": "B-WEALTHD",
+      "itemPath": "/sitecore/content/Home/Bangkok Bank/Essentials/Datasources/Rich Text Sections/FinCal/B-Wealth Series/ExpectedReturnFundMap/B-WEALTHD",
+      "fundName": "Bualuang Wealth Dynamic Fund",
+      "imageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/financial-calculator/investment-plan/banner/04-b-wealthd.jpg",
+      "fundDetails": {
+        "Risk_level": "6 (High risk)",
+        "Fund_type": "Mixed Fund",
+        "Investment_policy": "Diversified investments, with risk assets up to 80% of the NAV",
+        "Dividend_payment_policy": "No"
+      },
+      "factSheetUrl": "https://www.bangkokbank.com/-/media/files/personal/save-and-invest/mutual-funds/fact-sheet/b-wealthd_factsheet_en.pdf",
+      "FixLinkX": "https://bblmobile.onelink.me/xJQX?af_web_dp=https%3A%2F%2Fwww.bangkokbank.com%2Fth-TH%2FPersonal%2FDigital-Banking%2FBualuang-mBanking%2FHow-to-Use%2FMutual-Funds&af_xp=social&is_retargeting=true&af_reengagement_window=30d&deep_link_value=mutual_fund_detail&af_dp=bblonelink%3A%2F%2Fmutual_fund_detail&af_click_lookback=7d&deep_link_sub1=B-WEALTHD&openExternalBrowser=1&pid=All_Media",
+      "header": "Fund Highlights",
+      "remark": "",
+      "infographic": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/financial-calculator/investment-plan/infographic/b-wealthd.jpg",
+      "components": [
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80-bangkok-bank-m/4-bbm-main_80x80px.svg",
+          "teaserTitle": "Easy",
+          "teaserDescription": "Managed by a fund manager who adjusts the portfolio for you."
+        },
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80_benefit-and-highlight/10.svg",
+          "teaserTitle": "Comprehensive",
+          "teaserDescription": "Invests across a wide range of assets to enhance return potential."
+        },
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80_benefit-and-highlight/21.svg",
+          "teaserTitle": "In the B-WEALTH Series",
+          "teaserDescription": "Featuring five funds from BBLAM, the Series  brings together the expertise of global fund management partners, and BBLAM."
+        }
+      ]
+    },
+    {
+      "itemName": "B-WEALTHG",
+      "itemPath": "/sitecore/content/Home/Bangkok Bank/Essentials/Datasources/Rich Text Sections/FinCal/B-Wealth Series/ExpectedReturnFundMap/B-WEALTHG",
+      "fundName": "Bualuang Wealth Growth Fund",
+      "imageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/financial-calculator/investment-plan/banner/05-b-wealthg.jpg",
+      "fundDetails": {
+        "Risk_level": "6 (High risk)",
+        "Fund_type": "Mixed Fund",
+        "Investment_policy": "Diversified investments, with risk assets up to 100% of the NAV",
+        "Dividend_payment_policy": "No"
+      },
+      "factSheetUrl": "https://www.bangkokbank.com/-/media/files/personal/save-and-invest/mutual-funds/fact-sheet/b-wealthg_factsheet_en.pdf",
+      "FixLinkX": "https://bblmobile.onelink.me/xJQX?af_web_dp=https%3A%2F%2Fwww.bangkokbank.com%2Fth-TH%2FPersonal%2FDigital-Banking%2FBualuang-mBanking%2FHow-to-Use%2FMutual-Funds&af_xp=social&is_retargeting=true&af_reengagement_window=30d&deep_link_value=mutual_fund_detail&af_dp=bblonelink%3A%2F%2Fmutual_fund_detail&af_click_lookback=7d&deep_link_sub1=B-WEALTHG&openExternalBrowser=1&pid=All_Media",
+      "header": "Fund Highlights",
+      "remark": "",
+      "infographic": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/financial-calculator/investment-plan/infographic/b-wealthg.jpg",
+      "components": [
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80-bangkok-bank-m/4-bbm-main_80x80px.svg",
+          "teaserTitle": "Easy",
+          "teaserDescription": "Managed by a fund manager who adjusts the portfolio for you."
+        },
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80_benefit-and-highlight/10.svg",
+          "teaserTitle": "Comprehensive",
+          "teaserDescription": "Invests across a wide range of assets to enhance return potential."
+        },
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80_benefit-and-highlight/21.svg",
+          "teaserTitle": "In the B-WEALTH Series",
+          "teaserDescription": "Featuring five funds from BBLAM, the Series  brings together the expertise of global fund management partners, and BBLAM."
+        }
+      ]
+    },
+    {
+      "itemName": "B-WEALTHM",
+      "itemPath": "/sitecore/content/Home/Bangkok Bank/Essentials/Datasources/Rich Text Sections/FinCal/B-Wealth Series/ExpectedReturnFundMap/B-WEALTHM",
+      "fundName": "Bualuang Wealth Moderate Fund ",
+      "imageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/financial-calculator/investment-plan/banner/02-b-wealthm.jpg",
+      "fundDetails": {
+        "Risk_level": "5 (Moderate to high risk)",
+        "Fund_type": "Mixed Fund",
+        "Investment_policy": "Diversified investments, with risk assets up to 40% of the NAV",
+        "Dividend_payment_policy": "No"
+      },
+      "factSheetUrl": "https://www.bangkokbank.com/-/media/files/personal/save-and-invest/mutual-funds/fact-sheet/b-wealthm_factsheet_en.pdf",
+      "FixLinkX": "https://bblmobile.onelink.me/xJQX?af_web_dp=https%3A%2F%2Fwww.bangkokbank.com%2Fth-TH%2FPersonal%2FDigital-Banking%2FBualuang-mBanking%2FHow-to-Use%2FMutual-Funds&af_xp=social&is_retargeting=true&af_reengagement_window=30d&deep_link_value=mutual_fund_detail&af_dp=bblonelink%3A%2F%2Fmutual_fund_detail&af_click_lookback=7d&deep_link_sub1=B-WEALTHM&openExternalBrowser=1&pid=All_Media",
+      "header": "Fund Highlights",
+      "remark": "",
+      "infographic": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/financial-calculator/investment-plan/infographic/b-wealthm.jpg",
+      "components": [
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80-bangkok-bank-m/4-bbm-main_80x80px.svg",
+          "teaserTitle": "Easy",
+          "teaserDescription": "Managed by a fund manager who adjusts the portfolio for you."
+        },
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80_benefit-and-highlight/10.svg",
+          "teaserTitle": "Comprehensive",
+          "teaserDescription": "Invests across a wide range of assets to enhance return potential."
+        },
+        {
+          "teaserImage": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/icon_new-ci/80x80_benefit-and-highlight/21.svg",
+          "teaserTitle": "In the B-WEALTH Series",
+          "teaserDescription": "Featuring five funds from BBLAM, the Series  brings together the expertise of global fund management partners, and BBLAM."
+        }
+      ]
+    }
+  ]
+}

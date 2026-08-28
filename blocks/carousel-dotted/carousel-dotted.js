@@ -544,11 +544,17 @@ export default async function decorate(block) {
         } else if (circularOrDefaultImage) {
           // Use viewport width — track may grow with flex children.
           const trackViewport = block.querySelector('.carousel-track-viewport');
-          const slideWidthPx = (trackViewport || trackWrapper).offsetWidth;
+          const slideWidthPx = (trackViewport && slidesDefaultImage > 0)
+            ? trackViewport.clientWidth
+            : (trackViewport || trackWrapper).offsetWidth;
           const cloneOffset = shouldCloneTrack ? 1 : 0;
           const isLoopingBackward = index === slideEls.length - 1 && prevIndex === 0;
           const wrapForward = direction === 'forward' && isLoopingForward && shouldCloneTrack;
           const wrapBackward = direction === 'backward' && isLoopingBackward && shouldCloneTrack;
+
+          if (trackViewport && slideEls[index] && slidesCircularImage > 0) {
+            trackViewport.style.height = `${slideEls[index].offsetHeight}px`;
+          }
 
           if (wrapForward) {
             // Animate to trailing clone of slide 0, then snap to the real first slide.
@@ -754,6 +760,11 @@ export default async function decorate(block) {
           trackWrapper.getBoundingClientRect();
           trackWrapper.style.transition = '';
           if (trackViewport) {
+            if (slidesCircularImage > 0 && slideEls[0]) {
+              const updateH = () => { if (slideEls[0].offsetHeight > 0) trackViewport.style.height = `${slideEls[0].offsetHeight}px`; };
+              updateH();
+              slideEls[0].querySelectorAll('img').forEach((img) => { if (!img.complete) img.addEventListener('load', updateH, { once: true }); });
+            }
             trackViewport.style.visibility = '';
           }
         } else if (trackWrapper) {
@@ -812,7 +823,9 @@ export default async function decorate(block) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       const trackViewport = block.querySelector('.carousel-track-viewport');
       if (!trackWrapper) return;
-      const width = (trackViewport || trackWrapper).offsetWidth;
+      const width = (trackViewport && slidesDefaultImage > 0)
+        ? trackViewport.clientWidth
+        : (trackViewport || trackWrapper).offsetWidth;
       if (!width) return; // still hidden (display:none) — nothing meaningful to set yet
       const idx = currentIndex >= 0 ? currentIndex : 0;
       const cloneOffset = shouldCloneTrack ? 1 : 0;

@@ -28,6 +28,12 @@
         },
         {
           "component": "text",
+          "name": "datePrefix",
+          "label": "Date Prefix",
+          "description": "Optional date text displayed before the download link text"
+        },
+        {
+          "component": "text",
           "name": "downloadLinkText",
           "label": "Download Text",
           "description": "Download Button label text",

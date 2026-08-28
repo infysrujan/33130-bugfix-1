@@ -72,10 +72,6 @@
   line-height: 1.203rem;
 }
 
-.listing-card-desc :is(p, li) a {
-  color: inherit;
-}
-
 .listing-card-desc :is(p, li) a[class] {
   display: inline;
   font-weight: inherit;
@@ -256,15 +252,16 @@
 }
 
 @media (width > 64rem) {
+  .listing-card-grid{
+    gap: var(--bbl-space-500);
+    padding-bottom: var(--bbl-space-500);
+  }
+  
   .listing-card-grid:has(.listing-card-empty) {
     width: unset;
     padding-inline: 0;
   }
 
-  .listing-card-grid{
-    gap: var(--bbl-space-500);
-    padding-bottom: var(--bbl-space-500);
-  }
 
   .listing-card-container {
     width: calc(25% - 1.875rem);

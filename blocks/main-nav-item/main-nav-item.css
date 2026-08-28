@@ -29,6 +29,10 @@
   top: 46%;
 }
 
+:lang(th) .main-nav-item .icon-dropdown::before {
+  right: -30%;
+}
+
 .main-nav-trigger.icon-arrow-left::before {
   position: absolute;
   right: 50%;

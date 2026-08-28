@@ -1,3 +1,4 @@
+import { getMetadata } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 function pathnameSegmentMatches(pathOrUrl, normalizedLang) {
@@ -70,6 +71,7 @@ export default function decorate(block) {
     // Find the anchor link in the row
     const anchor = row.querySelector('a');
     const picture = row.querySelector('picture');
+    const hideLangSwitcher = getMetadata('hide');
 
     if (anchor) {
       const link = document.createElement('a');
@@ -103,6 +105,11 @@ export default function decorate(block) {
         span.textContent = textContent;
         li.appendChild(span);
       }
+    }
+
+    const langSwitcher = li.querySelector('a span.top-nav-text')?.textContent?.trim().toUpperCase();
+    if (hideLangSwitcher && ['TH', 'EN'].includes(langSwitcher)) {
+      li.style.display = 'none';
     }
 
     // Only add the list item if it has content
