@@ -7,6 +7,31 @@ import {
   showModal,
 } from './modal.js';
 
+let pdfLibReady;
+function loadPdfLib() {
+  if (!pdfLibReady) {
+    pdfLibReady = import(`${window.hlx.codeBasePath}/scripts/vendor/pdf-lib.esm.min.js`)
+      .then((mod) => mod.PDFDocument)
+      .catch(() => null);
+  }
+  return pdfLibReady;
+}
+
+async function withTitleMetadata(blob, name) {
+  if (!name) return blob;
+  const PDFDocument = await loadPdfLib();
+  if (!PDFDocument) return blob;
+  try {
+    const bytes = await blob.arrayBuffer();
+    const pdfDoc = await PDFDocument.load(bytes, { updateMetadata: false });
+    pdfDoc.setTitle(name);
+    const titledBytes = await pdfDoc.save();
+    return new Blob([titledBytes], { type: 'application/pdf' });
+  } catch {
+    return blob;
+  }
+}
+
 export default function openPdfViewer({
   path,
   name = '',
@@ -65,6 +90,7 @@ export default function openPdfViewer({
   const pdfBlobPromise = fetch(path).then((r) => r.blob());
 
   pdfBlobPromise
+    .then((blob) => withTitleMetadata(blob, name))
     .then((blob) => {
       // Keep the blob URL alive for the lifetime of the modal so the viewer's
       // built-in download button can still fetch it; revoke on close() below.
