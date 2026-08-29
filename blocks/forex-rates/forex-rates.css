@@ -223,7 +223,7 @@
   background: none;
   border: none;
   font-size: var(--bbl-body-b1-size);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   cursor: pointer;
   padding: 0.9375rem 0 0 0.625rem;
   font-weight: 700;
@@ -232,7 +232,7 @@
 
 .forex-rates .forex-rates-print-btn .icon-print {
   font-size: var(--bbl-body-b1-size);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 /* ── Table ─────────────────────────────────────────────────── */
@@ -303,7 +303,7 @@
   padding: 0.625rem;
   font-size: var(--bbl-body-b1-size);
   font-weight:var(--bbl-font-weight-regular);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   vertical-align: middle;
   height: 2.25rem;
 }

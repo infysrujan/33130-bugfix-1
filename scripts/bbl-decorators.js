@@ -152,6 +152,10 @@ function handleGlobalLinkClicks() {
 
     if (!link) return;
 
+    // Social share links (blocks/social-icons) open their own share popup/dialog
+    // and must not be intercepted by the external-redirect confirmation flow.
+    if (link.classList.contains('platform-facebook') && window.FB) return;
+
     if (link.dataset.bypassRedirect === 'true') {
       delete link.dataset.bypassRedirect;
       return;
@@ -338,22 +342,14 @@ function decorateButtonsV1(element) {
       const up = a.parentElement;
       const twoup = a.parentElement.parentElement;
       if (!a.querySelector('img') && !a.closest('.download-files')) {
-        const isBoldLink = (
-          (
-            up.tagName === 'STRONG'
-            && up.childNodes.length === 1
-            && up.firstElementChild === a
-          )
-          || (
-            a.childNodes.length === 1
-            && a.firstElementChild?.tagName === 'STRONG'
-          )
-        );
-        if (isBoldLink) {
+        if (
+          up.childNodes.length === 1
+          && up.tagName === 'STRONG'
+          && twoup.childNodes.length === 1
+          && twoup.tagName === 'P'
+        ) {
           a.className = 'button-m primary';
-
-          const buttonContainer = up.tagName === 'P' ? up : twoup;
-          buttonContainer.classList.add('button-container');
+          twoup.classList.add('button-container');
         }
         if (
           up.childNodes.length === 1

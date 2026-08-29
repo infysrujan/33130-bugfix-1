@@ -190,7 +190,7 @@ function buildAgeField(id, label, savedValue, labels) {
 
   input.addEventListener('keypress', (e) => { if (!/\d/.test(e.key)) e.preventDefault(); });
   input.addEventListener('input', () => {
-    input.value = input.value.replace(/\D/g, '');
+    input.value = input.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
     const val = parseInt(input.value, 10) || 0;
     if (val < 1) field.setError(minMsg);
     else if (val > 120) field.setError(maxMsg);
@@ -270,7 +270,8 @@ function buildMoneyField(id, label, savedValue, labels, { max = 999999999 } = {}
 // ─── Percent Field (J2 sections) ─────────────────────────────────────────────────
 
 function buildPercentField(id, label, savedValue, labels, { min = 0, max = 100 } = {}) {
-  const rangeMsg = getString(labels, 'validationPercentageError', 'Value must be a number between 0 and 100');
+  const minMsg = `${getString(labels, 'validationMinValueError', 'Minimum must not exceed')} ${min}`;
+  const maxMsg = `${getString(labels, 'validationMaxValueError', 'Maximum up to')} ${max}`;
 
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
@@ -310,7 +311,8 @@ function buildPercentField(id, label, savedValue, labels, { min = 0, max = 100 }
       input.value = input.value.slice(0, dotIdx + 3);
     }
     const val = parseFloat(input.value);
-    if (!Number.isNaN(val) && (val < min || val > max)) field.setError(rangeMsg);
+    if (!Number.isNaN(val) && val < min) field.setError(minMsg);
+    else if (!Number.isNaN(val) && val > max) field.setError(maxMsg);
     else field.setError('');
   });
 
@@ -582,7 +584,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
     const crossMsg = getString(labels, 'validationAnnualSavingsIncreaseRateError', '% of annual increase in savings must be less than/equal to the expected annual return.');
     const increaseErr = block.querySelector('#rc-err-savingsIncreaseRate').textContent;
     if (increaseRate > returnRate) {
-      if (!increaseErr) savingsIncreaseRateField.setError(crossMsg);
+      savingsIncreaseRateField.setError(crossMsg);
     } else if (increaseErr === crossMsg) {
       savingsIncreaseRateField.setError('');
     }

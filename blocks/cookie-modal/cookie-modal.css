@@ -88,7 +88,7 @@ body.cookie-modal-open .header {
 .cookie-modal-title {
   margin: 0;
   color: var(--bbl-color-black);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 1.875rem;
   font-weight: 700;
   letter-spacing: 0;
@@ -97,7 +97,6 @@ body.cookie-modal-open .header {
 
 .cookie-modal-description {
   margin: var(--bbl-space-300) 0 0;
-  color: var(--bbl-color-grey-80);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b2-desktop);
   font-weight: 500;
@@ -207,7 +206,7 @@ body.cookie-modal-open .header {
 }
 
 .cookie-accordion-content p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-family: var(--bbl-font-family-primary);
   font-size: 0.875rem;
   font-weight: 400;

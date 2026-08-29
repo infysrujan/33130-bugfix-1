@@ -115,6 +115,10 @@
   position: relative;
 }
 
+.carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
+  transition: height 300ms ease;
+}
+
 .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper {
   display: flex;
   width: 100%;
@@ -201,16 +205,6 @@
 }
 
 @media (width > 47.5rem) {
-  /* Simple image carousel: overlay arrows on image edges, dots below */
-  .carousel-dotted.show-arrows-dots {
-    display: grid;
-    grid-template-columns: 2.5rem 1fr 2.5rem;
-    grid-template-rows: auto auto;
-    gap: 0;
-    column-gap: 1rem;
-  }
-
-  /* show-arrows-dots: keep items hidden/visible via display, not opacity */
   .carousel-dotted.show-arrows-dots .carousel-dotted-item {
     position: relative;
     inset: unset;
@@ -241,86 +235,42 @@
     height: 2.5rem;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    gap: 0;
-    column-gap: 0;
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel),
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) {
     position: relative;
   }
 
   .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active {
-    grid-row: 1;
-    grid-column: 1;
     display: block;
     flex-direction: unset;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow {
-    display: flex;
-    grid-row: 1;
-    grid-column: 1;
-    align-self: center;
+  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .all-mf-fund-cards, .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 10;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
-    justify-self: start;
-    margin-left: -1.25rem;
+  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
+    left: -0.9375rem;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
-    justify-self: end;
-    margin-right: -1.25rem;
+  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
+    right: -0.9375rem;
   }
 
-  .central-aligned .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
-    justify-self: start;
-    margin-left: 2rem;
+  .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
+    left: 1.75rem;
   }
 
-  .central-aligned .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
-    justify-self: end;
-    margin-right: 2rem;
+  .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
+    right: 1.75rem;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .slick-dots {
-    grid-row: 2;
-    grid-column: 1;
-  }
-}
-
-@media (width > 47.5rem) {
-  /* Fix tablet spacing and align arrows automatically to content size */
-  .carousel-dotted.show-arrows-dots {
-    display: grid;
-    grid-template-columns: 2.5rem 1fr 2.5rem;
-    grid-template-rows: auto auto;
-    gap: 0;
-    column-gap: 1.25rem;
-    min-height: unset;
-  }
-
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item {
-    position: relative;
-    inset: unset;
-  }
-
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item.with-circular-image.is-active,
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item.with-default-image.is-active,
-  .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item.with-circular-image,
-  .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item.with-default-image {
+  .carousel-dotted.show-arrows-dots .carousel-dotted-item:is(.with-circular-image, .with-default-image).is-active,
+  .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item:is(.with-circular-image, .with-default-image) {
     display: flex;
-  }
-
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    gap: 0;
-    column-gap: 0;
-    min-height: unset;
   }
 }
 
@@ -334,64 +284,19 @@
     height: 2.5rem;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
-    justify-self: start;
-    margin-left: -3.45rem;
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-prev {
+    left: -3.4375rem;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
-    justify-self: end;
-    margin-right: -3.45rem;
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-next {
+    right: -3.4375rem;
   }
 
-  .central-aligned .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
-    justify-self: start;
-    margin-left: 0;
+  :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
+    left: -3.4375rem;
   }
 
-  .central-aligned .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
-    justify-self: end;
-    margin-right: 0;
-  }
-}
-
-/* Image/text step carousel (mixed-image-slides, e.g. with-default-image or
-   with-circular-image slides): let the card expand to the full block width
-   instead of being squeezed into the 2.5rem arrow gutters, and overlay the
-   arrows outside its edge like the simple-carousel variant already does.
-   Scoped to this class combo only so other carousel-dotted variants are unaffected. */
-@media (width > 47.5rem) {
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) {
-    grid-template-columns: 1fr;
-    column-gap: 0;
-  }
-
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-track-viewport {
-    grid-column: 1;
-  }
-
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev,
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
-    grid-column: 1;
-  }
-
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
-    justify-self: start;
-    margin-left: -1.25rem;
-  }
-
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
-    justify-self: end;
-    margin-right: -1.25rem;
-  }
-}
-
-@media (width > 64rem) {
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
-    margin-left: -3.45rem;
-  }
-
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
-    margin-right: -3.45rem;
+  :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
+    right: -3.4375rem;
   }
 }

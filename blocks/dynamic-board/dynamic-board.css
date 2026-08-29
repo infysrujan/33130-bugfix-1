@@ -245,7 +245,7 @@
   border: none;
   font-size: var(--bbl-font-size-b2);
   font-weight: 700;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   cursor: pointer;
   white-space: nowrap;
   padding: 0;
@@ -264,7 +264,7 @@
 
 .dynamic-board .db-print-btn .icon-print {
   font-size: var(--bbl-font-size-b1);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .dynamic-board .db-print-btn:hover .icon-print {

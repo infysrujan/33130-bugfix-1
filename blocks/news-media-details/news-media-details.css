@@ -21,10 +21,6 @@
   margin-block: 0;
 }
 
-.news-media-details .news-media-detail-description :is(p, li) a {
-  color: inherit;
-}
-
 .news-media-details .news-media-detail-description :is(p, li) a[class] {
   display: inline;
   font-weight: inherit;

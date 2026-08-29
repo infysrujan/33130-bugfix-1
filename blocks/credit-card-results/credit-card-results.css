@@ -7,6 +7,9 @@
    overrides and result-specific elements are styled here.
    ========================================================================== */
 
+.credit-card-results-container {
+   margin-top: var(--bbl-space-250);
+}
 
 .credit-card-results-wrapper {
    --header-scroll-offset: 8.3rem; 
@@ -17,7 +20,7 @@
 }
 
 .credit-card .cards-list:is(.scrollable, .carousel) .cards-list-item {
-  flex: 0 0 280px;
+  flex: 0 0 17.5rem;
 }
 
 /* ── Block wrapper ──────────────────────────────────────────────────────────── */
@@ -27,17 +30,6 @@
   background: var(--bbl-color-white);
   scroll-margin-top: var(--header-scroll-offset);
 }
-
-.credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
-    padding-bottom: var(--bbl-space-400);
-  }
-
-/* ==========================================================================
-   card-list credit-card variation
-   Scoped so no other card-list instances are affected.
-   ========================================================================== */
-
-/* ── Image area — contain the full credit card art ───────────────────────── */
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small {
   min-height: 8.9375rem;
@@ -62,7 +54,7 @@
 
 .card-list.credit-card .ccs-name-th {
   font-size: var(--bbl-font-size-b2);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin: 0 0 var(--bbl-space-050);
   line-height: 1.4;
 }
@@ -171,7 +163,7 @@
 .ccs-no-results {
   padding: var(--bbl-space-600) var(--bbl-space-200);
   text-align: center;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1);
 }
 
@@ -180,7 +172,6 @@
 .ccs-results-toggle {
   display: none;
   justify-content: center;
-  margin-top: var(--bbl-space-300);
 }
 
 .ccs-results-toggle-btn {
@@ -194,9 +185,9 @@
   font-family: var(--bbl-font-family-medium);
   font-size: 1.2em;
   font-weight: var(--bbl-font-weight-regular);
-  padding: var(--bbl-space-100) var(--bbl-space-200);
   border-radius: 0.4375rem;
   transition: background-color 0.2s ease;
+  height: unset;
 }
 
 /* Use the actual chevron SVG instead of the icomoon glyph — suppress the
@@ -209,7 +200,8 @@
 .ccs-results-toggle-btn .icon-dropdown {
   display: inline-block;
   width: var(--bbl-space-300);
-  height: 0.875rem;
+  height: 1.25rem;
+  line-height: 1.25rem;
   background-image: url('/icons/chevron-up-thin.svg');
   background-size: contain;
   background-repeat: no-repeat;
@@ -226,10 +218,12 @@
 
 .ccs-results-disclaimer {
   margin-top: var(--bbl-space-300);
+  margin-inline: 0;
   padding-top: var(--bbl-space-300);
   font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-85);
   line-height: 1.6;
+  text-align: left;
 }
 
 @media (width > 47.5rem) {
@@ -237,16 +231,12 @@
     display: none;
   }
 
-  .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
-    padding-bottom: var(--bbl-space-600);
-  }
-
   .card-list.credit-card .cards-list.scrollable.cards-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
     justify-content: stretch;
     overflow: visible;
     scroll-snap-type: none;
+    padding-bottom: var(--bbl-space-250);
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
@@ -259,7 +249,7 @@
   }
 
   .ccs-results-disclaimer {
-    margin-inline: 3rem;
+    padding-right: var(--bbl-space-250);
   }
 }
 
@@ -267,23 +257,15 @@
   .credit-card-results-wrapper {
    --header-scroll-offset: 8.9375rem; /* 143px */
 }
-
-  .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
-    padding-bottom: var(--bbl-space-700);
-  }
  
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     justify-content: center;
     gap: var(--bbl-space-500);
+    padding-bottom: var(--bbl-space-500);
   }
 
   .card-list.credit-card .cards-list-inner {
     min-height: 28rem;
-  }
-
-  .ccs-results-disclaimer {
-    max-width: 54.5rem;
-    margin-inline: auto;
   }
 
   .card-list.credit-card .cards-list-image.cards-list-image-x-small img {

@@ -12,7 +12,7 @@ main .custom-forms .form fieldset.radio-group-wrapper legend,
 main .custom-forms .form form p {
   font-weight: var(--form-label-font-weight);
   font-size: var(--bbl-font-size-h4-mobile);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .debt-support .form-container.custom-forms .form :is(h1, h2, h3, h4, h5, h6){

@@ -14,7 +14,7 @@
 .cards-list-subtitle p,
 .cards-list-description p {
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .cards-list-subtitle p {
@@ -58,10 +58,6 @@
 
 .cards-list-promo-tag p {
   margin: 0;
-}
-
-.cards-list-description :is(p, li) a {
-  color: inherit;
 }
 
 .cards-list-description :is(p, li) a[class] {
@@ -275,6 +271,8 @@
   width: 100%;
   object-fit: cover;
   display: block;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
 .cards-list-image.cards-list-image-card {
@@ -320,6 +318,10 @@
   flex: 1;
 }
 
+.cards-list-content:has(> .cards-list-title:only-child):has(+ .cards-list-downloads) {
+  padding-bottom: 0;
+}
+
 .cards-list-promo-tag {
   font-size: var(--bbl-text-label-tag-size);
   line-height: var(--bbl-text-label-tag-line-height);
@@ -349,6 +351,7 @@
 
 .cards-list-downloads .download-button-wrapper.multiple-download-wrapper {
   margin-top: 0.625rem;
+  width: 100%;
 }
 
 .cards-list-downloads .download-button-wrapper:first-child {
@@ -365,6 +368,7 @@
   padding-bottom: 0.9375rem;
   margin-block: 0 0.9375rem;
   overflow-wrap: anywhere;
+  box-sizing: border-box;
 }
 
 .section.bg-truthful-dark-blue * .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
@@ -372,11 +376,11 @@
 }
 
 .section.bg-truthful-dark-blue * .cards-list-description p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-dark-blue * .cards-list-remark p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-blue * .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
@@ -384,11 +388,11 @@
 }
 
 .section.bg-truthful-blue * .cards-list-description p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-blue * .cards-list-remark p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .cards-list-title:not(.has-title-underline) :is(h1, h2, h3, h4, h5, h6) {

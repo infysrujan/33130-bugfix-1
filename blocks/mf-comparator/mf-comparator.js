@@ -160,12 +160,8 @@ export default async function decorate(block) {
   } = buildComparatorDOM(block, warningText, linkText, linkType);
   if (linkTitle) ctaBtn.title = linkTitle;
 
-  let warningTimer = null;
-
   function showWarning() {
-    clearTimeout(warningTimer);
     errorDiv.hidden = false;
-    warningTimer = setTimeout(() => { errorDiv.hidden = true; }, 4000);
   }
 
   function update(selectedCards) {
@@ -173,7 +169,6 @@ export default async function decorate(block) {
     block.classList.toggle('active', count > 0);
     ctaBtn.disabled = count < MIN_COMPARE;
     if (count < MAX_COMPARE) {
-      clearTimeout(warningTimer);
       errorDiv.hidden = true;
     }
     saveComparatorCookie(selectedCards);

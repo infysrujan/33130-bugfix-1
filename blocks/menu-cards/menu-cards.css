@@ -30,8 +30,8 @@
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
-  font-size: 1.1375rem;
-  line-height: 1.2495rem;
+  font-size: var(--bbl-heading-h3-size);
+  line-height: var(--bbl-line-height-h3-mobile);
   overflow: hidden;
   display: -webkit-box;
 }
@@ -72,11 +72,6 @@
     box-sizing: unset;
   }
 
-  .menu-cards .tips-insight-quick-access-title {
-    font-size: 1.3125rem;
-    line-height: 1.4219rem;
-  }
-
   .menu-cards .tips-insight-quick-access-item img {
     max-width: var(--bbl-space-600);
     max-height: var(--bbl-space-600);
@@ -93,8 +88,4 @@
     flex: calc(32.33% - 4rem);
   }
 
-  .menu-cards .tips-insight-quick-access-title {
-    font-size: 1.3rem;
-    line-height: 2.0423rem;
-  }
 }

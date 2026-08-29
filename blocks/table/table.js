@@ -5,7 +5,7 @@ import {
   toClassName,
 } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { decorateNewTabLinks } from '../../scripts/custom-rte.js';
+import { decorateIconInContainer, decorateNewTabLinks } from '../../scripts/custom-rte.js';
 
 function getCellText(cell) {
   if (!cell) return '';
@@ -351,6 +351,7 @@ export default async function decorate(block) {
     block.textContent = '';
     block.append(parentTable);
     decorateNewTabLinks(parentTable);
+    decorateIconInContainer(parentTable);
     if (isAuthoring) {
       rows.slice(tableRowIndex + 1).forEach((row) => block.append(row));
     }
@@ -369,6 +370,7 @@ export default async function decorate(block) {
   block.textContent = '';
   block.append(parentTable);
   decorateNewTabLinks(parentTable);
+  decorateIconInContainer(parentTable);
 
   scheduleMergeTables(block, parentTable);
   scheduleResolveAdjacentNestedTables(block);

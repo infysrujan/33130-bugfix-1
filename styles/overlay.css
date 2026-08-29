@@ -36,11 +36,6 @@ body.modal-open {
     box-sizing: border-box;
 }
 
-.modal-body picture,
-.modal-body img {
-    display: block;
-}
-
 .modal-body picture {
     width: 100%;
 }

@@ -4,7 +4,7 @@
    Base Styles (Mobile First)
    ======================================================================== */
 .section.columns-3 {
-  row-gap: 0;
+  /* row-gap: 0; */
 }
 
 .currency-converter {
@@ -101,9 +101,9 @@
   right: 0;
   margin: auto var(--bbl-space-300);
   border-bottom: 0.0625rem solid var(--bbl-color-grey-125);
-  font-size: 3.4125rem;
-  font-weight: 900;
-  line-height: 4.875rem;
+  font-size: 1.625rem;
+  font-weight: 400;
+  line-height: 1.875rem;
   height: auto;
 }
 
@@ -183,7 +183,7 @@
 }
 
 .currency-converter .search-currency::placeholder {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-size: 1rem;
   font-family: var(--bbl-font-family-primary);
 }
@@ -342,10 +342,6 @@
   .currency-converter .icon-dropdown {
     top: 18.5%;
   }
-
-  .currency-converter .amount-input {
-    font-size: 3.9rem;
-  }
 }
 
 @keyframes wobble-vertical {
@@ -380,5 +376,11 @@
 
   .currency-converter .convert-group {
     margin-bottom: 0;
+  }
+
+  .currency-converter .amount-input {
+    font-size: 3.875rem;
+    line-height: 4.4375rem;
+    font-weight: 900;
   }
 }

@@ -2,6 +2,10 @@
   width: 100%;
 }
 
+.section:has(> .video-wrapper) {
+  padding-inline: 1rem;
+}
+
 /* YouTube embed */
 .video .video-embed {
   position: relative;
@@ -31,6 +35,10 @@
   .video .video-embed {
     height: 25.625rem;
   }
+
+  .section:has(> .video-wrapper) {
+    padding-inline: 3rem;
+  }
 }
 
 @media (width > 64rem) {
@@ -41,6 +49,10 @@
 
   .video .video-embed {
     height: 30.625rem;
+  }
+
+  .section:has(> .video-wrapper) {
+    padding-inline: 5.25rem;
   }
 }
 

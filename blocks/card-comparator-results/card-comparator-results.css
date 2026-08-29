@@ -92,7 +92,7 @@
   flex-grow: 1;
   font-size: var(--bbl-font-size-b1);
   line-height: var(--bbl-line-height-body);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 /* Card name — .title-3 */
@@ -132,7 +132,7 @@
   line-height: 1.625rem;
   padding: var(--bbl-space-100) 0 0;
   margin: 0;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .card-comparator-results .ccr-learn-more {
@@ -229,7 +229,7 @@
 .card-comparator-results .ccr-no-results {
   padding: var(--bbl-space-300);
   text-align: center;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 /* ── Scroll dots — mobile only ───────────────────────────────────────────── */

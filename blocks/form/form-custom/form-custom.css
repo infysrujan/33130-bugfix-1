@@ -199,7 +199,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   content: none;
   position: absolute;
   top: 50%;
-  right: -0.625rem;
+  right: -0.225rem;
   z-index: 2;
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-heading-h4-size);

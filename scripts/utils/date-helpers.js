@@ -36,7 +36,7 @@ export function parseCsvConfigList(value, fallback) {
 
 export function buildIntlMonthLabels(language) {
   return Array.from({ length: 12 }, (_, index) => new Intl.DateTimeFormat(language, {
-    month: 'long',
+    month: 'short',
   }).format(new Date(2026, index, 1)));
 }
 
@@ -51,7 +51,7 @@ export function formatDateInputValue(isoDate, monthLabels, yearOffset = 0) {
   const parsed = parseIsoDate(isoDate);
   if (!parsed) return '';
   const monthIndex = Number(parsed.month) - 1;
-  const monthShort = monthLabels[monthIndex]?.slice(0, 3) || parsed.month;
+  const monthShort = monthLabels[monthIndex] || parsed.month;
   return `${parsed.day} ${monthShort} ${Number(parsed.year) + yearOffset}`;
 }
 

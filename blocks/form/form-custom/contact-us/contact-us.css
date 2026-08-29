@@ -2,10 +2,30 @@
     /* Form Title & Subtitle */
     & .field-title h2,
     & :is(.field-wrapper, .plain-text-wrapper):has(h2) h2 {
+        position: relative;
         text-align: center;
         color: var(--bbl-color-black);
         font-family: var(--bbl-font-family-medium);
         font-weight: var(--bbl-font-weight-regular);
+        padding-bottom: 1.875rem;
+        margin-bottom: 1.875rem;
+    }
+
+    /* Title Underline: short centered rule below the title text */
+    & .field-title h2::before,
+    & :is(.field-wrapper, .plain-text-wrapper):has(h2) h2::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 5rem;
+        height: 0.0625rem;
+        background-color: var(--bbl-color-grey-150);
+        transform: translateX(-50%);
+    }
+
+    & :is(fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper), fieldset.radio-group-wrapper) > legend.field-label {
+        font-weight: 700;
     }
 
     /* All Section Legends / Panel Headers: Grey Background Header Styling */
@@ -56,13 +76,14 @@
         border: none;
         border-radius: 0;
         padding: 0;
-        row-gap: var(--bbl-form-gap-8);
+        gap: var(--bbl-form-gap-8) var(--bbl-form-margin-10);
     }
 
     /* Compliment / General Panel Fieldset Reset */
     & fieldset.panel-wrapper:not(:has(.date-wrapper)),
     & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) {
         margin-bottom: 0;
+        column-gap: var(--bbl-form-margin-10);
     }
 
     /* Service Branch Panel: halve the default row-gap (0.9375rem) between the stacked Province/Branch dropdowns */
@@ -73,6 +94,7 @@
     & fieldset.panel-wrapper:has(.date-wrapper) > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper),
     & fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper) {
         position: relative;
+        grid-column: span 12;
         width: 100%;
         margin: 0;
         padding: 0;
@@ -126,11 +148,6 @@
         margin: 0;
         text-overflow: ellipsis;
         white-space: nowrap;
-
-        /* The chevron background-image (form-global.css) sits from --bbl-space-150 (12px) to
-           --bbl-space-150 + --bbl-space-250 (32px) off the right edge, but the global select
-           padding-right (--bbl-space-300 / 24px) doesn't reach that far, so long text/ellipsis
-           still lands under the icon. Reserve enough padding to fully clear it, plus a small gap. */
         padding-right: calc(var(--bbl-space-400) + var(--bbl-space-100));
     }
 
@@ -245,10 +262,6 @@
         text-align: center;
     }
 
-    /* Paragraph Spacing */
-    & :is(.plain-text-wrapper, .tnc-text-decoration) > p > p:last-child {
-        margin-top: var(--bbl-form-margin-32);
-    }
 
     & .modal .plain-text-wrapper > p > p:last-child {
         margin: 1.25rem 0;
@@ -292,11 +305,18 @@
         width: auto;
     }
 
-    /* Mobile/Tablet Dropdown Font Size: 13.3px, smaller than desktop so long option text doesn't collide with the
-       chevron. :is() folds the Service Branch panel scope into a single selector (avoids a duplicate declaration)
-       while still carrying enough specificity to outrank the Date & Time panel's font-size rule above */
     & :is(.drop-down-wrapper, .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) .drop-down-wrapper) select {
         font-size: 0.8313rem;
+    }
+
+    /* Branch Dropdown District Group Headers (bold optgroup labels): grey background highlight */
+    & .drop-down-wrapper:has(select[name="Branch_exclude"]) select optgroup {
+        background-color: var(--bbl-color-grey-10);
+    }
+
+    /* Reset: Chromium paints the optgroup's background onto its child options too, so restore them */
+    & .drop-down-wrapper:has(select[name="Branch_exclude"]) select optgroup option {
+        background-color: var(--bbl-color-white);
     }
 }
 
@@ -322,6 +342,11 @@
         /* Desktop: restore the standard dropdown font size (mobile/tablet use the smaller size set in the base rule) */
         & :is(.drop-down-wrapper, .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) .drop-down-wrapper) select {
             font-size: var(--bbl-form-font-size-15-2);
+        }
+
+         /* Tablet/Desktop Subtitle: bump up from the mobile size set in the base rule */
+        & :is(.field-wrapper, .plain-text-wrapper):has(h2) + .plain-text-wrapper p {
+            font-size: var(--bbl-form-font-size-16);
         }
     }
 }

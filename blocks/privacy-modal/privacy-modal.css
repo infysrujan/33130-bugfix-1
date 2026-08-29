@@ -110,7 +110,7 @@
   text-align: center;
   flex: 1;
   white-space: normal;
-  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   text-indent: 0;
 }
 
@@ -126,7 +126,7 @@
   line-height: 1.5;
   color: var(--bbl-color-grey-28);
   background-color: var(--bbl-color-grey-155);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   box-sizing: border-box;
   scrollbar-width: auto;
   scrollbar-color: auto;
@@ -251,7 +251,7 @@
   line-height: 1.14rem;
   color: var(--bbl-text-primary);
   cursor: pointer;
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
 }
 
 .privacy-modal-checkbox-row input[type='checkbox']:disabled + .privacy-modal-checkbox-label {

@@ -7,7 +7,7 @@ export default function decorate(block) {
 
   // Create a container for all cards
   const cardsContainer = document.createElement('div');
-  cardsContainer.className = 'content-insert-cards-wrapper';
+  cardsContainer.className = 'content';
 
   // Process each card item
   cardItems.forEach((cardItem) => {

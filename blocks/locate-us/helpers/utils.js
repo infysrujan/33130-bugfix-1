@@ -1,3 +1,5 @@
+import { getLang } from '../../../scripts/bbl-decorators.js';
+
 // ─── Shared utilities ─────────────────────────────────────────────────────────
 
 export function hasValue(val) {
@@ -6,11 +8,22 @@ export function hasValue(val) {
   return trimmed !== '' && !/^[-–—]+$/.test(trimmed);
 }
 
-export function buildUrl(template, params) {
-  return Object.entries(params).reduce(
-    (url, [key, val]) => url.replace(`{{${key}}}`, encodeURIComponent(String(val))),
-    template,
-  );
+export function buildUrl(template, params = {}) {
+  if (!template) return '';
+  const lang = getLang() || 'en';
+  const langCapitalized = lang.toLowerCase() === 'th' ? 'Th' : 'En';
+
+  const defaultParams = {
+    lang: langCapitalized,
+    LANG: lang.toUpperCase(),
+    Lang: langCapitalized,
+    ...params,
+  };
+
+  return Object.entries(defaultParams).reduce((url, [key, val]) => {
+    const regex = new RegExp(`\\{\\{${key}\\}\\}`, 'gi');
+    return url.replace(regex, encodeURIComponent(String(val)));
+  }, template);
 }
 
 export function createEl(html) {

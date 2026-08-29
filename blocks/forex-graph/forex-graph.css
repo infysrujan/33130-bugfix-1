@@ -218,7 +218,7 @@
   border: none;
   font-size: 0.875rem;
   font-weight: 700;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   cursor: pointer;
   padding: 0;
   letter-spacing: 0.0313rem;
@@ -228,12 +228,12 @@
 
 .forex-graph .forex-graph-print-btn::before {
   font-size: 1.125rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .forex-graph .forex-graph-download-btn::before {
   font-size: 1.875rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 /* ── Error message ─────────────────────────────────────────── */

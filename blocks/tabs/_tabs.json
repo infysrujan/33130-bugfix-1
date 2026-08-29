@@ -281,6 +281,10 @@
                 {
                   "name": "Center Content",
                   "value": "center-content"
+                },
+                {
+                  "name": "Center First Paragraph",
+                  "value": "center-first-paragraph"
                 }
               ]
             },
@@ -413,6 +417,10 @@
                 {
                   "name": "Center Content",
                   "value": "center-content"
+                },
+                {
+                  "name": "Center First Paragraph",
+                  "value": "center-first-paragraph"
                 }
               ]
             },

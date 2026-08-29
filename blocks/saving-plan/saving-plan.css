@@ -143,7 +143,7 @@
 
 .saving-plan-field-text {
   font-size: var(--bbl-font-size-b1-mobile);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   line-height: 1.3;
   white-space: normal;
 }
@@ -233,7 +233,7 @@
 }
 
 .saving-plan-field-dropdown[data-value=""] .saving-plan-dropdown-current {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .saving-plan-field-dropdown.is-open .saving-plan-field-chevron {
@@ -475,7 +475,7 @@
   font-size: var(--bbl-font-size-h3-mobile);
   font-weight: var(--bbl-font-weight-regular);
   margin-top: 0.875rem;
-  color: var(--bbl-color-black);
+  color: var(--bbl-color-grey-90);
 }
 
 .saving-plan-info-card-slot .category-banner-btn.button-m.secondary {
@@ -803,12 +803,12 @@
 .saving-plan-newplan-future {
   font-size: var(--bbl-font-size-b1-mobile);
   margin: 0 0 2.625rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .saving-plan-newplan-future strong {
   font-weight: 700;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .saving-plan-newplan-lead {
@@ -846,7 +846,7 @@
 .saving-plan-newplan-card.is-placeholder .saving-plan-newplan-lead,
 .saving-plan-newplan-card.is-placeholder .saving-plan-newplan-amount,
 .saving-plan-newplan-card.is-placeholder .saving-plan-newplan-currency {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .saving-plan-newplan-footnote {

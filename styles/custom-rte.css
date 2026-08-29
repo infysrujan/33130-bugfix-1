@@ -16,12 +16,7 @@
   margin: 0;
 }
 
-.default-content-wrapper p.rte-inline-image picture {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.default-content-wrapper p.rte-has-icon picture {
+.default-content-wrapper p:is(.rte-inline-image, .rte-has-icon) picture {
   display: inline-block;
   vertical-align: middle;
 }
@@ -40,6 +35,34 @@
 }
 
 .default-content-wrapper li:has(p:is(.rte-inline-image, .rte-has-icon)) p:has(picture) {
+  display: inline;
+}
+
+.table.block table td p:is(.rte-inline-image, .rte-has-icon, .rte-image-link) {
+  display: inline;
+  margin: 0;
+}
+
+.table.block table td p:is(.rte-inline-image, .rte-has-icon) picture {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.table.block table td p.rte-has-icon + p {
+  display: inline;
+  vertical-align: middle;
+}
+
+.table.block table td p:is(.rte-has-icon, .rte-image-link, .rte-inline-image):has(picture) {
+  margin-block: 0;
+}
+
+.table.block table td li:has(p:is(.rte-inline-image, .rte-has-icon)) p {
+  display: inline;
+  margin: 0;
+}
+
+.table.block table td li:has(p:is(.rte-inline-image, .rte-has-icon)) p:has(picture) {
   display: inline;
 }
 
@@ -77,7 +100,6 @@
   margin: 0 0 0.625rem var(--bbl-space-250);
 }
 
-.default-content-wrapper > :not(.button-container, .footer-container) a:any-link {
+/* .default-content-wrapper > :not(.button-container, .footer-container) a:any-link {
   color: inherit;
-}
-
+} */

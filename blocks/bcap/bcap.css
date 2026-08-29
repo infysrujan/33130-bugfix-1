@@ -13,7 +13,7 @@
 .calendar-wrapper p {
   font-size: .8rem;
   line-height: 1.375;
-  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-weight: 400;
 }
 
@@ -57,7 +57,7 @@
 }
 
 .bcap-print-label p {
-  font: 1rem BangkokBank-Medium, Arial, sans-serif;
+  font: 1rem var(--bbl-font-family-medium);
 }
 
 .bcap-error-message p {
@@ -91,8 +91,8 @@
 }
 
 .bcap-table.table table tr:not(.header-row) td {
-  color: var(--bbl-color-grey-70);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  color: var(--bbl-color-grey-90);
+  font-family: var(--bbl-font-family-primary);
   font-weight: 400;
 }
 
