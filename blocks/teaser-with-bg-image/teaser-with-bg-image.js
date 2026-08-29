@@ -50,12 +50,14 @@ export default function decorate(block) {
     teaserDescRow,
     teaserButtonRow,
     teaserTargetRow,
+    teaserImagePositionRow,
     ...teaserRows
   ] = [...block.children];
 
   const teaserBgPicture = teaserBgImgRow?.querySelector('img');
   const teaserButton = teaserButtonRow?.querySelector('a');
   const targetValue = teaserTargetRow?.textContent?.trim() || '';
+  const imageObjectPosition = teaserImagePositionRow?.textContent?.trim() || '';
 
   const wrapper = createElementFromHTML(
     '<div class="teaser-bg-image-wrapper"></div>',
@@ -67,7 +69,9 @@ export default function decorate(block) {
       '<div class="teaser-bg-image-bg" aria-hidden="true"></div>',
       doc,
     );
-    bgLayer.appendChild(teaserBgPicture.cloneNode(true));
+    const bgImg = teaserBgPicture.cloneNode(true);
+    if (imageObjectPosition) bgImg.style.objectPosition = imageObjectPosition;
+    bgLayer.appendChild(bgImg);
     wrapper.appendChild(bgLayer);
   }
 

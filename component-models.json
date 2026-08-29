@@ -13516,6 +13516,13 @@
             "value": false
           }
         ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageObjectPosition",
+        "label": "Image Object Position",
+        "description": "Horizontal &amp; vertical position. Use px, %, or keywords (left/center/right, top/center/bottom). E.g. '60px 0', '0 40px', '30% 20%', 'center top'. Leave empty for default (50% 50%)."
       }
     ]
   },
