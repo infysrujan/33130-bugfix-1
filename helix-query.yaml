@@ -13,7 +13,12 @@ indices:
         select: head > meta[property="og:title"], head > title
         value: |
           attribute(el, 'content') || textContent(el)
-
+      keywords:
+        select: head > meta[name="keywords"]
+        value: attribute(el, 'content')
+      description:
+        select: head > meta[name="description"]
+        value: attribute(el, 'content')
   site-th:
     <<: *base-site
     include:
