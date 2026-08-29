@@ -7,29 +7,57 @@ import {
   showModal,
 } from './modal.js';
 
-let pdfLibReady;
-function loadPdfLib() {
-  if (!pdfLibReady) {
-    pdfLibReady = import(`${window.hlx.codeBasePath}/scripts/vendor/pdf-lib.esm.min.js`)
-      .then((mod) => mod.PDFDocument)
-      .catch(() => null);
-  }
-  return pdfLibReady;
+const SW_SCOPE_PATH = '/pdf-preview/';
+let swActiveReady;
+
+function waitForActivation(registration) {
+  if (registration.active) return registration.active;
+  const worker = registration.installing || registration.waiting;
+  if (!worker) return null;
+  return new Promise((resolve) => {
+    worker.addEventListener('statechange', function onChange() {
+      if (worker.state === 'activated') {
+        worker.removeEventListener('statechange', onChange);
+        resolve(registration.active);
+      } else if (worker.state === 'redundant') {
+        worker.removeEventListener('statechange', onChange);
+        resolve(null);
+      }
+    });
+  });
 }
 
-async function withTitleMetadata(blob, name) {
-  if (!name) return blob;
-  const PDFDocument = await loadPdfLib();
-  if (!PDFDocument) return blob;
-  try {
-    const bytes = await blob.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(bytes, { updateMetadata: false });
-    pdfDoc.setTitle(name);
-    const titledBytes = await pdfDoc.save();
-    return new Blob([titledBytes], { type: 'application/pdf' });
-  } catch {
-    return blob;
+function ensurePdfPreviewSw() {
+  if (!swActiveReady) {
+    if (!('serviceWorker' in navigator)) {
+      swActiveReady = Promise.resolve(null);
+    } else {
+      const base = window.hlx?.codeBasePath || '';
+      swActiveReady = navigator.serviceWorker
+        .register(`${base}${SW_SCOPE_PATH}sw.js`, { scope: `${base}${SW_SCOPE_PATH}` })
+        .then(waitForActivation)
+        .catch(() => null);
+    }
   }
+  return swActiveReady;
+}
+
+function registerPdfBytes(active, url, buffer) {
+  return new Promise((resolve) => {
+    const channel = new MessageChannel();
+    const timer = setTimeout(() => resolve(false), 3000);
+    channel.port1.onmessage = () => {
+      clearTimeout(timer);
+      resolve(true);
+    };
+    const transferBuffer = buffer.slice(0);
+    active.postMessage({ type: 'register-pdf', url, buffer: transferBuffer }, [transferBuffer, channel.port2]);
+  });
+}
+
+function randomId() {
+  if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+  return Math.random().toString(36).slice(2);
 }
 
 export default function openPdfViewer({
@@ -87,13 +115,27 @@ export default function openPdfViewer({
   buttonGroup.append(downloadLink);
 
   let objectUrl = null;
-  const pdfBlobPromise = fetch(path).then((r) => r.blob());
+  let swActive = null;
+  let swPreviewUrl = null;
 
-  pdfBlobPromise
-    .then((blob) => withTitleMetadata(blob, name))
-    .then((blob) => {
+  fetch(path)
+    .then((r) => r.arrayBuffer())
+    .then(async (buffer) => {
+      const active = name ? await ensurePdfPreviewSw() : null;
+      if (active) {
+        const base = window.hlx?.codeBasePath || '';
+        const previewUrl = `${window.location.origin}${base}${SW_SCOPE_PATH}${randomId()}/${encodeURIComponent(name)}`;
+        const registered = await registerPdfBytes(active, previewUrl, buffer);
+        if (registered) {
+          swActive = active;
+          swPreviewUrl = previewUrl;
+          embedEl.src = previewUrl;
+          return;
+        }
+      }
       // Keep the blob URL alive for the lifetime of the modal so the viewer's
       // built-in download button can still fetch it; revoke on close() below.
+      const blob = new Blob([buffer], { type: 'application/pdf' });
       objectUrl = URL.createObjectURL(blob);
       embedEl.src = objectUrl;
     })
@@ -109,6 +151,11 @@ export default function openPdfViewer({
     if (objectUrl) {
       URL.revokeObjectURL(objectUrl);
       objectUrl = null;
+    }
+    if (swActive && swPreviewUrl) {
+      swActive.postMessage({ type: 'unregister-pdf', url: swPreviewUrl });
+      swActive = null;
+      swPreviewUrl = null;
     }
     document.body.classList.remove(`${classPrefix}-open`);
     hideModal(overlay, `${classPrefix}-visible`);
