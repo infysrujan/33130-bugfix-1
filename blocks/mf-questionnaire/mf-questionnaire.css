@@ -125,6 +125,7 @@
   transition: all 0.2s ease;
   cursor: pointer;
   font-family: inherit;
+  white-space: normal;
 }
 
 .mfq-risk-options .thumb-square:hover,

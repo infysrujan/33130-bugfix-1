@@ -482,6 +482,8 @@ function getBranchEnum(province, lang = 'th') {
 /**
 * Returns BranchName display labels for a given province.
 * Maps to enumNames for branch dropdown.
+* NOTE: runs inside the Rule Engine's Web Worker (no DOM access), so no
+* grouping logic happens here — see the main-thread polling below.
 *
 * @name getBranchEnumNames
 * @param {string} province - Province name matching the selected language
@@ -493,6 +495,77 @@ function getBranchEnumNames(province, lang = 'th') {
   return data.map((item) => item.BranchName);
 }
 
+// Wraps a select's <option> elements into <optgroup> by district.
+// Main-thread DOM only — never called from inside the Rule Engine worker.
+function applyBranchDistrictGroupingToSelect(selectEl, data) {
+  const districtByBranchName = {};
+  data.forEach((item) => {
+    districtByBranchName[item.BranchName] = item.Address3 ? String(item.Address3).trim() : '';
+  });
+
+  let currentGroup = null;
+  let currentDistrict = null;
+
+  Array.from(selectEl.querySelectorAll('option')).forEach((opt) => {
+    const district = districtByBranchName[opt.value] || '';
+    if (!district) return;
+
+    if (district !== currentDistrict) {
+      currentGroup = document.createElement('optgroup');
+      currentGroup.label = district;
+      currentGroup.style.fontWeight = 'bold';
+      selectEl.appendChild(currentGroup);
+      currentDistrict = district;
+    }
+    currentGroup.appendChild(opt);
+  });
+}
+
+// Polls briefly for a <select> whose options match this branch dataset,
+// then groups it.
+function scheduleApplyBranchDistrictGroupingAuto(data) {
+  if (!data.length) return;
+  const branchNames = new Set(data.map((item) => String(item.BranchName)));
+
+  let attempts = 0;
+  const tryApply = () => {
+    attempts += 1;
+    const target = Array.from(document.querySelectorAll('select')).find((sel) => {
+      const optVals = Array.from(sel.options).map((o) => o.value).filter((v) => v !== '');
+      return optVals.length > 0 && optVals.every((v) => branchNames.has(v));
+    });
+
+    if (target) {
+      applyBranchDistrictGroupingToSelect(target, data);
+    } else if (attempts < 20) {
+      setTimeout(tryApply, 100);
+    }
+  };
+  setTimeout(tryApply, 0);
+}
+
+// The Rule Engine worker can't touch the DOM, and this form's custom
+// dropdown widget may not dispatch real 'change' events — so instead of
+// listening for events, poll each <select>'s value directly for changes.
+if (typeof document !== 'undefined') {
+  const lastValues = new Map();
+
+  setInterval(() => {
+    document.querySelectorAll('select').forEach((sel) => {
+      const key = sel.name || sel.id;
+      const prev = lastValues.get(key);
+      const current = sel.value;
+
+      if (current && current !== prev) {
+        lastValues.set(key, current);
+        ['en', 'th'].forEach((lang) => {
+          const data = fetchBranchesByProvince(current, lang);
+          if (data.length) scheduleApplyBranchDistrictGroupingAuto(data);
+        });
+      }
+    });
+  }, 300);
+}
 /**
  * Validates Thai Citizen ID using the official algorithm
  * @name validateThaiCitizenID

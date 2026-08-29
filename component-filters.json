@@ -93,6 +93,7 @@
       "mf-comparator",
       "mf-questionnaire",
       "cc-campaign",
+      "header-banner-slide",
       "custom-button"
     ]
   },
@@ -288,6 +289,12 @@
     "id": "forms-card-list",
     "components": [
       "forms-card-list-item"
+    ]
+  },
+  {
+    "id": "header-banner-slide",
+    "components": [
+      "credit-card"
     ]
   },
   {

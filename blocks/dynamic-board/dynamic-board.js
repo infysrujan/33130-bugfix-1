@@ -1,9 +1,9 @@
 import parseAuthoring, { parseTableHeading, parseMaturityTypes } from './helpers/authoring-helpers.js';
 import {
-  parseCsvConfigList, buildIntlMonthLabels,
   formatMaturityDate, formatRemainTerm, remainTermToMonths,
   formatMonthYear, formatMonthYearDisplay,
 } from './helpers/date-helpers.js';
+import { parseCsvConfigList, buildIntlMonthLabels } from '../../scripts/utils/date-helpers.js';
 import createApiService from './helpers/api-helpers.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
@@ -112,12 +112,6 @@ function renderTimeDropdown(timeListEl, timeLabelEl, state) {
 }
 
 // ─── table ────────────────────────────────────────────────────────────────────
-function sortIcon(key, state) {
-  if (!key) return '';
-  const icon = state.sortUserSet && state.sortKey === key ? 'bond-sorted' : 'bond-sort';
-  return `<img src="/icons/${icon}.svg" class="db-sort-icon" width="16" height="16" alt="" aria-hidden="true">`;
-}
-
 function updateFilterBtn(btn, state) {
   const isActive = state.filterMaturity !== null || state.filterDatesUserSet;
   const img = btn.querySelector('img');
@@ -138,11 +132,11 @@ function renderThead(thead, state) {
         const ssa = s.sortKey ? `data-sort="${s.sortKey}"` : '';
         const isSubSorted = state.sortUserSet && s.sortKey && s.sortKey === state.sortKey;
         const ssc = s.sortKey ? `db-th-sort${isSubSorted ? ' db-th-sorted' : ''}` : '';
-        row2 += `<th ${ssa} class="${ssc}">${escapeHtml(s.label)}${sortIcon(s.sortKey, state)}</th>`;
+        row2 += `<th ${ssa} class="${ssc}">${escapeHtml(s.label)}</th>`;
       });
     } else {
       const cs = col.colspan > 1 ? `colspan="${col.colspan}"` : '';
-      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}">${escapeHtml(col.label)}${sortIcon(col.sortKey, state)}</th>`;
+      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}">${escapeHtml(col.label)}</th>`;
     }
   });
   row1 += '</tr>';
@@ -572,7 +566,6 @@ function printElement(block) {
     '.db-filter-wrapper',
     '.db-mp-popup',
     '.db-go-btn',
-    '.db-sort-icon',
     '.db-td-check',
     '.db-th-download',
     '.db-td-dl',
@@ -794,6 +787,7 @@ function printElement(block) {
          thead/tr level even with print-color-adjust: exact set globally —
          setting it directly on each th is what actually survives printing. */
       background-color: #FFFFFF;
+      background-image: none;
       color: ${headerColor};
       font-size: 0.625rem;
       font-weight: ${headerFontWeight} !important;

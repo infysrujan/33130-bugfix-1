@@ -100,10 +100,11 @@
 
 .carousel-dotted.all-carousel-fragment.show-arrows-dots
   .carousel-arrow-prev:hover {
+  background-color: unset;
   transform: translateY(-50%) translateX(-0.3rem);
 }
 
-.carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow:hover {
+.carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow-next:hover {
   background-color: unset;
   transform: translateY(-50%) translateX(0.3rem);
 }

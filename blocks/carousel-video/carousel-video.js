@@ -180,17 +180,11 @@ export default async function decorate(block) {
   block.appendChild(dotsEl);
 
   // ── State helpers ─────────────────────────────────────────────────────────
-  // Pause any iframe that isn't the active one so only one video ever plays at a time.
-  function pauseIframe(iframeEl) {
-    iframeEl.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
-  }
-
   function setActive(index) {
     activeIndex = index;
     iframeEls.forEach((f, i) => {
       const isActive = i === index;
       f.classList.toggle('active', isActive);
-      if (!isActive) pauseIframe(f);
     });
     thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));

@@ -414,6 +414,8 @@ export default async function decorate(block) {
 
   // ── Values & calculation ──
   let lastResult = null;
+  // Holds the error text to show in the comparison table when the last calculation failed.
+  let lastErrorMessage = null;
 
   const getVal = (id) => {
     const inp = block.querySelector(`#${id}`);
@@ -426,6 +428,8 @@ export default async function decorate(block) {
     if (!Number.isFinite(n)) return 'N/A';
     return n.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   };
+
+  const formatResult = (n) => (rc.integer ? Math.floor(n).toLocaleString('en-US') : fmt(n));
 
   // Build the variable map, applying the annual->monthly conversion only where needed.
   const compute = () => {
@@ -490,6 +494,7 @@ export default async function decorate(block) {
     });
     touchedDecimalFields.clear();
     lastResult = null;
+    lastErrorMessage = null;
     resultLabel.textContent = `${resultValue}`;
     resultLabel.style.whiteSpace = '';
     tbody.innerHTML = '';
@@ -499,26 +504,31 @@ export default async function decorate(block) {
   calcBtn.addEventListener('click', () => {
     const { valid, showMessage } = validateAndMarkErrors();
     if (!valid) {
-      if (showMessage) showError(`${resultText} ${errorMessage}`);
+      if (showMessage) {
+        showError(`${resultText} ${errorMessage}`);
+        lastErrorMessage = errorMessage;
+      }
       return;
     }
 
     const raw = compute();
     // Term must be a positive, finite number of months; other tabs just need a finite number.
     const invalid = !Number.isFinite(raw) || (calcType === 'term' && !(raw > 0));
-    if (invalid) {
-      showError(errorMessage || 'Cannot Calculate');
-      return;
-    }
 
-    lastResult = raw;
     resultLabel.textContent = '';
     resultLabel.style.whiteSpace = 'pre-wrap';
     resultNum = el('strong', 'sme-result-number');
-    resultNum.textContent = rc.integer
-      ? Math.floor(lastResult).toLocaleString('en-US')
-      : fmt(lastResult);
-    resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
+    if (invalid || raw < 0) {
+      lastResult = null;
+      lastErrorMessage = errorMessage || 'Cannot Calculate';
+      resultNum.textContent = errorMessage || 'Cannot Calculate';
+      resultLabel.append(`${rc.prefix} `, resultNum);
+    } else {
+      lastResult = raw;
+      lastErrorMessage = null;
+      resultNum.textContent = formatResult(lastResult);
+      resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
+    }
   });
 
   // ── Input behaviour ──
@@ -608,9 +618,9 @@ export default async function decorate(block) {
 
   // ── Add to comparison table ──
   addBtn.addEventListener('click', () => {
-    if (lastResult === null) return;
+    if (lastResult === null && lastErrorMessage === null) return;
     tableSection.hidden = false;
-    const resultCell = rc.integer ? Math.floor(lastResult).toLocaleString('en-US') : fmt(lastResult);
+    const resultCell = lastResult === null ? lastErrorMessage : formatResult(lastResult);
     const fieldValues = tableFields.map((f) => {
       const inp = block.querySelector(`#${f.id}`);
       return inp ? inp.value : '';

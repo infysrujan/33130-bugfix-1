@@ -162,7 +162,7 @@
    VARIANT: BORDER BOTTOM TIGHT COLS — generic td (specificity 0,2,4)
    -------------------------------------------------------------------------- */
 .table table.border-bottom-tight-cols tbody tr td {
-  padding-left: 0.625rem;
+  padding: 0.9375rem 0.625rem;
 }
 
 /* --------------------------------------------------------------------------
@@ -238,6 +238,11 @@
   vertical-align: middle;
 }
 
+/* Cells Middle Aligned */
+.table table.cells-middle-aligned tr:not(.header-row) td {
+  vertical-align: middle;
+}
+
 /* --------------------------------------------------------------------------
    BORDER TYPE VARIANTS — last row (specificity 0,3,3)
    -------------------------------------------------------------------------- */
@@ -253,7 +258,6 @@
 .table table.border-bottom-tight-cols tbody tr td:first-child,
 .table table.border-bottom-tight-cols tbody tr td:nth-child(2) {
   padding: 0.9375rem 0.625rem 0.9375rem 0;
-  width: 20%;
 }
 
 /* --------------------------------------------------------------------------

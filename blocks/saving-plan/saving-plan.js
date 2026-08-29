@@ -894,7 +894,8 @@ function formatLive(input, decimal, digitCap) {
     const raw = clampToDigitCap(sanitizeDecimalInput(input.value), digitCap);
     input.value = raw;
     let count = 0;
-    let newCursor = raw.length;
+    // digitsBeforeCursor === 0 means the cursor sits before any digit/dot, so it belongs at 0.
+    let newCursor = digitsBeforeCursor === 0 ? 0 : raw.length;
     for (let i = 0; i < raw.length; i += 1) {
       if (/[\d.]/.test(raw[i])) count += 1;
       if (count === digitsBeforeCursor) { newCursor = i + 1; break; }
@@ -913,7 +914,8 @@ function formatLive(input, decimal, digitCap) {
   input.value = formatted;
   // Find new cursor: walk formatted string counting digits until we match digitsBeforeCursor.
   let count = 0;
-  let newCursor = formatted.length;
+  // digitsBeforeCursor === 0 means the cursor sits before any digit/dot, so it belongs at 0.
+  let newCursor = digitsBeforeCursor === 0 ? 0 : formatted.length;
   for (let i = 0; i < formatted.length; i += 1) {
     if (/[\d.]/.test(formatted[i])) count += 1;
     if (count === digitsBeforeCursor) { newCursor = i + 1; break; }
@@ -1059,11 +1061,19 @@ function attachHandlers(state, data) {
     const decimal = wrap.dataset.decimal === '1';
     const digitCap = FIELD_DIGIT_CAP[wrap.dataset.field];
     const smart = wrap.dataset.field === 'annualReturn' || wrap.dataset.field === 'annualIncrease';
-    if (wrap.dataset.field === 'annualIncrease') {
+    if (wrap.dataset.field === 'annualIncrease' || wrap.dataset.field === 'goalAmount') {
       input.addEventListener('focus', () => {
         // Clear a zero value on focus so the placeholder shows and the user can
-        // type immediately; blur restores 0.00 if left empty.
+        // type immediately; blur restores the previous value if left empty.
         if (parseNumber(input.value) === 0) input.value = '';
+      });
+    }
+    if (wrap.dataset.field === 'annualReturn') {
+      input.addEventListener('focus', () => {
+        // Show full 2-decimal precision while editing (e.g. "0.5" -> "0.50");
+        // blur re-applies the smart format that trims trailing zeros.
+        const value = parseNumber(input.value);
+        if (Number.isFinite(value)) input.value = formatDecimal(value);
       });
     }
     input.addEventListener('input', () => {

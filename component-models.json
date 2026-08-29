@@ -3724,6 +3724,12 @@
       },
       {
         "component": "text",
+        "name": "datePrefix",
+        "label": "Date Prefix",
+        "description": "Optional date text displayed before the download link text"
+      },
+      {
+        "component": "text",
         "name": "downloadLinkText",
         "label": "Download Text",
         "description": "Download Button label text",
@@ -6410,6 +6416,10 @@
           {
             "name": "123,421,567",
             "value": "###,###,###"
+          },
+          {
+            "name": "1,234.20",
+            "value": "#,##0.00"
           }
         ]
       },
@@ -10073,6 +10083,113 @@
     ]
   },
   {
+    "id": "header-banner-slide",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title",
+        "description": "credit card banner title"
+      },
+      {
+        "component": "select",
+        "name": "titleType",
+        "label": "Title Type",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "name": "autoScroll",
+        "label": "Auto-Scroll",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "select",
+        "name": "scrollTimeDelay",
+        "label": "Scroll Time Delay (milliseconds)",
+        "valueType": "string",
+        "value": "3000",
+        "options": [
+          {
+            "name": "3 seconds",
+            "value": "3000"
+          },
+          {
+            "name": "5 seconds",
+            "value": "5000"
+          },
+          {
+            "name": "10 seconds",
+            "value": "10000"
+          }
+        ],
+        "condition": {
+          "and": [
+            {
+              "!!": [
+                {
+                  "var": "autoScroll"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "infiniteLoop",
+        "label": "Infinite Loop",
+        "valueType": "boolean",
+        "value": true
+      }
+    ]
+  },
+  {
+    "id": "credit-card",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "creditCardImage",
+        "label": "Credit Card Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "creditCardImageAlt",
+        "label": "Alt",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "header-section",
     "fields": [
       {
@@ -12747,6 +12864,10 @@
                 "value": "cells-center-aligned-except-first"
               },
               {
+                "name": "Cells Middle Aligned",
+                "value": "cells-middle-aligned"
+              },
+              {
                 "name": "Dash Cell Highlight",
                 "value": "dash-cell-highlight"
               },
@@ -13120,6 +13241,10 @@
               {
                 "name": "Center Content",
                 "value": "center-content"
+              },
+              {
+                "name": "Center First Paragraph",
+                "value": "center-first-paragraph"
               }
             ]
           },
@@ -13252,6 +13377,10 @@
               {
                 "name": "Center Content",
                 "value": "center-content"
+              },
+              {
+                "name": "Center First Paragraph",
+                "value": "center-first-paragraph"
               }
             ]
           },

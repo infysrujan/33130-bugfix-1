@@ -71,10 +71,6 @@
   margin: 0;
 }
 
-.private .cross-banner-description {
-  line-height: 1.1244rem;
-}
-
 .wealth .cross-banner-wrapper {
   padding: 3.125rem 0 0;
 }
@@ -178,9 +174,9 @@ body.private
    margin-left: auto;
   }
 
-  :is(.wealth, .private) :is(.cross-banner-title, .cross-banner-description) {
-    flex: 0 0 38.86%;
-    max-width: 30.86%;
+   :is(.wealth, .private) :is(.cross-banner-title, .cross-banner-description) {
+    flex: 0 1 21.875rem;  
+    max-width: 21.875rem;  
   }
 }
 

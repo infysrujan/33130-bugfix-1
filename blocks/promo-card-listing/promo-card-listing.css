@@ -5,16 +5,18 @@
    The site-wide value (main.css, 5.25rem) under-shoots the real header height on
    this listing, so override it here, scoped to promo-card-listing pages only.
    Must live on an ancestor of .tabs (custom properties inherit down, not up) --
-   .promo-card-listing itself sits inside .tabs, so it can't be the target. */
-.section.tabs-container:has(.promo-card-listing) {
-  --header-scroll-offset: 7rem;
+   setupPanel() writes the filters/content markup directly into the .tab-panel
+   (see promo-card-listing.js), so there is no .promo-card-listing wrapper between
+   .tab-panel and .promo-selector-content to target instead. */
+.section.tabs-container:has(.tab-panel > .promo-selector-content) {
+  --header-scroll-offset: 9rem;
 }
 
 .bangkok-bankm-card :has(.section.tabs-container .tab-panel>.promo-selector-content) {
   background-color: var(--bbl-color-white);
 }
 
-body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector-content) .tabs-nav-wrapper .tabs-nav button:not(.active) {
+body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector-content) .tabs-nav-wrapper .tabs-nav button-m:not(.active) {
   color: var(--bbl-color-grey-85);
 }
 
@@ -193,9 +195,9 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   width: 100%;
 }
 
-.promo-selector-filter-actions .button {
+.promo-selector-filter-actions .button-m {
   flex: 1;
-  width: 100%;
+  min-width: 100%;
 }
 
 .promo-card-listing.has-preview > div[data-config-row] {
@@ -266,6 +268,10 @@ body.mobile-app-view main > div:first-child {
 
 
 @media (width > 47.5rem) {
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) {
+  --header-scroll-offset: 5rem;
+}
+
   .promo-selector-grid:has(.promo-selector-empty) {
     width: 50%;
     padding-inline: 0.625rem;
@@ -302,8 +308,6 @@ body.mobile-app-view main > div:first-child {
 
   .promo-selector-dropdown {
     max-height: 13.75rem;
-    left: 0.625rem;
-    right: 0.625rem;
   }
 
   .promo-selector-filter-actions {
@@ -317,14 +321,18 @@ body.mobile-app-view main > div:first-child {
     box-sizing: border-box;
   }
 
-  .promo-selector-filter-actions .button {
+  .promo-selector-filter-actions .button-m {
     width: 100%;
     box-sizing: border-box;
-    min-width: unset;
+    min-width: 8.75rem;
   }
 }
 
 @media (width > 64rem) {
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) {
+  --header-scroll-offset: 7rem;
+}
+  
   .promo-selector-grid:has(.promo-selector-empty) {
     width: unset;
     padding-inline: 0;
@@ -366,8 +374,6 @@ body.mobile-app-view main > div:first-child {
 
   .promo-selector-dropdown {
     max-height: 13.75rem;
-    left: var(--bbl-space-250);
-    right: var(--bbl-space-250);
   }
 
   body.mobile-app-view header.is-not-overlapped ~ main {

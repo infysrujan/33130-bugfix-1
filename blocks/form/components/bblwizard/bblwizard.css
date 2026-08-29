@@ -26,6 +26,7 @@
   max-width: 31.25rem;
   line-height: var(--bbl-wizard-line-height-base-mobile);
   font-family: var(--bbl-font-family-medium);
+  scroll-margin-top: 9rem;
 }
 
 main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper:not([class*="field-form-fragment"], .field-button-panel, [class*="field-form-width"], [class*="field-css-"], :has([class*="field-form-width"])) {
@@ -174,7 +175,12 @@ main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.r
   background-color: var(--bbl-color-white, #fff);
   cursor: pointer;
   flex-shrink: 0;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards) input[type='radio']:hover {
+  border-color: var(--bbl-color-active-blue, #0064ff);
+  opacity: 1;
 }
 
 main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards) input[type='radio']:checked {
@@ -198,6 +204,9 @@ main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.r
 }
 
 .bbl-wizard-step-indicator {
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 50%;
@@ -220,6 +229,17 @@ main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.r
   border-color: var(--bbl-color-active-blue, #0064ff);
   color: var(--bbl-color-active-blue, #0064ff);
   transform: scale(1.1);
+}
+
+/* Only completed steps are clickable — they let the user go back to a prior step. */
+.bbl-wizard-step.is-completed {
+  cursor: pointer;
+}
+
+.bbl-wizard-step.is-completed:focus-visible {
+  outline: 0.125rem solid var(--bbl-color-active-blue);
+  outline-offset: 0.125rem;
+  border-radius: 50%;
 }
 
 main .form-container.wizard-forms {
@@ -264,6 +284,16 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   text-align: right;
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-wizard-line-height-base-mobile);
+}
+
+main .section.form-container.wizard-forms .form form input[type='number'] {
+  appearance: textfield;
+}
+
+main .section.form-container.wizard-forms .form form input[type='number']::-webkit-inner-spin-button,
+main .section.form-container.wizard-forms .form form input[type='number']::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
 }
 
 main .section.form-container.wizard-forms .form form :is(input:not([type='radio'], [type='checkbox']), textarea)::placeholder {

@@ -680,6 +680,53 @@
   border: none;
 }
 
+.dynamic-board .db-table thead th[data-sort="OFFER_PRICE"],
+.dynamic-board .db-table thead th[data-sort="OFFER_YIELD"],
+.dynamic-board .db-table thead th[data-sort="REMAIN_TERM"],
+.dynamic-board .db-table thead th[data-sort="MATURITY_DATE"],
+.dynamic-board .db-table thead th[data-sort="CURRENT_COUPON"],
+.dynamic-board .db-table thead th[data-sort="ISSUER_RATING"],
+.dynamic-board .db-table thead th[data-sort="ISSUE_RATING"] {
+  width: 10%;
+  text-align: right;
+  white-space: normal;
+  word-break: normal;
+}
+
+.dynamic-board .db-table thead th[data-sort="BOND_SYMBOL"] {
+  width: 10%;
+}
+
+.dynamic-board .db-table thead th[data-sort="REMAIN_TERM"],
+.dynamic-board .db-table thead th[data-sort="CURRENT_COUPON"] {
+  word-spacing: 100vw;
+}
+
+.dynamic-board .db-table thead th[data-sort="NAME_ENG"] {
+  width: 20%;
+}
+
+.dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort {
+  background-image: none;
+  padding-right: 0.625rem;
+}
+
+.dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort::after {
+  content: '';
+  display: inline-block;
+  width: 0.9375rem;
+  height: 0.9375rem;
+  margin-left: var(--bbl-space-050);
+  vertical-align: middle;
+  background-image: url("/icons/bond-sort.svg");
+  background-repeat: no-repeat;
+  background-size: 0.9375rem;
+}
+
+.dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort.db-th-sorted::after {
+  background-image: url("/icons/bond-sorted.svg");
+}
+
 .dynamic-board .db-table thead th[rowspan='2'] {
   height: 6.25rem;
 }
@@ -711,19 +758,24 @@
   user-select: none;
 }
 
+.dynamic-board .db-table thead th.db-th-sort {
+  background-image: url("/icons/bond-sort.svg");
+  background-repeat: no-repeat;
+  background-position: 98% 50%;
+  background-size: 0.9375rem;
+  padding-right: 1.875rem;
+}
+
 .dynamic-board .db-th-sorted {
   color: var(--bbl-color-active-blue);
 }
 
-.dynamic-board .db-th-group {
-  border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
+.dynamic-board .db-table thead th.db-th-sort.db-th-sorted {
+  background-image: url("/icons/bond-sorted.svg");
 }
 
-.dynamic-board .db-sort-icon {
-  display: inline-block;
-  margin-left: var(--bbl-space-050);
-  vertical-align: middle;
-  flex-shrink: 0;
+.dynamic-board .db-th-group {
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
 }
 
 /* ── Table body rows ───────────────────────────────────────── */

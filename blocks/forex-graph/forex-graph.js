@@ -11,7 +11,7 @@ import {
   parseCsvConfigList,
   parseIsoDate,
   parseTypedDate,
-} from '../forex-rates/helpers/date-helpers.js';
+} from '../../scripts/utils/date-helpers.js';
 import {
   createApiEndpoints,
   getChartRates,
@@ -192,6 +192,28 @@ function printForexGraph(block, state) {
 
 // eslint-disable-next-line import/no-unresolved
 const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
+
+// Pick `intermediateCount` indices evenly spaced by position between first/last, so
+// ticks land at equal gaps on the (category) x-axis regardless of actual date gaps.
+function pickEvenlySpacedIndices(length, intermediateCount = 6) {
+  const lastIndex = length - 1;
+  if (lastIndex <= 0) return Array.from({ length }, (_, index) => index);
+
+  const segments = intermediateCount + 1;
+  const step = Math.floor(lastIndex / segments);
+  const indices = [0];
+
+  for (let k = 1; k <= intermediateCount; k += 1) {
+    const idx = step * k;
+    const lastPicked = indices[indices.length - 1];
+    if (idx > lastPicked && idx < lastIndex) {
+      indices.push(idx);
+    }
+  }
+
+  indices.push(lastIndex);
+  return indices;
+}
 
 async function loadChartJs() {
   if (window.ForexChart) return window.ForexChart;
@@ -438,10 +460,7 @@ export default async function decorate(block) {
     const buyingData = state.chartData.map((d) => d.buyingRate);
     const sellingData = state.chartData.map((d) => d.sellingRate);
 
-    // A single-day range (From === To) yields one category, and Chart.js pins a
-    // lone category to the axis origin instead of centering it. Pad with a blank
-    // category on each side so the real one lands in the middle, like the
-    // production site.
+    // Single-day range pins to the axis origin; pad both sides with a blank category to center it.
     if (labels.length === 1) {
       labels.unshift('');
       labels.push('');
@@ -454,6 +473,45 @@ export default async function decorate(block) {
     const allValues = [...buyingData, ...sellingData].filter((v) => v !== null);
     const minVal = Math.min(...allValues) - 0.5;
     const maxVal = Math.ceil(Math.max(...allValues));
+
+    // Breakpoints (see forex-graph.css): mobile < 760px, tablet 760–1024px, desktop 1024px+.
+    const viewportWidth = window.innerWidth;
+    const isMobileViewport = viewportWidth <= 760;
+    const isTabletViewport = viewportWidth > 760 && viewportWidth < 1024;
+
+    const fromParsedForMonth = parseIsoDate(state.from.selectedDate);
+    const toParsedForMonth = parseIsoDate(state.to.selectedDate);
+    const sameMonth = !!(fromParsedForMonth && toParsedForMonth
+      && fromParsedForMonth.year === toParsedForMonth.year
+      && fromParsedForMonth.month === toParsedForMonth.month);
+    const monthDiff = (fromParsedForMonth && toParsedForMonth)
+      ? (Number(toParsedForMonth.year) * 12 + Number(toParsedForMonth.month))
+        - (Number(fromParsedForMonth.year) * 12 + Number(fromParsedForMonth.month))
+      : null;
+    const isPrevMonthRange = monthDiff === 1;
+
+    // Mobile wants 6 evenly (position-)spaced labels for a ~1-month-or-less range,
+    // 7 for longer ranges, instead of index-based autoSkip.
+    const rangeDays = (new Date(state.to.selectedDate) - new Date(state.from.selectedDate))
+      / (1000 * 60 * 60 * 24);
+    const mobileIntermediateCount = rangeDays > 31 ? 5 : 4;
+    const mobileTickIndices = isMobileViewport
+      ? new Set(pickEvenlySpacedIndices(labels.length, mobileIntermediateCount))
+      : null;
+
+    // Tablet: same-month range wants 9 evenly (position-)spaced labels; a range
+    // starting in the month before "to" wants 10.
+    let tabletTickIndices = null;
+    if (isTabletViewport && sameMonth) {
+      tabletTickIndices = new Set(pickEvenlySpacedIndices(labels.length, 7));
+    } else if (isTabletViewport && isPrevMonthRange) {
+      tabletTickIndices = new Set(pickEvenlySpacedIndices(labels.length, 8));
+    }
+
+    const customTickIndices = mobileTickIndices || tabletTickIndices;
+
+    // Desktop: when from/to fall in the same month, show every working day instead of autoSkipping.
+    const sameMonthDesktop = !isMobileViewport && !isTabletViewport && sameMonth;
 
     // Plugin: draw halo on the cross-dataset point at the same index
     const crossHighlightPlugin = {
@@ -480,25 +538,27 @@ export default async function decorate(block) {
       },
     };
 
-    // Plugin: draw a vertical gridline at every data point, not just the
-    // (auto-skipped) labeled ticks, so the grid lines up with each point.
+    // Plugin: draw a vertical gridline only at the labeled (auto-skipped)
+    // x-axis ticks, so the number of gridlines matches the visible dates.
     const pointGridPlugin = {
       id: 'pointGrid',
       beforeDatasetsDraw(chart) {
-        const { ctx, chartArea } = chart;
+        const { ctx, chartArea, scales } = chart;
+        const xScale = scales.x;
         const meta = chart.getDatasetMeta(0);
-        if (!meta || !meta.data.length) return;
-        // Mobile (below 47.5rem), tablet (47.5rem-64rem), and desktop (above
-        // 64rem) viewports each need the line pulled up shorter than the x
-        // scale's bottom by a different amount.
-        const isMobile = window.innerWidth <= 760;
-        const isTablet = window.innerWidth > 760 && window.innerWidth <= 1024;
-        const lineOffset = (isMobile && 50) || (isTablet && 30) || 20;
-        const lineBottom = chart.scales.x.bottom - lineOffset;
+        if (!xScale || !meta || !meta.data.length) return;
+        const lineBottom = chartArea.bottom + 10;
         ctx.save();
         ctx.strokeStyle = 'rgba(0,0,0,0.08)';
         ctx.lineWidth = 1;
-        meta.data.forEach((point) => {
+        // Mobile/tablet: use our position-based ticks; else mirror autoSkip + last point.
+        const indices = customTickIndices
+          ? new Set(customTickIndices)
+          : new Set(xScale.ticks.map((tick) => tick.value));
+        indices.add(meta.data.length - 1);
+        indices.forEach((index) => {
+          const point = meta.data[index];
+          if (!point) return;
           ctx.beginPath();
           ctx.moveTo(point.x, chartArea.top);
           ctx.lineTo(point.x, lineBottom);
@@ -521,7 +581,7 @@ export default async function decorate(block) {
             backgroundColor: 'transparent',
             pointBackgroundColor: '#002087',
             pointBorderColor: '#002087',
-            pointRadius: 2,
+            pointRadius: 1.5,
             pointHoverRadius: 4,
             pointHoverBackgroundColor: '#002087',
             pointHoverBorderColor: 'rgba(0,32,135,0.35)',
@@ -536,7 +596,7 @@ export default async function decorate(block) {
             backgroundColor: 'transparent',
             pointBackgroundColor: '#ff6e00',
             pointBorderColor: '#ff6e00',
-            pointRadius: 2,
+            pointRadius: 1.5,
             pointHoverRadius: 4,
             pointHoverBackgroundColor: '#ff6e00',
             pointHoverBorderColor: 'rgba(255,110,0,0.35)',
@@ -573,14 +633,31 @@ export default async function decorate(block) {
         },
         scales: {
           x: {
+            // autoSkip can drop the last tick; force it back in before fit sizes/rotates labels.
+            beforeFit: (axis) => {
+              const lastIndex = labels.length - 1;
+              const { ticks } = axis;
+              if (ticks.length && ticks[ticks.length - 1].value !== lastIndex) {
+                // Drop the previously-last tick so it doesn't crowd/overlap the
+                // forced-in last one.
+                ticks.pop();
+                ticks.push({ value: lastIndex, label: axis.getLabelForValue(lastIndex) });
+                // eslint-disable-next-line no-underscore-dangle
+                axis._labelSizes = null;
+              }
+            },
             grid: {
               display: false,
             },
             ticks: {
               maxRotation: 45,
               minRotation: 0,
-              autoSkip: true,
+              // Mobile/tablet: blank labels outside our indices via callback; else autoSkip.
+              autoSkip: !customTickIndices && !sameMonthDesktop,
               autoSkipPadding: 10,
+              callback: (value) => (
+                customTickIndices && !customTickIndices.has(value) ? null : labels[value]
+              ),
               font: { size: 13, weight: '700' },
               color: '#000',
             },
@@ -604,10 +681,36 @@ export default async function decorate(block) {
     });
   }
 
-  const render = () => {
+  // Tick strategy is decided once at build time; rebuild when the breakpoint tier actually changes.
+  const getBreakpointTier = () => {
+    const width = window.innerWidth;
+    if (width <= 760) return 'mobile';
+    if (width < 1024) return 'tablet';
+    return 'desktop';
+  };
+  let breakpointTier = getBreakpointTier();
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const nowTier = getBreakpointTier();
+      if (nowTier !== breakpointTier) {
+        breakpointTier = nowTier;
+        drawChart();
+      }
+    }, 200);
+  });
+
+  const render = ({ redrawChart = false } = {}) => {
     if (rendering) return;
     rendering = true;
-    if (state.chartInstance) {
+
+    // Preserve the existing chart section (title, legend, canvas/chart) unless data changed.
+    const existingChartSection = !redrawChart
+      ? block.querySelector('.forex-graph-chart-section')
+      : null;
+
+    if (redrawChart && state.chartInstance) {
       state.chartInstance.destroy();
       state.chartInstance = null;
     }
@@ -621,6 +724,11 @@ export default async function decorate(block) {
       buddhistYearOffset,
       placeholders,
     );
+
+    if (existingChartSection) {
+      const freshChartSection = block.querySelector('.forex-graph-chart-section');
+      if (freshChartSection) freshChartSection.replaceWith(existingChartSection);
+    }
 
     const dropdownEl = block.querySelector('.forex-graph-dropdown');
     const dropdownTrigger = block.querySelector('.forex-graph-dropdown-trigger');
@@ -819,7 +927,7 @@ export default async function decorate(block) {
       goButton.addEventListener('click', async () => {
         if (state.loading) return;
         await fetchAndRenderChart();
-        render();
+        render({ redrawChart: true });
       });
     }
 
@@ -909,9 +1017,11 @@ export default async function decorate(block) {
       document.addEventListener('mousedown', handler);
     });
 
-    // Draw chart after DOM is updated
+    // Only (re)draw the chart when the data actually changed, not on every controls interaction.
     rendering = false;
-    drawChart();
+    if (redrawChart || !state.chartInstance) {
+      drawChart();
+    }
   };
 
   const init = async () => {
@@ -968,7 +1078,7 @@ export default async function decorate(block) {
       await fetchAndRenderChart();
     } finally {
       state.loading = false;
-      render();
+      render({ redrawChart: true });
     }
   };
 

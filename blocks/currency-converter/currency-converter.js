@@ -145,7 +145,7 @@ function createConvertGroup(label, currencies, type, searchPlaceholder, defaultC
 
   const code = document.createElement('span');
   code.className = 'code';
-  code.textContent = defaultCurrency.code;
+  code.textContent = defaultCurrency.name;
 
   countrySelect.appendChild(flag);
   countrySelect.appendChild(code);
@@ -223,7 +223,7 @@ function createConvertGroup(label, currencies, type, searchPlaceholder, defaultC
 
       flag.src = selectedIcon;
       flag.alt = selectedCode;
-      code.textContent = selectedCode;
+      code.textContent = item.dataset.description;
 
       // Remove active class from all items and add to selected
       dropdown.querySelectorAll('li').forEach((li) => {

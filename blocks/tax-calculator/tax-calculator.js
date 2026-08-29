@@ -981,7 +981,6 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
         Spouse: 0,
         ChildBornBefore61Other: 0,
         ChildBorn61OnWardsOther: 0,
-        FatherInsure: 0,
         // Step 1 values
         ...state.journey1,
         // Step 2 values (with correct API mapping)
@@ -989,6 +988,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
         NumberOfChildeBorn61OnWards: values.NumberOfChildeBorn61OnWards || 0,
         FatherMother: (values.FatherMother || []).filter(Boolean).length,
         HomeInterest: values.HomeInterest || 0,
+        FatherInsure: values.FatherInsure || 0,
         Insure: values.Insure || 0,
         PensionInsure: values.PensionInsure || 0,
         HealthInsure: values.HealthInsure || 0,
@@ -1069,7 +1069,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
           <div class="tax-calc-tax-card tax-calc-tax-card-original">
             <p class="tax-calc-tax-card-title">${getString(labels, 'resultsTaxToBePaidOriginalLabel', 'Tax payable')}</p>
             <div class="tax-calc-tax-card-saved tax-calc-tax-card-saved-placeholder" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" stroke="#2DCD73"/>
               </svg>
               <p></p>
@@ -1082,7 +1082,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
           <div class="tax-calc-tax-card tax-calc-tax-card-new">
             <p class="tax-calc-tax-card-title">${getString(labels, 'resultsTaxToBePaidNewLabel', 'New tax payable')}</p>
             <div class="tax-calc-tax-card-saved">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" stroke="#2DCD73"/>
               </svg>
               <p>${savedLabel} -${formatNumber(savedAmount)} <span class="tax-calc-tax-card-unit">${bahtUnit}</span></p>
