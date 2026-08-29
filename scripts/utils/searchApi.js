@@ -72,7 +72,7 @@ function filterQueryIndex(records, keywords) {
   const tokens = getSearchTokens(keywords);
   return records.filter((r) => {
     const searchBlob = buildSearchBlob(r);
-    return tokens.some((t) => searchBlob.includes(t));
+    return tokens.every((t) => searchBlob.includes(t));
   });
 }
 
