@@ -716,7 +716,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
         & > .cc-panel-item-timeline-date {
           top: calc(var(--timeline-height) * 0.78);
-          left: 48%;
+          left: 44%;
           width: min(12.5rem, 50%);
           max-width: none;
         }
@@ -746,7 +746,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
         & > .cc-panel-item-timeline-caption {
           top: calc(var(--timeline-height) * 0.87);
-          left: 48%;
+          left: 44%;
           width: min(12.5rem, 50%);
           max-width: none;
         }
