@@ -404,7 +404,8 @@
   background: var(--dp-surface-hover);
 }
 
-@media (width <= 640px) {
+/* stylelint-disable-next-line media-feature-range-notation */
+@media (max-width: 640px) {
   .date-picker .date-picker-backdrop.date-picker-backdrop {
     display: block;
     position: fixed;
@@ -415,14 +416,15 @@
 
   .date-picker .date-picker-panel.date-picker-panel.date-picker-panel {
     position: fixed;
-    top: auto;
-    bottom: 0;
-    left: 0;
+    inset: auto 0 0;
     margin: 0;
+    z-index: 999999;
   }
 
   .date-picker .date-picker-sheet.date-picker-sheet.date-picker-sheet {
-    width: auto;
+    position: relative;
+    z-index: 999999;
+    width: 100%;
     max-width: none;
     border-radius: 16px 16px 0 0;
   }
