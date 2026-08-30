@@ -68,12 +68,21 @@ class TermsAndConditions {
 
     textWrapper.addEventListener('scroll', onScroll);
 
-    // If the content is short enough that no scrolling is needed, unlock immediately
-    requestAnimationFrame(() => {
+    // Wait until the wrapper is actually laid out before deciding whether the
+    // content is short enough to unlock immediately. On first load scrollHeight
+    // can be 0 (content not yet measured), which would make isScrolledToBottom
+    // return true and wrongly enable the checkbox. Retry across frames until the
+    // wrapper has real dimensions, then decide once.
+    const tryUnlock = (attempt = 0) => {
+      if (textWrapper.scrollHeight === 0 && attempt < 20) {
+        requestAnimationFrame(() => tryUnlock(attempt + 1));
+        return;
+      }
       if (isScrolledToBottom(textWrapper)) {
         checkbox.removeAttribute('disabled');
       }
-    });
+    };
+    requestAnimationFrame(() => tryUnlock());
   }
 }
 export default async function decorate(tncDiv, fieldJson) {

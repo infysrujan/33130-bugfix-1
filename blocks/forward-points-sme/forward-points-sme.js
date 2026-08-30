@@ -10,7 +10,7 @@ import {
   parseCsvConfigList,
   parseIsoDate,
   parseTypedDate,
-} from './helpers/date-helpers.js';
+} from '../../scripts/utils/date-helpers.js';
 import {
   createApiEndpoints,
   getEnabledDays,
@@ -498,10 +498,7 @@ function setupSection(
         getEndpointUrl('updateInDay', parsed.day, parsed.month, parsed.year),
       );
       state.updates = updates;
-      const stillExists = updates.some((item) => trimValue(item.Update) === state.selectedUpdate);
-      if (!stillExists) {
-        state.selectedUpdate = trimValue(updates[updates.length - 1]?.Update);
-      }
+      state.selectedUpdate = trimValue(updates[updates.length - 1]?.Update);
     } catch (e) {
       // silent
     }

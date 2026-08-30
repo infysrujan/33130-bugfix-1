@@ -171,7 +171,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
   const points = hasHistory ? history : [{ mfr_fNav: 0, mfr_dDataDate: '' }];
 
   const isMobileView = typeof window !== 'undefined' && window.innerWidth < 768;
-  const useRotation = hasData && period !== '1W' && points.length > 1;
+  const useRotation = hasData && points.length > 1 && (period !== '1W' || isMobileView);
   const padB = useRotation ? 70 : 40;
   const H = useRotation ? 360 : 300;
   const padL = 58;
@@ -182,9 +182,11 @@ function renderChart(svgEl, history, period, noDataLabel) {
   const wrapPadH = wrapStyle
     ? parseFloat(wrapStyle.paddingLeft) + parseFloat(wrapStyle.paddingRight)
     : 0;
-  const W = isMobileView ? Math.max((chartWrap?.clientWidth || 400) - wrapPadH, 280) : 940;
+  const W = Math.max((chartWrap?.clientWidth || 400) - wrapPadH, 280);
   svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svgEl.style.minWidth = '';
+  svgEl.style.width = `${W}px`;
+  svgEl.style.height = `${H}px`;
   const innerW = W - padL - padR;
   const innerH = H - padT - padB;
 
@@ -193,7 +195,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
   const rawMax = Math.max(...navs);
   const tickStep = 0.5;
   const yMax = hasData ? Math.ceil(rawMax) : 0.5;
-  const yMin = hasData ? Math.floor(rawMin / tickStep) * tickStep - tickStep : 0;
+  const yMin = hasData ? Math.floor(rawMin) : 0;
 
   const xPos = (i) => (points.length > 1
     ? padL + (i / (points.length - 1)) * innerW
@@ -209,16 +211,17 @@ function renderChart(svgEl, history, period, noDataLabel) {
       y1: y,
       x2: W - padR,
       y2: y,
-      stroke: '#E8E8E8',
+      stroke: 'var(--bbl-color-gray-122)',
       'stroke-width': 1,
     }, svgEl);
     el('text', {
       x: padL - 8,
       y: y + 4,
       'text-anchor': 'end',
-      'font-size': 11,
-      fill: '#46464D',
-      'font-family': 'BangkokBank-Regular,Arial,sans-serif',
+      'font-size': 'var(--bbl-body-b3-size)',
+      fill: 'var(--bbl-color-black)',
+      'font-weight': 'bold',
+      'font-family': 'var(--bbl-font-family-primary)',
     }, svgEl).textContent = v.toFixed(1);
   });
 
@@ -228,7 +231,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
     // 1W: show every data point
     labelSet = new Set(points.map((_, i) => i));
   } else {
-    const labelSpacing = isMobileView ? 38 : 50;
+    const labelSpacing = isMobileView ? 80 : 50;
     const maxXLabels = Math.min(points.length, Math.floor(innerW / labelSpacing));
     const xLabelStep = Math.max(1, Math.ceil(points.length / maxXLabels));
     const prevRegularIdx = Math.floor(lastIdx / xLabelStep) * xLabelStep;
@@ -245,14 +248,16 @@ function renderChart(svgEl, history, period, noDataLabel) {
     const x = xPos(i);
     const isLabelPoint = labelSet.has(i);
     if (isLabelPoint) {
-      el('line', {
-        x1: x,
-        y1: padT,
-        x2: x,
-        y2: H - padB,
-        stroke: '#E8E8E8',
-        'stroke-width': 1,
-      }, svgEl);
+      if (points.length > 1) {
+        el('line', {
+          x1: x,
+          y1: padT,
+          x2: x,
+          y2: H - padB,
+          stroke: 'var(--bbl-color-gray-122)',
+          'stroke-width': 1,
+        }, svgEl);
+      }
       // eslint-disable-next-line no-nested-ternary
       const anchor = !hasData ? 'middle' : (useRotation ? 'end' : (i === lastIdx ? 'end' : (i === 0 ? 'start' : 'middle')));
       const clampedX = (hasData && !useRotation && i === lastIdx) ? Math.min(x, W - 4) : x;
@@ -261,7 +266,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
         y: H - padB + (useRotation ? 14 : 20),
         'text-anchor': anchor,
         'font-size': 11,
-        fill: '#002850',
+        fill: 'var(--bbl-color-black)',
         'font-weight': 'bold',
         'font-family': 'BangkokBank-Bold,Arial,sans-serif',
       };
@@ -280,8 +285,8 @@ function renderChart(svgEl, history, period, noDataLabel) {
       cx,
       cy,
       r: 1.8,
-      fill: '#002850',
-      stroke: '#002850',
+      fill: 'var(--bbl-color-truthful-blue)',
+      stroke: 'var(--bbl-color-truthful-blue)',
       'stroke-width': 1,
     }, svgEl);
   });
@@ -289,33 +294,39 @@ function renderChart(svgEl, history, period, noDataLabel) {
   el('polyline', {
     points: pts,
     fill: 'none',
-    stroke: '#002850',
+    stroke: 'var(--bbl-color-truthful-blue)',
     'stroke-width': 2,
     'stroke-linejoin': 'round',
     'stroke-linecap': 'round',
   }, svgEl);
 
+  const TT_W = 88;
+  const TT_H = 54;
+  const TT_GAP = 8;
   const tooltipG = el('g', { style: 'display:none; pointer-events:none' }, svgEl);
-  el('rect', {
-    width: 120,
-    height: 54,
+  const tooltipRect = el('rect', {
+    width: TT_W,
+    height: TT_H,
     rx: 6,
     fill: '#1a2e4a',
   }, tooltipG);
+  const tooltipTail = el('path', { fill: '#1a2e4a' }, tooltipG);
   const tooltipDate = el('text', {
-    x: 10,
-    y: 20,
+    'text-anchor': 'middle',
     fill: '#b0c4d8',
     'font-size': 11,
     'font-family': 'BangkokBank-Regular,Arial,sans-serif',
   }, tooltipG);
   const tooltipVal = el('text', {
-    x: 10,
-    y: 42,
-    fill: '#ffffff',
+    'text-anchor': 'middle',
+    fill: 'var(--bbl-color-white)',
     'font-size': 15,
     'font-family': 'BangkokBank-Medium,Arial,sans-serif',
   }, tooltipG);
+
+  const canHover = typeof window !== 'undefined'
+    && window.matchMedia
+    && window.matchMedia('(hover: hover)').matches;
 
   if (hasData) {
     points.forEach((d, i) => {
@@ -328,17 +339,31 @@ function renderChart(svgEl, history, period, noDataLabel) {
         fill: 'transparent',
         style: 'cursor:pointer',
       }, svgEl);
-      hit.addEventListener('mouseenter', () => {
+      const showTooltip = () => {
         tooltipG.style.display = '';
-        let tx = cx + 12;
-        let ty = cy - 62;
-        if (tx + 124 > W) tx = cx - 132;
-        if (ty < 0) ty = cy + 10;
-        tooltipG.setAttribute('transform', `translate(${tx},${ty})`);
+        let rectX = -TT_W / 2;
+        if (cx + rectX < 0) rectX = -cx;
+        if (cx + rectX + TT_W > W) rectX = W - TT_W - cx;
+        const above = cy - TT_GAP - TT_H >= 0;
+        const boxY = above ? -TT_H - TT_GAP : TT_GAP;
+        tooltipRect.setAttribute('x', rectX);
+        tooltipRect.setAttribute('y', boxY);
+        tooltipTail.setAttribute('d', above
+          ? `M -5,${-TT_GAP} L 5,${-TT_GAP} L 0,-2 Z`
+          : `M -5,${TT_GAP} L 5,${TT_GAP} L 0,2 Z`);
+        tooltipDate.setAttribute('x', rectX + TT_W / 2);
+        tooltipDate.setAttribute('y', boxY + 20);
+        tooltipVal.setAttribute('x', rectX + TT_W / 2);
+        tooltipVal.setAttribute('y', boxY + 42);
+        tooltipG.setAttribute('transform', `translate(${cx},${cy})`);
         tooltipDate.textContent = fmtHistDate(d.mfr_dDataDate);
         tooltipVal.textContent = fmtNav(d.mfr_fNav);
-      });
-      hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
+      };
+      if (canHover) {
+        hit.addEventListener('mouseenter', showTooltip);
+        hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
+      }
+      hit.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(); });
     });
   } else {
     const label = noDataLabel || 'No data found';
@@ -361,8 +386,8 @@ function renderChart(svgEl, history, period, noDataLabel) {
       x: 0,
       y: -boxH / 2 - 8 + 4,
       'text-anchor': 'middle',
-      fill: '#ffffff',
-      'font-size': 12,
+      fill: 'var(--bbl-color-white)',
+      'font-size': 'var(--bbl-body-b3-size)',
       'font-family': 'BangkokBank-Medium,Arial,sans-serif',
     }, noDataTooltipG).textContent = label;
 
@@ -376,11 +401,15 @@ function renderChart(svgEl, history, period, noDataLabel) {
         fill: 'transparent',
         style: 'cursor:pointer',
       }, svgEl);
-      hit.addEventListener('mouseenter', () => {
+      const showNoDataTooltip = () => {
         noDataTooltipG.style.display = '';
         noDataTooltipG.setAttribute('transform', `translate(${cx},${cy})`);
-      });
-      hit.addEventListener('mouseleave', () => { noDataTooltipG.style.display = 'none'; });
+      };
+      if (canHover) {
+        hit.addEventListener('mouseenter', showNoDataTooltip);
+        hit.addEventListener('mouseleave', () => { noDataTooltipG.style.display = 'none'; });
+      }
+      hit.addEventListener('click', (e) => { e.stopPropagation(); showNoDataTooltip(); });
     });
   }
 }
@@ -627,12 +656,10 @@ export default async function decorate(block) {
     renderHistTable(histTbody, sorted, labels.noDataFound);
 
     if (chartSvg.chartResizeObserver) chartSvg.chartResizeObserver.disconnect();
-    if (window.innerWidth < 768) {
-      chartSvg.chartResizeObserver = new ResizeObserver(() => {
-        if (sorted?.length) renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
-      });
-      chartSvg.chartResizeObserver.observe(chartSvg.parentElement);
-    }
+    chartSvg.chartResizeObserver = new ResizeObserver(() => {
+      if (sorted?.length) renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
+    });
+    chartSvg.chartResizeObserver.observe(chartSvg.parentElement);
   }
 
   function validateAndRenderDetail() {
@@ -741,21 +768,22 @@ export default async function decorate(block) {
     const printLogoEl = printRoot.querySelector('.fdd-print-logo');
     if (logoEl && printLogoEl) printLogoEl.appendChild(logoEl.cloneNode(true));
     const disclaimer = block.closest('.section')?.querySelector('.fund-prices-disclaimer-text')?.cloneNode(true);
-    const printFooter = block.ownerDocument.createElement('div');
     printRoot.id = 'fdd-print-root';
     printRoot.classList.remove('hidden');
     printRoot.classList.toggle('fdd-print-custom-range', currentPeriod === 'DR');
     printRoot.hidden = false;
     printRoot.querySelectorAll('.fund-prices-print-label, .fdd-back-btn').forEach((el) => el.remove());
+    printRoot.querySelectorAll('.detail-chart-svg').forEach((svg) => {
+      svg.style.width = '';
+      svg.style.height = '';
+      svg.style.minWidth = '';
+    });
     if (currentFromDate && currentToDate) {
       const printSubtitle = buildSubtitle(currentFromDate, currentToDate);
       printRoot.querySelectorAll('.fdd-fund-label, .chart-subtitle')
         .forEach((el) => { el.textContent = printSubtitle; });
     }
     if (disclaimer) printRoot.appendChild(disclaimer);
-    printFooter.className = 'fdd-print-footer';
-    printFooter.innerHTML = '<span>https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/Fund-Prices</span><span>1/2</span>';
-    printRoot.appendChild(printFooter);
 
     const cleanupPrint = () => {
       body.classList.remove('fdd-printing');

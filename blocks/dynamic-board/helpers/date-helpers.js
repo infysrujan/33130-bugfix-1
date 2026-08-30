@@ -1,13 +1,3 @@
-export function parseCsvConfigList(value, fallback) {
-  if (!value || typeof value !== 'string') return fallback;
-  const list = value.split(',').map((item) => item.trim()).filter(Boolean);
-  return list.length ? list : fallback;
-}
-
-export function buildIntlMonthLabels(language) {
-  return Array.from({ length: 12 }, (_, i) => new Intl.DateTimeFormat(language, { month: 'short' }).format(new Date(2026, i, 1)));
-}
-
 export function buildIntlDayLabels(language) {
   const baseSunday = new Date(Date.UTC(2026, 3, 5));
   return Array.from({ length: 7 }, (_, i) => new Intl.DateTimeFormat(language, { weekday: 'short' }).format(new Date(baseSunday.getTime() + i * 864e5)));

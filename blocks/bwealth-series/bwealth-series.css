@@ -1,0 +1,1554 @@
+/*
+ * BWealth Series — สไตล์ล้อ blocks/saving-plan/saving-plan.css
+ *
+ * ใช้ token ชุดเดียวกัน (--bbl-*) ขนาด/ระยะ/breakpoint เท่ากันทุกจุด
+ * เพื่อให้สอง block วางอยู่หน้าเดียวกันแล้วดูเป็นชุดเดียวกัน
+ * ส่วนที่ saving-plan ไม่มี (กองทุนแนะนำ, modal) ยึด token เดิมต่อ
+ */
+
+.bwealth-series-block {
+  display: block;
+  width: 100%;
+  color: var(--bbl-text-primary);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-text-default-size);
+  line-height: var(--bbl-line-height-body);
+  background: var(--bbl-color-white);
+}
+
+.bwealth-series-section {
+  padding-top: 1.25rem;
+  padding-bottom: 2rem;
+}
+
+/*
+ * หน้า authoring มี <h2> วางไว้เหนือ block ซึ่งซ้ำกับหัวข้อที่ block render เอง
+ * (และได้เส้นคั่นมาจาก section style underline-title) — ซ่อนเฉพาะตัวที่ติดกับ block นี้
+ */
+.bwealth-series-container > .default-content-wrapper:has(+ .bwealth-series-wrapper) {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ header */
+
+.bwealth-series-header {
+  text-align: center;
+  margin-top: 1.75rem;
+  margin-bottom: 1.75rem;
+}
+
+/*
+ * line-height ใช้คู่ h1 ไม่ใช่ h3 — หัวข้อ 22.4px คู่กับ 24px (h3) มันแน่นเกินจนบรรทัดติดกัน
+ * repo จับคู่ 22px ไว้กับ 30px อยู่แล้ว จึงยึดคู่นั้น
+ * (saving-plan ใช้ h3 แต่ไม่เจอปัญหาเพราะหัวข้อสั้น ไม่เคยตัดบรรทัด)
+ */
+.bwealth-series-header-title {
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-calculator-title-size);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
+  margin: 0 0 2.1875rem;
+  letter-spacing: 0;
+  line-height: var(--bbl-line-height-h1-mobile);
+}
+
+.bwealth-series-header-divider {
+  display: inline-block;
+  width: 4rem;
+  height: 0.125rem;
+  background: var(--bbl-color-grey-30);
+  margin-bottom: 0.875rem;
+}
+
+.bwealth-series-subtitle {
+  margin: 0;
+  font-size: var(--bbl-font-size-b1-mobile);
+  color: var(--bbl-color-grey-70);
+}
+
+/* -------------------------------------------------------------- calculator */
+
+.bwealth-series-calculator {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.bwealth-series-form-title {
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-h3-mobile);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
+  margin: 0 0 0.875rem;
+  line-height: var(--bbl-heading-h5-line-height);
+}
+
+.bwealth-series-result-title {
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-h3-mobile);
+  font-weight: var(--bbl-text-thumbnail-title-weight);
+  margin: 0 0 0.875rem;
+  line-height: var(--bbl-heading-h5-line-height);
+}
+
+.bwealth-series-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+}
+
+/* ------------------------------------------------------------------ fields */
+
+.bwealth-series-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  /* ยอมให้ยุบต่ำกว่า min-content เพื่อให้ทุกคอลัมน์กว้างเท่ากันเสมอ */
+  min-width: 0;
+}
+
+/* display:flex ชนะ [hidden] ของ UA stylesheet ต้องปิดเองไม่งั้นช่อง "ระบุเอง" โผล่ตลอด */
+.bwealth-series-field[hidden] {
+  display: none;
+}
+
+.bwealth-series-field-row {
+  display: flex;
+  align-items: center;
+  border: 0.0625rem solid var(--bbl-color-grey-30);
+  border-radius: 0.5rem;
+  padding: 0 0.875rem;
+  background: var(--bbl-color-white);
+  min-height: 3.375rem;
+  min-width: 0;
+  transition: border-color 150ms ease;
+}
+
+.bwealth-series-field-row:focus-within {
+  border-color: var(--bbl-color-active-blue);
+}
+
+.bwealth-series-field-label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 0 0 auto;
+  max-width: 58%;
+  cursor: pointer;
+}
+
+.bwealth-series-field-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--bbl-color-active-blue);
+}
+
+.bwealth-series-field-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.bwealth-series-field-text {
+  font-size: var(--bbl-font-size-b1-mobile);
+  color: var(--bbl-color-grey-70);
+  line-height: 1.3;
+  white-space: normal;
+}
+
+.bwealth-series-field-input {
+  border: 0;
+  outline: none;
+  background: transparent;
+  text-align: right;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-text-default-size);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-text-primary);
+  width: 5rem;
+  min-width: 3.75rem;
+  flex: 1 1 auto;
+  margin-left: auto;
+  padding: 0.375rem 0;
+}
+
+.bwealth-series-field-input::placeholder {
+  color: var(--bbl-color-gray-143);
+  font-size: 0.875rem;
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+.bwealth-series-field-error {
+  display: block;
+  margin-top: 0.25rem;
+  padding-left: 0.25rem;
+  font-size: var(--bbl-body-b2-size);
+  color: var(--bbl-color-red-130);
+  line-height: 1.4;
+}
+
+/* เป้าหมายแบบพิมพ์เอง — input ชิดซ้ายเต็มกรอบ ต่างจากฟิลด์ตัวเลข */
+.bwealth-series-custom-goal .bwealth-series-field-input {
+  width: auto;
+  margin-left: 0;
+  text-align: left;
+  font-size: var(--bbl-font-size-b1-mobile);
+}
+
+/*
+ * ต้องกำหนดขนาดเอง ไม่งั้นโดน `button { width: 6.25rem; line-height: 2.75rem }`
+ * ของ styles/buttons.css ทำให้กลายเป็นกล่อง 100x44 แล้วไอคอนไปอยู่กลางกล่อง
+ * ขนาดเท่า svg พอดี ไอคอนจึงชิดขวาตรงแนวเดียวกับ chevron ของ dropdown
+ */
+.bwealth-series-custom-goal-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  line-height: 0;
+  color: var(--bbl-color-active-blue);
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------- dropdown */
+
+.bwealth-series-field-dropdown {
+  position: relative;
+}
+
+.bwealth-series-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  border: 0.0625rem solid var(--bbl-color-grey-30);
+  border-radius: 0.5rem;
+  background: var(--bbl-color-white);
+  padding: 0 0.875rem;
+  min-height: 3.375rem;
+  min-width: 0;
+  cursor: pointer;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-text-default-size);
+  color: var(--bbl-text-primary);
+  text-align: left;
+  transition: border-color 150ms ease;
+}
+
+.bwealth-series-dropdown-trigger:focus-visible,
+.bwealth-series-field-dropdown.is-open .bwealth-series-dropdown-trigger {
+  border-color: var(--bbl-color-active-blue);
+  outline: none;
+}
+
+.bwealth-series-dropdown-current {
+  flex: 1;
+
+  /* flex item ต้อง min-width:0 ก่อน ellipsis ถึงจะทำงาน */
+  min-width: 0;
+  font-size: var(--bbl-font-size-b1-mobile);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bwealth-series-field-dropdown[data-value=""] .bwealth-series-dropdown-current {
+  color: var(--bbl-color-grey-70);
+}
+
+.bwealth-series-chevron {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 0.125rem solid var(--bbl-color-active-blue);
+  border-bottom: 0.125rem solid var(--bbl-color-active-blue);
+  transform: rotate(45deg);
+  transition: transform 200ms ease;
+  margin-left: 0.5rem;
+  margin-top: -0.1875rem;
+  flex-shrink: 0;
+}
+
+.bwealth-series-field-dropdown.is-open .bwealth-series-chevron {
+  transform: rotate(225deg);
+  margin-top: 0.1875rem;
+}
+
+.bwealth-series-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0.375rem 0;
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-30);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.375rem 1.125rem var(--bbl-color-black-alpha-10);
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-0.375rem);
+  transition: max-height 220ms ease, opacity 160ms ease, transform 220ms ease;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.bwealth-series-field-dropdown.is-open .bwealth-series-dropdown-panel {
+  max-height: 17.5rem;
+  opacity: 1;
+  transform: translateY(0);
+  overflow: auto;
+  pointer-events: auto;
+}
+
+.bwealth-series-dropdown-option {
+  padding: 0.625rem 0.875rem;
+  cursor: pointer;
+  font-size: var(--bbl-body-b2-size);
+  color: var(--bbl-text-primary);
+  line-height: 1.4;
+  transition: background-color 120ms ease;
+}
+
+.bwealth-series-dropdown-option:hover,
+.bwealth-series-dropdown-option.is-selected {
+  background: var(--bbl-bg-brand-light);
+}
+
+/* ท้ายกลุ่ม field เพื่อไม่ให้ specificity ย้อนลำดับ (stylelint) */
+.bwealth-series-field.has-error .bwealth-series-field-row,
+.bwealth-series-field.has-error .bwealth-series-dropdown-trigger {
+  border-color: var(--bbl-color-red-130);
+}
+
+.bwealth-series-field.has-error .bwealth-series-field-input {
+  color: var(--bbl-color-red-130);
+}
+
+/* --------------------------------------------------------------- inflation */
+
+.bwealth-series-inflation {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.875rem;
+  font-size: var(--bbl-font-size-b1-mobile);
+  color: var(--bbl-color-grey-70);
+}
+
+.bwealth-series-checkbox {
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--bbl-color-active-blue);
+  cursor: pointer;
+}
+
+.bwealth-series-inflation label {
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.3;
+}
+
+/* ----------------------------------------------------------------- buttons */
+
+.bwealth-series-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.875rem;
+  margin-bottom: 0.875rem;
+  font-size: var(--bbl-font-size-b1-mobile);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: var(--bbl-line-height-button);
+}
+
+.bwealth-series-btn {
+  /* ปุ่มบางตัวเป็น <a> ซึ่งไม่ได้ border-box จาก UA แบบ <button> — ตั้งให้เท่ากันทั้งหมด */
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 7.1875rem;
+
+  /* ต้องประกาศ width เอง ไม่งั้นโดน `button { width: 6.25rem }` ของ styles/buttons.css กิน */
+  width: 7.1875rem;
+  height: 2.1875rem;
+  padding: 0.4375rem 0.875rem;
+  border-radius: 0.375rem;
+  border: 0.0625rem solid var(--bbl-color-grey-30);
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-gray-143);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1-mobile);
+  font-weight: var(--bbl-font-weight-medium);
+  line-height: var(--bbl-line-height-button);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 150ms ease, background-color 150ms ease, border-color 150ms ease;
+}
+
+.bwealth-series-actions .bwealth-series-btn {
+  min-width: 7.1875rem;
+  width: 7.1875rem;
+}
+
+/* ปุ่มบางตัว (modal) เป็น <a> ต้อง :any-link เพื่อชนะสีลิงก์ของ styles/main.css */
+.bwealth-series-btn-secondary,
+.bwealth-series-btn-secondary:any-link {
+  background: transparent;
+  color: var(--bbl-color-active-blue);
+  border: 0.125rem solid var(--bbl-color-active-blue);
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+.bwealth-series-actions .bwealth-series-btn-secondary {
+  border: 0.125rem solid var(--bbl-color-grey-20);
+}
+
+.bwealth-series-actions .bwealth-series-btn-secondary:not(:disabled) {
+  border: 0.125rem solid var(--bbl-color-active-blue);
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+.bwealth-series-actions .bwealth-series-btn-secondary:disabled {
+  background: transparent;
+}
+
+.bwealth-series-btn-secondary:not(:disabled):hover {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+}
+
+.bwealth-series-btn-primary,
+.bwealth-series-btn-primary:any-link {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border-color: var(--bbl-color-active-blue);
+}
+
+/* ลำดับสำคัญ: generic disabled -> primary disabled -> hover (specificity ไล่ขึ้น) */
+.bwealth-series-btn:disabled,
+.bwealth-series-btn.is-disabled {
+  background: var(--bbl-bg-secondary);
+  border: 0.125rem solid var(--bbl-color-grey-20);
+  color: var(--bbl-color-grey-60);
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: not-allowed;
+}
+
+.bwealth-series-btn.is-disabled {
+  pointer-events: none;
+}
+
+.bwealth-series-btn-primary:disabled {
+  background: var(--bbl-color-grey-20);
+  border-color: var(--bbl-color-grey-20);
+}
+
+.bwealth-series-btn-primary:hover:not(:disabled) {
+  background: var(--bbl-color-blue-90);
+  border-color: var(--bbl-color-blue-90);
+}
+
+/* ------------------------------------------------------------------ result */
+
+.bwealth-series-result-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border-radius: 0.5rem;
+  padding: 0.875rem;
+  margin-bottom: 0.2188rem;
+}
+
+.bwealth-series-result-future {
+  font-size: var(--bbl-font-size-b1-mobile);
+  font-weight: var(--bbl-font-weight-regular);
+  margin: 0 0 2.625rem;
+  min-height: 1.25rem;
+}
+
+.bwealth-series-result-future strong {
+  font-weight: 700;
+}
+
+.bwealth-series-result-lead {
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-h3-mobile);
+  font-weight: var(--bbl-text-thumbnail-title-weight);
+  line-height: 1.5rem;
+  margin: 0;
+}
+
+.bwealth-series-result-monthly {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  margin: 0;
+  line-height: var(--bbl-line-height-h1-desktop);
+}
+
+.bwealth-series-result-amount {
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-calculator-title-size);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1;
+}
+
+.bwealth-series-result-unit {
+  font-size: var(--bbl-font-size-b3-mobile);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-grey-40);
+  opacity: 0.9;
+}
+
+.bwealth-series-result-increase {
+  margin: 0.5rem 0 0;
+  font-size: var(--bbl-body-b3-size);
+  line-height: 1.45;
+}
+
+/* ------------------------------------------------------------------- chart */
+
+.bwealth-series-results {
+  margin-top: 1.75rem;
+}
+
+.bwealth-series-results[hidden] {
+  display: none;
+}
+
+.bwealth-series-chart-wrap {
+  position: relative;
+  border: 0.0625rem solid var(--bbl-color-grey-60);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  min-height: 32.3125rem;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.bwealth-series-legend {
+  width: fit-content;
+  margin-bottom: 0.25rem;
+}
+
+.bwealth-series-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.375rem 0.75rem;
+  background: var(--bbl-color-blue-6);
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+}
+
+.bwealth-series-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b3-mobile);
+  font-weight: var(--bbl-font-weight-medium);
+  color: var(--bbl-color-active-blue);
+}
+
+.bwealth-series-legend-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  background: var(--bbl-color-active-blue);
+}
+
+.bwealth-series-chart-canvas-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  width: 100%;
+
+  /* ปล่อยให้ยืดตามกรอบ เหมือน .saving-plan-chart-canvas-wrap */
+  min-height: 0;
+}
+
+.bwealth-series-chart {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ----------------------------------------------------------------- remarks */
+
+/* ต้นฉบับกำหนด fontSize 16 / lineHeight 1.7 ตรง ๆ ไม่ใช่ b3 (12px) */
+.bwealth-series-remark:not(:empty) {
+  margin-top: 0.75rem;
+  font-size: var(--bbl-font-size-b1-desktop);
+  line-height: 1.7;
+  color: var(--bbl-text-primary);
+}
+
+.bwealth-series-remark ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.bwealth-series-remark li {
+  margin-bottom: 0.25rem;
+}
+
+.bwealth-series-remark a {
+  color: var(--bbl-color-active-blue);
+  text-decoration: underline;
+}
+
+.bwealth-series-remark br {
+  display: none;
+}
+
+/* ------------------------------------------------------------------- funds */
+
+.bwealth-series-funds {
+  margin-top: 2rem;
+}
+
+.bwealth-series-funds-track {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bwealth-series-funds-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* ลากด้วยเมาส์ได้เฉพาะตอนที่เลื่อนได้จริง (JS เป็นคนใส่ class ให้) */
+.bwealth-series-funds-track.is-scrollable {
+  cursor: grab;
+  user-select: none;
+}
+
+.bwealth-series-funds-track.is-dragging {
+  cursor: grabbing;
+}
+
+.bwealth-series-fund {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  width: min(18.75rem, 100%);
+  overflow: hidden;
+  scroll-snap-align: start;
+  border: 0.0625rem solid var(--bbl-color-grey-30);
+  border-radius: 0.875rem;
+  background: var(--bbl-color-white);
+  box-sizing: border-box;
+}
+
+.bwealth-series-fund-image {
+  height: 14.5625rem;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
+  background: var(--bbl-bg-secondary);
+}
+
+.bwealth-series-fund-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * ระยะในการ์ดยึดตาม markup ต้นฉบับ (SavingTools.tsx):
+ *   body   p-6 + gap-8   ระหว่างบล็อกเนื้อหากับปุ่ม
+ *   main   gap-4         ระหว่างชื่อกองทุนกับรายการรายละเอียด
+ *   title  h-[96px] / max-lg h-[72px]   ความสูงคงที่ ทุกการ์ดจึงเรียงตรงกัน
+ *   detail h-[44px] / max-lg h-[57px]   เช่นกัน
+ */
+.bwealth-series-fund-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1.5rem;
+}
+
+.bwealth-series-fund-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.bwealth-series-fund-title-wrap {
+  height: 4.5rem;
+  overflow: hidden;
+}
+
+.bwealth-series-fund-title {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--bbl-font-family-medium);
+  font-size: 1.125rem;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.5rem;
+  color: var(--bbl-color-black);
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.bwealth-series-fund-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.bwealth-series-fund-detail {
+  display: flex;
+  height: 3.5625rem;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.bwealth-series-fund-detail-label,
+.bwealth-series-fund-detail-value {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.875rem;
+  line-height: 1.1875rem;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.bwealth-series-fund-detail-label {
+  flex: 0 0 6.75rem;
+  width: 6.75rem;
+  color: var(--bbl-color-grey-70);
+}
+
+.bwealth-series-fund-detail-value {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-text-primary);
+}
+
+.bwealth-series-fund-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+/*
+ * สอง gotcha ของ <a> ที่ <button> ไม่มี:
+ *   :any-link  — ชนะ `a:any-link { color: … }` ของ styles/main.css ไม่งั้นตัวหนังสือเป็นสีน้ำเงิน
+ *   box-sizing — <button> ได้ border-box จาก UA stylesheet เอง แต่ <a> ไม่ได้
+ *                ถ้าไม่ประกาศ width:100% + padding ข้างจะบวกเพิ่มจนล้นออกนอก padding ของการ์ด
+ */
+.bwealth-series-fund-factsheet,
+.bwealth-series-fund-factsheet:any-link {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border-radius: 0.5rem;
+  background: var(--bbl-bg-secondary);
+  color: var(--bbl-text-primary);
+  font-family: var(--bbl-font-family-medium);
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+/*
+ * ปุ่มในการ์ดกองทุนไม่ได้ใช้ทรงเดียวกับปุ่มในฟอร์ม
+ * ต้นฉบับคือ shadcn Button size=default (h-10 px-4) + w-full rounded-lg font-bbl-bold
+ * คือสูง 40px มุม 8px เต็มความกว้าง และไม่มีเส้นขอบ
+ */
+
+/* font-family/size/weight ปล่อยให้ตกทอดจาก .bwealth-series-btn ซึ่งใช้ค่าเดียวกับ saving-plan */
+.bwealth-series-fund-actions .bwealth-series-btn {
+  width: 100%;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+}
+
+.bwealth-series-fund-factsheet.is-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.bwealth-series-funds-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.bwealth-series-funds-dots[hidden] {
+  display: none;
+}
+
+/* min-height: 28px จาก styles/buttons.css ทำให้ dot ยืดเป็นวงรี ต้อง reset */
+.bwealth-series-dot {
+  box-sizing: border-box;
+  width: 0.625rem;
+  height: 0.625rem;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bbl-color-grey-30);
+  cursor: pointer;
+}
+
+.bwealth-series-dot.is-active {
+  background: var(--bbl-color-active-blue);
+}
+
+/* ------------------------------------------------------------------- modal */
+
+body.bwealth-series-modal-open {
+  overflow: hidden;
+}
+
+.bwealth-series-modal {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.bwealth-series-modal[hidden] {
+  display: none;
+}
+
+.bwealth-series-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--bbl-color-black-alpha-50);
+}
+
+.bwealth-series-modal-dialog {
+  position: relative;
+  width: min(51.25rem, 94vw);
+  max-height: 92vh;
+  overflow: hidden auto;
+  border-radius: 0.75rem;
+  background: var(--bbl-color-white);
+  color: var(--bbl-text-primary);
+}
+
+/* เหตุผลเดียวกับ custom-goal-clear — ต้องกำหนดขนาดกันโดน global button width */
+.bwealth-series-modal-close {
+  position: absolute;
+  z-index: 1;
+  top: 1.5rem;
+  right: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  line-height: 0;
+  color: var(--bbl-color-active-blue);
+  cursor: pointer;
+}
+
+.bwealth-series-modal-summary {
+  padding: 1.5rem 1rem;
+}
+
+/* --fund-modal-detail-padding ของต้นฉบับ */
+.bwealth-series-modal-detail {
+  padding: 1.5rem 1rem 1rem;
+}
+
+/*
+ * ค่าตาม .fund-detail-modal-title / .fund-detail-section-title ของต้นฉบับ
+ * (FincalReact/src/index.css) — title จัดกลาง เว้นข้าง 52px ให้พ้นปุ่มปิด
+ */
+.bwealth-series-modal-title {
+  margin: 0 3.25rem 1.5rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.625rem;
+  letter-spacing: -0.0112rem;
+  color: var(--bbl-color-black);
+  text-align: center;
+}
+
+.bwealth-series-modal-section-title {
+  margin: 0 0 1rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.625rem;
+  color: var(--bbl-color-black);
+  text-align: left;
+}
+
+/* ซ่อน scrollbar ของเบราว์เซอร์ แล้ววาดแถบเองด้านล่าง (ตาม fund-highlights-scroll ต้นฉบับ) */
+.bwealth-series-highlights-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  user-select: none;
+  cursor: grab;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bwealth-series-highlights-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.bwealth-series-highlights-scroll.is-dragging {
+  cursor: grabbing;
+}
+
+.bwealth-series-highlights-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  width: max-content;
+  padding-bottom: 0.5rem;
+  padding-right: 0.75rem;
+}
+
+/*
+ * ต้นฉบับสูงรวม 8px หัก padding บนล่าง 3px เหลือเส้น 2px
+ * รีโปนี้ไม่มี global border-box ต้องประกาศเอง ไม่งั้นเส้นหนาเป็น 8px
+ */
+.bwealth-series-highlights-bar {
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  height: 0.5rem;
+  padding: 0.1875rem 0.25rem;
+  border-radius: 9999px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.bwealth-series-highlights-bar.is-visible {
+  opacity: 1;
+}
+
+.bwealth-series-highlights-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--bbl-color-grey-30);
+}
+
+.bwealth-series-highlight {
+  flex: 0 0 auto;
+  width: 13.4375rem;
+  padding: 1.5rem 1.25rem;
+  border: 0.0625rem solid var(--bbl-color-grey-30);
+  border-radius: 0.75rem;
+  box-sizing: border-box;
+}
+
+.bwealth-series-highlight img {
+  display: block;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1.25rem;
+  object-fit: contain;
+}
+
+.bwealth-series-highlight h4 {
+  color: var(--bbl-color-black);
+  margin: 0;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-h3-mobile);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.35;
+}
+
+.bwealth-series-highlight-rule {
+  display: block;
+  width: 1.25rem;
+  height: 0.0625rem;
+  margin: 1rem 0;
+  background: var(--bbl-color-grey-30);
+}
+
+.bwealth-series-highlight p {
+  color: var(--bbl-color-black);
+  margin: 0;
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.bwealth-series-modal-infographic {
+  display: block;
+  width: 100%;
+  margin-top: 1.25rem;
+  border-radius: 0.75rem;
+}
+
+.bwealth-series-modal-remark {
+  color: var(--bbl-color-black);
+  margin-top: 1.25rem;
+  font-size: var(--bbl-font-size-b1-desktop);
+  line-height: 1.7;
+}
+
+.bwealth-series-modal-footer,
+.bwealth-series-modal-invest-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  padding: 1.5rem 1.5rem 1.25rem;
+}
+
+/* --------------------------------------------------------- modal / summary */
+
+.bwealth-series-modal-summary-title {
+  max-width: 22.6875rem;
+  margin: 0 auto 1.5rem;
+  font-family: var(--bbl-font-family-primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 2rem;
+}
+
+.bwealth-series-modal-warning {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  border-radius: 0.5rem;
+  box-shadow: 0.3125rem 0.3125rem 0 0 var(--bbl-color-blue-105-alpha-17);
+}
+
+.bwealth-series-modal-warning-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.bwealth-series-modal-warning-title {
+  margin: 0;
+  color: var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1-desktop);
+  line-height: 1.4;
+}
+
+.bwealth-series-modal-warning-body {
+  color: var(--bbl-color-black);
+  margin: 0.125rem 0 0;
+  font-size: var(--bbl-font-size-b1-desktop);
+  line-height: 1.3;
+}
+
+.bwealth-series-modal-goal {
+  /* ต้นฉบับกำหนด color #111111 ทั้งหัวข้อและตาราง ถ้าไม่ประกาศจะตกไปใช้ text-primary (#323238) ซึ่งเทากว่า */
+  color: var(--bbl-color-black);
+  margin-top: 1.5rem;
+  padding: 1.5rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--bbl-bg-secondary);
+}
+
+.bwealth-series-modal-goal h4 {
+  margin: 0 0 1rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-h2-desktop);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.bwealth-series-modal-goal dl {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 0.5rem 1rem;
+  margin: 0;
+  font-size: var(--bbl-font-size-b1-desktop);
+  line-height: 1.3;
+}
+
+.bwealth-series-modal-goal dt {
+  min-width: 0;
+}
+
+.bwealth-series-modal-goal dd {
+  min-width: 0;
+  margin: 0;
+  font-family: var(--bbl-font-family-medium);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------- modal / QR (desktop) */
+
+/*
+ * ต้นฉบับใช้ useIsMobile() ที่ 760px สลับระหว่างปุ่มคู่กับ QR
+ * markup ใส่มาทั้งคู่ ตรงนี้เป็นคนเลือกว่าจะโชว์อันไหน — 760px = 47.5rem พอดี
+ */
+@media (width < 47.5rem) {
+  .bwealth-series-invest-qr {
+    display: none;
+  }
+}
+
+@media (width >= 47.5rem) {
+  .bwealth-series-modal-invest-actions {
+    display: none;
+  }
+}
+
+.bwealth-series-invest-qr {
+  text-align: center;
+}
+
+.bwealth-series-invest-qr-title {
+  margin: 1.5rem 0 1rem;
+  font-family: var(--bbl-font-family-primary);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.5rem;
+  color: var(--bbl-color-black);
+}
+
+/* qrCodeContainerStyle ของต้นฉบับ — กล่อง 220px มี padding 8px รอบ QR 204px */
+.bwealth-series-qr {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 13.75rem;
+  height: 13.75rem;
+  margin: 0 auto;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--bbl-color-white);
+}
+
+.bwealth-series-qr svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.bwealth-series-invest-or {
+  margin: 1.125rem 0 0.625rem;
+  font-size: 1rem;
+  line-height: 1.375rem;
+  color: var(--bbl-color-black);
+}
+
+.bwealth-series-onetime {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 18.875rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.bwealth-series-onetime-toggle {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 3rem;
+  padding: 0 1rem;
+  border: 0;
+  border-radius: 0.625rem;
+  background: #e9e9eb;
+  color: var(--bbl-color-black);
+  font-family: var(--bbl-font-family-medium);
+  font-size: 1.125rem;
+  font-weight: var(--bbl-font-weight-medium);
+  line-height: 1.5rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bwealth-series-onetime-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bwealth-series-onetime-toggle svg {
+  flex: 0 0 auto;
+  transition: transform 200ms ease;
+}
+
+.bwealth-series-onetime-toggle.is-open svg {
+  transform: rotate(180deg);
+}
+
+.bwealth-series-onetime-panel {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem 0.75rem;
+  border-radius: 0.75rem;
+}
+
+.bwealth-series-onetime-panel[hidden] {
+  display: none;
+}
+
+.bwealth-series-modal-invest-actions {
+  padding-inline: 0;
+
+  /* ต้นฉบับ gap 8 ต่างจาก footer ที่ใช้ 12 */
+  gap: 0.5rem;
+}
+
+/* ปุ่มใน modal ก็เป็น shadcn Button size=default เหมือนกัน — สูง 40px, min-width 115px */
+
+/* shadcn size=default คือ min-w-[115px] + width อัตโนมัติ ไม่ใช่ความกว้างคงที่แบบปุ่มในฟอร์ม */
+.bwealth-series-modal-footer .bwealth-series-btn {
+  width: auto;
+  height: 2.5rem;
+  padding: 0 1rem;
+}
+
+/* ปุ่มคู่นี้ต้นฉบับใช้ h-12 min-w-0 whitespace-normal leading-5 — สูงกว่าปุ่มอื่นและตัดบรรทัดได้ */
+.bwealth-series-modal-invest-actions .bwealth-series-btn {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  min-height: 3rem;
+  padding: 0 1rem;
+  line-height: 1.25rem;
+  white-space: normal;
+}
+
+/*
+ * ปุ่มที่เป็น <a> โดน `a:hover { text-decoration: underline }` ของ styles/main.css ทับ
+ * (0,1,1 ชนะ .bwealth-series-btn ที่เป็น 0,1,0) ต้องใช้ :any-link เพื่อดันให้สูงกว่า
+ */
+.bwealth-series-btn:any-link,
+.bwealth-series-btn:any-link:hover {
+  text-decoration: none;
+}
+
+/* -------------------------------------------------------------- responsive */
+
+@media (width > 47.5rem) {
+  .bwealth-series-section {
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  /* minmax(0,…) ไม่ใช่ 1fr เฉยๆ ไม่งั้นตัวเลือกผลตอบแทนที่ข้อความยาวจะดันคอลัมน์ให้กว้างขึ้น */
+  .bwealth-series-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .bwealth-series-field-input {
+    width: 6.25rem;
+    min-width: 5rem;
+  }
+
+  .bwealth-series-actions {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .bwealth-series-actions .bwealth-series-btn {
+    min-width: var(--bbl-space-1050);
+  }
+
+  .bwealth-series-chart-wrap {
+    height: auto;
+    align-self: stretch;
+    min-height: 26.25rem;
+  }
+
+  .bwealth-series-legend-row {
+    gap: 1.5rem;
+    padding: 0.5rem 1.25rem;
+  }
+
+  .bwealth-series-legend-item {
+    font-size: var(--bbl-text-body-small-size);
+  }
+
+  .bwealth-series-chart-canvas-wrap {
+    min-height: 15rem;
+  }
+
+  .bwealth-series-funds {
+    margin-top: 3.5rem;
+  }
+}
+
+@media (width > 64rem) {
+  .bwealth-series-section {
+    padding-top: 1.5rem;
+    padding-bottom: 3rem;
+  }
+
+  /*
+   * line-height ต้องขยับตาม font-size ด้วย ไม่งั้นได้ 48px/32px = บรรทัดซ้อนกัน
+   * ตอนหัวข้อยาวจนตัดสองบรรทัด (saving-plan ไม่เจอเพราะหัวข้อสั้น ไม่เคยตัดบรรทัด)
+   */
+  .bwealth-series-header-title {
+    font-size: var(--bbl-font-size-h1-desktop);
+    line-height: var(--bbl-line-height-h1-desktop);
+    margin-bottom: 2.5rem;
+  }
+
+  .bwealth-series-header-divider {
+    margin-bottom: 1rem;
+  }
+
+  .bwealth-series-form-title,
+  .bwealth-series-result-title {
+    font-size: var(--bbl-font-size-h3-desktop);
+    margin-bottom: 1rem;
+  }
+
+  /*
+   * การ์ดผลลัพธ์ต้องสูงลงมาจบที่แถว checkbox ไม่รวมปุ่ม Clear/Calculate
+   * ทำโดยกาง .bwealth-series-form ด้วย display:contents ให้ลูกกลายเป็น grid item
+   * แล้วให้คอลัมน์ผลลัพธ์ span แค่แถว title..checkbox
+   * row-gap เป็น 0 เพราะระยะห่างระหว่างแถวใช้ margin เดิมของแต่ละชิ้นอยู่แล้ว
+   */
+  .bwealth-series-calculator {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 32%;
+    gap: 0 1rem;
+    align-items: stretch;
+  }
+
+  .bwealth-series-form {
+    display: contents;
+  }
+
+  .bwealth-series-form-title {
+    grid-column: 1 / 3;
+    grid-row: 1;
+  }
+
+  .bwealth-series-form-grid {
+    grid-column: 1 / 3;
+    grid-row: 2;
+  }
+
+  .bwealth-series-inflation {
+    grid-column: 1 / 3;
+    grid-row: 3;
+  }
+
+  .bwealth-series-actions {
+    grid-column: 1 / 3;
+    grid-row: 4;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .bwealth-series-result {
+    grid-column: 3;
+    grid-row: 1 / 4;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bwealth-series-field-text,
+  .bwealth-series-dropdown-current {
+    font-size: var(--bbl-font-size-b1-desktop);
+  }
+
+  .bwealth-series-field-input::placeholder {
+    font-size: var(--bbl-font-size-h4-desktop);
+  }
+
+  .bwealth-series-btn {
+    font-size: var(--bbl-font-size-b1-desktop);
+    height: 2.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .bwealth-series-result-card {
+    flex: 1;
+    padding: 1rem;
+    margin-bottom: 0.25rem;
+    border: 0.0417rem solid var(--bbl-color-grey-30);
+    line-height: var(--bbl-line-height-h3-mobile);
+  }
+
+  .bwealth-series-result-future {
+    font-size: var(--bbl-font-size-b1-desktop);
+    margin-bottom: 3rem;
+    line-height: var(--bbl-line-height-button);
+  }
+
+  .bwealth-series-result-lead {
+    /* ดันบล็อก "ลงทุนเดือนละ + ตัวเลข" ไปชิดล่างของการ์ด */
+    margin-top: auto;
+    font-size: var(--bbl-font-size-h3-desktop);
+    line-height: var(--bbl-line-height-h3-desktop);
+  }
+
+  .bwealth-series-result-amount {
+    font-size: var(--bbl-font-size-h1-desktop);
+    line-height: var(--bbl-line-height-h1-desktop);
+  }
+
+  .bwealth-series-chart-canvas-wrap {
+    flex: 1 1 0;
+    height: 0;
+    min-height: 11rem;
+  }
+
+  .bwealth-series-funds-track {
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .bwealth-series-fund {
+    width: 100%;
+    max-width: 21.75rem;
+  }
+
+  /* ค่าฝั่ง lg: ของ Tailwind — title 96px, แถว detail 44px, ตัวอักษรโตขึ้น clamp 2 บรรทัด */
+  .bwealth-series-fund-title-wrap {
+    height: 6rem;
+  }
+
+  .bwealth-series-fund-title {
+    font-size: 1.5rem;
+    line-height: 1.35;
+  }
+
+  .bwealth-series-fund-detail {
+    height: 2.75rem;
+  }
+
+  .bwealth-series-fund-detail-label,
+  .bwealth-series-fund-detail-value {
+    font-size: 1rem;
+    line-height: 1.35;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .bwealth-series-funds-dots {
+    display: none;
+  }
+
+}
+
+/*
+ * ช่วง tablet ของต้นฉบับ (761–991px) เท่านั้นที่ padding ขยายเป็น 32px
+ * และ title ไม่ต้องเว้นข้าง 52px เพราะปุ่มปิดขยับออกไปแล้ว
+ * desktop (>=992px) กลับไปใช้ค่า base — จึงไม่มี override ในเบรกพอยต์ >64rem
+ */
+@media (width >= 47.5625rem) and (width <= 61.9375rem) {
+  .bwealth-series-modal-detail {
+    padding: 2rem 2rem 1.5rem;
+  }
+
+  .bwealth-series-modal-summary {
+    padding: 2rem;
+  }
+
+  .bwealth-series-modal-title {
+    margin: 0 0 1.5rem;
+  }
+
+  /* ช่วงนี้การ์ดพอดีจอ ต้นฉบับปิดการเลื่อนแล้วจัดกึ่งกลางแทน */
+  .bwealth-series-highlights-scroll {
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  .bwealth-series-highlights-row {
+    width: 100%;
+    padding-right: 0;
+    justify-content: center;
+  }
+}
+
+/* ตาม @media (min-width: 992px) ทั้งสองบล็อกของต้นฉบับ */
+@media (width >= 62rem) {
+  .bwealth-series-modal-title {
+    font-size: 2rem;
+    line-height: 2.5rem;
+    letter-spacing: -0.02rem;
+  }
+
+  .bwealth-series-modal-section-title {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  /* เลิกเลื่อน แล้วให้การ์ดกว้าง 1/3 พอดี (หัก gap 0.75rem สองช่อง = 1.5rem) */
+  .bwealth-series-highlights-scroll {
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  .bwealth-series-highlights-row {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    justify-content: flex-start;
+  }
+
+  .bwealth-series-highlight {
+    flex: 0 0 calc((100% - 1.5rem) / 3);
+    width: calc((100% - 1.5rem) / 3);
+    max-width: calc((100% - 1.5rem) / 3);
+    min-width: 0;
+  }
+}

@@ -42,6 +42,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
   const branchBookingText = placeholders?.branchBookingText || 'Branch Booking';
   const nearestLabel = placeholders?.nearestLocationTag || 'nearest';
   const statusLabel = placeholders?.statusLabel || 'Status:';
+  const closedStatusText = placeholders?.locateUsLabelClose;
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
   const isNearest = loc.isNearest === true;
@@ -49,8 +50,8 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
   // ATM/ATM+ sidebar only shows name, address, and directions
   const branchStatus = !isAtm && hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
   const isOpen = branchStatus.toLowerCase() === 'open';
-  const tel = !isAtm && hasValue(loc.Tel) && loc.Tel.trim() !== 'BeID' ? loc.Tel : '';
-  const fax = !isAtm && hasValue(loc.Fax) ? loc.Fax : '';
+  const tel = !isAtm && loc.Tel && loc.Tel.trim() !== '' && loc.Tel.trim() !== 'BeID' ? loc.Tel.trim() : '';
+  const fax = !isAtm && loc.Fax && loc.Fax.trim() !== '' ? loc.Fax.trim() : '';
   const showAppointment = !isAtm && loc.BranchAppointment;
 
   const card = createEl(`
@@ -89,7 +90,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
   if (branchStatus) {
     card.querySelector('.locate-us-card-detail .locate-us-card-row .locate-us-card-label').textContent = statusLabel;
     const statusEl = card.querySelector('.locate-us-card-status');
-    statusEl.textContent = branchStatus;
+    statusEl.textContent = isOpen ? branchStatus : (closedStatusText || branchStatus);
     statusEl.classList.add(`locate-us-card-status-${branchStatus.toLowerCase()}`);
   }
   if (isOpen) {
@@ -146,12 +147,13 @@ export async function fetchNearMe(lat, lng, code, configs) {
 
 export async function fetchProvinces(configs) {
   if (provincesCache) return provincesCache;
-  const url = configs?.locateUsGetProvince;
-  if (!url) {
+  const template = configs?.locateUsGetProvince;
+  if (!template) {
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: get-providence');
     return [];
   }
+  const url = buildUrl(template);
   const data = await fetchGet(url, { throwOnError: false });
   if (!data) return [];
   provincesCache = data.map((p) => p.Province);

@@ -421,15 +421,13 @@
 /* ── Unit label ────────────────────────────────────────────── */
 
 .forward-points-sme .fpsme-unit {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: var(--bbl-color-grey-90);
   margin-top: 0.3125rem;
 }
 
 .forward-points-sme .fpsme-unit-right {
-    padding-left:var(--bbl-space-250);
-    margin-left: 51.5%;
-    width: 41%;
+    width: 100%;
     text-align: right;
     display: inline-block;
 }
@@ -605,8 +603,13 @@
   letter-spacing: -0.0063rem;
 }
 
+.forward-points-sme .fpsme-remark ul {
+    padding-left: 17px;
+    margin: 0;
+}
+
 .forward-points-sme .fpsme-remark p {
-  margin: 0 0 var(--bbl-space-100);
+  margin: 0;
 }
 
 .forward-points-sme .fpsme-remark p:last-child {
@@ -664,6 +667,7 @@
   /* Forward tables remain stacked on desktop */
   .forward-points-sme .fpsme-fwd-tables {
     flex-direction: row;
+    gap: 2.5rem;
   }
 
   .forward-points-sme .fpsme-section-fwd {
@@ -686,10 +690,6 @@
     top: 0;
     margin-left: 0;
     font-size: 1rem;
-  }
-
-  .forward-points-sme .fpsme-fwd-table-col {
-    padding-inline: 1.25rem;
   }
 
   .forward-points-sme .fpsme-update-label {
@@ -726,6 +726,10 @@
 
   .forward-points-sme .fpsme-flag {
     margin-left: -0.875rem;
+  }
+
+  .forward-points-sme .fpsme-unit {
+    font-size: 0.7rem;
   }
 
   .forward-points-sme .fpsme-dp-day-btn,

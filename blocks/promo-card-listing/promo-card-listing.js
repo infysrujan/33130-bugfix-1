@@ -314,8 +314,8 @@ function setupPanel(
           </ul>
         </div>
         <div class="promo-selector-filter-actions">
-          <div class="promo-selector-filter-action btn-reset"><button class="promo-selector-btn-reset button secondary" type="button">${labelReset}</button></div>
-          <div class="promo-selector-filter-action btn-search"><button class="promo-selector-btn-search button primary" type="button">${labelSearch}</button></div>
+          <div class="promo-selector-filter-action btn-reset"><button class="promo-selector-btn-reset button-m secondary" type="button">${labelReset}</button></div>
+          <div class="promo-selector-filter-action btn-search"><button class="promo-selector-btn-search button-m primary" type="button">${labelSearch}</button></div>
         </div>
       </div>
       <div class="promo-selector-content pad-top-30 pad-bot-30">

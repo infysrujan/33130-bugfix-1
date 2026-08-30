@@ -375,7 +375,7 @@ export default function decorate(block) {
 
   // ── Collapsible wrapper — encloses the content grid ─────────────────────
   const collapsibleWrapper = document.createElement('div');
-  collapsibleWrapper.className = 'card-selector-collapsible';
+  collapsibleWrapper.className = 'card-selector-collapsible content';
   collapsibleWrapper.appendChild(selectorContent);
 
   block.appendChild(collapsibleWrapper);

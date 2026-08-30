@@ -132,6 +132,10 @@
                   "value": "cells-center-aligned-except-first"
                 },
                 {
+                  "name": "Cells Middle Aligned",
+                  "value": "cells-middle-aligned"
+                },
+                {
                   "name": "Dash Cell Highlight",
                   "value": "dash-cell-highlight"
                 },
