@@ -99,6 +99,7 @@ main .section.form-container .form form .date-wrapper .date-picker-trigger.date-
   left: 0;
   width: 100%;
   min-width: 21.25rem;
+  max-width: 100vw;
   background: var(--dp-surface);
   border: 0.0625rem solid var(--dp-border);
   border-radius: 0.25rem;
@@ -274,7 +275,11 @@ main .section.form-container .form form .date-wrapper .date-picker-today.date-pi
   background: var(--dp-surface-hover);
 }
 
-@media (width <= 40rem) {
+/* Below this width, the dropdown becomes a fixed bottom sheet — the
+   standard mobile pattern, and immune to iOS's dropdown-positioning
+   quirks. Uses classic max-width syntax (not the newer range syntax)
+   for the broadest possible Android/older-browser support. */
+@media (max-width: 40rem) {
   .date-picker-backdrop {
     display: block;
     position: fixed;
