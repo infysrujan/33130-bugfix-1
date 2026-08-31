@@ -168,24 +168,9 @@ export default function decorate(block) {
           const targetSection = sections[sectionIndex].element;
           if (targetSection) {
             if (window.matchMedia('(width > 64rem)').matches) {
-              // Desktop header has two states: collapsed (main-nav pinned to top:0,
-              // top-nav hidden) once scrolled past topNavHeight, or both bars stacked
-              // otherwise (see header.js setupDesktopScrollBehavior). A static offset
-              // sized for the collapsed state undershoots when the target sits close
-              // enough to the top that the resulting scroll never crosses that
-              // threshold, leaving main-nav's uncollapsed position covering the section.
-              const topNav = document.querySelector('.header-nav > .top-nav');
-              const mainNav = document.querySelector('.header .main-nav-desktop');
-              const topNavHeight = topNav?.getBoundingClientRect().height ?? 0;
-              const mainNavHeight = mainNav?.getBoundingClientRect().height ?? 0;
-              const docTop = targetSection.getBoundingClientRect().top + window.scrollY;
-              const willCollapse = (docTop - mainNavHeight) >= topNavHeight;
-              const offset = willCollapse ? mainNavHeight : topNavHeight + mainNavHeight;
-              window.scrollTo({ top: Math.max(0, docTop - offset), behavior: 'smooth' });
-            } else {
-              targetSection.style.scrollMarginTop = 'var(--header-scroll-offset)';
-              targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              targetSection.style.scrollMarginTop = '5.25rem';
             }
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
 
           subNavSelect.querySelector('.global-dropdown-trigger').textContent = link.textContent;
