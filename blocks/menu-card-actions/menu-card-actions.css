@@ -24,6 +24,10 @@
   padding-bottom: var(--bbl-space-250);
 }
 
+.menu-card-actions-container sup {
+  font-size: 0.75rem;
+}
+
 .menu-card-action {
   /* width: 100%; */
 }
