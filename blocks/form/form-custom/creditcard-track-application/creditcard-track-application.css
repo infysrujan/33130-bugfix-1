@@ -749,6 +749,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           left: 44%;
           width: min(12.5rem, 50%);
           max-width: none;
+          padding-right: var(--bbl-space-150);
         }
       }
 
