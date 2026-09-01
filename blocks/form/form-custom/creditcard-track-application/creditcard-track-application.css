@@ -45,14 +45,15 @@
   --cc-form-gutter: 0.9375rem;
   --cc-timeline-panel-width: 28.75rem;
   --cc-message-form-max-width: 46.25rem;
-  --cc-timeline-form-width: min(
-    var(--cc-timeline-panel-width),
-    calc(min(100vw, var(--cc-form-max-width)) - 2 * var(--cc-form-gutter))
-  );
 
   padding: 0;
   padding-left: var(--cc-form-gutter);
   padding-right: var(--cc-form-gutter);
+
+  --cc-timeline-form-width: min(
+    var(--cc-timeline-panel-width),
+    calc(min(100vw, var(--cc-form-max-width)) - 2 * var(--cc-form-gutter))
+  );
 
   /* Page + panel titles — form legend tokens (1.125rem live), global line-height */
   & :is(
