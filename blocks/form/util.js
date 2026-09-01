@@ -119,7 +119,7 @@ export function createButton(fd) {
   const button = document.createElement('button');
   button.textContent = fd?.label?.visible === false ? '' : fd?.label?.value;
   button.type = fd.buttonType || 'button';
-  button.classList.add('button');
+  button.classList.add('button', 'button-m');
   button.id = fd.id;
   button.name = fd.name;
   if (fd?.label?.visible === false) {

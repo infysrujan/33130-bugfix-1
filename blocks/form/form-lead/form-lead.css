@@ -542,17 +542,6 @@ main .lead-forms .form form .radio-group-wrapper.field-invalid>.field-descriptio
   height: auto;
 }
 
-main .lead-forms .form :is(.field-submitcta .button, .field-submitcta .button:disabled, .field-cancel .button, [class~="field-Cancel"] .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button) {
-  min-width: 9.6875rem;
-  margin: var(--bbl-space-300) auto;
-}
-
-main .lead-forms .form :is(.field-submitcta .button, .field-cancel .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button):is(:hover, :disabled:hover) {
-  color: var(--bbl-color-white);
-  background: var(--bbl-color-active-blue);
-  border-color: var(--bbl-color-active-blue);
-}
-
 main .lead-forms .form .col-6:is(.field-submitcta, .submit-wrapper) :is(.button, button) {
   margin-left: auto;
   margin-right: var(--bbl-space-200);

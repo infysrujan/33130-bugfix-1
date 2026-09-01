@@ -374,40 +374,6 @@ main .section.form-container .form form .plain-text-wrapper.field-text {
   font-size: 1rem;
 }
 
-/* Custom Form Button Sizing & Styles — panel + wrapper classes only */
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
-  min-width: 9.6875rem;
-}
-
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button:disabled {
-  color: var(--bbl-color-grey-60);
-  border: 0.0417rem solid var(--bbl-color-gray-300);
-  background-color: var(--bbl-color-gray-300);
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-/* main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled),
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled) {
-  border: 0.0417rem solid var(--bbl-color-active-blue);
-  background-color: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
-} */
-
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled):hover,
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled):hover {
-  border-color: var(--bbl-color-active-blue);
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-}
-
-@media (width >= 64rem) {
-  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
-    font-size: var(--form-font-size-xs);
-    line-height: var(--bbl-line-height-b1-desktop);
-  }
-}
-
 /* Radio group alignment (vertical) */
 main .section.form-container.custom-forms .form form .radio-group-wrapper:not(.horizontal) {
   display: flex;
