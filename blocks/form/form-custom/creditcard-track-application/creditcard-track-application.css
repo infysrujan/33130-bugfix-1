@@ -1,6 +1,6 @@
 ﻿/* ==========================================================================
    Credit Card Application Status Tracking
-   Scoped: :has(.cc-app-main-form)
+   Scoped: body.cc-track-application-form
    Panel roles: creditcard-tract-application.js
    ========================================================================== */
 
@@ -18,23 +18,23 @@
   --bbl-form-margin-35: 2.1875rem                  /* 35px */
 }
 
-main .section.form-container.custom-forms:has(.cc-app-main-form) .form label,
-main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.checkbox-group-wrapper legend,
-main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.radio-group-wrapper legend,
-main .section.form-container.custom-forms:has(.cc-app-main-form) .form form p {
+.cc-track-application-form main .section.form-container.custom-forms .form label,
+.cc-track-application-form main .section.form-container.custom-forms .form fieldset.checkbox-group-wrapper legend,
+.cc-track-application-form main .section.form-container.custom-forms .form fieldset.radio-group-wrapper legend,
+.cc-track-application-form main .section.form-container.custom-forms .form form p {
   font-weight: var(--form-label-font-weight);
   font-size: var(--bbl-font-size-h4-mobile);
   color: var(--bbl-color-grey-85);
 }
 
-main .section.form-container.custom-forms:has(.cc-app-main-form) div.form-wrapper,
-main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-content-wrapper {
+.cc-track-application-form main .section.form-container.custom-forms div.form-wrapper,
+.cc-track-application-form main .section.form-container.custom-forms div.default-content-wrapper {
   padding: 0;
   border-radius: unset;
   box-shadow: none;
 }
 
-main .section.form-container.custom-forms:has(.cc-app-main-form) {
+.cc-track-application-form main .section.form-container.custom-forms {
   --cc-form-max-width: 55.625rem;
   --cc-form-gutter: 0.9375rem;
   --cc-timeline-panel-width: 28.75rem;

@@ -203,6 +203,7 @@ function scrollToTopWhenResultPanelRevealed(form) {
 export default function decorateCreditCardTractApplication(form) {
   if (!isCreditCardTractApplicationForm(form)) return;
 
+  document.body.classList.add('cc-track-application-form');
   form.querySelectorAll(PANEL_SELECTOR).forEach(decoratePanel);
   scrollToTopWhenResultPanelRevealed(form);
 }
