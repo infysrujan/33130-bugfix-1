@@ -45,7 +45,8 @@
   );
 
   padding: 0;
-  padding-inline: var(--cc-form-gutter);
+  padding-left: var(--cc-form-gutter);
+  padding-right: var(--cc-form-gutter);
 
   & :is(.form-wrapper, .form.block, .form) {
     width: 100%;
@@ -883,7 +884,8 @@
   }
 
   @media (width >= 64rem) {
-    padding-inline: 0;
+    padding-left: 0;
+    padding-right: 0;
 
     --cc-timeline-form-width: min(var(--cc-timeline-panel-width), min(100vw, var(--cc-form-max-width)));
 
