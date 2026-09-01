@@ -34,6 +34,12 @@
   box-shadow: none;
 }
 
+.cc-track-application-form main .section.form-container.custom-forms :is(.form-wrapper, .form.block, .form) {
+  width: 100%;
+  max-width: 55.625rem;
+  margin-inline: auto;
+}
+
 .cc-track-application-form main .section.form-container.custom-forms {
   --cc-form-max-width: 55.625rem;
   --cc-form-gutter: 0.9375rem;
@@ -47,12 +53,6 @@
   padding: 0;
   padding-left: var(--cc-form-gutter);
   padding-right: var(--cc-form-gutter);
-
-  & :is(.form-wrapper, .form.block, .form) {
-    width: 100%;
-    max-width: var(--cc-form-max-width);
-    margin-inline: auto;
-  }
 
   /* Page + panel titles — form legend tokens (1.125rem live), global line-height */
   & :is(
