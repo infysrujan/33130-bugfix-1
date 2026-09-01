@@ -153,7 +153,7 @@
     /* Radio Group & Radio Tabs Clean Alignment Reset */
     & fieldset.radio-group-wrapper.radio-tabs {
         display: flex;
-        flex-flow: row wrap;
+        flex-flow: row nowrap;
         gap: 0;
         margin: 0 0 var(--bbl-form-margin-10);
     }
@@ -192,6 +192,7 @@
         padding: 0 var(--bbl-form-padding-10);
         text-align: center;
         line-height: 1.2;
+        overflow-wrap: break-word;
     }
 
     /* Generic Dropdown Field Wrappers inside Panels */
