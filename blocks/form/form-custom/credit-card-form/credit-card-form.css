@@ -72,17 +72,26 @@
   line-height: 1;
 }
 
-/* iOS sizes the native date input (text→date on focus) to its content and overflows; contain it */
-@supports (-webkit-touch-callout: none) {
-  @media (any-pointer: coarse) {
-    .credit-card-form main .section.form-container.custom-forms .form form input[type='date'] {
-      min-width: 0;
-      appearance: none;
-    }
+/* Keep the date field from growing to the date value's intrinsic width (grid track expands otherwise) */
+.credit-card-form main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper {
+  min-width: 0;
+}
 
-    .credit-card-form main .section.form-container.custom-forms .form form input[type='date']::-webkit-date-and-time-value {
-      text-align: left;
-    }
+.credit-card-form main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper input {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Touch: the field swaps text→date on focus and the native control sizes to its content, ballooning wider than its column; contain it */
+@media (any-pointer: coarse) {
+  .credit-card-form main .section.form-container.custom-forms .form form input[type='date'] {
+    min-width: 0;
+    appearance: none;
+  }
+
+  .credit-card-form main .section.form-container.custom-forms .form form input[type='date']::-webkit-date-and-time-value {
+    text-align: left;
   }
 }
 
