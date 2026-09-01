@@ -66,11 +66,24 @@
 
 .credit-card-form main .section.form-container.custom-forms .form form ul {
   padding: 0;
-  text-align: left;
 }
 
 .credit-card-form main .section.form-container.custom-forms .form .form-message.success-message {
   line-height: 1;
+}
+
+/* iOS sizes the native date input (text→date on focus) to its content and overflows; contain it */
+@supports (-webkit-touch-callout: none) {
+  @media (any-pointer: coarse) {
+    .credit-card-form main .section.form-container.custom-forms .form form input[type='date'] {
+      min-width: 0;
+      appearance: none;
+    }
+
+    .credit-card-form main .section.form-container.custom-forms .form form input[type='date']::-webkit-date-and-time-value {
+      text-align: left;
+    }
+  }
 }
 
 @media (width > 47.5rem) {
