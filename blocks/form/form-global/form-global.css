@@ -155,7 +155,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > legend
 main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper {
   position: relative;
   display: flex;
-  flex: 1 0 25%;
+  flex: 1 1 0;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
