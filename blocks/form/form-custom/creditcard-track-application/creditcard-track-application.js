@@ -5,6 +5,8 @@
  * Panel types are identified by authoring cc-app-* classes — not field-* names.
  */
 
+import { updateOrCreateInvalidMsg } from '../../util.js';
+
 // global changes for T & C and radio button
 const CC_PANEL_ITEM = 'cc-panel-item';
 const CC_APP_PREFIX = 'cc-app-';
@@ -198,6 +200,25 @@ function scrollToTopWhenResultPanelRevealed(form) {
 }
 
 /**
+ * On touch (iOS), the native date picker auto-fills today on focus, failing the min-age
+ * rule and painting an error before the user picks anything; strip it while the field is
+ * focused (submit-time model validation still applies).
+ *
+ * @param {HTMLFormElement} form
+ */
+function suppressDateErrorWhileEditing(form) {
+  if (!window.matchMedia('(any-pointer: coarse)').matches) return;
+
+  form.querySelectorAll('.date-wrapper.field-wrapper').forEach((wrapper) => {
+    new MutationObserver(() => {
+      if (wrapper.matches(':focus-within.field-invalid')) {
+        updateOrCreateInvalidMsg(wrapper.querySelector('input'), '');
+      }
+    }).observe(wrapper, { attributes: true, attributeFilter: ['class'] });
+  });
+}
+
+/**
  * @param {HTMLFormElement} form
  */
 export default function decorateCreditCardTractApplication(form) {
@@ -205,4 +226,5 @@ export default function decorateCreditCardTractApplication(form) {
 
   form.querySelectorAll(PANEL_SELECTOR).forEach(decoratePanel);
   scrollToTopWhenResultPanelRevealed(form);
+  suppressDateErrorWhileEditing(form);
 }
