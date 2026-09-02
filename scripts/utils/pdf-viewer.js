@@ -118,30 +118,37 @@ export default function openPdfViewer({
   let swActive = null;
   let swPreviewUrl = null;
 
-  fetch(path)
-    .then((r) => r.arrayBuffer())
-    .then(async (buffer) => {
-      const active = name ? await ensurePdfPreviewSw() : null;
-      if (active) {
-        const base = window.hlx?.codeBasePath || '';
-        const previewUrl = `${window.location.origin}${base}${SW_SCOPE_PATH}${randomId()}/${encodeURIComponent(name)}`;
-        const registered = await registerPdfBytes(active, previewUrl, buffer);
-        if (registered) {
-          swActive = active;
-          swPreviewUrl = previewUrl;
-          embedEl.src = previewUrl;
-          return;
+  const googleViewerSrc = () => `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
+  const isAndroid = /Android/i.test(navigator.userAgent);
+
+  if (isAndroid && googleViewerUrl) {
+    embedEl.src = googleViewerSrc();
+  } else {
+    fetch(path)
+      .then((r) => r.arrayBuffer())
+      .then(async (buffer) => {
+        const active = name ? await ensurePdfPreviewSw() : null;
+        if (active) {
+          const base = window.hlx?.codeBasePath || '';
+          const previewUrl = `${window.location.origin}${base}${SW_SCOPE_PATH}${randomId()}/${encodeURIComponent(name)}`;
+          const registered = await registerPdfBytes(active, previewUrl, buffer);
+          if (registered) {
+            swActive = active;
+            swPreviewUrl = previewUrl;
+            embedEl.src = previewUrl;
+            return;
+          }
         }
-      }
-      // Keep the blob URL alive for the lifetime of the modal so the viewer's
-      // built-in download button can still fetch it; revoke on close() below.
-      const blob = new Blob([buffer], { type: 'application/pdf' });
-      objectUrl = URL.createObjectURL(blob);
-      embedEl.src = objectUrl;
-    })
-    .catch(() => {
-      if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
-    });
+        // Keep the blob URL alive for the lifetime of the modal so the viewer's
+        // built-in download button can still fetch it; revoke on close() below.
+        const blob = new Blob([buffer], { type: 'application/pdf' });
+        objectUrl = URL.createObjectURL(blob);
+        embedEl.src = objectUrl;
+      })
+      .catch(() => {
+        if (googleViewerUrl) embedEl.src = googleViewerSrc();
+      });
+  }
 
   centerContent.append(pdfEmbed, buttonGroup);
   body.append(centerContent);
