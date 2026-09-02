@@ -699,7 +699,7 @@ function printElement() {
     }
 
     .market-report-othbis-gthb-row {
-      padding-top: 2rem;
+      padding-top: 3rem;
     }
 
     .tabs.simple-tab .tabs-nav {
