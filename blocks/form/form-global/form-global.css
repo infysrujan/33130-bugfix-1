@@ -543,7 +543,6 @@ main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.
 }
 
 main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration a {
-  color: inherit;
   text-decoration: none;
   transition: color 0.3s ease;
 }
