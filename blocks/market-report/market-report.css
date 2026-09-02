@@ -125,6 +125,10 @@
   margin: 1.25rem 0 2.5rem;
 }
 
+.market-report-othbis-gthb-row {
+  padding-top: 2.5rem;
+}
+
 .market-report-page .button-container a {
   font: 1rem BangkokBank-Medium, sans-serif;
   color: var(--bbl-color-black);
@@ -219,6 +223,10 @@
 
   .market-report-page .table.block {
     margin: 1rem 0 2rem;
+  }
+
+  .market-report-othbis-gthb-row {
+    padding-top: 2rem;
   }
 
   .market-report-page table,

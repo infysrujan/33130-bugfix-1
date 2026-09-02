@@ -698,6 +698,10 @@ function printElement() {
       margin: 1rem 0 2rem;
     }
 
+    .market-report-othbis-gthb-row {
+      padding-top: 2rem;
+    }
+
     .tabs.simple-tab .tabs-nav {
       padding-bottom: 0;
       margin-top: 0;
@@ -826,9 +830,11 @@ function createMarketReportColumns({
   rightTable,
   rightPTag,
   afterElement,
+  wrapperClass,
 }) {
   const columnsWrapper = document.createElement('div');
   columnsWrapper.classList.add('market-report-col');
+  if (wrapperClass) columnsWrapper.classList.add(wrapperClass);
 
   const leftCol = document.createElement('div');
   leftCol.classList.add('market-report-col-left');
@@ -868,6 +874,7 @@ function setupOthbisGthbColumns(panel) {
     rightTable: gthbParent,
     rightPTag: gthbParent?.nextElementSibling ?? null,
     afterElement: insertAfter,
+    wrapperClass: 'market-report-othbis-gthb-row',
   });
 }
 
