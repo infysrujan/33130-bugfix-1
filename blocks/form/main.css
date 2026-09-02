@@ -431,16 +431,6 @@ main .form button:hover {
     background: var(--form-button-background-hover-color);
 }
 
-main .form button.primary:hover {
-    background: var(--bbl-color-blue-90);
-}
-
-main .form button.secondary:hover {
-    background: var(--bbl-color-active-blue);
-    border-color: var(--bbl-color-blue-70);
-    color: var(--bbl-color-white);
-}
-
 main .submit-wrapper{
     width: var(--form-submit-width);
 }

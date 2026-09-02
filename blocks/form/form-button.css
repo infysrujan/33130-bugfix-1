@@ -44,3 +44,15 @@ main .form button[disabled] {
   border: 0.0625rem solid var(--bbl-color-gray-300);
   pointer-events: none;
 }
+
+main .form button.primary:hover {
+  background: var(--bbl-color-blue-90);
+  text-decoration: none;
+}
+
+main .form button.secondary:hover {
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-blue-70);
+  color: var(--bbl-color-white);
+  text-decoration: none;
+}
