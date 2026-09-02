@@ -813,10 +813,6 @@
 
 /* ── Cell types ────────────────────────────────────────────── */
 
-.dynamic-board .db-td-check {
-  text-align: center;
-}
-
 .dynamic-board .db-td-symbol {
   white-space: nowrap;
   color: var(--bbl-color-active-blue);

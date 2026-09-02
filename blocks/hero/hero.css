@@ -468,7 +468,10 @@
   max-width: none;
   white-space: nowrap;
 }
-
+.wealth .hero-banner-private-wealth-banking .hero-banner-content-group .button-container a {
+  min-width: 8.4375rem;
+  width: 8.4375rem;
+}
 .hero-banner-thumbnail-list {
   margin: 0;
   position: relative;
@@ -742,6 +745,10 @@
 
   .hero-banner-content-group .button-container a {
     margin-bottom: 4.0625rem;
+  }
+
+  .wealth .hero-banner-private-wealth-banking .hero-banner-content-group .button-container a {
+    width: 11.25rem;
   }
 
   .hero-banner::after {
