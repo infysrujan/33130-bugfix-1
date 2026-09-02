@@ -268,7 +268,6 @@
     .carousel-track {
         width: calc(100% - var(--carousel-grid-offset));
         margin-left: auto;
-        overflow: visible;
         scroll-snap-type: none;
         gap: var(--bbl-space-300);
     }
