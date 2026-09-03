@@ -1,0 +1,105 @@
+:root {
+  --bbl-hbs-gradient-start: #041b66;
+  --bbl-hbs-gradient-end: #193799;
+}
+
+.header-banner-slide-wrapper {
+  min-height: 11.875rem;
+  background: linear-gradient(0deg, var(--bbl-hbs-gradient-start) 50%, var(--bbl-hbs-gradient-end) 100%) top / 100% 10rem no-repeat;
+  margin-block: 0 -4.5rem;
+}
+
+.header-banner-slide-title :is(h1, h2, h3, h4, h5, h6) {
+  text-align: center;
+  color: var(--bbl-color-white);
+  padding-block: 2.1875rem;
+  margin-block: 0;
+}
+
+.header-banner-slide-carousel {
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+  width: 89.662%;
+  margin-block-end: -6rem;
+}
+
+.header-banner-slide-carousel::before {
+  content: "";
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 0.0625rem;
+  background: var(--bbl-color-grey-160);
+  width: 6.25rem;
+  margin-inline: auto;
+  z-index: 1;
+}
+
+.header-banner-slide .header-banner-slide-carousel.content {
+  padding-inline: 0;
+}
+
+.header-banner-slide-carousel.is-dragging {
+  cursor: grabbing;
+}
+
+.header-banner-slide-track {
+  display: flex;
+  gap: 0.625rem;
+  transition: transform 300ms cubic-bezier(0.8, 0, 0.2, 1);
+  will-change: transform;
+  user-select: none;
+}
+
+.header-banner-slide-item {
+  flex: none;
+  min-width: 0;
+  padding-block: 0.3125rem;
+}
+
+.header-banner-slide-item picture,
+.header-banner-slide-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+@media (width > 47.5rem) {
+  .header-banner-slide-wrapper {
+    min-height: 10rem;
+    background-size: 100% 10rem;
+    margin-block: 0 -6rem;
+  }
+
+  .header-banner-slide-title :is(h1, h2, h3, h4, h5, h6) {
+    padding-block: 2.5rem;
+  }
+
+  .header-banner-slide-carousel {
+    width: 83.7%;
+  }
+}
+
+@media (width > 64rem) {
+  .header-banner-slide-wrapper {
+    min-height: 12.1875rem;
+    background-size: 100% 12.1875rem;
+    margin-block: 0 -3.8rem;
+  }
+
+  .header-banner-slide-title :is(h1, h2, h3, h4, h5, h6) {
+    padding-block: 3.125rem 2.8125rem;
+  }
+
+  .header-banner-slide-carousel {
+    width: 93.1%;
+  }
+
+  .header-banner-slide-carousel::before {
+    top: 67%;
+  }
+}

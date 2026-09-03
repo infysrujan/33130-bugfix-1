@@ -2,6 +2,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { trackLinkClick } from '../../scripts/analytics.js';
 
 const MOBILE_MQ = `(width <= ${
   getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-mobile-max').trim()
@@ -142,6 +143,30 @@ function normalizeCellContent(cell, className) {
     wrapper.appendChild(cell.firstChild);
   }
   cell.appendChild(wrapper);
+}
+
+function addDesktopBreakClass(textCell) {
+  textCell?.querySelectorAll('.hero-banner-content-inner-text p').forEach((p) => {
+    p.classList.add('hero-banner-desktop-break');
+    p.querySelectorAll('br').forEach((br) => {
+      const next = br.nextSibling;
+      if (next?.nodeType === Node.TEXT_NODE && !/^\s/.test(next.textContent)) {
+        next.textContent = ` ${next.textContent}`;
+      }
+    });
+  });
+}
+
+function addHeadingDesktopBreakClass(headingCell) {
+  headingCell?.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((h) => {
+    h.classList.add('hero-banner-desktop-break');
+    h.querySelectorAll('br').forEach((br) => {
+      const next = br.nextSibling;
+      if (next?.nodeType === Node.TEXT_NODE && !/^\s/.test(next.textContent)) {
+        next.textContent = ` ${next.textContent}`;
+      }
+    });
+  });
 }
 
 function createThumbItem(picture, index, { strip = false, active = false } = {}) {
@@ -471,7 +496,10 @@ export default async function decorate(block) {
     const textCell = row.children[col]; col += 1;
     const linkCell = row.children[col]; col += 1;
     const skipCell = row.children[col];
-    if (skipCell && !skipCell.textContent?.trim() && !skipCell.querySelector('picture, a[href]')) col += 1;
+    const isSkippable = skipCell
+      && !skipCell.querySelector('picture, a[href]')
+      && (!skipCell.textContent?.trim() || /^(true|false)$/i.test(skipCell.textContent.trim()));
+    if (isSkippable) col += 1;
     const appStoreImageCell = row.children[col]; col += 1;
     const appStoreLinkCell = row.children[col]; col += 1;
     const googlePlayImageCell = row.children[col]; col += 1;
@@ -591,6 +619,8 @@ export default async function decorate(block) {
       if (preTitleEl.firstElementChild) preTitleEl.firstElementChild.classList.add('hero-banner-pre-title');
     }
     normalizeCellContent(textCell, 'hero-banner-content-inner-text');
+    addDesktopBreakClass(textCell);
+    addHeadingDesktopBreakClass(headingCell);
     const isAppCta = variant === 'simple-app-cta';
     const hasButtonLink = !isAppCta && !!linkCell?.querySelector('a[href]');
     // Private/Wealth banking places the logo beside the content (logo left,
@@ -677,4 +707,16 @@ export default async function decorate(block) {
   block.replaceChildren(wrapper);
   changeBanner(block);
   lazyLoadThumbnails(block);
+
+  block.addEventListener('click', (event) => {
+    const button = event.target.closest('.button-m.primary');
+    if (!button) return;
+    console.log('Hero banner CTA clicked');
+    trackLinkClick(
+      event,
+      button,
+      'hero-banner-cta',
+      'hero-banner',
+    );
+  });
 }

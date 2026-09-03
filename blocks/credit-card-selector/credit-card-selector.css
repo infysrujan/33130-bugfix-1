@@ -1,6 +1,3 @@
-/* ==========================================================================
-   Credit Card Selector Block
-/* ── Block wrapper ─────────────────────────────────────────────────────────── */
 .credit-card-selector .ccs-source-row {
   display: none;
 }
@@ -9,47 +6,40 @@
   font-family: var(--bbl-font-family-primary);
   position: relative;
   z-index: 0;
-
-  /* creates stacking context so ::after z-index: -1 stays behind content */
   overflow-x: clip;
-
-  /* prevent ::after full-bleed strip from causing horizontal scroll */
 }
 
 .credit-card-selector::after {
   display: none;
 }
 
-/* Positioning context for .collapse-toggle-button — needs to be the full
-   section-width wrapper (not .credit-card-selector itself, which is capped
-   and centered by the global .central-aligned rule), so the floating chevron
-   sits at the section's boundary/edge, matching production, rather than at
-   the edge of the narrower centered filter box. */
 .credit-card-selector-wrapper {
   position: relative;
 }
 
-/* ==========================================================================
-   Header — main page title
-   Mobile-first: left-aligned, smaller font
-   ========================================================================== */
 .credit-card-selector .card-selector-header {
   padding: var(--bbl-space-300) var(--bbl-space-200) var(--bbl-space-400);
   text-align: left;
 }
 
-.section.full-bleed-bg.credit-card-selector-container {
-  padding-inline: var(--bbl-space-200);
+.section.full-bleed-bg.credit-card-selector-container:not(:has(.is-collapsed)) .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+  padding-bottom: var(--bbl-space-400);
 }
 
-/* The global .central-aligned rule caps the wrapper/block at 900px, which
-   wraps this longer heading onto two lines — widen the cap for this section
-   instead of removing it, so content stays centered like the rest of the site. */
 @media (width > 64rem) {
   .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
   .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
     max-width: unset;
-    padding-inline: 9rem;
+    padding-inline: 12rem;
+  }
+}
+
+@media (width > 120rem) {
+  .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
+  .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
+    max-width: var(--bbl-layout-content-max-width-1920);
+    box-sizing: border-box;
+    margin-inline: auto;
   }
 }
 
@@ -63,8 +53,6 @@
   max-width: 100%;
 }
 
-/* The global .central-aligned rule caps .default-content-wrapper at 900px,
-   forcing this title to wrap unnecessarily — let it use the full section width. */
 .section.credit-card-selector-container.central-aligned > .default-content-wrapper {
   box-sizing: border-box;
   max-width: none;
@@ -73,22 +61,15 @@
   margin: 0;
 }
 
-/* Remove the decorative underline below the title for this section */
 .section.credit-card-selector-container.underline-title .default-content-wrapper>h2:first-child::after {
   display: none;
 }
 
-/* Actual page title is the section's authored heading, not a block-generated
-   .card-selector-title (that class never matches this plain <h2>) — override
-   the global h2 size (32px) directly on the real element. */
 .section.credit-card-selector-container .default-content-wrapper> :is(h1, h2, h3, h4, h5, h6):first-child {
   margin: 0;
   text-align: left;
+  padding-inline: var(--bbl-space-200);
 }
-
-/* ==========================================================================
-   Content — single column on mobile, two-column grid on tablet+
-   ========================================================================== */
 
 .credit-card-selector .card-selector-content {
   display: grid;
@@ -109,10 +90,6 @@
   min-width: 0;
 }
 
-/* ==========================================================================
-   Filter group — each selectable category (Monthly Income / Benefits / Lifestyles)
-   ========================================================================== */
-
 .credit-card-selector .filter-group {
   margin-bottom: var(--bbl-space-200);
 
@@ -130,10 +107,9 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: var(--bbl-space-075);
-  margin-bottom: var(--bbl-space-150);
+  margin-block: var(--bbl-space-200) var(--bbl-space-150);
 }
 
-/* Mobile / tablet: ~1.286 rem matches original site's 1.286em at this viewport */
 .credit-card-selector .filter-group-title {
   font-size: var(--bbl-text-thumbnail-card-title-size);
   line-height: var(--bbl-text-thumbnail-card-title-line-height);
@@ -143,15 +119,10 @@
   margin: 0;
 }
 
-/* Hint text shown alongside the Lifestyles heading */
 .credit-card-selector .filter-group-hint {
   font-size: 1rem;
   color: var(--bbl-color-grey-70);
 }
-
-/* ==========================================================================
-   Option list — flex wrap grid of selectable cards
-   ========================================================================== */
 
 .credit-card-selector .option-list {
   list-style: none;
@@ -162,34 +133,24 @@
   gap: var(--bbl-space-100);
 }
 
-/* Default two-column layout — Benefits (and Monthly Income desktop cards) */
 .credit-card-selector .option-list .option-item {
   flex: 0 0 calc(50% - var(--bbl-space-050));
 }
 
-
-/* Mobile: Lifestyle cards scroll horizontally — native scrollbar visible (matches live site) */
 .credit-card-selector .option-list-three-column {
   flex-wrap: nowrap;
   overflow-x: auto;
   padding-bottom: var(--bbl-space-100);
 }
 
-/* Fixed-width cards keep a consistent 8.5 rem tile on mobile scroll */
 .credit-card-selector .option-list-three-column .option-item {
   flex: 0 0 8.5rem;
 }
 
-/* ==========================================================================
-   Mobile dropdown — Monthly Income becomes a <select> on mobile (base state)
-   ========================================================================== */
-
-/* Sections without icons: desktop cards hidden, mobile dropdown visible */
 .credit-card-selector .filter-options-desktop {
   display: none;
 }
 
-/* Sections with icons (Benefits, Lifestyle) always show cards */
 .credit-card-selector .filter-options-always {
   display: block;
 }
@@ -212,7 +173,6 @@
   line-height: 1;
 }
 
-/* Styled <select> to match the option card appearance */
 .credit-card-selector .filter-dropdown {
   width: 100%;
   height: var(--bbl-space-700);
@@ -234,33 +194,23 @@
   border-color: var(--bbl-color-active-blue);
 }
 
-/* When a value is selected, apply the same blue ring as option cards */
 .credit-card-selector .filter-dropdown.has-value {
   border-color: var(--bbl-color-active-blue);
   box-shadow: inset 0 0 0 0.0625rem var(--bbl-color-active-blue);
 }
 
-/* ==========================================================================
-   Option card — the clickable tile (label wrapping a hidden input)
-   ========================================================================== */
-
 .credit-card-selector .option-card {
-  /* Layout */
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: var(--bbl-space-100);
-  min-height: var(--bbl-space-700);
+  min-height: 3.375rem;
   width: 100%;
   box-sizing: border-box;
-
-  /* Appearance */
   background-color: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-30);
   border-radius: var(--bbl-radius-md);
-
-  /* Typography */
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-110);
@@ -279,7 +229,6 @@
   font-size: var(--bbl-font-size-b2);
 }
 
-/* Hide the native input while keeping it keyboard / screen-reader accessible */
 .credit-card-selector .option-card input {
   position: absolute;
   opacity: 0;
@@ -288,7 +237,6 @@
   pointer-events: none;
 }
 
-/* Hover — blue border preview */
 .credit-card-selector .option-card:hover {
   border-color: var(--bbl-color-active-blue);
   box-shadow: 0.1732rem 0.1732rem 0 rgb(0 100 255 / 17%);
@@ -298,10 +246,6 @@
   border-color: var(--bbl-color-active-blue);
   box-shadow: inset 0 0 0 0.0625rem var(--bbl-color-active-blue);
 }
-
-/* ==========================================================================
-   Option icon — the SVG / image inside each card
-   ========================================================================== */
 
 .credit-card-selector .option-icon {
   display: flex;
@@ -317,7 +261,6 @@
   object-fit: contain;
 }
 
-/* Lifestyle / stacked icons — 1.5rem on mobile (horizontal scroll), 3rem on tablet+ */
 .credit-card-selector .option-icon-above img {
   display: block;
   width: var(--bbl-space-300);
@@ -325,20 +268,11 @@
   object-fit: contain;
 }
 
-/* ==========================================================================
-   Option text — the visible label inside each card
-   ========================================================================== */
-
 .credit-card-selector .option-text {
   line-height: 1.3;
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-b1);
 }
-
-/* ==========================================================================
-   Selector actions — Start Over + Apply button row
-   Mobile: centred; tablet+: right-aligned (see media queries below)
-   ========================================================================== */
 
 .credit-card-selector .selector-actions {
   display: flex;
@@ -353,19 +287,15 @@
   cursor: default;
 }
 
-/* ==========================================================================
-   Collapsible — wrapper, content transition, toggle button
-   ========================================================================== */
+.credit-card-selector .selector-actions .button-m {
+  min-width: 8.4375rem;
+}
 
-/* Outer wrapper: overflow visible so chevron can float on the boundary.
-   position: relative establishes the containing block for the absolutely
-   positioned collapse toggle button. */
 .credit-card-selector .card-selector-collapsible {
   overflow: visible;
   position: relative;
 }
 
-/* Collapsed state — content folds away */
 .credit-card-selector .card-selector-collapsible.is-collapsed .card-selector-content {
   max-height: 0;
   opacity: 0;
@@ -373,42 +303,33 @@
   padding-bottom: 0;
 }
 
-/* Toggle bar: zero-height positioning container, appended to the full-width
-   section wrapper (not the centered block) so the chevron's positioning
-   context spans the section edge. */
 .credit-card-selector-wrapper .collapse-toggle-bar {
   position: relative;
   height: 0;
   background: transparent;
 }
 
-/* Toggle button: rounded-square tab that hangs off the boundary between the
-   selector section and the next section, matching production.
-   top: 100% (a percentage, not a fixed px value) places the box's own top
-   edge exactly at the wrapper's bottom edge — the section boundary — at
-   every breakpoint, regardless of how tall the collapsible content above it
-   is, so no per-breakpoint tuning is needed. */
 .credit-card-selector-wrapper .collapse-toggle-button {
   position: absolute;
   top: 0.625rem;
-  right: 1rem;
+  right: 2rem;
   width: 3rem;
   height: 3rem;
-  background: #f5f5f5;
+  box-sizing: content-box;
+  background: var(--bbl-color-grey-10);
   border-radius: var(--bbl-radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
   z-index: 2;
 }
 
-/* No grey box behind the chevron — production has none */
 .credit-card-selector-wrapper .collapse-toggle-button::before {
   display: none;
 }
 
-/* Chevron icon — icomoon icon-dropdown (\e902), same as filter-options-mobile */
 .credit-card-selector-wrapper .collapse-toggle-button::after {
   content: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 8C0 3.58172 3.58172 0 8 0H40C44.4183 0 48 3.58172 48 8V40C48 44.4183 44.4183 48 40 48H8C3.58172 48 0 44.4183 0 40V8Z' fill='%23F5F5F5'/%3E%3Cpath d='M33.6001 28.7997L24.0001 19.1997L14.4001 28.7997' stroke='%230064FF' stroke-width='2.5' stroke-miterlimit='10'/%3E%3C/svg%3E%0A");
   font-family: icomoon, sans-serif;
@@ -423,14 +344,13 @@
   transition: transform 0.3s ease;
 }
 
-/* Rotate chevron to point down when collapsed */
 .credit-card-selector-wrapper .collapse-toggle-bar.is-collapsed .collapse-toggle-button::after {
   transform: rotate(180deg);
 }
 
-/* ==========================================================================
-   Touch devices — suppress hover ring so taps do not leave stale outlines
-   ========================================================================== */
+.credit-card-selector-wrapper .collapse-toggle-bar.is-collapsed .collapse-toggle-button {
+  padding: 0.3125rem 0 0;
+}
 
 @media (pointer: coarse) {
   .credit-card-selector .option-card:hover {
@@ -458,17 +378,15 @@
     padding: var(--bbl-space-400) var(--bbl-space-600) var(--bbl-space-600);
   }
 
-  .section.full-bleed-bg.credit-card-selector-container {
-    padding-inline: var(--bbl-space-600);
+  .credit-card-selector .filter-group-header {
+    margin-block: var(--bbl-space-200) 0.625rem;
   }
 
-  /* Two-column grid on tablet */
   .credit-card-selector .card-selector-content {
     grid-template-columns: 1fr 1fr;
     gap: var(--bbl-space-300);
   }
 
-  /* Show desktop card list for Monthly Income; hide mobile dropdown */
   .credit-card-selector .filter-options-desktop {
     display: block;
   }
@@ -477,17 +395,23 @@
     display: none;
   }
 
-  /* Lifestyle / stacked icons scale up to their natural 3rem on tablet+ */
+  .credit-card-selector .filter-options-desktop .option-text {
+    font-size: var(--bbl-font-size-b2);
+  }
+
   .credit-card-selector .option-icon-above img {
     width: var(--bbl-space-600);
     height: var(--bbl-space-600);
+  }
+
+  .credit-card-selector-wrapper .collapse-toggle-button {
+    right: 4rem;
   }
 
   .credit-card-selector .option-card-stacked {
     min-height: 7.875rem;
   }
 
-  /* Lifestyle: wrap back to three-column grid — no horizontal scroll needed */
   .credit-card-selector .option-list-three-column {
     flex-wrap: wrap;
     overflow: visible;
@@ -498,34 +422,31 @@
     flex: 0 0 calc((100% - 2 * var(--bbl-space-100)) / 3);
   }
 
-  /* Actions: right-aligned on tablet+ */
   .credit-card-selector .selector-actions {
     justify-content: flex-end;
   }
-
-  /* Rotate chevron to point down when collapsed */
 
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     flex-flow: row wrap;
     overflow: visible;
     scroll-snap-type: none;
-    gap: 0 var(--bbl-space-250);
+    gap: var(--bbl-space-250);
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 calc((100% - 3 * var(--bbl-space-250)) / 3);
-    margin-bottom: var(--bbl-space-250);
+    flex: 0 0 calc((100% - 2.5rem) / 3);
+    margin-bottom: 0;
     scroll-snap-align: none;
-  }
-
-  .credit-card-selector-wrapper .collapse-toggle-button {
-    right: 3.875rem;
   }
 
   .section.credit-card-selector-container .default-content-wrapper> :is(h1, h2, h3, h4, h5, h6):first-child {
     text-align: center;
+    padding-inline: var(--bbl-space-600);
   }
 
+  .section.full-bleed-bg.credit-card-selector-container:not(:has(.is-collapsed)) .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-600);
+  }
 }
 
 @media (width > 64rem) {
@@ -534,10 +455,33 @@
     text-align: center;
   }
 
-  /* Desktop: large heading matches original 48px */
+  .section.credit-card-selector-container .default-content-wrapper> :is(h1, h2, h3, h4, h5, h6):first-child {
+    padding-inline: var(--bbl-space-1050);
+  }
+
+  .section.full-bleed-bg.credit-card-selector-container:not(:has(.is-collapsed)) .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-700);
+  }
+
+  .credit-card-selector .filter-group-header {
+    margin-block : 0;
+  }
+
+   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+  }
+  
   .credit-card-selector .card-selector-title {
     font-size: var(--bbl-font-size-h1-desktop);
     line-height: var(--bbl-line-height-heading-tight);
+  }
+
+  .credit-card-selector-wrapper .collapse-toggle-button {
+    right: 5rem;
+  }
+
+  .credit-card-selector .selector-actions .button-m {
+    min-width: 9.6875rem;
   }
 
   .credit-card-selector .card-selector-content {

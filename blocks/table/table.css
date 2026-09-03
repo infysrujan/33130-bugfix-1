@@ -36,6 +36,12 @@
   color: var(--bbl-color-grey-85);
 }
 
+/* Column Width variant: authored widths (colgroup, set in JS) only take effect
+   with a fixed layout — table-layout: auto only treats them as a soft hint. */
+.table table.fixed-column-widths {
+  table-layout: fixed;
+}
+
 /* --------------------------------------------------------------------------
    BORDERS — default on all cells (specificity 0,1,3)
    -------------------------------------------------------------------------- */
@@ -156,16 +162,24 @@
    VARIANT: BORDER BOTTOM TIGHT COLS — generic td (specificity 0,2,4)
    -------------------------------------------------------------------------- */
 .table table.border-bottom-tight-cols tbody tr td {
-  padding-left: 0.625rem;
+  padding: 0.9375rem 0.625rem;
 }
 
-/* --------------------------------------------------------------------------
-   CELL VARIANTS — dash highlight (specificity 0,3,2)
-   -------------------------------------------------------------------------- */
+.table table.outline-border.currency-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  padding: 0.625rem 0;
+}
 
-/* Dash Cell Highlight — #d9d9d9 background for cells containing only "-" */
 .table table.dash-cell-highlight td.cell-dash {
   background: var(--bbl-color-grey-26);
+}
+
+/* Highlight All Cells — background for every body cell in the table.
+   Defaults to a light-blue background; when a Header variant is also
+   applied, the body cells' background matches that variant's color. */
+.table table.highlight-all-cells tr:not(.header-row) td {
+  background: var(--bbl-color-blue-steel-light);
 }
 
 /* --------------------------------------------------------------------------
@@ -203,6 +217,30 @@
   background-color: var(--bbl-color-blue-40);
 }
 
+/* Header Top Aligned — overrides vertical-align: middle from Center/Right Aligned */
+.table table.header-top-aligned tr.header-row td {
+  vertical-align: top;
+}
+
+/* Highlight Bold Cells — background for any cell containing a <strong>,
+   matching whichever Header variant is also applied to the table. No
+   background is applied when no matching Header variant is set. */
+.table table.highlight-bold-cells.header-blue td:has(strong) {
+  background: var(--bbl-color-blue-steel-dark);
+}
+
+.table table.highlight-bold-cells.header-light-blue td:has(strong) {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.highlight-bold-cells.header-light-gray td:has(strong) {
+  background: var(--bbl-color-grey-19);
+}
+
+.table table.highlight-bold-cells.header-primary-blue-s01 td:has(strong) {
+  background: var(--bbl-color-blue-40);
+}
+
 /* --------------------------------------------------------------------------
    CELL VARIANTS — center aligned (specificity 0,3,3)
    -------------------------------------------------------------------------- */
@@ -213,13 +251,71 @@
   vertical-align: middle;
 }
 
+/* Cells Middle Aligned */
+.table table.cells-middle-aligned tr:not(.header-row) td {
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
+   BORDER TYPE VARIANTS — last row (specificity 0,3,3)
+   -------------------------------------------------------------------------- */
+
+/* No Border Bottom — remove the bottom border from the last row only */
+.table table.no-border-bottom tr:last-child td {
+  border-bottom: none;
+}
+
 /* --------------------------------------------------------------------------
    VARIANT: BORDER BOTTOM TIGHT COLS — first two columns (specificity 0,3,4)
    -------------------------------------------------------------------------- */
 .table table.border-bottom-tight-cols tbody tr td:first-child,
 .table table.border-bottom-tight-cols tbody tr td:nth-child(2) {
   padding: 0.9375rem 0.625rem 0.9375rem 0;
-  width: 20%;
+}
+
+/* --------------------------------------------------------------------------
+   CELL VARIANTS — highlight first column (specificity 0,4,2)
+   -------------------------------------------------------------------------- */
+
+/* Highlight First Column — background for every cell in the first column,
+   matching whichever Header variant is also applied to the table. No
+   background is applied when no matching Header variant is set. */
+.table table.highlight-first-column.header-blue td:first-child {
+  background: var(--bbl-color-blue-steel-dark);
+}
+
+.table table.highlight-first-column.header-light-blue td:first-child {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.highlight-first-column.header-light-gray td:first-child {
+  background: var(--bbl-color-grey-19);
+}
+
+.table table.highlight-first-column.header-primary-blue-s01 td:first-child {
+  background: var(--bbl-color-blue-40);
+}
+
+/* --------------------------------------------------------------------------
+   CELL VARIANTS — highlight all cells except header (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+
+/* Highlight All Cells — override the default light-blue background with
+   whichever Header variant is also applied to the table. */
+.table table.highlight-all-cells.header-blue tr:not(.header-row) td {
+  background: var(--bbl-color-blue-steel-dark);
+}
+
+.table table.highlight-all-cells.header-light-blue tr:not(.header-row) td {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.highlight-all-cells.header-light-gray tr:not(.header-row) td {
+  background: var(--bbl-color-grey-19);
+}
+
+.table table.highlight-all-cells.header-primary-blue-s01 tr:not(.header-row) td {
+  background: var(--bbl-color-blue-40);
 }
 
 /* --------------------------------------------------------------------------
@@ -236,6 +332,16 @@
 }
 
 /* --------------------------------------------------------------------------
+   HEADER VARIANTS — right aligned except first (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+
+/* Header Right Aligned (exclude first column) */
+.table table.header-right-aligned-except-first tr.header-row td:not(:first-child) {
+  text-align: right;
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
    CELL VARIANTS — center aligned except first (specificity 0,4,3)
    -------------------------------------------------------------------------- */
 
@@ -243,6 +349,20 @@
 .table table.cells-center-aligned-except-first tr:not(.header-row) td:not(:first-child) {
   text-align: center;
   vertical-align: middle;
+}
+
+/* Cells Right Aligned (exclude first column) */
+.table table.cells-right-aligned-except-first tr:not(.header-row) td:not(:first-child) {
+  text-align: right;
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
+   CURRENCY TABLE — cell padding (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+.table table.outline-border.currency-table tr.header-row td,
+.table table.outline-border.currency-table tr:not(.header-row) td {
+  padding: 0.9375rem;
 }
 
 /* --------------------------------------------------------------------------
@@ -281,6 +401,13 @@
 /* Scroll variant: minimum table width for horizontal overflow */
 .table.scroll table {
   min-width: 61.9375rem;
+}
+
+/* Table nested inside an accordion item — keep a usable minimum width so
+   columns don't collapse when the accordion is narrower than the table;
+   the .table wrapper's overflow-x: auto handles the resulting overflow. */
+.accordion-item .table table {
+  min-width: 31.25rem;
 }
 
 /* --------------------------------------------------------------------------
@@ -330,6 +457,10 @@ td .icon {
 
   .table table tr:not(.header-row) td {
     font-size: 1rem;
+  }
+
+  .table table.outline-border.currency-table {
+    padding: 0.9375rem 1.25rem;
   }
 }
 

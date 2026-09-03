@@ -5,7 +5,7 @@ import {
   toClassName,
 } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { decorateNewTabLinks } from '../../scripts/custom-rte.js';
+import { decorateIconInContainer, decorateNewTabLinks } from '../../scripts/custom-rte.js';
 
 function getCellText(cell) {
   if (!cell) return '';
@@ -167,6 +167,33 @@ function applyMixedBlueHeader(table) {
   });
 }
 
+function setColgroup(table, widths) {
+  table.querySelector(':scope > colgroup')?.remove();
+
+  const colgroup = document.createElement('colgroup');
+  widths.forEach((width) => {
+    const col = document.createElement('col');
+    if (width) col.style.width = width;
+    colgroup.append(col);
+  });
+
+  table.prepend(colgroup);
+}
+
+function applyColumnWidths(table, raw) {
+  const tokens = (raw || '').split(',').map((value) => value.trim());
+  if (!tokens.some(Boolean)) return;
+
+  // Any CSS width value is passed through as-is (percentages, lengths, or
+  // keywords like fit-content/min-content); "auto" is equivalent to leaving
+  // the column blank.
+  const widths = tokens.map((token) => (token && token.toLowerCase() !== 'auto' ? token : null));
+  if (!widths.some(Boolean)) return;
+
+  table.classList.add('fixed-column-widths');
+  setColgroup(table, widths);
+}
+
 function markHeaderRows(table) {
   const rows = [...table.querySelectorAll('tr')];
   if (!rows.length) return;
@@ -307,8 +334,12 @@ export default async function decorate(block) {
   const nestedRow = tableRowIndex > 2 ? rows[tableRowIndex - 1] : null;
   const nestedTableId = nestedRow?.children[0]?.textContent.trim() || null;
 
+  const columnWidthRow = tableRowIndex > 3 ? rows[tableRowIndex - 2] : null;
+  const columnWidth = columnWidthRow?.children[0]?.textContent.trim() || null;
+
   applyVariationClasses(parentTable, parentStyles, firstRowText);
   if (nestedTableId) parentTable.dataset.nestedId = nestedTableId;
+  applyColumnWidths(parentTable, columnWidth);
 
   // Non-hierarchical nested table: render normally and schedule section-level resolution
   if (parentStyles.includes('nested-table')) {
@@ -320,6 +351,7 @@ export default async function decorate(block) {
     block.textContent = '';
     block.append(parentTable);
     decorateNewTabLinks(parentTable);
+    decorateIconInContainer(parentTable);
     if (isAuthoring) {
       rows.slice(tableRowIndex + 1).forEach((row) => block.append(row));
     }
@@ -338,6 +370,7 @@ export default async function decorate(block) {
   block.textContent = '';
   block.append(parentTable);
   decorateNewTabLinks(parentTable);
+  decorateIconInContainer(parentTable);
 
   scheduleMergeTables(block, parentTable);
   scheduleResolveAdjacentNestedTables(block);

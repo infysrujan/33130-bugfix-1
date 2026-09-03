@@ -155,10 +155,21 @@ function extractTitleAndBody(section) {
 }
 
 function wireAccordionHeader(header, panel) {
+  panel.querySelectorAll('img').forEach((img) => {
+    img.removeAttribute('loading');
+  });
+
   header.addEventListener('click', () => {
     const expanded = header.getAttribute('aria-expanded') === 'true';
-    header.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-    panel.hidden = expanded;
+    if (expanded) {
+      header.setAttribute('aria-expanded', 'false');
+      panel.hidden = true;
+      panel.style.maxHeight = '0px';
+    } else {
+      header.setAttribute('aria-expanded', 'true');
+      panel.hidden = false;
+      panel.style.maxHeight = `${panel.scrollHeight + 40}px`;
+    }
   });
 }
 
@@ -172,7 +183,7 @@ function accordionIconUrl(filename) {
  * @returns {boolean}
  */
 function allAccordionPanelsExpanded(block) {
-  const headers = [...block.querySelectorAll(':scope > .accordion-item .accordion-header')];
+  const headers = [...block.querySelectorAll(':scope > .content > .accordion-item .accordion-header')];
   if (!headers.length) return false;
   return headers.every((h) => h.getAttribute('aria-expanded') === 'true');
 }
@@ -182,12 +193,13 @@ function allAccordionPanelsExpanded(block) {
  * @param {boolean} expand
  */
 function setAllAccordionPanels(block, expand) {
-  block.querySelectorAll(':scope > .accordion-item').forEach((item) => {
+  block.querySelectorAll(':scope > .content > .accordion-item').forEach((item) => {
     const header = item.querySelector('.accordion-header');
     const panel = item.querySelector('.accordion-panel');
     if (!header || !panel) return;
     header.setAttribute('aria-expanded', expand ? 'true' : 'false');
     panel.hidden = !expand;
+    panel.style.maxHeight = expand ? `${panel.scrollHeight + 40}px` : '0px';
   });
 }
 
@@ -227,22 +239,12 @@ function escapeHtml(s) {
 }
 
 /**
- * Snapshot panel open state, expand all, build HTML, restore.
+ * Build the print document HTML with every panel expanded.
  * @param {Element} block
  */
 function buildAccordionPrintDocument(block) {
-  const items = [...block.querySelectorAll(':scope > .accordion-item')];
-  const states = items.map((item) => {
-    const header = item.querySelector('.accordion-header');
-    const panel = item.querySelector('.accordion-panel');
-    return {
-      expanded: header?.getAttribute('aria-expanded') === 'true',
-      hidden: panel?.hidden ?? true,
-    };
-  });
-
-  setAllAccordionPanels(block, true);
-
+  // Expand only the detached clone below (not `block`) so the live accordion
+  // never visibly flashes open/closed while the print document is assembled.
   const clone = block.cloneNode(true);
   clone.querySelectorAll('.accordion-block-toolbar').forEach((el) => el.remove());
 
@@ -259,7 +261,14 @@ function buildAccordionPrintDocument(block) {
     if (panel) {
       panel.hidden = false;
       panel.removeAttribute('hidden');
+      // Frozen from the live page's layout width; let the print CSS size it instead.
+      panel.style.maxHeight = '';
     }
+  });
+
+  clone.querySelectorAll('img').forEach((img) => {
+    img.removeAttribute('loading');
+    img.setAttribute('loading', 'eager');
   });
 
   const wrapper = block.closest('.accordion-block-wrapper');
@@ -315,15 +324,6 @@ function buildAccordionPrintDocument(block) {
     bodyHtml = clone.outerHTML;
   }
 
-  items.forEach((item, i) => {
-    const header = item.querySelector('.accordion-header');
-    const panel = item.querySelector('.accordion-panel');
-    const s = states[i];
-    if (!header || !panel || !s) return;
-    header.setAttribute('aria-expanded', s.expanded ? 'true' : 'false');
-    panel.hidden = s.hidden;
-  });
-
   const docTitle = block.querySelector('.accordion-block-title')?.textContent?.trim()
     || document.querySelector('title')?.textContent
     || placeholders.printLabel;
@@ -349,7 +349,7 @@ function buildAccordionPrintDocument(block) {
     .accordion-block-title { font-size: 1.5rem; margin: 0 0 0.5rem; }
     .accordion-item { border-bottom: 0; padding-bottom: 1rem; margin-bottom: 1rem; }
     .accordion-print-heading { font-size: 1rem; margin: 0 0 0.5rem; border-block: 1px solid var(--bbl-color-gray-146); padding-block: 10px; }
-    .accordion-panel { display: block !important; padding: 0; }
+    .accordion-panel { display: block !important; padding: 0; max-height: none !important; overflow: visible !important; }
     .accordion-header { display: none; }
     .accordion-heading { display: none; }
     .accordion-block-toolbar { display: none; }
@@ -394,6 +394,21 @@ function buildAccordionPrintDocument(block) {
   `;
 }
 
+// Waits on each <link> directly — readyState/load only prove the browser
+// finished attempting the stylesheets, not that they applied.
+function waitForStylesheets(doc) {
+  const links = [...doc.querySelectorAll('link[rel="stylesheet"]')];
+  return Promise.all(links.map((link) => new Promise((resolve) => {
+    // Already loaded (e.g. served from cache before the listener attached).
+    if (link.sheet) {
+      resolve();
+      return;
+    }
+    link.addEventListener('load', resolve, { once: true });
+    link.addEventListener('error', resolve, { once: true });
+  }))).then(() => undefined);
+}
+
 /**
  * @param {Element} block
  */
@@ -402,30 +417,27 @@ function openAccordionPrintWindow(block) {
   const printWindow = window.open('', '', 'height=500,width=800');
   if (!printWindow) return;
 
-  const runPrint = () => {
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 100);
-  };
-  if (printWindow.document.readyState === 'complete') {
-    requestAnimationFrame(runPrint);
-  } else {
-    printWindow.addEventListener('load', runPrint);
-  }
-
   printWindow.document.write(printHtml);
   printWindow.document.close();
+
+  waitForStylesheets(printWindow.document).then(() => {
+    requestAnimationFrame(() => {
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 100);
+    });
+  });
 }
 
 /**
- * @param {Element} block
+ * @param {Element} container
  * @param {string} baseId
  * @param {{ showExpandAll: boolean, showPrint: boolean }} options
  * @returns {{ expandBtn: HTMLButtonElement | null, printBtn: HTMLButtonElement | null }}
  */
-function renderAccordionToolbar(block, baseId, { showExpandAll, showPrint }) {
+function renderAccordionToolbar(container, baseId, { showExpandAll, showPrint }) {
   if (!showExpandAll && !showPrint) {
     return { expandBtn: null, printBtn: null };
   }
@@ -489,7 +501,7 @@ function renderAccordionToolbar(block, baseId, { showExpandAll, showPrint }) {
   }
 
   toolbar.appendChild(inner);
-  block.appendChild(toolbar);
+  container.appendChild(toolbar);
 
   return { expandBtn, printBtn };
 }
@@ -529,7 +541,7 @@ function wireAccordionToolbar(block, { expandBtn, printBtn }) {
  * @param {Element} block
  */
 function wireAccordionGroupNavigation(block) {
-  const headers = [...block.querySelectorAll(':scope > .accordion-item > .accordion-heading .accordion-header')];
+  const headers = [...block.querySelectorAll(':scope > .content > .accordion-item > .accordion-heading .accordion-header')];
   if (headers.length < 2) return;
 
   headers.forEach((header, i) => {
@@ -678,22 +690,25 @@ function groupDownloadSections(contentFrag) {
 }
 
 /**
- * @param {Element} block
+ * @param {Element} container
  * @param {string} baseId
  * @param {string} itemTitle
  * @param {DocumentFragment} contentFrag
  * @param {number} index
  */
-function appendAccordionItem(block, baseId, itemTitle, contentFrag, index) {
+function appendAccordionItem(container, baseId, itemTitle, contentFrag, index, panelClasses = []) {
   const { item, header, panel } = createAccordionItemElements(
     baseId,
     index,
     itemTitle,
     `Item ${index + 1}`,
   );
+  // Carry the source section's own style classes (e.g. right-content,
+  // full-bleed-special, pad-top-30, table-container) onto the panel.
+  if (panelClasses.length) panel.classList.add(...panelClasses);
   groupDownloadSections(contentFrag);
   panel.appendChild(contentFrag);
-  block.appendChild(item);
+  container.appendChild(item);
   wireAccordionHeader(header, panel);
 }
 
@@ -739,9 +754,13 @@ export default async function decorate(block) {
   block.textContent = '';
   block.classList.add('accordion');
 
+  const content = document.createElement('div');
+  content.className = 'content';
+  block.appendChild(content);
+
   const baseId = block.id || `accordion-${crypto.randomUUID().slice(0, 8)}`;
 
-  const toolbarButtons = renderAccordionToolbar(block, baseId, {
+  const toolbarButtons = renderAccordionToolbar(content, baseId, {
     showExpandAll,
     showPrint,
   });
@@ -753,7 +772,7 @@ export default async function decorate(block) {
       placeholders.accordionPlaceholder,
       placeholders.accordionPlaceholder,
     );
-    block.appendChild(item);
+    content.appendChild(item);
     wireAccordionHeader(header, panel);
     wireAccordionToolbarAndNavigation(block, toolbarButtons);
     return;
@@ -770,12 +789,12 @@ export default async function decorate(block) {
   }
 
   if (!fragment) {
-    block.querySelector('.accordion-block-toolbar')?.remove();
+    content.querySelector('.accordion-block-toolbar')?.remove();
     const status = document.createElement('p');
     status.className = 'accordion-load-error';
     status.setAttribute('role', 'status');
     status.textContent = placeholders.fragmentErrorText;
-    block.appendChild(status);
+    content.appendChild(status);
     return;
   }
 
@@ -783,8 +802,9 @@ export default async function decorate(block) {
 
   if (sections.length > 0) {
     sections.forEach((section, index) => {
+      const sectionClasses = [...section.classList].filter((c) => c !== 'section');
       const { titleText, contentFrag } = extractTitleAndBody(section);
-      appendAccordionItem(block, baseId, titleText, contentFrag, index);
+      appendAccordionItem(content, baseId, titleText, contentFrag, index, sectionClasses);
     });
     block.classList.add('accordion-panel-loaded');
     wireAccordionToolbarAndNavigation(block, toolbarButtons);
@@ -802,11 +822,13 @@ export default async function decorate(block) {
     placeholders.accordionPlaceholder,
     placeholders.accordionPlaceholder,
   );
-  block.appendChild(item);
-  wireAccordionHeader(header, panel);
+  content.appendChild(item);
 
   const fragmentSection = fragment.querySelector(':scope .section');
   if (fragmentSection) {
+    // Carry the section's own style classes onto the panel.
+    const sectionClasses = [...fragmentSection.classList].filter((c) => c !== 'section');
+    if (sectionClasses.length) panel.classList.add(...sectionClasses);
     const contentFrag = document.createDocumentFragment();
     contentFrag.append(...fragmentSection.childNodes);
     groupDownloadSections(contentFrag);
@@ -818,6 +840,7 @@ export default async function decorate(block) {
     }
     panel.appendChild(contentFrag);
   }
+  wireAccordionHeader(header, panel);
   block.classList.add('accordion-panel-loaded');
   wireAccordionToolbarAndNavigation(block, toolbarButtons);
 }

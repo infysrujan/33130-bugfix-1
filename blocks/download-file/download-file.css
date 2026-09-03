@@ -24,3 +24,15 @@
   height: 0.0625rem;
   background-color: var(--bbl-color-grey-150);
 }
+
+.full-bleed-bg .accordion-block .download-button-wrapper.content{
+  padding-inline: 0;
+}
+
+.download-button-wrapper .download-files .download-date-prefix {
+  margin-right: 0.9375rem;
+  min-width: 155px; /* 155px in rem */
+  display: inline-block;
+  font-weight: var(--bbl-font-weight-regular);
+  font-family: var(--bbl-font-family-primary);
+}

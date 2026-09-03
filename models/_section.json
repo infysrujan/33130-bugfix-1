@@ -143,6 +143,10 @@
                 {
                   "name":"Columns 2(25-75)",
                   "value": "columns-2-25"
+                },
+                {
+                  "name":"Columns 2(33-67)",
+                  "value": "columns-2-33"
                 }
               ]
             },
@@ -168,6 +172,10 @@
                 {
                   "name": "Center Content",
                   "value": "center-content"
+                },
+                {
+                  "name": "Right Content",
+                  "value": "right-content"
                 }
               ]
             },
@@ -282,6 +290,7 @@
         "latest-news",
         "forward-points-sme",
         "saving-plan",
+        "bwealth-series",
         "category-banner",      
         "bbm-glow-card",
         "menu-list",
@@ -292,6 +301,7 @@
         "mf-comparator",
         "mf-questionnaire",
         "cc-campaign",
+        "header-banner-slide",
         "custom-button"
       ]
     }

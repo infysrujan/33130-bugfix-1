@@ -63,8 +63,8 @@ const isEnabled = !window.location.search.includes('martech=off');
 // TODO: Update BBL's Dev, Stage and Prod datastream IDs here
 const dataStreamConfig = {
   dev: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
-  stage: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
-  prod: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
+  stage: '754d5abb-573b-4c8f-907d-a45e3418d700',
+  prod: '68f164c2-a131-443a-a28d-8331a08e499c',
 };
 
 // TODO: Update BBL's Launch script URLs here
@@ -73,9 +73,11 @@ const launchConfig = {
     'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-f69e7329c58a-development.min.js',
   ],
   stage: [
-    'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-f69e7329c58a-development.min.js',
+    'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-bb28126e1019-staging.min.js',
   ],
-  prod: [],
+  prod: [
+    'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-f8fe1c3d0242.min.js',
+  ],
 };
 
 const orgId = '599F1E47665EC45B0A495E73@AdobeOrg';

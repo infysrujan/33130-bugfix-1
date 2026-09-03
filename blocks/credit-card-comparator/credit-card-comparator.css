@@ -41,9 +41,7 @@
   display: none;
   width: 100%;
   color: var(--bbl-color-system-red);
-  font-size: 1rem;
-  font-weight: var(--bbl-font-weight-regular);
-  padding-bottom: var(--bbl-space-100);
+  margin-bottom: var(--bbl-space-200);
 }
 
 .credit-card-comparator .compare-error.is-visible {
@@ -58,9 +56,15 @@
   display: block;
   width: 100%;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-150);
-  padding-bottom: 0.625rem;
+  padding: 0.625rem 0;
+  margin-bottom: 1rem;
   overflow-x: auto;
   white-space: nowrap;
+}
+
+.credit-card-comparator .inner-container .button {
+  max-width: 100%;
+  width: 100%;
 }
 
 /* ── Each product card — inline-table so thumb and info sit side by side ─── */
@@ -73,6 +77,10 @@
   margin: 0 0.625rem;
   position: relative;
   white-space: normal;
+}
+
+.credit-card-comparator .product-comparing:first-child {
+  margin-left: 0;
 }
 
 .credit-card-comparator .product-comparing + .product-comparing {
@@ -173,9 +181,17 @@
 }
 
 @media (width > 47.5rem) {
+.credit-card-comparator .inner-container {
+  padding: 0 var(--bbl-space-600);
+}
+
   .credit-card-comparator .compare-group {
     overflow-x: visible;
     white-space: normal;
+  }
+
+  .credit-card-comparator .inner-container .button {
+    max-width: 8.4375rem;
   }
 
   .credit-card-comparator .product-comparing {
@@ -193,18 +209,28 @@
   .credit-card-comparator .inner-container {
     padding: 0 var(--bbl-space-1050);
     flex-direction: row;
-    gap: var(--bbl-space-250);
   }
 
   .credit-card-comparator .compare-group {
     border-bottom: none;
-    padding-bottom: 0;
+    padding: 0;
+    margin-bottom: 0;
   }
-
+  
   .credit-card-comparator .btn-primary {
-    width: auto;
     margin: 0;
     display: inline-block;
+  }
+  
+  .credit-card-comparator .inner-container .button {
+    max-width: 9.6875rem;
+  }
+}
+
+@media (width > 120rem) {
+  .credit-card-comparator .inner-container {
+    max-width: var(--bbl-layout-content-max-width-1920);
+    margin: 0 auto;
   }
 }
 

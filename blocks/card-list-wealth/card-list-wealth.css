@@ -1,6 +1,3 @@
-/* Card List Wealth Block */
-
-/* ── Block-level tokens ─────────────────────────────────── */
 .card-list-wealth {
   --clw-title-font-size: 1.3125rem;
   --clw-title-line-height-desktop: 1.625rem;
@@ -9,29 +6,17 @@
   --clw-cta-line-height: 1.375rem;
 }
 
-/* ── Common / Mobile-first base ────────────────────────── */
 .card-list-wealth .content {
   display: flex;
   justify-content: flex-start;
-  margin: 0;
-  padding: 0 1.25rem;
-  margin-top: 3.125rem;
-  margin-bottom: 0.625rem;
+  margin-block: 3.125rem 0.625rem;;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  scroll-padding-inline-start: var(--bbl-space-section-xs);
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: var(--bbl-color-grey-40) transparent;
-}
-
-/*
- * .section.full-bleed-bg .content (main.css) has higher specificity
- * (3 classes vs. 2) and sets `margin: 0 auto`, silently overriding
- * margin-inline here. Matching that ancestor chain wins reliably
- * without relying on source order or !important.
- */
-.section.full-bleed-bg .card-list-wealth .content {
-  margin-inline: -0.625rem;
+  gap: var(--bbl-space-250);
 }
 
 .card-list-wealth .content::-webkit-scrollbar {
@@ -50,16 +35,9 @@
 .card-list-item-padding {
   display: flex;
   box-sizing: border-box;
-
-  /*
-   * box-sizing: border-box makes this basis the full occupied width
-   * (card + its own left/right padding), so the gutter between cards
-   * lives entirely inside the padding and doesn't need to be subtracted
-   * separately: 1.5 items (1 full + 50% peek) exactly fill the row.
-   */
-  flex: 0 0 calc(100% / 1.5);
+  flex: 0 0 16.875rem;
   scroll-snap-align: start;
-  padding: 0 0.625rem 1.25rem;
+  padding-bottom: var(--bbl-space-250);
 }
 
 .card-list-wealth-card {
@@ -70,15 +48,14 @@
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-bottom-left-radius: 0.4375rem;
   border-bottom-right-radius: 0.4375rem;
+  overflow: hidden;
   background: var(--bbl-color-white);
 }
 
-
-/* ── Logo area ─────────────────────────────────────────── */
 .card-logo {
   height: 5rem;
   box-sizing: border-box;
-  padding: 1.25rem;
+  padding: var(--bbl-space-250);
   display: flex;
   align-items: center;
 }
@@ -101,38 +78,36 @@
   object-fit: contain;
 }
 
-/* ── Card body ─────────────────────────────────────────── */
 .card-body {
   flex: 1;
-  padding: 1.25rem;
+  padding: var(--bbl-space-250);
   background: var(--bbl-color-white);
 }
 
 .card-title {
   font-size: var(--clw-title-font-size);
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-line-height-h4-desktop);
-  margin: 0 0 1.25rem;
+  margin: 0 0 var(--bbl-space-250);
   color: var(--bbl-color-black);
 }
 
 .card-description {
   font-size: var(--bbl-font-size-b1-mobile);
-  line-height: 1.285rem;
+  line-height: 1.1244rem;
   margin: 0;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .card-eyebrow {
   font-size: var(--bbl-font-size-b1-mobile);
-  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
-  font-weight: 400;
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-line-height-b1-mobile);
-  margin: 1.25rem 0;
-  color: var(--bbl-color-grey-70);
+  margin: var(--bbl-space-250) 0;
+  color: var(--bbl-color-grey-90);
 }
 
-/* ── Benefits list ─────────────────────────────────────── */
 .card-benefit {
   display: flex;
   align-items: center;
@@ -148,73 +123,55 @@
 
 .card-benefit span {
   font-size: var(--bbl-font-size-b1-mobile);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
-/* ── CTA ───────────────────────────────────────────────── */
 .card-cta {
-  padding: 1.875rem 1.25rem 1.25rem;
+  padding: 1.875rem var(--bbl-space-250) var(--bbl-space-250);
   background: var(--bbl-color-white);
   display: flex;
   justify-content: center;
   margin: 0;
 }
 
-.card-list-wealth .button-m.secondary {
+.card-list-wealth .button-m {
   width: 100%;
+  box-sizing: border-box;
   max-width: 100%;
-  padding: 0.3125rem 0;
   text-align: center;
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-primary);
+  height: auto;
+  min-height: 2.75rem;
 }
 
-/* ── Tablet: > 760px ───────────────────────────────────── */
 @media (width > 47.5rem) {
   .card-list-wealth .content {
-    padding: 0 2.5rem;
-  }
-
-  .card-list-item-padding {
-    /*
-     * Right at the tablet breakpoint this is "2 full cards + 50% peek of
-     * the 3rd" (100% / 2.5). Capping the growth at 19.5rem - just under the
-     * desktop per-card width - means the card stops widening before the
-     * desktop breakpoint, so the leftover space progressively reveals more
-     * of the 3rd card the wider the viewport gets, instead of jumping
-     * straight from "half visible" to "fully visible" at the breakpoint.
-     */
-    flex: 0 0 clamp(17rem, calc(100% / 2.5), 19.5rem);
+    scroll-padding-inline-start: var(--bbl-space-section-sm);
   }
 
 }
 
-/* ── Desktop: > 1024px ─────────────────────────────────── */
 @media (width > 64rem) {
   .card-list-wealth .content {
     overflow-x: visible;
     scroll-snap-type: none;
+    justify-content: center;
+    gap: var(--bbl-space-500);
   }
 
   .card-list-item-padding {
-    /* 3 full cards, no scrolling: basis = 100% / 3 (border-box keeps the
-       padding-based gutter inside each item, so no gap needs subtracting) */
-    flex: 0 0 calc(100% / 3);
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
     scroll-snap-align: none;
-    padding: 0 1.25rem 2.5rem;
+    padding-bottom: var(--bbl-space-500);
   }
 
   .card-title {
     font-size: var(--bbl-font-size-h3-desktop);
+    line-height: 1.625rem;
   }
 
   .card-description {
     font-size: var(--bbl-font-size-b1-desktop);
-    line-height: 1.285rem;
-  }
-
-  .section.full-bleed-bg .card-list-wealth .content {
-    margin-inline: -1.25rem;
+    line-height: 1.375rem;
   }
 
   .card-eyebrow {
@@ -223,10 +180,6 @@
   }
 
   .card-benefit span {
-    font-size: var(--bbl-font-size-b1-desktop);
-  }
-
-  .card-list-wealth .card-cta a{
     font-size: var(--bbl-font-size-b1-desktop);
   }
 }

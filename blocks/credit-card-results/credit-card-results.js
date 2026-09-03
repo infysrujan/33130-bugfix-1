@@ -186,6 +186,7 @@ function buildCardBlock(cards, doc, lang, labels) {
   cards.forEach((card) => {
     const nameEN = getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName');
     const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
+    const description = getCardField(card, 'cardDescription', 'description');
     const imgSrc = resolveImageUrl(card);
     const { cardPageUrl } = card;
     // eslint-disable-next-line no-underscore-dangle
@@ -236,6 +237,17 @@ function buildCardBlock(cards, doc, lang, labels) {
     h3.dataset.cardId = card.cardId || card.id || '';
     titleEl.appendChild(h3);
     content.appendChild(titleEl);
+
+    // Description
+    if (description && typeof description === 'string') {
+      titleEl.classList.add('has-description');
+      const descEl = doc.createElement('div');
+      descEl.className = 'cards-list-description';
+      const p = doc.createElement('p');
+      p.textContent = description;
+      descEl.appendChild(p);
+      content.appendChild(descEl);
+    }
 
     inner.appendChild(content);
 
@@ -582,6 +594,7 @@ export default async function decorate(block) {
 
   // ── See more / See less ────────────────────────────────────────────────────
   toggleBtn.addEventListener('click', () => {
+    const prevTop = toggleBtn.getBoundingClientRect().top;
     isExpanded = !isExpanded;
     [...cardListContainer.querySelectorAll('.cards-list-item')].forEach((item, i) => {
       if (i >= INITIAL_VISIBLE) item.classList.toggle('ccs-hidden', !isExpanded);
@@ -589,10 +602,14 @@ export default async function decorate(block) {
     if (isExpanded) {
       removePeek(cardListContainer);
     } else {
-      requestAnimationFrame(() => setPeek(cardListContainer));
+      setPeek(cardListContainer);
     }
     refreshToggle();
     if (currentBuildDots) currentBuildDots();
+    if (!isExpanded) {
+      const newTop = toggleBtn.getBoundingClientRect().top;
+      window.scrollBy(0, newTop - prevTop);
+    }
   });
 
   // ── Filter applied ─────────────────────────────────────────────────────────

@@ -51,7 +51,7 @@
 .section.center-image .columns-3-cols > div:has(> div:nth-child(3) > p > picture) {
   justify-content: center;
   flex-flow: row wrap;
-  gap: var(--bbl-space-050);
+  gap: 0 var(--bbl-space-050);
 }
 
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col {

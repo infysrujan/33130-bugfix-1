@@ -85,7 +85,7 @@
 }
 
 main .section.form-container.lead-forms .form .form-message.success-message {
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     background-color: transparent;
     border-color: unset;
     padding: unset;
@@ -115,7 +115,7 @@ main .lead-forms .form form p {
 }
 
 main .lead-forms.section.central-aligned > .default-content-wrapper p{
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-19);
 }
@@ -143,7 +143,7 @@ main .lead-forms div.default-content-wrapper {
 }
 
 main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  color: var(--bbl-color-grey-140);
+  color: var(--bbl-color-black);
   font-weight: var(--bbl-font-weight-regular);
 }
 
@@ -159,6 +159,7 @@ main .lead-forms .drop-down-wrapper {
 main .section.form-container.lead-forms .form form .plain-text-wrapper.field-text {
   background-color: unset;
   padding: unset;
+  padding-top: var(--bbl-form-padding-30);
   border-radius: unset;
   font-size: unset;
 }
@@ -168,7 +169,7 @@ main .lead-forms .form form {
   max-width: 46.25rem;
   width: 100%;
   margin: 0 auto;
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b1);
   line-height: var(--bbl-form-line-height-1-3);
@@ -209,7 +210,7 @@ main .lead-forms .form form .field-infotext {
 }
 
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-14);
   padding-right: 0;
@@ -220,8 +221,7 @@ main .lead-forms .form form .plain-text-wrapper p:last-child {
   margin-bottom: 0;
 }
 
-main .lead-forms .form form .plain-text-wrapper :is(a, .custom-wffm-form) {
-  color: inherit;
+main .lead-forms .form form .plain-text-wrapper :is(.custom-wffm-form) {
   font-size: inherit;
 }
 
@@ -348,7 +348,7 @@ main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .tele
 
 main .lead-forms .form form .field-wrapper[class*='icon-'] input {
   margin-top: var(--bbl-form-margin-8);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-black);
 }
 
 main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):has([aria-live="polite"]) input {
@@ -371,14 +371,6 @@ main .lead-forms .form select option {
   font-size: var(--bbl-font-size-b1);
   font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-form-line-height-44);
-}
-
-main .lead-forms .form input[type='date']::-webkit-calendar-picker-indicator {
-  display: none;
-}
-
-main .lead-forms .form input[type='date']:invalid::-webkit-datetime-edit {
-  color: transparent;
 }
 
 main .lead-forms .form :is(input, textarea)::placeholder {
@@ -530,7 +522,7 @@ main .lead-forms .form form .field-wrapper[class*='icon-']:has(> label:not([data
   display: block;
   font-size: var(--bbl-form-font-size-17);
   font-weight: var(--bbl-form-font-weight-bold);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-black);
 }
 
 main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper):has(.field-description).field-wrapper :is(input, textarea, select){
@@ -861,7 +853,7 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label
   height: 100%;
   margin: 0;
   padding: 0 var(--bbl-form-padding-10);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1-mobile);
   font-weight: var(--bbl-font-weight-medium);
   text-align: center;

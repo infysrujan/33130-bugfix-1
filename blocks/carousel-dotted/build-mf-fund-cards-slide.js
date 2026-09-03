@@ -118,7 +118,7 @@ function buildFundCardsBlock(funds, doc, readMoreLabel, cardsPerSlide = 3) {
     // Image
     if (imgSrc) {
       const imageWrapper = doc.createElement('div');
-      imageWrapper.className = 'cards-list-image cards-list-image-default';
+      imageWrapper.className = 'cards-list-image cards-list-image-full';
       const img = doc.createElement('img');
       img.src = imgSrc;
       img.alt = name;

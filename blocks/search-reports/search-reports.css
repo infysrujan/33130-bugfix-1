@@ -84,8 +84,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: var(--bbl-space-400) var(--bbl-space-250);
+  justify-content: flex-start;
+  padding: var(--bbl-space-1000) var(--bbl-space-250);
+  margin-block: 3.125rem;
   width: 100%;
   box-sizing: border-box;
 }
@@ -144,6 +145,13 @@
   background: var(--bbl-color-white);
   user-select: none;
   color: var(--bbl-color-grey-85);
+}
+
+.search-reports-overlay .sr-dropdown-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .search-reports-overlay .sr-dropdown-chevron::after {
@@ -207,40 +215,18 @@
   background: none;
 }
 
-/* Search button */
-
-.search-reports-overlay .sr-search-btn {
-  display: inline-block;
-  height: 2.75rem;
-  min-width: 9.6875rem;
-  margin: 1.875rem 0;
-  padding: 0 var(--bbl-space-250);
-  border: none;
-  border-radius: 0.4375rem;
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-button-size);
-  font-weight: var(--bbl-text-button-weight);
-  letter-spacing: 0.05rem;
-  line-height: 2.75rem;
-  text-align: center;
-  cursor: not-allowed;
-  background: var(--bbl-color-grey-150);
-  color: var(--bbl-color-white);
-  transition: background 0.4s;
-  box-sizing: border-box;
+.search-reports-overlay .button-m {
+  min-width: 8.4375rem;
 }
 
-.search-reports-overlay .sr-search-btn:not(.sr-search-btn-disabled) {
-  background: var(--bbl-color-active-blue);
-  border-color: var(--bbl-color-active-blue);
-  cursor: pointer;
+.search-reports-overlay .button-m.primary:disabled {
+  min-width: 8.4375rem;
 }
 
 @media (width > 47.5rem) {
   .search-reports-overlay .sr-body {
-    padding: 0 var(--bbl-space-250);
     max-width: 71.11rem;
-    margin: 0 auto;
+    margin-inline: auto;
   }
 
   .search-reports-overlay .sr-title {
@@ -259,9 +245,22 @@
 }
 
 @media (width > 64rem) {
+  .search-reports-overlay .sr-body {
+    justify-content: center;
+    padding: var(--bbl-space-1000) var(--bbl-space-250);
+  }
+
   .search-reports-overlay .sr-header {
     padding-block: 1.56rem;
     padding-inline: var(--bbl-space-section-xl);
+  }
+
+  .search-reports-overlay .button-m {
+    min-width: 9.6875rem;
+  }
+
+  .search-reports-overlay .button-m.primary:disabled {
+    min-width: 9.6875rem;
   }
 }
 

@@ -409,15 +409,11 @@ function setupMegamenuColumnsCarousel(header) {
     }
 
     arrowPrev.addEventListener('click', () => {
-      const firstColumn = columnsContainer.querySelector(':scope > .megamenu-column');
-      const step = firstColumn ? firstColumn.offsetWidth + 20 : track.clientWidth * 0.8;
-      track.scrollBy({ left: -step, behavior: 'smooth' });
+      track.scrollTo({ left: 0, behavior: 'smooth' });
     });
 
     arrowNext.addEventListener('click', () => {
-      const firstColumn = columnsContainer.querySelector(':scope > .megamenu-column');
-      const step = firstColumn ? firstColumn.offsetWidth + 20 : track.clientWidth * 0.8;
-      track.scrollBy({ left: step, behavior: 'smooth' });
+      track.scrollTo({ left: track.scrollWidth - track.clientWidth, behavior: 'smooth' });
     });
 
     track.addEventListener('scroll', updateArrows);

@@ -2,7 +2,7 @@
 
 .bbl-calendar-picker-popover {
   position: fixed;
-  z-index: 10050;
+  z-index: 50;
   min-width: 280px;
   padding: 16px;
   background: var(--bbl-color-white);
@@ -55,8 +55,9 @@
   flex: 1 1 auto;
   margin: 0;
   text-align: center;
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--bbl-heading-h3-size);
+  line-height: var(--bbl-heading-h3-line-height);
+  font-weight: var(--bbl-heading-h3-weight);
   color: var(--bbl-color-blue-105);
 }
 
@@ -69,8 +70,9 @@
 
 .bbl-calendar-picker-weekdays span {
   text-align: center;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: var(--bbl-body-b1-size);
+  line-height: var(--bbl-body-b1-line-height);
+  font-weight: var(--bbl-body-b1-weight);
   color: var(--bbl-color-black);
 }
 
@@ -88,8 +90,9 @@
   border: none;
   background: transparent;
   border-radius: 50%;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--bbl-body-b1-size);
+  line-height: var(--bbl-body-b1-line-height);
+  font-weight: var(--bbl-body-b1-weight);
   color: var(--bbl-color-grey-100);
   cursor: pointer;
   padding: 0;
@@ -103,6 +106,7 @@
 
 .bbl-calendar-picker-day:disabled {
   color: var(--bbl-color-grey-45);
+  background-color: transparent;
   cursor: not-allowed;
 }
 

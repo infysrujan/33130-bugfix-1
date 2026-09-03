@@ -4,6 +4,10 @@
 
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
+function getShareUrl() {
+  return document.querySelector('meta[property="og:url"]')?.content || window.location.href;
+}
+
 export default function decorate(block) {
   // Check if we have at least one row with a platform and icon
   const validRows = [...block.children].filter((row) => {
@@ -58,7 +62,7 @@ export default function decorate(block) {
     const a = document.createElement('a');
 
     if (url) {
-      a.href = url.replace('page-url', encodeURIComponent(window.location.href));
+      a.href = url.replace('page-url', encodeURIComponent(getShareUrl()));
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
     } else {
@@ -146,7 +150,12 @@ export default function decorate(block) {
       e.preventDefault();
       e.stopPropagation();
 
-      const pageUrl = encodeURIComponent(window.location.href);
+      if (a.classList.contains('platform-facebook') && window.FB) {
+        window.FB.ui({ method: 'share', href: getShareUrl() });
+        return;
+      }
+
+      const pageUrl = encodeURIComponent(getShareUrl());
       let shareUrl = a.dataset.shareHref || '';
       if (a.classList.contains('platform-facebook')) {
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;

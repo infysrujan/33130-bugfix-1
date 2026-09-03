@@ -164,7 +164,7 @@ function createConvertGroup(
 
       if (flag) flag.src = selectedIcon;
       if (flag) flag.alt = selectedCode;
-      if (code) code.textContent = selectedCode;
+      if (code) code.textContent = selectedCode ?? '';
       onSelect?.(selectedCode);
 
       // Remove active class from all items and add to selected

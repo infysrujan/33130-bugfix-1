@@ -178,6 +178,10 @@ export function normalizeCardTypeValue(cardType) {
   return match ? match[0] : normalized.toLowerCase();
 }
 
+export function normalizeCategory(s) {
+  return (s || '').toLowerCase().replace(/&/g, 'and').replace(/\s+/g, ' ').trim();
+}
+
 function getCardTypeLogo(cardType) {
   const value = normalizeCardTypeValue(cardType);
   const icon = CARD_TYPE_ICONS[value];
@@ -291,7 +295,13 @@ export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollT
     }
     if (changed) {
       onPageChange();
-      scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (scrollTarget) {
+        // Land the target below the fixed header, not behind it. scrollIntoView
+        // honors scroll-margin-top, so reuse the site's --header-scroll-offset
+        // token (same value .section uses) instead of measuring the header in JS.
+        scrollTarget.style.scrollMarginTop = 'var(--header-scroll-offset)';
+        scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   });
 }

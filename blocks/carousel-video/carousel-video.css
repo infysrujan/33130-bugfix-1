@@ -1,17 +1,36 @@
+/* ── Wrapper ─────────────────────────────────────────────────────────────── */
 .carousel-video-wrapper {
-  box-sizing: border-box;
+  max-width: 56.25rem;
   width: 100%;
   margin: auto;
 }
 
-.carousel-video {
-  position: relative;
+/* Overrides the global .section.full-bleed-bg .content padding-inline.
+   Mobile-first: 16px inline padding so the player doesn't sit flush against
+   the section edges, matching the live site. Tablet/desktop reset to
+   edge-to-edge below. */
+.section .carousel-video-wrapper.content {
+  box-sizing: border-box;
+  padding-inline: 1rem;
 }
 
+/* ── Block positioning context ───────────────────────────────────────────── */
+.carousel-video {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 56.25rem;
+  margin-inline: auto;
+}
+
+/* ── Main player ─────────────────────────────────────────────────────────── */
 .carousel-video .cv-main-player {
   position: relative;
   width: 100%;
-  height: calc((100vw - 2.5rem) / 1.8);
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  overflow: hidden;
   background: var(--bbl-color-black);
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
@@ -29,23 +48,30 @@
   border: none;
   display: block;
   opacity: 0;
+
+  /* Opacity 0 is still clickable — without this, a click can land on a
+     stacked-but-invisible iframe instead of the visible .active one, which
+     plays audio for the wrong video while the visible frame stays paused. */
   pointer-events: none;
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.5s ease-in-out, transform 0.45s ease-in-out;
 }
 
 .carousel-video .cv-main-player iframe.active {
   opacity: 1;
+  z-index: 1;
   pointer-events: auto;
 }
 
+/* ── Thumbnail carousel — mobile: nav arrows overlay the player, centered
+   on its vertical midline ───────────────────────────────────────────────── */
 .carousel-video .cv-carousel-section {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: auto;
-  aspect-ratio: 16 / 9;
-  height: auto;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
   border: 0;
@@ -66,13 +92,23 @@
   transition: transform 0.35s ease;
 }
 
+/* 3 or fewer items: center them with equal spacing instead of flush left. */
+.carousel-video .cv-track.cv-track-center {
+  justify-content: center;
+}
+
+/* ── Thumbnails ──────────────────────────────────────────────────────────── */
 .carousel-video .cv-thumb {
+  flex: 0 0 12.0625rem;
+  width: 12.0625rem;
+  height: 7.625rem;
   padding: 0;
   margin: 0 0.3125rem;
   border: none;
   border-radius: 0;
   overflow: hidden;
   cursor: pointer;
+  background: var(--bbl-color-black);
   transition: outline-color 0.2s ease;
 }
 
@@ -82,13 +118,20 @@
   object-fit: cover;
   display: block;
   pointer-events: none;
+  border-radius: 0;
 }
+
 
 .carousel-video .cv-thumb.active {
   box-shadow: 0 0 0.625rem var(--bbl-color-black);
   opacity: 1;
 }
 
+/* ── Prev / Next buttons ─────────────────────────────────────────────────── */
+
+/* Mobile: absolutely centered on .cv-carousel-section's vertical midline
+   (the row sitting above the player). Tablet+ (below) repositions this
+   as an overlay beside the thumbnail track instead. */
 .carousel-video .cv-nav {
   position: absolute;
   top: 50%;
@@ -109,14 +152,6 @@
   pointer-events: all;
 }
 
-.carousel-video .cv-prev {
-  left: 0.75rem;
-}
-
-.carousel-video .cv-next {
-  right: 0.75rem;
-}
-
 .carousel-video .cv-nav:hover {
   background: var(--bbl-color-grey-10);
 }
@@ -124,6 +159,14 @@
 .carousel-video .cv-prev,
 .carousel-video .cv-next {
   transition: all 0.3s ease;
+}
+
+.carousel-video .cv-prev {
+  left: 1.75rem;
+}
+
+.carousel-video .cv-next {
+  right: 1.75rem;
 }
 
 .carousel-video .cv-prev:hover {
@@ -158,11 +201,13 @@
   margin-right: 0.1875rem;
 }
 
+/* ── Dots — hidden on mobile ─────────────────────────────────────────────── */
 .carousel-video .cv-dots {
   display: none;
   justify-content: center;
   align-items: center;
-  gap: 0.8125rem;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
 }
 
 .carousel-video .cv-dot {
@@ -173,7 +218,7 @@
   border-radius: 50%;
   border: 0.0625rem solid var(--bbl-color-grey-150);
   background: transparent;
-  padding: 0.1875rem;
+  padding: 0;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease, width 0.2s ease, height 0.2s ease;
 }
@@ -191,6 +236,7 @@
   border-color: var(--bbl-color-active-blue);
 }
 
+
 @keyframes wobble-vertical {
     25% { margin-top: 0.25rem; }
     50% { margin-top: -0.125rem; }
@@ -202,38 +248,39 @@
     animation: wobble-vertical 0.75s alternate;
 }
 
+
+
+/* ── Tablet: > 760px ─────────────────────────────────────────────────────── */
 @media (width > 47.5rem) {
-  .carousel-video-wrapper {
-    padding: 0 2.5rem;
-    margin: 0 -2.8125rem;
+  .section .carousel-video-wrapper.content {
+    box-sizing: content-box;
+    padding-inline: 0;
   }
 
   .carousel-video .cv-main-player {
     width: 100%;
+    max-width: 35.75rem;
+    height: 25.625rem;
     aspect-ratio: unset;
-    height: calc((100vw - 1.875rem) / 1.8);
     margin: 0 auto;
   }
 
-  .carousel-video {
-    padding: 0 3.125rem 1.875rem;
-  }
-
   .carousel-video .cv-carousel-section {
+    display: block;
     position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    aspect-ratio: unset;
+    inset: auto;
+    max-width: 35.75rem;
     width: 100%;
-    margin: 1.875rem -0.3125rem;
+    height: auto;
+    margin: 1.875rem auto;
     padding: 0;
     pointer-events: auto;
     z-index: auto;
   }
 
   .carousel-video .cv-thumb {
-    flex: 0 0 10.0625rem;
+    flex: 0 0 8.3125rem;
+    width: 8.3125rem;
     height: 7.625rem;
   }
 
@@ -247,10 +294,12 @@
     display: flex;
     width: 100%;
     margin: 0;
+    padding: 0.75rem 0 3.125rem;
   }
 
   .carousel-video .cv-nav {
-    top: 50%;
+    position: absolute;
+    transform: translateY(-50%);
     width: 2.5rem;
     height: 2.5rem;
     background: var(--bbl-color-white);
@@ -263,8 +312,14 @@
   .carousel-video .cv-next {
     right: -2.9rem;
   }
+
+  /* 4 or fewer items fit in a single view — no scrolling, so hide the arrows. */
+  .carousel-video.cv-few-items .cv-nav, .carousel-video.cv-few-items .cv-dots {
+    display: none;
+  }
 }
 
+/* ── Desktop: > 1024px ───────────────────────────────────────────────────── */
 @media (width > 64rem) {
   .carousel-video-wrapper {
     padding: 0 3rem;
@@ -272,28 +327,36 @@
   }
 
   .carousel-video .cv-main-player {
+    max-width: 50rem;
     height: 30.625rem;
     aspect-ratio: unset;
+    margin: 0 auto;
   }
 
   .carousel-video .cv-carousel-section {
-    max-width: 49.875rem;
+    width: 50.5rem;
+    max-width: 100%;
     margin: 1.875rem auto;
+     margin-left: 51px;
   }
 
   .carousel-video .cv-thumb {
-    flex: 0 0 11.4375rem;
+    flex: 0 0 12rem;
+    width: 12rem;
+    height: 7.625rem;
   }
 
   .carousel-video .cv-track-wrap {
     margin: 0 -0.3125rem;
   }
 
+
+
   .carousel-video .cv-prev {
     left: -3.1rem;
   }
 
   .carousel-video .cv-next {
-    right: -2.9rem;
+    right: -2.4rem;
   }
 }

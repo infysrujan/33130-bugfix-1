@@ -218,7 +218,7 @@
   border: none;
   font-size: 0.875rem;
   font-weight: 700;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   cursor: pointer;
   padding: 0;
   letter-spacing: 0.0313rem;
@@ -228,12 +228,12 @@
 
 .forex-graph .forex-graph-print-btn::before {
   font-size: 1.125rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .forex-graph .forex-graph-download-btn::before {
   font-size: 1.875rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 /* ── Error message ─────────────────────────────────────────── */
@@ -471,15 +471,22 @@
   background: var(--bbl-color-blue-90);
 }
 
-/* stylelint-disable selector-max-compound-selectors */
-.forex-graph .forex-graph-datepicker-calendar td.is-today:not(.is-current) .forex-graph-datepicker-day-btn {
+/* Selected date that isn't a tradable day (e.g. default "From" = 1st of month
+   falling on a weekend/holiday) — outline it so it reads as selected without
+   implying it's clickable like an enabled day. */
+.forex-graph .forex-graph-datepicker-calendar td.is-current .forex-graph-datepicker-day-text {
   outline: 0.125rem solid var(--bbl-color-active-blue);
   outline-offset: -0.125rem;
   color: var(--bbl-color-active-blue);
   font-weight: 700;
 }
 
-/* stylelint-enable selector-max-compound-selectors */
+/* ── Section underline width override ─────────────────────── */
+
+body:has(.forex-graph-wrapper) .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after,
+body:has(.forex-graph-wrapper) .section.underline-image .section-image-item::after {
+  width: 40px;
+}
 
 /* ── Tablet: 47.5rem+ (760px) ──────────────────────────────── */
 

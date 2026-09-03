@@ -1,10 +1,22 @@
 @import url("../../styles/components/listing-card.css");
 
+/* Pagination's scrollIntoView (card-helpers.js bindPaginationClick) targets the
+   ancestor .tabs section and relies on its scroll-margin-top: var(--header-scroll-offset).
+   The site-wide value (main.css, 5.25rem) under-shoots the real header height on
+   this listing, so override it here, scoped to promo-card-listing pages only.
+   Must live on an ancestor of .tabs (custom properties inherit down, not up) --
+   setupPanel() writes the filters/content markup directly into the .tab-panel
+   (see promo-card-listing.js), so there is no .promo-card-listing wrapper between
+   .tab-panel and .promo-selector-content to target instead. */
+.section.tabs-container:has(.tab-panel > .promo-selector-content) {
+  --header-scroll-offset: 9rem;
+}
+
 .bangkok-bankm-card :has(.section.tabs-container .tab-panel>.promo-selector-content) {
   background-color: var(--bbl-color-white);
 }
 
-body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector-content) .tabs-nav-wrapper .tabs-nav button {
+body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector-content) .tabs-nav-wrapper .tabs-nav button-m:not(.active) {
   color: var(--bbl-color-grey-85);
 }
 
@@ -121,6 +133,7 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   color: var(--bbl-color-grey-60);
 }
 
+
 .promo-selector-dropdown {
   display: none;
   position: absolute;
@@ -153,8 +166,22 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   font-family: var(--bbl-font-family-medium);
 }
 
-.promo-selector-option:hover,
 .promo-selector-option.is-active {
+  color: var(--bbl-color-blue-90);
+}
+
+.promo-selector-option:hover {
+  color: var(--bbl-color-blue-90);
+}
+
+/* While hovering anywhere inside the open dropdown, only the option under
+   the cursor is blue — every other option, including the persistently
+   selected .is-active one, drops back to black until the hover moves on. */
+.promo-selector-dropdown:hover .promo-selector-option {
+  color: var(--bbl-color-black);
+}
+
+.promo-selector-dropdown:hover .promo-selector-option:hover {
   color: var(--bbl-color-blue-90);
 }
 
@@ -168,9 +195,9 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   width: 100%;
 }
 
-.promo-selector-filter-actions .button {
+.promo-selector-filter-actions .button-m {
   flex: 1;
-  width: 100%;
+  min-width: 100%;
 }
 
 .promo-card-listing.has-preview > div[data-config-row] {
@@ -239,7 +266,12 @@ body.mobile-app-view main > div:first-child {
   padding-inline-end: 3rem;
 }
 
+
 @media (width > 47.5rem) {
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) {
+  --header-scroll-offset: 5rem;
+}
+
   .promo-selector-grid:has(.promo-selector-empty) {
     width: 50%;
     padding-inline: 0.625rem;
@@ -276,8 +308,6 @@ body.mobile-app-view main > div:first-child {
 
   .promo-selector-dropdown {
     max-height: 13.75rem;
-    left: 0.625rem;
-    right: 0.625rem;
   }
 
   .promo-selector-filter-actions {
@@ -291,14 +321,18 @@ body.mobile-app-view main > div:first-child {
     box-sizing: border-box;
   }
 
-  .promo-selector-filter-actions .button {
+  .promo-selector-filter-actions .button-m {
     width: 100%;
     box-sizing: border-box;
-    min-width: unset;
+    min-width: 8.75rem;
   }
 }
 
 @media (width > 64rem) {
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) {
+  --header-scroll-offset: 7rem;
+}
+  
   .promo-selector-grid:has(.promo-selector-empty) {
     width: unset;
     padding-inline: 0;
@@ -340,8 +374,6 @@ body.mobile-app-view main > div:first-child {
 
   .promo-selector-dropdown {
     max-height: 13.75rem;
-    left: var(--bbl-space-250);
-    right: var(--bbl-space-250);
   }
 
   body.mobile-app-view header.is-not-overlapped ~ main {

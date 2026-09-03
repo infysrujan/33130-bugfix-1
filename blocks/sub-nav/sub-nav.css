@@ -65,7 +65,8 @@
     text-align: left;
     padding-inline: 1.25rem 2.1875rem;
     text-transform: capitalize;
-    font-size: var(--bbl-font-size-b2);
+    font-size: var(--bbl-body-b1-size);
+    line-height: var(--bbl-body-b1-line-height);
 }
 
 .sub-nav button.global-dropdown-trigger.icon-dropdown:hover {
@@ -101,7 +102,6 @@
 .sub-nav .sub-nav-tabs {
     display: flex;
     align-items: center;
-    gap: 0.93rem;
     flex-shrink: 0;
 }
 

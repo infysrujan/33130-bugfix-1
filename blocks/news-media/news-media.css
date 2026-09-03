@@ -106,6 +106,12 @@
     padding: 0;
     scroll-snap-type: unset;
     margin: 0 calc(-1 * var(--bbl-space-250));
+
+    /* Pagination scroll (bindPaginationClick) lands the grid using
+       scroll-margin-top: var(--header-scroll-offset). On News & Media the grid
+       sits below the year-tab nav as well as the site header, so raise the
+       offset here to clear both and keep the tabs in view. */
+    --header-scroll-offset: 23.8125rem;
   }
 
   .news-media-grid .listing-card-container {

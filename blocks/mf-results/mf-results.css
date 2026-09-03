@@ -18,7 +18,7 @@
 .mfr-disclaimer {
   padding: 1.875rem 0;
   font-size: var(--bbl-font-size-b3, 0.8125rem);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   line-height: var(--bbl-line-height-body, 1.6);
   text-align: center;
 }
@@ -60,7 +60,7 @@
   margin: var(--bbl-space-075) 0 0;
   padding: 0;
   font-size: var(--bbl-font-size-b1);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   line-height: 1.625;
 }
 
@@ -105,7 +105,7 @@
 .mfr-no-results {
   text-align: center;
   font-size: var(--bbl-font-size-b1, 1rem);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin:0;
 }
 
@@ -180,7 +180,7 @@
 .card-list.mf-results .cards-list-description p {
   font-size: 1rem;
   line-height: 1.375;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin: 0 0 0.625rem;
   overflow: hidden;
   display: -webkit-box;
@@ -228,25 +228,10 @@
  margin-top: 0.625rem;
 }
 
-.mfr-cta {
-  display: inline-block;
-  height: 2.75rem;
-  min-width: 9.6875rem;
-  padding: 0 1.25rem;
-  border-radius: 0.4375rem;
-  font-family: var(--bbl-font-family-primary);
-  font-size: 0.875rem;
-  line-height: 2.75rem;
-  font-weight: var(--bbl-font-weight-regular);
-  cursor: pointer;
-  text-decoration: none;
-  text-align: center;
-  transition: all 0.3s;
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
+.mfr-footer .mfr-cta {
+  display: inline-flex;
   box-sizing: border-box;
-  vertical-align: middle;
+  min-width: 9.6875rem;
   letter-spacing: 0.05rem;
 }
 
@@ -254,25 +239,9 @@
   margin-left: 0.225rem;
 }
 
-.mfr-cta:hover {
-  background: var(--bbl-color-white);
-  border-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-active-blue);
-  text-decoration: none;
-}
-
-.mfr-cta:visited,
-.mfr-cta:focus {
-  text-decoration: none;
-}
-
 /* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
 
 @media (width > 47.5rem) {
-  .mfr-cta {
-    font-size: var(--bbl-font-size-b1, 1rem);
-  }
-
   .mf-results-container .default-content-wrapper p {
   padding-bottom: 1.875rem;
   }

@@ -125,12 +125,12 @@
   flex-direction: column;
   font-size: 1rem;
   line-height: 1.375;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 /* Card name */
 .mf-comparator-results .mfcr-card-name {
-  font-family: var(--bbl-font-family-medium), sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-size: 1.5rem;
   line-height: 1.625rem;
   color: var(--bbl-color-black);
@@ -154,7 +154,7 @@
 
 .mf-comparator-results .mfcr-label {
   font-size: 1rem;
-  font-family: var(--bbl-font-family-medium), sans-serif;
+  font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   margin: 0;
 }
@@ -164,7 +164,7 @@
   line-height: 1.625rem;
   padding: 0.5rem 0 0;
   margin: 0;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .mf-comparator-results .mfcr-value ul {
@@ -224,7 +224,7 @@
 .mf-comparator-results .mfcr-no-results {
   padding: var(--bbl-space-layout-md) var(--bbl-space-container-xs);
   text-align: center;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 /* ── Scroll dots — mobile only ────────────────────────────────────────────── */

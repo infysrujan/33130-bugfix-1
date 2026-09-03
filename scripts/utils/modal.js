@@ -191,10 +191,15 @@ function decorateModalContent(modalBody) {
   });
 
   // Only merge a later wrapper into its section's text flow when it's the section's
-  // sole child. If it shares the section with another block (e.g. accordion), unwrapping
-  // would strip the div that block's siblings/CSS rely on — keep it wrapped instead.
+  // sole child AND the section has no style classes (e.g. central-aligned, full-bleed-bg)
+  // from section metadata. Those styles have global CSS keyed off
+  // `.section.<style> > .default-content-wrapper`, so unwrapping would silently drop
+  // their styling. Likewise, if the wrapper shares the section with another block (e.g.
+  // accordion), unwrapping would strip the div that block's siblings/CSS rely on — keep
+  // it wrapped in both cases.
   wrappers.slice(1).forEach((wrapper) => {
-    if (wrapper.parentElement.children.length === 1) {
+    const { parentElement: section } = wrapper;
+    if (section.children.length === 1 && section.classList.length === 1) {
       wrapper.replaceWith(...wrapper.childNodes);
     }
   });

@@ -71,9 +71,12 @@ function buildStepper(labels, activeStep) {
     if (num === activeStep) mod = isLastStep ? ' rc-step-done' : ' rc-step-active';
     else if (num < activeStep) mod = ' rc-step-done';
     const showTick = num < activeStep || (num === activeStep && isLastStep);
+    const stepContent = showTick
+      ? '<img src="/icons/tick.svg" class="rc-step-check" alt="" aria-hidden="true">'
+      : num;
     stepsContainer.appendChild(parseHTML(`
       <div class="rc-step${mod}">
-        <div class="rc-step-circle"><span>${showTick ? '✓' : num}</span></div>
+        <div class="rc-step-circle"><span>${stepContent}</span></div>
         <div class="rc-step-label">${label}</div>
       </div>
     `));
@@ -93,12 +96,14 @@ function buildIncomeCard(labels, savedValue) {
   const card = parseHTML(`
     <div class="rc-income-card">
       <div class="rc-income-title">${getString(labels, 'stepsStep1MonthlyIncomeTitle', 'Monthly amount you want after retirement')}</div>
-      <div class="rc-income-input-wrap">
-        <input type="text" id="rc-monthlyIncome" class="rc-income-input"
-          placeholder="1-999,999,999" maxlength="${formatNumber(999999999).length}" value="${formatNumber(savedValue ?? 0)}">
-        <span class="rc-income-unit">${getString(labels, 'commonUnit', 'baht')}</span>
+      <div class="rc-income-wrap">
+        <div class="rc-income-input-wrap">
+          <input type="text" id="rc-monthlyIncome" class="rc-income-input" autocomplete="off"
+            placeholder="1-999,999,999" maxlength="${formatNumber(999999999).length}" value="${formatNumber(savedValue ?? 0)}">
+          <span class="rc-income-unit">${getString(labels, 'commonUnit', 'baht')}</span>
+        </div>
+        <hr class="rc-income-divider">
       </div>
-      <hr class="rc-income-divider">
       <div class="rc-income-footer">
         <span class="rc-error-text" id="rc-err-monthlyIncome"></span>
         <span class="rc-present-value">${getString(labels, 'stepsStep1CurrentValueNote', 'At present value')}</span>
@@ -167,7 +172,7 @@ function buildAgeField(id, label, savedValue, labels) {
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="1-120" maxlength="${formatNumber(120).length}" value="${savedValue ?? 0}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
@@ -188,7 +193,7 @@ function buildAgeField(id, label, savedValue, labels) {
 
   input.addEventListener('keypress', (e) => { if (!/\d/.test(e.key)) e.preventDefault(); });
   input.addEventListener('input', () => {
-    input.value = input.value.replace(/\D/g, '');
+    input.value = input.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
     const val = parseInt(input.value, 10) || 0;
     if (val < 1) field.setError(minMsg);
     else if (val > 120) field.setError(maxMsg);
@@ -206,7 +211,7 @@ function buildMoneyField(id, label, savedValue, labels, { max = 999999999 } = {}
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="0 - ${formatNumber(max)}" maxlength="${formatNumber(max).length}" value="${formatNumber(savedValue ?? 0)}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
@@ -268,12 +273,13 @@ function buildMoneyField(id, label, savedValue, labels, { max = 999999999 } = {}
 // ─── Percent Field (J2 sections) ─────────────────────────────────────────────────
 
 function buildPercentField(id, label, savedValue, labels, { min = 0, max = 100 } = {}) {
-  const rangeMsg = getString(labels, 'validationPercentageError', 'Value must be a number between 0 and 100');
+  const minMsg = `${getString(labels, 'validationMinValueError', 'Minimum must not exceed')} ${min}`;
+  const maxMsg = `${getString(labels, 'validationMaxValueError', 'Maximum up to')} ${max}`;
 
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="${min} - ${max}" maxlength="${formatNumber(Math.floor(max - 0.01)).length + 3}" value="${savedValue ?? 0}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
@@ -308,7 +314,8 @@ function buildPercentField(id, label, savedValue, labels, { min = 0, max = 100 }
       input.value = input.value.slice(0, dotIdx + 3);
     }
     const val = parseFloat(input.value);
-    if (!Number.isNaN(val) && (val < min || val > max)) field.setError(rangeMsg);
+    if (!Number.isNaN(val) && val < min) field.setError(minMsg);
+    else if (!Number.isNaN(val) && val > max) field.setError(maxMsg);
     else field.setError('');
   });
 
@@ -580,7 +587,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
     const crossMsg = getString(labels, 'validationAnnualSavingsIncreaseRateError', '% of annual increase in savings must be less than/equal to the expected annual return.');
     const increaseErr = block.querySelector('#rc-err-savingsIncreaseRate').textContent;
     if (increaseRate > returnRate) {
-      if (!increaseErr) savingsIncreaseRateField.setError(crossMsg);
+      savingsIncreaseRateField.setError(crossMsg);
     } else if (increaseErr === crossMsg) {
       savingsIncreaseRateField.setError('');
     }
@@ -629,9 +636,9 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
         SavingBeginAmount: journey2Values.SavingBeginAmount,
         CompensationRate: userReturnRate / 100,
         SavingIncRate: journey2Values.SavingIncRatePct / 100,
-        SavingCurrent: journey2Values.SavingCurrentPct / 100,
+        SavingCurrent: journey2Values.PVDRetire,
         IncomeRetire: journey2Values.IncomeRetire,
-        PVDRetire: journey2Values.PVDRetire,
+        PVDRetire: journey2Values.SavingCurrentPct / 100,
         IncIncomeRetire: journey2Values.IncIncomeRetirePct / 100,
         CompensationRateRetire: journey2Values.CompensationRateRetirePct / 100,
         RMFSumRetire: journey2Values.RMFSumRetire,
@@ -732,6 +739,7 @@ function renderJourney3(block, data, state, onBack) {
     const increaseRate = round2(state.journey2?.SavingIncRatePct ?? 0);
     const increaseRateText = getString(labels, 'stepsResultsInvestmentReturnRate', 'By increasing your annual savings by {rate}%')
       .replace('{rate}%', `${increaseRate}%`);
+    const increaseRateNote = increaseRate > 0 ? `<p class="rc-j1-summary-note">${increaseRateText}</p>` : '';
 
     // ── Cases 2 & 3: savings cards ──
     const altCard = savingMonth2 >= 0 ? `
@@ -745,7 +753,7 @@ function renderJourney3(block, data, state, onBack) {
               ${note2Text}
             </p>
           </div>
-          <p class="rc-j1-summary-note">${increaseRateText}</p>
+          ${increaseRateNote}
         </div>` : '';
     content.appendChild(parseHTML(`
       <div class="rc-savings-cards">
@@ -759,7 +767,7 @@ function renderJourney3(block, data, state, onBack) {
               ${note1Text}
             </p>
           </div>
-          <p class="rc-j1-summary-note">${increaseRateText}</p>
+          ${increaseRateNote}
         </div>
         ${altCard}
       </div>

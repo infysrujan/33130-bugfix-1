@@ -10,7 +10,7 @@ import {
   parseCsvConfigList,
   parseIsoDate,
   parseTypedDate,
-} from './helpers/date-helpers.js';
+} from '../../scripts/utils/date-helpers.js';
 import {
   createApiEndpoints,
   getEnabledDays,
@@ -498,10 +498,7 @@ function setupSection(
         getEndpointUrl('updateInDay', parsed.day, parsed.month, parsed.year),
       );
       state.updates = updates;
-      const stillExists = updates.some((item) => trimValue(item.Update) === state.selectedUpdate);
-      if (!stillExists) {
-        state.selectedUpdate = trimValue(updates[updates.length - 1]?.Update);
-      }
+      state.selectedUpdate = trimValue(updates[updates.length - 1]?.Update);
     } catch (e) {
       // silent
     }
@@ -843,10 +840,7 @@ export default async function decorate(block) {
         endpoints.updateInDay(latestDate.day, latestDate.month, latestDate.year),
       );
       s1State.updates = updates;
-      const preferredUpdate = trimValue(latestItem?.Update);
-      const hasPreferred = updates.some((item) => trimValue(item.Update) === preferredUpdate);
-      const fallback = trimValue(updates[updates.length - 1]?.Update);
-      s1State.selectedUpdate = hasPreferred ? preferredUpdate : fallback;
+      s1State.selectedUpdate = trimValue(updates[updates.length - 1]?.Update);
       s1State.typedDate = formatDateInputValue(
         s1State.selectedDate,
         monthLabels,
@@ -883,10 +877,7 @@ export default async function decorate(block) {
         endpoints.fwdUpdateInDay(latestDate.day, latestDate.month, latestDate.year),
       );
       s2State.updates = updates;
-      const preferredUpdate = trimValue(latestFwd?.Update);
-      const hasPreferred = updates.some((item) => trimValue(item.Update) === preferredUpdate);
-      const fallback = trimValue(updates[updates.length - 1]?.Update);
-      s2State.selectedUpdate = hasPreferred ? preferredUpdate : fallback;
+      s2State.selectedUpdate = trimValue(updates[updates.length - 1]?.Update);
       s2State.typedDate = formatDateInputValue(
         s2State.selectedDate,
         monthLabels,

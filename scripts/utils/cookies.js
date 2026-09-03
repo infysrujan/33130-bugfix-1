@@ -21,3 +21,11 @@ export function setCookie(name, value, days) {
   document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; `
     + `expires=${expires}; path=/; SameSite=Lax`;
 }
+
+/**
+ * Deletes a cookie by name.
+ * @param {string} name
+ */
+export function deleteCookie(name) {
+  document.cookie = `${encodeURIComponent(name)}=; Max-Age=0; path=/; SameSite=Lax`;
+}

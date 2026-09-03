@@ -10,6 +10,7 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
   const nearestLabel = placeholders?.nearestLocationTag || 'nearest';
   const getDirectionText = placeholders?.getDirectionText || 'Get Direction';
   const statusLabel = placeholders?.statusLabel || 'Status:';
+  const closedStatusText = placeholders?.locateUsLabelClose;
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
 
@@ -22,8 +23,8 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
   // ATM/ATM+ cards only show name, address, and directions
   const branchStatus = !isAtm && hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
   const isOpen = branchStatus.toLowerCase() === 'open';
-  const tel = !isAtm && hasValue(loc.Tel) && loc.Tel.trim() !== 'BeID' ? loc.Tel : '';
-  const fax = !isAtm && hasValue(loc.Fax) ? loc.Fax : '';
+  const tel = !isAtm && loc.Tel && loc.Tel.trim() !== '' && loc.Tel.trim() !== 'BeID' ? loc.Tel.trim() : '';
+  const fax = !isAtm && loc.Fax && loc.Fax.trim() !== '' ? loc.Fax.trim() : '';
 
   const card = createEl(`
     <article class="locate-us-card">
@@ -59,7 +60,7 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
   if (branchStatus) {
     card.querySelector('.locate-us-card-detail .locate-us-card-row .locate-us-card-label').textContent = statusLabel;
     const statusEl = card.querySelector('.locate-us-card-status');
-    statusEl.textContent = branchStatus;
+    statusEl.textContent = isOpen ? branchStatus : (closedStatusText || branchStatus);
     statusEl.classList.add(`locate-us-card-status-${branchStatus.toLowerCase()}`);
   }
   if (isOpen) {
@@ -99,8 +100,8 @@ export function buildOverseasCard(loc, placeholders) {
   const address = [loc.Address1, loc.Address2, loc.Address3, loc.Province, loc.Postcode]
     .filter(Boolean).join(' ');
   const hours = hasValue(loc.MicroBranchHours) ? loc.MicroBranchHours : '';
-  const tel = hasValue(loc.Tel) ? loc.Tel : '';
-  const fax = hasValue(loc.Fax) ? loc.Fax : '';
+  const tel = loc.Tel && loc.Tel.trim() !== '' ? loc.Tel.trim() : '';
+  const fax = loc.Fax && loc.Fax.trim() !== '' ? loc.Fax.trim() : '';
   const hoursLabel = placeholders?.hoursLabel || 'Hours:';
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
@@ -244,6 +245,42 @@ export function renderPagination(paginationEl, total, page, onPageChange, placeh
   paginationEl.appendChild(nextBtn);
 }
 
+// ─── Header height equalization (per row) ────────────────────────────────────
+
+/**
+ * Equalize the .locate-us-card-name (h3) height across each visual row so the
+ * <hr> beneath the header lines up. Flexbox can't size a nested element to match
+ * sibling cards, so we measure per row — cards sharing an offsetTop are one row —
+ * and set each row's names to the tallest name height in that row.
+ * @param {HTMLElement} cardsContainer
+ */
+function equalizeCardNames(cardsContainer) {
+  const cards = [...cardsContainer.querySelectorAll(':scope > .locate-us-card')];
+  if (!cards.length) return;
+
+  // Reset first so a re-run (e.g. on resize) measures natural heights.
+  cards.forEach((card) => {
+    const name = card.querySelector('.locate-us-card-name');
+    if (name) name.style.minHeight = '';
+  });
+
+  // Group each card's name by the card's row (same offsetTop = same row).
+  const rows = new Map();
+  cards.forEach((card) => {
+    const name = card.querySelector('.locate-us-card-name');
+    if (!name) return;
+    const top = Math.round(card.offsetTop);
+    if (!rows.has(top)) rows.set(top, []);
+    rows.get(top).push(name);
+  });
+
+  // Apply the tallest name height in each row to that row's names.
+  rows.forEach((rowNames) => {
+    const max = Math.max(...rowNames.map((n) => n.offsetHeight));
+    if (max > 0) rowNames.forEach((n) => { n.style.minHeight = `${max}px`; });
+  });
+}
+
 // ─── renderCards ─────────────────────────────────────────────────────────────
 
 export function renderCards(
@@ -256,6 +293,7 @@ export function renderCards(
   configs,
   isAtm = false,
   autoSelect = true,
+  getSelectedLoc = null,
 ) {
   cardsContainer.innerHTML = '';
   const start = (page - 1) * CARDS_PER_PAGE;
@@ -310,18 +348,47 @@ export function renderCards(
       }
     });
 
-    if (idx === 0 && autoSelect) {
+    // Keep the currently-selected location's card active/expanded on every render
+    // (incl. pagination back to its page). `allResults` is a stable array, so the
+    // selected loc is the same object reference we can match here. Falls back to
+    // the first card only on the initial auto-select render.
+    const selectedLoc = getSelectedLoc ? getSelectedLoc() : null;
+    const isActive = selectedLoc ? loc === selectedLoc : (idx === 0 && autoSelect);
+    if (isActive) {
       body.hidden = false;
       header.setAttribute('aria-expanded', 'true');
-      if (hasCoords) onSelect(loc);
     }
+    if (idx === 0 && autoSelect && hasCoords && !selectedLoc) onSelect(loc);
 
     cardsContainer.appendChild(card);
   });
 
   renderPagination(paginationEl, allResults.length, page, (newPage) => {
     // eslint-disable-next-line max-len
-    renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs, isAtm, false);
+    renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs, isAtm, false, getSelectedLoc);
     scrollToMap();
   }, placeholders);
+
+  // Align the <hr> across a row by equalizing card-name heights per row. Wait for
+  // fonts + a layout frame so measurements are accurate.
+  (document.fonts?.ready ?? Promise.resolve()).then(() => {
+    requestAnimationFrame(() => equalizeCardNames(cardsContainer));
+  });
+
+  // Re-equalize when the container width changes (row composition shifts between
+  // 3 and 4 cards). Attached once; the width guard avoids a feedback loop from
+  // the min-heights we set (those change height, not width).
+  if (typeof ResizeObserver !== 'undefined' && !cardsContainer.dataset.headerEqualizer) {
+    cardsContainer.dataset.headerEqualizer = 'true';
+    let lastWidth = cardsContainer.offsetWidth;
+    let rafId = null;
+    const observer = new ResizeObserver(() => {
+      const width = cardsContainer.offsetWidth;
+      if (width === lastWidth) return;
+      lastWidth = width;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => equalizeCardNames(cardsContainer));
+    });
+    observer.observe(cardsContainer);
+  }
 }

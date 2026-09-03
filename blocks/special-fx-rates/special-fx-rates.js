@@ -1,6 +1,6 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { normalizeRates } from '../forex-rates/helpers/api-helpers.js';
-import { parseApiDate } from '../forex-rates/helpers/date-helpers.js';
+import { parseApiDate } from '../../scripts/utils/date-helpers.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 async function fetchFxRatesConfig(url) {

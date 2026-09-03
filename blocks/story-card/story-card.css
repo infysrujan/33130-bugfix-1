@@ -91,7 +91,7 @@
   margin-bottom: 1.875rem;
   font-size: 0.875rem;
   line-height: 1.125rem;
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 10;
@@ -119,6 +119,11 @@
 
 .story-card .story-card-social-icons a:hover {
   text-decoration: none;
+}
+
+.story-card-content .button-container .button-m {
+  min-width:  8.4375rem;
+  box-sizing: border-box;
 }
 
 /* ========================================================================
@@ -167,7 +172,6 @@
     align-items: center;
     height: 100%;
     padding: 0;
-    padding-left: 2.25rem;
   }
 }
 
@@ -178,7 +182,7 @@
     box-sizing: border-box;
   }
 
-  .story-card .inner {
+  .image-right.story-card .inner {
     padding: 0 0 0 2.25rem;
   }
 
@@ -189,5 +193,15 @@
   .story-card .text-default {
     font-size: 1rem;
     line-height: 1.375rem;
+  }
+
+  .story-card-content .button-container .button-m {
+    min-width: 9.688rem;
+  }
+
+  :lang(th){
+    .story-card .title-1 {
+      line-height: 2.5rem;
+    }
   }
 }

@@ -13,7 +13,7 @@
   width: 100%;
   max-width: 100%;
   display: block;
-  border-radius: 0.4375rem;
+  border-radius: var(--bbl-rounded-150);
   overflow: hidden;
   border: 0.063rem solid rgb(0 0 0 / 8%);
   background-color: var(--bbl-color-white);
@@ -88,7 +88,7 @@
 /* --- Title --- */
 .content-insert-cards .title-2 {
   font-size: var(--bbl-text-thumbnail-card-title-size);
-  line-height: 1.2;
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
   font-weight: var(--bbl-text-thumbnail-card-title-weight);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
@@ -117,8 +117,8 @@
   font-size: var(--bbl-body-b1-size);
   line-height: 1.29;
   font-weight: var(--bbl-font-weight-regular);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  color: var(--bbl-color-grey-85);
+  font-family: var(--bbl-font-family-primary);
+  color: var(--bbl-color-grey-90);
   margin: 0;
   overflow: hidden;
   display: -webkit-box;
@@ -135,6 +135,15 @@
 
 .content-insert-card .button-m {
   max-width: 100%;
+}
+
+.section.columns-3.content-insert-cards-container,
+.section.columns-2-50.content-insert-cards-container,
+.section.columns-2-65.content-insert-cards-container,
+.section.columns-2-75.content-insert-cards-container,
+.section.columns-2-25.content-insert-cards-container,
+.section.columns-2-33.content-insert-cards-container {
+  gap: var(--bbl-space-200);
 }
 
 @media (width > 47.5rem) {
@@ -169,7 +178,7 @@
 .content-insert-cards .thumb {
   border-radius: var(--bbl-rounded-100);
   width: auto;
-  height: 23.75rem;
+  height: 23.625rem;
 }
 
 .content-insert-cards .thumb:not(:has(picture, img)) {
@@ -223,4 +232,13 @@
 .content-insert-cards .category {
   font-size: 0.9rem;
 }
+
+  .section.columns-3.content-insert-cards-container,
+  .section.columns-2-50.content-insert-cards-container,
+  .section.columns-2-65.content-insert-cards-container,
+  .section.columns-2-75.content-insert-cards-container,
+  .section.columns-2-25.content-insert-cards-container,
+  .section.columns-2-33.content-insert-cards-container {
+    gap: var(--bbl-space-500);
+  }
 }

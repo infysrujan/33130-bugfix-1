@@ -40,16 +40,21 @@
 }
 
 .mobile-brand-logo {
-  width: 50%;
-  margin: 0 auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.mobile-brand-logo img {
+  width: auto;
 }
 
 .header .hamburger-icon {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  width: 1.5rem;
-  height: 1.125rem;
+  justify-content: space-around;
+  width: 1.125rem;
+  height: 1.5rem;
   box-sizing: content-box;
 }
 

@@ -50,6 +50,10 @@
                 {
                   "name": "Border Bottom",
                   "value": "border-bottom"
+                },
+                {
+                  "name": "No Border Bottom",
+                  "value": "no-border-bottom"
                 }
               ]
             },
@@ -80,6 +84,14 @@
                 {
                   "name": "Right Aligned",
                   "value": "header-right-aligned"
+                },
+                {
+                  "name": "Right Aligned Except First",
+                  "value": "header-right-aligned-except-first"
+                },
+                {
+                  "name": "Top Aligned",
+                  "value": "header-top-aligned"
                 },
                 {
                   "name": "Header Blue",
@@ -128,8 +140,28 @@
                   "value": "cells-center-aligned-except-first"
                 },
                 {
+                  "name": "Cells Right Aligned Except First",
+                  "value": "cells-right-aligned-except-first"
+                },
+                {
+                  "name": "Cells Middle Aligned",
+                  "value": "cells-middle-aligned"
+                },
+                {
                   "name": "Dash Cell Highlight",
                   "value": "dash-cell-highlight"
+                },
+                {
+                  "name": "Highlight Bold Cells",
+                  "value": "highlight-bold-cells"
+                },
+                {
+                  "name": "Highlight First Column",
+                  "value": "highlight-first-column"
+                },
+                {
+                  "name": "Highlight All Cells",
+                  "value": "highlight-all-cells"
                 }
               ]
             },
@@ -164,6 +196,14 @@
               ]
             }
           ]
+        },
+        {
+          "component": "text",
+          "name": "columnWidth",
+          "label": "Column Width",
+          "valueType": "string",
+          "required": false,
+          "description": "Comma-separated width per column, in order. Accepts any CSS width value (e.g. 35%, 30px, fit-content). Use \"auto\" or leave a column blank to size it automatically."
         },
         {
           "component": "text",

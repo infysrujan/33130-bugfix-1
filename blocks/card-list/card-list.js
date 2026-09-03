@@ -9,17 +9,17 @@ function getTextValue(value) {
   return value?.toString().trim() || '';
 }
 
-function formatMenuCardDate(dateStr) {
+function formatMenuCardDate(dateStr, monthYearOnly = false) {
   if (!dateStr) return '';
-  const lang = getLang();
   const date = new Date(dateStr);
-  if (lang === 'th') {
-    const buddhistYear = date.getFullYear() + 543;
+  const isThai = getLang() === 'th';
+  if (isThai) {
     const month = date.toLocaleString('th-TH', { month: 'long' });
-    const day = date.getDate();
-    return `${day} ${month} ${buddhistYear}`;
+    const year = date.getFullYear() + 543;
+    return monthYearOnly ? `${month} ${year}` : `${date.getDate()} ${month} ${year}`;
   }
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const options = { month: 'long', year: 'numeric', ...(monthYearOnly ? {} : { day: 'numeric' }) };
+  return date.toLocaleDateString('en-GB', options);
 }
 
 function parseBooleanFlag(value, defaultValue = false) {
@@ -82,28 +82,21 @@ function createCardListItem(cardElement, doc) {
     ? cells.length
     : (9 + downloadOffset + stubOffset) + relIdx;
 
-  const img = imageDiv?.querySelector('img');
-  const promoTag = promoTagDiv?.textContent?.trim();
-  const title = titleDiv?.innerHTML?.trim();
-  const subtitle = subtitleDiv?.textContent?.trim() || '';
-  const description = descDiv?.innerHTML;
-  const remark = remarkDiv?.innerHTML;
-  const dateTextRaw = cells[cells.length - 1]?.textContent?.trim() || '';
+  const lastCellText = cells[cells.length - 1]?.textContent?.trim() || '';
+  const monthYearOnly = isBooleanLikeValue(lastCellText);
+  const dateRaw = (monthYearOnly ? cells[cells.length - 2] : cells[cells.length - 1])?.textContent?.trim() || '';
   let financialDate = '';
-  if (dateTextRaw) {
-    const parsedDate = new Date(dateTextRaw);
-    financialDate = !Number.isNaN(parsedDate.getTime())
-      ? formatMenuCardDate(dateTextRaw)
-      : dateTextRaw;
+  if (dateRaw && !Number.isNaN(new Date(dateRaw).getTime())) {
+    financialDate = formatMenuCardDate(dateRaw, monthYearOnly && parseBooleanFlag(lastCellText));
+  } else if (!monthYearOnly) {
+    financialDate = dateRaw;
   }
-  const defaultButton = defaultButtonDiv?.querySelector('a');
   const imageLayout = cells[base]?.textContent?.trim() || 'default';
   const enableTitleUnderline = parseBooleanFlag(cells[base + 1]?.textContent, false);
   const isCardClickable = parseBooleanFlag(cells[base + 2]?.textContent, false);
   const cardLinkAnchor = cells[base + 3]?.querySelector('a');
   const cardLinkHref = cardLinkAnchor?.getAttribute('href') || '';
   const cardLinkTarget = cardLinkAnchor?.target || '';
-  const cardLinkTitle = cardLinkAnchor?.title || '';
   const cell4Text = cells[base + 4]?.textContent?.trim();
   const isCell4Boolean = isBooleanLikeValue(cell4Text);
   let overlayHref;
@@ -118,69 +111,57 @@ function createCardListItem(cardElement, doc) {
   const inner = createElementFromHTML('<div class="cards-list-inner"></div>', doc);
   const content = createElementFromHTML('<div class="cards-list-content"></div>', doc);
 
-  if (img) {
-    const newImg = img.cloneNode(true);
-    const imageWrapper = createElementFromHTML(
-      `<div class="cards-list-image cards-list-image-${imageLayout}"></div>`,
-      doc,
-    );
-    imageWrapper.appendChild(newImg);
-    inner.appendChild(imageWrapper);
+  if (imageDiv?.querySelector('img')) {
+    imageDiv.className = `cards-list-image cards-list-image-${imageLayout}`;
+    inner.appendChild(imageDiv);
   }
 
-  if (promoTag) {
-    content.appendChild(
-      createElementFromHTML(`<div class="cards-list-promo-tag"><p>${promoTag}</p></div>`, doc),
-    );
+  if (promoTagDiv?.textContent?.trim()) {
+    promoTagDiv.className = 'cards-list-promo-tag';
+    content.appendChild(promoTagDiv);
   }
 
-  if (title) {
+  if (titleDiv?.innerHTML?.trim()) {
     const titleClasses = ['cards-list-title'];
     if (enableTitleUnderline) titleClasses.push('has-title-underline');
-    content.appendChild(
-      createElementFromHTML(`<div class="${titleClasses.join(' ')}">${title}</div>`, doc),
-    );
+    titleDiv.className = titleClasses.join(' ');
+    content.appendChild(titleDiv);
   }
 
-  if (subtitle) {
-    content.appendChild(
-      createElementFromHTML(`<div class="cards-list-subtitle"><p>${subtitle}</p></div>`, doc),
-    );
+  if (subtitleDiv?.textContent?.trim()) {
+    subtitleDiv.className = 'cards-list-subtitle';
+    content.appendChild(subtitleDiv);
   }
 
-  if (description) {
-    content.appendChild(
-      createElementFromHTML(`<div class="cards-list-description">${description}</div>`, doc),
-    );
+  if (descDiv?.innerHTML) {
+    descDiv.className = 'cards-list-description';
+    content.appendChild(descDiv);
     content.querySelector('.cards-list-title')?.classList.add('has-description');
   }
 
-  if (remark) {
-    content.appendChild(
-      createElementFromHTML(`<div class="cards-list-remark">${remark}</div>`, doc),
-    );
+  if (remarkDiv?.innerHTML) {
+    remarkDiv.className = 'cards-list-remark';
+    content.appendChild(remarkDiv);
   }
 
   if (content.children.length) {
     inner.appendChild(content);
   }
 
-  if (actionTypeText === 'default' && defaultButton) {
-    const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
-    buttonWrapper.innerHTML = defaultButtonDiv.innerHTML;
-    const buttonLink = buttonWrapper.querySelector('a');
+  if (actionTypeText === 'default' && defaultButtonDiv?.querySelector('a')) {
+    defaultButtonDiv.className = 'cards-list-button';
+    const buttonLink = defaultButtonDiv.querySelector('a');
     if (buttonLink) {
       buttonLink.removeAttribute('data-modal');
       if (enableOverlayModal && overlayHref) {
         buttonLink.setAttribute('href', '#');
         buttonLink.setAttribute('data-modal', overlayHref);
-        buttonLink.removeAttribute('title'); // modal trigger, not a real link — drop the tooltip
-        // Stop later decoration passes from re-adding title on this modal trigger
+        buttonLink.removeAttribute('title');
         addAutoBlockingExclusion(buttonLink, 'title');
       }
     }
-    applyLinkTarget(buttonWrapper, 'a.button-m', openInNewTab);
-    inner.appendChild(buttonWrapper);
+    applyLinkTarget(defaultButtonDiv, 'a.button-m', openInNewTab);
+    inner.appendChild(defaultButtonDiv);
   }
 
   if (actionTypeText === 'select-dropdown') {
@@ -224,18 +205,18 @@ function createCardListItem(cardElement, doc) {
     // true when the card opens a modal instead of navigating
     const willUseModal = enableOverlayModal && !!overlayHref;
 
-    if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle); // skip title for modal triggers
     if (cardLinkTarget) wrapper.setAttribute('target', cardLinkTarget);
     if (cardLinkTarget === '_blank') wrapper.setAttribute('rel', 'noopener noreferrer');
 
     wrapper.target = openInNewTab ? '_blank' : '_self';
     if (openInNewTab) wrapper.setAttribute('rel', 'noopener noreferrer');
 
+    wrapper.removeAttribute('title');
+    addAutoBlockingExclusion(wrapper, 'title'); // stop later decoration passes from adding a hover tooltip
+
     if (willUseModal) {
       wrapper.setAttribute('data-modal', overlayHref);
       wrapper.setAttribute('href', '#');
-      wrapper.removeAttribute('title');
-      addAutoBlockingExclusion(wrapper, 'title'); // stop later decoration passes from re-adding title
     } else {
       wrapper.setAttribute('href', cardLinkHref);
     }
@@ -247,15 +228,6 @@ function createCardListItem(cardElement, doc) {
   }
 
   return card;
-}
-
-function stripAuthoringInstrumentation(root) {
-  if (!root) return;
-  [root, ...root.querySelectorAll('*')].forEach((el) => {
-    [...el.attributes]
-      .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
-      .forEach(({ name }) => el.removeAttribute(name));
-  });
 }
 
 function removeDuplicateAuthoringBlocks(block) {
@@ -300,16 +272,12 @@ export default function decorate(block) {
   }
 
   const sourceRows = getSourceRows(block);
-  if (isAuthoring) {
-    sourceRows.forEach((row) => { row.style.display = 'none'; });
-  }
-
   const [LayoutRow, Alignment, cardsPerRowEl, ...cardRows] = sourceRows;
   const cardListLayout = LayoutRow?.textContent?.trim();
   const cardListAlignment = Alignment?.textContent?.trim();
   const cardsPerRow = cardsPerRowEl?.textContent?.trim();
   const container = createElementFromHTML(
-    `<div class="cards-list ${cardListLayout} ${cardListAlignment} ${cardsPerRow}"></div>`,
+    `<div class="cards-list content ${cardListLayout} ${cardListAlignment} ${cardsPerRow}"></div>`,
     doc,
   );
 
@@ -319,23 +287,15 @@ export default function decorate(block) {
 
   cardRows.forEach((row) => {
     const card = createCardListItem(row, doc);
-    if (!isAuthoring) {
-      moveInstrumentation(row, card);
-    }
+    moveInstrumentation(row, card);
+    row.remove();
     container.appendChild(card);
-    if (!isAuthoring) {
-      row.remove();
-    }
   });
 
   block.appendChild(container);
 
   const isScrollableLayout = cardListLayout === 'scrollable' || cardListLayout === 'carousel';
   if (isScrollableLayout) attachScrollableDropdownPanel(container, doc);
-
-  if (isAuthoring) {
-    stripAuthoringInstrumentation(container);
-  }
 
   bindModalHandler(block, doc);
 }

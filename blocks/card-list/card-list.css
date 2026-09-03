@@ -1,19 +1,6 @@
-.card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  font-size: var(--bbl-text-section-title-size);
-  line-height: var(--bbl-text-section-title-line-height);
-  font-weight: var(--bbl-text-section-title-weight);
-  letter-spacing: -0.0125rem;
-}
+
 
 :lang(th) {
-  .card-list-container .default-content-wrapper :is(h1) {
-    line-height: 1.875rem;
-  }
-
-  .card-list-container .default-content-wrapper :is(h2) {
-    line-height: 1.5rem;
-  }
-
   .cards-list-title :is(h1) {
     line-height: 1.875rem;
   }
@@ -27,7 +14,7 @@
 .cards-list-subtitle p,
 .cards-list-description p {
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .cards-list-subtitle p {
@@ -71,10 +58,6 @@
 
 .cards-list-promo-tag p {
   margin: 0;
-}
-
-.cards-list-description :is(p, li) a {
-  color: inherit;
 }
 
 .cards-list-description :is(p, li) a[class] {
@@ -133,7 +116,6 @@
   gap: 0 var(--bbl-space-250);
   overflow: auto hidden;
   padding: 0.625rem 0;
-  scroll-snap-type: x mandatory;
   scrollbar-width: thin;
 }
 
@@ -149,19 +131,32 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-width: 0;
   box-sizing: border-box;
   box-shadow: 0 0 1rem 0 transparent;
   position: relative;
+  border: 0.0625rem solid transparent;
+  border-radius: 0.4375rem;
+}
+
+.cards-list-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-radius: 0.4375rem;
+  pointer-events: none;
+  z-index: 1;
+  transition: border-color 0.3s ease;
+}
+
+.cards-list-item:has(.cards-list-item-link:hover)::after {
+  border-color: var(--bbl-color-active-blue);
 }
 
 .carousel .cards-list-item {
   margin-block: 0.5625rem 0;
-}
-
-.cards-list-item:has(.cards-list-item-link) {
-  border: none;
 }
 
 /* .cards-list-item:has(.cards-list-image-logo) {
@@ -201,8 +196,6 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
-  transition: border 0.3s ease, box-shadow 0.3s ease;
   border-radius: 0.4375rem;
 }
 
@@ -211,7 +204,6 @@
 }
 
 .cards-list-item-link:hover {
-  border: 0.0625rem solid var(--bbl-color-active-blue);
   text-decoration: none;
 }
 
@@ -219,6 +211,8 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+  min-width: 0;
+  border-radius: 0.375rem;
 }
 
 .cards-list-image.cards-list-image-x-small {
@@ -236,13 +230,6 @@
   width: auto;
   max-width: 100%;
   margin-inline: auto;
-}
-
-.cards-list-image.cards-list-image-profile img {
-  height: 100%;
-  width: 100%;
-  display: block;
-  object-fit: cover;
 }
 
 .cards-list-image.cards-list-image-profile {
@@ -278,21 +265,17 @@
   height: calc(100vw * 0.5);
 }
 
-.cards-list-image:is(.cards-list-image-card, .cards-list-image-full, .cards-list-image-default) img {
+.cards-list-image:is(.cards-list-image-card, .cards-list-image-full, .cards-list-image-default, .cards-list-image-profile) img {
   height: 100%;
   width: 100%;
-  object-fit: initial;
-  display: block;
-}
-
-.cards-list-image.cards-list-image-default img {
   object-fit: cover;
+  display: block;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
 .cards-list-image.cards-list-image-card {
   max-height: 10.3125rem;
-  border-top-left-radius: 0.4375rem;
-  border-top-right-radius: 0.4375rem;
 }
 
 .cards-list-image.cards-list-image-full {
@@ -303,10 +286,6 @@
 .cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
   max-height: 10.3125rem;
   min-height: 9.375rem;
-}
-
-.cards-list-image.cards-list-image-full img {
-  object-fit: initial;
 }
 
 .cards-list-image.cards-list-image-default {
@@ -338,6 +317,10 @@
   flex: 1;
 }
 
+.cards-list-content:has(> .cards-list-title:only-child):has(+ .cards-list-downloads) {
+  padding-bottom: 0;
+}
+
 .cards-list-promo-tag {
   font-size: var(--bbl-text-label-tag-size);
   line-height: var(--bbl-text-label-tag-line-height);
@@ -367,6 +350,7 @@
 
 .cards-list-downloads .download-button-wrapper.multiple-download-wrapper {
   margin-top: 0.625rem;
+  width: 100%;
 }
 
 .cards-list-downloads .download-button-wrapper:first-child {
@@ -383,6 +367,7 @@
   padding-bottom: 0.9375rem;
   margin-block: 0 0.9375rem;
   overflow-wrap: anywhere;
+  box-sizing: border-box;
 }
 
 .section.bg-truthful-dark-blue * .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
@@ -390,11 +375,11 @@
 }
 
 .section.bg-truthful-dark-blue * .cards-list-description p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-dark-blue * .cards-list-remark p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-blue * .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
@@ -402,11 +387,11 @@
 }
 
 .section.bg-truthful-blue * .cards-list-description p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-blue * .cards-list-remark p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .cards-list-title:not(.has-title-underline) :is(h1, h2, h3, h4, h5, h6) {
@@ -443,10 +428,7 @@
 }
 
 .card-list-modal-title {
-  font-size: var(--bbl-text-section-title-size);
-  font-weight: var(--bbl-text-section-title-weight);
   letter-spacing: -0.0125rem;
-  line-height: var(--bbl-text-section-title-line-height);
 }
 
 .card-list-modal-subtitle {
@@ -484,7 +466,6 @@
 
 .card-list-modal-title+.card-list-modal-text {
   margin: 0;
-  padding-bottom: 3.078rem;
   line-height: 1.124rem;
 }
 
@@ -555,7 +536,7 @@
 
   .cards-list.cards-4 .cards-list-item,
   .cards-list.cards-3 .cards-list-item {
-    flex: 0 0 calc((100% - 2.5rem) / 3);
+    flex: 0 0 calc((100.001% - 2.5rem) / 3);
   }
 
   .cards-list.cards-1 .cards-list-item {
@@ -587,6 +568,11 @@
   .cards-list-image.cards-list-image-card {
     height: calc(100vw / 5);
     min-height: 8.4375rem;
+  }
+
+  .cards-list:not(.scrollable, .carousel) .cards-list-inner {
+    margin-inline: -0.0625rem;
+    width: calc(100% + 0.125rem);
   }
 
   .cards-list-image.cards-list-image-full {
@@ -651,22 +637,6 @@
 
 @media (width > 64rem) {
   :lang(th) {
-    .card-list-container .default-content-wrapper :is(h1) {
-      line-height: 3.75rem;
-    }
-
-    .card-list-container .default-content-wrapper :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .card-list-container .default-content-wrapper :is(h3) {
-      line-height: 2rem;
-    }
-
-    .card-list-container .default-content-wrapper :is(h4) {
-      line-height: 1.375rem;
-    }
-
     .cards-list-title :is(h1) {
       line-height: 3.75rem;
     }
@@ -724,6 +694,11 @@
 
   .cards-list:is(.carousel) .cards-list-item {
     flex: 0 0 16.25rem;
+  }
+
+  .cards-list:not(.scrollable, .carousel) .cards-list-inner {
+    margin-inline: unset;
+    width: unset;
   }
 
   .cards-list:is(.scrollable, .carousel).center {
@@ -844,5 +819,61 @@
 
   .cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
     min-height: calc(100px + 50 * ((100vw - 320px) / 1600));
+  }
+}
+
+@media print {
+  .cards-list {
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 0 var(--bbl-space-250);
+    align-items: stretch;
+  }
+
+  .cards-list-item {
+    break-inside: avoid;
+  }
+
+  .cards-list:is(.cards-1, .cards-3, .cards-4) .cards-list-item {
+    margin-bottom: var(--bbl-space-250);
+    display: flex;
+  }
+
+  .cards-list.cards-4 .cards-list-item,
+  .cards-list.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 2.5rem) / 3);
+  }
+
+  .cards-list.cards-1 .cards-list-item {
+    flex: 0 0 calc((100% - 3.75rem) / 3);
+  }
+
+  .cards-list:is(.scrollable, .carousel) {
+    flex-flow: row wrap;
+    justify-content: center;
+    overflow: visible;
+    scroll-snap-type: none;
+    padding: 0;
+  }
+
+  .cards-list:is(.scrollable, .carousel) .cards-list-item {
+    flex: 0 0 16.875rem;
+    scroll-snap-align: none;
+    margin-bottom: var(--bbl-space-250);
+  }
+
+  .cards-list-image.cards-list-image-card {
+    height: calc(100vw / 5);
+    min-height: 8.4375rem;
+  }
+
+  .cards-list-image.cards-list-image-full {
+    height: calc(100vw / 5);
+    max-height: calc(100vw * 0.2);
+  }
+
+  .cards-list-image.cards-list-image-default {
+    max-height: calc(100vw * 0.4);
+    height: 100vw;
   }
 }

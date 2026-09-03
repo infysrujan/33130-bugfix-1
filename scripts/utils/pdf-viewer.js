@@ -49,8 +49,6 @@ export default function openPdfViewer({
   embedEl.setAttribute('title', name || 'PDF Preview');
   pdfEmbed.append(embedEl);
 
-  let pdfBlob = null;
-
   const buttonGroup = document.createElement('div');
   buttonGroup.className = `${classPrefix}-button-group`;
 
@@ -58,24 +56,20 @@ export default function openPdfViewer({
   downloadLink.className = `${classPrefix}-download`;
   downloadLink.textContent = downloadLabel;
   downloadLink.href = path;
+  if (name) downloadLink.download = name;
   downloadLink.target = '_blank';
-  downloadLink.download = name || '';
-  downloadLink.addEventListener('click', () => {
-    if (!pdfBlob) return;
-    const blobUrl = URL.createObjectURL(pdfBlob);
-    downloadLink.href = blobUrl;
-    downloadLink.removeAttribute('target');
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-  });
+  downloadLink.rel = 'noopener';
   buttonGroup.append(downloadLink);
 
-  fetch(path)
-    .then((r) => r.blob())
+  let objectUrl = null;
+  const pdfBlobPromise = fetch(path).then((r) => r.blob());
+
+  pdfBlobPromise
     .then((blob) => {
-      pdfBlob = blob;
-      const blobUrl = URL.createObjectURL(blob);
-      embedEl.src = blobUrl;
-      embedEl.addEventListener('load', () => URL.revokeObjectURL(blobUrl), { once: true });
+      // Keep the blob URL alive for the lifetime of the modal so the viewer's
+      // built-in download button can still fetch it; revoke on close() below.
+      objectUrl = URL.createObjectURL(blob);
+      embedEl.src = objectUrl;
     })
     .catch(() => {
       if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
@@ -86,6 +80,10 @@ export default function openPdfViewer({
   dialog.append(header, body);
 
   function close() {
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+      objectUrl = null;
+    }
     document.body.classList.remove(`${classPrefix}-open`);
     hideModal(overlay, `${classPrefix}-visible`);
   }

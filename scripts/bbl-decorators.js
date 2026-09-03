@@ -152,6 +152,10 @@ function handleGlobalLinkClicks() {
 
     if (!link) return;
 
+    // Social share links (blocks/social-icons) open their own share popup/dialog
+    // and must not be intercepted by the external-redirect confirmation flow.
+    if (link.classList.contains('platform-facebook') && window.FB) return;
+
     if (link.dataset.bypassRedirect === 'true') {
       delete link.dataset.bypassRedirect;
       return;

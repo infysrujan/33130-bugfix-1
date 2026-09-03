@@ -1,10 +1,9 @@
 .carousel {
-    margin-bottom: var(--bbl-space-300);
     padding-left: 1rem;
 }
 
 .carousel-header {
-    margin: var(--bbl-space-300) 0 0.875rem;
+    margin-block: 0 var(--bbl-space-300);
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -31,8 +30,8 @@
     align-items: flex-end;
     justify-content: flex-end;
     font-weight: var(--bbl-font-weight-regular);
-    font-size: 0.7rem;
-    line-height: 0.98rem;
+    font-size: var(--bbl-font-size-h4-desktop);
+    line-height: var(--bbl-line-height-h4-desktop);
     color: var(--bbl-color-active-blue);
     text-decoration: none;
     position: relative;
@@ -91,7 +90,7 @@
     display: none;
 }
 
-.carousel-item {
+.carousel-track .carousel-item {
     flex: 0 0 auto;
     width: calc(((100vw - 2.1875rem) / 4) * 3);
     max-width: 100%;
@@ -104,7 +103,7 @@
     background-color: var(--bbl-color-white);
 }
 
-.carousel-item:last-child {
+.carousel-track .carousel-item:last-child {
     margin-right: 6.25rem;
 }
 
@@ -164,7 +163,7 @@
     background: var(--bbl-color-blue-140);
     font-family: var(--bbl-font-family-looped);
     display: inline-block;
-    padding: 0.25rem 0.4375rem;
+    padding: var(--bbl-space-025) var(--bbl-space-100);
     margin-bottom: 0.8125rem;
     color: var(--bbl-color-white);
     border-radius: var(--bbl-rounded-200);
@@ -187,7 +186,7 @@
 }
 
 .carousel-description {
-    color: var(--bbl-color-grey-70);
+    color: var(--bbl-color-grey-90);
     margin: 0 0 var(--bbl-space-300);
     overflow: hidden;
     display: -webkit-box;
@@ -217,19 +216,16 @@
         padding-left: 3rem;
     }
 
-    .carousel-header {
-        padding-right: 3rem;
-    }
 
     .carousel-track {
         gap: var(--bbl-space-200);
     }
 
-    .carousel-item {
+    .carousel-track .carousel-item {
         width: calc((100vw - 8rem) / 3);
     }
 
-    .carousel-item:last-child {
+    .carousel-track .carousel-item:last-child {
         margin-right: 18.75rem;
     }
 }
@@ -238,10 +234,12 @@
     .carousel {
         position: relative;
         padding-left: 0;
+
+        --carousel-grid-offset: var(--bbl-space-1050);
     }
 
     .carousel-header h2 {
-        padding-left: var(--bbl-space-1050);
+        padding-left: 0;
     }
 
     .carousel .carousel-wrapper {
@@ -250,8 +248,11 @@
     }
 
     .carousel-header {
-        margin: 1.375rem 0 var(--bbl-space-500);
-        padding-right: var(--bbl-space-1050);
+        width: calc(100% - (2 * var(--carousel-grid-offset)));
+        margin: 0 0 var(--bbl-space-400);
+        margin-left: auto;
+        margin-right: var(--carousel-grid-offset);
+        padding-right: 0;
     }
 
     :lang(th) {
@@ -261,16 +262,20 @@
     }
 
     .carousel-header a {
-        font-size: 0.8rem;
-        line-height: 1.12rem;
-        margin-right: 0.9375rem;
         font-family: var(--bbl-font-family-looped);
     }
 
     .carousel-track {
+        width: calc(100% - var(--carousel-grid-offset));
+        margin-left: auto;
         overflow: visible;
         scroll-snap-type: none;
         gap: var(--bbl-space-300);
+    }
+
+    .carousel-track.is-sliding {
+        width: 100%;
+        margin-left: 0;
     }
 
     .carousel-nav {
@@ -322,13 +327,13 @@
         display: inline-block;
     }
 
-    .carousel-item.active {
+    .carousel-track .carousel-item.active {
         display: flex;
         width: calc(66.66vw - 8.25rem);
         min-width: calc(66.66vw - 8.25rem);
     }
 
-    .carousel-item.active > div {
+    .carousel-track .carousel-item.active > div {
         max-width: calc(50% - 0.75rem);
         height: 100%;
     }
@@ -368,7 +373,7 @@
         display: none;
     }
 
-    .carousel-item.active .carousel-content {
+    .carousel-track .carousel-item.active .carousel-content {
         padding: var(--bbl-space-400);
         max-height: 26.875rem;
         min-height: 0;
@@ -377,7 +382,7 @@
     }
 
     .carousel-eyebrow {
-        padding: var(--bbl-space-050) 0.4375rem;
+        padding: var(--bbl-space-050) var(--bbl-space-100);
         margin-bottom: 0.875rem;
         font-family: var(--bbl-font-family-medium);
     }
@@ -392,9 +397,8 @@
         display: none;
     }
 
-    .carousel-item.active .carousel-description {
+    .carousel-track .carousel-item.active .carousel-description {
         margin-bottom: var(--bbl-space-300);
-        color: var(--bbl-color-gray-142);
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
@@ -409,13 +413,13 @@
         align-self: flex-start;
     }
 
-    .carousel-item:not(.active) {
+    .carousel-track .carousel-item:not(.active) {
         position: relative;
         width: calc(30% - 1.3125rem);
         height: 30.625rem;
     }
 
-    .carousel-item:not(.active) .carousel-item-link {
+    .carousel-track .carousel-item:not(.active) .carousel-item-link {
         position: absolute;
         inset: 0;
         z-index: 1;
@@ -424,7 +428,7 @@
         max-height: 58%;
     }
 
-    .carousel-item:not(.active) .carousel-content {
+    .carousel-track .carousel-item:not(.active) .carousel-content {
         position: relative;
         top: auto;
         width: 100%;
@@ -441,18 +445,18 @@
         box-sizing: border-box;
     }
 
-    .carousel-item:not(.active) > .carousel-content {
+    .carousel-track .carousel-item:not(.active) > .carousel-content {
         position: absolute;
         inset: 0 auto auto;
         z-index: 1;
         max-height: 58%;
     }
 
-    .carousel-item:not(.active) .carousel-eyebrow {
+    .carousel-track .carousel-item:not(.active) .carousel-eyebrow {
         flex-shrink: 0;
     }
 
-    .carousel-item:not(.active) .carousel-title {
+    .carousel-track .carousel-item:not(.active) .carousel-title {
         max-width: 100%;
         min-height: 0;
         flex-shrink: 1;
@@ -464,23 +468,24 @@
 
 @media (width > 120rem) {
     .carousel {
-        --carousel-grid-offset: calc((100vw - var(--bbl-layout-content-max-width-1920)) / 2);
+        --carousel-grid-offset: max(0px, calc((100% - var(--bbl-layout-content-max-width-1920)) / 2));
     }
 
     .carousel-header {
-        padding-right: var(--carousel-grid-offset);
+        padding-right: 0;
+        width: calc(100% - (2 * var(--carousel-grid-offset)));
     }
 
     .carousel-header h2 {
-        padding-left: var(--carousel-grid-offset);
+        padding-left: 0;
     }
 
-    .carousel-item.active {
+    .carousel-track .carousel-item.active {
         width: 73.75rem;
         min-width: 73.75rem;
     }
 
-    .carousel-item:not(.active) {
+    .carousel-track .carousel-item:not(.active) {
         width: 34.5625rem;
     }
 }

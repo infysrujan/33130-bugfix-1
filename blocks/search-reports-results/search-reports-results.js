@@ -20,6 +20,24 @@ function getPreviousPagePath() {
   return `/${segments.join('/')}`;
 }
 
+function getFileNameFromPath(path) {
+  if (!path) return '';
+  const lastSegment = path.split('/').pop() || '';
+  let name = lastSegment;
+  try {
+    name = decodeURIComponent(lastSegment);
+  } catch {
+    name = lastSegment;
+  }
+  // DAM asset names are lowercase/hyphenated (e.g. fs1q-en2025.pdf) but production
+  // files use uppercase names with underscores (e.g. FS1Q_EN2025.pdf).
+  const dotIndex = name.lastIndexOf('.');
+  if (dotIndex <= 0) return name.toUpperCase();
+  const base = name.slice(0, dotIndex).replace(/-/g, '_').toUpperCase();
+  const ext = name.slice(dotIndex + 1).toLowerCase();
+  return `${base}.${ext}`;
+}
+
 function sortAssets(assets, type) {
   return [...assets].sort((a, b) => {
     if (type === 'summary-statement') {
@@ -30,7 +48,8 @@ function sortAssets(assets, type) {
 }
 
 function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
-  const fetchPath = asset.path.startsWith('http') ? asset.path : `${apiBase}${asset.path}`;
+  const fetchPath = asset.path;
+  const fileName = getFileNameFromPath(fetchPath) || asset.name;
 
   const card = createTaggedElement('div', { className: 'download-section' });
 
@@ -49,17 +68,17 @@ function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
   if (asset.mimeType === 'application/pdf') {
     const previewBtn = createTaggedElement('button', {
       className: 'srr-icon-btn srr-preview-btn',
-      attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
+      attrs: { type: 'button', 'aria-label': `Preview ${fileName}` },
     });
     previewBtn.append(createTaggedElement('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
-    previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfViewer({ path: fetchPath, name: asset.name, googleViewerUrl }); });
+    previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfViewer({ path: fetchPath, name: fileName, googleViewerUrl }); });
     iconGroup.append(previewBtn);
   }
 
   const downloadAnchor = createTaggedElement('a', {
     className: 'srr-icon-btn srr-download-btn',
     attrs: {
-      href: fetchPath, download: asset.name, 'aria-label': `Download ${asset.name}`, target: '_blank',
+      href: fetchPath, download: fileName, 'aria-label': `Download ${fileName}`, target: '_blank',
     },
   });
   const downloadBtn = createDownloadLink(downloadAnchor).querySelector('a');
