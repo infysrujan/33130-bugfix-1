@@ -22,8 +22,8 @@
 
 .floating-popup-inner {
   position: relative;
-  width: 86.1333%;
-  margin: 0 auto;
+  width: 91.6667%;
+  box-sizing: border-box;
   padding: 0 var(--bbl-space-250) var(--bbl-space-250);
   border-radius: 0.625rem;
   background: linear-gradient(115.36deg,
@@ -83,6 +83,7 @@
 }
 
 .floating-popup-body img {
+  display: block;
   margin-top: -9.375rem;
   height: 15.625rem;
 }
@@ -112,8 +113,7 @@
 .floating-popup-inner a {
   margin: 1.875rem 0 0;
   min-width: 8.625rem;
-  max-width: 8.625rem;
-  width: 100%;
+  box-sizing: border-box;
 }
 
 .floating-popup-inner .button-container {
@@ -129,7 +129,7 @@
   }
 
   .floating-popup-inner {
-    width: 38.275%;
+    width: 46%;
     bottom: 2%;
     margin: 0;
     right: 1.3125rem;
@@ -149,7 +149,7 @@
 @media (width > 64rem) {
   .floating-popup-inner {
     right: 1%;
-    width: 35.618%;
+    width: 41.6667%;
   }
 
   .floating-popup-title :is(h1, h2, h3, h4, h5, h6) {

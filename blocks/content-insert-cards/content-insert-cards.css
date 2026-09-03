@@ -13,7 +13,7 @@
   width: 100%;
   max-width: 100%;
   display: block;
-  border-radius: 0.4375rem;
+  border-radius: var(--bbl-rounded-150);
   overflow: hidden;
   border: 0.063rem solid rgb(0 0 0 / 8%);
   background-color: var(--bbl-color-white);
@@ -88,7 +88,7 @@
 /* --- Title --- */
 .content-insert-cards .title-2 {
   font-size: var(--bbl-text-thumbnail-card-title-size);
-  line-height: 1.625rem;
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
   font-weight: var(--bbl-text-thumbnail-card-title-weight);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
@@ -135,6 +135,15 @@
 
 .content-insert-card .button-m {
   max-width: 100%;
+}
+
+.section.columns-3.content-insert-cards-container,
+.section.columns-2-50.content-insert-cards-container,
+.section.columns-2-65.content-insert-cards-container,
+.section.columns-2-75.content-insert-cards-container,
+.section.columns-2-25.content-insert-cards-container,
+.section.columns-2-33.content-insert-cards-container {
+  gap: var(--bbl-space-200);
 }
 
 @media (width > 47.5rem) {
@@ -223,4 +232,13 @@
 .content-insert-cards .category {
   font-size: 0.9rem;
 }
+
+  .section.columns-3.content-insert-cards-container,
+  .section.columns-2-50.content-insert-cards-container,
+  .section.columns-2-65.content-insert-cards-container,
+  .section.columns-2-75.content-insert-cards-container,
+  .section.columns-2-25.content-insert-cards-container,
+  .section.columns-2-33.content-insert-cards-container {
+    gap: var(--bbl-space-500);
+  }
 }

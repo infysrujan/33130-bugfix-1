@@ -181,8 +181,12 @@ function runRteMarkers(paragraphs) {
 
 export function decorateEncodedNbsp(root, selector = 'p, li, td') {
   root.querySelectorAll(selector).forEach((el) => {
-    if (!el.innerHTML.includes('&amp;nbsp;')) return;
-    el.innerHTML = el.innerHTML.replace(/&amp;nbsp;/g, '&nbsp;');
+    if (el.innerHTML.includes('&amp;nbsp;')) {
+      el.innerHTML = el.innerHTML.replace(/&amp;nbsp;/g, '&nbsp;');
+    }
+    if (el.tagName === 'P' && /^\u00A0+$/.test(el.textContent)) {
+      el.classList.add('rte-nbsp-only');
+    }
   });
 }
 
@@ -191,18 +195,29 @@ export function decorateIconInContainer(container) {
   runRteMarkers([...container.querySelectorAll('p')]);
 }
 
+const INLINE_WRAPPERS = new Set(['STRONG', 'EM', 'U', 'SPAN', 'B', 'I']);
+
+function stripMarker(node, trimEnd) {
+  if (!node || node.nodeType !== Node.TEXT_NODE || !NEWTAB_RE.test(node.nodeValue)) return false;
+  const v = node.nodeValue.replace(NEWTAB_RE, '');
+  node.nodeValue = trimEnd ? v.trimEnd() : v.trimStart();
+  return true;
+}
+
 export function decorateNewTabLinks(container) {
   container.querySelectorAll('a').forEach((a) => {
     const href = a.getAttribute('href') || '';
-    const prev = a.previousSibling;
-    const next = a.nextSibling;
     const inHref = NEWTAB_RE.test(href);
-    const inPrev = prev?.nodeType === Node.TEXT_NODE && NEWTAB_RE.test(prev.nodeValue);
-    const inNext = next?.nodeType === Node.TEXT_NODE && NEWTAB_RE.test(next.nodeValue);
-    if (!inHref && !inPrev && !inNext) return;
+    const parent = a.parentElement;
+    const isWrapped = parent && parent !== container && INLINE_WRAPPERS.has(parent.tagName);
+    const found = [
+      stripMarker(a.previousSibling, true),
+      stripMarker(a.nextSibling, false),
+      isWrapped && stripMarker(parent.previousSibling, true),
+      isWrapped && stripMarker(parent.nextSibling, false),
+    ].some(Boolean);
+    if (!inHref && !found) return;
     if (inHref) a.setAttribute('href', href.replace(NEWTAB_RE, ''));
-    if (inPrev) prev.nodeValue = prev.nodeValue.replace(NEWTAB_RE, '').trimEnd();
-    if (inNext) next.nodeValue = next.nodeValue.replace(NEWTAB_RE, '').trimStart();
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
   });

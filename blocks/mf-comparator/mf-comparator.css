@@ -41,7 +41,6 @@
   color: var(--bbl-color-system-red, #d32f2f);
   font-size: var(--bbl-font-size-b2, 0.875rem);
   font-weight: 600;
-  padding-bottom: var(--bbl-space-100);
 }
 
 /* ── Compare group — scrollable row of selected cards ─────────────────────── */
@@ -53,7 +52,7 @@
   align-items: center;
   width: 100%;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-150);
-  padding: 0.9375rem 0;
+  padding: 1rem 0;
   overflow-x: auto;
   margin-bottom: 0.9375rem;
   white-space: nowrap;
@@ -98,6 +97,7 @@
   position: absolute;
   top: -0.5rem;
   z-index: 10;
+  left: -4px;
   width: var(--bbl-space-250);
   height: var(--bbl-space-250);
   border-radius: var(--bbl-radius-full);
@@ -175,7 +175,6 @@
 @media (width > 64rem) {
   .mf-comparator .inner-container {
     flex-direction: row;
-    gap: var(--bbl-space-250);
   }
 
   .mf-comparator .compare-group {
@@ -183,6 +182,7 @@
     padding-bottom: 0;
     overflow-x: visible;
     white-space: normal;
+    margin-bottom: 0;
   }
 
   .mf-comparator .product-comparing {

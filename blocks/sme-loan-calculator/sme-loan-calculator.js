@@ -511,14 +511,20 @@ export default async function decorate(block) {
       return;
     }
 
-    lastResult = raw;
     resultLabel.textContent = '';
     resultLabel.style.whiteSpace = 'pre-wrap';
     resultNum = el('strong', 'sme-result-number');
-    resultNum.textContent = rc.integer
-      ? Math.floor(lastResult).toLocaleString('en-US')
-      : fmt(lastResult);
-    resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
+    if (raw < 0) {
+      lastResult = null;
+      resultNum.textContent = errorMessage || 'Cannot Calculate';
+      resultLabel.append(`${rc.prefix} `, resultNum);
+    } else {
+      lastResult = raw;
+      resultNum.textContent = rc.integer
+        ? Math.floor(lastResult).toLocaleString('en-US')
+        : fmt(lastResult);
+      resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
+    }
   });
 
   // ── Input behaviour ──

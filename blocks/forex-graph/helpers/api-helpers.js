@@ -88,11 +88,14 @@ export function normalizeChartData(list, lang) {
   return (Array.isArray(list) ? list : []).map((item) => {
     const rawDate = String(item?.Ddate || '').trim();
     let date = rawDate;
+    let timestamp = null;
 
     const [month, day, year] = rawDate.split('/');
     if (month && day && year) {
+      const parsed = new Date(Number(year), Number(month) - 1, Number(day));
+      if (!Number.isNaN(parsed.getTime())) timestamp = parsed.getTime();
+
       if (lang === 'th') {
-        const parsed = new Date(`${month}/${day}/${year}`);
         if (!Number.isNaN(parsed.getTime())) {
           date = parsed.toLocaleDateString('th-TH', {
             year: 'numeric',
@@ -110,6 +113,7 @@ export function normalizeChartData(list, lang) {
 
     return {
       date,
+      timestamp,
       buyingRate: parseFloat(String(item?.BuyingRates || '').trim()) || null,
       sellingRate: parseFloat(String(item?.SellingRates || '').trim()) || null,
     };

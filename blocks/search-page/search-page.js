@@ -266,7 +266,7 @@ export default async function decorate(block) {
   function setLoading(isLoading) {
     loading = isLoading;
     searchButton.disabled = isLoading;
-    searchButton.textContent = isLoading ? 'Searching...' : config.searchLabel;
+    searchButton.textContent = config.searchLabel;
   }
 
   function renderResults(items, term = '') {

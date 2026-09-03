@@ -272,6 +272,20 @@
   scroll-snap-type: x mandatory;
 }
 
+@media (width > 64rem) {
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel :is(.tabs-nav-prev, .tabs-nav-next) {
+    top: 5.81rem;
+  }
+
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel .tabs-nav-prev {
+    left: -0.875rem;
+  }
+
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel .tabs-nav-next {
+    right: -0.875rem;
+  }
+}
+
 .tabs.icon-tab-carousel .tabs-nav-prev {
   left: 0;
 }
@@ -291,8 +305,7 @@
   justify-content: flex-start;
   white-space: normal;
   text-align: center;
-  flex: 0 0 calc(100% / var(--tabs-per-view));
-  min-width: 0;
+  flex: 0 0 27%;
 
   /* No inline margin/gap so N columns divide the row exactly (otherwise the
      margins push the last column past the edge and it gets clipped). */
@@ -322,6 +335,11 @@
 @media (width > 47.5rem) {
   .tabs.icon-tab-carousel .tabs-nav {
     --tabs-per-view: 5;
+  }
+
+  .tabs.icon-tab-carousel .tabs-nav button {
+     flex: 0 0 calc(100% / var(--tabs-per-view));
+     min-width: 0;
   }
 }
 

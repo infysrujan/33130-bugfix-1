@@ -7,7 +7,7 @@ import {
   getMonthKey,
   parseApiDate,
   parseIsoDate,
-} from './helpers/date-helpers.js';
+} from '../../scripts/utils/date-helpers.js';
 import {
   createApiEndpoints,
   getEnabledDays,

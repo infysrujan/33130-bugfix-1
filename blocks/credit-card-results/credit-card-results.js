@@ -594,6 +594,7 @@ export default async function decorate(block) {
 
   // ── See more / See less ────────────────────────────────────────────────────
   toggleBtn.addEventListener('click', () => {
+    const prevTop = toggleBtn.getBoundingClientRect().top;
     isExpanded = !isExpanded;
     [...cardListContainer.querySelectorAll('.cards-list-item')].forEach((item, i) => {
       if (i >= INITIAL_VISIBLE) item.classList.toggle('ccs-hidden', !isExpanded);
@@ -601,10 +602,14 @@ export default async function decorate(block) {
     if (isExpanded) {
       removePeek(cardListContainer);
     } else {
-      requestAnimationFrame(() => setPeek(cardListContainer));
+      setPeek(cardListContainer);
     }
     refreshToggle();
     if (currentBuildDots) currentBuildDots();
+    if (!isExpanded) {
+      const newTop = toggleBtn.getBoundingClientRect().top;
+      window.scrollBy(0, newTop - prevTop);
+    }
   });
 
   // ── Filter applied ─────────────────────────────────────────────────────────

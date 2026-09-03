@@ -143,7 +143,7 @@ main .lead-forms div.default-content-wrapper {
 }
 
 main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  color: var(--bbl-color-grey-140);
+  color: var(--bbl-color-black);
   font-weight: var(--bbl-font-weight-regular);
 }
 
@@ -210,7 +210,7 @@ main .lead-forms .form form .field-infotext {
 }
 
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
-  color: var(--bbl-color-grey-90);
+  color: var(--bbl-color-grey-70);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-14);
   padding-right: 0;
@@ -287,7 +287,7 @@ main .section.form-container.lead-forms .form form select {
   border-color: var(--bbl-color-grey-23);
   cursor: pointer;
   appearance: none;
-  color: var(--bbl-color-grey-90);
+  color: var(--bbl-color-grey-70);
   margin-bottom: var(--bbl-form-margin-14);
   background: var(--bbl-color-white) url('../../../icons/dropdown.svg') no-repeat right var(--bbl-space-150) center /25px;
   font-family: var(--bbl-font-family-medium);
@@ -349,7 +349,7 @@ main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .tele
 
 main .lead-forms .form form .field-wrapper[class*='icon-'] input {
   margin-top: var(--bbl-form-margin-8);
-  color: var(--bbl-color-grey-90);
+  color: var(--bbl-color-black);
 }
 
 main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):has([aria-live="polite"]) input {
@@ -372,14 +372,6 @@ main .lead-forms .form select option {
   font-size: var(--bbl-font-size-b1);
   font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-form-line-height-44);
-}
-
-main .lead-forms .form input[type='date']::-webkit-calendar-picker-indicator {
-  display: none;
-}
-
-main .lead-forms .form input[type='date']:invalid::-webkit-datetime-edit {
-  color: transparent;
 }
 
 main .lead-forms .form :is(input, textarea)::placeholder {
@@ -454,7 +446,7 @@ main .lead-forms .form form .email-wrapper::before {
   justify-content: center;
   width: var(--bbl-space-250);
   height: 1.1875rem;
-  color: var(--bbl-color-grey-90);
+  color: var(--bbl-color-grey-70);
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -531,7 +523,7 @@ main .lead-forms .form form .field-wrapper[class*='icon-']:has(> label:not([data
   display: block;
   font-size: var(--bbl-form-font-size-17);
   font-weight: var(--bbl-form-font-weight-bold);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-black);
 }
 
 main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper):has(.field-description).field-wrapper :is(input, textarea, select){

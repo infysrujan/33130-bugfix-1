@@ -115,6 +115,10 @@
   position: relative;
 }
 
+.carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
+  transition: height 300ms ease;
+}
+
 .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper {
   display: flex;
   width: 100%;
@@ -249,11 +253,11 @@
   }
 
   .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
-    left: -1.25rem;
+    left: -0.9375rem;
   }
 
   .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
-    right: -1.25rem;
+    right: -0.9375rem;
   }
 
   .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
@@ -289,10 +293,10 @@
   }
 
   :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
-    left: -3.45rem;
+    left: -3.4375rem;
   }
 
   :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
-    right: -3.45rem;
+    right: -3.4375rem;
   }
 }

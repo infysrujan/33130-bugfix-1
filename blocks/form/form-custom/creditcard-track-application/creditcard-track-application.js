@@ -95,6 +95,13 @@ const CC_APP_PANEL_SELECTOR = Object.keys(PANEL_LAYOUTS)
   .map((key) => `fieldset.panel-wrapper.${key}`)
   .join(',');
 
+// Result panels shown after the tracking API responds (approved/denied/pending/etc.) —
+// excludes cc-app-main-form, which is the input form visible on initial load.
+const RESULT_PANEL_SELECTOR = Object.keys(PANEL_LAYOUTS)
+  .filter((key) => key.startsWith(CC_APP_PREFIX) && key !== 'cc-app-main-form')
+  .map((key) => `fieldset.panel-wrapper.${key}`)
+  .join(',');
+
 /**
  * @param {HTMLElement | null} form
  * @returns {boolean}
@@ -167,10 +174,35 @@ function decoratePanel(panel) {
 }
 
 /**
+ * The rule engine sets `data-visible` on the fieldset directly (rules/index.js
+ * fieldChanged 'visible' case). Watching it here — rather than hooking into
+ * submit/click handlers — works regardless of which panel the tracking API
+ * response reveals (approved, denied, pending, ...).
+ *
+ * @param {HTMLFormElement} form
+ */
+function scrollToTopWhenResultPanelRevealed(form) {
+  const resultPanels = [...form.querySelectorAll(RESULT_PANEL_SELECTOR)];
+  if (resultPanels.length === 0) return;
+
+  const observer = new MutationObserver((mutations) => {
+    const revealed = mutations.some((mutation) => mutation.target.dataset.visible === 'true');
+    if (revealed) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  resultPanels.forEach((panel) => {
+    observer.observe(panel, { attributes: true, attributeFilter: ['data-visible'] });
+  });
+}
+
+/**
  * @param {HTMLFormElement} form
  */
 export default function decorateCreditCardTractApplication(form) {
   if (!isCreditCardTractApplicationForm(form)) return;
 
   form.querySelectorAll(PANEL_SELECTOR).forEach(decoratePanel);
+  scrollToTopWhenResultPanelRevealed(form);
 }

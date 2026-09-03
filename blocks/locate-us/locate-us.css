@@ -14,6 +14,10 @@
   margin: 0 auto 1.875rem;
 }
 
+.locate-us .card-list .cards-list {
+  padding-inline: 0;
+}
+
 .locate-us .cards-list-item {
   width: auto;
   border: none;
@@ -49,6 +53,10 @@
 .locate-us-card button.locate-us-card-header {
   height: max-content;
   line-height: normal;
+}
+
+.locate-us .content .locate-us-fragment .default-content-wrapper > h2 {
+  margin-top: 0;
 }
 
 .locate-us-fragment .cards-list-image.cards-list-image-x-small img {
@@ -500,6 +508,7 @@
   white-space: nowrap;
   line-height: 1.375rem;
   text-transform: lowercase;
+  z-index: 1;
 }
 
 /* Label + value rows — matching BBL's 60px td pattern */
@@ -507,10 +516,6 @@
   display: flex;
   align-items: flex-start;
   margin-bottom: var(--bbl-space-050);
-}
-
-.locate-us .card-list {
-  padding: var(--bbl-space-250);
 }
 
 .locate-us .locate-us-card-label {
@@ -591,8 +596,8 @@
 .locate-us .locate-us-card-directions::before {
   content: '';
   display: inline-block;
-  width: var(--bbl-space-250);
-  height: var(--bbl-space-250);
+  width: var(--bbl-space-300);
+  height: var(--bbl-space-300);
   background-image: url('../../icons/icon_route.svg');
   background-size: contain;
   background-repeat: no-repeat;
@@ -968,6 +973,7 @@
 
   .sub-nav .sub-nav-tabs {
     flex-shrink: 0;
+    gap: 0.93rem;
   }
 
   .sub-nav .sub-nav-tab-btn {
@@ -988,7 +994,7 @@
   /* ── Filter bar ── */
 
   .locate-us .cards-list.cards-3 .cards-list-item {
-    max-width: 23.9375rem;
+    flex: 0 0 48%
   }
 
   .locate-us .cards-list.cards-3 .cards-list-item .cards-list-image.cards-list-image-x-small {
@@ -1001,10 +1007,6 @@
 
   .locate-us .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
     font-size: 1.3125rem;
-  }
-
-  .locate-us .card-list {
-    padding: var(--bbl-space-250);
   }
 
   .locate-us .section {
@@ -1440,10 +1442,6 @@
 
   .locate-us .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
     font-size: var(--bbl-font-size-h5-desktop);
-  }
-
-  .locate-us .section.underline-title .default-content-wrapper {
-    padding-top: 1.875rem;
   }
 
   .locate-us .cards-list-title h3 {

@@ -216,7 +216,7 @@
   color: var(--bbl-color-black);
   border: none;
   box-sizing: border-box;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
 }
 
 .tax-calculator .tax-calc-invest-table .tax-calc-input:disabled {
@@ -507,7 +507,8 @@
 }
 
 .tax-calculator .tax-calc-tax-card {
-  padding: var(--bbl-space-200);
+  flex: 1;
+  padding: 0.875rem;
   border-radius: var(--bbl-rounded-100);
   display: flex;
   flex-direction: column;
@@ -515,13 +516,11 @@
 
 .tax-calculator .tax-calc-tax-card-original {
   background: var(--bbl-color-grey-10);
-  padding: var(--bbl-space-200);
 }
 
 .tax-calculator .tax-calc-tax-card-new {
   background: var(--bbl-color-truthful-blue);
   color: var(--bbl-color-white);
-  padding: var(--bbl-space-200);
 }
 
 .tax-calculator .tax-calc-tax-card-title {
@@ -541,6 +540,13 @@
 
 .tax-calculator .tax-calc-tax-card-new .tax-calc-tax-card-title {
   color: var(--bbl-color-white);
+  margin-bottom: var(--bbl-space-350);
+}
+
+/* Two-card comparison view: "original" has a hidden saved-placeholder that
+   reserves the same height as "new"'s real saved line, so its title must
+   use the same margin-bottom as "new" instead of the single-card value. */
+.tax-calculator .tax-calc-tax-cards-two .tax-calc-tax-card-original .tax-calc-tax-card-title {
   margin-bottom: var(--bbl-space-350);
 }
 
@@ -591,6 +597,8 @@
 }
 
 .tax-calculator .tax-calc-tax-card-saved svg {
+  width: 1.3125rem;
+  height: 1.3125rem;
   flex-shrink: 0;
 }
 
@@ -628,7 +636,8 @@
 }
 
 .tax-calculator .tax-calc-summary-label {
-  font-weight: 600;
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   text-align: left;
   margin: 0;
@@ -655,7 +664,7 @@
 
 .tax-calculator .tax-calc-summary-subtitle {
   font-family: var(--bbl-font-family-looped);
-  font-size: 0.75rem;
+  font-size: 0.825rem;
   font-weight: var(--bbl-font-weight-regular);
   line-height: 1rem;
   color: var(--bbl-color-black);
@@ -685,7 +694,7 @@
 
 .tax-calculator .tax-calc-invest-header {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: var(--bbl-space-200);
   margin-bottom: var(--bbl-space-100);
 }
@@ -694,17 +703,17 @@
   font-family: var(--bbl-font-family-medium);
   font-size: 0.875rem;
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-gray-121);
-  text-align: center;
+  color: var(--bbl-color-black);
+  text-align: left;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   line-height: 1.1875rem;
 }
 
 .tax-calculator .tax-calc-invest-row {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: var(--bbl-space-200);
   align-items: flex-start;
 }
@@ -735,12 +744,6 @@
 
 .tax-calculator .tax-calc-invest-table .tax-calc-input::placeholder {
   font-size: 0.875rem;
-}
-
-.tax-calculator .tax-calc-invest-table .tax-calc-input-col .tax-calc-input-wrap {
-  padding: 0 var(--bbl-space-050);
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .tax-calculator .tax-calc-invest-table .tax-calc-label {
@@ -841,15 +844,8 @@
     flex-direction: row;
   }
 
-  /* Two-card (recalculation) variation only — taller than the single-card
-     normal state; scoped so it doesn't affect the full-width single card. */
-  .tax-calculator .tax-calc-tax-cards-two .tax-calc-tax-card {
-    min-height: 10.974rem; /* content ≈143.583px + 1rem padding, border-box */
-  }
-
   .tax-calculator .tax-calc-summary-label {
     font-size: 0.875rem;
-    font-weight: 700;
   }
 
   .tax-calculator .tax-calc-summary-value {
@@ -861,19 +857,11 @@
   }
 
   .tax-calculator .tax-calc-invest-header-cell {
-    font-size: 1rem;
-  }
-
-  .tax-calculator .tax-calc-invest-header {
-    grid-template-columns: 1fr 1fr;
+    justify-content: center;
   }
 
   .tax-calculator .tax-calc-invest-table {
     gap: var(--bbl-space-100);
-  }
-
-  .tax-calculator .tax-calc-invest-row {
-    grid-template-columns: 1fr 1fr;
   }
 
   .tax-calculator .tax-calc-invest-total {
@@ -888,6 +876,7 @@
     height: 3.375rem;
     display: flex;
     align-items: center;
+    justify-content: center;
     background: transparent;
     padding: 0 var(--bbl-space-200);
     box-sizing: border-box;
@@ -899,7 +888,6 @@
   }
 
   .tax-calculator .tax-calc-invest-table .tax-calc-input {
-    font-size: 0.875rem;
     width: auto;
     flex: 1;
   }
@@ -1018,7 +1006,7 @@
   }
 
   .tax-calculator .tax-calc-tax-card {
-    min-height: 9.475rem;
+    padding: var(--bbl-space-200);
   }
 
   .tax-calculator .tax-calc-tax-card-title {
@@ -1033,6 +1021,11 @@
 
   .tax-calculator .tax-calc-tax-card-saved {
     font-size: 1rem;
+  }
+
+  .tax-calculator .tax-calc-tax-card-saved svg {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   .tax-calculator .tax-calc-tax-cards {
@@ -1066,6 +1059,7 @@
   }
 
   .tax-calculator .tax-calc-invest-header-cell {
+    font-size: 1rem;
     line-height: 1.375rem;
   }
 

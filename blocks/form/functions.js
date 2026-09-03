@@ -514,7 +514,6 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
       currentGroup = document.createElement('optgroup');
       currentGroup.label = district;
       currentGroup.style.fontWeight = 'bold';
-
       selectEl.appendChild(currentGroup);
       currentDistrict = district;
     }
@@ -567,7 +566,6 @@ if (typeof document !== 'undefined') {
     });
   }, 300);
 }
-
 /**
  * Validates Thai Citizen ID using the official algorithm
  * @name validateThaiCitizenID

@@ -2,7 +2,7 @@
 
 .bbl-calendar-picker-popover {
   position: fixed;
-  z-index: 10050;
+  z-index: 50;
   min-width: 280px;
   padding: 16px;
   background: var(--bbl-color-white);

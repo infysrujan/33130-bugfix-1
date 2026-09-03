@@ -1,9 +1,9 @@
 import parseAuthoring, { parseTableHeading, parseMaturityTypes } from './helpers/authoring-helpers.js';
 import {
-  parseCsvConfigList, buildIntlMonthLabels,
   formatMaturityDate, formatRemainTerm, remainTermToMonths,
   formatMonthYear, formatMonthYearDisplay,
 } from './helpers/date-helpers.js';
+import { parseCsvConfigList, buildIntlMonthLabels } from '../../scripts/utils/date-helpers.js';
 import createApiService from './helpers/api-helpers.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
