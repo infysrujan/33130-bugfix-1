@@ -217,18 +217,10 @@ function inputDecorator(field, element) {
           input.type = field.type;
         }
         handleFocus(input, field);
-        if (fieldType !== 'date') {
-          isMobileTouch = false;
-        }
+        // Reset mobile touch flag
+        isMobileTouch = false;
       });
-      input.addEventListener('blur', () => {
-        if (fieldType === 'date' && isMobileTouch
-          && /iP(ad|hone|od)/.test(navigator.userAgent)) {
-          isMobileTouch = false;
-          return;
-        }
-        handleFocusOut(input);
-      });
+      input.addEventListener('blur', () => handleFocusOut(input));
     } else if (input.type !== 'file') {
       input.value = field.value ?? '';
       if (input.type === 'radio' || input.type === 'checkbox') {
