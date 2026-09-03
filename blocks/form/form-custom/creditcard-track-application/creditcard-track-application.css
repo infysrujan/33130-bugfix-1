@@ -527,7 +527,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         justify-content: flex-start;
         align-items: flex-start;
         width: 100%;
-        max-width: 100%;
+        max-width: 39.6rem;
         margin-top: 1.25rem;
         margin-inline: auto;
 
