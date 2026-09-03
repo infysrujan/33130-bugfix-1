@@ -122,6 +122,15 @@ function createInnerContent(eyebrow, titleElement, cardElements, doc) {
     emTags.forEach((em) => {
       em.classList.add('text-blue');
     });
+    // Replace any anchor tags (e.g. auto-linked phone numbers) with the
+    // same em.text-blue styling used elsewhere, so mobile matches desktop/tablet
+    const linkTags = titleContent.querySelectorAll('a');
+    linkTags.forEach((link) => {
+      const em = doc.createElement('em');
+      em.classList.add('text-blue');
+      em.textContent = link.textContent;
+      link.replaceWith(em);
+    });
     titleContainer.innerHTML = titleContent.innerHTML;
     inner.appendChild(titleContainer);
   }
