@@ -223,6 +223,11 @@ export default function decorate(fieldDiv, fd, _container, formId) {
   renderOptions(select, listbox, trigger);
   syncFieldState(fieldDiv, select, trigger);
 
+  const optionsObserver = new MutationObserver(() => {
+    renderOptions(select, listbox, trigger);
+  });
+  optionsObserver.observe(select, { childList: true, subtree: true });
+
   // Programmatic focus (e.g. rule-engine focusing an invalid field, or a stray
   // Tab into the hidden select) should land on the visible trigger instead.
   select.addEventListener('focus', () => trigger.focus());
@@ -369,6 +374,7 @@ export default function decorate(fieldDiv, fd, _container, formId) {
     if (!fieldDiv.isConnected) {
       document.removeEventListener('click', onDocumentClick);
       document.removeEventListener('reset', onFormReset);
+      optionsObserver.disconnect();
       removalObserver.disconnect();
     }
   });
