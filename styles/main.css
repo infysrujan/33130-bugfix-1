@@ -177,11 +177,11 @@ a:hover {
     text-decoration: underline;
 }
 
-:is(.bg-truthful-blue, .bg-truthful-dark-blue, .bg-grey-100) a:any-link {
+:is(.bg-truthful-blue, .bg-truthful-blue footer, .bg-truthful-dark-blue, .bg-grey-100) a:any-link {
     color: var(--bbl-color-white);
 }
 
-:is(.bg-truthful-blue, .bg-truthful-dark-blue, .bg-grey-100) a:hover {
+:is(.bg-truthful-blue, .bg-truthful-blue footer, .bg-truthful-dark-blue, .bg-grey-100) a:hover {
     color: var(--bbl-color-active-blue);
 }
 
