@@ -82,25 +82,57 @@ function syncFieldState(fieldDiv, select, trigger) {
   linkLabel(fieldDiv, select, trigger);
 }
 
+function createOptionLi(select, opt, index) {
+  const li = document.createElement('li');
+  li.className = 'custom-dropdown-option';
+  li.id = `${select.id}-option-${index}`;
+  li.setAttribute('role', 'option');
+  li.textContent = opt.textContent;
+  li.dataset.value = opt.value;
+  if (opt.disabled) {
+    li.classList.add('is-placeholder');
+    li.setAttribute('aria-disabled', 'true');
+  }
+  const isSelected = opt.selected && !opt.disabled;
+  li.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+  if (isSelected) {
+    li.classList.add(SELECTED_CLASS);
+  }
+  return li;
+}
+
+function createOptgroupLi(select, optgroup, indexRef) {
+  const groupLi = document.createElement('li');
+  groupLi.className = 'custom-dropdown-group';
+  groupLi.setAttribute('role', 'group');
+  groupLi.setAttribute('aria-label', optgroup.label);
+
+  const groupLabel = document.createElement('div');
+  groupLabel.className = 'custom-dropdown-group-label';
+  groupLabel.setAttribute('aria-hidden', 'true');
+  groupLabel.textContent = optgroup.label;
+
+  const groupOptions = document.createElement('ul');
+  groupOptions.className = 'custom-dropdown-group-options';
+  Array.from(optgroup.children).forEach((opt) => {
+    groupOptions.append(createOptionLi(select, opt, indexRef.value));
+    indexRef.value += 1;
+  });
+
+  groupLi.append(groupLabel, groupOptions);
+  return groupLi;
+}
+
 function renderOptions(select, listbox, trigger) {
   listbox.innerHTML = '';
-  Array.from(select.options).forEach((opt, index) => {
-    const li = document.createElement('li');
-    li.className = 'custom-dropdown-option';
-    li.id = `${select.id}-option-${index}`;
-    li.setAttribute('role', 'option');
-    li.textContent = opt.textContent;
-    li.dataset.value = opt.value;
-    if (opt.disabled) {
-      li.classList.add('is-placeholder');
-      li.setAttribute('aria-disabled', 'true');
+  const indexRef = { value: 0 };
+  Array.from(select.children).forEach((child) => {
+    if (child.tagName === 'OPTGROUP') {
+      listbox.append(createOptgroupLi(select, child, indexRef));
+    } else if (child.tagName === 'OPTION') {
+      listbox.append(createOptionLi(select, child, indexRef.value));
+      indexRef.value += 1;
     }
-    const isSelected = opt.selected && !opt.disabled;
-    li.setAttribute('aria-selected', isSelected ? 'true' : 'false');
-    if (isSelected) {
-      li.classList.add(SELECTED_CLASS);
-    }
-    listbox.append(li);
   });
   syncTriggerLabel(select, trigger);
 }
