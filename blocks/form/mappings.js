@@ -1,7 +1,7 @@
 import { loadCSS } from '../../scripts/aem.js';
 
 let customComponents = ['range'];
-const OOTBComponentDecorators = ['accordion', 'double-key-dropdown', 'file', 'modal', 'password', 'rating', 'repeat', 'tnc', 'toggleable-link', 'wizard'];
+const OOTBComponentDecorators = ['accordion', 'custom-dropdown', 'double-key-dropdown', 'file', 'modal', 'password', 'rating', 'repeat', 'tnc', 'toggleable-link', 'wizard'];
 
 export function setCustomComponents(components) {
   customComponents = components;
@@ -114,6 +114,18 @@ export default async function componentDecorator(element, fd, container, formId)
 
   if (fieldType === 'radio-group') {
     await loadComponent('radio-group', element, fd, container, formId);
+  }
+
+  // custom-dropdown: a separate, opt-in drop-down variant (authored via
+  // fd:viewType, same pattern as double-key-dropdown) that renders a
+  // div-based listbox widget instead of a native <select>. The default
+  // "drop-down" field type is left untouched so existing pages/forms keep
+  // their current native-select rendering.
+  if (
+    fd['fd:viewType'] === 'custom-dropdown'
+    && !getOOTBComponents().includes(type)
+  ) {
+    await loadComponent('custom-dropdown', element, fd, container, formId);
   }
 
   return null;

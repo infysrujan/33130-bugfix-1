@@ -1260,6 +1260,31 @@
           }
         },
         {
+          "title": "Custom Dropdown",
+          "id": "custom-dropdown",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/fd/components/form/dropdown/v1/dropdown",
+                "template": {
+                  "jcr:title": "Custom Dropdown",
+                  "fieldType": "drop-down",
+                  "fd:viewType": "custom-dropdown",
+                  "enum": [
+                    "0",
+                    "1"
+                  ],
+                  "enumNames": [
+                    "Item 1",
+                    "Item 2"
+                  ],
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Forms Menu Card",
           "id": "forms-menu-card",
           "plugins": {

@@ -40,6 +40,9 @@
       "...": "./components/double-key-dropdown/_double-key-dropdown.json#/definitions"
     },
     {
+      "...": "./components/custom-dropdown/_custom-dropdown.json#/definitions"
+    },
+    {
       "...": "./components/forms-menu-card/_forms-menu-card.json#/definitions"
     },
     {
@@ -89,6 +92,9 @@
       "...": "./components/double-key-dropdown/_double-key-dropdown.json#/models"
     },
     {
+      "...": "./components/custom-dropdown/_custom-dropdown.json#/models"
+    },
+    {
       "...": "./components/forms-menu-card/_forms-menu-card.json#/models"
     }
   ],
@@ -122,6 +128,7 @@
         "wizard",
         "range",
         "double-key-dropdown",
+        "custom-dropdown",
         "forms-menu-card",
         "forms-card-list",
         "forms-card-list-item",
