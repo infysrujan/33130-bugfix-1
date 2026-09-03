@@ -231,23 +231,18 @@ document.addEventListener('bbl:load-fragment', async (e) => {
 });
 
 /**
- * Resolves html lang from URL path (locale segment after host, e.g. bangkokbank.com/en/...).
- * @param {string} pathname - `window.location.pathname`
- * @returns {'en'|'th'}
- */
+   * Resolves html lang from URL path (locale segment after host, e.g. bangkokbank.com/en/...).
+   * @param {string} pathname - `window.location.pathname`
+   * @returns {'en'|'th'}
+   */
 function getDocumentLangFromPath(pathname) {
   const segments = pathname.split('/').filter(Boolean);
   const first = segments[0];
-
   if (document.querySelector('[data-aue-resource]')) {
     const lang = segments[2];
-    if (lang === 'en') return 'en';
-    if (lang === 'th') return 'th';
+    if (lang) return lang ?? 'th';
   }
-
-  if (first === 'en') return 'en';
-  if (first === 'th') return 'th';
-
+  if (first) return first ?? 'th';
   // Check bblcorporate#lang cookie
   const cookie = document.cookie
     .split(';')
@@ -256,7 +251,6 @@ function getDocumentLangFromPath(pathname) {
   if (cookie) {
     return cookie.split('=')[1];
   }
-
   // Fallback to 'th'
   return 'th';
 }
