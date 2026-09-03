@@ -17,13 +17,20 @@ function isCreditCardForm(form) {
 export default function decorateCreditCardForm(form) {
   if (!isCreditCardForm(form)) return;
   document.body.classList.add('credit-card-form');
-  // for ignoring the first blur event in ios device
-  const tapped = new WeakSet();
-  form.addEventListener('touchstart', (e) => {
-    if (e.target.closest('.date-wrapper')) tapped.add(e.target);
-  }, true);
-  form.addEventListener('blur', (e) => {
-    if (!tapped.delete(e.target)) return;
-    e.stopImmediatePropagation();
-  }, true);
+
+  // to skip iOS fires blur when the native date picker opens;
+
+  if (!/iP(ad|hone|od)/.test(navigator.userAgent)) return;
+
+  form.querySelectorAll('.date-wrapper input').forEach((input) => {
+    let isMobileTouch = false;
+    input.addEventListener('touchstart', () => {
+      isMobileTouch = true;
+    });
+    input.addEventListener('blur', (event) => {
+      if (!isMobileTouch) return;
+      isMobileTouch = false;
+      event.stopImmediatePropagation();
+    }, true);
+  });
 }
