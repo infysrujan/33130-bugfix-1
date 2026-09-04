@@ -284,10 +284,8 @@ function initCarousel(track) {
   carousel.addEventListener('keydown', (e) => {
     if (window.innerWidth < DESKTOP_BREAKPOINT) return;
     if (e.key === 'ArrowLeft') {
-      e.preventDefault();
       prevButton.click();
     } else if (e.key === 'ArrowRight') {
-      e.preventDefault();
       nextButton.click();
     }
   });
