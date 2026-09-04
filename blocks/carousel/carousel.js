@@ -117,10 +117,6 @@ function initCarousel(track) {
   const items = track.querySelectorAll('.carousel-item');
   if (items.length === 0) return;
 
-  if (!track.hasAttribute('tabindex')) {
-    track.setAttribute('tabindex', '-1');
-  }
-
   let currentIndex = 0;
   let currentTrackOffset = 0;
   let isSliding = false;
@@ -307,7 +303,6 @@ function initCarousel(track) {
     hasDragged = false;
     startX = e.clientX;
     startY = e.clientY;
-    track.focus({ preventScroll: true });
   });
 
   track.addEventListener('pointermove', (e) => {

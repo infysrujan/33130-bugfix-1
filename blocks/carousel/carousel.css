@@ -86,10 +86,6 @@
     -webkit-overflow-scrolling: touch;
 }
 
-.carousel-track:focus {
-    outline: none;
-}
-
 .carousel-track::-webkit-scrollbar {
     display: none;
 }
