@@ -301,9 +301,6 @@ function initCarousel(track) {
     hasDragged = false;
     startX = e.clientX;
     startY = e.clientY;
-    if (track.setPointerCapture) {
-      track.setPointerCapture(e.pointerId);
-    }
   });
 
   track.addEventListener('pointermove', (e) => {
@@ -314,12 +311,12 @@ function initCarousel(track) {
     if (!hasDragged && (Math.abs(diffX) > 10 || Math.abs(diffY) > 10)) {
       if (Math.abs(diffY) > Math.abs(diffX)) {
         isDown = false;
-        if (track.hasPointerCapture && track.hasPointerCapture(e.pointerId)) {
-          track.releasePointerCapture(e.pointerId);
-        }
         return;
       }
       hasDragged = true;
+      if (track.setPointerCapture) {
+        track.setPointerCapture(e.pointerId);
+      }
     }
 
     if (hasDragged) {
