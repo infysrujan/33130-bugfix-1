@@ -542,12 +542,17 @@ export default async function decorate(block) {
             trackWrapper.style.transition = '';
           }, 700);
         } else if (circularOrDefaultImage) {
-          // Use viewport width — track may grow with flex children.
           const trackViewport = block.querySelector('.carousel-track-viewport');
-          const slideWidthPx = (trackViewport && slidesDefaultImage > 0)
-            ? trackViewport.clientWidth
-            : (trackViewport || trackWrapper).offsetWidth;
           const cloneOffset = shouldCloneTrack ? 1 : 0;
+          const slideWidthPx = (trackViewport || trackWrapper).offsetWidth;
+          // Default-image only: align to each slide's actual painted position (offsetLeft)
+          // instead of width*index. The browser rounds slide widths to whole pixels, so
+          // width*index drifts a fraction of a pixel per slide and eventually lets the
+          // neighbouring slide peek through; offsetLeft has no drift. Circular-image keeps
+          // its original width-based math.
+          const restOffset = (i) => (slidesDefaultImage > 0
+            ? (trackWrapper.children[i + cloneOffset]?.offsetLeft ?? 0)
+            : (i + cloneOffset) * slideWidthPx);
           const isLoopingBackward = index === slideEls.length - 1 && prevIndex === 0;
           const wrapForward = direction === 'forward' && isLoopingForward && shouldCloneTrack;
           const wrapBackward = direction === 'backward' && isLoopingBackward && shouldCloneTrack;
@@ -558,11 +563,10 @@ export default async function decorate(block) {
 
           if (wrapForward) {
             // Animate to trailing clone of slide 0, then snap to the real first slide.
-            const cloneIndex = slideEls.length + cloneOffset;
-            trackWrapper.style.transform = `translate3d(${-cloneIndex * slideWidthPx}px, 0px, 0px)`;
+            trackWrapper.style.transform = `translate3d(${-restOffset(slideEls.length)}px, 0px, 0px)`;
             setTimeout(() => {
               trackWrapper.style.transition = 'none';
-              trackWrapper.style.transform = `translate3d(${-cloneOffset * slideWidthPx}px, 0px, 0px)`;
+              trackWrapper.style.transform = `translate3d(${-restOffset(0)}px, 0px, 0px)`;
               trackWrapper.getBoundingClientRect();
               trackWrapper.style.transition = '';
             }, 600);
@@ -571,18 +575,18 @@ export default async function decorate(block) {
             trackWrapper.style.transform = 'translate3d(0px, 0px, 0px)';
             setTimeout(() => {
               trackWrapper.style.transition = 'none';
-              trackWrapper.style.transform = `translate3d(${-(slideEls.length - 1 + cloneOffset) * slideWidthPx}px, 0px, 0px)`;
+              trackWrapper.style.transform = `translate3d(${-restOffset(slideEls.length - 1)}px, 0px, 0px)`;
               trackWrapper.getBoundingClientRect();
               trackWrapper.style.transition = '';
             }, 600);
           } else if ((isLoopingForward || isLoopingBackward) && shouldCloneTrack) {
             // Dot jump across the loop boundary — skip animating through every slide.
             trackWrapper.style.transition = 'none';
-            trackWrapper.style.transform = `translate3d(${-(index + cloneOffset) * slideWidthPx}px, 0px, 0px)`;
+            trackWrapper.style.transform = `translate3d(${-restOffset(index)}px, 0px, 0px)`;
             trackWrapper.getBoundingClientRect();
             trackWrapper.style.transition = '';
           } else {
-            trackWrapper.style.transform = `translate3d(${-(index + cloneOffset) * slideWidthPx}px, 0px, 0px)`;
+            trackWrapper.style.transform = `translate3d(${-restOffset(index)}px, 0px, 0px)`;
           }
         } else {
           const slideWidth = trackWrapper.offsetWidth;
@@ -755,8 +759,13 @@ export default async function decorate(block) {
           };
           requestAnimationFrame(() => applyMfFundCentering(0));
         } else if (circularOrDefaultImage && trackWrapper) {
-          const width = (trackViewport || trackWrapper).offsetWidth;
-          trackWrapper.style.transform = `translate3d(${-width}px, 0px, 0px)`;
+          // shouldCloneTrack is true here, so slide 0 rests at the second child (index 1).
+          // Default-image: align to its actual offsetLeft to avoid sub-pixel drift.
+          // Circular-image: keep original offsetWidth-based math.
+          const restLeft = slidesDefaultImage > 0
+            ? (trackWrapper.children[1]?.offsetLeft ?? 0)
+            : (trackViewport || trackWrapper).offsetWidth;
+          trackWrapper.style.transform = `translate3d(${-restLeft}px, 0px, 0px)`;
           trackWrapper.getBoundingClientRect();
           trackWrapper.style.transition = '';
           if (trackViewport) {
@@ -823,14 +832,18 @@ export default async function decorate(block) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       const trackViewport = block.querySelector('.carousel-track-viewport');
       if (!trackWrapper) return;
-      const width = (trackViewport && slidesDefaultImage > 0)
-        ? trackViewport.clientWidth
-        : (trackViewport || trackWrapper).offsetWidth;
-      if (!width) return; // still hidden (display:none) — nothing meaningful to set yet
+      const viewportWidth = (trackViewport || trackWrapper).offsetWidth;
+      if (!viewportWidth) return; // still hidden (display:none) — nothing meaningful to set yet
       const idx = currentIndex >= 0 ? currentIndex : 0;
       const cloneOffset = shouldCloneTrack ? 1 : 0;
+      // Default-image: align to the slide's actual painted position (offsetLeft) rather
+      // than width*index, which drifts a sub-pixel per slide and reveals the next slide.
+      // Circular-image: keep original width-based math.
+      const restLeft = slidesDefaultImage > 0
+        ? (trackWrapper.children[idx + cloneOffset]?.offsetLeft ?? 0)
+        : (idx + cloneOffset) * viewportWidth;
       trackWrapper.style.transition = 'none';
-      trackWrapper.style.transform = `translate3d(${-(idx + cloneOffset) * width}px, 0px, 0px)`;
+      trackWrapper.style.transform = `translate3d(${-restLeft}px, 0px, 0px)`;
       trackWrapper.getBoundingClientRect();
       trackWrapper.style.transition = '';
     };
