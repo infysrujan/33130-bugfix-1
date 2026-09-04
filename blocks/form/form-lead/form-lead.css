@@ -938,10 +938,6 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     line-height: 1.3rem;
   }
 
-  main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textw, .field-text1) p {
-    padding-inline: var(--bbl-form-padding-10);
-  }
-
   main .lead-forms .form form h2{
     padding: 0 var(--bbl-form-padding-10);
   }
@@ -954,6 +950,10 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   main .lead-forms.section.central-aligned > .default-content-wrapper p{
     font-size: var(--bbl-font-size-b1-desktop);
     line-height: var(--bbl-line-height-b1-desktop);
+  }
+
+  main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textw, .field-text1) p {
+    padding-inline: var(--bbl-form-padding-10);
   }
 
   main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
