@@ -1,5 +1,6 @@
 :root {
   --bbl-color-grey-300 :#d1d5db;
+  --bbl-border-color-gray-301: #eee;
   --bbl-margin-block-14px: 0.875rem;
   --bbl-margin-block-15px: 0.9375rem;
   --bbl-margin-block-10px: 0.625rem;
@@ -9,6 +10,19 @@
   --bbl-wizard-line-height-base-desktop: 1.3rem;
   --bbl-wizard-line-height-radio-desktop: 2.3rem;
   --bbl-wizard-line-height-plain-text-desktop: 1.375rem;
+  --bbl-wizard-line-height-summary-info: 1.6rem;
+  --bbl-wizard-line-height-summary-heading: 1.6875rem;
+  --bbl-wizard-font-size-summary-heading: 1.125rem;
+  --bbl-wizard-font-size-summary-label-mobile: 1.3125rem;
+  --bbl-wizard-font-size-summary-input-mobile: 1.225rem;
+  --bbl-wizard-font-size-summary-value-mobile: 1.925rem;
+  --bbl-wizard-font-size-summary-label-desktop: 1.5rem;
+  --bbl-wizard-font-size-summary-input-desktop: 1.4rem;
+  --bbl-wizard-font-size-summary-value-desktop: 2.2rem;
+  --bbl-wizard-margin-1875: 1.875rem;
+  --bbl-wizard-radio-margin-top: 0.1875rem;
+  --bbl-wizard-margin-input-left: 0.5rem;
+  --bbl-wizard-padding-col1-left: 0.25rem;
 }
 
 .field-bbl-wizard {
@@ -54,7 +68,7 @@ main .section.form-container.wizard-forms .form form fieldset[class*="field-form
 }
 
 main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-900"]:has(.field-veiwplanstext) {
-  padding-bottom: 1.875rem;
+  padding-bottom: var(--bbl-wizard-margin-1875);
 }
 
 main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-1240"] {
@@ -131,6 +145,21 @@ main .section.form-container.wizard-forms .form form .plain-text-wrapper li {
   margin: 0 0 var(--bbl-margin-block-10px) var(--bbl-space-250);
 }
 
+main .section.form-container.wizard-forms .form form fieldset:has(> fieldset[name="css-summaryWithHR"]) .plain-text-wrapper ul {
+  margin: 0;
+  padding-left: 0;
+  list-style-position: inside;
+}
+
+main .section.form-container.wizard-forms .form form fieldset:has(> fieldset[name="css-summaryWithHR"]) .plain-text-wrapper li {
+  margin: 0;
+  text-indent: 0.625rem;
+}
+
+main .section.form-container.wizard-forms .form form fieldset:has(> fieldset[name="css-summaryWithHR"]) .plain-text-wrapper li::marker {
+  content: "•\00a0\00a0";
+}
+
 main .section.form-container.wizard-forms .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) .radio-wrapper {
   min-width: unset;
 }
@@ -168,7 +197,7 @@ main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.r
   height: 1.5rem;
   width: 1.5rem;
   padding: 0;
-  margin-top: 0.1875rem;
+  margin-top: var(--bbl-wizard-radio-margin-top);
   border-radius: 50%;
   border: 0.125rem solid var(--bbl-color-grey-40, #c8c8cc);
   opacity: 0.2;
@@ -262,6 +291,10 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   margin-bottom: var(--bbl-margin-block-10px);
 }
 
+main .section.wizard-forms .form form .field-prospectage {
+  position: relative;
+}
+
 main .section.wizard-forms .form form .field-prospectage:has(~ .field-prospectsa) {
   margin-bottom: var(--bbl-margin-block-15px);
 }
@@ -284,6 +317,27 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   text-align: right;
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-wizard-line-height-base-mobile);
+}
+
+main .section.wizard-forms .form form .field-prospectage > label.field-label::before {
+  content: attr(title);
+  position: absolute;
+  left: var(--bbl-margin-block-14px);
+  top: 1.5625rem;
+  height: 3.125rem;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  z-index: 1;
+  font-size: var(--bbl-font-size-b1-mobile);
+}
+
+main .section.wizard-forms .form form .field-prospectage input {
+  padding-left: var(--bbl-space-500);
+}
+
+main .section.wizard-forms .form form .field-prospectage input::placeholder {
+  color: transparent;
 }
 
 main .section.form-container.wizard-forms .form form input[type='number'] {
@@ -314,7 +368,7 @@ main .section.form-container.wizard-forms .form form .field-infotext {
 }
 
 main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-button-panel.field-wrapper {
-  margin: 1.875rem auto;
+  margin: var(--bbl-wizard-margin-1875) auto;
 }
 
 main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards, .horizontal) .radio-wrapper label {
@@ -369,15 +423,31 @@ main .section.form-container.wizard-forms .form form {
   max-width: 77.5rem;
 }
 
+main .section.form-container.wizard-forms .form form fieldset:has(> fieldset[name="css-summaryWithHR"]) > .field-infotext p {
+  font-size: var(--bbl-font-size-base);
+  line-height: var(--bbl-wizard-line-height-summary-info);
+  color: var(--bbl-color-black);
+}
+
 main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper:is(.field-veiwplanstext, .field-infotext2) :is(h1, h2, h3, h4, h5, h6, p),
 main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-infotext2 p p {
   text-align: center;
 }
 
+main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .plain-text-wrapper.col-1 p {
+  color: var(--bbl-color-black, #000);
+}
+
+main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .plain-text-wrapper.field-wrapper.col-1 p {
+  font-size: var(--bbl-font-size-base);
+  line-height: var(--bbl-wizard-line-height-base-mobile);
+  color: var(--bbl-color-black);
+}
+
 main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
   position: relative;
   padding-bottom: var(--bbl-space-250);
-  margin-block: 1.875rem;
+  margin-block: var(--bbl-wizard-margin-1875);
 }
 
 main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6)::after {
@@ -391,7 +461,91 @@ main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-w
   background-color: var(--bbl-color-grey-150);
 }
 
-@media (width >= 47.5rem) {
+main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] :is(h1, h2, h3, h4, h5, h6) {
+  font-size: var(--bbl-wizard-font-size-summary-heading);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: var(--bbl-wizard-line-height-summary-heading);
+  margin-block: 0 var(--bbl-margin-block-10px);
+}
+
+main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] .field-label {
+  font-size: var(--bbl-font-size-base);
+  color: var(--bbl-color-black);
+}
+
+main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 {
+  padding: 0;
+  gap: 0;
+  border: unset;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 .field-label {
+  white-space: nowrap;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 input {
+  font-size: var(--bbl-wizard-font-size-summary-input-mobile);
+  color: var(--bbl-color-black, #000);
+  font-weight: var(--bbl-font-weight-regular);
+  margin-left: var(--bbl-wizard-margin-input-left);
+}
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper[name="insuranceSummaryPanel"] > .plain-text-wrapper.col-1 {
+  width: max-content;
+  padding: var(--bbl-space-050) 0 0 var(--bbl-wizard-padding-col1-left);
+  border: unset;
+  align-self: center;
+}
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper[name="css-summaryWithHR"] {
+  margin-block: var(--bbl-space-250) var(--bbl-margin-block-14px) !important;
+  padding: var(--bbl-margin-block-15px) 0 0 !important;
+  border-top: 0.0625rem solid var(--bbl-border-color-gray-301) !important;
+  display: flex !important;
+  flex-flow: row nowrap !important;
+  align-items: center !important;
+  gap: 0.3125rem !important;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .text-wrapper.field-wrapper.col-11 {
+  display: flex;
+  flex-direction: row;
+  min-width: 0;
+  padding: 0;
+  gap: 0;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 label.field-label {
+  margin-bottom: 0;
+  flex: 0 1 auto;
+  max-width: 61.5%;
+  min-width: 0;
+  font-weight: var(--bbl-font-weight-regular);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-wizard-font-size-summary-label-mobile);
+  margin-block: var(--bbl-space-200);
+}
+
+main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 input {
+  flex: 1 1 auto;
+  field-sizing: content;
+  max-width: 100%;
+  min-width: 0;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-wizard-font-size-summary-value-mobile);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: var(--bbl-wizard-line-height-base-mobile);
+}
+
+main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .plain-text-wrapper.field-wrapper.col-1 {
+  width: auto;
+  flex-shrink: 0;
+  align-self: center;
+  margin: 0;
+  padding: 0;
+}
+
+@media (width > 47.5rem) {
   main .form-container.wizard-forms {
     padding-inline: var(--bbl-space-600);
   }
@@ -420,18 +574,28 @@ main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-w
   }
 
   main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
-    padding-bottom: 1.875rem;
+    padding-bottom: var(--bbl-wizard-margin-1875);
   }
 
   main .section.form-container.wizard-forms .form form :is(fieldset[class*="field-form-width-740"], fieldset[class*="field-form-width-900"], fieldset[class*="field-form-width-1240"]) {
     padding-inline: var(--bbl-space-600);
   }
+
+  main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper:not([class*="field-form-fragment"], .field-button-panel, [class*="field-form-width"], [class*="field-css-"], :has([class*="field-form-width"])) {
+    margin-top: var(--bbl-space-400);
+  }
 }
 
-@media (width >= 64rem) {
+@media (width > 64rem) {
   .bbl-wizard-steps {
     font-size: var(--bbl-font-size-b1-desktop);
     line-height: var(--bbl-wizard-line-height-base-desktop);
+  }
+
+  main .section.wizard-forms .form form .field-prospectage > label.field-label::before {
+    height: 3.625rem;
+    top: 1.8125rem;
+    font-size: var(--bbl-font-size-b1-desktop);
   }
 
   main .wizard-forms .form input {
@@ -485,11 +649,40 @@ main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-w
     line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
+
   main .section.form-container.wizard-forms .form form :is(fieldset[class*="field-form-width-740"], fieldset[class*="field-form-width-900"], fieldset[class*="field-form-width-1240"]) {
     padding-inline: 0;
   }
 
   main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-1240"]:has(.field-cards-health) {
     padding-bottom: var(--bbl-space-500);
+  }
+
+  main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 label.field-label {
+    font-size: var(--bbl-wizard-font-size-summary-label-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
+  }
+
+  main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper[name="css-summaryWithHR"] {
+    margin-block: var(--bbl-space-250) var(--bbl-space-200) !important;
+  }
+ 
+  main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 input {
+    font-size: var(--bbl-wizard-font-size-summary-input-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
+  }
+
+  main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .plain-text-wrapper.col-1 p {
+    font-size: var(--bbl-font-size-base);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
+  }
+
+  main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .plain-text-wrapper.field-wrapper.col-1 p {
+    line-height: var(--bbl-wizard-line-height-base-desktop);
+  }
+
+  main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 input {
+    font-size: var(--bbl-wizard-font-size-summary-value-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 }

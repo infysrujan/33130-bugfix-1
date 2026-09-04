@@ -178,7 +178,7 @@
 .content-insert-cards .thumb {
   border-radius: var(--bbl-rounded-100);
   width: auto;
-  height: 23.75rem;
+  height: 23.625rem;
 }
 
 .content-insert-cards .thumb:not(:has(picture, img)) {

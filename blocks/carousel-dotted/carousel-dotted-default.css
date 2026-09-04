@@ -983,7 +983,7 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-badge{
-    padding:var(--bbl-space-050) var(--bbl-space-200);
+    padding:var(--bbl-space-050) var(--bbl-space-100);
   }
 
   .carousel-dotted .carousel-dotted-description {

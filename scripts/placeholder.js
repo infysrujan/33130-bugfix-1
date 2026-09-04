@@ -71,7 +71,7 @@ export async function fetchPlaceholders() {
         .catch(() => ({ data: [] }));
 
       const fetchLang = pageLanguage
-        ? safeFetchJson(`/placeholders-${pageLanguage}.json`)
+        ? safeFetchJson(`/${pageLanguage}/placeholders.json`)
         : Promise.resolve({ data: [] });
 
       Promise.all([fetchDefault, fetchLang]).then(([defaultJson, langJson]) => {

@@ -126,13 +126,19 @@
   margin-top: 0;
 }
 
-/* SPACING INSIDE TAB PANEL between different blocks except download block */
-.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper, :has(.merge-tables)):has(+ *) {
+/* SPACING INSIDE TAB PANEL between different blocks except download block and merged tables */
+.tab-panel > [class$="-wrapper"]:not(
+    .download-file-wrapper:has(+ .download-file-wrapper),
+    :has(.merge-tables)
+    ):has(+ *) {
   padding-bottom: 1.5rem;
 }
 
 @media (width > 64rem) {
-  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper, :has(.merge-tables)):has(+ *) {
+  .tab-panel > [class$="-wrapper"]:not(
+    .download-file-wrapper:has(+ .download-file-wrapper),
+    :has(.merge-tables)
+    ):has(+ *) {
     padding-bottom: 2rem;
   }
 }

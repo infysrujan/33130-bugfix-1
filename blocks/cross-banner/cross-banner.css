@@ -150,7 +150,7 @@ body.private
   .cross-banner-badge {
     margin: 0;
     text-align: center;
-    padding:var(--bbl-space-050) var(--bbl-space-200);
+    padding:var(--bbl-space-050) var(--bbl-space-100);
   }
 
   .cross-banner-title {

@@ -261,6 +261,24 @@ function getDocumentLangFromPath(pathname) {
   return 'th';
 }
 
+function redirectToLocale() {
+  let { pathname } = window.location;
+
+  // Remove trailing slash if present (except for root)
+  if (pathname.length > 1 && pathname.endsWith('/')) {
+    pathname = pathname.slice(0, -1);
+    window.location.href = pathname + window.location.search + window.location.hash;
+    return;
+  }
+
+  const locale = getDocumentLangFromPath(pathname);
+
+  // If locale doesn't exist in path, redirect
+  if (!/^\/(en|th)(\/|$)/.test(pathname)) {
+    window.location.href = `/${locale}${pathname === '/' ? '/' : pathname}`;
+  }
+}
+
 function decorateOgTitle() {
   const shortTitle = getMetadata('short-title');
   const title = shortTitle || document.title;
@@ -477,6 +495,7 @@ function loadDelayed() {
 }
 
 async function loadPage() {
+  if (await redirectToLocale()) return;
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

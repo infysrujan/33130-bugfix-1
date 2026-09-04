@@ -382,7 +382,7 @@
     }
 
     .carousel-eyebrow {
-        padding: var(--bbl-space-025) var(--bbl-space-100);
+        padding: var(--bbl-space-050) var(--bbl-space-100);
         margin-bottom: 0.875rem;
         font-family: var(--bbl-font-family-medium);
     }

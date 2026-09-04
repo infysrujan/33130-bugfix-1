@@ -268,7 +268,7 @@
   }
 
   .listing-card-tag {
-    padding:var(--bbl-space-050) var(--bbl-space-200);
+    padding:var(--bbl-space-050) var(--bbl-space-100);
   }
 
   .listing-card-empty {

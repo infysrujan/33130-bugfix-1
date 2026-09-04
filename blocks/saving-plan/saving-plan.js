@@ -652,7 +652,6 @@ function setSliderBounds(root, name, {
 }
 
 function goalAmountStep(amount) {
-  if (amount >= 1000000) return 50000;
   if (amount >= 100000) return 10000;
   if (amount >= 10000) return 1000;
   return 100;

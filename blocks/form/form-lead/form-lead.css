@@ -286,7 +286,7 @@ main .section.form-container.lead-forms .form form select {
   border-color: var(--bbl-color-grey-23);
   cursor: pointer;
   appearance: none;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin-bottom: var(--bbl-form-margin-14);
   background: var(--bbl-color-white) url('../../../icons/dropdown.svg') no-repeat right var(--bbl-space-150) center /25px;
   font-family: var(--bbl-font-family-medium);
@@ -328,6 +328,10 @@ main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number
 
 main .lead-forms .form form .field-wrapper[class*='icon-'] select {
   margin-top: var(--bbl-form-margin-8);
+}
+
+main .section.form-container.lead-forms .form form select:valid {
+  color: var(--bbl-color-black);
 }
 
 main .section.form-container.lead-forms .section.form-container.custom-forms .drop-down-wrapper.field-wrapper select {
@@ -375,7 +379,7 @@ main .lead-forms .form select option {
 
 main .lead-forms .form :is(input, textarea)::placeholder {
   opacity: 1;
-  color: var(--bbl-color-grey-150);
+  color: var(--bbl-color-grey-40);
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-form-line-height-44);
@@ -445,7 +449,7 @@ main .lead-forms .form form .email-wrapper::before {
   justify-content: center;
   width: var(--bbl-space-250);
   height: 1.1875rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-40);
   transform: translateY(-50%);
   pointer-events: none;
 }

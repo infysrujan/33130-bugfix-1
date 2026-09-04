@@ -530,7 +530,7 @@
   }
 
   .fund-prices-dropdown .stat-table td {
-    color: var(--bbl-color-grey-70);
+    color: var(--bbl-color-grey-90);
   }
 
   .fund-prices-dropdown .stat-table th.stat-th-nav,
@@ -611,7 +611,7 @@
   }
 
   .fund-prices-dropdown .stat-table td {
-    color: var(--bbl-color-grey-78);
+    color: var(--bbl-color-grey-90);
   }
 
   .fund-prices-dropdown .stat-table td:not(.stat-nav-val) {

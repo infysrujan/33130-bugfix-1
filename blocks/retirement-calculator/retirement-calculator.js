@@ -1,7 +1,8 @@
 import fetchBlockConfig from '../../scripts/block-config.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { fetchPost } from '../../scripts/utils/fetchApi.js';
+import { fetchGet, fetchPost } from '../../scripts/utils/fetchApi.js';
+import { getLang } from '../../scripts/scripts.js';
 
 // ─── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -35,17 +36,39 @@ function getInflationText(labels, data) {
 
 // ─── Data ────────────────────────────────────────────────────────────────────────
 
+/** Live inflation / after-retirement rates from the fincal rate-list GraphQL query. */
+function toRate(value) {
+  const n = parseFloat(value);
+  return Number.isNaN(n) ? undefined : n;
+}
+
+async function loadRateList(siteConfig) {
+  try {
+    const baseUrl = siteConfig.retirementCalculatorRateListUrl;
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
+    const json = await fetchGet(url, { throwOnError: false });
+    const item = json?.data?.RateList?.items?.[0] || {};
+    return {
+      inflationRate: toRate(item.InflationRate),
+      afterRetirementRate: toRate(item.AfterRetireRate),
+    };
+  } catch {
+    return {};
+  }
+}
+
 async function loadData() {
-  const [siteConfig, labels, placeholders] = await Promise.all([
-    fetchConfigs(),
+  const siteConfig = await fetchConfigs();
+  const [labels, placeholders, rateList] = await Promise.all([
     fetchBlockConfig('/retirement-config.json'),
     fetchPlaceholders(),
+    loadRateList(siteConfig),
   ]);
   return {
     labels,
     apiUrl: siteConfig.retirementCalculatorApiUrl,
-    inflationRate: String(siteConfig.retirementCalculatorInflationRate ?? '1.5'),
-    afterRetirementRate: String(siteConfig.retirementCalculatorAfterRetirementRate ?? '3'),
+    inflationRate: String(rateList.inflationRate ?? '1.5'),
+    afterRetirementRate: String(rateList.afterRetirementRate ?? '3'),
     altCompensationRate: parseFloat(siteConfig.retirementCalculatorAltCompensationRate) || 0.05,
     defaultMonthlyIncome: parseFloat(placeholders.defaultMonthlyIncome) || 20000,
     defaultCurrentAge: parseInt(placeholders.defaultCurrentAge, 10) || 30,
