@@ -43,6 +43,7 @@
 .warning-card-description {
   color: var(--bbl-color-grey-85);
   margin: 0;
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 .warning-card-description p {
@@ -57,6 +58,7 @@
   color: inherit;
   text-decoration: underline;
   transition: all .3s;
+  font-weight: var(--bbl-font-weight-medium);
 }
 
 .warning-card-description .button-tertiary::after {
@@ -69,7 +71,7 @@
 
 .warning-card-description strong a {
   font-family: var(--bbl-font-family-medium);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 @media (width > 47.5rem) {
