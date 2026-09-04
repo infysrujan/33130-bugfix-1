@@ -284,8 +284,10 @@ function initCarousel(track) {
   carousel.addEventListener('keydown', (e) => {
     if (window.innerWidth < DESKTOP_BREAKPOINT) return;
     if (e.key === 'ArrowLeft') {
+      e.preventDefault();
       prevButton.click();
     } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
       nextButton.click();
     }
   });
@@ -311,6 +313,9 @@ function initCarousel(track) {
     if (!hasDragged && (Math.abs(diffX) > 10 || Math.abs(diffY) > 10)) {
       if (Math.abs(diffY) > Math.abs(diffX)) {
         isDown = false;
+        if (track.hasPointerCapture && track.hasPointerCapture(e.pointerId)) {
+          track.releasePointerCapture(e.pointerId);
+        }
         return;
       }
       hasDragged = true;
@@ -346,6 +351,9 @@ function initCarousel(track) {
         track.style.transition = CAROUSEL_TRANSITION;
         track.style.transform = `translateX(${currentTrackOffset}px)`;
       }
+      setTimeout(() => {
+        hasDragged = false;
+      }, 0);
     }
   };
 
