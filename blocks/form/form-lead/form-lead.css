@@ -952,7 +952,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     line-height: var(--bbl-line-height-b1-desktop);
   }
 
-  main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textw, .field-text1) p {
+  main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textw, .field-text1) > p {
     padding-inline: var(--bbl-form-padding-10);
   }
 
