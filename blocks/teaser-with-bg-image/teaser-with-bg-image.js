@@ -97,6 +97,18 @@ export default function decorate(block) {
 
   contentContainer.appendChild(overlay);
 
+  if (teaserButton) {
+    teaserButton.classList.add('button-m');
+    const ctaWrapper = createElementFromHTML(
+      '<div class="teaser-bg-image-cta"></div>',
+      doc,
+    );
+    const buttonCell = teaserButtonRow.firstElementChild;
+    while (buttonCell?.firstChild) ctaWrapper.appendChild(buttonCell.firstChild);
+    applyLinkTarget(ctaWrapper, 'a', targetValue);
+    contentContainer.appendChild(ctaWrapper);
+  }
+
   if (teaserRows.length) {
     const cardsContainer = createElementFromHTML(
       '<div class="teaser-bg-image-cards"></div>',
@@ -112,18 +124,6 @@ export default function decorate(block) {
     });
 
     contentContainer.appendChild(cardsContainer);
-  }
-
-  if (teaserButton) {
-    teaserButton.classList.add('button-m');
-    const ctaWrapper = createElementFromHTML(
-      '<div class="teaser-bg-image-cta"></div>',
-      doc,
-    );
-    const buttonCell = teaserButtonRow.firstElementChild;
-    while (buttonCell?.firstChild) ctaWrapper.appendChild(buttonCell.firstChild);
-    applyLinkTarget(ctaWrapper, 'a', targetValue);
-    contentContainer.appendChild(ctaWrapper);
   }
 
   wrapper.appendChild(contentContainer);
