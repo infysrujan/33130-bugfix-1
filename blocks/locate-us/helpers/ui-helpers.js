@@ -397,10 +397,9 @@ export async function buildThailandUI(container, data, placeholders, configs) {
       return;
     }
 
-    // No retained location: reset selection and do a fresh near-me search.
+    // No retained location: reset province/district, keep any typed keyword, fresh near-me search.
     selectedProvince = '';
     selectedDistrict = '';
-    keywordInput.value = '';
     districtWrapper.hidden = true;
     districtWrapper.innerHTML = '';
     try {
