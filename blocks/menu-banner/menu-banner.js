@@ -209,8 +209,10 @@ export default function decorate(block) {
   // Append both versions to wrapper
   wrapper.appendChild(desktopTools);
   wrapper.appendChild(mobileContainer);
-  if (textColor) {
+  if (textColor === 'white') {
     block.classList.add('text-white');
+  } else if (textColor === 'black') {
+    block.classList.add('text-black');
   }
 
   // Replace block content

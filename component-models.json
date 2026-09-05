@@ -10849,12 +10849,12 @@
         "value": "black",
         "options": [
           {
-            "name": "White",
-            "value": "white"
-          },
-          {
             "name": "Black",
             "value": "black"
+          },
+          {
+            "name": "White",
+            "value": "white"
           }
         ]
       }
