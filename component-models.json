@@ -13551,6 +13551,14 @@
             "value": false
           }
         ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageObjectPosition",
+        "label": "Image Object Position",
+        "value": "center center",
+        "description": "Set image position using px, %, or keywords (left/center/right, top/center/bottom). E.g. '30% 20%' or 'center top'. Leave empty for default (center)."
       }
     ]
   },

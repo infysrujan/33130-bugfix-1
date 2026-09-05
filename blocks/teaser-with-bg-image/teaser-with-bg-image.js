@@ -50,12 +50,14 @@ export default function decorate(block) {
     teaserDescRow,
     teaserButtonRow,
     teaserTargetRow,
+    teaserImagePositionRow,
     ...teaserRows
   ] = [...block.children];
 
   const teaserBgPicture = teaserBgImgRow?.querySelector('img');
   const teaserButton = teaserButtonRow?.querySelector('a');
   const targetValue = teaserTargetRow?.textContent?.trim() || '';
+  const imageObjectPosition = teaserImagePositionRow?.textContent?.trim() || '';
 
   const wrapper = createElementFromHTML(
     '<div class="teaser-bg-image-wrapper"></div>',
@@ -67,7 +69,9 @@ export default function decorate(block) {
       '<div class="teaser-bg-image-bg" aria-hidden="true"></div>',
       doc,
     );
-    bgLayer.appendChild(teaserBgPicture.cloneNode(true));
+    const bgImg = teaserBgPicture.cloneNode(true);
+    if (imageObjectPosition) bgImg.style.objectPosition = imageObjectPosition;
+    bgLayer.appendChild(bgImg);
     wrapper.appendChild(bgLayer);
   }
 
@@ -93,6 +97,18 @@ export default function decorate(block) {
 
   contentContainer.appendChild(overlay);
 
+  if (teaserButton) {
+    teaserButton.classList.add('button-m');
+    const ctaWrapper = createElementFromHTML(
+      '<div class="teaser-bg-image-cta"></div>',
+      doc,
+    );
+    const buttonCell = teaserButtonRow.firstElementChild;
+    while (buttonCell?.firstChild) ctaWrapper.appendChild(buttonCell.firstChild);
+    applyLinkTarget(ctaWrapper, 'a', targetValue);
+    contentContainer.appendChild(ctaWrapper);
+  }
+
   if (teaserRows.length) {
     const cardsContainer = createElementFromHTML(
       '<div class="teaser-bg-image-cards"></div>',
@@ -108,18 +124,6 @@ export default function decorate(block) {
     });
 
     contentContainer.appendChild(cardsContainer);
-  }
-
-  if (teaserButton) {
-    teaserButton.classList.add('button-m');
-    const ctaWrapper = createElementFromHTML(
-      '<div class="teaser-bg-image-cta"></div>',
-      doc,
-    );
-    const buttonCell = teaserButtonRow.firstElementChild;
-    while (buttonCell?.firstChild) ctaWrapper.appendChild(buttonCell.firstChild);
-    applyLinkTarget(ctaWrapper, 'a', targetValue);
-    contentContainer.appendChild(ctaWrapper);
   }
 
   wrapper.appendChild(contentContainer);
