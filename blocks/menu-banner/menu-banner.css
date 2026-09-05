@@ -81,6 +81,15 @@
   margin: var(--bbl-space-200) 0 var(--bbl-space-300);
 }
 
+.text-white.menu-banner :is(h1, h2, h3, h4, h5, h6),
+.text-white .sub-title-medium {
+  color:  var(--bbl-color-white);
+}
+
+.text-white.menu-banner .sub-title-medium.line::after {
+  background: var(--bbl-color-white);
+}
+
 .bangkok-bankm-card .menu-banner .sub-title-medium,
 .bangkok-bankm-card .menu-banner .title-1,
 .bangkok-bankm-card .menu-banner .title-1 :is(h1, h2, h3, h4, h5, h6) {

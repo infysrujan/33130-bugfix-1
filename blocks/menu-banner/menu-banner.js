@@ -153,13 +153,21 @@ export default function decorate(block) {
 
   // Extract block fields based on JSON model
   // [0] = backgroundImage, [1] = eyebrow, [2] = titleDesktop, [3] = titleMobile, [4+] = cards
-  const [bgImageRow, eyebrowRow, titleDesktopRow, titleMobileRow, ...cardRows] = children;
+  const [
+    bgImageRow,
+    eyebrowRow,
+    titleDesktopRow,
+    titleMobileRow,
+    textColorRow,
+    ...cardRows
+  ] = children;
 
   const bgImg = bgImageRow?.querySelector('img');
   const bgImageUrl = bgImg?.src || '';
   const eyebrow = eyebrowRow?.textContent.trim() || '';
   const titleDesktop = titleDesktopRow?.firstElementChild;
   const titleMobile = titleMobileRow?.firstElementChild;
+  const textColor = textColorRow?.firstElementChild;
 
   // Limit to max 4 cards
   const cards = cardRows.slice(0, 4);
@@ -201,6 +209,11 @@ export default function decorate(block) {
   // Append both versions to wrapper
   wrapper.appendChild(desktopTools);
   wrapper.appendChild(mobileContainer);
+  if (textColor === 'white') {
+    block.classList.add('text-white');
+  } else if (textColor === 'black') {
+    block.classList.add('text-black');
+  }
 
   // Replace block content
   block.textContent = '';

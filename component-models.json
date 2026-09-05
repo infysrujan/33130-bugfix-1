@@ -10233,6 +10233,10 @@
           {
             "name": "Simple with App cta",
             "value": "simple-app-cta"
+          },
+          {
+            "name": "Default",
+            "value": "default"
           }
         ]
       }
@@ -10836,6 +10840,23 @@
         "label": "Title (Mobile)",
         "valueType": "string",
         "required": true
+      },
+      {
+        "component": "select",
+        "name": "textColor",
+        "label": "Text Color",
+        "valueType": "string",
+        "value": "black",
+        "options": [
+          {
+            "name": "Black",
+            "value": "black"
+          },
+          {
+            "name": "White",
+            "value": "white"
+          }
+        ]
       }
     ]
   },
