@@ -344,6 +344,10 @@
               {
                 "name": "Columns 2(25-75)",
                 "value": "columns-2-25"
+              },
+              {
+                "name": "Columns 2(33-67)",
+                "value": "columns-2-33"
               }
             ]
           },
@@ -12818,6 +12822,14 @@
                 "value": "header-right-aligned"
               },
               {
+                "name": "Right Aligned Except First",
+                "value": "header-right-aligned-except-first"
+              },
+              {
+                "name": "Top Aligned",
+                "value": "header-top-aligned"
+              },
+              {
                 "name": "Header Blue",
                 "value": "header-blue"
               },
@@ -12836,6 +12848,10 @@
               {
                 "name": "Header Primary Blue S01",
                 "value": "header-primary-blue-s01"
+              },
+              {
+                "name": "Right Aligned Last Line",
+                "value": "header-right-aligned-last-line"
               }
             ]
           },
@@ -12864,6 +12880,10 @@
                 "value": "cells-center-aligned-except-first"
               },
               {
+                "name": "Cells Right Aligned Except First",
+                "value": "cells-right-aligned-except-first"
+              },
+              {
                 "name": "Cells Middle Aligned",
                 "value": "cells-middle-aligned"
               },
@@ -12874,6 +12894,14 @@
               {
                 "name": "Highlight Bold Cells",
                 "value": "highlight-bold-cells"
+              },
+              {
+                "name": "Highlight First Column",
+                "value": "highlight-first-column"
+              },
+              {
+                "name": "Highlight All Cells",
+                "value": "highlight-all-cells"
               }
             ]
           },
@@ -13398,6 +13426,13 @@
             ]
           }
         ]
+      },
+      {
+        "component": "aem-tag",
+        "name": "tab-category-tag",
+        "label": "Tab Category Tag",
+        "description": "Select the AEM tag that identifies this tab's category. Used by listing blocks (News & Media, Promotional Card Listing, Top Promotional Cards) to filter cards by category instead of relying on the tab label text.",
+        "valueType": "string"
       }
     ]
   },

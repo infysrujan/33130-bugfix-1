@@ -739,12 +739,17 @@
   border-right: none;
 }
 
+/* The group-header row must always paint above the sub-header row, so that
+   even if the JS-measured sticky offset is momentarily stale, the sub-headers
+   can never obscure "Bidding Price"/"Offering Price" as you scroll. */
 .dynamic-board .db-table thead tr:first-child th {
   top: 0;
+  z-index: 3;
 }
 
 .dynamic-board .db-table thead tr:last-child th {
   top: 3.125rem;
+  z-index: 2;
   border-top: 0.0625rem solid var(--bbl-color-grey-152);
 }
 
@@ -807,11 +812,6 @@
 }
 
 /* ── Cell types ────────────────────────────────────────────── */
-
-.dynamic-board .db-td-check {
-  width: var(--bbl-space-500);
-  text-align: center;
-}
 
 .dynamic-board .db-td-symbol {
   white-space: nowrap;

@@ -218,7 +218,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
       x: padL - 8,
       y: y + 4,
       'text-anchor': 'end',
-      'font-size': 'var(--bbl-body-b3-size)',
+      'font-size': 'var(--bbl-body-b1-size)',
       fill: 'var(--bbl-color-black)',
       'font-weight': 'bold',
       'font-family': 'var(--bbl-font-family-primary)',
@@ -265,7 +265,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
         x: clampedX,
         y: H - padB + (useRotation ? 14 : 20),
         'text-anchor': anchor,
-        'font-size': 11,
+        'font-size': 'var(--bbl-body-b1-size)',
         fill: 'var(--bbl-color-black)',
         'font-weight': 'bold',
         'font-family': 'BangkokBank-Bold,Arial,sans-serif',
@@ -285,8 +285,8 @@ function renderChart(svgEl, history, period, noDataLabel) {
       cx,
       cy,
       r: 1.8,
-      fill: 'var(--bbl-color-truthful-blue)',
-      stroke: 'var(--bbl-color-truthful-blue)',
+      fill: 'var(--bbl-color-blue-indigo)',
+      stroke: 'var(--bbl-color-blue-indigo)',
       'stroke-width': 1,
     }, svgEl);
   });
@@ -294,7 +294,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
   el('polyline', {
     points: pts,
     fill: 'none',
-    stroke: 'var(--bbl-color-truthful-blue)',
+    stroke: 'var(--bbl-color-blue-indigo)',
     'stroke-width': 2,
     'stroke-linejoin': 'round',
     'stroke-linecap': 'round',

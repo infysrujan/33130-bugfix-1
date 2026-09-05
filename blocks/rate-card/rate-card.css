@@ -301,6 +301,7 @@
     flex-direction: row;
     align-items: center;
     margin-top: 1.5rem;
+    padding-bottom: 1.5625rem;
   }
 }
 

@@ -228,25 +228,10 @@
  margin-top: 0.625rem;
 }
 
-.mfr-cta {
-  display: inline-block;
-  height: 2.75rem;
-  min-width: 9.6875rem;
-  padding: 0 1.25rem;
-  border-radius: 0.4375rem;
-  font-family: var(--bbl-font-family-primary);
-  font-size: 0.875rem;
-  line-height: 2.75rem;
-  font-weight: var(--bbl-font-weight-regular);
-  cursor: pointer;
-  text-decoration: none;
-  text-align: center;
-  transition: all 0.3s;
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
+.mfr-footer .mfr-cta {
+  display: inline-flex;
   box-sizing: border-box;
-  vertical-align: middle;
+  min-width: 9.6875rem;
   letter-spacing: 0.05rem;
 }
 
@@ -254,25 +239,9 @@
   margin-left: 0.225rem;
 }
 
-.mfr-cta:hover {
-  background: var(--bbl-color-white);
-  border-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-active-blue);
-  text-decoration: none;
-}
-
-.mfr-cta:visited,
-.mfr-cta:focus {
-  text-decoration: none;
-}
-
 /* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
 
 @media (width > 47.5rem) {
-  .mfr-cta {
-    font-size: var(--bbl-font-size-b1, 1rem);
-  }
-
   .mf-results-container .default-content-wrapper p {
   padding-bottom: 1.875rem;
   }

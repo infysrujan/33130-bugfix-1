@@ -641,6 +641,11 @@
   width:48%;
 }
 
+.wealth .hero-banner-private-wealth-banking .hero-banner-content-group .button-container a {
+  min-width: 8.4375rem;
+  width: 8.4375rem;
+}
+
 .hero-banner-hero-with-thumbnail-images .hero-banner-content-group .button-container .button-m {
   min-width: 8.4375rem;
   box-sizing: border-box;
@@ -740,9 +745,9 @@
     max-width: 100%;
   }
 
-  .hero-banner-content-group .button-container a {
+  /* .hero-banner-content-group .button-container a {
     margin-bottom: 4.0625rem;
-  }
+  } */
 
   .hero-banner::after {
     width: calc(100% - 3rem);
@@ -845,6 +850,10 @@
     min-width: 11.25rem;
     margin: 0;
     width:unset;
+  }
+
+  .wealth .hero-banner-private-wealth-banking .hero-banner-content-group .button-container a {
+    width: 11.25rem;
   }
 
   .hero-banner-item.no-mobile-app-cta .hero-app-ctas {

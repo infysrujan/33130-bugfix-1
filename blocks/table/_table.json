@@ -86,6 +86,14 @@
                   "value": "header-right-aligned"
                 },
                 {
+                  "name": "Right Aligned Except First",
+                  "value": "header-right-aligned-except-first"
+                },
+                {
+                  "name": "Top Aligned",
+                  "value": "header-top-aligned"
+                },
+                {
                   "name": "Header Blue",
                   "value": "header-blue"
                 },
@@ -104,6 +112,10 @@
                 {
                   "name": "Header Primary Blue S01",
                   "value": "header-primary-blue-s01"
+                },
+                {
+                  "name": "Right Aligned Last Line",
+                  "value": "header-right-aligned-last-line"
                 }
               ]
             },
@@ -132,6 +144,10 @@
                   "value": "cells-center-aligned-except-first"
                 },
                 {
+                  "name": "Cells Right Aligned Except First",
+                  "value": "cells-right-aligned-except-first"
+                },
+                {
                   "name": "Cells Middle Aligned",
                   "value": "cells-middle-aligned"
                 },
@@ -142,6 +158,14 @@
                 {
                   "name": "Highlight Bold Cells",
                   "value": "highlight-bold-cells"
+                },
+                {
+                  "name": "Highlight First Column",
+                  "value": "highlight-first-column"
+                },
+                {
+                  "name": "Highlight All Cells",
+                  "value": "highlight-all-cells"
                 }
               ]
             },

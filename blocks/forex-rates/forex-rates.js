@@ -28,6 +28,21 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+function getPageTitle(root = document) {
+  const tabsContainer = root.querySelector('.tabs-container');
+  if (!tabsContainer) {
+    return 'Foreign Exchange Rates';
+  }
+
+  let previous = tabsContainer.previousElementSibling;
+  while (previous && !previous.classList.contains('section')) {
+    previous = previous.previousElementSibling;
+  }
+
+  return previous?.querySelector('h1, h2, h3, h4, h5, h6')?.textContent?.trim()
+    || 'Foreign Exchange Rates';
+}
+
 function isNextMonthDisabled(titleText, rawLang) {
   const text = String(titleText || '').trim();
   const lastSpace = text.lastIndexOf(' ');
@@ -151,7 +166,7 @@ function printForexRates(block) {
     || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
   const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
-  const pageTitle = doc.querySelector('h1')?.textContent?.trim() || 'Foreign Exchange Rates';
+  const pageTitle = getPageTitle(doc);
 
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }

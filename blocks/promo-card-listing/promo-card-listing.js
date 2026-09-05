@@ -1,7 +1,7 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
-import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { activateTab } from '../tabs/helpers/tabs-utils.js';
 import {
@@ -9,16 +9,15 @@ import {
   buildCardHtml,
   buildCardOptions,
   buildPaginationHtml,
-  getPromotionDataUrl,
   fetchJson,
   getPromotionPathFlags,
   handleMobileAppView,
-  mergeLocalConfig,
   normalizePromotionType,
   normalizeQueryLang,
   getPromotionApiConfig,
   getPromotionLanguage,
   sortCards,
+  normalizeCategory,
 } from '../../scripts/utils/card-helpers.js';
 
 // --- Autoscroll to the category subnav (any promotions listing in tabs) -----
@@ -222,8 +221,8 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
   const matched = allCards.filter((card) => {
     if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
     if (!topPromotionOnly && category) {
-      const cardCats = normalizeList(card.category).map((c) => c.toLowerCase());
-      if (!cardCats.includes(category.toLowerCase())) return false;
+      const cardCats = normalizeList(card.category).map(normalizeCategory);
+      if (!cardCats.includes(normalizeCategory(category))) return false;
     }
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory) {
@@ -357,7 +356,12 @@ function setupPanel(
         const cardOptions = buildCardOptions(cardData);
         cardOptions.baseUrl = options.baseUrl;
         if (isBbmPanel) cardOptions.logoHtml = '';
-        return buildCardHtml(cardData, category, placeholders, cardOptions);
+        const cats = cardData.category;
+        let displayTag = category;
+        if (!isHighlightsPanel) {
+          displayTag = Array.isArray(cats) ? cats[0] : (cats || category);
+        }
+        return buildCardHtml(cardData, displayTag, placeholders, cardOptions);
       }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
@@ -507,9 +511,6 @@ export default async function decorate(block) {
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
-  if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
-    await mergeLocalConfig(pathname, lang, effectiveConfigs, toCamelCase);
-  }
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
 
@@ -524,10 +525,10 @@ export default async function decorate(block) {
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
 
-  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
+  const promotionsUrl = promotionApi.baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
   const [activeData, cardRefConfig, placeholders] = await Promise.all([
     fetchPromotionalData(promotionsUrl),
-    fetchJson(effectiveConfigs.bbmCardRef || ''),
+    isBbm ? fetchJson(effectiveConfigs.bbmCardRef || '') : Promise.resolve(null),
     fetchPlaceholders(),
   ]);
   const activeCards = filterByPromotionType(activeData?.cards || [], promotionType);
@@ -618,17 +619,15 @@ export default async function decorate(block) {
       ? (tabsContainer?.querySelector(`#${tabBtnId}`) || document.getElementById(tabBtnId))
       : null;
     const tabText = tabBtn?.textContent?.trim() || '';
+    const tabTags = tabBtn?.dataset.tabCategoryTag;
 
     const dataSet = activeData;
     const dataCategories = dataSet?.categories || [];
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
-    const catMeta = dataCategories.find((c) => c.label.toLowerCase() === tabText.toLowerCase())
-      || {};
-    const category = catMeta.label || tabText;
-    const subcategories = catMeta.subcategories || [];
-
     const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText));
+    const category = tabTags || (isHighlightsPanel ? tabText : '');
+    const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
     setupPanel(
       panel,

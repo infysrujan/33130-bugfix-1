@@ -46,8 +46,8 @@
 }
 
 .sub-nav .sub-nav-back-circle.icon-arrow-left::before {
-    transform: translateY(0%) rotate(180deg);
-    font-size: 0.625rem;
+    transform: translateY(0%) rotate(90deg);
+    font-size: 0.4375rem;
 }
 
 /* Sub-nav dropdown (uses dropdown-helpers.js createGlobalDropdown) */

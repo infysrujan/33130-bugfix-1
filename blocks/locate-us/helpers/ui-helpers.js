@@ -397,12 +397,18 @@ export async function buildThailandUI(container, data, placeholders, configs) {
       return;
     }
 
-    // No retained location: reset selection and do a fresh near-me search.
+    // No retained province: reset province/district selection.
     selectedProvince = '';
     selectedDistrict = '';
-    keywordInput.value = '';
     districtWrapper.hidden = true;
     districtWrapper.innerHTML = '';
+
+    // Keep any typed keyword and re-run the search via the existing form submit; else near-me.
+    if (keywordInput.value.trim() && !keywordFromSelection) {
+      keywordForm.requestSubmit();
+      return;
+    }
+
     try {
       const locations = await fetchNearMe(userLat, userLng, selectedServiceCode, configs);
       showResults(locations);

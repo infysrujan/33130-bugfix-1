@@ -72,6 +72,8 @@ export function createBaseButton(cell, index) {
   button.id = `tab-${index}`;
   const variantAttr = cell.dataset.variant;
   if (variantAttr) button.setAttribute('data-tab-variant', variantAttr);
+  const { tabCategoryTag } = cell.dataset;
+  if (tabCategoryTag) button.dataset.tabCategoryTag = tabCategoryTag;
   return button;
 }
 

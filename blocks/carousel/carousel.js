@@ -281,6 +281,90 @@ function initCarousel(track) {
     }
   });
 
+  carousel.addEventListener('keydown', (e) => {
+    if (window.innerWidth < DESKTOP_BREAKPOINT) return;
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prevButton.click();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextButton.click();
+    }
+  });
+
+  let startX = 0;
+  let startY = 0;
+  let isDown = false;
+  let hasDragged = false;
+
+  track.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0 || window.innerWidth < DESKTOP_BREAKPOINT || isSliding) return;
+    isDown = true;
+    hasDragged = false;
+    startX = e.clientX;
+    startY = e.clientY;
+    if (track.setPointerCapture) {
+      track.setPointerCapture(e.pointerId);
+    }
+  });
+
+  track.addEventListener('pointermove', (e) => {
+    if (!isDown) return;
+    const diffX = e.clientX - startX;
+    const diffY = e.clientY - startY;
+
+    if (!hasDragged && (Math.abs(diffX) > 10 || Math.abs(diffY) > 10)) {
+      if (Math.abs(diffY) > Math.abs(diffX)) {
+        isDown = false;
+        if (track.hasPointerCapture && track.hasPointerCapture(e.pointerId)) {
+          track.releasePointerCapture(e.pointerId);
+        }
+        return;
+      }
+      hasDragged = true;
+    }
+
+    if (hasDragged) {
+      let pull = diffX;
+      if ((currentIndex === 0 && diffX > 0) || (currentIndex >= totalItems - 1 && diffX < 0)) {
+        pull = diffX * 0.3;
+      }
+      track.style.transition = 'none';
+      track.style.transform = `translateX(${currentTrackOffset + pull}px)`;
+    }
+  });
+
+  const endDrag = (e) => {
+    if (!isDown) return;
+    isDown = false;
+    if (track.hasPointerCapture && track.hasPointerCapture(e.pointerId)) {
+      track.releasePointerCapture(e.pointerId);
+    }
+
+    if (hasDragged) {
+      const deltaX = e.clientX - startX;
+      if (deltaX < -50 && currentIndex < totalItems - 1) {
+        nextButton.click();
+      } else if (deltaX > 50 && currentIndex > 0) {
+        prevButton.click();
+      } else {
+        track.style.transition = CAROUSEL_TRANSITION;
+        track.style.transform = `translateX(${currentTrackOffset}px)`;
+      }
+    }
+  };
+
+  track.addEventListener('pointerup', endDrag);
+  track.addEventListener('pointercancel', endDrag);
+
+  track.addEventListener('click', (e) => {
+    if (hasDragged) {
+      e.preventDefault();
+      e.stopPropagation();
+      hasDragged = false;
+    }
+  }, true);
+
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);

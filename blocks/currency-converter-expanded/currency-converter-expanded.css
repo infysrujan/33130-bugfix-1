@@ -382,11 +382,9 @@
 
 /* Disclaimer text */
 .currency-converter-expanded .converter-expanded-disclaimer {
-  color: var(--bbl-color-white-alpha-50);
-  font-size: 0.875rem;
-  line-height: 0.875rem;
   margin: 0;
   text-align: center;
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 .currency-converter-expanded .converter-expanded-result-content p,
@@ -476,8 +474,6 @@
     text-align: center;
     max-width: 50%;
     margin: 0 auto;
-    font-size: 1rem;
-    line-height: 1rem;
   }
 
   .currency-converter-expanded .converter-expanded-result {

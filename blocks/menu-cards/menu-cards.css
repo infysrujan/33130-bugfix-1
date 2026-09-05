@@ -80,6 +80,11 @@
 
 /* Desktop: width > 1024px */
 @media (width > 64rem) {
+  .menu-cards .tips-insight-quick-access-title {
+    font-size: var(--bbl-font-size-h3-desktop);
+    line-height: var(--bbl-line-height-h3-desktop);
+  }
+
   .menu-cards .tips-insight-quick-access {
     gap: var(--bbl-space-300);
   }

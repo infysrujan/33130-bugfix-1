@@ -119,6 +119,10 @@ strong{
   font-weight: var(--bbl-font-weight-regular);
 }
 
+sup {
+  font-size: 0.75rem;
+}
+
 p,
 dl,
 ol,
@@ -660,7 +664,7 @@ main img {
     .section.columns-2-33 > *:first-child,
     .accordion-panel.columns-2-33 > *:first-child,
     .tab-panel.columns-2-33 > *:first-child {
-        flex: 33;
+        flex: 32.5;
     }
     
     .section.columns-2-33 > *:last-child,

@@ -13,7 +13,7 @@ body.modal-open {
   box-sizing: border-box;
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-form-font-size-16);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   background-color: var(--bbl-color-white);
   overflow: hidden;
 }
@@ -25,7 +25,7 @@ body.modal-open {
   padding: 0;
   font-size: var(--bbl-form-font-size-16);
   line-height: var(--bbl-form-line-height-1-3);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -40,7 +40,7 @@ body.modal-open {
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-form-font-size-16);
   line-height: var(--bbl-form-line-height-1-3);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 .modal dialog .modal-content :is(b, strong) {

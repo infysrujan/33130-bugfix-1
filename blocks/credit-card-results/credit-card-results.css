@@ -89,6 +89,7 @@
 
 .ccs-card-list-container .cards-list.scrollable {
   scrollbar-width: none;
+  scroll-snap-type: x mandatory;
 }
 
 .ccs-card-list-container .cards-list.scrollable::-webkit-scrollbar {
@@ -161,7 +162,7 @@
 /* ── No-results state ─────────────────────────────────────────────────────── */
 
 .ccs-no-results {
-  padding: var(--bbl-space-600) var(--bbl-space-200);
+  padding-bottom: 1.875rem;
   text-align: center;
   color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1);
@@ -217,13 +218,22 @@
 /* ── Disclaimer ────────────────────────────────────────────────────────────── */
 
 .ccs-results-disclaimer {
-  margin-top: var(--bbl-space-300);
+  margin-top: 1.875rem;
   margin-inline: 0;
-  padding-top: var(--bbl-space-300);
+  padding-top: 1.875rem;
   font-size: var(--bbl-font-size-b1);
-  color: var(--bbl-color-grey-85);
   line-height: 1.6;
   text-align: left;
+}
+
+@media (width < 47.5rem) {
+  .credit-card-results-container {
+    padding-inline: 0.375rem;
+  }
+
+  .ccs-results-disclaimer {
+    padding-inline: 0.625rem;
+  }
 }
 
 @media (width > 47.5rem) {
@@ -250,6 +260,7 @@
 
   .ccs-results-disclaimer {
     padding-right: var(--bbl-space-250);
+    margin-top: 0;
   }
 }
 

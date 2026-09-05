@@ -144,15 +144,15 @@ export default async function decorate(block) {
     if (row.querySelector('.button-container') || row.querySelector('a')) {
       const anchor = row.querySelector('a');
       if (anchor) {
-        const text = anchor.textContent?.toLowerCase() || '';
         const href = anchor.getAttribute('href')?.toLowerCase() || '';
+        const title = anchor.getAttribute('title')?.toLowerCase() || '';
 
         // Convert anchors to buttons based on content
-        if (text.includes('policy')) {
+        if (href.includes('policy') || title.includes('policy')) {
           // Keep policy links as links
           anchor.className = 'cookie-alert-policy-link';
           textEl.append(anchor);
-        } else if (text.includes('setting') || href.includes('cookie-modal')) {
+        } else if (href.includes('cookie-modal') || title.includes('setting')) {
           // Settings button
           const btn = document.createElement('button');
           btn.type = 'button';
@@ -171,7 +171,7 @@ export default async function decorate(block) {
           });
 
           btnsEl.append(btn);
-        } else if (text.includes('accept')) {
+        } else if (href.includes('#accept-all')) {
           // Accept button
           const btn = document.createElement('button');
           btn.type = 'button';
