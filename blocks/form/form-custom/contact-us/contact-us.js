@@ -7,13 +7,11 @@ import { trackContactFormSubmit } from '../../../../scripts/analytics.js';
 function isContactUsForm(form) {
   if (!form) return false;
 
-  // Generated panel/fragment class names (field-contact, field-contactfragment,
-  // field-main-panel, field-contactusfragment, ...) drift across environments
-  // and are reused by other form templates, so matching on them is unreliable.
-  // The hidden "formCode" field is an authored, form-specific identifier
-  // added for tracking/submission purposes — use that instead.
+  // Panel/fragment class names drift across environments, so match on the
+  // authored "formCode" field instead. Strip non-alphanumerics since authored
+  // values drift too (e.g. "ContactUs" vs "Contact-Us").
   const formCode = form.querySelector('input[name="formCode"]')?.value;
-  return formCode?.trim().toLowerCase() === 'contactus';
+  return formCode?.replace(/[^a-z0-9]/gi, '').toLowerCase() === 'contactus';
 }
 
 /**
