@@ -74,6 +74,7 @@
           "name": "textColor",
           "label": "Text Color",
           "valueType": "string",
+          "value": "black",
           "options": [
             {
               "name": "White",
