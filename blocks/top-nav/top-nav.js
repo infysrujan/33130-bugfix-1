@@ -27,13 +27,7 @@ function urlMatchesLang(url, lang) {
   }
 }
 
-/**
- * Merges two query strings, preserving each side's raw formatting
- * (including any authored quirks like a leading "?&").
- * @param {string} anchorSearch - Anchor's own query string (e.g. "?&campaignid=11")
- * @param {string} currentSearch - Current page's query string (window.location.search)
- * @returns {string} Combined query string, or '' if both are empty
- */
+// Merges anchor and current page query strings, preserving raw formatting
 function mergeSearchStrings(anchorSearch, currentSearch) {
   const anchorQuery = anchorSearch.startsWith('?') ? anchorSearch.slice(1) : anchorSearch;
   const currentQuery = currentSearch.startsWith('?') ? currentSearch.slice(1) : currentSearch;
