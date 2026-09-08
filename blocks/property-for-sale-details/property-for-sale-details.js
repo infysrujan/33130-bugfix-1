@@ -127,13 +127,17 @@ function buildMapLink(data, label, mapBaseUrl) {
   return `<a href="${href}" target="_blank" class="prop-for-sale-map-link">${label}<img src="/icons/google-map-open.ico" alt="" class="prop-for-sale-map-icon"></a>`;
 }
 
+function hasActiveSpecialPrice(data) {
+  return !!(data.SPECIAL_PRICE && data.START_SPECAIL_PRICE_DATE && data.END_SPECAIL_PRICE_DATE);
+}
+
 function getFieldValue(field, data, currency, openMapLabel, mapBaseUrl) {
   switch (field) {
     case 'FILE_ID': return data.FILE_ID ? `${data.FILE_ID}${data.OLD_FILE_ID ? ` หรือ ${data.OLD_FILE_ID}` : ''}` : '-';
     case 'AREA': return formatArea(data);
     case 'LOCATION': return buildLocation(data);
     case 'PR_PRICE': return data.PR_PRICE ? `${formatPrice(data.PR_PRICE)} ${currency}` : '-';
-    case 'SPECIAL_PRICE': return data.SPECIAL_PRICE ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
+    case 'SPECIAL_PRICE': return hasActiveSpecialPrice(data) ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
     case 'MAP': return buildMapLink(data, openMapLabel, mapBaseUrl);
     default: {
       const raw = data[field];
@@ -159,7 +163,7 @@ function buildDetailHtml(data, placeholders, detailRows, mapBaseUrl) {
     label, value, special, starting,
   }) => {
     const cls = `prop-for-sale-value${special ? ' prop-for-sale-special-price' : ''}${starting ? ' prop-for-sale-starting-price' : ''}`;
-    const hideRow = special && (value === '-' || !!value) ? 'hidden' : '';
+    const hideRow = special && value === '-' ? 'hidden' : '';
     return `
     <div class="prop-for-sale-row ${hideRow}">
       <div class="prop-for-sale-label">${label}</div>

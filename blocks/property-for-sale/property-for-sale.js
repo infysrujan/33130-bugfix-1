@@ -142,7 +142,9 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData) {
   const photo = item.PHOTO_FILE_1;
   const currency = p.propertyForSaleCurrency || 'บาท';
   const price = item.PR_PRICE ? `${formatPrice(item.PR_PRICE)} ${currency}` : '';
-  const specialPrice = item.SPECIAL_PRICE ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}` : '';
+  const hasActiveSpecialPrice = item.SPECIAL_PRICE
+    && item.START_SPECAIL_PRICE_DATE && item.END_SPECAIL_PRICE_DATE;
+  const specialPrice = hasActiveSpecialPrice ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}` : '';
   const location = [item.LOCATION_AMPHUR, item.LOCATION_PROVINCE].filter(Boolean).join(', ');
   const tag = pfsData.categoryLabel[category] || item.MAIN_ASSET || '';
 
