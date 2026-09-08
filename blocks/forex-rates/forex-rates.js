@@ -170,7 +170,11 @@ function printForexRates(block) {
   const doc = block.ownerDocument;
   const logoEl = doc.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
     || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+  // A cloned <picture>'s relative srcset can fail to resolve in the print
+  // window, so use the browser's already-resolved absolute image URL.
+  const logoImg = logoEl?.tagName === 'IMG' ? logoEl : logoEl?.querySelector('img');
+  const logoSrc = logoImg ? (logoImg.currentSrc || logoImg.src) : '';
+  const brandLogo = logoSrc ? `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoImg.alt || 'Bangkok Bank')}">` : '';
 
   const pageTitle = getPageTitle(doc);
 
