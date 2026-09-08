@@ -92,8 +92,10 @@ function renderBlock(block, state, authoring) {
 
   const rows = state.rates.map((rate) => `<tr>
     <td class="forex-rates-currency">
-      <img src="/icons/${escapeHtml(rate.family)}.svg" alt="${escapeHtml(rate.family)} flag" loading="lazy" class="forex-rates-flag">
-      <span>${escapeHtml(rate.family)}</span>
+      <span class="forex-rates-currency-inner">
+        <img src="/icons/${escapeHtml(rate.family)}.svg" alt="${escapeHtml(rate.family)} flag" loading="lazy" class="forex-rates-flag">
+        <span>${escapeHtml(rate.family)}</span>
+      </span>
     </td>
     <td>${escapeHtml(rate.description)}</td>
     <td class="is-right">${escapeHtml(rate.buyingRates)}</td>

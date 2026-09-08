@@ -312,7 +312,7 @@
   text-align: right;
 }
 
-.forex-rates .forex-rates-currency {
+.forex-rates .forex-rates-currency-inner {
   display: flex;
   align-items: center;
   gap: 0.625rem;
