@@ -219,7 +219,7 @@ function printForexRates(block) {
     /* Table */
     .forex-rates-table-wrap { overflow: visible; margin-top: var(--bbl-space-050); }
     .forex-rates-table {
-      min-width: 0; width: 100%; table-layout: fixed; border-collapse: collapse;
+      min-width: 0; width: 100%; table-layout: auto; border-collapse: collapse;
       border: 0.0625rem solid var(--bbl-color-black); font-size: 0.5rem; color: #555;
     }
     .forex-rates-table thead tr { height: auto; }
