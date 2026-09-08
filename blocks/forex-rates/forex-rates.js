@@ -281,10 +281,29 @@ function printForexRates(block) {
   doc.body.appendChild(iframe);
 
   iframe.onload = () => {
-    setTimeout(() => {
-      iframe.contentWindow.focus();
-      iframe.contentWindow.print();
-    }, 300);
+    const iframeWin = iframe.contentWindow;
+    const iframeContentDoc = iframeWin.document;
+
+    // A blind fixed delay before printing works fine on Android/Chrome, where
+    // images and the web font are typically already warm in cache, but iOS
+    // Safari's first load of these same resources inside a fresh iframe can
+    // take longer — printing before they're ready bakes in missing images or
+    // a fallback font. Wait for actual readiness instead of guessing a delay,
+    // with a timeout fallback so printing can't hang indefinitely.
+    const imagesReady = Promise.all([...iframeContentDoc.images].map((img) => (
+      img.complete ? Promise.resolve() : new Promise((resolve) => {
+        img.addEventListener('load', resolve, { once: true });
+        img.addEventListener('error', resolve, { once: true });
+      })
+    )));
+    const fontsReady = iframeContentDoc.fonts ? iframeContentDoc.fonts.ready : Promise.resolve();
+    const readyTimeout = new Promise((resolve) => { setTimeout(resolve, 2000); });
+
+    Promise.race([Promise.all([imagesReady, fontsReady]), readyTimeout]).then(() => {
+      iframeWin.focus();
+      iframeWin.print();
+    });
+
     window.addEventListener('afterprint', () => {
       if (doc.body.contains(iframe)) doc.body.removeChild(iframe);
     }, { once: true });
