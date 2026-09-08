@@ -178,6 +178,17 @@ function printForexRates(block) {
 
   const pageTitle = getPageTitle(doc);
 
+  // iOS/iPadOS detection (covers iPad reporting as "MacIntel" with touch).
+  const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  // On iOS only, center the last three rate columns' data instead of the
+  // default right-alignment. Placed after the .is-right rule (equal
+  // specificity) so it wins the cascade; empty string on other platforms.
+  const iosTableCss = isIOS
+    ? '.forex-rates-table tbody td:nth-child(n+5) { text-align: center; }'
+    : '';
+
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }
     /* iOS Safari can auto-boost font sizes for readability, inflating every
@@ -262,6 +273,8 @@ function printForexRates(block) {
       .forex-rates-table { break-inside: auto; }
       .forex-rates-table tbody tr { break-inside: avoid; }
     }
+
+    ${iosTableCss}
   `;
 
   const printHtml = `<!DOCTYPE html>
