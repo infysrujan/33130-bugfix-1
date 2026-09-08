@@ -64,6 +64,7 @@
   width: 100%;
   background-color: var(--bbl-bg-primary);
   transition: transform 0.3s ease, opacity 0.3s ease;
+  border-radius: 0.25rem;
 }
 
 .header .mob-megamenu-back-btn span {

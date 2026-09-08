@@ -198,12 +198,6 @@
 }
 
 @media (width > 64rem) {
-  :lang(th) {
-    .teaser-bg-image-title :is(h1, h2, h3, h4, h5, h6) {
-      line-height: 3.75rem;
-    }
-  }
-
   .teaser-bg-image-cards {
     padding-block: 1.875rem;
     order: 3;

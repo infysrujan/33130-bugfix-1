@@ -112,12 +112,6 @@ function renderTimeDropdown(timeListEl, timeLabelEl, state) {
 }
 
 // ─── table ────────────────────────────────────────────────────────────────────
-function sortIcon(key, state) {
-  if (!key) return '';
-  const icon = state.sortUserSet && state.sortKey === key ? 'bond-sorted' : 'bond-sort';
-  return `<img src="/icons/${icon}.svg" class="db-sort-icon" width="16" height="16" alt="" aria-hidden="true">`;
-}
-
 function updateFilterBtn(btn, state) {
   const isActive = state.filterMaturity !== null || state.filterDatesUserSet;
   const img = btn.querySelector('img');
@@ -125,7 +119,25 @@ function updateFilterBtn(btn, state) {
   btn.classList.toggle('is-active', isActive);
 }
 
-function renderThead(thead, state) {
+// Group header ("Bidding Price"/"Offering Price")
+function syncStickyOffsets(thead, tbodySel) {
+  const groupHeader = thead.querySelector('.db-th-group');
+  const secondRow = thead.querySelector('tr:last-child');
+  if (groupHeader && secondRow) {
+    // position:sticky lives on the <th> cells, not the <tr>.
+    const top = `${groupHeader.getBoundingClientRect().height}px`;
+    secondRow.querySelectorAll('th').forEach((th) => { th.style.top = top; });
+  }
+  if (!tbodySel) return;
+  const theadH = thead.getBoundingClientRect().height;
+  let offset = theadH;
+  tbodySel.querySelectorAll('tr').forEach((tr) => {
+    tr.style.top = `${offset}px`;
+    offset += tr.getBoundingClientRect().height;
+  });
+}
+
+function renderThead(thead, state, tbodySel) {
   let row1 = '<tr>';
   let row2 = '<tr>';
   state.columns.forEach((col) => {
@@ -138,24 +150,18 @@ function renderThead(thead, state) {
         const ssa = s.sortKey ? `data-sort="${s.sortKey}"` : '';
         const isSubSorted = state.sortUserSet && s.sortKey && s.sortKey === state.sortKey;
         const ssc = s.sortKey ? `db-th-sort${isSubSorted ? ' db-th-sorted' : ''}` : '';
-        row2 += `<th ${ssa} class="${ssc}">${escapeHtml(s.label)}${sortIcon(s.sortKey, state)}</th>`;
+        row2 += `<th ${ssa} class="${ssc}">${escapeHtml(s.label)}</th>`;
       });
     } else {
       const cs = col.colspan > 1 ? `colspan="${col.colspan}"` : '';
-      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}">${escapeHtml(col.label)}${sortIcon(col.sortKey, state)}</th>`;
+      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}">${escapeHtml(col.label)}</th>`;
     }
   });
   row1 += '</tr>';
   row2 += '</tr>';
   thead.innerHTML = row1 + row2;
 
-  requestAnimationFrame(() => {
-    const groupHeader = thead.querySelector('.db-th-group');
-    const secondRow = thead.querySelector('tr:last-child');
-    if (groupHeader && secondRow) {
-      secondRow.style.top = `${groupHeader.getBoundingClientRect().height}px`;
-    }
-  });
+  requestAnimationFrame(() => syncStickyOffsets(thead, tbodySel));
 }
 
 function renderRow(rate, isSelected, state) {
@@ -206,14 +212,7 @@ function renderTable(tbodySel, tbodyAll, state) {
   tbodySel.innerHTML = selRates.map((r) => renderRow(r, true, state)).join('');
   tbodyAll.innerHTML = unsel.map((r) => renderRow(r, false, state)).join('');
   const thead = tbodySel.closest('table')?.querySelector('thead');
-  if (thead) {
-    const theadH = thead.getBoundingClientRect().height;
-    let offset = theadH;
-    tbodySel.querySelectorAll('tr').forEach((tr) => {
-      tr.style.top = `${offset}px`;
-      offset += tr.getBoundingClientRect().height;
-    });
-  }
+  if (thead) syncStickyOffsets(thead, tbodySel);
 }
 
 // ─── month picker ─────────────────────────────────────────────────────────────
@@ -493,7 +492,7 @@ function wireFilterEvents(
     try {
       await loadFilteredRates(state);
       state.selectedIds = [];
-      renderThead(thead, state);
+      renderThead(thead, state, tbodySel);
       renderTable(tbodySel, tbodyAll, state);
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -572,7 +571,6 @@ function printElement(block) {
     '.db-filter-wrapper',
     '.db-mp-popup',
     '.db-go-btn',
-    '.db-sort-icon',
     '.db-td-check',
     '.db-th-download',
     '.db-td-dl',
@@ -794,6 +792,7 @@ function printElement(block) {
          thead/tr level even with print-color-adjust: exact set globally —
          setting it directly on each th is what actually survives printing. */
       background-color: #FFFFFF;
+      background-image: none;
       color: ${headerColor};
       font-size: 0.625rem;
       font-weight: ${headerFontWeight} !important;
@@ -1081,7 +1080,13 @@ export default async function decorate(block) {
   const tbodySel = block.querySelector('#db-tbody-sel');
   const tbodyAll = block.querySelector('#db-tbody-all');
 
-  renderThead(thead, state);
+  renderThead(thead, state, tbodySel);
+
+  // The second header row and the pinned selected rows are position:sticky at
+  if (typeof ResizeObserver !== 'undefined') {
+    const stickyObserver = new ResizeObserver(() => syncStickyOffsets(thead, tbodySel));
+    stickyObserver.observe(thead);
+  }
 
   // ── initial data load ──
   try {
@@ -1100,7 +1105,7 @@ export default async function decorate(block) {
     state.rates = Array.isArray(latestRates) ? latestRates : [];
 
     renderTimeDropdown(timeListEl, timeLabelEl, state);
-    renderThead(thead, state);
+    renderThead(thead, state, tbodySel);
     renderTable(tbodySel, tbodyAll, state);
   } catch (err) {
     // eslint-disable-next-line no-console
@@ -1186,7 +1191,7 @@ export default async function decorate(block) {
     if (state.sortKey === key) state.sortAsc = !state.sortAsc;
     else { state.sortKey = key; state.sortAsc = true; }
     state.sortUserSet = true;
-    renderThead(thead, state);
+    renderThead(thead, state, tbodySel);
     renderTable(tbodySel, tbodyAll, state);
   });
 
@@ -1245,7 +1250,7 @@ export default async function decorate(block) {
     state.sortAsc = true;
     state.sortUserSet = false;
     updateFilterBtn(filterBtn, state);
-    renderThead(thead, state);
+    renderThead(thead, state, tbodySel);
     try {
       await loadRates(state);
       state.selectedIds = [];

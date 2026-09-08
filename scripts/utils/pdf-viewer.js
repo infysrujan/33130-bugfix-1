@@ -61,18 +61,20 @@ export default function openPdfViewer({
   downloadLink.rel = 'noopener';
   buttonGroup.append(downloadLink);
 
-  let objectUrl = null;
-  const pdfBlobPromise = fetch(path).then((r) => r.blob());
+  fetch(path)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load PDF: ${response.status}`);
+      }
 
-  pdfBlobPromise
-    .then((blob) => {
-      // Keep the blob URL alive for the lifetime of the modal so the viewer's
-      // built-in download button can still fetch it; revoke on close() below.
-      objectUrl = URL.createObjectURL(blob);
-      embedEl.src = objectUrl;
+      embedEl.src = path;
     })
     .catch(() => {
-      if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
+      if (googleViewerUrl) {
+        embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(
+          path,
+        )}`;
+      }
     });
 
   centerContent.append(pdfEmbed, buttonGroup);
@@ -80,10 +82,6 @@ export default function openPdfViewer({
   dialog.append(header, body);
 
   function close() {
-    if (objectUrl) {
-      URL.revokeObjectURL(objectUrl);
-      objectUrl = null;
-    }
     document.body.classList.remove(`${classPrefix}-open`);
     hideModal(overlay, `${classPrefix}-visible`);
   }

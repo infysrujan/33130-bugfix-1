@@ -9,7 +9,8 @@
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
               "name": "Promotional Details",
-              "model": "promotional-details"
+              "model": "promotional-details",
+              "filter": "promotional-details-rte"
             }
           }
         }
@@ -262,5 +263,76 @@
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "promotional-details-rte",
+      "components": [
+        "richtext"
+      ],
+      "rte": {
+        "toolbar": {
+          "format": [
+            "bold",
+            "italic",
+            "underline",
+            "strike"
+          ],
+          "alignment": [
+            "left",
+            "center",
+            "right",
+            "justify"
+          ],
+          "indentation": [
+            "indent",
+            "outdent"
+          ],
+          "blocks": [
+            "paragraph",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6"
+          ],
+          "list": [
+            "bullet_list",
+            "ordered_list"
+          ],
+          "insert": [
+            "link",
+            "unlink",
+            "image",
+            "special_characters"
+          ],
+          "sr_script": [
+            "superscript",
+            "subscript"
+          ],
+          "editor": [
+            "removeformat",
+            "paste_text"
+          ],
+          "sections": [
+            "format",
+            "alignment",
+            "indentation",
+            "blocks",
+            "list",
+            "insert",
+            "sr_script",
+            "editor"
+          ]
+        },
+        "actions": {
+          "image": {
+            "wrapInPicture": false,
+            "shortcut": "Mod-Shift-I",
+            "label": "Insert Image"
+          }
+        }
+      }
+    }
+  ]
 }

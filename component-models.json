@@ -46,6 +46,10 @@
           {
             "name": "Error Page",
             "value": "error-page"
+          },
+          {
+            "name": "Bangkok Bankm Promotion",
+            "value": "bangkok-bankm-promotion"
           }
         ]
       },
@@ -344,6 +348,10 @@
               {
                 "name": "Columns 2(25-75)",
                 "value": "columns-2-25"
+              },
+              {
+                "name": "Columns 2(33-67)",
+                "value": "columns-2-33"
               }
             ]
           },
@@ -2206,6 +2214,139 @@
               "var": "slideType"
             },
             "contentInsertCarouselCards"
+          ]
+        }
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "heroImagePickerDesktop",
+        "label": "Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "heroImagePickerDesktopMimeType",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "heroImagePickerMobile",
+        "label": "Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "heroImagePickerMobileMimeType",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heroImagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
           ]
         }
       }
@@ -10229,6 +10370,10 @@
           {
             "name": "Simple with App cta",
             "value": "simple-app-cta"
+          },
+          {
+            "name": "Default",
+            "value": "default"
           }
         ]
       }
@@ -12818,6 +12963,18 @@
                 "value": "header-right-aligned"
               },
               {
+                "name": "Right Aligned Except First",
+                "value": "header-right-aligned-except-first"
+              },
+              {
+                "name": "Top Aligned",
+                "value": "header-top-aligned"
+              },
+              {
+                "name": "Middle Aligned",
+                "value": "header-middle-aligned"
+              },
+              {
                 "name": "Header Blue",
                 "value": "header-blue"
               },
@@ -12836,6 +12993,10 @@
               {
                 "name": "Header Primary Blue S01",
                 "value": "header-primary-blue-s01"
+              },
+              {
+                "name": "Right Aligned Last Line",
+                "value": "header-right-aligned-last-line"
               }
             ]
           },
@@ -12864,6 +13025,10 @@
                 "value": "cells-center-aligned-except-first"
               },
               {
+                "name": "Cells Right Aligned Except First",
+                "value": "cells-right-aligned-except-first"
+              },
+              {
                 "name": "Cells Middle Aligned",
                 "value": "cells-middle-aligned"
               },
@@ -12874,6 +13039,14 @@
               {
                 "name": "Highlight Bold Cells",
                 "value": "highlight-bold-cells"
+              },
+              {
+                "name": "Highlight First Column",
+                "value": "highlight-first-column"
+              },
+              {
+                "name": "Highlight All Cells",
+                "value": "highlight-all-cells"
               }
             ]
           },
@@ -13381,6 +13554,10 @@
               {
                 "name": "Center First Paragraph",
                 "value": "center-first-paragraph"
+              },
+              {
+                "name": "Center Aligned First Paragraph",
+                "value": "center-aligned-first-paragraph"
               }
             ]
           },
@@ -13398,6 +13575,13 @@
             ]
           }
         ]
+      },
+      {
+        "component": "aem-tag",
+        "name": "tab-category-tag",
+        "label": "Tab Category Tag",
+        "description": "Select the AEM tag that identifies this tab's category. Used by listing blocks (News & Media, Promotional Card Listing, Top Promotional Cards) to filter cards by category instead of relying on the tab label text.",
+        "valueType": "string"
       }
     ]
   },

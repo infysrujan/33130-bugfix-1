@@ -143,6 +143,10 @@
                 {
                   "name":"Columns 2(25-75)",
                   "value": "columns-2-25"
+                },
+                {
+                  "name":"Columns 2(33-67)",
+                  "value": "columns-2-33"
                 }
               ]
             },

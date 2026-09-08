@@ -45,7 +45,7 @@
 }
 
 .credit-card-form main .section.form-container.custom-forms .form form .field-summary p {
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 .credit-card-form main .section.form-container.custom-forms .form form .plain-text-wrapper:is(.field-notetext, .field-summary) > p:not(:has(ul)) > p:last-of-type {
@@ -53,7 +53,7 @@
 }
 
 .credit-card-form main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration>p>p:first-child {
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 .credit-card-form main .section.form-container .form form .field-invalid :is(.field-validation-error, .field-description) {
@@ -66,10 +66,17 @@
 
 .credit-card-form main .section.form-container.custom-forms .form form ul {
   padding: 0;
+  text-align: left;
 }
 
 .credit-card-form main .section.form-container.custom-forms .form .form-message.success-message {
   line-height: 1;
+}
+
+@media (width < 47.5rem) {
+  .credit-card-form main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) fieldset.panel-wrapper .plain-text-wrapper.tnc-text-decoration {
+    max-height: 15rem;
+  }
 }
 
 @media (width > 47.5rem) {

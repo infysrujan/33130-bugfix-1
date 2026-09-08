@@ -176,6 +176,76 @@
     ]
   },
   {
+    "id": "card-list-item-rte",
+    "components": [
+      "richtext"
+    ],
+    "rte": {
+      "toolbar": {
+        "format": [
+          "bold",
+          "italic",
+          "underline",
+          "strike"
+        ],
+        "alignment": [
+          "left",
+          "center",
+          "right",
+          "justify"
+        ],
+        "indentation": [
+          "indent",
+          "outdent"
+        ],
+        "blocks": [
+          "paragraph",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6"
+        ],
+        "list": [
+          "bullet_list",
+          "ordered_list"
+        ],
+        "insert": [
+          "link",
+          "unlink",
+          "image",
+          "special_characters"
+        ],
+        "sr_script": [
+          "superscript",
+          "subscript"
+        ],
+        "editor": [
+          "removeformat",
+          "paste_text"
+        ],
+        "sections": [
+          "format",
+          "alignment",
+          "indentation",
+          "blocks",
+          "list",
+          "insert",
+          "sr_script",
+          "editor"
+        ]
+      },
+      "actions": {
+        "image": {
+          "wrapInPicture": false,
+          "shortcut": "Mod-Shift-I",
+          "label": "Insert Image"
+        }
+      }
+    }
+  },
+  {
     "id": "cards-product",
     "components": [
       "product-card"
@@ -354,6 +424,76 @@
     ]
   },
   {
+    "id": "menu-card-item-rte",
+    "components": [
+      "richtext"
+    ],
+    "rte": {
+      "toolbar": {
+        "format": [
+          "bold",
+          "italic",
+          "underline",
+          "strike"
+        ],
+        "alignment": [
+          "left",
+          "center",
+          "right",
+          "justify"
+        ],
+        "indentation": [
+          "indent",
+          "outdent"
+        ],
+        "blocks": [
+          "paragraph",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6"
+        ],
+        "list": [
+          "bullet_list",
+          "ordered_list"
+        ],
+        "insert": [
+          "link",
+          "unlink",
+          "image",
+          "special_characters"
+        ],
+        "sr_script": [
+          "superscript",
+          "subscript"
+        ],
+        "editor": [
+          "removeformat",
+          "paste_text"
+        ],
+        "sections": [
+          "format",
+          "alignment",
+          "indentation",
+          "blocks",
+          "list",
+          "insert",
+          "sr_script",
+          "editor"
+        ]
+      },
+      "actions": {
+        "image": {
+          "wrapInPicture": false,
+          "shortcut": "Mod-Shift-I",
+          "label": "Insert Image"
+        }
+      }
+    }
+  },
+  {
     "id": "menu-cards",
     "components": [
       "menu-card"
@@ -372,6 +512,76 @@
     "components": [
       "multi-column-tiles-item"
     ]
+  },
+  {
+    "id": "promotional-details-rte",
+    "components": [
+      "richtext"
+    ],
+    "rte": {
+      "toolbar": {
+        "format": [
+          "bold",
+          "italic",
+          "underline",
+          "strike"
+        ],
+        "alignment": [
+          "left",
+          "center",
+          "right",
+          "justify"
+        ],
+        "indentation": [
+          "indent",
+          "outdent"
+        ],
+        "blocks": [
+          "paragraph",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6"
+        ],
+        "list": [
+          "bullet_list",
+          "ordered_list"
+        ],
+        "insert": [
+          "link",
+          "unlink",
+          "image",
+          "special_characters"
+        ],
+        "sr_script": [
+          "superscript",
+          "subscript"
+        ],
+        "editor": [
+          "removeformat",
+          "paste_text"
+        ],
+        "sections": [
+          "format",
+          "alignment",
+          "indentation",
+          "blocks",
+          "list",
+          "insert",
+          "sr_script",
+          "editor"
+        ]
+      },
+      "actions": {
+        "image": {
+          "wrapInPicture": false,
+          "shortcut": "Mod-Shift-I",
+          "label": "Insert Image"
+        }
+      }
+    }
   },
   {
     "id": "rate-card",

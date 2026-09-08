@@ -34,7 +34,7 @@
   height: 0.188rem;
   border-radius: 50%;
   background: var(--bbl-text-link);
-  vertical-align: middle;
+  vertical-align: baseline;
   margin-right: var(--bbl-space-075);
 }
 

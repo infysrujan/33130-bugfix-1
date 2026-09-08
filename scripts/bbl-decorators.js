@@ -235,7 +235,7 @@ function handleGlobalLinkClicks() {
 
 function isHomepage() {
   const p = window.location.pathname.replace(/\/$/, '') || '/';
-  return ['/', '/en', '/th-TH', '/th-th'].includes(p);
+  return ['/', '/en', '/th', '/jp', '/zh'].includes(p);
 }
 
 function preloadWelcomeBannerImage(fragment, basePath) {

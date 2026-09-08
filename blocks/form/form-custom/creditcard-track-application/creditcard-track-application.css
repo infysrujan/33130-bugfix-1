@@ -10,6 +10,14 @@
 
   /* font size */
   --bbl-form-font-size-6: 0.375rem;                /* 6px */
+  --bbl-form-font-size-21: 1.3125rem;              /* 21px */
+
+  /* font weight */
+  --bbl-form-font-weight-thin: 100;
+
+  /* line height */
+  --bbl-form-line-height-22-75: 1.4219rem;         /* 22.75px */
+  --bbl-form-line-height-25: 1.5625rem;             /* 25px */
 
   /* height */
   --bbl-form-height-50: 3.125rem;                  /* 50px */
@@ -24,7 +32,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.
 main .section.form-container.custom-forms:has(.cc-app-main-form) .form form p {
   font-weight: var(--form-label-font-weight);
   font-size: var(--bbl-font-size-h4-mobile);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 main .section.form-container.custom-forms:has(.cc-app-main-form) div.form-wrapper,
@@ -62,7 +70,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     .field-title,
     .cc-panel-item-form-title
   ) {
-    margin: 0 0 var(--bbl-space-150);
+    margin: 0;
     padding: 0;
     border: 0;
     text-align: left;
@@ -70,8 +78,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     color: var(--bbl-color-grey-85);
     font-family: var(--bbl-font-family-medium);
     font-weight: 400;
-    font-size: var(--bbl-heading-h3-size);
-    line-height: var(--bbl-line-height-h3-mobile);
+    font-size: var(--bbl-form-font-size-21);
+    line-height: var(--bbl-form-line-height-22-75);
 
     &::before {
       background: none;
@@ -92,45 +100,28 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     line-height: var(--bbl-line-height-b1-desktop);
   }
 
+  & .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
+    line-height: 2.75rem;
+  }
+
+  @media (width >= 36rem) {
+    & .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
+      height: 3.4375rem;
+      padding-left: 1.5625rem;
+      padding-right: var(--bbl-space-250);
+    }
+  }
+
   & .date-wrapper.field-wrapper {
     min-width: 0;
+    
+    --bbl-form-date-icon-height: var(--bbl-form-height-50);
   }
 
   & .date-wrapper.field-wrapper input {
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
-  }
-
-  @supports (-webkit-touch-callout: none) {
-    @media (any-pointer: coarse) {
-      & .form input[type="date"] {
-        appearance: none;
-        padding-right: 2.75rem;
-      }
-
-      & .form input[type="date"]::-webkit-calendar-picker-indicator {
-        display: none;
-      }
-
-      & .form input[type="date"]::-webkit-date-and-time-value {
-        text-align: left;
-      }
-
-      & .date-wrapper.field-wrapper::after {
-        content: "\e912";
-        font-family: var(--bbl-form-font-family-icomoon);
-        font-size: var(--bbl-font-size-h3-mobile);
-        color: var(--bbl-color-grey-85);
-        position: absolute;
-        top: 0;
-        right: var(--bbl-space-300);
-        height: var(--bbl-form-height-50);
-        display: flex;
-        align-items: center;
-        pointer-events: none;
-      }
-    }
   }
 
   & :is(.form select, .drop-down-wrapper.field-wrapper select) {
@@ -152,11 +143,17 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     text-overflow: ellipsis;
   }
 
+  @media (width >= 36rem) {
+    & :is(.form select, .drop-down-wrapper.field-wrapper select) {
+      height: 3.4375rem;
+    }
+  }
+
   & .drop-down-wrapper.field-wrapper::after {
     content: "\e902";
     font-family: var(--bbl-form-font-family-icomoon);
     font-size: var(--bbl-form-font-size-6);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     position: absolute;
     right: var(--bbl-space-150);
     bottom: 0;
@@ -215,7 +212,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
     position: relative;
     clear: both;
-    margin-bottom: 0.625rem;
+    margin-bottom: 2.19rem;;
   }
 
   /* Mobile: stack half-width fields in a single column */
@@ -233,7 +230,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     gap: var(--bbl-space-200);
     width: 100%;
     clear: both;
-    margin: 1.875rem 0 2.1875rem;
 
 
     & > .button-wrapper {
@@ -276,10 +272,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     margin: 0;
     padding: 0;
     text-align: left;
-    color: var(--form-label-color);
+    color: var(--bbl-color-grey-85);
     font-size: var(--bbl-form-font-size-15);
-    font-weight: var(--form-label-font-weight);
-    line-height: var(--bbl-line-height-h4-mobile);
+    font-weight: var(--bbl-form-font-weight-thin);
+    line-height: var(--bbl-form-line-height-25);
   }
 
  & .form form :is(.drop-down-wrapper, .panel-wrapper.field-wrapper:has(select)) > legend.field-label {
@@ -325,7 +321,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-width: 9.6875rem;
+    min-width: 8.4375rem;
     width: auto;
     max-width: fit-content;
     height: 2.75rem;
@@ -395,7 +391,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     font-size: var(--form-font-size-xs);
     font-weight: var(--form-label-font-weight);
     line-height: var(--bbl-text-default-line-height);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
 
      & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
     & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
@@ -502,7 +498,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         justify-content: flex-start;
         align-items: flex-start;
         width: 100%;
-        max-width: 100%;
+        max-width: 39.6rem;
+        margin-top: 1.25rem;
         margin-inline: auto;
 
         & > .cc-panel-item-form-input-half {
@@ -526,9 +523,13 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           font-size: var(--form-fieldset-legend-font-size);
           font-weight: var(--form-fieldset-legend-font-weight);
           line-height: var(--bbl-line-height-h2-mobile);
-          margin: 0 0 var(--bbl-space-200);
+          margin: 0 0 0.625rem;
           text-align: left;
           color: var(--form-fieldset-legend-color);
+
+          h3 {
+            margin: 0;
+          }
 
           p {
             text-align: left;
@@ -544,6 +545,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           flex-flow: column nowrap;
           align-items: flex-start;
           gap: var(--bbl-space-150);
+          margin-top: 0.625rem;
           margin-bottom: var(--bbl-space-150);
 
           & > legend.field-label {
@@ -563,7 +565,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
         & fieldset.field-submitbuttonpanel2 {
           width: 100%;
-          margin-top: var(--bbl-space-200);
+          margin-top: 2.375rem;
           margin-bottom: 2.1875rem;
           flex-direction: row-reverse;
           justify-content: center;
@@ -573,6 +575,14 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
           & > legend {
             display: none;
+          }
+
+          & > .button-wrapper {
+            margin: 0;
+          }
+
+          & .button {
+            min-width: 8.75rem;
           }
         }
       }
@@ -642,7 +652,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         }
 
         & > .cc-panel-item-timeline-message p {
-          color: var(--bbl-color-grey-85);
+          color: var(--bbl-color-grey-90);
           font-weight: var(--bbl-text-default-weight);
         }
 
@@ -651,10 +661,25 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           line-height: var(--bbl-text-small-line-height);
           color: var(--bbl-color-grey-28);
           font-weight: var(--bbl-text-small-weight);
+          padding-right:0.75rem;
         }
 
         & > .cc-panel-item-timeline-muted p {
           color: var(--bbl-color-white-alpha-158-70);
+        }
+
+        & > .cc-panel-item-timeline-status.cc-panel-item-timeline-status p {
+          color: var(--bbl-color-blue-90);
+          font-weight: var(--bbl-form-font-weight-bold);
+          font-size: 1.0625rem;
+          line-height: 1.0625rem;
+        }
+
+        & > .cc-panel-item-timeline-message.cc-panel-item-timeline-message p {
+          color: var(--bbl-color-grey-85);
+          font-weight: var(--bbl-text-default-weight);
+          font-size: 1rem;
+          line-height: 1.1375rem;
         }
 
         & > .cc-panel-item:not(
@@ -669,7 +694,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           z-index: 1;
           margin: 0;
           width: auto;
-          max-width: 80%;
+          max-width: 85%;
 
           & :where(p) {
             margin: 0;
@@ -849,13 +874,70 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   }
 
   & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .field-disclaimer .plain-text-wrapper p {
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     text-align: left;
-    font-size: var(--form-font-size-xs);
+    font-size: var(--bbl-font-size-b2-desktop);
+    font-weight: var(--bbl-font-weight-regular);
     line-height: var(--bbl-text-default-line-height);
   }
 
+  @media (width >= 62rem) {
+    & :is(
+      h3,
+      .form form .field-title h2,
+      .form form .field-title .page-header,
+      .form form .field-title .label-header,
+      .field-title,
+      .cc-panel-item-form-title
+    ) {
+      font-size: 1.5rem;
+      line-height: 1.625rem;
+    }
+
+    & .form :is(
+      fieldset.panel-wrapper:is(.field-submitbuttonpanel, .field-submitbuttonpanel2) .button,
+      :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) .button
+    ) {
+      min-width: 9.6875rem;
+    }
+
+    & .form form fieldset.panel-wrapper.field-wrapper:is(
+      .cc-app-approved,
+      .cc-app-denied,
+      .cc-app-cancel,
+      .cc-app-pending,
+      .cc-app-incomplete,
+      .cc-app-callback,
+      .cc-app-notfound
+    ) {
+      & > .cc-panel-item-timeline-status.cc-panel-item-timeline-status p {
+        font-size: 1.25rem;
+        line-height: 1.25rem;
+      }
+
+      & > .cc-panel-item-timeline-message.cc-panel-item-timeline-message p {
+        font-size: 1.25rem;
+        line-height: 1.5rem;
+      }
+    }
+  }
+
   @media (width < 64rem) {
+    & :is(
+      h3,
+      .form form .field-title h2,
+      .form form .field-title .page-header,
+      .form form .field-title .label-header,
+      .field-title,
+      .cc-panel-item-form-title
+    ) {
+      margin-bottom: 2.1875rem;
+
+      & h3 {
+        margin-bottom: 0;
+      }
+    }
+
     /* Mobile: stack title, inputs, cover, consent, and actions vertically */
     & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form {
       display: flex;
@@ -882,6 +964,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     }
   }
 
+  & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
+    margin: 0;
+  }
+
   @media (width >= 64rem) {
     padding-inline: 0;
 
@@ -894,7 +980,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       font-size: var(--form-font-size-xs);
     }
 
-    & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .date-wrapper).field-wrapper :is(input, textarea),
+    & .date-wrapper.field-wrapper :is(input, textarea),
     & .form select,
     & .drop-down-wrapper.field-wrapper select {
       height: 3.4375rem;
@@ -904,10 +990,9 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     & .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label):not(:is(.field-title *, .cc-panel-item-form-title *)),
     & .form form :is(.drop-down-wrapper, .field-wrapper:has(select)) > .field-label {
       font-size: var(--bbl-form-font-size-15);
-      line-height: var(--bbl-line-height-b1-desktop);
     }
 
-& .form form .field-wrapper.col-6:not(.button-wrapper) {
+    & .form form .field-wrapper.col-6:not(.button-wrapper) {
       grid-column: span 6;
     }
 
@@ -1015,8 +1100,9 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         padding: 0;
       }
 
-      & > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration) {
+      & > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
         max-height: 10.9375rem;
+        margin: 0;
       }
     }
 
@@ -1040,5 +1126,15 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         }
       }
     }
+  }
+}
+
+main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
+  padding-block-start: 3rem;
+}
+
+@media (width >= 64rem) {
+  main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
+    padding-block-start: 2.5rem;
   }
 }

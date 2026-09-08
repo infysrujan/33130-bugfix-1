@@ -1,7 +1,8 @@
 import fetchBlockConfig from '../../scripts/block-config.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { fetchPost } from '../../scripts/utils/fetchApi.js';
+import { fetchGet, fetchPost } from '../../scripts/utils/fetchApi.js';
+import { getLang } from '../../scripts/scripts.js';
 
 // ─── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -35,18 +36,39 @@ function getInflationText(labels, data) {
 
 // ─── Data ────────────────────────────────────────────────────────────────────────
 
+/** Live inflation / after-retirement rates from the fincal rate-list GraphQL query. */
+function toRate(value) {
+  const n = parseFloat(value);
+  return Number.isNaN(n) ? undefined : n;
+}
+
+async function loadRateList(siteConfig) {
+  try {
+    const baseUrl = siteConfig.retirementCalculatorRateListUrl;
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
+    const json = await fetchGet(url, { throwOnError: false });
+    const item = json?.data?.RateList?.items?.[0] || {};
+    return {
+      inflationRate: toRate(item.InflationRate),
+      afterRetirementRate: toRate(item.AfterRetireRate),
+    };
+  } catch {
+    return {};
+  }
+}
+
 async function loadData() {
-  const [siteConfig, labels, placeholders] = await Promise.all([
-    fetchConfigs(),
+  const siteConfig = await fetchConfigs();
+  const [labels, placeholders, rateList] = await Promise.all([
     fetchBlockConfig('/retirement-config.json'),
     fetchPlaceholders(),
+    loadRateList(siteConfig),
   ]);
   return {
     labels,
     apiUrl: siteConfig.retirementCalculatorApiUrl,
-    inflationRate: String(siteConfig.retirementCalculatorInflationRate ?? '1.5'),
-    afterRetirementRate: String(siteConfig.retirementCalculatorAfterRetirementRate ?? '3'),
-    altCompensationRate: parseFloat(siteConfig.retirementCalculatorAltCompensationRate) || 0.05,
+    inflationRate: String(rateList.inflationRate ?? '1.5'),
+    afterRetirementRate: String(rateList.afterRetirementRate ?? '3'),
     defaultMonthlyIncome: parseFloat(placeholders.defaultMonthlyIncome) || 20000,
     defaultCurrentAge: parseInt(placeholders.defaultCurrentAge, 10) || 30,
     defaultRetirementAge: parseInt(placeholders.defaultRetirementAge, 10) || 60,
@@ -71,9 +93,12 @@ function buildStepper(labels, activeStep) {
     if (num === activeStep) mod = isLastStep ? ' rc-step-done' : ' rc-step-active';
     else if (num < activeStep) mod = ' rc-step-done';
     const showTick = num < activeStep || (num === activeStep && isLastStep);
+    const stepContent = showTick
+      ? '<img src="/icons/tick.svg" class="rc-step-check" alt="" aria-hidden="true">'
+      : num;
     stepsContainer.appendChild(parseHTML(`
       <div class="rc-step${mod}">
-        <div class="rc-step-circle"><span>${showTick ? '✓' : num}</span></div>
+        <div class="rc-step-circle"><span>${stepContent}</span></div>
         <div class="rc-step-label">${label}</div>
       </div>
     `));
@@ -169,7 +194,7 @@ function buildAgeField(id, label, savedValue, labels) {
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="1-120" maxlength="${formatNumber(120).length}" value="${savedValue ?? 0}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
@@ -208,7 +233,7 @@ function buildMoneyField(id, label, savedValue, labels, { max = 999999999 } = {}
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="0 - ${formatNumber(max)}" maxlength="${formatNumber(max).length}" value="${formatNumber(savedValue ?? 0)}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
@@ -276,7 +301,7 @@ function buildPercentField(id, label, savedValue, labels, { min = 0, max = 100 }
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="${min} - ${max}" maxlength="${formatNumber(Math.floor(max - 0.01)).length + 3}" value="${savedValue ?? 0}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
@@ -641,9 +666,9 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
         RMFSumRetire: journey2Values.RMFSumRetire,
         RMFSavingRateRetire: journey2Values.RMFSavingRateRetire,
         RMFCompensationRateRetire: journey2Values.RMFCompensationRateRetirePct / 100,
-        SumYearRetire: journey2Values.SumYearRetire,
+        SumYearRetire: journey2Values.OneTimeMoneyRetire,
         YearCompensationRateRetire: journey2Values.YearCompensationRateRetirePct / 100,
-        OneTimeMoneyRetire: journey2Values.OneTimeMoneyRetire,
+        OneTimeMoneyRetire: journey2Values.SumYearRetire,
         inflationrate: data.inflationRate,
         afterretirerate: data.afterRetirementRate,
       };

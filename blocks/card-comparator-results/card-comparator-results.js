@@ -156,34 +156,35 @@ function buildApplyArea(card, doc, labels, icons) {
   const webUrl = resolveApplyUrl(card.webApplyUrl);
   const mobileUrl = resolveApplyUrl(card.mobileApplyUrl);
 
-  // Desktop: single apply button shown when webApplyEnabled
+  // Desktop: single apply button — shown whenever either channel is enabled,
+  // preferring the website URL when both are enabled
+  const desktopBtn = doc.createElement('a');
+  desktopBtn.href = (hasWebApply ? webUrl : mobileUrl) || '#';
+  desktopBtn.className = 'ccr-apply-btn ccr-apply-desktop';
+  desktopBtn.textContent = labels.applyNow;
+  area.appendChild(desktopBtn);
+
+  // Mobile: boxed button per enabled channel — one button when only web or
+  const mobileGroup = doc.createElement('span');
+  mobileGroup.className = 'ccr-apply-mobile-group';
+
   if (hasWebApply) {
-    const desktopBtn = doc.createElement('a');
-    desktopBtn.href = webUrl || '#';
-    desktopBtn.className = 'ccr-apply-btn ccr-apply-desktop';
-    desktopBtn.textContent = labels.applyNow;
-    area.appendChild(desktopBtn);
-  }
-
-  // Mobile: two buttons shown when mobileApplyEnabled
-  if (hasMobileApply) {
-    const mobileGroup = doc.createElement('div');
-    mobileGroup.className = 'ccr-apply-mobile-group';
-
     const webBtn = doc.createElement('a');
     webBtn.href = webUrl || '#';
     webBtn.className = 'ccr-apply-btn ccr-apply-mobile-btn';
     webBtn.innerHTML = `${icons.web}<span>${labels.applyViaWebsite}</span>`;
     mobileGroup.appendChild(webBtn);
+  }
 
+  if (hasMobileApply) {
     const mwebBtn = doc.createElement('a');
     mwebBtn.href = mobileUrl || '#';
     mwebBtn.className = 'ccr-apply-btn ccr-apply-mobile-btn';
     mwebBtn.innerHTML = `${icons.mweb}<span>${labels.applyViaMobile}</span>`;
     mobileGroup.appendChild(mwebBtn);
-
-    area.appendChild(mobileGroup);
   }
+
+  area.appendChild(mobileGroup);
 
   return area;
 }
@@ -280,45 +281,145 @@ function initMobileCarousel(grid, doc) {
   dotsEl.className = 'ccr-scroll-dots';
   grid.parentElement.appendChild(dotsEl);
 
-  const getItems = () => [...grid.querySelectorAll('.ccr-card')];
+  const isMobile = () => window.innerWidth < 760;
+  const getItems = () => [...grid.querySelectorAll('.ccr-card:not([data-ccr-clone])')];
+
+  const centerLeft = (item) => item.getBoundingClientRect().left
+    - grid.getBoundingClientRect().left
+    + grid.scrollLeft
+    - (grid.clientWidth - item.offsetWidth) / 2;
 
   const scrollToItem = (item) => {
-    const offset = item.getBoundingClientRect().left
-      - grid.getBoundingClientRect().left
-      + grid.scrollLeft;
-    grid.scrollTo({ left: offset, behavior: 'smooth' });
+    grid.scrollTo({ left: centerLeft(item), behavior: 'smooth' });
+  };
+
+  const closestCard = (cards) => {
+    const center = grid.getBoundingClientRect().left + grid.clientWidth / 2;
+    let best = cards[0];
+    let min = Infinity;
+    cards.forEach((item) => {
+      const r = item.getBoundingClientRect();
+      const dist = Math.abs(r.left + r.width / 2 - center);
+      if (dist < min) { min = dist; best = item; }
+    });
+    return best;
+  };
+
+  const centerFirst = () => {
+    if (!isMobile()) return;
+    const first = getItems()[0];
+    if (!first) return;
+    grid.style.scrollSnapType = 'none';
+    grid.scrollLeft = centerLeft(first);
+    requestAnimationFrame(() => grid.style.removeProperty('scroll-snap-type'));
+  };
+
+  const currentIndex = () => {
+    const items = getItems();
+    const snapped = closestCard([...grid.querySelectorAll('.ccr-card')]);
+    if (snapped?.dataset.ccrCloneOf !== undefined) return Number(snapped.dataset.ccrCloneOf);
+    const i = items.indexOf(snapped);
+    return i < 0 ? 0 : i;
+  };
+
+  const goNext = () => {
+    if (!isMobile()) return;
+    const items = getItems();
+    if (items.length <= 1) return;
+    const next = (currentIndex() + 1) % items.length;
+    if (next === 0) {
+      const clones = [...grid.querySelectorAll('.ccr-card[data-ccr-clone-of="0"]')];
+      scrollToItem(clones[clones.length - 1] || items[0]);
+      return;
+    }
+    scrollToItem(items[next]);
+  };
+
+  let autoTimer;
+  const stopAuto = () => clearInterval(autoTimer);
+  const startAuto = () => {
+    stopAuto();
+    if (!isMobile() || getItems().length <= 1) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    autoTimer = setInterval(goNext, 15000);
+  };
+
+  const syncLoop = () => {
+    grid.querySelectorAll('[data-ccr-clone]').forEach((el) => el.remove());
+    grid.scrollLeft = 0;
+    stopAuto();
+    if (!isMobile()) return;
+    const items = getItems();
+    if (items.length <= 1) return;
+    const n = items.length;
+    const makeClone = (i) => {
+      const el = items[i].cloneNode(true);
+      el.dataset.ccrClone = 'true';
+      el.dataset.ccrCloneOf = String(i);
+      return el;
+    };
+    // [3rd][1st][2nd]… — last card peeks left, second peeks right.
+    grid.prepend(makeClone(n - 1));
+    if (n > 2) grid.prepend(makeClone(n - 2));
+    grid.append(makeClone(0));
+    if (n > 2) grid.append(makeClone(1));
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      centerFirst();
+      startAuto();
+    }));
   };
 
   const buildDots = () => {
     dotsEl.innerHTML = '';
     const items = getItems();
-    if (items.length <= 1) return;
-    items.forEach((item, i) => {
-      const dot = doc.createElement('button');
-      dot.type = 'button';
-      dot.className = 'ccr-scroll-dot';
-      if (i === 0) dot.classList.add('is-active');
-      dot.setAttribute('aria-label', `Card ${i + 1}`);
-      dot.addEventListener('click', () => scrollToItem(item));
-      dotsEl.appendChild(dot);
-    });
+    if (items.length > 1) {
+      items.forEach((item, i) => {
+        const dot = doc.createElement('button');
+        dot.type = 'button';
+        dot.className = 'ccr-scroll-dot';
+        if (i === 0) dot.classList.add('is-active');
+        dot.setAttribute('aria-label', `Card ${i + 1}`);
+        dot.addEventListener('click', () => scrollToItem(item));
+        dotsEl.appendChild(dot);
+      });
+    }
+    syncLoop();
   };
 
+  const wrapIfClone = () => {
+    if (!isMobile()) return;
+    const items = getItems();
+    if (items.length <= 1) return;
+    const snapped = closestCard([...grid.querySelectorAll('.ccr-card')]);
+    if (!snapped?.dataset.ccrClone) return;
+    const real = items[Number(snapped.dataset.ccrCloneOf)];
+    if (!real) return;
+    grid.style.scrollSnapType = 'none';
+    grid.scrollLeft += real.getBoundingClientRect().left - snapped.getBoundingClientRect().left;
+    requestAnimationFrame(() => grid.style.removeProperty('scroll-snap-type'));
+  };
+
+  let wrapTimer;
   grid.addEventListener('scroll', () => {
     const dots = [...dotsEl.querySelectorAll('.ccr-scroll-dot')];
     const items = getItems();
-    if (!items.length || !dots.length) return;
-    const containerLeft = grid.getBoundingClientRect().left;
-    let activeIndex = 0;
-    let minDistance = Infinity;
-    items.forEach((item, i) => {
-      const dist = Math.abs(item.getBoundingClientRect().left - containerLeft);
-      if (dist < minDistance) { minDistance = dist; activeIndex = i; }
-    });
-    dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+    if (items.length && dots.length) {
+      const snapped = closestCard([...grid.querySelectorAll('.ccr-card')]);
+      const activeIndex = snapped?.dataset.ccrCloneOf !== undefined
+        ? Number(snapped.dataset.ccrCloneOf)
+        : items.indexOf(snapped);
+      dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+    }
+    if (!isMobile()) return;
+    clearTimeout(wrapTimer);
+    wrapTimer = setTimeout(wrapIfClone, 180);
   }, { passive: true });
+  grid.addEventListener('scrollend', wrapIfClone);
+  grid.addEventListener('touchstart', stopAuto, { passive: true });
+  grid.addEventListener('touchend', startAuto, { passive: true });
+  doc.addEventListener('visibilitychange', () => (doc.hidden ? stopAuto() : startAuto()));
 
-  return buildDots;
+  return { buildDots, syncLoop, centerFirst };
 }
 
 // ── Cookie reader ──────────────────────────────────────────────────────────────
@@ -460,10 +561,13 @@ export default async function decorate(block) {
   container.className = 'ccr-grid';
   innerContainer.appendChild(container);
 
-  const buildDots = initMobileCarousel(container, doc);
+  const { buildDots, syncLoop, centerFirst } = initMobileCarousel(container, doc);
 
   const doAlign = () => {
-    const measure = () => requestAnimationFrame(() => equalizeRowHeights(container));
+    const measure = () => requestAnimationFrame(() => {
+      equalizeRowHeights(container);
+      centerFirst();
+    });
 
     const runAlign = () => {
       // document.fonts.ready may already be resolved when a section that was
@@ -519,6 +623,10 @@ export default async function decorate(block) {
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => equalizeRowHeights(container), 150);
+    resizeTimer = setTimeout(() => {
+      syncLoop();
+      equalizeRowHeights(container);
+      centerFirst();
+    }, 150);
   });
 }

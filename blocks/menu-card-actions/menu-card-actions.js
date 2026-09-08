@@ -153,6 +153,7 @@ function createCardItem(cardRow, doc) {
   const appendDownloadLink = (anchor) => {
     const dlLink = createDownloadLink(anchor, doc);
     if (dlLink) {
+      dlLink.classList.remove('content');
       dlLink.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
       inner.appendChild(dlLink);
     }

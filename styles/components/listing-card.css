@@ -48,6 +48,10 @@
   position: absolute;
   top: 0.625rem;
   left: 0.625rem;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 1.4375rem;
   padding: var(--bbl-space-025) var(--bbl-space-100);
   background: var(--bbl-color-blue-140);
   color: var(--bbl-color-white);
@@ -268,7 +272,8 @@
   }
 
   .listing-card-tag {
-    padding:var(--bbl-space-050) var(--bbl-space-200);
+    height: 1.875rem;
+    padding: var(--bbl-space-050) var(--bbl-space-100);
   }
 
   .listing-card-empty {

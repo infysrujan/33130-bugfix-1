@@ -162,7 +162,7 @@
   min-width: 0;
   font-size: var(--bbl-text-accordion-size);
   line-height: var(--bbl-text-accordion-line-height);
-  font-weight: var(--bbl-text-accordion-weight);
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   font-family: var(--bbl-font-family-medium);
 }

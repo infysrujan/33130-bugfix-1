@@ -200,7 +200,10 @@
 }
 
 .carousel-dotted .carousel-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 1.4375rem;
   font-size: var(--bbl-text-label-tag-size);
   font-weight: var(--bbl-text-label-tag-weight);
   line-height: var(--bbl-text-label-tag-line-height);
@@ -372,11 +375,6 @@
   bottom: var(--bbl-space-200);
   right: var(--bbl-space-200);
   z-index: 2;
-}
-
-.carousel-dotted .carousel-dotted-more .button-container > a {
-  font-size: var(--bbl-font-size-b2-desktop);
-  line-height: var(--bbl-line-height-b2-desktop);
 }
 
 .carousel-dotted .icon-arrow-left {
@@ -584,6 +582,7 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .caption {
   flex: 1;
+  padding-right: 1.875rem;
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
@@ -599,10 +598,8 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
-  font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-text-default-size);
   line-height: var(--bbl-text-default-line-height);
-  color: var(--bbl-color-grey-90);
   font-weight: var(--bbl-text-default-weight);
 }
 
@@ -647,10 +644,10 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor {
-  padding: 2rem;
+  padding: 1.875rem var(--bbl-space-250);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   flex: 1;
 }
 
@@ -672,7 +669,6 @@
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
   line-height: 1.285rem;
   margin: unset;
-  color: var(--bbl-color-grey-85);
 }
 
 /* title-3: use regular weight (matches live site inherited font) */
@@ -681,6 +677,7 @@
   line-height: 1.428rem;
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
+  margin:0;
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 p {
@@ -892,6 +889,7 @@ p.text-large.text-light {
 
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor {
     padding: 0 1.875rem;
+    justify-content: center;
   }
 
   /* title-3 desktop: regular weight to match live site */
@@ -930,6 +928,10 @@ p.text-large.text-light {
   .carousel-dotted.all-without-image {
     margin-top: 1.25rem;
     min-height: 30.9375rem;
+  }
+
+  .carousel-dotted .carousel-dotted-item.with-circular-image .caption {
+    padding-right: 0;
   }
 
   main > .carousel-dotted-container:first-child:has(.all-text-animation-variant, .hero-banner-image-carousel) {       
@@ -981,7 +983,8 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-badge{
-    padding:var(--bbl-space-050) var(--bbl-space-200);
+    height: 1.875rem;
+    padding: var(--bbl-space-050) var(--bbl-space-100);
   }
 
   .carousel-dotted .carousel-dotted-description {

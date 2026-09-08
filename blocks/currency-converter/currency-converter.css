@@ -282,14 +282,6 @@
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.currency-converter .btn-convert:hover {
-  opacity: 1;
-}
-
-.currency-converter .btn-convert:active {
-  transform: translate(-50%, -50%) scale(0.95);
-}
-
 .currency-converter .btn-convert:disabled {
   opacity: 0.5;
   cursor: not-allowed;

@@ -48,7 +48,7 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--form-font-size-xs);
     line-height: var(--bbl-text-default-line-height);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
   }
 
   & .form form :is(p, .repeat-wrapper, .field-wrapper) {
@@ -83,7 +83,7 @@
         margin: 0;
     }
   }
-  
+
   & .form form input::-webkit-contacts-auto-fill-button {
     visibility: hidden;
     display: none !important;
@@ -122,7 +122,7 @@
   }
 
   & .form form :is(.field-infotext p, .plain-text-wrapper p) {
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     font-size: var(--form-font-size-xs);
     line-height: 1.5625rem;
   }
@@ -135,7 +135,7 @@
     text-align: center;
     font-size: var(--form-font-size-xs);
     font-weight: var(--bbl-font-weight-medium);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
   }
 
   & .form form :is(.field-prefix-dropdown, .field-province).field-wrapper > .field-label {
@@ -369,6 +369,20 @@
     scrollbar-width: thin;
   }
 
+  & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .plain-text-wrapper.tnc-text-decoration,
+  & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) fieldset.panel-wrapper .plain-text-wrapper.tnc-text-decoration {
+    max-height: 15.437rem;
+    margin-bottom: 1.875rem;
+  }
+
+  & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p:first-child {
+    padding-right: 0;
+  }
+
+  & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) input[type='checkbox'] {
+    top: -0.25rem;
+  }
+
   & .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) .checkbox-wrapper {
     display: contents;
   }
@@ -404,6 +418,10 @@
     & .form form .field-wrapper:has(>.field-description) .field-description {
       right: 0;
       left: 1.25rem
+    }
+
+    & .form form fieldset.field-salutation-panel .text-wrapper .field-description {
+      left: -14.125rem;
     }
 
     & .form form .field-wrapper.col-4 {
@@ -447,5 +465,12 @@
     & .form form fieldset.panel-wrapper.field-wrapper > .checkbox-group-wrapper .checkbox-wrapper {
       width: calc(50% - var(--bbl-space-200));
     }
+
+    & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .plain-text-wrapper.tnc-text-decoration,
+    & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) fieldset.panel-wrapper .plain-text-wrapper.tnc-text-decoration {
+      max-height: 9.375rem;
+      margin-bottom: 2.312rem;
+    }
   }
 }
+ 

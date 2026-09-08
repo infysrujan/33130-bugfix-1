@@ -155,9 +155,9 @@
 }
 
 .footer .footer-bottom p {
-  font-size: 0.7875rem;
+  font-size: var(--bbl-body-b3-size);
   font-family: var(--bbl-font-family-looped);
-  line-height: 1;
+  line-height: var(--bbl-body-b3-line-height);
   margin-bottom: var(--bbl-space-200);
   color: var(--bbl-color-white-alpha-30);
 }
@@ -185,18 +185,6 @@
 .footer .footer-bottom a:hover {
   text-decoration: underline;
   color: var(--bbl-color-active-blue);
-}
-
-/* ==========================================================================
-   TABLET STYLES
-  > 47.5rem and <= 64rem: Still accordion, but with adjusted spacing
-   ========================================================================== */
-
-@media (width > 47.5rem) {
-  .footer .footer-bottom p {
-    font-size: 0.8125rem;
-    font-family: var(--bbl-font-family-looped);
-  }
 }
 
 /* ==========================================================================
@@ -258,7 +246,6 @@
   }
 
   .footer .footer-bottom p {
-    font-size: 0.9rem;
     margin-bottom: var(--bbl-space-200);
     width: fit-content;
     display: inline-block;
