@@ -180,6 +180,11 @@ function printForexRates(block) {
 
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }
+    /* iOS Safari can auto-boost font sizes for readability, inflating every
+       rem-sized value here beyond what's specified — Android doesn't do this,
+       which is why layouts tuned to fit can still overflow only on iOS. Lock
+       text to the specified size so both platforms measure the same. */
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     body { font-family: var(--bbl-font-family-primary); margin: 0; padding: 0; }
     /* Print background colors (title underline, table header shading) — off by default */
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
