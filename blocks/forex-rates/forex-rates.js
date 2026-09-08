@@ -225,9 +225,9 @@ function printForexRates(block) {
       border-bottom: 0.0625rem solid var(--bbl-color-black); border-right: 0.0625rem solid var(--bbl-color-black); text-align: left;
     }
     .forex-rates-table thead th:last-child { border-right: none; }
-    .forex-rates-table thead th:nth-child(n+3) { text-align: center; width: 9%; }
-    .forex-rates-table thead th:nth-child(1) { width: 15%; }
-    .forex-rates-table thead th:nth-child(2) { width: 40%; }
+    .forex-rates-table thead th:nth-child(n+3) { text-align: center; width: 14%; }
+    .forex-rates-table thead th:nth-child(1) { width: 8%; }
+    .forex-rates-table thead th:nth-child(2) { width: 22%; }
     .forex-rates-table tbody tr { height: auto; }
     .forex-rates-table tbody td {
       padding-block: 0.15rem; padding-inline: 0.2rem; font-size: 0.5rem; height: auto; vertical-align: middle;
