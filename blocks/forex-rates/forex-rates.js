@@ -284,7 +284,15 @@ function printForexRates(block) {
   </html>`;
 
   const iframe = doc.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;border:none;opacity:0;';
+  // Give the iframe a real A4-portrait content width (210mm ≈ 794px at 96dpi)
+  // rather than 0×0. Chromium re-lays the document out at the paper width when
+  // printing regardless of iframe size, but WebKit (all iOS browsers) uses the
+  // iframe's own layout width as the basis — at 0px it collapses every table
+  // column to its minimum and then scales up, which is what pushes the last
+  // digit of each number past the cell border on iOS. A proper layout width
+  // makes both engines size columns the same. Kept off-screen instead of
+  // zero-size so it stays invisible without starving layout.
+  iframe.style.cssText = 'position:fixed;top:0;left:-9999px;width:794px;height:1123px;border:none;opacity:0;';
   doc.body.appendChild(iframe);
 
   iframe.onload = () => {
