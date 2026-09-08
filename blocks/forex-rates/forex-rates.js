@@ -153,6 +153,10 @@ function printForexRates(block) {
     '.forex-rates-print-btn, .forex-rates-go-btn, .forex-rates-time-list, .forex-rates-time-chevron, .forex-rates-date-trigger',
   ).forEach((el) => el.remove());
 
+  // loading="lazy" can stay deferred forever inside the zero-size print iframe
+  // (most noticeable on iOS Safari), so force flag icons to load eagerly.
+  cloned.querySelectorAll('.forex-rates-flag').forEach((img) => img.setAttribute('loading', 'eager'));
+
   const dateInput = cloned.querySelector('.forex-rates-date-text-input');
   if (dateInput) {
     const span = block.ownerDocument.createElement('span');
