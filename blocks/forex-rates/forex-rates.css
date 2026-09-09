@@ -427,25 +427,243 @@
   }
 }
 
+/* ── Print ─────────────────────────────────────────────────────
+   Layout for the formatted print output. printForexRates() clones the
+   block into #forex-rates-print-root on the main document; these rules
+   render it and hide the live page. Scoped to the print root + @media
+   print so screen rendering is untouched.
+   ============================================================ */
+
+@page {
+  size: a4 portrait;
+  margin: 10mm;
+}
+
 @media print {
-  .bbl-calendar-picker-popover {
-    display: none;
+  /* Force painted background colors (title underline) regardless of the browser's
+     "background graphics" print toggle. */
+  #forex-rates-print-root * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
-  /* Repeat-header on multi-page print */
-  .forex-rates .forex-rates-table thead {
-    display: table-header-group;
+  /* Isolation: show only the print root, hide the live page (header/nav/footer/main). */
+  body > *:not(#forex-rates-print-root) {
+    display: none !important;
   }
 
-  .forex-rates .forex-rates-table tbody {
-    display: table-row-group;
+  #forex-rates-print-root {
+    display: block !important;
+    font-family: var(--bbl-font-family-primary);
   }
 
-  .forex-rates .forex-rates-table {
+  /* ── Logo (override brand-logo.css, which hides .brand-logo-print-logo by default) ── */
+  #forex-rates-print-root .print-logo {
+    display: block !important;
+    margin-bottom: var(--bbl-space-075);
+  }
+
+  #forex-rates-print-root .print-logo img,
+  #forex-rates-print-root .print-logo picture img {
+    height: 1.5rem !important;
+    width: auto !important;
+    max-width: none !important;
+    display: block !important;
+  }
+
+  /* ── Horizontal rule after logo ── */
+  #forex-rates-print-root .print-divider {
+    border: none;
+    border-top: 0.0625rem solid var(--bbl-color-grey-125);
+    margin: var(--bbl-space-075) 0 var(--bbl-space-100);
+  }
+
+  /* ── Page H1 title ── */
+  #forex-rates-print-root .print-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--bbl-color-black);
+    margin: 0 0 var(--bbl-space-050);
+    padding-bottom: var(--bbl-space-075);
+    position: relative;
+  }
+
+  #forex-rates-print-root .print-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 2.25rem;
+    height: var(--bbl-space-025);
+    background: var(--bbl-color-blue-105);
+  }
+
+  /* ── Controls (date + time shown as static text) ── */
+  #forex-rates-print-root .forex-rates-control-row {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0;
+    margin: var(--bbl-space-100) 0 var(--bbl-space-075);
+  }
+
+  #forex-rates-print-root .forex-rates-calendar-label {
+    font-size: 0.5625rem;
+    font-weight: 900;
+    line-height: normal;
+    width: auto;
+    color: var(--bbl-color-black);
+  }
+
+  #forex-rates-print-root .forex-rates-date-group {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  #forex-rates-print-root .forex-rates-date-text-input {
+    font-size: 0.5625rem;
+    border: 0.0625rem solid var(--bbl-color-grey-125);
+    padding: 0.1rem 0.3rem;
+    border-radius: 0.2rem;
+    color: var(--bbl-color-black);
+  }
+
+  #forex-rates-print-root .forex-rates-time-trigger {
+    display: flex;
+    align-items: center;
+    border: 0.0625rem solid var(--bbl-color-grey-125);
+    background: none;
+    border-radius: 0.2rem;
+    padding: 0.1rem 0.3rem;
+    font-size: 0.5625rem;
+    font-weight: 700;
+    height: auto;
+    color: var(--bbl-color-black);
+  }
+
+  /* ── Table ── */
+  #forex-rates-print-root .forex-rates-table-wrap {
+    overflow: visible;
+    margin-top: var(--bbl-space-050);
+  }
+
+  #forex-rates-print-root .forex-rates-table {
+    min-width: 0;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border: 0.0625rem solid var(--bbl-color-black);
+    font-size: 0.5rem;
+    color: #555;
     break-inside: auto;
   }
 
-  .forex-rates .forex-rates-table tbody tr {
+  #forex-rates-print-root .forex-rates-table thead {
+    display: table-header-group; /* repeat header on multi-page print */
+  }
+
+  #forex-rates-print-root .forex-rates-table tbody {
+    display: table-row-group;
+  }
+
+  #forex-rates-print-root .forex-rates-table thead tr {
+    height: auto;
+    background: transparent !important;
+  }
+
+  #forex-rates-print-root .forex-rates-table thead th {
+    padding-block: var(--bbl-space-050);
+    padding-inline: 20px;
+    font-size: 0.5rem;
+    font-weight: 700;
+    white-space: normal;
+    line-height: 1.2;
+    color: var(--bbl-color-black);
+    border-bottom: 0.0625rem solid var(--bbl-color-black);
+    border-right: 0.0625rem solid var(--bbl-color-black);
+    text-align: left;
+  }
+
+  #forex-rates-print-root .forex-rates-table thead th:last-child {
+    border-right: none;
+  }
+
+  #forex-rates-print-root .forex-rates-table thead th:nth-child(n+3) {
+    text-align: center;
+    width: 10%;
+    padding-inline: 4px;
+  }
+
+  #forex-rates-print-root .forex-rates-table thead th:nth-child(1) {
+    width: 15%;
+  }
+
+  #forex-rates-print-root .forex-rates-table thead th:nth-child(2) {
+    width: 35%;
+  }
+
+  #forex-rates-print-root .forex-rates-table tbody tr {
+    height: auto;
     break-inside: avoid;
+  }
+
+  #forex-rates-print-root .forex-rates-table tbody td {
+    padding-block: 0.15rem;
+    padding-inline: 20px;
+    font-size: 0.5rem;
+    height: auto;
+    vertical-align: middle;
+    border-bottom: 0.0625rem solid var(--bbl-color-black);
+    border-right: 0.0625rem solid var(--bbl-color-black);
+    color: var(--bbl-color-black);
+  }
+
+  #forex-rates-print-root .forex-rates-table tbody td:last-child {
+    border-right: none;
+  }
+
+  #forex-rates-print-root .forex-rates-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  #forex-rates-print-root .forex-rates-table tbody td.is-right {
+    text-align: right;
+    padding-inline: 4px;
+    white-space: nowrap;
+  }
+
+  #forex-rates-print-root .forex-rates-currency {
+    display: table-cell;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  #forex-rates-print-root .forex-rates-flag {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: var(--bbl-space-075);
+    width: var(--bbl-space-150);
+    height: var(--bbl-space-150);
+    object-fit: contain;
+  }
+
+  /* ── Disclaimer ── */
+  #forex-rates-print-root .forex-rates-disclaimer {
+    font-size: 0.5rem;
+    line-height: 1.4;
+    margin-top: var(--bbl-space-075);
+    color: #555;
+  }
+
+  #forex-rates-print-root .forex-rates-disclaimer p {
+    margin: 0;
+  }
+
+  #forex-rates-print-root .forex-rates-disclaimer p:first-child {
+    font-weight: 700;
+    color: var(--bbl-color-black);
+    padding-bottom: 0.2rem;
   }
 }
