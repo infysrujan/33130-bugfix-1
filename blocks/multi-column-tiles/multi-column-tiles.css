@@ -130,7 +130,7 @@
 
 .multi-column-tiles-tile:hover .multi-column-tiles-title,
 .multi-column-tiles-tile.is-active .multi-column-tiles-title {
-  transform: translateY(calc(-11vh - 8.125rem));
+  transform: translateY(-5.375rem);
 }
 
 .multi-column-tiles-separator {
@@ -171,6 +171,12 @@
   .multi-column-tiles-image {
     height: 22.25rem;
   }
+
+  .multi-column-tiles-tile:hover .multi-column-tiles-title,
+  .multi-column-tiles-tile.is-active .multi-column-tiles-title {
+  transform: translateY(-5.375rem);
+}
+  
 }
 
 /* === Desktop and above (> 64rem) === */
@@ -193,11 +199,16 @@
   }
 
   .multi-column-tiles-image {
-    height: 37.5rem; 
+    height: 37.5rem;
   }
 
   .multi-column-tiles-title {
     font-size: var(--bbl-font-size-h3-desktop);
+  }
+
+  .multi-column-tiles-tile:hover .multi-column-tiles-title,
+  .multi-column-tiles-tile.is-active .multi-column-tiles-title {
+    transform: translateY(calc(-11vh - 8.125rem));
   }
 }
 

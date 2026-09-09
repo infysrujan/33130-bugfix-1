@@ -219,7 +219,8 @@
     padding-right: 1.875rem;
   }
 
-  & .form form .field-bond-allocation-review .plain-text-wrapper p{
+  & .form form .field-bond-allocation-review .plain-text-wrapper p,
+  & .form form .field-bond-allocation-notfound .plain-text-wrapper p {
     text-align: left;
   }
 
@@ -297,7 +298,7 @@
   }
 
   /* ── infotxt / thank-you text ── */
-  & .form form .field-bond-allocation-review .field-successpanel > .plain-text-wrapper {
+  & .form form .field-bond-allocation-review .field-successpanel .plain-text-wrapper {
     padding: 1.5625rem 0.0625rem 0.9375rem;
 
     & p {

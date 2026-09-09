@@ -33,6 +33,7 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
+  touch-action: pan-x;
   scrollbar-width: none;
   padding: 0.625rem 0;
 }
@@ -51,7 +52,7 @@
   border-radius: var(--bbl-radius-md);
   overflow: hidden;
   flex: 0 0 16.875rem;
-  scroll-snap-align: start;
+  scroll-snap-align: center;
 }
 
 /* ── Image area — .thumb-default.card .inner + .thumb ────────────────────── */
@@ -285,7 +286,11 @@
 
   .card-comparator-results .ccr-card {
     flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
-    scroll-snap-align: none;
+    scroll-snap-align: center;
+  }
+
+  .card-comparator-results .ccr-card[data-ccr-clone] {
+    display: none;
   }
 
   .card-comparator-results .ccr-apply-mobile-group {

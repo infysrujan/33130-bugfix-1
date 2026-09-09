@@ -285,6 +285,10 @@
                 {
                   "name": "Center First Paragraph",
                   "value": "center-first-paragraph"
+                },
+                {
+                  "name": "Center Aligned First Paragraph",
+                  "value": "center-aligned-first-paragraph"
                 }
               ]
             },
@@ -421,6 +425,10 @@
                 {
                   "name": "Center First Paragraph",
                   "value": "center-first-paragraph"
+                },
+                {
+                  "name": "Center Aligned First Paragraph",
+                  "value": "center-aligned-first-paragraph"
                 }
               ]
             },

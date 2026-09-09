@@ -125,9 +125,13 @@
         height: 2.6389rem;
     }
 
+    & .date-wrapper.field-wrapper {
+        --bbl-form-date-icon-height: 2.6389rem;
+    }
+
     /* Hour/Minute separator colon (turned on for desktop below) */
     & fieldset.panel-wrapper:has(.date-wrapper) > .date-wrapper + .drop-down-wrapper::after {
-        content: none;
+        content: ':';
         position: absolute;
         top: 48%;
         right: -0.325rem;
@@ -262,6 +266,10 @@
         padding-right: 1.875rem;
     }
 
+    & fieldset.panel-wrapper:has(.date-wrapper) > .drop-down-wrapper {
+        grid-column: span 6;
+    }
+    
     /* Service Branch dropdowns: no extra bottom margin (panel row-gap handles spacing instead) */
     & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) select {
         margin: 0;

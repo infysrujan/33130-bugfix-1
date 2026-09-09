@@ -216,6 +216,10 @@ body.wealth .menu-card-action-inner {
   margin: 0;
 }
 
+.menu-card-action-inner:has(.download-button-wrapper) .menu-card-action-date {
+  padding-top: 1.875rem;
+}
+
 .menu-card-action-inner .download-button-wrapper {
   margin-top: var(--bbl-space-250);
   width: 100%;

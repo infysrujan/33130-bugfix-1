@@ -296,6 +296,7 @@
 
 .retirement-calculator .rc-field-error {
   font-size: 0.7rem;
+  font-family: var(--bbl-font-family-looped);
   color: var(--bbl-state-error);
   padding-left: var(--bbl-space-200);
   margin: 0;

@@ -94,6 +94,10 @@
                   "value": "header-top-aligned"
                 },
                 {
+                  "name": "Middle Aligned",
+                  "value": "header-middle-aligned"
+                },
+                {
                   "name": "Header Blue",
                   "value": "header-blue"
                 },
@@ -112,6 +116,10 @@
                 {
                   "name": "Header Primary Blue S01",
                   "value": "header-primary-blue-s01"
+                },
+                {
+                  "name": "Right Aligned Last Line",
+                  "value": "header-right-aligned-last-line"
                 }
               ]
             },

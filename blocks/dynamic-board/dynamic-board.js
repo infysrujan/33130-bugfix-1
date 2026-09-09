@@ -585,6 +585,13 @@ function printElement(block) {
     td.textContent = td.textContent.trim();
   });
 
+  content.querySelectorAll('.db-td-name[data-title]').forEach((td) => {
+    const fullName = td.getAttribute('data-title');
+    const nameSpan = td.querySelector('.db-td-name-text');
+    if (nameSpan && fullName) nameSpan.textContent = fullName;
+    td.removeAttribute('data-title');
+  });
+
   // The live header's Symbol column has colspan=2 for layout reasons the
   // body doesn't match (only one Symbol cell, since the checkbox column is
   // stripped above) — fixed by position (first header cell only), not by
@@ -1016,7 +1023,7 @@ export default async function decorate(block) {
             <ul class="db-time-list" id="db-time-list" role="listbox"></ul>
           </div>
         </div>
-        <button type="button" class="db-go-btn" id="db-go-btn">${escapeHtml(authoring.ctaButtonLabel)}</button>
+        <button type="button" class="db-go-btn button-m primary" id="db-go-btn">${escapeHtml(authoring.ctaButtonLabel)}</button>
       </div>
       <div class="db-controls-right">
         <button type="button" class="db-filter-btn" id="db-filter-btn">

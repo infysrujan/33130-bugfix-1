@@ -28,6 +28,51 @@ main .section.form-container.custom-forms .form form :is(input:not([type='radio'
   color: var(--bbl-color-grey-150);
 }
 
+main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper {
+  position: relative;
+}
+
+@media (any-pointer: coarse) {
+  main .section.form-container.custom-forms .form form input[type="date"] {
+    appearance: none;
+    position: relative;
+    padding-right: var(--bbl-space-500);
+  }
+
+  main .section.form-container.custom-forms .form form input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: var(--bbl-space-500);
+    height: auto;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  main .section.form-container.custom-forms .form form input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+  }
+
+  main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper::after {
+    content: "\e912";
+    font-family: icomoon, sans-serif;
+    font-size: var(--bbl-font-size-h3-mobile);
+    color: var(--bbl-color-grey-90);
+    position: absolute;
+    top: 1.125rem;
+    right: var(--bbl-space-300);
+    height: var(--bbl-form-date-icon-height, 2.75rem);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper:has(label[data-visible="false"])::after {
+    top: 0;
+  }
+}
+
 main .section.form-container.custom-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):not(:has(label:is([class*=' icon-'], [class^='icon-'])))::before {
   content: '';
 }

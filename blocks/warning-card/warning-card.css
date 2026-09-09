@@ -53,7 +53,6 @@
 }
 
 .warning-card-description a {
-  color: inherit;
   text-decoration: underline;
   transition: all .3s;
 }
@@ -68,7 +67,6 @@
 
 .warning-card-description strong a {
   font-family: var(--bbl-font-family-medium);
-  color: var(--bbl-color-grey-85);
 }
 
 @media (width > 47.5rem) {

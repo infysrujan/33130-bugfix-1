@@ -114,43 +114,14 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
   & .date-wrapper.field-wrapper {
     min-width: 0;
+    
+    --bbl-form-date-icon-height: var(--bbl-form-height-50);
   }
 
   & .date-wrapper.field-wrapper input {
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
-  }
-
-  @supports (-webkit-touch-callout: none) {
-    @media (any-pointer: coarse) {
-      & .form input[type="date"] {
-        appearance: none;
-        padding-right: 2.75rem;
-      }
-
-      & .form input[type="date"]::-webkit-calendar-picker-indicator {
-        display: none;
-      }
-
-      & .form input[type="date"]::-webkit-date-and-time-value {
-        text-align: left;
-      }
-
-      & .date-wrapper.field-wrapper::after {
-        content: "\e912";
-        font-family: var(--bbl-form-font-family-icomoon);
-        font-size: var(--bbl-font-size-h3-mobile);
-        color: var(--bbl-color-grey-90);
-        position: absolute;
-        top: 0;
-        right: var(--bbl-space-300);
-        height: var(--bbl-form-height-50);
-        display: flex;
-        align-items: center;
-        pointer-events: none;
-      }
-    }
   }
 
   & :is(.form select, .drop-down-wrapper.field-wrapper select) {
@@ -1155,5 +1126,15 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         }
       }
     }
+  }
+}
+
+main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
+  padding-block-start: 3rem;
+}
+
+@media (width >= 64rem) {
+  main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
+    padding-block-start: 2.5rem;
   }
 }

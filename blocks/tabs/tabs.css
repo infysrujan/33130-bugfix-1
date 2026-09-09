@@ -374,8 +374,7 @@
   justify-content: center;
   align-items: stretch;
   list-style: none;
-  padding: 0 1.43rem;
-
+  padding: 0;
 }
 
 .tabs.tiled-tab .tabs-nav-wrapper .tabs-dropdown {
@@ -404,7 +403,7 @@
   box-sizing: border-box;
   justify-content: flex-start;
   text-align: center;
-  width: 11.75rem;
+  width: 100%;
   background: transparent;
   cursor: pointer;
   position: relative;
@@ -534,6 +533,8 @@
     overflow-x: auto;
     flex-flow: row nowrap;
     justify-content: flex-start;
+    margin: 0;
+    padding: 0;
   }
 
   .tabs.tiled-tab .tabs-nav li {
@@ -544,6 +545,8 @@
   }
 
   .tabs.tiled-tab .tabs-nav button {
+    width: auto;
+    flex: 0 0 auto;
     padding: 0.9375rem;
     font-size: var(--bbl-font-size-h5-desktop);
     line-height: 1.3rem;

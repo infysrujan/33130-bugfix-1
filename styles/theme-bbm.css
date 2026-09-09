@@ -17,3 +17,17 @@ body.bangkok-bankm-card .tabs-nav-wrapper .tabs-nav button {
 body.bangkok-bankm-card .content { /* In bbm-glow-card vendor css is being appiled to .content class */
     text-align: unset;
 }
+
+
+/* =========================================================================
+   PAGE-LEVEL VARIANTS - for Bangkok BankM Promotion Page
+   ========================================================================= */
+
+body.bangkok-bankm-promotion .menu-banner :is(h1, h2, h3, h4, h5, h6),
+body.bangkok-bankm-promotion .sub-title-medium {
+  color:  var(--bbl-color-white);
+}
+
+body.bangkok-bankm-promotion .menu-banner .sub-title-medium.line::after {
+  background: var(--bbl-color-white);
+}

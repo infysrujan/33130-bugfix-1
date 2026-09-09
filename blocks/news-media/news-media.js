@@ -42,7 +42,24 @@ function filterAndPage(allCards, category, page, pageSize) {
   return { cards: sorted.slice(start, start + pageSize), total };
 }
 
-function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
+const BE_CE_OFFSET = 543;
+
+function tagToGregorianYear(tag, lang) {
+  const match = /(\d+)$/.exec(tag || '');
+  if (!match) return '';
+  const n = parseInt(match[1], 10);
+  return lang === 'th' ? String(n - BE_CE_OFFSET) : String(n);
+}
+
+function preserveQueryOnLangLinks() {
+  const { search } = window.location;
+  document.querySelectorAll('.top-nav li.top-nav-item.link-icon > a[href]').forEach((a) => {
+    const [path] = a.getAttribute('href').split('?');
+    a.setAttribute('href', path + search);
+  });
+}
+
+function setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage = 1, yearKey = '') {
   panel.innerHTML = `
     <div class="news-media-content">
       <div class="news-media-grid"></div>
@@ -51,11 +68,14 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
 
   const gridEl = panel.querySelector('.news-media-grid');
   const paginationEl = panel.querySelector('.listing-card-pagination');
-  const state = { page: 1 };
+  const state = { page: initialPage };
 
   function render() {
-    const { cards, total } = filterAndPage(allCards, category, state.page, pageSize);
-    const totalPages = Math.ceil(total / pageSize);
+    const totalPages = Math.ceil(filterAndPage(allCards, category, 1, pageSize).total / pageSize);
+    if (state.page < 1) state.page = 1;
+    if (totalPages && state.page > totalPages) state.page = totalPages;
+
+    const { cards } = filterAndPage(allCards, category, state.page, pageSize);
 
     gridEl.innerHTML = cards.length
       ? cards.map((c) => {
@@ -69,7 +89,14 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
     const carouselNavBtnsLabels = { prevBtnLabel: placeholders.carouselPrevBtnLabel || 'Previous', nextBtnLabel: placeholders.carouselNextBtnLabel || 'Next' };
     paginationEl.innerHTML = buildPaginationHtml(state.page, totalPages, carouselNavBtnsLabels);
   }
-  bindPaginationClick(paginationEl, state, render, gridEl);
+  bindPaginationClick(paginationEl, state, () => {
+    render();
+    const params = new URLSearchParams(window.location.search);
+    if (yearKey) params.set('year', yearKey);
+    params.set('page', state.page);
+    window.history.replaceState(null, '', `?${params.toString()}`);
+    preserveQueryOnLangLinks();
+  }, gridEl);
   render();
 }
 
@@ -84,31 +111,50 @@ async function renderNewsMedia(block) {
   const [data, placeholders] = await Promise.all([fetchJson(dataUrl), fetchPlaceholders()]);
   const allCards = data?.news || [];
 
+  const initSearch = new URLSearchParams(window.location.search);
+  const yearParam = initSearch.get('year');
+  const pageParam = parseInt(initSearch.get('page'), 10) || 1;
+
   document.querySelector('.tabs.block')?.classList.add('news-media-tabs');
+
+  const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
+  const yearMatchBtn = tabBtns.find(
+    (btn) => tagToGregorianYear(btn.dataset.tabCategoryTag, lang) === yearParam,
+  );
+  const defaultBtn = tabBtns.find((btn) => btn.getAttribute('aria-selected') === 'true');
+  const activeBtn = yearMatchBtn || defaultBtn;
+  const activeTag = activeBtn?.dataset.tabCategoryTag;
+  const activeYearKey = activeBtn ? tagToGregorianYear(activeTag, lang) : null;
+
+  if (yearParam && activeYearKey && activeYearKey !== yearParam) {
+    const params = new URLSearchParams(window.location.search);
+    params.set('year', activeYearKey);
+    window.history.replaceState(null, '', `?${params.toString()}`);
+  }
 
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
   tabPanels.forEach((panel) => {
-    const tabBtnId = panel.getAttribute('aria-labelledby');
-    const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
+    const tabBtn = document.getElementById(panel.getAttribute('aria-labelledby'));
     const tabTags = tabBtn?.dataset.tabCategoryTag;
-    const category = tabTags;
-
-    setupPanel(panel, allCards, category, locale, pageSize, placeholders);
+    const yearKey = tagToGregorianYear(tabTags, lang);
+    const initialPage = tabBtn === activeBtn ? pageParam : 1;
+    setupPanel(panel, allCards, tabTags, locale, pageSize, placeholders, initialPage, yearKey);
   });
 
-  const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
+  yearMatchBtn?.click();
+
   tabBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const params = new URLSearchParams(window.location.search);
-      params.set('year', btn.textContent.trim());
+      params.set('year', tagToGregorianYear(btn.dataset.tabCategoryTag, lang));
+      params.delete('page');
       window.history.replaceState(null, '', `?${params.toString()}`);
+      preserveQueryOnLangLinks();
     });
   });
 
-  const yearParam = new URLSearchParams(window.location.search).get('year');
-  if (yearParam) {
-    tabBtns.find((btn) => btn.textContent.trim() === yearParam)?.click();
-  }
+  preserveQueryOnLangLinks();
+  document.addEventListener('header-decorated', preserveQueryOnLangLinks);
 
   block.hidden = true;
 }

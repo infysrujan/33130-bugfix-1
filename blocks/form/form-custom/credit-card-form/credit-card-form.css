@@ -73,6 +73,12 @@
   line-height: 1;
 }
 
+@media (width < 47.5rem) {
+  .credit-card-form main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) fieldset.panel-wrapper .plain-text-wrapper.tnc-text-decoration {
+    max-height: 15rem;
+  }
+}
+
 @media (width > 47.5rem) {
   .credit-card-form main .section.form-container.custom-forms .form form :is(.field-name, .field-surname) {
     grid-column: span 6;

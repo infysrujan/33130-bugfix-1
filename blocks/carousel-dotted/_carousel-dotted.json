@@ -1029,6 +1029,126 @@
               "contentInsertCarouselCards"
             ]
           }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopField",
+          "name": "heroImagePickerDesktop",
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "heroBannerImageCarousel"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "textAnimationVariant"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopMimeTypeField",
+          "name": "heroImagePickerDesktopMimeType",
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "heroBannerImageCarousel"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "textAnimationVariant"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
+          "name": "heroImagePickerMobile",
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "heroBannerImageCarousel"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "textAnimationVariant"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
+          "name": "heroImagePickerMobileMimeType",
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "heroBannerImageCarousel"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "textAnimationVariant"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerAltField",
+          "name": "heroImagePickerAlt",
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "heroBannerImageCarousel"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "textAnimationVariant"
+                ]
+              }
+            ]
+          }
         }
       ]
     },

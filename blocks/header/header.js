@@ -22,6 +22,7 @@ const isDesktop = window.matchMedia('(min-width: 1025px)');
 
 const LANG_COOKIE_NAME = 'bblcorporate#lang';
 const LANG_COOKIE_DAYS = 365;
+const TOP_NAV_HEIGHT = 40;
 
 function setLangCookie(value) {
   const expires = new Date(Date.now() + LANG_COOKIE_DAYS * 864e5).toUTCString();
@@ -188,22 +189,9 @@ function setupLoginPanelEvents(loginBlock, options = {}) {
  * @param {() => boolean} getIsNavItemActive
  */
 function setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, getIsNavItemActive) {
-  let topNavHeight = 0;
   let lastScrollY = window.scrollY;
-
-  const getTopNavHeight = () => {
-    if (topNavBlock) {
-      topNavHeight = topNavBlock.getBoundingClientRect().height;
-      mainNavDesktop.style.setProperty('--main-nav-top', `${topNavHeight}px`);
-    }
-    return topNavHeight;
-  };
-
-  getTopNavHeight();
-
   const handleDesktopScroll = () => {
     const currentScrollY = window.scrollY;
-    if (topNavHeight === 0) getTopNavHeight();
 
     // Wheel/trackpad scroll events don't move in a clean straight line — they
     // wobble by a few px even during a steady downward scroll. Reacting to every
@@ -214,7 +202,7 @@ function setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, getIsNavItemAct
     const isScrollingUp = scrollDelta < 0;
     lastScrollY = currentScrollY;
 
-    if (currentScrollY >= topNavHeight && topNavHeight > 0) {
+    if (currentScrollY >= TOP_NAV_HEIGHT && TOP_NAV_HEIGHT > 0) {
       if (topNavBlock) topNavBlock.classList.add('is-hidden');
       mainNavDesktop.classList.add('is-scrolled');
     } else if (!getIsNavItemActive()) {
@@ -248,18 +236,7 @@ function setupDesktopMegamenuBehavior(
   desktopState,
   headerNav,
 ) {
-  let topNavHeight = 0;
-
-  const getTopNavHeight = () => {
-    if (topNavBlock) {
-      topNavHeight = topNavBlock.getBoundingClientRect().height;
-      mainNavDesktop.style.setProperty('--main-nav-top', `${topNavHeight}px`);
-    }
-    return topNavHeight;
-  };
-
   const closeMegamenu = () => {
-    getTopNavHeight();
     mainNavBlocks.forEach((block) => block.classList.remove('is-active'));
     document.querySelectorAll('.main-nav-trigger[aria-expanded="true"]').forEach((trigger) => {
       trigger.setAttribute('aria-expanded', 'false');
@@ -269,7 +246,7 @@ function setupDesktopMegamenuBehavior(
     });
     desktopState.isNavItemActive = false;
     releaseHeaderNavBackdrop(headerNav, NAV_BACKDROP_MEGAMENU);
-    if (window.scrollY <= topNavHeight) {
+    if (window.scrollY <= TOP_NAV_HEIGHT) {
       mainNavDesktop.classList.remove('is-scrolled');
       if (topNavBlock) topNavBlock.classList.remove('is-hidden');
     }

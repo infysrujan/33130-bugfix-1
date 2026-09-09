@@ -16,7 +16,7 @@ function createCarouselHeader(title, linkElement, doc) {
   const headerHTML = `
     <div class="carousel-header">
       ${title ? `<h2>${title}</h2>` : ''}
-      ${linkElement ? `<a href="${linkElement.href}" class="link-primary" target="${linkElement.target || '_self'}"${linkElement.title ? ` title="${linkElement.title}"` : ''}>${linkElement.textContent}</a>` : ''}
+      ${linkElement ? `<a href="${linkElement.href}" class="${linkElement.className}" target="${linkElement.target || '_self'}"${linkElement.title ? ` title="${linkElement.title}"` : ''}>${linkElement.textContent}</a>` : ''}
     </div>
   `;
   return createElementFromHTML(headerHTML, doc);
@@ -29,7 +29,7 @@ function createCarouselHeader(title, linkElement, doc) {
  * @returns {Element} The formatted carousel card
  */
 function createCarouselCard(cardElement, doc) {
-  const card = createElementFromHTML('<div class="carousel-item"></div>', doc);
+  const card = createElementFromHTML('<div class="carousel-item" tabindex="-1"></div>', doc);
 
   const children = [...cardElement.children];
 
@@ -127,7 +127,19 @@ function initCarousel(track) {
   const prevButton = carousel.querySelector('.carousel-prev');
   const nextButton = carousel.querySelector('.carousel-next');
 
+  prevButton.disabled = true;
+  nextButton.disabled = totalItems <= 1;
+
+  items.forEach((item, index) => {
+    if (window.innerWidth >= DESKTOP_BREAKPOINT) {
+      item.classList.toggle('active', index === 0);
+    } else {
+      item.classList.add('active');
+    }
+  });
+
   function measureItemWidth(item) {
+    if (!item) return 0;
     // eslint-disable-next-line no-unused-expressions
     item.offsetHeight;
     return item.offsetWidth;
@@ -164,6 +176,7 @@ function initCarousel(track) {
 
     const carouselRect = carousel.getBoundingClientRect();
     const trackRect = track.getBoundingClientRect();
+    if (trackRect.height === 0) return;
     const navTop = trackRect.top - carouselRect.top + trackRect.height / 2;
     const activeWidth = measureItemWidth(items[currentIndex]);
     const buttonOffset = (button) => button.offsetWidth / 2;
@@ -267,6 +280,18 @@ function initCarousel(track) {
     });
   });
 
+  carousel.addEventListener('mouseenter', () => {
+    if (window.innerWidth >= DESKTOP_BREAKPOINT && !carousel.contains(document.activeElement)) {
+      items[currentIndex]?.focus({ preventScroll: true });
+    }
+  });
+
+  carousel.addEventListener('pointerdown', (e) => {
+    if (window.innerWidth >= DESKTOP_BREAKPOINT && !e.target.closest('a, button')) {
+      items[currentIndex]?.focus({ preventScroll: true });
+    }
+  });
+
   prevButton.addEventListener('click', () => {
     if (!isSliding && currentIndex > 0) {
       currentIndex -= 1;
@@ -283,12 +308,19 @@ function initCarousel(track) {
 
   carousel.addEventListener('keydown', (e) => {
     if (window.innerWidth < DESKTOP_BREAKPOINT) return;
+    if (e.target.closest('input, textarea, select')) return;
     if (e.key === 'ArrowLeft') {
       e.preventDefault();
       prevButton.click();
+      if (items[currentIndex]) {
+        items[currentIndex].focus({ preventScroll: true });
+      }
     } else if (e.key === 'ArrowRight') {
       e.preventDefault();
       nextButton.click();
+      if (items[currentIndex]) {
+        items[currentIndex].focus({ preventScroll: true });
+      }
     }
   });
 
@@ -303,9 +335,6 @@ function initCarousel(track) {
     hasDragged = false;
     startX = e.clientX;
     startY = e.clientY;
-    if (track.setPointerCapture) {
-      track.setPointerCapture(e.pointerId);
-    }
   });
 
   track.addEventListener('pointermove', (e) => {
@@ -322,6 +351,9 @@ function initCarousel(track) {
         return;
       }
       hasDragged = true;
+      if (track.setPointerCapture) {
+        track.setPointerCapture(e.pointerId);
+      }
     }
 
     if (hasDragged) {
@@ -351,6 +383,9 @@ function initCarousel(track) {
         track.style.transition = CAROUSEL_TRANSITION;
         track.style.transform = `translateX(${currentTrackOffset}px)`;
       }
+      setTimeout(() => {
+        hasDragged = false;
+      }, 0);
     }
   };
 
@@ -365,6 +400,12 @@ function initCarousel(track) {
     }
   }, true);
 
+  carousel.addEventListener('click', (e) => {
+    if (window.innerWidth >= DESKTOP_BREAKPOINT && !hasDragged && !e.target.closest('a, button')) {
+      items[currentIndex]?.focus({ preventScroll: true });
+    }
+  });
+
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -372,6 +413,18 @@ function initCarousel(track) {
       updateCarousel(false);
     }, 250);
   });
+
+  let lastWidth = carousel.offsetWidth;
+  if (typeof ResizeObserver !== 'undefined') {
+    const visibilityObserver = new ResizeObserver(() => {
+      const width = carousel.offsetWidth;
+      if (width > 0 && width !== lastWidth) {
+        lastWidth = width;
+        updateCarousel(false);
+      }
+    });
+    visibilityObserver.observe(carousel);
+  }
 
   if (!isMobileOrTablet()) {
     requestAnimationFrame(() => {

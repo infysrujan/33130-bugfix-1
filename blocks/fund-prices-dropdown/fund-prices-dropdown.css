@@ -56,17 +56,18 @@
 
 .fund-prices-dropdown .fdd-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-heading-h1-size);
-  font-weight: var(--bbl-text-page-title-weight);
+  font-size: var(--bbl-text-section-title-size);
+  font-weight: var(--bbl-text-section-title-weight);
   color: var(--bbl-color-black);
-  margin: 1.5rem 0 2rem;
+  margin: 1.875rem 0;
   display: none;
+  line-height: var(--bbl-text-section-title-line-height);
 }
 
 .fund-prices-dropdown .fdd-title-rule {
   border: none;
   border-top: 0.125rem solid var(--bbl-color-grey-30);
-  margin: 2rem 0 2.5rem;
+  margin: 2rem 0 1.875rem;
   width: var(--bbl-space-600);
   display: none;
 }
@@ -223,6 +224,7 @@
   font-size: 0.7rem;
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
+  margin: 0;
 }
 
 .fund-prices-dropdown .fund-prices-print-label {

@@ -198,7 +198,7 @@ function filterFundsByMatrix(funds, matchedNames) {
   if (!matchedNames.length) return [];
   return funds.filter((fund) => {
     const name = norm(fund.FundName || '');
-    return matchedNames.some((n) => name === n || name.includes(n) || n.includes(name));
+    return matchedNames.some((n) => name === n);
   });
 }
 

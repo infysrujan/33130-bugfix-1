@@ -45,7 +45,8 @@ function getRegisterCtaUrl(isRegister, registerCtaUrl, data) {
 
   return registerCtaUrl.replace(
     /\{\{\s*([\w-]+)\s*\}\}/g,
-    (_, key) => encodeURIComponent(tokenMap[key.trim()] ?? ''),
+    (_, key) => encodeURIComponent(tokenMap[key.trim()] ?? '')
+      .replace(/%[0-9A-F]{2}/g, (hex) => hex.toLowerCase()),
   );
 }
 
@@ -56,6 +57,7 @@ function readBlockData(block) {
   if (firstRow.children.length >= 2) {
     const config = readBlockConfig(block);
     return {
+      id: config.promoid || '',
       title: config.title || '',
       detailImageUrl: config.detailimageurl || '',
       detailDescription: config.detaildescription || '',
@@ -89,6 +91,7 @@ function readBlockData(block) {
   const rldEnabledOut = hasRldEnabledField ? rldEnabled : (rldText && 'true') || '';
 
   return {
+    id: txt(o),
     title: titleHeading?.innerHTML?.trim() || txt(o + 1),
     detailImageUrl: imgSrc(o + 3),
     detailDescription: innerHtml(o + 5),
@@ -208,16 +211,17 @@ function renderDetails(container, data, locale, viewFull, registerCtaUrl) {
           ${imageColHtml}
           <div class="promo-detail-content">
             <div class="promo-detail-description">${description}</div>
-            ${buildRegisterCtaHtml(ctaLabel, ctaUrl)}
           </div>
         </div>
       </div>
     </div>`;
 
   const disclaimerHtml = buildDisclaimerHtml(disclaimerEnabled, disclaimerText);
+  const contentEl = container.querySelector('.promo-detail-content');
   if (disclaimerHtml) {
-    container.querySelector('.promo-detail-content')?.insertAdjacentHTML('beforeend', disclaimerHtml);
+    contentEl?.insertAdjacentHTML('beforeend', disclaimerHtml);
   }
+  contentEl?.insertAdjacentHTML('beforeend', buildRegisterCtaHtml(ctaLabel, ctaUrl));
 
   if (imageUrl) bindImageModal(container, imageUrl, cleanTitle);
 }

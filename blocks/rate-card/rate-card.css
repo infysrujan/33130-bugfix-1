@@ -55,11 +55,6 @@
   padding: 0;
 }
 
-.rate-card .default-wrap > a {
-  font-size: var(--bbl-font-size-b2-desktop);
-  line-height: var(--bbl-line-height-b2-desktop);
-}
-
 .rate-card .tab-header a:any-link {
   color: var(--bbl-color-gray-121);
   font-size: var(--bbl-text-label-tag-size);
