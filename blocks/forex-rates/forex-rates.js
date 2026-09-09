@@ -28,6 +28,63 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+// ─── Flag icons ───────────────────────────────────────────────────────────────
+// The flag SVGs use <mask>/<use> which WebKit (all iOS browsers) renders
+// unreliably when loaded via <img>. Inlining them as real <svg> nodes makes the
+// main document's SVG engine paint them, which is correct on every engine. Each
+// file reuses the same internal ids (a, b, c, d), so ids are namespaced per
+// instance to avoid cross-icon collisions once they share one document.
+
+const flagSvgCache = new Map();
+let flagIdSeq = 0;
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Suffix every id (and its #ref / url(#ref) usages) so inlined icons never clash.
+function namespaceSvgIds(svgText) {
+  const token = `fx${flagIdSeq += 1}`;
+  const ids = new Set([...svgText.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+  let out = svgText;
+  ids.forEach((id) => {
+    const e = escapeRegExp(id);
+    const nid = `${id}-${token}`;
+    out = out
+      .replace(new RegExp(`(\\sid=")${e}(")`, 'g'), `$1${nid}$2`)
+      .replace(new RegExp(`url\\(#${e}\\)`, 'g'), `url(#${nid})`)
+      .replace(new RegExp(`((?:xlink:)?href=")#${e}(")`, 'g'), `$1#${nid}$2`);
+  });
+  return out;
+}
+
+// Fetch the raw SVG text once per currency (cached, deduped by promise).
+function fetchFlagSvg(family) {
+  if (!flagSvgCache.has(family)) {
+    const promise = fetch(`/icons/${encodeURIComponent(family)}.svg`)
+      .then((res) => (res.ok ? res.text() : ''))
+      .then((text) => (text.trim().startsWith('<svg') ? text : ''))
+      .catch(() => '');
+    flagSvgCache.set(family, promise);
+  }
+  return flagSvgCache.get(family);
+}
+
+// Replace each flag placeholder in `root` with a freshly namespaced inline SVG.
+async function hydrateFlags(root) {
+  await Promise.all([...root.querySelectorAll('.forex-rates-flag[data-flag]')].map(
+    async (el) => {
+      const svgText = await fetchFlagSvg(el.dataset.flag);
+      if (!el.isConnected) return;
+      if (svgText) {
+        el.innerHTML = namespaceSvgIds(svgText);
+      } else {
+        el.style.display = 'none';
+      }
+    },
+  ));
+}
+
 function getPageTitle(root = document) {
   const tabsContainer = root.querySelector('.tabs-container');
   if (!tabsContainer) {
@@ -92,7 +149,7 @@ function renderBlock(block, state, authoring) {
 
   const rows = state.rates.map((rate) => `<tr>
     <td class="forex-rates-currency">
-      <img src="/icons/${escapeHtml(rate.family)}.svg" alt="${escapeHtml(rate.family)} flag" loading="lazy" class="forex-rates-flag">
+      <span class="forex-rates-flag" role="img" aria-label="${escapeHtml(rate.family)} flag" data-flag="${escapeHtml(rate.family)}"></span>
       <span>${escapeHtml(rate.family)}</span>
     </td>
     <td>${escapeHtml(rate.description)}</td>
@@ -136,11 +193,7 @@ function renderBlock(block, state, authoring) {
     <div class="forex-rates-disclaimer">${authoring.disclaimerHtml}</div>
   </section>`;
 
-  block.querySelectorAll('.forex-rates-flag').forEach((img) => {
-    img.addEventListener('error', (event) => {
-      event.target.style.display = 'none';
-    });
-  });
+  hydrateFlags(block);
 }
 
 function printForexRates(block) {
@@ -232,7 +285,8 @@ function printForexRates(block) {
     .forex-rates-table tbody tr:last-child td { border-bottom: none; }
     .forex-rates-table tbody td.is-right { text-align: right; padding-inline: 4px; white-space: nowrap; }
     .forex-rates-currency { display: table-cell; vertical-align: middle; white-space: nowrap; }
-    .forex-rates-flag { display: inline-block; vertical-align: middle; margin-right: var(--bbl-space-075); width: var(--bbl-space-150); height: var(--bbl-space-150); object-fit: contain; }
+    .forex-rates-flag { display: inline-flex; vertical-align: middle; margin-right: var(--bbl-space-075); width: var(--bbl-space-150); height: var(--bbl-space-150); }
+    .forex-rates-flag svg { width: 100%; height: 100%; display: block; }
 
     /* Disclaimer */
     .forex-rates-disclaimer { font-size: 0.5rem; line-height: 1.4; margin-top: var(--bbl-space-075); color: #555; }
