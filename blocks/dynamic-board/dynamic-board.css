@@ -287,7 +287,8 @@
 .dynamic-board .db-filter-panel {
   position: relative;
   width: 100%;
-  max-width: 28.125rem;
+  max-width: 26.875rem;
+  height: 29.6875rem;
   max-height: 90vh;
   background: var(--bbl-color-white);
   border-radius: var(--bbl-rounded-050);
