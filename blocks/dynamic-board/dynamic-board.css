@@ -372,7 +372,7 @@
 /* ── Month-year picker input ───────────────────────────────── */
 
 .dynamic-board .db-mp-input {
-  width: 100%;
+  width: 8.5313rem;
   height: 2.75rem;
   padding: 0 var(--bbl-space-500) 0 var(--bbl-space-200);
   font-size: var(--bbl-font-size-b2);
@@ -1014,10 +1014,14 @@
     flex-direction: row-reverse;
   }
 
-  .dynamic-board .db-filter-apply,
-  .dynamic-board .db-filter-reset {
+  .dynamic-board .db-filter-apply {
     flex: 1;
     width: auto;
+  }
+
+  .dynamic-board .db-filter-reset {
+    flex: 0 0 11.5625rem;
+    width: 11.5625rem;
   }
 
   .dynamic-board .db-remarks-content {
