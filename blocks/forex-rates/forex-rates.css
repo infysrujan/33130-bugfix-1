@@ -431,11 +431,17 @@
    Detailed visual layout for the formatted print output. printForexRates()
    clones the block into #forex-rates-print-root on the main document and injects
    an inline <style> that handles isolation + the cross-device consistency resets
-   (@page, text-size-adjust, color-adjust); these rules render the visual layout.
-   Same main-document approach as blocks/forward-points-sme.
+   (@page, text-size-adjust, color-adjust).
+
+   These layout rules use @media all (not @media print) so they apply in BOTH the
+   true print re-layout done by iOS Safari/desktop AND the on-screen snapshot that
+   iOS Chrome captures for its preview — giving both engines ONE identical style.
+   The print root only exists in the DOM while printing, so matching in screen
+   media is harmless on the normal page. Same main-document approach as
+   blocks/forward-points-sme.
    ============================================================ */
 
-@media print {
+@media all {
   #forex-rates-print-root {
     font-family: var(--bbl-font-family-primary);
   }

@@ -183,52 +183,61 @@ function printForexRates(block) {
 
   // Inline <style> applies synchronously (no network delay), so these rules are
   // guaranteed active before window.print() fires. It holds the cross-device
-  // CONSISTENCY primitives that must not depend on any external/responsive CSS;
-  // the detailed visual layout lives in forex-rates.css under @media print.
+  // CONSISTENCY primitives that must not depend on any external/responsive CSS.
+  //
+  // ONE STYLE FOR BOTH iOS ENGINES: Safari does a true @media print re-layout,
+  // but iOS Chrome renders its preview from the on-screen (screen-media) layout
+  // and ignores @media print. So every print rule is applied in BOTH contexts —
+  // via the .forex-rates-printing class on <html> (screen-effective, catches iOS
+  // Chrome) AND @media print (catches Safari/desktop). The print root only exists
+  // in the DOM while printing, so its layout can safely apply in screen media too.
   const printStyle = document.createElement('style');
   printStyle.id = 'forex-rates-print-style';
   printStyle.textContent = `
     /* Fixed A4 page box so the print area is identical on every device/printer. */
     @page { size: a4 portrait; margin: 10mm; }
 
-    @media print {
-      /* Isolation: print only the cloned root, hide the live page. */
-      body > *:not(#forex-rates-print-root) { display: none !important; }
+    /* Isolation: show only the cloned root, hide the live page. Both triggers. */
+    .forex-rates-printing body > *:not(#forex-rates-print-root) { display: none !important; }
+    @media print { body > *:not(#forex-rates-print-root) { display: none !important; } }
 
-      #forex-rates-print-root {
-        display: block !important;
-        /* Neutralize page themes (private/wealth/bbm tints) and, crucially,
-           iOS/WebKit text inflation — text-size-adjust is what makes iOS render
-           text at a different scale than Windows/Android. Pinning it to 100%
-           makes glyph metrics (and therefore column fit) identical everywhere. */
-        margin: 0 !important;
-        padding: 0 !important;
-        background: #fff !important;
-        color: #000 !important;
-        -webkit-text-size-adjust: 100% !important;
-        text-size-adjust: 100% !important;
-      }
-
-      /* Print painted backgrounds/borders regardless of the browser's
-         "background graphics" toggle. */
-      #forex-rates-print-root, #forex-rates-print-root * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-
-      #forex-rates-print-root .print-logo { display: block !important; }
-      #forex-rates-print-root .print-logo img { display: block !important; height: 1.5rem !important; width: auto !important; max-width: none !important; }
+    /* Root resets — safe to apply always (the root exists only while printing).
+       Neutralize page themes (private/wealth/bbm tints) and, crucially, iOS/WebKit
+       text inflation: text-size-adjust is what makes iOS render text at a different
+       scale than Windows/Android. Pinning it to 100% keeps glyph metrics (and
+       therefore column fit) identical on every device and engine. */
+    #forex-rates-print-root {
+      display: block !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #fff !important;
+      color: #000 !important;
+      -webkit-text-size-adjust: 100% !important;
+      text-size-adjust: 100% !important;
     }
+
+    /* Print painted backgrounds/borders regardless of the "background graphics" toggle. */
+    #forex-rates-print-root, #forex-rates-print-root * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    #forex-rates-print-root .print-logo { display: block !important; }
+    #forex-rates-print-root .print-logo img { display: block !important; height: 1.5rem !important; width: auto !important; max-width: none !important; }
   `;
 
   document.head.appendChild(printStyle);
   document.body.appendChild(printRoot);
 
-  window.print();
+  // Toggle the class so the isolation/layout also applies in screen media, which
+  // is the context iOS Chrome actually captures for its print preview.
+  const rootEl = document.documentElement;
+  rootEl.classList.add('forex-rates-printing');
 
   const cleanup = () => {
     printRoot.remove();
     printStyle.remove();
+    rootEl.classList.remove('forex-rates-printing');
     window.removeEventListener('afterprint', cleanup);
     window.removeEventListener('focus', cleanup);
   };
@@ -237,6 +246,8 @@ function printForexRates(block) {
   // regains focus after the print/share sheet closes (attached a tick later so
   // the current focus state can't trigger it early).
   setTimeout(() => window.addEventListener('focus', cleanup, { once: true }), 0);
+
+  window.print();
 }
 
 export default async function decorate(block) {
