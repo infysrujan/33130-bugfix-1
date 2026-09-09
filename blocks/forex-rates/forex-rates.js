@@ -143,6 +143,19 @@ function renderBlock(block, state, authoring) {
   });
 }
 
+function waitForStylesheets(doc) {
+  const links = [...doc.querySelectorAll('link[rel="stylesheet"]')];
+  return Promise.all(links.map((link) => new Promise((resolve) => {
+    // Already loaded (e.g. served from cache before the listener attached).
+    if (link.sheet) {
+      resolve();
+      return;
+    }
+    link.addEventListener('load', resolve, { once: true });
+    link.addEventListener('error', resolve, { once: true });
+  }))).then(() => undefined);
+}
+
 function printForexRates(block) {
   const content = block.querySelector('.forex-rates-content');
   if (!content) return;
@@ -266,24 +279,19 @@ function printForexRates(block) {
     </body>
   </html>`;
 
-  const iframe = doc.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;border:none;opacity:0;';
-  doc.body.appendChild(iframe);
+  const printWindow = window.open('', '', 'height=600,width=900');
+  if (!printWindow) return;
 
-  iframe.onload = () => {
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
+
+  waitForStylesheets(printWindow.document).then(() => {
+    printWindow.focus();
     setTimeout(() => {
-      iframe.contentWindow.focus();
-      iframe.contentWindow.print();
-    }, 300);
-    window.addEventListener('afterprint', () => {
-      if (doc.body.contains(iframe)) doc.body.removeChild(iframe);
-    }, { once: true });
-  };
-
-  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-  iframeDoc.open();
-  iframeDoc.write(printHtml);
-  iframeDoc.close();
+      printWindow.print();
+      printWindow.close();
+    }, 100);
+  });
 }
 
 export default async function decorate(block) {
