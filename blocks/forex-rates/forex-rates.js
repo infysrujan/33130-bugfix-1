@@ -153,6 +153,12 @@ function printForexRates(block) {
     '.forex-rates-print-btn, .forex-rates-go-btn, .forex-rates-time-list, .forex-rates-time-chevron, .forex-rates-date-trigger',
   ).forEach((el) => el.remove());
 
+  // iOS Safari never resolves lazy-loaded images inside the 0x0 offscreen print
+  // iframe (they're never "near" its viewport), so force them to load eagerly.
+  cloned.querySelectorAll('.forex-rates-flag').forEach((img) => {
+    img.removeAttribute('loading');
+  });
+
   const dateInput = cloned.querySelector('.forex-rates-date-text-input');
   if (dateInput) {
     const span = block.ownerDocument.createElement('span');
@@ -270,11 +276,37 @@ function printForexRates(block) {
   iframe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;border:none;opacity:0;';
   doc.body.appendChild(iframe);
 
+  const waitForImages = (targetDoc) => Promise.all(
+    [...targetDoc.images].map((img) => {
+      if (img.complete) return Promise.resolve();
+      return new Promise((resolve) => {
+        img.addEventListener('load', resolve, { once: true });
+        img.addEventListener('error', resolve, { once: true });
+      });
+    }),
+  );
+
+  const waitForTimeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
+
   iframe.onload = () => {
-    setTimeout(() => {
-      iframe.contentWindow.focus();
-      iframe.contentWindow.print();
-    }, 300);
+    const iframeWin = iframe.contentWindow;
+    const iframeDocument = iframeWin.document;
+
+    // A fixed delay before print() is unreliable across browsers/devices (iOS
+    // Safari is often slower than desktop Chrome to fetch fonts/CSS/images),
+    // which is why the print preview looked different per platform. Wait for
+    // the actual resources instead, capped by a safety timeout.
+    Promise.race([
+      Promise.all([
+        iframeDocument.fonts ? iframeDocument.fonts.ready : Promise.resolve(),
+        waitForImages(iframeDocument),
+      ]),
+      waitForTimeout(2000),
+    ]).then(() => {
+      iframeWin.focus();
+      iframeWin.print();
+    });
+
     window.addEventListener('afterprint', () => {
       if (doc.body.contains(iframe)) doc.body.removeChild(iframe);
     }, { once: true });
