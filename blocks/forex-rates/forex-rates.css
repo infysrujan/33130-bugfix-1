@@ -349,7 +349,7 @@
 
 /* ── Tablet: 47.5rem+ (760px) ──────────────────────────────── */
 
-@media (width > 47.5rem) {
+@media screen and (width > 47.5rem) {
   .forex-rates .forex-rates-calendar-label {
     width: auto;
     flex-shrink: 0;
@@ -378,7 +378,7 @@
 
 /* ── Desktop: 64rem+ (1024px) ──────────────────────────────── */
 
-@media (width > 64rem) {
+@media screen and (width > 64rem) {
   .forex-rates .forex-rates-date-text-input {
     font-size: var(--bbl-font-size-b1);
   }
