@@ -285,12 +285,32 @@ function printForexRates(block) {
   printWindow.document.write(printHtml);
   printWindow.document.close();
 
-  waitForStylesheets(printWindow.document).then(() => {
+  // Wait on both the popup's <link> stylesheets and its web fonts before
+  // printing — a stylesheet's "load" event fires once the CSS text itself
+  // is parsed, not once the @font-face files it references have downloaded.
+  // The table's numeric columns are sized around the custom BBLSans font;
+  // WebKit (iOS) snapshots whatever is currently painted when print() fires
+  // and, unlike Chrome, does not wait for a pending font swap, so it can
+  // rasterize with the wider fallback font and overflow the narrow columns.
+  // Capped by a safety timeout so a genuinely stuck font/stylesheet can't
+  // hang printing forever. Same approach as blocks/dynamic-board/dynamic-board.js.
+  const waitForFonts = () => printWindow.document.fonts?.ready ?? Promise.resolve();
+  const timeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
+
+  Promise.race([
+    Promise.all([waitForStylesheets(printWindow.document), waitForFonts()]),
+    timeout(8000),
+  ]).then(() => {
     printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 100);
+    // Double rAF: the first callback can fire before the browser has applied
+    // the fonts/styles that just resolved above, so let a second frame pass
+    // before printing to ensure the final layout is what gets printed.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        printWindow.print();
+        printWindow.close();
+      });
+    });
   });
 }
 
