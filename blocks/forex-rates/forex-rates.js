@@ -219,9 +219,9 @@ function printForexRates(block) {
       border-bottom: 0.0625rem solid var(--bbl-color-black); border-right: 0.0625rem solid var(--bbl-color-black); text-align: left;
     }
     .forex-rates-table thead th:last-child { border-right: none; }
-    .forex-rates-table thead th:nth-child(n+3) { text-align: center; width: 9%; }
+    .forex-rates-table thead th:nth-child(n+3) { text-align: center; width: 10%; padding-inline: 4px; }
     .forex-rates-table thead th:nth-child(1) { width: 15%; }
-    .forex-rates-table thead th:nth-child(2) { width: 40%; }
+    .forex-rates-table thead th:nth-child(2) { width: 35%; }
     .forex-rates-table tbody tr { height: auto; }
     .forex-rates-table tbody td {
       padding-block: 0.15rem; padding-inline: 20px; font-size: 0.5rem; height: auto; vertical-align: middle;
@@ -230,7 +230,7 @@ function printForexRates(block) {
     }
     .forex-rates-table tbody td:last-child { border-right: none; }
     .forex-rates-table tbody tr:last-child td { border-bottom: none; }
-    .forex-rates-table tbody td.is-right { text-align: right; }
+    .forex-rates-table tbody td.is-right { text-align: right; padding-inline: 4px; white-space: nowrap; }
     .forex-rates-currency { display: table-cell; vertical-align: middle; white-space: nowrap; }
     .forex-rates-flag { display: inline-block; vertical-align: middle; margin-right: var(--bbl-space-075); width: var(--bbl-space-150); height: var(--bbl-space-150); object-fit: contain; }
 
