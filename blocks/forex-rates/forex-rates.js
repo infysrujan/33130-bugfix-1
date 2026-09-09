@@ -316,6 +316,16 @@ function printForexRates(block) {
     timeout(8000),
   ]).then(() => {
     printWindow.focus();
+    // Close the print tab/window once the dialog is dismissed — whether the
+    // user prints or cancels. afterprint fires on both and, per spec, only
+    // after the dialog/preview has closed, so it cannot close the window while
+    // the preview is still opening. (A matchMedia('print') change listener was
+    // tried here but fired spuriously on tablets — the print media query can
+    // toggle off while the native print sheet is still up — which closed the
+    // window mid-open and stopped the preview from appearing.)
+    printWindow.addEventListener('afterprint', () => {
+      if (!printWindow.closed) printWindow.close();
+    }, { once: true });
     // Use setTimeout rather than requestAnimationFrame here: opening the print
     // document via window.open() shifts focus to the new tab on iOS Safari,
     // which backgrounds this (opener) page — and iOS pauses rAF callbacks in
@@ -325,7 +335,6 @@ function printForexRates(block) {
     // content-based column recalc that would need extra animation frames.
     setTimeout(() => {
       printWindow.print();
-      printWindow.close();
     }, 100);
   });
 }
