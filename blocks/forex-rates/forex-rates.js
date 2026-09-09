@@ -285,6 +285,15 @@ function printForexRates(block) {
   printWindow.document.write(printHtml);
   printWindow.document.close();
 
+  // window.open('') leaves the popup's location at about:blank, which is what
+  // Chrome's/Safari's print header/footer shows — replace it with the real page
+  // URL (same-origin, so this doesn't trigger a navigation).
+  try {
+    printWindow.history.replaceState(null, '', window.location.href);
+  } catch {
+    // ignore — footer just falls back to about:blank
+  }
+
   // Wait on both the popup's <link> stylesheets and its web fonts before
   // printing — a stylesheet's "load" event fires once the CSS text itself
   // is parsed, not once the @font-face files it references have downloaded.
