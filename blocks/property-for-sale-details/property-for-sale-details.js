@@ -1,6 +1,7 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { parseApiDate } from '../../scripts/utils/date-helpers.js';
 
 function getFileId() {
   return new URLSearchParams(window.location.search).get('FILE_ID') || '';
@@ -83,6 +84,18 @@ function formatPrice(price) {
   }).format(price);
 }
 
+// Special price is only valid while today falls within its start/end date window.
+// Dates come from the API as "DD/MM/YYYY", which Date.parse cannot read;
+// parseApiDate handles that format. A missing/unparseable boundary is treated as open-ended.
+function isSpecialPriceActive(data) {
+  const now = Date.now();
+  const start = parseApiDate(data.START_SPECAIL_PRICE_DATE);
+  if (start && now < Date.parse(start.iso)) return false;
+  const end = parseApiDate(data.END_SPECAIL_PRICE_DATE);
+  if (end && now > Date.parse(end.iso)) return false;
+  return true;
+}
+
 function formatArea(data) {
   return `${data.AREA_RAI ?? 0}-${data.AREA_QUARTER ?? 0}-${data.AREA_SQUARE_WAH ?? 0}-${data.AREA_SQUARE_METER ?? 0}`;
 }
@@ -133,7 +146,7 @@ function getFieldValue(field, data, currency, openMapLabel, mapBaseUrl) {
     case 'AREA': return formatArea(data);
     case 'LOCATION': return buildLocation(data);
     case 'PR_PRICE': return data.PR_PRICE ? `${formatPrice(data.PR_PRICE)} ${currency}` : '-';
-    case 'SPECIAL_PRICE': return data.SPECIAL_PRICE ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
+    case 'SPECIAL_PRICE': return data.SPECIAL_PRICE && isSpecialPriceActive(data) ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
     case 'MAP': return buildMapLink(data, openMapLabel, mapBaseUrl);
     default: {
       const raw = data[field];
@@ -159,7 +172,7 @@ function buildDetailHtml(data, placeholders, detailRows, mapBaseUrl) {
     label, value, special, starting,
   }) => {
     const cls = `prop-for-sale-value${special ? ' prop-for-sale-special-price' : ''}${starting ? ' prop-for-sale-starting-price' : ''}`;
-    const hideRow = special && (value === '-' || !!value) ? 'hidden' : '';
+    const hideRow = special && value === '-' ? 'hidden' : '';
     return `
     <div class="prop-for-sale-row ${hideRow}">
       <div class="prop-for-sale-label">${label}</div>

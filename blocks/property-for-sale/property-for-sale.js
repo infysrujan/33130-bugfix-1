@@ -7,6 +7,7 @@ import {
 } from '../../scripts/utils/card-helpers.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
+import { parseApiDate } from '../../scripts/utils/date-helpers.js';
 
 function initFilterToggles(container) {
   container.querySelectorAll('[aria-haspopup="listbox"]').forEach((btn) => {
@@ -80,6 +81,18 @@ function formatPrice(price) {
   }).format(price);
 }
 
+// Special price is only valid while today falls within its start/end date window.
+// Dates come from the API as "DD/MM/YYYY", which Date.parse cannot read;
+// parseApiDate handles that format. A missing/unparseable boundary is treated as open-ended.
+function isSpecialPriceActive(item) {
+  const now = Date.now();
+  const start = parseApiDate(item.START_SPECAIL_PRICE_DATE);
+  if (start && now < Date.parse(start.iso)) return false;
+  const end = parseApiDate(item.END_SPECAIL_PRICE_DATE);
+  if (end && now > Date.parse(end.iso)) return false;
+  return true;
+}
+
 function buildOptions(items) {
   return items
     .map((item) => `<li class="pfs-option" data-value="${item.value}" role="option">${item.label}</li>`)
@@ -142,7 +155,9 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData) {
   const photo = item.PHOTO_FILE_1;
   const currency = p.propertyForSaleCurrency || 'บาท';
   const price = item.PR_PRICE ? `${formatPrice(item.PR_PRICE)} ${currency}` : '';
-  const specialPrice = item.SPECIAL_PRICE ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}` : '';
+  const specialPrice = item.SPECIAL_PRICE && isSpecialPriceActive(item)
+    ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}`
+    : '';
   const location = [item.LOCATION_AMPHUR, item.LOCATION_PROVINCE].filter(Boolean).join(', ');
   const tag = pfsData.categoryLabel[category] || item.MAIN_ASSET || '';
 
