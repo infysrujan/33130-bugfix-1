@@ -144,6 +144,11 @@ function renderBlock(block, state, authoring) {
 }
 
 function printForexRates(block) {
+  const doc = block.ownerDocument;
+
+  // Guard: clear any leftover root from a previous print (e.g. afterprint didn't fire).
+  doc.getElementById('forex-rates-print-root')?.remove();
+
   const content = block.querySelector('.forex-rates-content');
   if (!content) return;
 
@@ -153,169 +158,60 @@ function printForexRates(block) {
     '.forex-rates-print-btn, .forex-rates-go-btn, .forex-rates-time-list, .forex-rates-time-chevron, .forex-rates-date-trigger',
   ).forEach((el) => el.remove());
 
-  // Safari never fetches lazy-loaded images inside the 0x0 offscreen print iframe
-  // (they are never near its viewport), so force them to load eagerly.
-  cloned.querySelectorAll('.forex-rates-flag').forEach((img) => {
-    img.removeAttribute('loading');
-  });
-
   const dateInput = cloned.querySelector('.forex-rates-date-text-input');
   if (dateInput) {
-    const span = block.ownerDocument.createElement('span');
+    const span = doc.createElement('span');
     span.className = 'forex-rates-date-text-input';
     span.textContent = dateInput.value;
     dateInput.replaceWith(span);
   }
 
-  const doc = block.ownerDocument;
+  // Clone the logo straight from the live page — it is already loaded and painted.
   const logoEl = doc.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
     || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
   const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
   const pageTitle = getPageTitle(doc);
 
-  const printCss = `
-    @page { size: A4 portrait; margin: 10mm; }
-    body { font-family: var(--bbl-font-family-primary); margin: 0; padding: 0; }
-    /* Print background colors (title underline, table header shading) — off by default */
-    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-
-    /* Logo */
-    .print-logo { margin-bottom: var(--bbl-space-075); }
-    .print-logo img { height: 1.5rem; width: auto; }
-
-    /* Horizontal rule after logo */
-    .print-divider { border: none; border-top: 0.0625rem solid var(--bbl-color-grey-125); margin: var(--bbl-space-075) 0 var(--bbl-space-100); }
-
-    /* Page H1 title */
-    .print-title {
-      font-size: 1.25rem; font-weight: 700; color: var(--bbl-color-black);
-      margin: 0 0 var(--bbl-space-050); padding-bottom: var(--bbl-space-075); position: relative;
-    }
-    .print-title::after {
-      content: ''; position: absolute; bottom: 0; left: 0;
-      width: 2.25rem; height: var(--bbl-space-025); background: var(--bbl-color-blue-105);
-    }
-
-    /* Controls */
-    .forex-rates-control-row {
-      display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;
-      gap: 0.4rem; padding: 0; margin: var(--bbl-space-100) 0 var(--bbl-space-075);
-    }
-    .forex-rates-calendar-label { font-size: 0.5625rem; font-weight: 900; line-height: normal; width: auto; }
-    .forex-rates-date-group { display: flex; align-items: center; gap: 0.2rem; }
-    .forex-rates-date-text-input { font-size: 0.5625rem; border: 0.0625rem solid var(--bbl-color-grey-125); padding: 0.1rem 0.3rem; border-radius: 0.2rem; }
-    .forex-rates-date-trigger { position: static; transform: none; font-size: var(--bbl-font-size-b3); background: none; border: none; padding: 0; }
-    .forex-rates-time-trigger {
-      display: flex; align-items: center; border: 0.0625rem solid var(--bbl-color-grey-125);
-      background: none; border-radius: 0.2rem;
-      padding: 0.1rem 0.3rem; font-size: 0.5625rem; font-weight: 700; height: auto;
-    }
-
-    /* Table */
-    .forex-rates-table-wrap { overflow: visible; margin-top: var(--bbl-space-050); }
-    .forex-rates-table {
-      min-width: 0; width: 100%; table-layout: fixed; border-collapse: collapse;
-      border: 0.0625rem solid var(--bbl-color-black); font-size: 0.5rem; color: #555;
-    }
-    .forex-rates-table thead tr { height: auto; }
-    .forex-rates-table thead th {
-      padding-block: var(--bbl-space-050); padding-inline: 20px; font-size: 0.5rem; font-weight: 700;
-      white-space: normal; line-height: 1.2; color: var(--bbl-color-black);
-      border-bottom: 0.0625rem solid var(--bbl-color-black); border-right: 0.0625rem solid var(--bbl-color-black); text-align: left;
-    }
-    .forex-rates-table thead th:last-child { border-right: none; }
-    .forex-rates-table thead th:nth-child(n+3) { text-align: center; width: 9%; padding-inline: 4px; }
-    .forex-rates-table thead th:nth-child(1) { width: 15%; }
-    .forex-rates-table thead th:nth-child(2) { width: 35%; }
-    .forex-rates-table tbody tr { height: auto; }
-    .forex-rates-table tbody td {
-      padding-block: 0.15rem; padding-inline: 20px; font-size: 0.5rem; height: auto; vertical-align: middle;
-      border-bottom: 0.0625rem solid var(--bbl-color-black); border-right: 0.0625rem solid var(--bbl-color-black);
-      color: var(--bbl-color-black);
-    }
-    .forex-rates-table tbody td:last-child { border-right: none; }
-    .forex-rates-table tbody tr:last-child td { border-bottom: none; }
-    .forex-rates-table tbody td.is-right { text-align: right; padding-inline: 4px; white-space: nowrap; }
-    .forex-rates-currency { display: table-cell; vertical-align: middle; white-space: nowrap; }
-    .forex-rates-flag { display: inline-block; vertical-align: middle; margin-right: var(--bbl-space-075); width: var(--bbl-space-150); height: var(--bbl-space-150); object-fit: contain; }
-
-    /* Disclaimer */
-    .forex-rates-disclaimer { font-size: 0.5rem; line-height: 1.4; margin-top: var(--bbl-space-075); color: #555; }
-    .forex-rates-disclaimer p { margin: 0; }
-    .forex-rates-disclaimer p:first-child { font-weight: 700; color: var(--bbl-color-black); padding-bottom: 0.2rem; }
-
-    @media print {
-      .forex-rates-table thead { display: table-header-group; }
-      .forex-rates-table tbody { display: table-row-group; }
-      .forex-rates-table { break-inside: auto; }
-      .forex-rates-table tbody tr { break-inside: avoid; }
-    }
+  // Print the MAIN document in place — no iframe. iOS Chrome does not reliably
+  // print a hidden child iframe (it prints the top-level page instead), which is
+  // why the iframe approach differed from iOS Safari. Cloning into the real page
+  // and calling the top-level window.print() is the one path every engine — iOS
+  // Safari, iOS Chrome, Android, desktop — handles identically. Layout comes from
+  // forex-rates.css (#forex-rates-print-root, @media all + @media print).
+  const printRoot = doc.createElement('div');
+  printRoot.id = 'forex-rates-print-root';
+  printRoot.innerHTML = `
+    <div class="print-logo brand-logo-print-logo">${brandLogo}</div>
+    <hr class="print-divider">
+    <h1 class="print-title">${escapeHtml(pageTitle)}</h1>
+    <div class="forex-rates block" data-block-status="loaded">
+      ${cloned.outerHTML}
+    </div>
   `;
 
-  const printHtml = `<!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="utf-8"/>
-      <title>${escapeHtml(pageTitle)}</title>
-      <link rel="stylesheet" href="/styles/tokens.css">
-      <link rel="stylesheet" href="/styles/fonts.css">
-      <style>${printCss}</style>
-    </head>
-    <body>
-      <div class="print-logo">${brandLogo}</div>
-      <hr class="print-divider">
-      <h1 class="print-title">${escapeHtml(pageTitle)}</h1>
-      <div class="forex-rates block" data-block-status="loaded">
-        ${cloned.outerHTML}
-      </div>
-    </body>
-  </html>`;
+  doc.body.appendChild(printRoot);
 
-  const iframe = doc.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;border:none;opacity:0;';
-  doc.body.appendChild(iframe);
+  // Hide the live page during printing. iOS Chrome ignores @media print and
+  // rasterizes the on-screen layout, so a screen-effective class (paired with
+  // the @media print rule in CSS) keeps its output consistent with iOS Safari.
+  const rootEl = doc.documentElement;
+  rootEl.classList.add('forex-rates-printing');
 
-  const waitForImages = (targetDoc) => Promise.all(
-    [...targetDoc.images].map((img) => {
-      if (img.complete) return Promise.resolve();
-      return new Promise((resolve) => {
-        img.addEventListener('load', resolve, { once: true });
-        img.addEventListener('error', resolve, { once: true });
-      });
-    }),
-  );
-
-  const waitForTimeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
-
-  iframe.onload = () => {
-    const iframeWin = iframe.contentWindow;
-    const iframeDocument = iframeWin.document;
-
-    // Wait for the flag SVGs and fonts to actually finish loading before printing,
-    // instead of a fixed delay — a blind timeout can snapshot before Safari has
-    // painted the images, leaving the flag cells blank. Capped by a safety timeout
-    // so a stuck resource can never hang the print.
-    Promise.race([
-      Promise.all([
-        iframeDocument.fonts ? iframeDocument.fonts.ready : Promise.resolve(),
-        waitForImages(iframeDocument),
-      ]),
-      waitForTimeout(2000),
-    ]).then(() => {
-      iframeWin.focus();
-      iframeWin.print();
-    });
-
-    window.addEventListener('afterprint', () => {
-      if (doc.body.contains(iframe)) doc.body.removeChild(iframe);
-    }, { once: true });
+  const printWindow = doc.defaultView || window;
+  const cleanup = () => {
+    printRoot.remove();
+    rootEl.classList.remove('forex-rates-printing');
+    printWindow.removeEventListener('afterprint', cleanup);
+    printWindow.removeEventListener('focus', cleanup);
   };
+  printWindow.addEventListener('afterprint', cleanup, { once: true });
+  // Fallback for engines where afterprint may not fire (some iOS browsers):
+  // restore the page when it regains focus after the print/share sheet closes.
+  // Attached on a later tick so the current focus state can't trigger it early.
+  setTimeout(() => printWindow.addEventListener('focus', cleanup, { once: true }), 0);
 
-  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-  iframeDoc.open();
-  iframeDoc.write(printHtml);
-  iframeDoc.close();
+  printWindow.print();
 }
 
 export default async function decorate(block) {
