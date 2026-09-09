@@ -907,7 +907,7 @@
   overflow: hidden;
   font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-150);
-  line-height: 1.6;
+  line-height: 1.675rem;
 }
 
 .dynamic-board .db-remarks-content.db-remarks-expanded {
@@ -1106,7 +1106,7 @@
   }
 
   .dynamic-board .db-time-wrap {
-    flex: 0 0 7.25rem;
+    flex: 0 0 7.1094rem;
   }
 }
 
