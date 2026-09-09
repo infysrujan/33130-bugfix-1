@@ -430,8 +430,14 @@
 /* ── Print ─────────────────────────────────────────────────────
    Layout for the formatted print output. printForexRates() clones the
    block into #forex-rates-print-root on the main document; these rules
-   render it and hide the live page. Scoped to the print root + @media
-   print so screen rendering is untouched.
+   render it and hide the live page.
+
+   iOS Safari does a real @media print re-layout, but iOS Chrome generates its
+   print/PDF from the on-screen layout and ignores @media print. So the layout
+   rules below use @media all (the print root only exists in the DOM while
+   printing, so they match nothing on the normal page), and the live page is
+   hidden via BOTH a .forex-rates-printing class — toggled on <html> around
+   window.print(), which is screen-effective for iOS Chrome — and @media print.
    ============================================================ */
 
 @page {
@@ -439,17 +445,23 @@
   margin: 10mm;
 }
 
+/* Isolation: hide the live page (header/nav/footer/main) while printing. */
+.forex-rates-printing body > *:not(#forex-rates-print-root) {
+  display: none !important;
+}
+
 @media print {
+  body > *:not(#forex-rates-print-root) {
+    display: none !important;
+  }
+}
+
+@media all {
   /* Force painted background colors (title underline) regardless of the browser's
      "background graphics" print toggle. */
   #forex-rates-print-root * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-  }
-
-  /* Isolation: show only the print root, hide the live page (header/nav/footer/main). */
-  body > *:not(#forex-rates-print-root) {
-    display: none !important;
   }
 
   #forex-rates-print-root {

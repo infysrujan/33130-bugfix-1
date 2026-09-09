@@ -192,8 +192,26 @@ function printForexRates(block) {
 
   doc.body.appendChild(printRoot);
 
+  // Hide the live page during printing. iOS Chrome ignores @media print and
+  // rasterizes the on-screen layout, so a screen-effective class (paired with
+  // the @media print rule in CSS) is what keeps its output consistent with
+  // iOS Safari's true print re-layout.
+  const rootEl = doc.documentElement;
+  rootEl.classList.add('forex-rates-printing');
+
   const printWindow = doc.defaultView || window;
-  printWindow.addEventListener('afterprint', () => printRoot.remove(), { once: true });
+  const cleanup = () => {
+    printRoot.remove();
+    rootEl.classList.remove('forex-rates-printing');
+    printWindow.removeEventListener('afterprint', cleanup);
+    printWindow.removeEventListener('focus', cleanup);
+  };
+  printWindow.addEventListener('afterprint', cleanup, { once: true });
+  // Fallback for engines where afterprint may not fire (some iOS browsers):
+  // restore the page when it regains focus after the print/share sheet closes.
+  // Attached on a later tick so the current focus state can't trigger it early.
+  setTimeout(() => printWindow.addEventListener('focus', cleanup, { once: true }), 0);
+
   printWindow.print();
 }
 
