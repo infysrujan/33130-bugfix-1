@@ -220,7 +220,7 @@
 /* Uses .button-m.primary from buttons.css; width driven by --db-go-btn-width, redeclared per breakpoint below. */
 
 .dynamic-board .db-go-btn {
-  --db-go-btn-width: 8.4375rem; /* 135px — mobile */
+  --db-go-btn-width: 100%;
 
   flex: 0 0 var(--db-go-btn-width);
   max-width: var(--db-go-btn-width);
