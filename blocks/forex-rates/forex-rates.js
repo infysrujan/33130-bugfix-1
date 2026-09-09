@@ -144,10 +144,9 @@ function renderBlock(block, state, authoring) {
 }
 
 function printForexRates(block) {
-  const doc = block.ownerDocument;
-
-  // Guard: clear any leftover root from a previous print (e.g. afterprint didn't fire).
-  doc.getElementById('forex-rates-print-root')?.remove();
+  // Guard: remove any leftover root from a previous print (e.g. afterprint didn't fire)
+  document.getElementById('forex-rates-print-root')?.remove();
+  document.getElementById('forex-rates-print-style')?.remove();
 
   const content = block.querySelector('.forex-rates-content');
   if (!content) return;
@@ -160,58 +159,50 @@ function printForexRates(block) {
 
   const dateInput = cloned.querySelector('.forex-rates-date-text-input');
   if (dateInput) {
-    const span = doc.createElement('span');
+    const span = document.createElement('span');
     span.className = 'forex-rates-date-text-input';
     span.textContent = dateInput.value;
     dateInput.replaceWith(span);
   }
 
-  // Clone the logo straight from the live page — it is already loaded and painted.
-  const logoEl = doc.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
-    || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+  // Logo — clone directly from the live page (images already loaded, no fetch needed)
+  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  const brandLogoHtml = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
-  const pageTitle = getPageTitle(doc);
+  const pageTitle = getPageTitle(document);
 
-  // Print the MAIN document in place — no iframe. iOS Chrome does not reliably
-  // print a hidden child iframe (it prints the top-level page instead), which is
-  // why the iframe approach differed from iOS Safari. Cloning into the real page
-  // and calling the top-level window.print() is the one path every engine — iOS
-  // Safari, iOS Chrome, Android, desktop — handles identically. Layout comes from
-  // forex-rates.css (#forex-rates-print-root, @media all + @media print).
-  const printRoot = doc.createElement('div');
+  const printRoot = document.createElement('div');
   printRoot.id = 'forex-rates-print-root';
   printRoot.innerHTML = `
-    <div class="print-logo brand-logo-print-logo">${brandLogo}</div>
+    <div class="print-logo">${brandLogoHtml}</div>
     <hr class="print-divider">
     <h1 class="print-title">${escapeHtml(pageTitle)}</h1>
-    <div class="forex-rates block" data-block-status="loaded">
-      ${cloned.outerHTML}
-    </div>
+    <div class="forex-rates block" data-block-status="loaded">${cloned.outerHTML}</div>
   `;
 
-  doc.body.appendChild(printRoot);
+  // Inline <style> applies synchronously — no network delay unlike an external CSS file.
+  // This guarantees the page isolation rule is active before window.print() fires.
+  const printStyle = document.createElement('style');
+  printStyle.id = 'forex-rates-print-style';
+  printStyle.textContent = `
+    @media print {
+      body > *:not(#forex-rates-print-root) { display: none !important; }
+      #forex-rates-print-root { display: block !important; }
+      #forex-rates-print-root .print-logo { display: block !important; }
+      #forex-rates-print-root .print-logo img { display: block !important; height: 1.5rem !important; width: auto !important; max-width: none !important; }
+    }
+  `;
 
-  // Hide the live page during printing. iOS Chrome ignores @media print and
-  // rasterizes the on-screen layout, so a screen-effective class (paired with
-  // the @media print rule in CSS) keeps its output consistent with iOS Safari.
-  const rootEl = doc.documentElement;
-  rootEl.classList.add('forex-rates-printing');
+  document.head.appendChild(printStyle);
+  document.body.appendChild(printRoot);
 
-  const printWindow = doc.defaultView || window;
-  const cleanup = () => {
+  window.print();
+
+  window.addEventListener('afterprint', () => {
     printRoot.remove();
-    rootEl.classList.remove('forex-rates-printing');
-    printWindow.removeEventListener('afterprint', cleanup);
-    printWindow.removeEventListener('focus', cleanup);
-  };
-  printWindow.addEventListener('afterprint', cleanup, { once: true });
-  // Fallback for engines where afterprint may not fire (some iOS browsers):
-  // restore the page when it regains focus after the print/share sheet closes.
-  // Attached on a later tick so the current focus state can't trigger it early.
-  setTimeout(() => printWindow.addEventListener('focus', cleanup, { once: true }), 0);
-
-  printWindow.print();
+    printStyle.remove();
+  }, { once: true });
 }
 
 export default async function decorate(block) {
