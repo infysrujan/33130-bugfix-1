@@ -17,7 +17,6 @@ main .form select.custom-dropdown-native-select {
 main .form .custom-dropdown {
   position: relative;
   width: 100%;
-  margin-top: var(--bbl-space-100);
   margin-bottom: var(--bbl-space-100);
 }
 
