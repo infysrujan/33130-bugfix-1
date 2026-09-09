@@ -311,21 +311,21 @@ function printForexRates(block) {
   const waitForFonts = () => printWindow.document.fonts?.ready ?? Promise.resolve();
   const timeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
 
+  // Desktop print() blocks until the dialog is dismissed, so the popup can be
+  // closed right after it returns (covers both Print and Cancel). On
+  // mobile/tablet print() returns immediately and the OS renders the preview
+  // asynchronously in a separate, out-of-process UI — closing the window then
+  // aborts that render ("There was a problem printing the page." on Android),
+  // and afterprint there fires at hand-off (not at dismissal), so it can't be
+  // used to close either. On those platforms the window is left for the OS/user.
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
   Promise.race([
     Promise.all([waitForStylesheets(printWindow.document), waitForFonts()]),
     timeout(8000),
   ]).then(() => {
     printWindow.focus();
-    // Close the print tab/window once the dialog is dismissed — whether the
-    // user prints or cancels. afterprint fires on both and, per spec, only
-    // after the dialog/preview has closed, so it cannot close the window while
-    // the preview is still opening. (A matchMedia('print') change listener was
-    // tried here but fired spuriously on tablets — the print media query can
-    // toggle off while the native print sheet is still up — which closed the
-    // window mid-open and stopped the preview from appearing.)
-    printWindow.addEventListener('afterprint', () => {
-      if (!printWindow.closed) printWindow.close();
-    }, { once: true });
     // Use setTimeout rather than requestAnimationFrame here: opening the print
     // document via window.open() shifts focus to the new tab on iOS Safari,
     // which backgrounds this (opener) page — and iOS pauses rAF callbacks in
@@ -335,6 +335,7 @@ function printForexRates(block) {
     // content-based column recalc that would need extra animation frames.
     setTimeout(() => {
       printWindow.print();
+      if (!isMobile && !printWindow.closed) printWindow.close();
     }, 100);
   });
 }
