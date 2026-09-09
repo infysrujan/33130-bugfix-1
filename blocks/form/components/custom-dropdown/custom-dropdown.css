@@ -83,8 +83,6 @@ main .form button.custom-dropdown-trigger[type='button']:hover:not(:disabled) {
 
 main .form .field-wrapper.field-invalid button.custom-dropdown-trigger[type='button'] {
   border-color: var(--form-error-color);
-  box-shadow: 0 0 0 0.1875rem rgb(255 95 63 / 15%);
-  box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--form-error-color) 15%, transparent);
 }
 
 main .form .custom-dropdown-listbox {
