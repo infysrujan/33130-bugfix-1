@@ -181,7 +181,7 @@
   border: 0.0625rem solid var(--bbl-color-grey-22);
   border-radius: var(--bbl-space-075);
   box-shadow: 0 var(--bbl-space-100) var(--bbl-space-300) var(--bbl-color-black-alpha-12);
-  z-index: 50;
+  z-index: 400;
   margin: 0;
   padding: 0;
   list-style: none;

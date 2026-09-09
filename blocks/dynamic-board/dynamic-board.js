@@ -22,6 +22,14 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
+function formatPrintTimestamp(date = new Date()) {
+  const shortYear = String(date.getFullYear()).slice(-2);
+  const time = date.toLocaleTimeString('en-US', {
+    hour: 'numeric', minute: '2-digit', hour12: true,
+  });
+  return `${date.getMonth() + 1}/${date.getDate()}/${shortYear}, ${time}`;
+}
+
 // ─── formatting ───────────────────────────────────────────────────────────────
 function fmtPrice(val) {
   if (!val || val === '-') return '-';
@@ -617,18 +625,17 @@ function printElement(block) {
   const dateInput = content.querySelector('.db-date-display');
   if (dateInput) dateInput.setAttribute('value', dateInput.value);
 
-  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+  // Prefer the dedicated black print asset. Older headers only expose the
+  // white navigation logo, which receives a print-only black fallback below.
+  const printLogoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img');
+  const logoEl = printLogoEl
     || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  if (!logoEl) return;
-  // A cloned <picture>'s relative srcset can fail to resolve in the print
-  // window, so use the browser's already-resolved absolute image URL.
-  const logoImg = logoEl.tagName === 'IMG' ? logoEl : logoEl.querySelector('img');
-  if (!logoImg) return;
-  const logoSrc = logoImg.currentSrc || logoImg.src;
-  const brandLogo = `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoImg.alt || 'Bangkok Bank')}">`;
+  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+  const fallbackLogoClass = printLogoEl ? '' : ' print-logo-fallback';
 
   const pageTitle = section.querySelector('.default-content-wrapper > :is(h1, h2, h3, h4, h5, h6)')
     ?.textContent?.trim() || document.querySelector('h1')?.textContent?.trim() || 'Print';
+  const printTimestamp = formatPrintTimestamp();
 
   const printWindow = window.open('', '', 'height=500,width=800');
 
@@ -660,17 +667,49 @@ function printElement(block) {
       background-color: transparent;
     }
 
+    .header-wrapper,
+    .header,
+    .header-content,
+    .main-nav-desktop {
+      background: transparent !important;
+      min-height: 0;
+    }
+
     .brand-logo-container {
-      width: 12.5rem;
-      height: 3.125rem;
-      margin-block: 3rem 1rem;
+      width: 10rem;
+      height: 2.5rem;
+      margin: 0.25rem 0 1rem;
     }
 
     .brand-logo-container img {
       display: block;
-      width: 12.5rem;
-      height: 3.125rem;
+      width: 10rem;
+      height: 2.5rem;
       object-fit: contain;
+      object-position: left center;
+    }
+
+    .brand-logo-container.print-logo-fallback img {
+      filter: brightness(0);
+    }
+
+    /* Mirrors the live site's printed masthead. This is rendered in the
+       document rather than relying on Chrome's native header, because the
+       isolated print window otherwise reports itself as about:blank. */
+    .dynamic-board-print-masthead {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: start;
+      min-height: 0.75rem;
+      font-family: var(--bbl-font-family-primary, Arial, sans-serif);
+      font-size: 0.5rem;
+      line-height: 1.2;
+      color: #000;
+    }
+
+    .dynamic-board-print-masthead__title {
+      text-align: center;
+      font-weight: 700;
     }
 
     /* Scoped to the always-present .table-container rather than
@@ -746,6 +785,7 @@ function printElement(block) {
 
     .dynamic-board .db-table {
       width: 100%;
+      min-width: 0;
       /* table-layout: AUTO (not fixed). Combined with white-space: nowrap on
          every column except Name below, the browser sizes each non-Name
          column to exactly fit its longest single-line value (end-to-end, no
@@ -911,12 +951,17 @@ function printElement(block) {
       <style>${printCss}</style>
     </head>
     <body class="appear">
+      <div class="dynamic-board-print-masthead">
+        <div>${escapeHtml(printTimestamp)}</div>
+        <div class="dynamic-board-print-masthead__title">${escapeHtml(pageTitle)}</div>
+        <div></div>
+      </div>
       <header class="header-wrapper">
         <div class="header block" data-block-status="loaded">
           <div class="header-content">
             <div class="main-nav-desktop">
               <div class="brand-logo block" data-block-status="loaded">
-                <div class="brand-logo-container">
+                <div class="brand-logo-container${fallbackLogoClass}">
                   ${brandLogo}
                 </div>
               </div>
