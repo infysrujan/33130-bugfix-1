@@ -181,14 +181,41 @@ function printForexRates(block) {
     <div class="forex-rates block" data-block-status="loaded">${cloned.outerHTML}</div>
   `;
 
-  // Inline <style> applies synchronously — no network delay unlike an external CSS file.
-  // This guarantees the page isolation rule is active before window.print() fires.
+  // Inline <style> applies synchronously (no network delay), so these rules are
+  // guaranteed active before window.print() fires. It holds the cross-device
+  // CONSISTENCY primitives that must not depend on any external/responsive CSS;
+  // the detailed visual layout lives in forex-rates.css under @media print.
   const printStyle = document.createElement('style');
   printStyle.id = 'forex-rates-print-style';
   printStyle.textContent = `
+    /* Fixed A4 page box so the print area is identical on every device/printer. */
+    @page { size: a4 portrait; margin: 10mm; }
+
     @media print {
+      /* Isolation: print only the cloned root, hide the live page. */
       body > *:not(#forex-rates-print-root) { display: none !important; }
-      #forex-rates-print-root { display: block !important; }
+
+      #forex-rates-print-root {
+        display: block !important;
+        /* Neutralize page themes (private/wealth/bbm tints) and, crucially,
+           iOS/WebKit text inflation — text-size-adjust is what makes iOS render
+           text at a different scale than Windows/Android. Pinning it to 100%
+           makes glyph metrics (and therefore column fit) identical everywhere. */
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        color: #000 !important;
+        -webkit-text-size-adjust: 100% !important;
+        text-size-adjust: 100% !important;
+      }
+
+      /* Print painted backgrounds/borders regardless of the browser's
+         "background graphics" toggle. */
+      #forex-rates-print-root, #forex-rates-print-root * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
       #forex-rates-print-root .print-logo { display: block !important; }
       #forex-rates-print-root .print-logo img { display: block !important; height: 1.5rem !important; width: auto !important; max-width: none !important; }
     }
@@ -199,10 +226,17 @@ function printForexRates(block) {
 
   window.print();
 
-  window.addEventListener('afterprint', () => {
+  const cleanup = () => {
     printRoot.remove();
     printStyle.remove();
-  }, { once: true });
+    window.removeEventListener('afterprint', cleanup);
+    window.removeEventListener('focus', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup, { once: true });
+  // Fallback: some iOS browsers don't fire afterprint. Restore the page when it
+  // regains focus after the print/share sheet closes (attached a tick later so
+  // the current focus state can't trigger it early).
+  setTimeout(() => window.addEventListener('focus', cleanup, { once: true }), 0);
 }
 
 export default async function decorate(block) {

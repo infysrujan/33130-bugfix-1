@@ -428,25 +428,14 @@
 }
 
 /* ── Print ─────────────────────────────────────────────────────
-   Layout for the formatted print output. printForexRates() clones the block
-   into #forex-rates-print-root on the main document and injects an inline
-   <style> that hides the rest of the page; these rules render the print root.
+   Detailed visual layout for the formatted print output. printForexRates()
+   clones the block into #forex-rates-print-root on the main document and injects
+   an inline <style> that handles isolation + the cross-device consistency resets
+   (@page, text-size-adjust, color-adjust); these rules render the visual layout.
    Same main-document approach as blocks/forward-points-sme.
    ============================================================ */
 
-@page {
-  size: a4 portrait;
-  margin: 10mm;
-}
-
 @media print {
-  /* Force painted background colors (title underline) regardless of the browser's
-     "background graphics" print toggle. */
-  #forex-rates-print-root * {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
   #forex-rates-print-root {
     font-family: var(--bbl-font-family-primary);
   }
