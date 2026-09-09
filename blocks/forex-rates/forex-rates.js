@@ -316,15 +316,17 @@ function printForexRates(block) {
     timeout(8000),
   ]).then(() => {
     printWindow.focus();
-    // Double rAF: the first callback can fire before the browser has applied
-    // the fonts/styles that just resolved above, so let a second frame pass
-    // before printing to ensure the final layout is what gets printed.
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        printWindow.print();
-        printWindow.close();
-      });
-    });
+    // Use setTimeout rather than requestAnimationFrame here: opening the print
+    // document via window.open() shifts focus to the new tab on iOS Safari,
+    // which backgrounds this (opener) page — and iOS pauses rAF callbacks in
+    // backgrounded tabs, so a double-rAF would never fire and print() would
+    // never be called. setTimeout still fires when the opener is backgrounded.
+    // The table uses table-layout: fixed with fixed % widths, so there is no
+    // content-based column recalc that would need extra animation frames.
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 100);
   });
 }
 
