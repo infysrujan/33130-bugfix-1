@@ -64,7 +64,6 @@
 .card-list.credit-card .cards-list-title h3 {
   font-family: var(--bbl-font-family-medium);
   font-size: 1.5rem;
-  line-height: 1.3;
   font-weight: var(--bbl-font-weight-medium);
   color: var(--bbl-color-black);
   overflow-wrap: anywhere;
