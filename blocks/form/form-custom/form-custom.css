@@ -60,7 +60,7 @@ main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper
     font-size: var(--bbl-font-size-h3-mobile);
     color: var(--bbl-color-grey-90);
     position: absolute;
-    top: 1.6rem;
+    top: 1.1875rem;
     right: var(--bbl-space-300);
     height: var(--bbl-form-date-icon-height, 2.75rem);
     display: flex;

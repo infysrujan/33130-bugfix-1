@@ -31,3 +31,7 @@ body.bangkok-bankm-promotion .sub-title-medium {
 body.bangkok-bankm-promotion .menu-banner .sub-title-medium.line::after {
   background: var(--bbl-color-white);
 }
+
+body.bangkok-bankm-card .bbm-glow-card-container .title-card {
+  color: var(--bbl-color-white);
+}

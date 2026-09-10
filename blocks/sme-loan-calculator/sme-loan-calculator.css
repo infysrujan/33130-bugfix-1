@@ -301,6 +301,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   background-color: var(--bbl-color-sme-section-bg);
   border-radius: 0 0 0.5rem 0.5rem;
   padding: 1.5625rem 1rem;
+  padding-inline: 1rem;
   text-align: center;
   padding-bottom: 3.125rem;
 }
@@ -497,13 +498,14 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 
   .sme-calc-result-section {
     padding: 1.875rem 0.625rem;
+    padding-inline: 3rem;
     border-radius: 0;
     padding-bottom: 3.125rem;
   }
 
   /* Fields remain stacked (column) at tablet — 3-column moves to desktop */
   .textbox-cal {
-    width: 5.5rem;
+    width: max-content;
     font-size: var(--bbl-font-size-15);
   }
 
@@ -530,6 +532,10 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   }
 
   .sme-calc-dark-section {
+    padding-inline: 5.25rem;
+  }
+
+  .sme-calc-result-section {
     padding-inline: 5.25rem;
   }
 

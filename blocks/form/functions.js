@@ -1170,6 +1170,12 @@ function restrictNumberOnlyInputs() {
 }
 restrictNumberOnlyInputs();
 
+/** format number at review panel
+*/
+function formatNumberWithCommas(value) {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -1207,4 +1213,5 @@ export {
   getSelectedLabelValue,
   validateMaxCheckbox,
   replaceother,
+  formatNumberWithCommas,
 };

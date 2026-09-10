@@ -217,7 +217,8 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio
   border-radius: 0.4375rem 0 0 0.4375rem;
 }
 
-main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper:last-of-type input[type='radio'] {
+main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper:last-of-type input[type='radio'],
+main .section.form-container .form form .radio-group-wrapper.radio-tabs.field-invalid > .radio-wrapper:not(:has(~ .radio-wrapper)) input[type="radio"] {
   border-radius: 0 0.4375rem 0.4375rem 0;
 }
 
@@ -406,7 +407,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 } */
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled, .secondary):hover{
-  border-color: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-blue-90);
   background-color: var(--bbl-color-blue-90);
   color: var(--bbl-color-white);
 }

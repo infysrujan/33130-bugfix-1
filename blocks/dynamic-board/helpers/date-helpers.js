@@ -12,10 +12,10 @@ export function formatDisplayDate(date, monthLabels) {
   return `${pad2(date.getDate())} ${monthShort} ${date.getFullYear()}`;
 }
 
-export function formatMaturityDate(isoStr, monthLabels) {
+export function formatMaturityDate(isoStr, monthLabels, yearOffset = 0) {
   const d = new Date(isoStr);
   const monthShort = monthLabels[d.getMonth()]?.slice(0, 3);
-  return `${pad2(d.getDate())} ${monthShort} ${String(d.getFullYear()).slice(-2)}`;
+  return `${pad2(d.getDate())} ${monthShort} ${String(d.getFullYear() + yearOffset).slice(-2)}`;
 }
 
 export function formatRemainTerm(remainTerm) {

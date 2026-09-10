@@ -922,6 +922,12 @@ p.text-large.text-light {
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
     line-height: 1.625rem;
   }
+
+  /* Step number below title: keep the extra top spacing at tablet */
+  .carousel-dotted .carousel-dotted-item.with-default-image
+  .caption.editor .title-3 ~ .text-default p.text-large.text-light {
+    padding-top: 1.875rem;
+  }
 }
 
 @media (width > 64rem) {

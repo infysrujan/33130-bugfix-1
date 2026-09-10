@@ -147,7 +147,7 @@ export default async function decorate(block) {
   let footerPath = '';
   if (document.querySelector('body.error-page')) {
     const lang = getLang();
-    footerPath = `/${lang}/footer`;
+    footerPath = ['EN', 'TH'].includes(lang.toUpperCase()) ? `/${lang}/footer` : '/en/footer';
   } else {
     const footerMeta = getMetadata('footer');
     footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';

@@ -365,7 +365,12 @@ export default async function decorate(block) {
   // Comparison-table-only column order: under the Account Receivable / Account Payable
   // groups, "Credit Term" swaps with the 3rd column so it renders last. The input form
   // above (built from fieldGroups directly) keeps the authored order.
-  const TABLE_COLUMN_SWAP_GROUPS = ['account receivable', 'account payable'];
+  const TABLE_COLUMN_SWAP_GROUPS = [
+    'account receivable',
+    'account payable',
+    'ลูกหนี้การค้า',
+    'เจ้าหนี้การค้า',
+  ];
   const tableGroupFields = (group) => {
     const isSwapGroup = TABLE_COLUMN_SWAP_GROUPS.includes(group.header.trim().toLowerCase());
     if (!isSwapGroup || group.fields.length < 3) return group.fields;
@@ -588,8 +593,10 @@ export default async function decorate(block) {
 
         let limit = 9;
         if (f.id === 'n') limit = 3;
-        else if (f.id === 'A') limit = 8;
-        else if (f.id === 'H' || f.id === 'C' || f.id === 'F') limit = 6;
+        else if (f.id === 'A') limit = 10;
+        else if (f.id === 'F') limit = 6;
+        else if (f.id === 'C' || f.id === 'H') limit = 7;
+        else if (f.id === 'P' || f.id === 'B' || f.id === 'E') limit = 11;
 
         if (raw.length > limit) raw = raw.slice(0, limit);
         const num = parseInt(raw, 10);

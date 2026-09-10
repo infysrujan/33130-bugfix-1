@@ -107,7 +107,7 @@
 .credit-card-comparator .product-comparing .thumb {
   display: table-cell;
   vertical-align: middle;
-  width: 5.125rem;
+  min-width: 5.125rem;
   height: 3.125rem;
   position: relative;
   background-size: contain;
@@ -195,7 +195,7 @@
   }
 
   .credit-card-comparator .product-comparing {
-    flex-shrink: 1;
+    width: calc(30% - 0.5rem);
   }
 
   .credit-card-comparator .btn-primary {

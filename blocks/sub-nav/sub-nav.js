@@ -8,6 +8,24 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+// Native `scrollIntoView({ behavior: 'smooth' })` leaves duration/easing to the
+// browser, which does not scale the time with distance — jumps beyond a short
+// hop finish abruptly and read as "too fast". Animate the scroll ourselves
+// over a fixed duration with an ease-in-out curve instead.
+function smoothScrollTo(targetY, duration = 600) {
+  const startY = window.scrollY;
+  const diff = targetY - startY;
+  if (Math.abs(diff) < 1) return;
+  const start = performance.now();
+  const step = (now) => {
+    const p = Math.min((now - start) / duration, 1);
+    const eased = p < 0.5 ? 2 * p * p : 1 - ((-2 * p + 2) ** 2) / 2;
+    window.scrollTo(0, Math.round(startY + diff * eased));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 /**
  * Collect sections marked in the section model as sub-nav targets (is-subnav-section).
  */
@@ -187,7 +205,9 @@ export default function decorate(block) {
             if (window.matchMedia('(width > 64rem)').matches) {
               targetSection.style.scrollMarginTop = '5.25rem';
             }
-            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const offset = parseFloat(getComputedStyle(targetSection).scrollMarginTop) || 0;
+            const targetY = targetSection.getBoundingClientRect().top + window.scrollY - offset;
+            smoothScrollTo(targetY);
           }
 
           subNavSelect.querySelector('.global-dropdown-trigger').textContent = link.textContent;

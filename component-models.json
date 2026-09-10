@@ -81,7 +81,7 @@
       {
         "component": "reference",
         "valueType": "string",
-        "name": "ogImage",
+        "name": "og:image",
         "label": "OG Image",
         "description": "Select the image asset to use for the Open Graph og:image meta tag."
       },

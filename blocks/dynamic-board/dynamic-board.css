@@ -708,19 +708,30 @@
   padding-right: 0.625rem;
 }
 
-.dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort::after {
+/* Same specificity (0,4,2) as the generic `.db-th-sort.db-th-sorted` rule below,
+   which appears later in the file and would otherwise win the tie and
+   reinstate the background-image once this column becomes the active sort. */
+.dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort.db-th-sorted {
+  background-image: none;
+}
+
+.dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort .db-th-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bbl-space-050);
+}
+
+.dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort .db-th-label::after {
   content: '';
-  display: inline-block;
   width: 0.9375rem;
   height: 0.9375rem;
-  margin-left: var(--bbl-space-050);
-  vertical-align: middle;
+  flex: none;
   background-image: url("/icons/bond-sort.svg");
   background-repeat: no-repeat;
   background-size: 0.9375rem;
 }
 
-.dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort.db-th-sorted::after {
+.dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort.db-th-sorted .db-th-label::after {
   background-image: url("/icons/bond-sorted.svg");
 }
 

@@ -1354,6 +1354,14 @@
 } */
 
 @media (width > 64rem) {
+  .locate-us.block:not(:has(.locate-us-results-overseas)) .content {
+    padding-inline: 0;
+  }
+
+  .locate-us.block:not(:has(.locate-us-results-overseas)) .locate-us-results {
+    padding-inline: var(--bbl-space-section-xl);
+  }
+
   .locate-us .locate-us-map-row {
     padding: 0 0 1.875rem;
   }

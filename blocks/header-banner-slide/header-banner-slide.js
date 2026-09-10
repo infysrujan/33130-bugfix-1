@@ -6,7 +6,10 @@ function initCarousel(carousel, track) {
 
   const autoplay = carousel.dataset.autoplay !== 'false';
   const speed = parseInt(carousel.dataset.autoplaySpeed, 10) || 3000;
+  const hasAuthoringAttrs = !!track.querySelector('[data-aue-resource]');
+  const isAuthoring = hasAuthoringAttrs && window.self !== window.top;
   const infinite = carousel.dataset.infinite !== 'false';
+  const canClone = infinite && !isAuthoring;
   const STEP = 4;
   const maxIndex = realTotal - STEP;
 
@@ -19,9 +22,9 @@ function initCarousel(carousel, track) {
   for (let i = 0; i <= maxIndex; i += STEP) positions.push(i);
   if (positions[positions.length - 1] < maxIndex) positions.push(maxIndex);
 
-  const offset = infinite ? STEP : 0;
+  const offset = canClone ? STEP : 0;
 
-  if (infinite && !track.querySelector('[data-aue-resource]')) {
+  if (canClone) {
     const realItems = [...track.children];
     realItems.slice(-STEP).reverse().forEach((c) => track.prepend(c.cloneNode(true)));
     realItems.slice(0, STEP).forEach((c) => track.appendChild(c.cloneNode(true)));
@@ -51,7 +54,12 @@ function initCarousel(carousel, track) {
     if (isWrapping) return;
     if (!infinite && posIdx >= positions.length - 1) { stopAutoplay(); return; }
 
-    if (infinite && posIdx >= positions.length - 1) {
+    if (posIdx >= positions.length - 1) {
+      if (!canClone) {
+        posIdx = 0;
+        moveTo(positions[posIdx]);
+        return;
+      }
       isWrapping = true;
       track.style.transform = `translate3d(${-(offset + realTotal) * itemStep}px, 0, 0)`;
       track.addEventListener('transitionend', () => {
@@ -69,7 +77,12 @@ function initCarousel(carousel, track) {
     if (isWrapping) return;
     if (!infinite && posIdx <= 0) return;
 
-    if (infinite && posIdx <= 0) {
+    if (posIdx <= 0) {
+      if (!canClone) {
+        posIdx = positions.length - 1;
+        moveTo(positions[posIdx]);
+        return;
+      }
       isWrapping = true;
       track.style.transform = 'translate3d(0px, 0, 0)';
       track.addEventListener('transitionend', () => {
