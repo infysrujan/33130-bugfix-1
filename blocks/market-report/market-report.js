@@ -757,11 +757,12 @@ function printElement() {
   `;
 
   const runPrint = () => {
+    // Safari finishes its print-UI transition before it can close the tab.
+    printWindow.addEventListener('afterprint', () => {
+      setTimeout(() => printWindow.close(), 500);
+    });
     printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 100);
+    printWindow.print();
   };
   if (printWindow.document.readyState === 'complete') {
     requestAnimationFrame(runPrint);
