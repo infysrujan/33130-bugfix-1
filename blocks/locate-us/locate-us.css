@@ -1315,7 +1315,7 @@
     right: 0;
     width: auto;
   }
-  
+
   .locate-us:has(.locate-us-results-overseas) .locate-us-location-filter-row {
     padding: var(--bbl-space-000);
     margin-top: var(--bbl-space-200);
@@ -1354,6 +1354,15 @@
 } */
 
 @media (width > 64rem) {
+  .locate-us.block:not(:has(.locate-us-results-overseas)) .content {
+    padding-inline: 0;
+  }
+
+  .locate-us.block:not(:has(.locate-us-results-overseas)) .locate-us-results {
+    padding-inline: var(--bbl-space-section-xl);
+  }
+
+  
   .locate-us .locate-us-map-row {
     padding: 0 0 1.875rem;
   }
