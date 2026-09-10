@@ -134,7 +134,7 @@
 }
 
 .credit-card-selector .option-list .option-item {
-  flex: 0 0 calc(50% - var(--bbl-space-050));
+  flex: 0 0 11.5625rem;
 }
 
 .credit-card-selector .option-list-three-column {
@@ -144,7 +144,7 @@
 }
 
 .credit-card-selector .option-list-three-column .option-item {
-  flex: 0 0 8.5rem;
+  flex: 0 0 8.5625rem;
 }
 
 .credit-card-selector .filter-options-desktop {
@@ -175,7 +175,7 @@
 
 .credit-card-selector .filter-dropdown {
   width: 100%;
-  height: var(--bbl-space-700);
+  height: 2.75rem;
   padding: 0 var(--bbl-space-500) 0 var(--bbl-space-200);
   box-sizing: border-box;
   background-color: var(--bbl-color-white);
@@ -289,6 +289,11 @@
 
 .credit-card-selector .selector-actions .button-m {
   min-width: 8.4375rem;
+}
+
+.credit-card-selector .selector-actions .button-m.secondary {
+  width: 8.75rem;
+  max-width: 8.75rem;
 }
 
 .credit-card-selector .card-selector-collapsible {
@@ -419,7 +424,11 @@
   }
 
   .credit-card-selector .option-list-three-column .option-item {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-100)) / 3);
+    flex: 0 0 6.375rem;
+  }
+
+  .credit-card-selector .option-list:not(.option-list-three-column) .option-item {
+    flex: 0 0 9.8125rem;
   }
 
   .credit-card-selector .selector-actions {
@@ -484,7 +493,20 @@
     min-width: 9.6875rem;
   }
 
+  .credit-card-selector .selector-actions .button-m.secondary {
+    width: 9.6875rem;
+    max-width: 9.6875rem;
+  }
+
   .credit-card-selector .card-selector-content {
     gap: var(--bbl-space-400) 3rem;
+  }
+
+  .credit-card-selector .option-list-three-column .option-item {
+    flex: 0 0 9.875rem;
+  }
+
+  .credit-card-selector .option-list:not(.option-list-three-column) .option-item {
+    flex: 0 0 15.1875rem;
   }
 }
