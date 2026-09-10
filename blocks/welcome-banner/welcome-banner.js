@@ -220,4 +220,4 @@ export default function decorate(block) {
   // ── Show banner ────────────────────────────────────────────────────────────
   doc.body.classList.add('modal-open');
   showModal(overlay, 'welcome-banner-overlay-visible');
-} 
+}

@@ -810,6 +810,9 @@
   border-radius: 0.5rem;
   padding: 0.875rem;
   color: var(--bbl-color-gray-143);
+  width: 25.5138rem;
+  height: 11.9075rem;
+  box-sizing: border-box;
 }
 
 .saving-plan-newplan-future {
