@@ -135,6 +135,7 @@
 
 .credit-card-selector .option-list .option-item {
   flex: 0 0 11.5625rem;
+  min-width: 0;
 }
 
 .credit-card-selector .option-list-three-column {
@@ -503,10 +504,10 @@
   }
 
   .credit-card-selector .option-list-three-column .option-item {
-    flex: 0 0 9.875rem;
+    flex: 0 0 calc((100% - 1.75rem) / 3);
   }
 
   .credit-card-selector .option-list:not(.option-list-three-column) .option-item {
-    flex: 0 0 15.1875rem;
+    flex: 0 0 calc(50% - 0.5625rem);
   }
 }
