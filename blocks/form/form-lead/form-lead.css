@@ -205,9 +205,9 @@ main .lead-forms .form form .field-title {
   padding: 0;
 }
 
-main .lead-forms .form form .field-infotext {
+/* main .lead-forms .form form .field-infotext {
   margin: var(--bbl-space-500) 0 var(--bbl-space-250);
-}
+} */
 
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
   color: var(--bbl-color-grey-90);
