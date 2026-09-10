@@ -179,22 +179,37 @@
     display: none;
   }
 
+  /* WebKit mis-sizes flex-basis:0 items when printing; table-cell paginates
+     identically in Blink and WebKit, so print the columns as a table. */
   .market-report-col {
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
   }
 
   .market-report-page-content > .market-report-col > .market-report-col-left {
-    flex: 2 1 0;
+    display: table-cell;
+    box-sizing: border-box;
+    width: 66.66%;
+    padding-right: 2rem;
+    vertical-align: top;
   }
 
   .market-report-page-content > .market-report-col > .market-report-col-right {
-    flex: 1 1 0;
+    display: table-cell;
+    width: 33.34%;
+    vertical-align: top;
   }
 
   .market-report-col-left .market-report-col > div {
-    flex: 1 1 0;
+    display: table-cell;
+    width: 50%;
+    vertical-align: top;
+  }
+
+  .market-report-col-left .market-report-col > div:first-child {
+    box-sizing: border-box;
+    padding-right: 2rem;
   }
 
   .market-report-date {
