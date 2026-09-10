@@ -133,12 +133,18 @@ function resolveCardPageUrl(card) {
   return '';
 }
 
-// Resolve a URL field that may be a plain string or a publish/author URL object
+// Resolve a URL field that may be a plain string or a publish/author URL object,
+// stripping internal JCR repository prefixes (/content/bangkokbank).
 function resolveApplyUrl(urlField) {
   if (!urlField) return '';
-  if (typeof urlField === 'string') return urlField;
-  // eslint-disable-next-line no-underscore-dangle
-  return urlField._publishUrl || urlField._authorUrl || urlField._path || '';
+  const raw = typeof urlField === 'string' ? urlField : (
+    // eslint-disable-next-line no-underscore-dangle
+    urlField._publishUrl || urlField._authorUrl || urlField._path || ''
+  );
+  if (!raw) return '';
+  return raw.startsWith('/content/bangkokbank')
+    ? raw.replace(/^\/content\/bangkokbank/, '')
+    : raw;
 }
 
 // Build the apply area with desktop (single) and mobile (two-button) variants.
