@@ -206,7 +206,9 @@ function renderTable(tbodySel, tbodyAll, state) {
     tbodyAll.innerHTML = `<tr><td colspan="99" class="db-no-results">${state.placeholders?.dynamicBoardNoResults || 'No results found'}</td></tr>`;
     return;
   }
-  const selRates = state.rates.filter((r) => state.selectedIds.includes(String(r.AutoID)));
+  const selRates = state.selectedIds
+    .map((id) => state.rates.find((r) => String(r.AutoID) === id))
+    .filter(Boolean);
   const unsel = state.rates.filter((r) => !state.selectedIds.includes(String(r.AutoID)));
   unsel.sort((a, b) => {
     const av = sortValue(a, state.sortKey);
