@@ -887,7 +887,7 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor {
-    padding: 0 1.875rem;
+    padding: var(--bbl-space-100) 1.875rem 0;
     justify-content: center;
   }
 
