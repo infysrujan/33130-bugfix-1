@@ -489,7 +489,7 @@ export default async function decorate(block) {
   const isTH = lang === 'th';
   const labels = {
     noResultsFound: ph.cardNoResultsFound || (isTH ? 'ไม่พบผลลัพธ์' : 'No Results Found'),
-    cardResultTitle: ph.cardResultTitle || 'These cards might suit your needs',
+    cardResultTitle: ph.cardResultTitle || (isTH ? 'บัตรเครดิตที่แนะนำสำหรับคุณ' : 'These cards might suit your needs'),
     seeLess: ph.cardSeeLess || (isTH ? 'ดูน้อยลง' : 'See less'),
     seeMore: ph.cardSeeMore || (isTH ? 'ดูเพิ่มเติม' : 'See more'),
     learnMore: ph.cardLearnMore || (isTH ? 'เรียนรู้เพิ่มเติม' : 'Learn more'),
