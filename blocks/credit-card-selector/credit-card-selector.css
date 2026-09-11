@@ -293,8 +293,7 @@
 }
 
 .credit-card-selector .selector-actions .button-m.secondary {
-  width: 8.75rem;
-  max-width: 8.75rem;
+  min-width: 8.75rem;
 }
 
 .credit-card-selector .card-selector-collapsible {
@@ -495,8 +494,7 @@
   }
 
   .credit-card-selector .selector-actions .button-m.secondary {
-    width: 9.6875rem;
-    max-width: 9.6875rem;
+    min-width: 9.6875rem;
   }
 
   .credit-card-selector .card-selector-content {
