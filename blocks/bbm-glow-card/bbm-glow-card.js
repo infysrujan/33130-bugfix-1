@@ -1,8 +1,7 @@
 import { loadScript } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { decodeHtmlEntities, extractStyles, sanitizeCss } from '../../scripts/custom-css.js';
 
-const STYLE_TAG_REGEX = /<style[^>]*>[\s\S]*?<\/style>/gi;
-const STYLE_CONTENT_REGEX = /<style[^>]*>([\s\S]*?)<\/style>/gi;
 const STYLES_ID = 'bbm-glow-card-styles';
 const DOMPURIFY_SRC = `${window.hlx.codeBasePath}/scripts/dompurify.min.js`;
 
@@ -31,17 +30,6 @@ const SANITIZE_HTML_CONFIG = {
   ],
 };
 
-const UNSAFE_CSS_PATTERNS = [
-  /@import\b[^;]*;?/gi,
-  /expression\s*\(/gi,
-  /javascript\s*:/gi,
-  /behavior\s*:/gi,
-  /-moz-binding\s*:/gi,
-  /url\s*\(\s*['"]?\s*javascript:/gi,
-  /url\s*\(\s*['"]?data:(?!image\/)/gi,
-  /<\/style/gi,
-];
-
 /**
  * Loads DOMPurify once for this block.
  * @returns {Promise<void>}
@@ -66,45 +54,6 @@ function collectParagraphText(row) {
   return [...row.querySelectorAll('p')]
     .map((p) => p.textContent)
     .join('\n');
-}
-
-/**
- * Decodes HTML entities in a string (e.g. &lt; → <).
- * @param {string} encoded
- * @returns {string}
- */
-function decodeHtmlEntities(encoded) {
-  const decoder = document.createElement('textarea');
-  decoder.innerHTML = encoded;
-  return decoder.value;
-}
-
-/**
- * Pulls inline styles out of HTML and returns stitched CSS plus body markup.
- * @param {string} html
- * @returns {{ css: string, bodyHtml: string }}
- */
-function extractStyles(html) {
-  const css = [...html.matchAll(STYLE_CONTENT_REGEX)]
-    .map((match) => match[1])
-    .join('\n');
-
-  const bodyHtml = html.replace(STYLE_TAG_REGEX, '');
-
-  return { css, bodyHtml };
-}
-
-/**
- * Strips dangerous CSS constructs while preserving layout and glow styling.
- * @param {string} css
- * @returns {string}
- */
-function sanitizeCss(css) {
-  if (!css || typeof css !== 'string') return '';
-  return UNSAFE_CSS_PATTERNS.reduce(
-    (sanitized, pattern) => sanitized.replace(pattern, ''),
-    css,
-  ).trim();
 }
 
 /**
