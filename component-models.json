@@ -13254,7 +13254,7 @@
         }
       },
       {
-        "component": "richtext",
+        "component": "textarea",
         "name": "cellCss",
         "label": "Cell CSS",
         "valueType": "string",

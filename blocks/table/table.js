@@ -6,7 +6,7 @@ import {
 } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { decorateIconInContainer, decorateNewTabLinks } from '../../scripts/custom-rte.js';
-import { decodeHtmlEntities, extractStyles, sanitizeCss } from '../../scripts/custom-css.js';
+import { extractStyles, sanitizeCss } from '../../scripts/custom-css.js';
 
 function getCellText(cell) {
   if (!cell) return '';
@@ -248,10 +248,10 @@ function alignHeaderLastLine(table) {
 function applyCustomCellCss(block, row) {
   if (!row) return;
 
-  const encoded = [...row.querySelectorAll('p')].map((p) => p.textContent).join('\n');
-  if (!encoded.trim()) return;
+  const raw = row.children[0]?.textContent || '';
+  if (!raw.trim()) return;
 
-  const { css } = extractStyles(decodeHtmlEntities(encoded));
+  const { css } = extractStyles(raw);
   const sanitized = sanitizeCss(css);
   if (!sanitized) return;
 
