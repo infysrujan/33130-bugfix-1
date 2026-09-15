@@ -9,7 +9,9 @@
   }
 }
 
-:lang(en) {
+:lang(en),
+:lang(zh),
+:lang(jp) {
   .error-page-en {
     display: block;
   }

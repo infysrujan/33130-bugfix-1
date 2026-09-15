@@ -21,6 +21,10 @@
   gap: 1.25rem;
 }
 
+.sip-form main .section.form-container .form form fieldset.panel-wrapper.field-main-panel.field-wrapper {
+  gap: 0;
+}
+
 .sip-form main .form form .field-wrapper{
   margin: 0;
 }

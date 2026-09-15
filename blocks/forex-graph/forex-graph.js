@@ -33,11 +33,21 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function buildGraphTitle(template, currName, currFamily, fromIso, toIso) {
-  const fromParsed = parseIsoDate(fromIso);
-  const toParsed = parseIsoDate(toIso);
-  const startDate = fromParsed ? `${fromParsed.month}/${fromParsed.day}/${fromParsed.year}` : '';
-  const endDate = toParsed ? `${toParsed.month}/${toParsed.day}/${toParsed.year}` : '';
+function buildGraphTitle(template, currName, currFamily, fromIso, toIso, buddhistYearOffset = 0) {
+  const formatTitleDate = (parsed) => {
+    if (!parsed) return '';
+    // Thai: day/month/Buddhist-year, no leading zeros (e.g. 1/9/2569).
+    if (buddhistYearOffset) {
+      const day = Number(parsed.day);
+      const month = Number(parsed.month);
+      const year = Number(parsed.year) + buddhistYearOffset;
+      return `${day}/${month}/${year}`;
+    }
+    // Other locales: keep the original month/day/year format (e.g. 09/01/2026).
+    return `${parsed.month}/${parsed.day}/${parsed.year}`;
+  };
+  const startDate = formatTitleDate(parseIsoDate(fromIso));
+  const endDate = formatTitleDate(parseIsoDate(toIso));
 
   // Normalise template: ensure spaces around family code, colon and dash
   const base = template
@@ -351,6 +361,7 @@ function renderBlock(
     state.selectedFamily,
     state.from.selectedDate,
     state.to.selectedDate,
+    buddhistYearOffset,
   );
 
   const errorStyle = state.error ? '' : ' style="display:none"';

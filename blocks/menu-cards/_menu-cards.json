@@ -41,6 +41,24 @@
                     "name": "title",
                     "label": "Menu Cards Title",
                     "valueType": "string"
+                },
+                {
+                    "component": "select",
+                    "name": "cardsInARow",
+                    "label": "Number of cards in a row",
+                    "description": "Select the number of cards to display in a row",
+                    "valueType": "string",
+                    "value": "three-cards",
+                    "options": [
+                        {
+                            "name": "3 cards in a row",
+                            "value": "three-cards"
+                        },
+                        {
+                            "name": "4 cards in a row",
+                            "value": "four-cards"
+                        }
+                    ]
                 }
             ]
         },

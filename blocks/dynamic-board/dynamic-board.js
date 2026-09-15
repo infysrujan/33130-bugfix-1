@@ -60,10 +60,18 @@ function buildDownloadHref(downloadUrl, symbol) {
 }
 
 // ─── sort helper ──────────────────────────────────────────────────────────────
-function sortValue(rate, key) {
+function sortValue(rate, key, isThai) {
   if (key === 'REMAIN_TERM') return remainTermToMonths(rate.REMAIN_TERM || '00.00.00');
   if (key === 'MATURITY_DATE') return new Date(rate.MATURITY_DATE).getTime();
-  if (key === 'BOND_SYMBOL' || key === 'NAME_ENG') return (rate[key] || '').toLowerCase();
+  if (key === 'BOND_SYMBOL') return (rate.BOND_SYMBOL || '').toLowerCase();
+  // The Name column's sortKey is always 'NAME_ENG', but the cell itself renders
+  // NAME_THAI on the Thai locale (see renderRow) — sort by whichever field is
+  // actually on screen, or the sort order and the displayed text disagree.
+  if (key === 'NAME_ENG') return (rate[isThai ? 'NAME_THAI' : 'NAME_ENG'] || '').toLowerCase();
+  // Legacy sorts '-' before '+' (opposite of plain order); remap to match.
+  if (key === 'ISSUE_RATING' || key === 'ISSUER_RATING') {
+    return (rate[key] || '').toLowerCase().replace(/-/g, 'n').replace(/\+/g, 'p');
+  }
   const n = parseFloat(rate[key]);
   return Number.isNaN(n) ? Infinity : n;
 }
@@ -125,25 +133,7 @@ function updateFilterBtn(btn, state) {
   btn.classList.toggle('is-active', isActive);
 }
 
-// Group header ("Bidding Price"/"Offering Price")
-function syncStickyOffsets(thead, tbodySel) {
-  const groupHeader = thead.querySelector('.db-th-group');
-  const secondRow = thead.querySelector('tr:last-child');
-  if (groupHeader && secondRow) {
-    // position:sticky lives on the <th> cells, not the <tr>.
-    const top = `${groupHeader.getBoundingClientRect().height}px`;
-    secondRow.querySelectorAll('th').forEach((th) => { th.style.top = top; });
-  }
-  if (!tbodySel) return;
-  const theadH = thead.getBoundingClientRect().height;
-  let offset = theadH;
-  tbodySel.querySelectorAll('tr').forEach((tr) => {
-    tr.style.top = `${offset}px`;
-    offset += tr.getBoundingClientRect().height;
-  });
-}
-
-function renderThead(thead, state, tbodySel) {
+function renderThead(thead, state) {
   let row1 = '<tr>';
   let row2 = '<tr>';
   state.columns.forEach((col) => {
@@ -160,14 +150,12 @@ function renderThead(thead, state, tbodySel) {
       });
     } else {
       const cs = col.colspan > 1 ? `colspan="${col.colspan}"` : '';
-      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}">${escapeHtml(col.label)}</th>`;
+      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}"><span class="db-th-label">${escapeHtml(col.label)}</span></th>`;
     }
   });
   row1 += '</tr>';
   row2 += '</tr>';
   thead.innerHTML = row1 + row2;
-
-  requestAnimationFrame(() => syncStickyOffsets(thead, tbodySel));
 }
 
 function renderRow(rate, isSelected, state) {
@@ -189,10 +177,10 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(fmtPct(rate.BID_YIELD))}</td>`}
       <td class="db-td-num">${escapeHtml(fmtPrice(rate.OFFER_PRICE))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.OFFER_YIELD))}</td>
-      <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00'))}</td>
+      <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00', state.isThai))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
       <td class="db-td-num db-td-maturity">
-        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}
+        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels, state.buddhistYearOffset))}
         <a class="db-td-dl" href="${buildDownloadHref(state.downloadUrl, sym)}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
@@ -209,16 +197,18 @@ function renderTable(tbodySel, tbodyAll, state) {
   const selRates = state.rates.filter((r) => state.selectedIds.includes(String(r.AutoID)));
   const unsel = state.rates.filter((r) => !state.selectedIds.includes(String(r.AutoID)));
   unsel.sort((a, b) => {
-    const av = sortValue(a, state.sortKey);
-    const bv = sortValue(b, state.sortKey);
+    const av = sortValue(a, state.sortKey, state.isThai);
+    const bv = sortValue(b, state.sortKey, state.isThai);
+    if (typeof av === 'string' && typeof bv === 'string') {
+      const cmp = av.localeCompare(bv, state.isThai ? 'th' : undefined);
+      return state.sortAsc ? cmp : -cmp;
+    }
     if (av < bv) return state.sortAsc ? -1 : 1;
     if (av > bv) return state.sortAsc ? 1 : -1;
     return 0;
   });
   tbodySel.innerHTML = selRates.map((r) => renderRow(r, true, state)).join('');
   tbodyAll.innerHTML = unsel.map((r) => renderRow(r, false, state)).join('');
-  const thead = tbodySel.closest('table')?.querySelector('thead');
-  if (thead) syncStickyOffsets(thead, tbodySel);
 }
 
 // ─── month picker ─────────────────────────────────────────────────────────────
@@ -498,7 +488,7 @@ function wireFilterEvents(
     try {
       await loadFilteredRates(state);
       state.selectedIds = [];
-      renderThead(thead, state, tbodySel);
+      renderThead(thead, state);
       renderTable(tbodySel, tbodyAll, state);
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -863,6 +853,19 @@ function printElement(block) {
         display: table-row-group;
       }
 
+      .dynamic-board .db-table-wrap #db-tbody-sel,
+      .dynamic-board .db-table-wrap #db-tbody-all {
+        display: table-row-group;
+        max-height: none;
+        overflow-y: visible;
+      }
+
+      .dynamic-board .db-table-wrap #db-tbody-sel tr,
+      .dynamic-board .db-table-wrap #db-tbody-all tr {
+        display: table-row;
+        width: auto;
+      }
+
       .dynamic-board .db-table {
         break-inside: auto;
       }
@@ -1059,13 +1062,7 @@ export default async function decorate(block) {
   const tbodySel = block.querySelector('#db-tbody-sel');
   const tbodyAll = block.querySelector('#db-tbody-all');
 
-  renderThead(thead, state, tbodySel);
-
-  // Sticky header/selected-row offsets depend on thead's height, so resync on resize.
-  if (typeof ResizeObserver !== 'undefined') {
-    const stickyObserver = new ResizeObserver(() => syncStickyOffsets(thead, tbodySel));
-    stickyObserver.observe(thead);
-  }
+  renderThead(thead, state);
 
   // ── initial data load ──
   try {
@@ -1084,7 +1081,7 @@ export default async function decorate(block) {
     state.rates = Array.isArray(latestRates) ? latestRates : [];
 
     renderTimeDropdown(timeListEl, timeLabelEl, state);
-    renderThead(thead, state, tbodySel);
+    renderThead(thead, state);
     renderTable(tbodySel, tbodyAll, state);
   } catch (err) {
     // eslint-disable-next-line no-console
@@ -1170,7 +1167,7 @@ export default async function decorate(block) {
     if (state.sortKey === key) state.sortAsc = !state.sortAsc;
     else { state.sortKey = key; state.sortAsc = true; }
     state.sortUserSet = true;
-    renderThead(thead, state, tbodySel);
+    renderThead(thead, state);
     renderTable(tbodySel, tbodyAll, state);
   });
 
@@ -1229,10 +1226,9 @@ export default async function decorate(block) {
     state.sortAsc = true;
     state.sortUserSet = false;
     updateFilterBtn(filterBtn, state);
-    renderThead(thead, state, tbodySel);
+    renderThead(thead, state);
     try {
       await loadRates(state);
-      state.selectedIds = [];
       renderTable(tbodySel, tbodyAll, state);
     } catch (err) {
       // eslint-disable-next-line no-console

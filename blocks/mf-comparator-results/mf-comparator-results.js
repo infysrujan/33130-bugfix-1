@@ -143,8 +143,13 @@ function buildCompareCard(card, doc, labels) {
     return slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
-  const riskRaw = getField('RiskLevel', 'riskLevel');
-  const riskLabel = riskRaw ? riskRaw.replace(/^level-/i, 'Level ') : '';
+  const riskRaw = getField('RiskLevel', 'riskLevel', 'type');
+  let riskLabel = '';
+  let riskIsHtml = false;
+  if (riskRaw && typeof riskRaw === 'object' && riskRaw.html) {
+    riskLabel = riskRaw.html;
+    riskIsHtml = true;
+  }
 
   const fundTypeRaw = getField('FundType', 'fundType', 'type');
   let fundTypeLabel = '';
@@ -197,7 +202,9 @@ function buildCompareCard(card, doc, labels) {
   compareInfo.className = 'compare-info';
 
   const fields = [
-    { key: 'riskLevel', label: labels.riskLevel, value: riskLabel },
+    {
+      key: 'riskLevel', label: labels.riskLevel, value: riskLabel, isHtml: riskIsHtml,
+    },
     {
       key: 'fundType', label: labels.fundType, value: fundTypeLabel, isHtml: fundTypeIsHtml,
     },

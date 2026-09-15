@@ -53,8 +53,12 @@
   background: var(--bbl-text-link);
 }
 
-.breadcrumb.is-homepage ol>li:last-child::after {
+.breadcrumb.is-homepage ol > li:last-child::after {
   background: none;
+}
+
+.breadcrumb ol > li:last-child:not(:only-child):hover::after {
+  background: var(--bbl-color-blue-90);
 }
 
 .breadcrumb+.social-icons-wrapper {

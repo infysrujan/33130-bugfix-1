@@ -462,10 +462,6 @@ main:has(.property-for-sale-container) > .section .default-content-wrapper img {
     align-items: center;
   }
 
-  .pfs-grid {
-    margin-inline: -1.25rem;
-  }
-
   .pfs-search-wrap {
     flex: 1 1 0;
     min-width: 0;

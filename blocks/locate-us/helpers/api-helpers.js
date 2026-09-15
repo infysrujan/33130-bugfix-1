@@ -42,14 +42,25 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
   const branchBookingText = placeholders?.branchBookingText || 'Branch Booking';
   const nearestLabel = placeholders?.nearestLocationTag || 'nearest';
   const statusLabel = placeholders?.statusLabel || 'Status:';
+  const openStatusText = placeholders?.locateUsLabelOpen;
   const closedStatusText = placeholders?.locateUsLabelClose;
+  const temporaryCloseStatusText = placeholders?.locateUsLabelTemporaryClose;
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
   const isNearest = loc.isNearest === true;
 
   // ATM/ATM+ sidebar only shows name, address, and directions
   const branchStatus = !isAtm && hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
-  const isOpen = branchStatus.toLowerCase() === 'open';
+  const branchStatusLower = branchStatus.toLowerCase();
+  const isOpen = branchStatusLower === 'open';
+  const isTemporaryClose = branchStatusLower === 'temporary close';
+
+  // Resolve the display label from placeholders; fall back to raw API value
+  const getStatusLabel = () => {
+    if (isOpen) return openStatusText || branchStatus;
+    if (isTemporaryClose) return temporaryCloseStatusText || branchStatus;
+    return closedStatusText || branchStatus;
+  };
   const tel = !isAtm && loc.Tel && loc.Tel.trim() !== '' && loc.Tel.trim() !== 'BeID' ? loc.Tel.trim() : '';
   const fax = !isAtm && loc.Fax && loc.Fax.trim() !== '' ? loc.Fax.trim() : '';
   const showAppointment = !isAtm && loc.BranchAppointment;
@@ -90,7 +101,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
   if (branchStatus) {
     card.querySelector('.locate-us-card-detail .locate-us-card-row .locate-us-card-label').textContent = statusLabel;
     const statusEl = card.querySelector('.locate-us-card-status');
-    statusEl.textContent = isOpen ? branchStatus : (closedStatusText || branchStatus);
+    statusEl.textContent = getStatusLabel();
     statusEl.classList.add(`locate-us-card-status-${branchStatus.toLowerCase()}`);
   }
   if (isOpen) {

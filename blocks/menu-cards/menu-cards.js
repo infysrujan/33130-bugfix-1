@@ -89,15 +89,16 @@ function createMenuCard(cardElement, doc) {
 export default function decorate(block) {
   const doc = block.ownerDocument;
   const children = [...block.children];
-
+  const [numCardsInARowElement] = children.slice(1, 2);
+  const numCardsInARowClass = numCardsInARowElement?.textContent?.trim() || '';
   // Create main container
   const menuCardsContainer = createElementFromHTML(
-    '<div class="tips-insight-quick-access"></div>',
+    `<div class="tips-insight-quick-access ${numCardsInARowClass}"></div>`,
     doc,
   );
 
   // Skip first row (block title if exists) and process remaining rows as cards
-  const cards = children.slice(1);
+  const cards = children.slice(2);
 
   cards.forEach((cardElement) => {
     const menuCard = createMenuCard(cardElement, doc);

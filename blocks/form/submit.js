@@ -108,7 +108,7 @@ export function submitSuccess(e, form) {
     closeModalsAndScrollTo(thankYouMessage, { toTop: true });
   } else {
     closeModalsAndScrollTo();
-    window.location.assign(encodeURI(redirectUrl));
+    window.location.assign(encodeURI(redirectUrl.replace(/\.html$/, '')));
   }
   form.setAttribute('data-submitting', 'false');
   const submitBtn = form.querySelector('button[type="submit"]');

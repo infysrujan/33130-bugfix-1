@@ -192,7 +192,7 @@
   justify-content: center;
   gap: 0.5rem;
   width: auto;
-  height: auto;
+  min-height:0.625rem;
   overflow: visible;
 }
 

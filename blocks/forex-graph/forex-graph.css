@@ -615,7 +615,7 @@ body:has(.forex-graph-wrapper) .section.underline-image .section-image-item::aft
     display: flex;
     align-items: center;
     gap: 0.625rem;
-    max-width: 13.125rem;
+    max-width: 14rem;
   }
 
   .forex-graph .forex-graph-date-label {

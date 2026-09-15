@@ -200,6 +200,14 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   min-width: 100%;
 }
 
+@media (hover: none) {
+  .promo-selector-btn-reset.button-m.secondary:hover {
+    background: transparent;
+    border-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-active-blue);
+  }
+}
+
 .promo-card-listing.has-preview > div[data-config-row] {
   display: none;
 }

@@ -13,7 +13,24 @@ const DESKTOP_BREAKPOINT = `(width > ${TABLET_MIN})`;
 const MAX_FILTERED = 5;
 const MAX_COMPARE = 3;
 const MOBILE_BREAKPOINT = `(width < ${TABLET_MIN})`;
-const BENEFIT_ALIASES = { rewards: 'point' };
+// Map UI benefit/lifestyle labels (EN and TH, as authored in the credit-card-selector
+// block) to the filtering-matrix sheet's canonical English values. The sheet only has
+// one (English) Benefit/Lifestyles column per row, so non-English UI copy must be
+// aliased here or it will never match — see credit-card-selector.js buildFilterState.
+const BENEFIT_ALIASES = {
+  rewards: 'point',
+  เครดิตเงินคืน: 'cash back',
+  ช็อปปิง: 'point',
+};
+const LIFESTYLE_ALIASES = {
+  ใช้จ่ายทั่วไป: 'everyday',
+  รักสุขภาพ: 'healthcare',
+  ชอบเที่ยว: 'travel',
+  ทำบุญ: 'donation',
+  รถยนต์: 'automotive',
+  ช้อปปิ้ง: 'shopping',
+  คะแนนสะสม: 'shopping',
+};
 
 // ── String / data utilities ────────────────────────────────────────────────────
 
@@ -57,6 +74,11 @@ function resolveImageUrl(card) {
 function normalizeBenefit(str) {
   const n = norm(str);
   return BENEFIT_ALIASES[n] || n;
+}
+
+function normalizeLifestyle(str) {
+  const n = norm(str);
+  return LIFESTYLE_ALIASES[n] || n;
 }
 
 function sortBySourcing(cards) {
@@ -129,7 +151,7 @@ function filterSheetCards(sheetCards, { income, benefit, lifestyles } = {}) {
   const criteria = {
     userIncome: parseIncomeValue(income),
     userBenefit: normalizeBenefit(benefit),
-    userLifestyles: (lifestyles || []).map(norm).filter(Boolean),
+    userLifestyles: (lifestyles || []).map(normalizeLifestyle).filter(Boolean),
   };
   return sheetCards.filter((row) => matchesFilter(row, criteria));
 }
@@ -139,29 +161,45 @@ function filterSheetCards(sheetCards, { income, benefit, lifestyles } = {}) {
  * → sort by Sourcing → cap at MAX_FILTERED.
  */
 async function resolveFilteredCards(sheetCards, filterState) {
+  const lang = getLang();
+  const productNameKey = lang === 'th' ? 'Product Name (TH)' : 'Product Name (EN)';
+  const cardNameKeys = lang === 'th'
+    ? ['nameTH', 'Product Name (TH)', 'cardNameTH', 'name']
+    : ['nameEN', 'Product Name (EN)', 'name', 'cardName'];
+
   const matchingRows = filterSheetCards(sheetCards, filterState);
-  const matchingNames = matchingRows.map((row) => norm(row['Product Name (EN)'] || ''));
-
-  if (!matchingNames.length) return [];
-
+  const matchingNames = new Set();
   const sourcingMap = {};
+
   matchingRows.forEach((row) => {
-    const name = norm(row['Product Name (EN)'] || '');
-    if (name) sourcingMap[name] = parseInt(row.Sourcing || 9999, 10);
+    const name = norm(row[productNameKey] || '');
+    if (name) {
+      matchingNames.add(name);
+      sourcingMap[name] = parseInt(row.Sourcing || 9999, 10);
+    }
   });
 
-  // Second fetch — request only the matched cards by name
+  if (!matchingNames.size) return [];
+
   const rawCards = await loadCardData();
+
+  const getCardNames = (card) => cardNameKeys
+    .map((key) => norm(getCardField(card, key)))
+    .filter(Boolean);
 
   const filtered = rawCards
     .filter((card) => {
-      const name = norm(getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
-      return matchingNames.includes(name);
+      const cardNames = getCardNames(card);
+      return cardNames.some((name) => matchingNames.has(name));
     })
     .sort((a, b) => {
-      const nameA = norm(getCardField(a, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
-      const nameB = norm(getCardField(b, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
-      return (sourcingMap[nameA] ?? 9999) - (sourcingMap[nameB] ?? 9999);
+      const namesA = getCardNames(a);
+      const namesB = getCardNames(b);
+
+      const sourceA = Math.min(...namesA.map((name) => sourcingMap[name] ?? 9999), 9999);
+      const sourceB = Math.min(...namesB.map((name) => sourcingMap[name] ?? 9999), 9999);
+
+      return sourceA - sourceB;
     })
     .slice(0, MAX_FILTERED);
 
