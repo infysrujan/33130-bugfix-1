@@ -42,6 +42,12 @@
   display: inline;
 }
 
+/* Large lead/intro paragraph (matches live's 32px regular). Opt-in Section Style "intro-lead". */
+.intro-lead > .default-content-wrapper > p:first-of-type {
+  font-size: 2rem; /* 32px */
+  line-height: 2.6rem; /* 41.6px */
+}
+
 .table.block table td p:is(.rte-inline-image, .rte-has-icon, .rte-image-link) {
   display: inline;
   margin: 0;
@@ -113,3 +119,4 @@
 /* .default-content-wrapper > :not(.button-container, .footer-container) a:any-link {
   color: inherit;
 } */
+ 
