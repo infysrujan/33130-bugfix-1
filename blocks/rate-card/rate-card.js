@@ -279,7 +279,7 @@ function createTabContent(tabData, apiData, lang) {
 
   const cardNameLower = cardName.toLowerCase();
 
-  if (cardNameLower.includes('exchange')) {
+  if (cardNameLower.includes('exchange') || cardNameLower.includes('แลกเปลี่ยน')) {
     dataType1 = 'exchange';
     apiData1 = apiData.exchange || [];
     dateString1 = apiData.exchangeDate || '';
