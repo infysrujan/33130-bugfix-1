@@ -944,6 +944,7 @@
   width: calc(100% - var(--bbl-space-400));
   left: unset;
   right: unset;
+  margin-top: 1rem;
 }
 
 /* ── Sub-nav tab overrides — mobile only ────────────────────────────────────── */
@@ -1314,7 +1315,7 @@
     right: 0;
     width: auto;
   }
-
+  
   .locate-us:has(.locate-us-results-overseas) .locate-us-location-filter-row {
     padding: var(--bbl-space-000);
     margin-top: var(--bbl-space-200);
@@ -1355,6 +1356,10 @@
 @media (width > 64rem) {
   .locate-us.block:not(:has(.locate-us-results-overseas)) .content {
     padding-inline: 0;
+  }
+
+  .locate-us.block:not(:has(.locate-us-results-overseas)) .locate-us-results {
+    padding-inline: var(--bbl-space-section-xl);
   }
 
   .locate-us .locate-us-map-row {
@@ -1506,6 +1511,12 @@
     max-width: 43%;
   }
 
+  .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
+    width: calc(434px + (100vw - 1200px) * 0.5);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
 }
 
 @media (width > 87.5rem) {
@@ -1535,4 +1546,9 @@
     padding-right: 2rem;
     width: calc(50% - 2.8rem);
   }
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
+    width: 49.62rem;
+  }
+
 }

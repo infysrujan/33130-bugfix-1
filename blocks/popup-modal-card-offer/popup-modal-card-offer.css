@@ -79,7 +79,7 @@
 }
 
 .bangkok-bankm-card .floating-popup-body {
-  margin-top: -3.75rem;
+  margin-top: -11.77rem;
 }
 
 .floating-popup-body img {
@@ -143,6 +143,10 @@
 
   .floating-popup-description p {
     font-size: var(--bbl-font-size-b2);
+  }
+
+  .bangkok-bankm-card .floating-popup-body {
+    margin-top: -11.656rem;
   }
 }
 

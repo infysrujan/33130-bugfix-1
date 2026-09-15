@@ -562,6 +562,7 @@ function setupMobileMenuBehavior(headerNav, hamburger, mobileNavMenu, blocks) {
   };
 
   const openMobileMenu = () => {
+    window.scrollTo({ top: 0 });
     hamburger.setAttribute('aria-expanded', 'true');
     hamburger.setAttribute('aria-label', 'Close navigation');
     hamburger.classList.add('is-hidden');
@@ -704,7 +705,7 @@ export default async function decorate(block) {
   let navPath = '';
   if (document.querySelector('body.error-page')) {
     const lang = getLang();
-    navPath = `/${lang}/nav`;
+    navPath = ['EN', 'TH'].includes(lang.toUpperCase()) ? `/${lang}/nav` : '/en/nav';
   } else {
     const navMeta = getMetadata('nav');
     navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';

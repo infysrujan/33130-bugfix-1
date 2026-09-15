@@ -246,10 +246,6 @@
         }
     }
 
-    .carousel-header a {
-        font-family: var(--bbl-font-family-looped);
-    }
-
     .carousel-track {
         width: calc(100% - var(--carousel-grid-offset));
         margin-left: auto;

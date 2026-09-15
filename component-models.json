@@ -69,7 +69,7 @@
         "component": "boolean",
         "name": "breadcrumb",
         "value": true,
-        "label": "Breadcrumb",
+        "label": "Hide the entire breadcrumb from the current page",
         "valueType": "boolean"
       },
       {
@@ -81,9 +81,15 @@
       {
         "component": "reference",
         "valueType": "string",
-        "name": "ogImage",
+        "name": "og:image",
         "label": "OG Image",
         "description": "Select the image asset to use for the Open Graph og:image meta tag."
+      },
+      {
+        "component": "boolean",
+        "name": "hide-from-breadcrumb",
+        "label": "Hide only the current page’s breadcrumb from the breadcrumb trail.",
+        "valueType": "boolean"
       }
     ]
   },
@@ -11485,6 +11491,24 @@
         "name": "title",
         "label": "Menu Cards Title",
         "valueType": "string"
+      },
+      {
+        "component": "select",
+        "name": "cardsInARow",
+        "label": "Number of cards in a row",
+        "description": "Select the number of cards to display in a row",
+        "valueType": "string",
+        "value": "three-cards",
+        "options": [
+          {
+            "name": "3 cards in a row",
+            "value": "three-cards"
+          },
+          {
+            "name": "4 cards in a row",
+            "value": "four-cards"
+          }
+        ]
       }
     ]
   },

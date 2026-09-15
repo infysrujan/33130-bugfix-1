@@ -119,12 +119,12 @@ function buildMapLink(data, label, mapBaseUrl) {
   return `<a href="${href}" target="_blank" class="prop-for-sale-map-link">${label}<img src="/icons/google-map-open.ico" alt="" class="prop-for-sale-map-icon"></a>`;
 }
 
-function getFieldValue(field, data, currency, openMapLabel, mapBaseUrl) {
+function getFieldValue(field, data, currency, openMapLabel, mapBaseUrl, contactLabel) {
   switch (field) {
     case 'FILE_ID': return data.FILE_ID ? `${data.FILE_ID}${data.OLD_FILE_ID ? ` หรือ ${data.OLD_FILE_ID}` : ''}` : '-';
     case 'AREA': return formatArea(data);
     case 'LOCATION': return buildLocation(data);
-    case 'PR_PRICE': return data.PR_PRICE ? `${formatPrice(data.PR_PRICE)} ${currency}` : '-';
+    case 'PR_PRICE': return Number(data.PR_PRICE) > 0 ? `${formatPrice(data.PR_PRICE)} ${currency}` : contactLabel;
     case 'SPECIAL_PRICE': return data.SPECIAL_PRICE ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
     case 'MAP': return buildMapLink(data, openMapLabel, mapBaseUrl);
     default: {
@@ -139,10 +139,11 @@ function buildDetailHtml(data, placeholders, detailRows, mapBaseUrl) {
   const p = placeholders;
   const currency = p.propertyForSaleCurrency || 'บาท';
   const openMapLabel = p.propertyForSaleOpenMap || 'เปิด google map';
+  const contactLabel = p.propertyForSaleContactStaff || 'ติดต่อเจ้าหน้าที่';
 
   const rows = detailRows.map(({ Label: label, Field: field }) => ({
     label,
-    value: getFieldValue(field, data, currency, openMapLabel, mapBaseUrl),
+    value: getFieldValue(field, data, currency, openMapLabel, mapBaseUrl, contactLabel),
     special: field === 'SPECIAL_PRICE',
     starting: field === 'PR_PRICE',
   }));

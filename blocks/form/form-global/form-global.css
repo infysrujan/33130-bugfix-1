@@ -22,7 +22,7 @@ main .section.form-container .form form .field-wrapper.field-invalid :is(input:n
 
 main .section.form-container .form form .field-invalid :is(.field-validation-error, .field-description) {
   color: var(--bbl-color-system-red);
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-looped);
 }
 
@@ -217,7 +217,8 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio
   border-radius: 0.4375rem 0 0 0.4375rem;
 }
 
-main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper:last-of-type input[type='radio'] {
+main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper:last-of-type input[type='radio'],
+main .section.form-container .form form .radio-group-wrapper.radio-tabs.field-invalid > .radio-wrapper:not(:has(~ .radio-wrapper)) input[type="radio"] {
   border-radius: 0 0.4375rem 0.4375rem 0;
 }
 
@@ -406,7 +407,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 } */
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled, .secondary):hover{
-  border-color: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-blue-90);
   background-color: var(--bbl-color-blue-90);
   color: var(--bbl-color-white);
 }
@@ -543,7 +544,7 @@ main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.
 }
 
 main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration a {
-  text-decoration: none;
+  text-decoration: underline;
   transition: color 0.3s ease;
 }
 

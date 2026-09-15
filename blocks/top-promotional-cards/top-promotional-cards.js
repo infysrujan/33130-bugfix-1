@@ -1,19 +1,18 @@
 import {
   buildCardHtml,
   buildCardOptions,
-  fetchJson, sortCards, normalizeCategory,
+  fetchJson, sortCards,
 } from '../../scripts/utils/card-helpers.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
-function filterCards(activeCards, tabText, isTopPromo) {
+function filterCards(activeCards, categoryValue, isTopPromo) {
   if (isTopPromo) {
     return activeCards.filter((card) => card.topPromotion === true);
   }
-  const normalized = normalizeCategory(tabText);
   return activeCards.filter(
-    (card) => normalizeCategory(card.category) === normalized,
+    (card) => card.category === categoryValue,
   );
 }
 
@@ -48,7 +47,7 @@ function setupPanel(panel, activeCards, placeholders) {
   const grid = document.createElement('div');
   grid.className = 'promo-selector-grid top-promo-grid listing-card-grid';
   grid.innerHTML = cards.length
-    ? cards.map((card) => buildCardHtml(card, card.category || tabText, placeholders, buildCardOptions(card))).join('')
+    ? cards.map((card) => buildCardHtml(card, tabText, placeholders, buildCardOptions(card))).join('')
     : `<p class="top-promo-empty">${noResultsText}</p>`;
 
   panel.append(grid);

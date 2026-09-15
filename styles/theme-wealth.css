@@ -20,6 +20,6 @@ body.wealth main .default-content-wrapper p {
     color: var(--bbl-color-grey-85);
 }
 
-body.wealth main .bg-grey-100 .default-content-wrapper p {
+body.wealth main .bg-grey-100 .default-content-wrapper :is(h1, h2, h3, h4, h5, h6, p) {
     color: var(--bbl-color-white);
 }

@@ -251,11 +251,12 @@ export default async function decorate(block) {
   const formulaDescription = siteConfigs[configKeyMap[calcType]] || '';
 
   // Result presentation per tab. `integer` => round up to whole months.
+  // Suffix text is authored via placeholders, falling back to the default label.
   const resultConfig = {
-    monthly: { suffix: ' baht.', integer: false },
-    loanbalance: { suffix: ' baht.', integer: false },
-    term: { suffix: ' month.', integer: true },
-    wc: { suffix: ' baht.', integer: false },
+    monthly: { suffix: placeholders.smeMonthlyResultSuffix || 'baht.', integer: false },
+    loanbalance: { suffix: placeholders.smeLoanbalanceResultSuffix || 'baht.', integer: false },
+    term: { suffix: placeholders.smeTermResultSuffix || 'month.', integer: true },
+    wc: { suffix: placeholders.smeWcResultSuffix || 'baht.', integer: false },
   };
   const rc = { prefix: resultText, ...resultConfig[calcType] };
 
@@ -365,7 +366,12 @@ export default async function decorate(block) {
   // Comparison-table-only column order: under the Account Receivable / Account Payable
   // groups, "Credit Term" swaps with the 3rd column so it renders last. The input form
   // above (built from fieldGroups directly) keeps the authored order.
-  const TABLE_COLUMN_SWAP_GROUPS = ['account receivable', 'account payable'];
+  const TABLE_COLUMN_SWAP_GROUPS = [
+    'account receivable',
+    'account payable',
+    'ลูกหนี้การค้า',
+    'เจ้าหนี้การค้า',
+  ];
   const tableGroupFields = (group) => {
     const isSwapGroup = TABLE_COLUMN_SWAP_GROUPS.includes(group.header.trim().toLowerCase());
     if (!isSwapGroup || group.fields.length < 3) return group.fields;
@@ -416,6 +422,8 @@ export default async function decorate(block) {
   let lastResult = null;
   // Holds the error text to show in the comparison table when the last calculation failed.
   let lastErrorMessage = null;
+  // True once a result/error is on screen: focusing a field then clears it for fresh entry.
+  let resultPopulated = false;
 
   const getVal = (id) => {
     const inp = block.querySelector(`#${id}`);
@@ -482,6 +490,7 @@ export default async function decorate(block) {
     resultNum.textContent = msg;
     resultLabel.append(resultNum);
     lastResult = null;
+    resultPopulated = true;
   };
 
   function clearFormAndResult() {
@@ -495,6 +504,7 @@ export default async function decorate(block) {
     touchedDecimalFields.clear();
     lastResult = null;
     lastErrorMessage = null;
+    resultPopulated = false;
     resultLabel.textContent = `${resultValue}`;
     resultLabel.style.whiteSpace = '';
     tbody.innerHTML = '';
@@ -527,8 +537,9 @@ export default async function decorate(block) {
       lastResult = raw;
       lastErrorMessage = null;
       resultNum.textContent = formatResult(lastResult);
-      resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
+      resultLabel.append(`${rc.prefix} `, resultNum, ` ${rc.suffix}`);
     }
+    resultPopulated = true;
   });
 
   // ── Input behaviour ──
@@ -538,19 +549,28 @@ export default async function decorate(block) {
     const isRateField = ['i', 'D', 'G'].includes(f?.id);
 
     inp.addEventListener('focus', () => {
+      // Once a result is on screen, focusing a field clears it so the user can enter fresh values.
+      if (resultPopulated) {
+        inp.value = '';
+        return;
+      }
       if (inp.value === '0' || inp.value === '0.00' || inp.value === '0.000') inp.value = '';
     });
 
     inp.addEventListener('blur', () => {
-      const v = parseFloat(inp.value.replace(/,/g, ''));
+      const raw = inp.value.replace(/,/g, '');
+      const v = parseFloat(raw);
       if (!Number.isFinite(v)) {
         if (isRateField) inp.value = '0.000';
         else inp.value = decimal ? '0.00' : '0';
+      } else if (decimal) {
+        // Preserve the precision the user actually entered (no forced trailing zeros);
+        // only add thousands separators to the integer part.
+        const [intPart, decPart] = raw.split('.');
+        const formattedInt = (parseInt(intPart, 10) || 0).toLocaleString('en-US');
+        inp.value = decPart ? `${formattedInt}.${decPart}` : formattedInt;
       } else {
-        const decPlaces = isRateField ? 3 : 2;
-        inp.value = decimal
-          ? v.toLocaleString('en-US', { minimumFractionDigits: decPlaces, maximumFractionDigits: decPlaces })
-          : Math.round(v).toLocaleString('en-US');
+        inp.value = Math.round(v).toLocaleString('en-US');
       }
     });
 
@@ -589,7 +609,9 @@ export default async function decorate(block) {
         let limit = 9;
         if (f.id === 'n') limit = 3;
         else if (f.id === 'A') limit = 8;
-        else if (f.id === 'H' || f.id === 'C' || f.id === 'F') limit = 6;
+        else if (f.id === 'C' || f.id === 'F') limit = 6;
+        else if (f.id === 'H') limit = 7;
+        else if (f.id === 'P' || f.id === 'B' || f.id === 'E') limit = 9;
 
         if (raw.length > limit) raw = raw.slice(0, limit);
         const num = parseInt(raw, 10);
@@ -616,6 +638,14 @@ export default async function decorate(block) {
     });
   });
 
+  // Strip unnecessary trailing zeros after the decimal point for display only
+  // (e.g. "10.500" -> "10.5", "10.000" -> "10"), keeping thousands separators
+  // in the integer part and preserving meaningful digits ("10.125" -> "10.125").
+  const trimTrailingZeros = (str) => {
+    if (!str.includes('.')) return str;
+    return str.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
+  };
+
   // ── Add to comparison table ──
   addBtn.addEventListener('click', () => {
     if (lastResult === null && lastErrorMessage === null) return;
@@ -623,7 +653,8 @@ export default async function decorate(block) {
     const resultCell = lastResult === null ? lastErrorMessage : formatResult(lastResult);
     const fieldValues = tableFields.map((f) => {
       const inp = block.querySelector(`#${f.id}`);
-      return inp ? inp.value : '';
+      if (!inp) return '';
+      return f.valueType === 'decimal' ? trimTrailingZeros(inp.value) : inp.value;
     });
     const newRowValues = [resultCell, ...fieldValues];
     const existingRows = [...tbody.querySelectorAll('tr')].map((row) => [...row.children].map((td) => td.textContent.trim()));

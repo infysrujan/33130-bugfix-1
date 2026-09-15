@@ -22,10 +22,6 @@
   padding-left: 1.875rem;
 }
 
-.fund-prices-disclaimer-text a:any-link {
-  color: inherit;
-}
-
 .fund-prices-disclaimer-text ol,
 .fund-prices-disclaimer-text ul {
   list-style: none;

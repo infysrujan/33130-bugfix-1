@@ -483,12 +483,12 @@
 }
 
 .forward-points-sme .fpsme-fwd-title {
-  font-size: 1.4rem;
   font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-heading-h3-size);
+  line-height: var(--bbl-heading-h3-line-height);
+  font-weight: var(--bbl-heading-h3-weight);
   color: var(--bbl-color-black);
   text-align: center;
-  line-height: 1.75rem;
   margin-bottom: unset;
   margin-top: 1.88rem;
 }

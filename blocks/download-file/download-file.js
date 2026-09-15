@@ -26,10 +26,12 @@ async function handleDownloadWithPopup(e, link) {
 
     const configs = await fetchConfigs();
     const lang = getLang() || 'en';
-    const popupPath = configs?.downloadFilePopup
+    const rawPath = configs?.downloadFilePopup
       || configs?.download_file_popup
       || configs?.downloadfilepopup
       || `/${lang}/fragments/modals/download-file-popup`;
+    // Support {{lang}} placeholder in config: e.g. /{{lang}}/fragments/modals/download-file-popup
+    const popupPath = rawPath.replace(/\{\{lang\}\}/g, lang);
 
     await loadFragment(popupPath);
 
