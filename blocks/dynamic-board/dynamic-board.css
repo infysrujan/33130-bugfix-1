@@ -595,33 +595,16 @@
 .dynamic-board .db-filter-apply,
 .dynamic-board .db-filter-reset {
   width: 100%;
-  height: 2.75rem;
-  font-size: var(--bbl-font-size-b2);
+  max-width: unset;
   font-weight: 700;
   border-radius: var(--bbl-space-075);
   cursor: pointer;
   box-sizing: border-box;
 }
 
-.dynamic-board .db-filter-apply {
-  color: var(--bbl-color-white);
-  background: var(--bbl-color-active-blue);
-  border: none;
-}
-
-.dynamic-board .db-filter-apply:hover {
-  background: var(--bbl-color-blue-90);
-}
-
 .dynamic-board .db-filter-reset {
-  color: var(--bbl-color-active-blue);
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-active-blue);
-}
-
-.dynamic-board .db-filter-reset:hover {
-  background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
 }
 
 /* ── Table ─────────────────────────────────────────────────── */
@@ -1121,11 +1104,6 @@
   }
 
   .dynamic-board .db-filter-radio-row label {
-    font-size: var(--bbl-font-size-b1);
-  }
-
-  .dynamic-board .db-filter-apply,
-  .dynamic-board .db-filter-reset {
     font-size: var(--bbl-font-size-b1);
   }
 

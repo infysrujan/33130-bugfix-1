@@ -286,8 +286,8 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
         </div>`).join('')}
       <div class="db-filter-divider"></div>
       <div class="db-filter-actions">
-        <button type="button" class="db-filter-apply">${placeholders?.dynamicBoardApplyLabel || 'Apply'}</button>
-        <button type="button" class="db-filter-reset">${escapeHtml(authoring.clearFilterLabel)}</button>
+        <button type="button" class="db-filter-apply button-m primary">${placeholders?.dynamicBoardApplyLabel || 'Apply'}</button>
+        <button type="button" class="db-filter-reset button-m secondary">${escapeHtml(authoring.clearFilterLabel)}</button>
       </div>
     </div>`;
 
