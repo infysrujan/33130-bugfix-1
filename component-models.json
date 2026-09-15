@@ -400,6 +400,10 @@
               {
                 "name": "Background Private Banking",
                 "value": "background-privatebanking"
+              },
+              {
+                "name": "Wealth Elite Gray Theme BG",
+                "value": "elite-theme-gray-bg"
               }
             ]
           },
