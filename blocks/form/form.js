@@ -9,6 +9,7 @@ import { handleSubmit } from './submit.js';
 import DocBasedFormToAF from './transform.js';
 import decorateCreditCardTractApplication from './form-custom/creditcard-track-application/creditcard-track-application.js';
 import decorateBondAllocationForm from './form-custom/bond-allocation/bond-allocation.js';
+import decorateBondConnectForm from './form-custom/bond-connect/bond-connect.js';
 import decorateSipForm from './form-custom/sip-form/sip-form.js';
 import decorateDebtSupportForm from './form-custom/debt-support/debt-support.js';
 import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
@@ -381,6 +382,7 @@ async function createFormForAuthoring(formDef) {
   });
   decorateCreditCardTractApplication(form);
   decorateBondAllocationForm(form);
+  decorateBondConnectForm(form);
   decorateSipForm(form);
   decorateDebtSupportForm(form);
   decorateSmeLoanForm(form);
@@ -443,6 +445,7 @@ export async function createForm(formDef, data, source = 'aem') {
 
   decorateCreditCardTractApplication(form);
   decorateBondAllocationForm(form);
+  decorateBondConnectForm(form);
   decorateSipForm(form);
   decorateDebtSupportForm(form);
   decorateSmeLoanForm(form);

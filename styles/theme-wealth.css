@@ -20,6 +20,53 @@ body.wealth main .default-content-wrapper p {
     color: var(--bbl-color-grey-85);
 }
 
-body.wealth main .bg-grey-100 .default-content-wrapper p {
+body.wealth main .bg-grey-100 .default-content-wrapper :is(h1, h2, h3, h4, h5, h6, p) {
     color: var(--bbl-color-white);
+}
+
+/* =========================================================================
+   SECTION-LEVEL THEME VARIANTS - For Wealth Elite Gray Theme
+   ========================================================================= */
+
+body.wealth main .elite-theme-gray-bg {
+    background: var(--bbl-color-grey-100);
+    padding-block: 1.5rem;
+}
+
+body.wealth main .elite-theme-gray-bg .default-content-wrapper :is(p, a){
+    font-weight: var(--bbl-font-weight-regular);
+}
+
+body.wealth main .elite-theme-gray-bg .default-content-wrapper :is(h1, h2, h3, h4, h5, h6, p) {
+    color: var(--bbl-color-white);
+}
+
+body.wealth main .elite-theme-gray-bg .default-content-wrapper :is(h1, h2, h3, h4, h5, h6):first-child {
+   margin-block: 0 1rem;
+   padding-bottom: 1rem;
+}
+
+body.wealth main .elite-theme-gray-bg .default-content-wrapper br + a {
+   margin-top: 1rem;
+   display: block;
+   color: var(--bbl-color-white);
+}
+
+body.wealth main .elite-theme-gray-bg .default-content-wrapper br + a:hover {
+    color: var(--bbl-color-active-blue); 
+}
+
+@media (width > 64rem) {
+    body.wealth main .elite-theme-gray-bg {
+        padding-block: 2rem;
+    }
+
+    body.wealth main .elite-theme-gray-bg .default-content-wrapper :is(h1, h2, h3, h4, h5, h6):first-child {
+        margin-block: 0 1.875rem;
+        padding-bottom: 1.875rem;
+    }
+
+    body.wealth main .elite-theme-gray-bg .default-content-wrapper br + a {
+       margin-top: 1.875rem;
+    }
 }

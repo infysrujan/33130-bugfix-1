@@ -279,12 +279,12 @@ function createTabContent(tabData, apiData, lang) {
 
   const cardNameLower = cardName.toLowerCase();
 
-  if (cardNameLower.includes('exchange')) {
+  if (cardNameLower.includes('exchange') || cardNameLower.includes('แลกเปลี่ยน')) {
     dataType1 = 'exchange';
     apiData1 = apiData.exchange || [];
     dateString1 = apiData.exchangeDate || '';
     timeString1 = apiData.exchangeTime || '';
-  } else if (cardNameLower.includes('rate')) {
+  } else if (cardNameLower.includes('rate') || cardNameLower.includes('ดอกเบี้ย')) {
     // Rates tab has both deposit and loan
     dataType1 = 'deposit';
     dataType2 = 'loan';

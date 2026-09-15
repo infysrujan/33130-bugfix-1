@@ -638,6 +638,14 @@ export default async function decorate(block) {
     });
   });
 
+  // Strip unnecessary trailing zeros after the decimal point for display only
+  // (e.g. "10.500" -> "10.5", "10.000" -> "10"), keeping thousands separators
+  // in the integer part and preserving meaningful digits ("10.125" -> "10.125").
+  const trimTrailingZeros = (str) => {
+    if (!str.includes('.')) return str;
+    return str.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
+  };
+
   // ── Add to comparison table ──
   addBtn.addEventListener('click', () => {
     if (lastResult === null && lastErrorMessage === null) return;
@@ -645,7 +653,8 @@ export default async function decorate(block) {
     const resultCell = lastResult === null ? lastErrorMessage : formatResult(lastResult);
     const fieldValues = tableFields.map((f) => {
       const inp = block.querySelector(`#${f.id}`);
-      return inp ? inp.value : '';
+      if (!inp) return '';
+      return f.valueType === 'decimal' ? trimTrailingZeros(inp.value) : inp.value;
     });
     const newRowValues = [resultCell, ...fieldValues];
     const existingRows = [...tbody.querySelectorAll('tr')].map((row) => [...row.children].map((td) => td.textContent.trim()));

@@ -172,7 +172,7 @@ export default function decorateTabs(main) {
       [...buttonRow.children].forEach((cell, index) => {
         if (index < validTabs.length) {
           const tabCategoryTag = validTabs[index].sectionMetadata['tab-category-tag'];
-          if (tabCategoryTag) cell.dataset.tabCategoryTag = tabCategoryTag.split('/').pop().replace(/-/g, ' ');
+          if (tabCategoryTag) cell.dataset.tabCategoryTag = tabCategoryTag;
         }
       });
     }

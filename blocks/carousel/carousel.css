@@ -196,6 +196,15 @@
     display: none;
 }
 
+.carousel-nav:active {
+    outline: none;
+    background: var(--bbl-color-gray-300);
+}
+
+.carousel-nav:hover {
+    border-color: var(--bbl-color-grey-150);
+}
+
 @media (width > 47.5rem) {
     .carousel {
         padding-left: 3rem;
@@ -246,10 +255,6 @@
         }
     }
 
-    .carousel-header a {
-        font-family: var(--bbl-font-family-looped);
-    }
-
     .carousel-track {
         width: calc(100% - var(--carousel-grid-offset));
         margin-left: auto;
@@ -289,11 +294,6 @@
         font-size: 1rem;
         line-height: 4;
         color: var(--bbl-color-active-blue);
-    }
-
-    .carousel-nav:active {
-        outline: none;
-        background: var(--bbl-color-gray-300);
     }
 
     .carousel-nav:disabled {
@@ -497,3 +497,4 @@
         right: calc(var(--carousel-grid-offset) + 2.8125rem);
     }
 }
+ 

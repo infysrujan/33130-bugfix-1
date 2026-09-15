@@ -141,6 +141,15 @@ function padToColumnCount(values, colCount) {
   return out;
 }
 
+function setCellText(cell, text) {
+  const wrapper = cell.querySelector(':scope > strong, :scope > b');
+  if (wrapper) {
+    wrapper.textContent = text;
+  } else {
+    cell.textContent = text;
+  }
+}
+
 /**
  * @param {HTMLTableRowElement} tr
  * @param {string[]} texts
@@ -149,11 +158,7 @@ function fillInterestRateRowCells(tr, texts) {
   const cells = tr.querySelectorAll('td');
   texts.forEach((text, j) => {
     if (cells[j]) {
-      if (j === 1) {
-        cells[j].textContent = `${text}%`;
-      } else {
-        cells[j].textContent = text;
-      }
+      setCellText(cells[j], j === 1 ? `${text}%` : text);
     }
   });
 }

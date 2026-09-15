@@ -507,6 +507,18 @@
   min-height: unset;
 }
 
+.carousel-dotted-container .all-text-animation-variant .carousel-content.content:not(:has(.button-container)) {
+  margin-bottom: var(--bbl-space-500);
+}
+
+.carousel-dotted-container .all-text-animation-variant .carousel-content.content:has(.button-container) {
+  margin-bottom: var(--bbl-space-250);
+}
+
+.carousel-dotted-container .all-text-animation-variant .slick-dots {
+  bottom: var(--bbl-space-250);
+}
+
 .carousel-dotted.dots-center-inside-container.all-without-image .slick-dots {
   transform: unset;
   left: 1.5rem;
@@ -722,7 +734,6 @@ p.text-large.text-light {
   .carousel-dotted .carousel-dotted-item.is-active {
     opacity: 1;
     height: 100%;
-    
   }
 
   .carousel-dotted-item.with-image .carousel-dotted-content .button-container {
@@ -853,6 +864,16 @@ p.text-large.text-light {
     bottom: 1.875rem;
     left: 0;
     width: 100%;
+  }
+
+  .carousel-dotted-container .all-text-animation-variant .carousel-content.content:not(:has(.button-container)) {
+    bottom: 60px;
+    margin-bottom: 0;
+  }
+
+  .carousel-dotted-container .all-text-animation-variant .carousel-content.content:has(.button-container) {
+    bottom: 40px;
+    margin-bottom: 0;
   }
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1, h2, h3, h4, h5, h6) {

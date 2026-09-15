@@ -119,7 +119,7 @@ function setupAccordion(block) {
   headers.forEach((header) => {
     header.addEventListener('click', () => {
       // Only work on mobile/tablet (< 1024px)
-      if (window.innerWidth >= DESKTOP_BREAKPOINT) return;
+      if (window.innerWidth > DESKTOP_BREAKPOINT) return;
 
       const parent = header.closest('.footer-group');
       const isActive = parent.classList.contains('active');

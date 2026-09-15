@@ -114,6 +114,10 @@
   text-indent: 0;
 }
 
+.download-file-modal .privacy-modal-title :is(h3) {
+  color: var(--bbl-color-grey-28);
+}
+
 .privacy-modal-scroll-hint {
   display: none;
 }

@@ -13,7 +13,9 @@
   text-align: left;
   border-radius: 0;
   border-top: 0.0625rem solid var(--bbl-color-black-alpha-10);
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
   padding: 1.25rem 0;
   height: auto;
   color: var(--bbl-color-black);
@@ -34,11 +36,14 @@
 }
 
 .main-nav-trigger.icon-arrow-left::before {
-  position: absolute;
-  right: 50%;
-  top: 43%;
+  position: static;
+  order: 2;
   font-size: 0.6594rem;
   color: var(--bbl-color-black);
+}
+
+.main-nav-trigger.icon-arrow-left .main-nav-trigger-text {
+  order: 1;
 }
 
 .main-nav-trigger:hover,
