@@ -369,44 +369,34 @@ main:has(.property-for-sale-container) > .section .default-content-wrapper img {
     margin-right: unset;
   }
 
-  .pfs-filter-row,
-  .pfs-filter-row:has([data-filter="province"]:not(.is-hidden)) {
-    flex-flow: row nowrap;
-    gap: var(--bbl-space-250);
-    align-items: center;
+  .pfs-filter-row {
+    display: table;
+    width: 100%;
+    padding-inline: 0;
+  }
+
+  .pfs-search-wrap,
+  .pfs-filter,
+  .pfs-search-btn-wrap {
+    float: left;
+    margin-block: 0;
+    box-sizing: border-box;
+    width: 20%;
+    padding-inline: 0.625rem;
   }
 
   .pfs-filter-row:has([data-filter="province"]:not(.is-hidden))
-    :is(.pfs-search-wrap, [data-filter="type"], [data-filter="region"], [data-filter="price"], .pfs-search-btn-wrap) {
-    width: auto;
-  }
-
-  .pfs-search-wrap {
-    flex: 1 1 0;
-    min-width: 0;
-    width: auto;
-    box-sizing: border-box;
-    margin-block: 0;
-  }
-
-  .pfs-filter {
-    margin-block: 0;
-    flex: 1 1 0;
-    min-width: 0;
-    width: auto;
-    box-sizing: border-box;
-  }
-
-  .pfs-search-btn-wrap {
-    flex: 1 1 0;
-    min-width: 0;
-    width: auto;
-    margin-block: 0;
-    padding-inline: 0;
+    :is(.pfs-search-wrap, .pfs-filter, .pfs-search-btn-wrap) {
+    width: 14.2857%;
   }
 
   .pfs-filter-dropdown {
     max-height: 13.75rem;
+  }
+
+  .pfs-filter-arrow,
+  .pfs-search-icon {
+    right: var(--bbl-space-250);
   }
 
   .pfs-tabs-wrapper .tabs-nav-wrapper {
@@ -455,17 +445,6 @@ main:has(.property-for-sale-container) > .section .default-content-wrapper img {
 @media (width > 64rem) {
   .pfs-search-input {
     font-size: 0.9rem;
-  }
-
-  .pfs-filter-row {
-    flex-wrap: nowrap;
-    align-items: center;
-  }
-
-  .pfs-search-wrap {
-    flex: 1 1 0;
-    min-width: 0;
-    width: auto;
   }
 
   .pfs-filter-dropdown {
