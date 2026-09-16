@@ -7,15 +7,6 @@ import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit } from './submit.js';
 import DocBasedFormToAF from './transform.js';
-import decorateCreditCardTractApplication from './form-custom/creditcard-track-application/creditcard-track-application.js';
-import decorateBondAllocationForm from './form-custom/bond-allocation/bond-allocation.js';
-import decorateBondConnectForm from './form-custom/bond-connect/bond-connect.js';
-import decorateSipForm from './form-custom/sip-form/sip-form.js';
-import decorateDebtSupportForm from './form-custom/debt-support/debt-support.js';
-import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
-import decorateReliefMeasures from './form-custom/relief-measures/relief-measures.js';
-import decorateCreditCardForm from './form-custom/credit-card-form/credit-card-form.js';
-import decorateContactUsForm from './form-custom/contact-us/contact-us.js';
 import {
   checkValidation,
   createButton,
@@ -37,6 +28,41 @@ import {
 export const DELAY_MS = 0;
 let captchaField;
 let afModule;
+
+async function decorateCustomForm(form) {
+  const decorators = [];
+  if (form.querySelector('.cc-app-main-form')) {
+    decorators.push(import('./form-custom/creditcard-track-application/creditcard-track-application.js'));
+  }
+  if (form.querySelector('.bond-allocation-panel')) {
+    decorators.push(import('./form-custom/bond-allocation/bond-allocation.js'));
+  }
+  if (form.querySelector('.bond-connect-panel, .field-bond-connect, .field-bondconnecttable')
+    || window.location.pathname.toLowerCase().includes('bond-connect')) {
+    decorators.push(import('./form-custom/bond-connect/bond-connect.js'));
+  }
+  if (form.querySelector('.sip-form-panel')) {
+    decorators.push(import('./form-custom/sip-form/sip-form.js'));
+  }
+  if (form.querySelector('.field-main-form-panel .field-loan-type')) {
+    decorators.push(import('./form-custom/debt-support/debt-support.js'));
+  }
+  if (form.querySelector('.sme-loan-form-panel')) {
+    decorators.push(import('./form-custom/sme-loan-form/sme-loan-form.js'));
+  }
+  if (form.querySelector('.relief-measures-panel')) {
+    decorators.push(import('./form-custom/relief-measures/relief-measures.js'));
+  }
+  if (form.querySelector('[class*="field-creditcard"], .credit-card-form-panel, .creditcard-form-panel')) {
+    decorators.push(import('./form-custom/credit-card-form/credit-card-form.js'));
+  }
+  if (form.querySelector('input[name="formCode"]')?.value?.trim().toLowerCase() === 'contactus') {
+    decorators.push(import('./form-custom/contact-us/contact-us.js'));
+  }
+
+  const modules = await Promise.all(decorators);
+  modules.forEach(({ default: decorateCustom }) => decorateCustom(form));
+}
 
 const withFieldWrapper = (element) => (fd) => {
   const wrapper = createFieldWrapper(fd);
@@ -380,15 +406,7 @@ async function createFormForAuthoring(formDef) {
     }
     return [];
   });
-  decorateCreditCardTractApplication(form);
-  decorateBondAllocationForm(form);
-  decorateBondConnectForm(form);
-  decorateSipForm(form);
-  decorateDebtSupportForm(form);
-  decorateSmeLoanForm(form);
-  decorateReliefMeasures(form);
-  decorateCreditCardForm(form);
-  decorateContactUsForm(form);
+  await decorateCustomForm(form);
   return form;
 }
 
@@ -443,15 +461,7 @@ export async function createForm(formDef, data, source = 'aem') {
     handleSubmit(e, form, captcha);
   });
 
-  decorateCreditCardTractApplication(form);
-  decorateBondAllocationForm(form);
-  decorateBondConnectForm(form);
-  decorateSipForm(form);
-  decorateDebtSupportForm(form);
-  decorateSmeLoanForm(form);
-  decorateReliefMeasures(form);
-  decorateCreditCardForm(form);
-  decorateContactUsForm(form);
+  await decorateCustomForm(form);
   return {
     form,
     captcha,

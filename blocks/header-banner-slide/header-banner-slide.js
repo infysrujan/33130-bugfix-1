@@ -140,6 +140,27 @@ function initCarousel(carousel, track) {
   }, { passive: true });
 }
 
+function optimizeSlideImage(image) {
+  const src = image.getAttribute('src');
+  if (!src) return;
+
+  const url = new URL(src, window.location.href);
+  url.search = '';
+  const optimizedSrc = `${url.pathname}?width=300&format=webply&optimize=medium`;
+  image.src = optimizedSrc;
+  image.width = 300;
+  const sourceWidth = Number(image.getAttribute('width')) || image.naturalWidth;
+  const sourceHeight = Number(image.getAttribute('height')) || image.naturalHeight;
+  if (sourceWidth && sourceHeight) {
+    image.height = Math.round((sourceHeight / sourceWidth) * 300);
+  }
+
+  const picture = image.closest('picture');
+  picture?.querySelectorAll('source').forEach((source) => {
+    source.srcset = optimizedSrc;
+  });
+}
+
 export default function decorate(block) {
   const [titleRow, autoScrollRow, scrollDelayRow, infiniteLoopRow, ...slideItems] = block.children;
 
@@ -174,6 +195,14 @@ export default function decorate(block) {
     if (picture) cardItem.appendChild(picture);
     else if (img) cardItem.appendChild(img);
 
+    const slideImage = cardItem.querySelector('img');
+    if (slideImage) {
+      optimizeSlideImage(slideImage);
+      const isFirstSlide = track.children.length === 0;
+      slideImage.loading = isFirstSlide ? 'eager' : 'lazy';
+      slideImage.fetchPriority = isFirstSlide ? 'high' : 'low';
+    }
+
     moveInstrumentation(item, cardItem);
     track.appendChild(cardItem);
   });
@@ -184,7 +213,12 @@ export default function decorate(block) {
   const ro = new ResizeObserver((entries) => {
     if (entries[0].contentRect.width > 0) {
       ro.disconnect();
-      initCarousel(carousel, track);
+      const initialize = () => initCarousel(carousel, track);
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(initialize, { timeout: 1200 });
+      } else {
+        window.setTimeout(initialize, 0);
+      }
     }
   });
   ro.observe(carousel);

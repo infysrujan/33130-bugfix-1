@@ -28,28 +28,25 @@ import initRteAnchors, { decorateIconInContainer, decorateNewTabLinks, decorateE
 
 import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
-/**
- * Import the martech plugin.
- * See: https://github.com/adobe-rnd/aem-martech#launch-container-configuration for more information.
- */
-/* eslint-disable import/no-relative-packages -- martech lives under plugins/, not node_modules */
-import {
-  initMartech,
-  martechEager,
-  martechLazy,
-  martechDelayed,
-} from '../plugins/martech/src/index.js';
-/* eslint-enable import/no-relative-packages */
 
-/**
- * Import the gtm-martech plugin.
- * See: https://github.com/adobe-rnd/aem-gtm-martech#launch-container-configuration for more information.
- */
-import gtmMartech from './gtm-martech.js';
-import { initCdpEvents } from './analytics.js';
-import { initMarketingConsentListener } from './consent.js';
+let martech;
+let gtmMartech;
+let initCdpEvents;
 
-initMarketingConsentListener();
+async function loadMarketingModules() {
+  const [martechModule, gtmModule, analyticsModule, consentModule] = await Promise.all([
+    // eslint-disable-next-line import/no-relative-packages
+    import('../plugins/martech/src/index.js'),
+    import('./gtm-martech.js'),
+    import('./analytics.js'),
+    import('./consent.js'),
+  ]);
+
+  martech = martechModule;
+  gtmMartech = gtmModule.default;
+  ({ initCdpEvents } = analyticsModule);
+  consentModule.initMarketingConsentListener();
+}
 
 // Consent when AnalysisCookie is 'Analysis' (cookie-modal / cookie-alert).
 // Load martech unless the URL query includes martech=off (DA preview).
@@ -135,7 +132,6 @@ export function createElementFromHTML(html, doc) {
   template.innerHTML = html.trim();
   return template.content.firstElementChild;
 }
-
 /**
  * load fonts.css and set a session storage flag
  */
@@ -163,10 +159,6 @@ function buildAutoBlocks(main) {
   }
 }
 
-/**
- * Decorates the main element.
- * @param {Element} main The main element
- */
 function decorateSectionIds(main) {
   main.querySelectorAll('.section[data-id]').forEach((section) => {
     section.id = toClassName(section.dataset.id);
@@ -174,9 +166,12 @@ function decorateSectionIds(main) {
   });
 }
 
+/**
+ * Decorates the main element.
+ * @param {Element} main The container element
+ */
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
-  // hopefully forward compatible button decoration
   decorateButtons(main);
   decorateIcons(main);
   buildAutoBlocks(main);
@@ -357,32 +352,6 @@ export function removePictureOptimizationParams(root) {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  const martechLoadedPromise = initMartech(
-    // WebSDK Configuration
-    // TODO: Remove the below comment once the WebSDK Configuration is updated.
-    // Docs: https://experienceleague.adobe.com/en/docs/experience-platform/web-sdk/commands/configure/overview#configure-js
-    {
-      datastreamId: dataStreamConfig[env],
-      orgId,
-      edgeDomain: 'edge.bangkokbank.com',
-      onBeforeEventSend: (payload) => {
-        if (payload.xdm.eventType === 'pageLoaded') {
-          // eslint-disable-next-line no-console
-          console.debug('Prevented custom `pageLoaded` event trigger', payload);
-          return false;
-        }
-        return true;
-      },
-    },
-    // 2. Library Configuration
-    {
-      analytics: isEnabled,
-      personalization: !!getMetadata('target') && isEnabled,
-      launchUrls: launchConfig[env],
-      trackPageView: false, // disables the first collect call
-    },
-  );
-
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
@@ -393,10 +362,6 @@ async function loadEager(doc) {
     decorateMain(main);
     document.body.classList.add('appear');
     await Promise.all([
-      // Load the martech library in the eager phase.
-      martechLoadedPromise.then(martechEager),
-      // Load the gtm-martech library in the eager phase.
-      gtmMartech.eager(),
       loadSection(main.querySelector('.section'), waitForFirstImage),
       loadWelcomeBanner(doc),
     ]);
@@ -430,6 +395,34 @@ async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
 
+  await loadMarketingModules();
+  const martechLoadedPromise = martech.initMartech(
+    {
+      datastreamId: dataStreamConfig[env],
+      orgId,
+      edgeDomain: 'edge.bangkokbank.com',
+      onBeforeEventSend: (payload) => {
+        if (payload.xdm.eventType === 'pageLoaded') {
+          // eslint-disable-next-line no-console
+          console.debug('Prevented custom `pageLoaded` event trigger', payload);
+          return false;
+        }
+        return true;
+      },
+    },
+    {
+      analytics: isEnabled,
+      personalization: !!getMetadata('target') && isEnabled,
+      launchUrls: launchConfig[env],
+      trackPageView: false,
+    },
+  );
+
+  await Promise.all([
+    martechLoadedPromise.then(martech.martechEager),
+    gtmMartech.eager(),
+  ]);
+
   // Load the gtm-martech library in the lazy phase.
   await gtmMartech.lazy();
   await buildCookieAlert(main);
@@ -447,7 +440,7 @@ async function loadLazy(doc) {
   }
 
   // Load the martech library in the lazy phase.
-  await martechLazy();
+  await martech.martechLazy();
 
   await loadBreadcrumb(doc);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
@@ -475,12 +468,12 @@ async function bblMartechDelayed() {
  */
 function loadDelayed() {
   // load the gtm-martech library in the delayed phase
-  window.setTimeout(() => gtmMartech.delayed(), 1000);
+  window.setTimeout(() => gtmMartech?.delayed(), 1000);
 
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => {
     // Load the martech library in the delayed phase.
-    martechDelayed();
+    martech?.martechDelayed();
     // trigger the martech delayed phase
     bblMartechDelayed();
 
