@@ -588,7 +588,7 @@
   display: flex;
   flex-direction: column-reverse;
   gap: var(--bbl-space-150);
-  margin-top: var(--bbl-space-300);
+  margin-top: auto;
   padding-top: var(--bbl-space-100);
 }
 
@@ -1033,6 +1033,7 @@
   .dynamic-board .db-filter-actions {
     flex-direction: row-reverse;
     justify-content: center;
+    margin-top: var(--bbl-space-300);
   }
 
   .dynamic-board .db-filter-apply,
