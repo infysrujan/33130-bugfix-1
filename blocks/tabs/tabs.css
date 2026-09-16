@@ -71,7 +71,6 @@
   border: solid 0.0625rem var(--bbl-color-black);
   position: relative;
   text-align: left;
-  margin-top: 1.875rem;
 }
 
 .tabs-nav-wrapper .tabs-dropdown:hover,

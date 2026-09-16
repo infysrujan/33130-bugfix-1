@@ -555,12 +555,14 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   }
 
   .bbl-wizard-steps {
-    padding: 0;
-    height: 3.125rem;
+    padding: 0 4rem;
+    width: 100%;
+    max-width: 46.25rem;
+    height: auto;
   }
 
   .bbl-wizard-step {
-    max-width: 7.5rem;
+    max-width: none;
     gap: var(--bbl-space-100);
   }
 
@@ -570,7 +572,9 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   }
 
   .bbl-wizard-step-title {
-    min-width: 8.75rem;
+    width: auto;
+    min-width: unset;
+    white-space: nowrap;
   }
 
   main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
