@@ -3861,6 +3861,33 @@
     ]
   },
   {
+    "id": "debit-prepaid",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "debitPrepaid",
+        "label": "debit or prepaid",
+        "options": [
+          {
+            "name": "Debit",
+            "value": "debit"
+          },
+          {
+            "name": "Prepaid",
+            "value": "prepaid"
+          }
+        ]
+      },
+      {
+        "component": "aem-tag",
+        "name": "category",
+        "label": "Category",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "download-file",
     "fields": [
       {
