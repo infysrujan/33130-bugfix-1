@@ -507,6 +507,18 @@
   min-height: unset;
 }
 
+.carousel-dotted-container .all-text-animation-variant .carousel-content.content:not(:has(.button-container)) {
+  margin-bottom: var(--bbl-space-500);
+}
+
+.carousel-dotted-container .all-text-animation-variant .carousel-content.content:has(.button-container) {
+  margin-bottom: var(--bbl-space-250);
+}
+
+.carousel-dotted-container .all-text-animation-variant .slick-dots {
+  bottom: var(--bbl-space-250);
+}
+
 .carousel-dotted.dots-center-inside-container.all-without-image .slick-dots {
   transform: unset;
   left: 1.5rem;
@@ -663,11 +675,10 @@
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default.pad-bot {
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
-  line-height: 1.285rem;
   margin: unset;
 }
 
@@ -700,7 +711,7 @@ p.text-large.text-light {
 
 /* Description padding — only when no step text is present in the wrapper */
 .carousel-dotted .carousel-dotted-item.with-default-image
-.caption.editor .text-default.pad-bot:not(:has(p.text-large)) p {
+.caption.editor .text-default.pad-bot:not(:has(p.text-large)) {
   padding-top: 1.875rem;
   padding-bottom: 1.875rem;
 }
@@ -723,7 +734,6 @@ p.text-large.text-light {
   .carousel-dotted .carousel-dotted-item.is-active {
     opacity: 1;
     height: 100%;
-    
   }
 
   .carousel-dotted-item.with-image .carousel-dotted-content .button-container {
@@ -731,7 +741,7 @@ p.text-large.text-light {
   }
 
   .carousel-dotted.all-with-image .carousel-dotted-item.is-active {
-    min-height: 27.8125rem;
+    min-height: 28.375rem;
   } 
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant) .carousel-track-wrapper {
@@ -856,6 +866,16 @@ p.text-large.text-light {
     width: 100%;
   }
 
+  .carousel-dotted-container .all-text-animation-variant .carousel-content.content:not(:has(.button-container)) {
+    bottom: 60px;
+    margin-bottom: 0;
+  }
+
+  .carousel-dotted-container .all-text-animation-variant .carousel-content.content:has(.button-container) {
+    bottom: 40px;
+    margin-bottom: 0;
+  }
+
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1, h2, h3, h4, h5, h6) {
     color: var(--bbl-color-white);
     padding: 0 0 0.625rem;
@@ -914,13 +934,13 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default {
-    line-height: 1.625rem;
-    font-family: var(--bbl-font-family-primary);
     font-weight: var(--bbl-font-weight-regular);
   }
 
-  .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
-    line-height: 1.625rem;
+  /* Step number below title: keep the extra top spacing at tablet */
+  .carousel-dotted .carousel-dotted-item.with-default-image
+  .caption.editor .title-3 ~ .text-default p.text-large.text-light {
+    padding-top: 1.875rem;
   }
 }
 
@@ -1043,4 +1063,8 @@ p.text-large.text-light {
   .carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
     width: 100%;
   }
+  
+  .carousel-dotted.all-with-image .carousel-dotted-item.is-active {
+    min-height: 27.8125rem;
+  } 
 }

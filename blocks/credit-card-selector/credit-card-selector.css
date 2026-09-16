@@ -26,23 +26,6 @@
   padding-bottom: var(--bbl-space-400);
 }
 
-@media (width > 64rem) {
-  .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
-  .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
-    max-width: unset;
-    padding-inline: 12rem;
-  }
-}
-
-@media (width > 120rem) {
-  .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
-  .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
-    max-width: var(--bbl-layout-content-max-width-1920);
-    box-sizing: border-box;
-    margin-inline: auto;
-  }
-}
-
 .credit-card-selector .card-selector-title {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-h1-desktop);
@@ -224,7 +207,8 @@
   flex-direction: column;
   justify-content: center;
   gap: var(--bbl-space-100);
-  padding: var(--bbl-space-200) var(--bbl-space-100);
+  
+  /* padding: var(--bbl-space-200) var(--bbl-space-100); */
   min-height: 7rem;
   font-size: var(--bbl-font-size-b2);
 }
@@ -486,5 +470,10 @@
 
   .credit-card-selector .card-selector-content {
     gap: var(--bbl-space-400) 3rem;
+    padding-inline: 12rem;
+  }
+
+  .section.full-bleed-bg.credit-card-selector-container .content {
+    padding-inline: 0;
   }
 }

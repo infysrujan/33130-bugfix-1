@@ -42,7 +42,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
   box-shadow: none;
 }
 
-main .section.form-container.custom-forms:has(.cc-app-main-form) {
+.credit-card-form main .section.form-container.custom-forms:has(.cc-app-main-form) {
   --cc-form-max-width: 55.625rem;
   --cc-form-gutter: 0.9375rem;
   --cc-timeline-panel-width: 28.75rem;
@@ -51,9 +51,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     var(--cc-timeline-panel-width),
     calc(min(100vw, var(--cc-form-max-width)) - 2 * var(--cc-form-gutter))
   );
-
-  padding: 0;
-  padding-inline: var(--cc-form-gutter);
+  
+  
 
   & :is(.form-wrapper, .form.block, .form) {
     width: 100%;
@@ -104,7 +103,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     line-height: 2.75rem;
   }
 
-  @media (width >= 36rem) {
+  @media (width >= 47.5rem) {
     & .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
       height: 3.4375rem;
       padding-left: 1.5625rem;
@@ -122,6 +121,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
+  }
+
+  & .date-wrapper.field-wrapper::after {
+    top: 1.625rem;
   }
 
   & :is(.form select, .drop-down-wrapper.field-wrapper select) {
@@ -143,7 +146,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     text-overflow: ellipsis;
   }
 
-  @media (width >= 36rem) {
+  @media (width >= 47.5rem) {
     & :is(.form select, .drop-down-wrapper.field-wrapper select) {
       height: 3.4375rem;
     }
@@ -349,14 +352,14 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     .submit-wrapper .button:not(:disabled),
     .cc-panel-item-panel-action-primary .button:not(:disabled)
   ) {
-    border: 0.0417rem solid transparent;
+    border: 0.0625rem solid transparent;
     background-color: var(--bbl-color-active-blue);
     color: var(--bbl-color-white);
   }
 
   & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) .button:not(:disabled),
   & .form .button.secondary {
-    border: 0.0417rem solid var(--bbl-color-active-blue);
+    border: 0.0625rem solid var(--bbl-color-active-blue);
     background-color: var(--bbl-color-white);
     color: var(--bbl-color-active-blue);
   }
@@ -375,7 +378,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) .button:disabled
   ) {
     color: var(--bbl-color-grey-60);
-    border: 0.0417rem solid var(--bbl-color-gray-300);
+    border: 0.0625rem solid var(--bbl-color-gray-300);
     background-color: var(--bbl-color-gray-300);
     cursor: not-allowed;
     pointer-events: none;

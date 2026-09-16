@@ -9,13 +9,20 @@
   overflow-x: auto;
 }
 
-.download-section > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
-  position: relative;
-  padding-bottom: 0.6875rem;
-  margin: 0.9375rem 0;
+.download-file.boxed-card {
+  background: var(--bbl-color-white);
+  padding: 1.875rem;
+  box-shadow: 0 0 1rem 0 var(--bbl-color-black-alpha-10);
+  box-sizing: border-box;
 }
 
-.download-section > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+.download-file > :is(h1, h2, h3, h4, h5, h6) {
+  position: relative;
+  padding-bottom: 0.9375rem;
+  margin: 0 0 0.9375rem;
+}
+
+.download-file > :is(h1, h2, h3, h4, h5, h6):first-child::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -23,6 +30,11 @@
   width: 1.3125rem;
   height: 0.0625rem;
   background-color: var(--bbl-color-grey-150);
+}
+
+.download-file .download-file-date {
+  margin-top: 1.5rem;
+  margin-bottom: 0;
 }
 
 .full-bleed-bg .accordion-block .download-button-wrapper.content{

@@ -495,21 +495,35 @@ function getBranchEnumNames(province, lang = 'th') {
   return data.map((item) => item.BranchName);
 }
 
-// Wraps a select's <option> elements into <optgroup> by district.
-// Main-thread DOM only — never called from inside the Rule Engine worker.
+// Wraps a select's <option> elements into <optgroup> by district, with
+// districts sorted A-Z and branches within each district sorted A-Z.
 function applyBranchDistrictGroupingToSelect(selectEl, data) {
   const districtByBranchName = {};
   data.forEach((item) => {
     districtByBranchName[item.BranchName] = item.Address3 ? String(item.Address3).trim() : '';
   });
 
+  // Collator gives correct A-Z ordering for both Thai and English labels.
+  const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
+
+  // (district, then option label) so everything ends up A-Z.
+  const entries = Array.from(selectEl.querySelectorAll('option'))
+    .map((opt) => ({
+      opt,
+      district: districtByBranchName[opt.value] || '',
+    }))
+    .filter((entry) => entry.district !== '');
+
+  entries.sort((a, b) => {
+    const districtCompare = collator.compare(a.district, b.district);
+    if (districtCompare !== 0) return districtCompare;
+    return collator.compare(a.opt.textContent, b.opt.textContent);
+  });
+
   let currentGroup = null;
   let currentDistrict = null;
 
-  Array.from(selectEl.querySelectorAll('option')).forEach((opt) => {
-    const district = districtByBranchName[opt.value] || '';
-    if (!district) return;
-
+  entries.forEach(({ opt, district }) => {
     if (district !== currentDistrict) {
       currentGroup = document.createElement('optgroup');
       currentGroup.label = district;
@@ -566,6 +580,7 @@ if (typeof document !== 'undefined') {
     });
   }, 300);
 }
+
 /**
  * Validates Thai Citizen ID using the official algorithm
  * @name validateThaiCitizenID
@@ -1122,38 +1137,57 @@ function replaceother(selectedValues, otherText) {
 }
 
 /**
- * Blocks any non-digit character from being entered into inputs whose field
- * wrapper (or the input itself) has the `number-only` CSS class — set via
+ * Restricts input characters based on CSS classes on the input or its ancestors:
+ * - `number-only`  → digits only
+ * - `english-only` → English letters only (a-z, A-Z)
+ * - both classes   → digits and English letters
  *
  * @name restrictNumberOnlyInputs
  * @returns {void}
  */
 function restrictNumberOnlyInputs() {
   if (typeof document === 'undefined') return;
-
   document.addEventListener('beforeinput', (event) => {
     const input = event.target;
     if (!(input instanceof HTMLInputElement)) {
       return;
     }
-
     const isNumberOnly = input.classList.contains('number-only')
       || input.closest('.number-only') !== null;
-    if (!isNumberOnly) {
+    const isEnglishOnly = input.classList.contains('english-only')
+      || input.closest('.english-only') !== null;
+    if (!isNumberOnly && !isEnglishOnly) {
       return;
     }
-
     const insertingTypes = ['insertText', 'insertFromPaste', 'insertFromDrop', 'insertCompositionText'];
     if (!insertingTypes.includes(event.inputType)) {
       return;
     }
-
-    if (event.data !== null && /\D/.test(event.data)) {
+    if (event.data === null) return;
+    let pattern;
+    if (isNumberOnly && isEnglishOnly) {
+      pattern = /[^a-zA-Z0-9]/;
+    } else if (isNumberOnly) {
+      pattern = /\D/;
+    } else {
+      pattern = /[^a-zA-Z]/;
+    }
+    if (pattern.test(event.data)) {
       event.preventDefault();
     }
   });
 }
 restrictNumberOnlyInputs();
+
+/**
+ * Formats a number with comma separators
+ * @name formatNumberWithCommas
+ * @param {string} value - The numeric value to format
+ * @return {string}
+ */
+function formatNumberWithCommas(value) {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
 
 // eslint-disable-next-line import/prefer-default-export
 export {
@@ -1192,4 +1226,5 @@ export {
   getSelectedLabelValue,
   validateMaxCheckbox,
   replaceother,
+  formatNumberWithCommas,
 };

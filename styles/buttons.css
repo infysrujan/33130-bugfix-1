@@ -544,7 +544,6 @@ a.link-inverted[aria-disabled="true"] {
 
 .global-dropdown-trigger:hover {
     box-shadow: none;
-    border-color: var(--bbl-color-white);
     text-decoration: none;
 }
 

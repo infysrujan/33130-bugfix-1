@@ -172,6 +172,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
 
   const isMobileView = typeof window !== 'undefined' && window.innerWidth < 768;
   const useRotation = hasData && points.length > 1 && (period !== '1W' || isMobileView);
+  const xLabelFontSize = useRotation ? '0.6875rem' : 'var(--bbl-body-b1-size)';
   const padB = useRotation ? 70 : 40;
   const H = useRotation ? 360 : 300;
   const padL = 58;
@@ -265,7 +266,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
         x: clampedX,
         y: H - padB + (useRotation ? 14 : 20),
         'text-anchor': anchor,
-        'font-size': 'var(--bbl-body-b1-size)',
+        'font-size': xLabelFontSize,
         fill: 'var(--bbl-color-black)',
         'font-weight': 'bold',
         'font-family': 'BangkokBank-Bold,Arial,sans-serif',

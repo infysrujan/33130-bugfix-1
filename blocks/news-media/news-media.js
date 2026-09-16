@@ -2,7 +2,7 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import {
-  buildCardHtml, buildPaginationHtml, bindPaginationClick, normalizeCategory,
+  buildCardHtml, buildPaginationHtml, bindPaginationClick,
 } from '../../scripts/utils/card-helpers.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
@@ -27,7 +27,7 @@ function filterAndPage(allCards, category, page, pageSize) {
   const filtered = category
     ? allCards.filter((c) => {
       const cats = Array.isArray(c.category) ? c.category : [c.category];
-      return cats.map(normalizeCategory).includes(normalizeCategory(category));
+      return cats.includes(category);
     })
     : allCards;
 
@@ -42,7 +42,24 @@ function filterAndPage(allCards, category, page, pageSize) {
   return { cards: sorted.slice(start, start + pageSize), total };
 }
 
-function setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage = 1) {
+const BE_CE_OFFSET = 543;
+
+function tagToGregorianYear(tag, lang) {
+  const match = /(\d+)$/.exec(tag || '');
+  if (!match) return '';
+  const n = parseInt(match[1], 10);
+  return lang === 'th' ? String(n - BE_CE_OFFSET) : String(n);
+}
+
+function preserveQueryOnLangLinks() {
+  const { search } = window.location;
+  document.querySelectorAll('.top-nav li.top-nav-item.link-icon > a[href]').forEach((a) => {
+    const [path] = a.getAttribute('href').split('?');
+    a.setAttribute('href', path + search);
+  });
+}
+
+function setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage = 1, yearKey = '') {
   panel.innerHTML = `
     <div class="news-media-content">
       <div class="news-media-grid"></div>
@@ -75,8 +92,10 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders, i
   bindPaginationClick(paginationEl, state, () => {
     render();
     const params = new URLSearchParams(window.location.search);
+    if (yearKey) params.set('year', yearKey);
     params.set('page', state.page);
     window.history.replaceState(null, '', `?${params.toString()}`);
+    preserveQueryOnLangLinks();
   }, gridEl);
   render();
 }
@@ -98,35 +117,44 @@ async function renderNewsMedia(block) {
 
   document.querySelector('.tabs.block')?.classList.add('news-media-tabs');
 
+  const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
+  const yearMatchBtn = tabBtns.find(
+    (btn) => tagToGregorianYear(btn.dataset.tabCategoryTag, lang) === yearParam,
+  );
+  const defaultBtn = tabBtns.find((btn) => btn.getAttribute('aria-selected') === 'true');
+  const activeBtn = yearMatchBtn || defaultBtn;
+  const activeTag = activeBtn?.dataset.tabCategoryTag;
+  const activeYearKey = activeBtn ? tagToGregorianYear(activeTag, lang) : null;
+
+  if (yearParam && activeYearKey && activeYearKey !== yearParam) {
+    const params = new URLSearchParams(window.location.search);
+    params.set('year', activeYearKey);
+    window.history.replaceState(null, '', `?${params.toString()}`);
+  }
+
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
   tabPanels.forEach((panel) => {
-    const tabBtnId = panel.getAttribute('aria-labelledby');
-    const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
+    const tabBtn = document.getElementById(panel.getAttribute('aria-labelledby'));
     const tabTags = tabBtn?.dataset.tabCategoryTag;
-    const category = tabTags;
-
-    const isActiveTab = yearParam
-      ? tabBtn?.textContent.trim() === yearParam
-      : tabBtn?.getAttribute('aria-selected') === 'true';
-
-    const initialPage = isActiveTab ? pageParam : 1;
-    setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage);
+    const yearKey = tagToGregorianYear(tabTags, lang);
+    const initialPage = tabBtn === activeBtn ? pageParam : 1;
+    setupPanel(panel, allCards, tabTags, locale, pageSize, placeholders, initialPage, yearKey);
   });
 
-  const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
-
-  if (yearParam) {
-    tabBtns.find((btn) => btn.textContent.trim() === yearParam)?.click();
-  }
+  yearMatchBtn?.click();
 
   tabBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const params = new URLSearchParams(window.location.search);
-      params.set('year', btn.textContent.trim());
+      params.set('year', tagToGregorianYear(btn.dataset.tabCategoryTag, lang));
       params.delete('page');
       window.history.replaceState(null, '', `?${params.toString()}`);
+      preserveQueryOnLangLinks();
     });
   });
+
+  preserveQueryOnLangLinks();
+  document.addEventListener('header-decorated', preserveQueryOnLangLinks);
 
   block.hidden = true;
 }

@@ -371,6 +371,8 @@ function buildAccordionPrintDocument(block) {
     .download-section .default-content-wrapper h4 { font-size: 1.125rem;}
     .download-button-wrapper .download-files { background: none; box-shadow: none; padding: 0; margin: 0; }
     .table.scroll table {min-width: unset;}
+    .accordion-block-container .accordion-item .table { overflow: visible; }
+    .accordion-block-container .accordion-item .table table { min-width: 0; }
     .download-button-wrapper .download-files {padding-right: 2.125rem;}
     .download-files.icon-download::before, .download-files .icon-download::before {right: -0.27rem;}
 

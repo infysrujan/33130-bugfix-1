@@ -141,6 +141,15 @@ function padToColumnCount(values, colCount) {
   return out;
 }
 
+function setCellText(cell, text) {
+  const wrapper = cell.querySelector(':scope > strong, :scope > b');
+  if (wrapper) {
+    wrapper.textContent = text;
+  } else {
+    cell.textContent = text;
+  }
+}
+
 /**
  * @param {HTMLTableRowElement} tr
  * @param {string[]} texts
@@ -149,11 +158,7 @@ function fillInterestRateRowCells(tr, texts) {
   const cells = tr.querySelectorAll('td');
   texts.forEach((text, j) => {
     if (cells[j]) {
-      if (j === 1) {
-        cells[j].textContent = `${text}%`;
-      } else {
-        cells[j].textContent = text;
-      }
+      setCellText(cells[j], j === 1 ? `${text}%` : text);
     }
   });
 }
@@ -314,7 +319,7 @@ function populateStandardLayoutTable(table, tableId, tableData) {
         tds[0].textContent = `${tds[0].textContent}${extra}`;
       }
       for (let j = 1; j < tds.length; j += 1) {
-        const dataIndex = (i * (tds.length - 1)) + (j - 1) + 1;
+        const dataIndex = i * (tds.length - 1) + (j - 1) + 1;
         if (tableData[dataIndex]) {
           if (j === 1) {
             tds[j].textContent = `${tableData[dataIndex].mktvalue} $/Barrel`;
@@ -496,7 +501,10 @@ function applyTableWrapperPageLayout(tableWrapper) {
   const rrBlockIndex = indexOfChildContainingRR(wrapperChildren);
   if (rrBlockIndex === -1) return;
 
-  const splitRightStart = indexOfPrecedingHeading(wrapperChildren, rrBlockIndex);
+  const splitRightStart = indexOfPrecedingHeading(
+    wrapperChildren,
+    rrBlockIndex,
+  );
   const rightEndExclusive = indexAfterWhichRightColumnEnds(wrapperChildren);
 
   const pageLayout = buildTwoColumnPageLayout(
@@ -510,8 +518,18 @@ function applyTableWrapperPageLayout(tableWrapper) {
  * Month names for the market report date
  */
 const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 /**
@@ -614,8 +632,9 @@ function applyTextSmallToTableFollowParagraphs(panel) {
 }
 
 function hideToolsAndAssistanceFromPrint(content) {
-  const heading = [...content.querySelectorAll('h1, h2, h3, h4, h5, h6')]
-    .find((element) => element.textContent.trim().toLowerCase() === 'tools & assistance');
+  const heading = [...content.querySelectorAll('h1, h2, h3, h4, h5, h6')].find(
+    (element) => element.textContent.trim().toLowerCase() === 'tools & assistance',
+  );
   heading?.closest('.section')?.classList.add('market-report-tools-assistance');
 }
 
@@ -627,12 +646,14 @@ function printElement() {
 
   hideToolsAndAssistanceFromPrint(content);
 
-  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
-    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  const logoEl = document.querySelector(
+    '.brand-logo-print-logo picture, .brand-logo-print-logo img',
+  )
+    || document.querySelector(
+      '.brand-logo-container picture, .brand-logo-container img',
+    );
   if (!logoEl) return;
   const brandLogo = logoEl.cloneNode(true).outerHTML;
-
-  const printWindow = window.open('', '', 'height=500,width=800');
 
   const printCss = `
     @page {
@@ -653,7 +674,11 @@ function printElement() {
     .tabs-dropdown {
       display: none;
     }
-   
+
+    .sub-nav.block {
+      display: none;
+    }
+
     .tabs-nav-wrapper .tabs-nav {
      display: block;
     }
@@ -756,21 +781,35 @@ function printElement() {
   </html>
   `;
 
-  const runPrint = () => {
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 100);
-  };
-  if (printWindow.document.readyState === 'complete') {
-    requestAnimationFrame(runPrint);
-  } else {
-    printWindow.addEventListener('load', runPrint);
-  }
+  // Print through a hidden iframe rather than a popup window: iOS Safari turns
+  // window.open into a stuck new tab it won't let the script close, whereas an
+  // iframe prints in place with nothing to close.
+  document.querySelector('.market-report-print-frame')?.remove();
 
-  printWindow.document.write(printHtml);
-  printWindow.document.close();
+  const printFrame = document.createElement('iframe');
+  printFrame.className = 'market-report-print-frame';
+  printFrame.setAttribute('aria-hidden', 'true');
+  printFrame.style.cssText = 'position:fixed;left:-9999px;width:0;height:0;border:0;';
+  printFrame.srcdoc = printHtml;
+
+  printFrame.addEventListener(
+    'load',
+    () => {
+      const frameWindow = printFrame.contentWindow;
+      if (!frameWindow) {
+        printFrame.remove();
+        return;
+      }
+      frameWindow.addEventListener('afterprint', () => printFrame.remove(), {
+        once: true,
+      });
+      frameWindow.focus();
+      frameWindow.print();
+    },
+    { once: true },
+  );
+
+  document.body.appendChild(printFrame);
 }
 /* Create the top row of the market report */
 /**
@@ -896,7 +935,11 @@ function setupOthbisGthbColumns(panel) {
  * @param {HTMLElement} panel
  */
 function flattenMarketReportContent(panel) {
-  const wrappers = [...panel.querySelectorAll(':scope > .default-content-wrapper, :scope > .table-wrapper')];
+  const wrappers = [
+    ...panel.querySelectorAll(
+      ':scope > .default-content-wrapper, :scope > .table-wrapper',
+    ),
+  ];
   if (wrappers.length <= 1) return;
 
   const target = document.createElement('div');

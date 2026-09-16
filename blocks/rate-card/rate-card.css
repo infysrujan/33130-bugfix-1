@@ -325,6 +325,10 @@
     width: 4.375rem;
   }
 
+  .rate-card table thead th:nth-child(2) {
+    padding-right: 0.625rem;
+  }
+
   .rate-card table tbody td:not(:first-child) {
     padding-inline: 0.625rem;
     font-size: 1.5rem;

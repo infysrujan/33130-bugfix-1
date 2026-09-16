@@ -17,7 +17,6 @@ import {
   getPromotionApiConfig,
   getPromotionLanguage,
   sortCards,
-  normalizeCategory,
 } from '../../scripts/utils/card-helpers.js';
 
 // --- Autoscroll to the category subnav (any promotions listing in tabs) -----
@@ -77,11 +76,10 @@ function scrollToSubnav(subnavId) {
   run();
 }
 
-const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
-
-function isTopPromotionsLabel(value) {
+function isTopPromotionsLabel(value, placeholders) {
   const key = String(value || '').trim().toLowerCase().replace(/\s+/g, '');
-  return TOP_PROMO_KEYS.some((k) => k.toLowerCase() === key);
+  const highlightsLabel = (placeholders?.promotionMbHighlights || 'highlights').toLowerCase().replace(/\s+/g, '');
+  return key === highlightsLabel;
 }
 
 function extractListingConfig(block) {
@@ -221,8 +219,8 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
   const matched = allCards.filter((card) => {
     if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
     if (!topPromotionOnly && category) {
-      const cardCats = normalizeList(card.category).map(normalizeCategory);
-      if (!cardCats.includes(normalizeCategory(category))) return false;
+      const cardCats = normalizeList(card.category);
+      if (!cardCats.includes(category)) return false;
     }
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory) {
@@ -268,6 +266,7 @@ function setupPanel(
     hidePagination = false,
     isBbm: isBbmPanel = false,
     isHighlightsPanel = false,
+    tabText: displayTabText = category,
   } = options;
   const labelCategory = placeholders.promoFilterCategory || 'Category';
   const labelCardType = placeholders.promoFilterCardType || 'Card Type';
@@ -356,12 +355,7 @@ function setupPanel(
         const cardOptions = buildCardOptions(cardData);
         cardOptions.baseUrl = options.baseUrl;
         if (isBbmPanel) cardOptions.logoHtml = '';
-        const cats = cardData.category;
-        let displayTag = category;
-        if (!isHighlightsPanel) {
-          displayTag = Array.isArray(cats) ? cats[0] : (cats || category);
-        }
-        return buildCardHtml(cardData, displayTag, placeholders, cardOptions);
+        return buildCardHtml(cardData, displayTabText, placeholders, cardOptions);
       }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
@@ -557,7 +551,7 @@ export default async function decorate(block) {
     }
     const firstCategory = activeCategories[0]?.label || '';
     const firstSubcategories = activeCategories[0]?.subcategories || [];
-    const isHighlightsPanel = isBbm && isTopPromotionsLabel(firstCategory);
+    const isHighlightsPanel = isBbm && isTopPromotionsLabel(firstCategory, placeholders);
     previewPanel.innerHTML = '';
     setupPanel(
       previewPanel,
@@ -625,7 +619,7 @@ export default async function decorate(block) {
     const dataCategories = dataSet?.categories || [];
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
-    const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText));
+    const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText, placeholders));
     const category = tabTags || (isHighlightsPanel ? tabText : '');
     const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
@@ -644,6 +638,7 @@ export default async function decorate(block) {
         hidePagination: disableFilters && isBbm,
         isBbm,
         isHighlightsPanel,
+        tabText,
         // Autoscroll pages: render the active panel now so the page reaches its
         // full height before we scroll (otherwise a short doc clamps the scroll).
         immediate: autoScroll,

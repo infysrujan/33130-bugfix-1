@@ -13,12 +13,28 @@
     }
   }
 
-  & :is(.form-wrapper, .form.block, .form),
-  & .form form,
+  & :is(.form-wrapper, .form.block, .form) {
+    width: 100%;
+    margin-inline: auto;
+  }
+
   & .form form fieldset.panel-wrapper.field-main-form-panel {
     width: 100%;
     max-width: 46.25rem;
     margin-inline: auto;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+  }
+
+  & .form form,
+  & .form form > fieldset.panel-wrapper.field-wrapper {
+    max-width: none;
+  }
+
+  & .form form fieldset.panel-wrapper.field-title-panel {
+    width: 100%;
+    max-width: none;
   }
 
   & .form form .field-wrapper:has(>.field-description) {
@@ -101,7 +117,7 @@
     font-size: 0.875rem;
     color: var(--bbl-color-gray-800);
   }
-
+  
   & .form form .form-review-2col fieldset.panel-wrapper.field-wrapper > legend {
     width: 100%;
     margin: 0;
@@ -188,6 +204,10 @@
       min-width: 18rem;
       margin: 0;
       justify-content: flex-start;
+
+      &:lang(th) {
+        min-width: 11rem;
+      }
 
       & label.field-label {
         min-width: 0;
@@ -281,12 +301,6 @@
         cursor: pointer;
       }
     }
-  }
-
-  & .form form fieldset.panel-wrapper.field-main-form-panel {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 0;
   }
 
   & .form form fieldset.panel-wrapper.field-main-form-panel > .field-wrapper {

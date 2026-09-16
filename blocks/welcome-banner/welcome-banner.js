@@ -11,10 +11,10 @@ const SUPPRESSION_DURATION_MS = 20 * 60 * 1000; // 20 minutes
 // ─── Storage helpers (sessionStorage only — cleared when the tab closes) ──────
 
 /**
- * Reads the suppression timestamp from sessionStorage.
- * Silently returns 0 on any SecurityError (strict privacy modes / Incognito).
- * @returns {number} Unix timestamp in ms, or 0 if not found.
- */
+* Reads the suppression timestamp from sessionStorage.
+* Silently returns 0 on any SecurityError (strict privacy modes / Incognito).
+* @returns {number} Unix timestamp in ms, or 0 if not found.
+*/
 function readTimestamp() {
   try {
     return Number(sessionStorage.getItem(BANNER_STORAGE_KEY)) || 0;
@@ -26,9 +26,9 @@ function readTimestamp() {
 }
 
 /**
- * Persists the current timestamp to sessionStorage when the user clicks a CTA.
- * Silently ignores write failures in restrictive environments.
- */
+* Persists the current timestamp to sessionStorage when the user clicks a CTA.
+* Silently ignores write failures in restrictive environments.
+*/
 function writeTimestamp() {
   try {
     sessionStorage.setItem(BANNER_STORAGE_KEY, String(Date.now()));
@@ -38,9 +38,9 @@ function writeTimestamp() {
 }
 
 /**
- * Returns the remaining milliseconds within the suppression window, or 0 if expired / unset.
- * @returns {number}
- */
+* Returns the remaining milliseconds within the suppression window, or 0 if expired / unset.
+* @returns {number}
+*/
 function getRemainingMs() {
   const ts = readTimestamp();
   if (!ts) return 0;
@@ -50,12 +50,12 @@ function getRemainingMs() {
 // ─── Date-validity guard ──────────────────────────────────────────────────────
 
 /**
- * Returns true if the current date falls within [startStr, endStr].
- * Boundaries are inclusive; a missing boundary is treated as open.
- * @param {string|undefined} startStr
- * @param {string|undefined} endStr
- * @returns {boolean}
- */
+* Returns true if the current date falls within [startStr, endStr].
+* Boundaries are inclusive; a missing boundary is treated as open.
+* @param {string|undefined} startStr
+* @param {string|undefined} endStr
+* @returns {boolean}
+*/
 function isDateActive(startStr, endStr) {
   const now = Date.now();
   if (startStr) {
@@ -72,11 +72,11 @@ function isDateActive(startStr, endStr) {
 // ─── CTA extraction ───────────────────────────────────────────────────────────
 
 /**
- * Extracts CTA data from a single button row.
- * The second cell contains the open-in-new-tab toggle ("true"/"false").
- * @param {Element} row
- * @returns {{ href: string, sourceAnchor: HTMLAnchorElement }|null}
- */
+* Extracts CTA data from a single button row.
+* The second cell contains the open-in-new-tab toggle ("true"/"false").
+* @param {Element} row
+* @returns {{ href: string, sourceAnchor: HTMLAnchorElement }|null}
+*/
 function rowToCtaData(row) {
   const cells = [...row.children];
   const a = cells[0]?.querySelector('a');
@@ -88,12 +88,12 @@ function rowToCtaData(row) {
 }
 
 /**
- * Extracts CTA data from the block's button rows.
- * Falls back to sibling `.default-content-wrapper` links when no rows contain anchors.
- * @param {Element[]} buttonRows
- * @param {Element}   placeholder
- * @returns {Array}
- */
+* Extracts CTA data from the block's button rows.
+* Falls back to sibling `.default-content-wrapper` links when no rows contain anchors.
+* @param {Element[]} buttonRows
+* @param {Element}   placeholder
+* @returns {Array}
+*/
 function extractCtas(buttonRows, placeholder) {
   const fromRows = buttonRows.map(rowToCtaData).filter(Boolean);
   if (fromRows.length) return fromRows;
@@ -109,18 +109,19 @@ function extractCtas(buttonRows, placeholder) {
 // ─── DOM builders ─────────────────────────────────────────────────────────────
 
 /**
- * Attaches dismiss/navigation logic to the original anchor and returns it
- * along with its inline wrapper (e.g. <strong>) so the authored markup and
- * existing button classes (applied by decorateButtonsV1) are preserved as-is.
- * @param {Document} doc
- * @param {object}   ctaData
- * @param {Function} dismissAndSuppress
- * @returns {HTMLElement}
- */
+* Attaches dismiss/navigation logic to the original anchor and returns it
+* along with its inline wrapper (e.g. <strong>) so the authored markup and
+* existing button classes (applied by decorateButtonsV1) are preserved as-is.
+* @param {Document} doc
+* @param {object}   ctaData
+* @param {Function} dismissAndSuppress
+* @returns {HTMLElement}
+*/
 function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
   const { sourceAnchor, href } = ctaData;
   const target = sourceAnchor.getAttribute('target') || '';
 
+  sourceAnchor.classList.replace('button', 'button-m');
   sourceAnchor.addEventListener('click', (e) => {
     e.preventDefault();
     dismissAndSuppress();
@@ -136,12 +137,12 @@ function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
 }
 
 /**
- * Builds the CTA container with all action anchors.
- * @param {Document} doc
- * @param {Array}    ctaList
- * @param {Function} dismissAndSuppress
- * @returns {HTMLElement}
- */
+* Builds the CTA container with all action anchors.
+* @param {Document} doc
+* @param {Array}    ctaList
+* @param {Function} dismissAndSuppress
+* @returns {HTMLElement}
+*/
 function buildCtas(doc, ctaList, dismissAndSuppress) {
   const el = doc.createElement('div');
   el.className = 'welcome-banner-ctas';

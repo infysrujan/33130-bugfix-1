@@ -355,11 +355,16 @@ export default async function buildMfFundCardsSlide(row, index) {
     });
   }
 
+  function getTrackSlides() {
+    const container = slides[0]?.parentElement;
+    return container ? Array.from(container.querySelectorAll('.mf-fund-cards-item')) : slides;
+  }
+
   async function equalizeCardHeights() {
-    let activeSlides = [];
+    const activeSlides = getTrackSlides();
+
     function measureAndApply() {
       let max = 0;
-      activeSlides = Array.from(document.querySelectorAll('.mf-fund-cards-item'));
       activeSlides.forEach((sl) => { sl.style.display = 'flex'; });
       try {
         activeSlides.forEach((sl) => {

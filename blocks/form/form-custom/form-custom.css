@@ -60,12 +60,16 @@ main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper
     font-size: var(--bbl-font-size-h3-mobile);
     color: var(--bbl-color-grey-90);
     position: absolute;
-    top: 0;
+    top: 1.1875rem;
     right: var(--bbl-space-300);
     height: var(--bbl-form-date-icon-height, 2.75rem);
     display: flex;
     align-items: center;
     pointer-events: none;
+  }
+
+  main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper:has(label[data-visible="false"])::after {
+    top: 0;
   }
 }
 
@@ -211,7 +215,7 @@ main .section.form-container.custom-forms .form .form-message.success-message {
   text-align: center;
   white-space: pre-line;
   line-height: var(--bbl-line-height-b1-mobile);
-  padding: var(--bbl-space-200) var(--bbl-space-150);
+  padding: var(--bbl-space-400) var(--bbl-space-150);
 }
 
 main .section.form-container.custom-forms .form .form-message.success-message::first-line {

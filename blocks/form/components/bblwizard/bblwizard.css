@@ -40,7 +40,7 @@
   max-width: 31.25rem;
   line-height: var(--bbl-wizard-line-height-base-mobile);
   font-family: var(--bbl-font-family-medium);
-  scroll-margin-top: 9rem;
+  scroll-margin-top: 8rem;
 }
 
 main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper:not([class*="field-form-fragment"], .field-button-panel, [class*="field-form-width"], [class*="field-css-"], :has([class*="field-form-width"])) {
@@ -590,6 +590,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   .bbl-wizard-steps {
     font-size: var(--bbl-font-size-b1-desktop);
     line-height: var(--bbl-wizard-line-height-base-desktop);
+    scroll-margin-top: 9.5rem;
   }
 
   main .section.wizard-forms .form form .field-prospectage > label.field-label::before {
@@ -686,3 +687,4 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
     line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 }
+ 

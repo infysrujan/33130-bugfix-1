@@ -313,10 +313,13 @@
 }
 
 .forex-rates .forex-rates-currency {
+  white-space: nowrap;
+}
+
+.forex-rates .forex-rates-currency-inner {
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  white-space: nowrap;
 }
 
 .forex-rates .forex-rates-flag {

@@ -71,8 +71,11 @@
   --bbl-form-line-height-1-5: 1.5;
   --bbl-form-line-height-14: 0.875rem;               /* 14px */
   --bbl-form-line-height-17: 1.0625rem;              /* 17px */
+  --bbl-form-line-height-18: 1.125rem;               /* 18px */
   --bbl-form-line-height-19: 1.2031rem;              /* ~19px */
+  --bbl-form-line-height-19-25:  1.2031rem;           /* 19.25px */
   --bbl-form-line-height-21: 1.2891rem;              /* 20.625px */
+  --bbl-form-line-height-22: 1.375rem;               /* 22px */
   --bbl-form-line-height-25: 1.5625rem;              /* 25px */
   --bbl-form-line-height-32: 2rem;                   /* 32px */
   --bbl-form-line-height-44: 2.75rem;                /* 44px */
@@ -205,14 +208,14 @@ main .lead-forms .form form .field-title {
   padding: 0;
 }
 
-main .lead-forms .form form .field-infotext {
+/* main .lead-forms .form form .field-infotext {
   margin: var(--bbl-space-500) 0 var(--bbl-space-250);
-}
+} */
 
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
   color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1-mobile);
-  line-height: var(--bbl-form-line-height-14);
+  line-height: var(--bbl-form-line-height-19-25);
   padding-right: 0;
   margin-bottom: var(--bbl-form-margin-10);
 }
@@ -221,7 +224,7 @@ main .lead-forms .form form .plain-text-wrapper p:last-child {
   margin-bottom: 0;
 }
 
-main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textw, .field-text1) p {
+main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textt, .field-or, .field-textw, .field-text1) p {
   text-align: left;
 }
 
@@ -453,7 +456,7 @@ main .lead-forms .form form .email-wrapper::before {
   justify-content: center;
   width: var(--bbl-space-250);
   height: 1.1875rem;
-  color: var(--bbl-color-grey-40);
+  color: var(--bbl-color-grey-90);
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -939,7 +942,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
 
   main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
     font-size: var(--bbl-font-size-b1-desktop);
-    line-height: 1.3rem;
+    line-height: var(--bbl-form-line-height-22);
   }
 
   main .lead-forms .form form h2{
@@ -956,7 +959,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     line-height: var(--bbl-line-height-b1-desktop);
   }
 
-  main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textw, .field-text1) > p {
+  main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textt, .field-or, .field-textw, .field-text1) > p {
     padding-inline: var(--bbl-form-padding-10);
   }
 
