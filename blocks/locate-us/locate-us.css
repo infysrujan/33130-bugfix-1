@@ -1538,13 +1538,15 @@
 
   .locate-us.block .content>*:not(.locate-us-filter-bar) {
     max-width: var(--bbl-layout-content-max-width-1920);
-    margin: auto;
+    margin-inline: auto;
   }
 
   .locate-us .locate-us-filter-bar {
     padding-left: 2rem;
     padding-right: 2rem;
     width: calc(50% - 2.8rem);
+    max-width: var(--bbl-layout-content-max-width-1920);
+    margin-left: auto;
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
