@@ -292,7 +292,7 @@
   max-height: 90vh;
   background: var(--bbl-color-white);
   border-radius: var(--bbl-rounded-050);
-  padding: var(--bbl-space-250);
+  padding: 1.875rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
