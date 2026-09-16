@@ -1293,6 +1293,22 @@
           }
         },
         {
+          "title": "Calendar",
+          "id": "calendar",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/fd/components/form/datepicker/v1/datepicker",
+                "template": {
+                  "jcr:title": "Calendar",
+                  "fieldType": "date-input",
+                  "fd:viewType": "calendar"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Forward Points SME",
           "id": "forward-points-sme",
           "plugins": {

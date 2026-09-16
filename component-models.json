@@ -8255,6 +8255,295 @@
     ]
   },
   {
+    "id": "calendar",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Basic",
+        "name": "basic"
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Field name",
+        "valueType": "string",
+        "value": "date",
+        "required": true,
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^[^$].*",
+          "customErrorMsg": "Name cannot start with $"
+        },
+        "description": "Name used for this field's value when the form is submitted."
+      },
+      {
+        "component": "text",
+        "name": "jcr:title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "hideTitle",
+        "label": "Hide title",
+        "valueType": "boolean"
+      },
+      {
+        "component": "text",
+        "name": "label",
+        "label": "Label",
+        "valueType": "string",
+        "description": "Label shown above the date field."
+      },
+      {
+        "component": "text",
+        "name": "placeholder",
+        "label": "Placeholder",
+        "valueType": "string",
+        "description": "Placeholder text shown in the empty input field."
+      },
+      {
+        "component": "boolean",
+        "name": "visible",
+        "label": "Show Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "boolean",
+        "name": "enabled",
+        "label": "Enable Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "boolean",
+        "name": "readOnly",
+        "label": "Read-only",
+        "valueType": "boolean"
+      },
+      {
+        "component": "select",
+        "name": "colspan",
+        "label": "Column Span",
+        "valueType": "string",
+        "value": "12",
+        "options": [
+          {
+            "name": "1 column",
+            "value": "1"
+          },
+          {
+            "name": "2 column",
+            "value": "2"
+          },
+          {
+            "name": "3 column",
+            "value": "3"
+          },
+          {
+            "name": "4 column",
+            "value": "4"
+          },
+          {
+            "name": "5 column",
+            "value": "5"
+          },
+          {
+            "name": "6 column",
+            "value": "6"
+          },
+          {
+            "name": "7 column",
+            "value": "7"
+          },
+          {
+            "name": "8 column",
+            "value": "8"
+          },
+          {
+            "name": "9 column",
+            "value": "9"
+          },
+          {
+            "name": "10 column",
+            "value": "10"
+          },
+          {
+            "name": "11 column",
+            "value": "11"
+          },
+          {
+            "name": "12 column",
+            "value": "12"
+          }
+        ]
+      },
+      {
+        "component": "date-time",
+        "name": "default",
+        "label": "Default Value",
+        "valueType": "date"
+      },
+      {
+        "component": "text",
+        "name": "customClassName",
+        "label": "Custom CSS Class Name",
+        "valueType": "string",
+        "description": "Enter one or more CSS class names (space-separated) to apply custom styling to this date field's wrapper."
+      },
+      {
+        "component": "tab",
+        "label": "Validation",
+        "name": "validation"
+      },
+      {
+        "component": "boolean",
+        "name": "required",
+        "label": "Required",
+        "valueType": "boolean"
+      },
+      {
+        "component": "text",
+        "name": "mandatoryMessage",
+        "label": "Required error message",
+        "valueType": "string",
+        "description": "Error message shown when required field is left empty."
+      },
+      {
+        "component": "text",
+        "name": "validateExpMessage",
+        "label": "Script validation message",
+        "valueType": "string",
+        "description": "Displayed when validation script fails."
+      },
+      {
+        "component": "date-time",
+        "name": "minimumDate",
+        "label": "Minimum date",
+        "valueType": "date",
+        "description": "Minimum date allowed in the field",
+        "valueFormat": "YYYY-MM-DD[T]HH:mm:ss.000-00:00"
+      },
+      {
+        "component": "text",
+        "name": "minimumMessage",
+        "label": "Minimum error message",
+        "valueType": "string",
+        "description": "Error message shown when the date entered is before the minimum date."
+      },
+      {
+        "component": "date-time",
+        "name": "maximumDate",
+        "label": "Maximum date",
+        "valueType": "date",
+        "description": "Maximum date allowed in the field",
+        "valueFormat": "YYYY-MM-DD[T]HH:mm:ss.000-00:00"
+      },
+      {
+        "component": "text",
+        "name": "maximumMessage",
+        "label": "Maximum error message",
+        "valueType": "string",
+        "description": "Error message shown when the date entered is after the maximum date."
+      },
+      {
+        "component": "tab",
+        "label": "Formats",
+        "name": "formats"
+      },
+      {
+        "component": "select",
+        "label": "Display Format",
+        "name": "displayFormat",
+        "valueType": "string",
+        "value": "d MMMM y (BE)",
+        "description": "How the date is shown to the user in the input field.",
+        "options": [
+          {
+            "name": "No Pattern",
+            "value": ""
+          },
+          {
+            "name": "1 มกราคม 2569 (Thai, Buddhist Era)",
+            "value": "d MMMM y (BE)"
+          },
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
+          },
+          {
+            "name": "01 April, 2007",
+            "value": "d MMMM, y"
+          },
+          {
+            "name": "April 01, 2007",
+            "value": "MMMM d, y"
+          },
+          {
+            "name": "Sunday, 01 April, 2007",
+            "value": "EEEE, d MMMM, y"
+          },
+          {
+            "name": "Sunday, April 01, 2007",
+            "value": "EEEE, MMMM d, y"
+          },
+          {
+            "name": "D/M/YYYY (1/4/2007)",
+            "value": "d/M/y"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "label": "Submit Value Format",
+        "name": "valueFormat",
+        "valueType": "string",
+        "value": "d MMMM y (BE)",
+        "description": "Format of the date value sent on form submission.",
+        "options": [
+          {
+            "name": "1 มกราคม 2569 (Thai, Buddhist Era)",
+            "value": "d MMMM y (BE)"
+          },
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
+          },
+          {
+            "name": "YYYY-MM-DD (2007-04-01) — ISO 8601",
+            "value": "yyyy-MM-dd"
+          },
+          {
+            "name": "MM/DD/YYYY (04/01/2007)",
+            "value": "MM/dd/yyyy"
+          },
+          {
+            "name": "D/M/YYYY (1/4/2007)",
+            "value": "d/M/y"
+          }
+        ]
+      },
+      {
+        "component": "tab",
+        "label": "Help Content",
+        "name": "help"
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Help text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "tooltip",
+        "label": "Short description",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "double-key-dropdown",
     "fields": [
       {
