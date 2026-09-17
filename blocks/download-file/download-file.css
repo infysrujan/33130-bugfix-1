@@ -53,7 +53,8 @@
 
 @media (width > 64rem) {
   .download-file-container:has(.download-file.boxed-card) {
-    width: 53.583rem; 
+    /* Fluid: 857px at 1024px viewport, grows with the viewport, capped at 900px */
+    width: clamp(53.5625rem, calc(53.5625rem + (100vw - 64rem) * 0.1034), 56.25rem);
     padding-inline: 0;
   }
 }
