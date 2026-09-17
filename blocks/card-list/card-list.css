@@ -45,6 +45,10 @@
   margin: 0;
 }
 
+.cards-list-description:has(> p.rte-inline-image) {
+  display: block;
+}
+
 .cards-list-inner:has(.cards-list-remark) .cards-list-description {
   margin-bottom: 0.625rem;
 }
