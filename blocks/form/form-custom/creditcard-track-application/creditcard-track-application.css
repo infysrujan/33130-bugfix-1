@@ -103,14 +103,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     line-height: 2.75rem;
   }
 
-  @media (width >= 47.5rem) {
-    & .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
-      height: 3.4375rem;
-      padding-left: 1.5625rem;
-      padding-right: var(--bbl-space-250);
-    }
-  }
-
   & .date-wrapper.field-wrapper {
     min-width: 0;
     
@@ -146,7 +138,16 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     text-overflow: ellipsis;
   }
 
-  @media (width >= 47.5rem) {
+  @media (width > 47.5rem) {
+    padding-left: 12%;
+    padding-right: 12%;
+
+    & .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
+      height: 3.4375rem;
+      padding-left: 1.5625rem;
+      padding-right: var(--bbl-space-250);
+    }
+
     & :is(.form select, .drop-down-wrapper.field-wrapper select) {
       height: 3.4375rem;
     }
@@ -217,6 +218,17 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     clear: both;
     margin-bottom: 2.19rem;;
   }
+
+  & .form form fieldset.panel-wrapper.field-wrapper.cc-app-message-form :is(
+  .text-wrapper,
+  .number-wrapper,
+  .email-wrapper,
+  .telephone-wrapper,
+  .drop-down-wrapper,
+  .date-wrapper
+) {
+  margin-bottom: 0.625rem;
+}
 
   /* Mobile: stack half-width fields in a single column */
   & .form form .field-wrapper.col-6:not(.button-wrapper) {
@@ -884,7 +896,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     line-height: var(--bbl-text-default-line-height);
   }
 
-  @media (width >= 62rem) {
+  @media (width > 64rem) {
     & :is(
       h3,
       .form form .field-title h2,
@@ -971,7 +983,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     margin: 0;
   }
 
-  @media (width >= 64rem) {
+  @media (width > 64rem) {
     padding-inline: 0;
 
     --cc-timeline-form-width: min(var(--cc-timeline-panel-width), min(100vw, var(--cc-form-max-width)));
@@ -1136,7 +1148,7 @@ main .section.header-banner-slide-container + .section.form-container.custom-for
   padding-block-start: 3rem;
 }
 
-@media (width >= 64rem) {
+@media (width > 64rem) {
   main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
     padding-block-start: 2.5rem;
   }

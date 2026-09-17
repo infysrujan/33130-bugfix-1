@@ -1,0 +1,219 @@
+/* Date Picker TH — fully standalone, zero dependency on existing picker styles */
+
+/* ── Wrapper & label ─────────────────────────────────────────────────────── */
+
+.dpth-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.dpth-label {
+  font-family: var(--bbl-font-family-primary, inherit);
+  font-size: var(--bbl-body-b1-size, 1rem);
+  line-height: var(--bbl-body-b1-line-height, 1.5);
+  font-weight: 600;
+  color: var(--bbl-color-grey-100, #333);
+}
+
+/* ── Input field ─────────────────────────────────────────────────────────── */
+
+.dpth-field {
+  position: relative;
+  width: 100%;
+}
+
+.dpth-input {
+  width: 100%;
+  height: 3rem;
+  padding-inline: 0.875rem 2.75rem;
+  border: 0.0625rem solid var(--bbl-color-grey-30, #ccc);
+  border-radius: 0.5rem;
+  background: var(--bbl-color-white, #fff);
+  font-family: var(--bbl-font-family-primary, inherit);
+  font-size: var(--bbl-body-b1-size, 1rem);
+  line-height: var(--bbl-body-b1-line-height, 1.5);
+  color: var(--bbl-color-grey-100, #333);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+  appearance: none;
+}
+
+.dpth-input::placeholder {
+  color: var(--bbl-color-grey-45, #999);
+}
+
+.dpth-input:hover {
+  border-color: var(--bbl-color-grey-50, #aaa);
+}
+
+.dpth-input:focus-visible,
+.dpth-input[aria-expanded="true"] {
+  outline: 0.125rem solid var(--bbl-color-active-blue, #0070d2);
+  outline-offset: 0.125rem;
+  border-color: var(--bbl-color-active-blue, #0070d2);
+}
+
+/* ── Calendar icon ───────────────────────────────────────────────────────── */
+
+.dpth-icon {
+  position: absolute;
+  right: var(--bbl-space-300, 0.75rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  color: var(--bbl-color-grey-85, #555);
+  pointer-events: none;
+  font-size: var(--bbl-font-size-h3-mobile, 1.25rem);
+  line-height: 1;
+}
+
+/* ── Popover container ───────────────────────────────────────────────────── */
+
+.dpth-popover {
+  position: fixed;
+  z-index: 9999;
+  min-width: 17.5rem;
+  padding: 1rem;
+  background: var(--bbl-color-white, #fff);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%), 0 2px 8px rgb(0 0 0 / 6%);
+  font-family: var(--bbl-font-family-primary, inherit);
+  box-sizing: border-box;
+}
+
+.dpth-popover *,
+.dpth-popover *::before,
+.dpth-popover *::after {
+  box-sizing: border-box;
+}
+
+/* ── Popover header (month + nav) ────────────────────────────────────────── */
+
+.dpth-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.dpth-nav {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0.0625rem solid var(--bbl-color-grey-30, #ccc);
+  border-radius: 50%;
+  background: var(--bbl-color-white, #fff);
+  color: var(--bbl-color-grey-100, #333);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.dpth-nav:hover {
+  border-color: var(--bbl-color-grey-50, #aaa);
+  background: var(--bbl-color-grey-10, #f5f5f5);
+}
+
+.dpth-nav:focus-visible {
+  outline: 0.125rem solid var(--bbl-color-active-blue, #0070d2);
+  outline-offset: 0.125rem;
+}
+
+.dpth-month-title {
+  flex: 1 1 auto;
+  margin: 0;
+  text-align: center;
+  font-size: var(--bbl-heading-h3-size, 1rem);
+  line-height: var(--bbl-heading-h3-line-height, 1.4);
+  font-weight: var(--bbl-heading-h3-weight, 700);
+  color: var(--bbl-color-blue-105, #00447c);
+}
+
+/* ── Weekday row ─────────────────────────────────────────────────────────── */
+
+.dpth-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.dpth-weekdays span {
+  text-align: center;
+  font-size: var(--bbl-body-b1-size, 0.875rem);
+  font-weight: var(--bbl-body-b1-weight, 400);
+  color: var(--bbl-color-black, #000);
+}
+
+/* ── Day grid ────────────────────────────────────────────────────────────── */
+
+.dpth-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.dpth-day {
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: 2.5rem;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  font-family: var(--bbl-font-family-primary, inherit);
+  font-size: var(--bbl-body-b1-size, 0.875rem);
+  font-weight: var(--bbl-body-b1-weight, 400);
+  color: var(--bbl-color-grey-100, #333);
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+
+.dpth-day-empty {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.dpth-day:disabled {
+  color: var(--bbl-color-grey-45, #aaa);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+.dpth-day:focus-visible {
+  outline: 0.125rem solid var(--bbl-color-active-blue, #0070d2);
+  outline-offset: 0.125rem;
+}
+
+.dpth-day:not(:disabled):hover {
+  background: var(--bbl-color-grey-10, #f5f5f5);
+}
+
+.dpth-day-selected {
+  background: var(--bbl-color-active-blue, #0070d2);
+  color: var(--bbl-color-white, #fff);
+  font-weight: 700;
+}
+
+.dpth-day-selected:not(:disabled):hover {
+  background: var(--bbl-color-blue-70, #0057a8);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (width <= 767px) {
+  .dpth-wrapper {
+    max-width: 100%;
+  }
+}

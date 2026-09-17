@@ -632,10 +632,9 @@ function applyTextSmallToTableFollowParagraphs(panel) {
 }
 
 function hideToolsAndAssistanceFromPrint(content) {
-  const heading = [...content.querySelectorAll('h1, h2, h3, h4, h5, h6')].find(
-    (element) => element.textContent.trim().toLowerCase() === 'tools & assistance',
-  );
-  heading?.closest('.section')?.classList.add('market-report-tools-assistance');
+  content.querySelectorAll('.menu-banner').forEach((block) => {
+    block.closest('.section')?.classList.add('market-report-tools-assistance');
+  });
 }
 
 function printElement() {

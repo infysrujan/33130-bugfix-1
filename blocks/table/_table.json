@@ -194,6 +194,10 @@
                   "value": "merge-tables"
                 },
                 {
+                  "name": "Group Tables",
+                  "value": "group-tables"
+                },
+                {
                   "name": "Nested Table",
                   "value": "nested-table"
                 },

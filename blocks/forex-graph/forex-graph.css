@@ -250,6 +250,13 @@
   justify-content: center;
 }
 
+.forex-graph .forex-graph-no-data {
+  margin: 0.75rem 0 0;
+  font-size: 0.7rem;
+  color: var(--bbl-color-grey-85);
+  text-align: center;
+}
+
 /* ── Chart section ─────────────────────────────────────────── */
 
 .forex-graph .forex-graph-chart-section {
@@ -649,6 +656,10 @@ body:has(.forex-graph-wrapper) .section.underline-image .section-image-item::aft
   }
 
   .forex-graph .forex-graph-error-text {
+    font-size: 0.8rem;
+  }
+
+  .forex-graph .forex-graph-no-data {
     font-size: 0.8rem;
   }
 

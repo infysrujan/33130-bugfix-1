@@ -277,6 +277,32 @@ function mergeTablesInSection(block) {
   alignHeaderLastLine(targetTable);
 }
 
+function groupTablesInSection(block) {
+  const section = block.closest('.section');
+  if (!section) return;
+
+  const wrappers = [...section.querySelectorAll('.table-wrapper:has(table.group-tables)')];
+  if (wrappers.length < 2) return;
+
+  let run = [];
+  const flushRun = () => {
+    if (run.length > 1 && !run[0].parentElement.classList.contains('table-group-scroll')) {
+      const container = document.createElement('div');
+      container.className = 'table-group-scroll';
+      run[0].before(container);
+      run.forEach((wrapper) => container.append(wrapper));
+    }
+    run = [];
+  };
+
+  wrappers.forEach((wrapper) => {
+    const previous = run[run.length - 1];
+    if (previous && previous.nextElementSibling !== wrapper) flushRun();
+    run.push(wrapper);
+  });
+  flushRun();
+}
+
 function hasMatchingPlaceholders(table, nestedTables) {
   const walker = document.createTreeWalker(table, NodeFilter.SHOW_TEXT);
   while (walker.nextNode()) {
@@ -340,6 +366,17 @@ function scheduleMergeTables(block, parentTable) {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       mergeTablesInSection(block);
+    });
+  });
+}
+
+function scheduleGroupTables(block, parentTable) {
+  if (!parentTable.classList.contains('group-tables')) return;
+  if (isAuthoringInstance(block)) return;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      groupTablesInSection(block);
     });
   });
 }
@@ -408,5 +445,6 @@ export default async function decorate(block) {
   decorateIconInContainer(parentTable);
 
   scheduleMergeTables(block, parentTable);
+  scheduleGroupTables(block, parentTable);
   scheduleResolveAdjacentNestedTables(block);
 }

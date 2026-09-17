@@ -4,6 +4,9 @@ import {
   buildCardHtml,
   buildPaginationHtml,
   bindPaginationClick,
+  resolvePhotoSrc,
+  formatPrice,
+  isPromotionOverDate,
 } from '../../scripts/utils/card-helpers.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
@@ -58,26 +61,12 @@ function closeFiltersOnOutsideClick(container) {
   });
 }
 
-function resolvePhotoSrc(photo) {
-  if (!photo) return '';
-  if (photo.startsWith('data:')) return photo;
-  return `data:image/jpeg;base64,${photo}`;
-}
-
 function resolveGps(item) {
   if (item.GPS_LATITUDE && item.GPS_LONGTITUDE) {
     return { lat: item.GPS_LATITUDE, lng: item.GPS_LONGTITUDE };
   }
   const [lat, lng] = (item.GPS_DATA || '').split(',').map((s) => s.trim());
   return lat && lng ? { lat, lng } : null;
-}
-
-function formatPrice(price) {
-  if (!price) return '';
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(price);
 }
 
 function buildOptions(items) {
@@ -144,7 +133,7 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData) {
   const price = Number(item.PR_PRICE) > 0
     ? `${formatPrice(item.PR_PRICE)} ${currency}`
     : (p.propertyForSaleContactStaff || 'ติดต่อเจ้าหน้าที่');
-  const specialPrice = item.SPECIAL_PRICE ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}` : '';
+  const specialPrice = !isPromotionOverDate(item) ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}` : '';
   const location = [item.LOCATION_AMPHUR, item.LOCATION_PROVINCE].filter(Boolean).join(', ');
   const tag = pfsData.categoryLabel[category] || item.MAIN_ASSET || '';
 
@@ -333,7 +322,9 @@ function setupPanel(panel, state, config) {
         { ...searchParams, category },
         pfsData.tabIndexCategory,
       );
-      allItems = items;
+      allItems = category === 'promotion'
+        ? items.filter((item) => !isPromotionOverDate(item))
+        : items;
       pageRef.page = 1;
       renderPage();
     } finally {

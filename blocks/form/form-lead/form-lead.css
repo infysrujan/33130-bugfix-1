@@ -228,6 +228,14 @@ main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext
   text-align: left;
 }
 
+/* Privacy consent text — b1 body tokens (regular) + 20.8px line-height, all breakpoints */
+main .lead-forms .form form .plain-text-wrapper.field-wrapper.tnc-text-decoration p {
+  font-size: var(--bbl-body-b1-size);
+  line-height: 1.3rem;
+  font-weight: var(--bbl-body-b1-weight);
+  font-family: var(--bbl-font-family-primary);
+}
+
 main .lead-forms .form form .plain-text-wrapper :is(.custom-wffm-form) {
   font-size: inherit;
 }
