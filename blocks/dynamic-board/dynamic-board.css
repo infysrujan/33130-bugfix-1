@@ -665,6 +665,7 @@
   font-size: var(--bbl-body-b1-size);
   font-weight: var(--bbl-body-b1-weight);
   line-height: var(--bbl-body-b1-line-height);
+  font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   text-align: center;
   border-bottom: var(--bbl-space-025) solid var(--bbl-color-grey-20);
@@ -831,6 +832,7 @@
   font-size: var(--bbl-body-b1-size);
   line-height: var(--bbl-body-b1-line-height);
   font-weight: var(--bbl-body-b1-weight);
+  font-family: var(--bbl-font-family-primary);
   color: var(--bbl-color-grey-70);
   vertical-align: middle;
   height: 4.6875rem;
