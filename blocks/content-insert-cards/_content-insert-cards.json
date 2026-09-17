@@ -61,6 +61,14 @@
         },
         {
           "...": "../../models/elements/_button-fields.json"
+        },
+        {
+          "component": "boolean",
+          "name": "thumbSmaller",
+          "label": "Thumb Smaller",
+          "description": "If enabled, the card image uses the smaller thumbnail size instead of the default larger size.",
+          "valueType": "boolean",
+          "value": true
         }
       ]
     }
