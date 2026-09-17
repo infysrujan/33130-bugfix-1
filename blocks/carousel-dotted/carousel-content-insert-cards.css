@@ -258,6 +258,10 @@
   height: 23.75rem;
 }
 
+.carousel-dotted-container.menu-list-container .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .smaller .thumb {
+  height: 28.25rem;
+}
+
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .intro-info {
   position: absolute;
   bottom: 1.875rem;
