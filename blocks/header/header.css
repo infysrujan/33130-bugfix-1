@@ -260,12 +260,12 @@ header.is-not-overlapped ~ main {
     right: 0;
     z-index: 100;
     transform: translateY(0);
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.3s ease;
   }
 
+  /* Transform-only hide: an opacity fade would blend the hero through this bar. */
   .header-nav>.top-nav.is-hidden {
     transform: translateY(-100%);
-    opacity: 0;
     pointer-events: none;
   }
 
@@ -284,7 +284,9 @@ header.is-not-overlapped ~ main {
     left: 0;
     right: 0;
     z-index: 101;
-    transition: background-color 0.3s ease, top 0.3s ease;
+
+    /* top only: animating background-color blends the hero behind it into the bar. */
+    transition: top 0.3s ease;
   }
 
   .header .main-nav-inner {
