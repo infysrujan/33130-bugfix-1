@@ -195,6 +195,8 @@ function applyColumnWidths(table, raw) {
 }
 
 function markHeaderRows(table) {
+  if (table.classList.contains('no-header')) return;
+
   const rows = [...table.querySelectorAll('tr')];
   if (!rows.length) return;
 

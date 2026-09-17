@@ -1189,6 +1189,96 @@ function formatNumberWithCommas(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
+/**
+ * Formats a number with comma separators, capping the actual digit count
+ * would count the added commas and wrongly flag the value as too long).
+ * @name formatCappedNumberWithCommas
+ * @param {string} value - The numeric value to format
+ * @param {number} [maxDigits=12] - Maximum allowed actual digits
+ * @return {string}
+ */
+function formatCappedNumberWithCommas(value, maxDigits = 12) {
+  const digitsOnly = value.toString().replace(/\D/g, '').slice(0, Number(maxDigits));
+  return digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+/**
+ * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
+ * so they remain visible even when the AEM Forms Rule Engine overwrites the
+ * field's description container with a validation error message.
+ * Only applies to fields marked with the `preserve-unit-label` CSS class.
+ *
+ * @name preserveFieldUnitLabels
+ * @returns {void}
+ */
+function preserveFieldUnitLabels() {
+  if (typeof document === 'undefined') return;
+
+  const initWrapper = (wrapper) => {
+    if (wrapper.dataset.unitLabelInit === 'true') return;
+
+    const rawDescription = wrapper.getAttribute('data-description');
+    if (!rawDescription) return;
+
+    const temp = document.createElement('div');
+    temp.innerHTML = rawDescription;
+    const unitText = temp.textContent.trim();
+    if (!unitText) return;
+
+    const computedPosition = window.getComputedStyle(wrapper).position;
+    if (computedPosition === 'static') {
+      wrapper.style.position = 'relative';
+    }
+
+    const unitLabel = document.createElement('span');
+    unitLabel.className = 'field-unit-label';
+    unitLabel.textContent = unitText;
+    unitLabel.style.position = 'absolute';
+    unitLabel.style.right = '0';
+    unitLabel.style.top = '3.2rem';
+    unitLabel.style.color = 'var(--bbl-color-gray-800)';
+    unitLabel.style.fontSize = '0.875rem';
+    unitLabel.style.pointerEvents = 'none';
+    unitLabel.style.background = 'transparent';
+
+    wrapper.appendChild(unitLabel);
+
+    // Hide the original description text ONLY while it still shows the
+    // original unit text (e.g. "Baht/Month"), so it never overlaps our
+    // cloned label. Once the Rule Engine overwrites it with a validation
+    // error, its text no longer matches, so it becomes visible again.
+    const originalDescription = wrapper.querySelector('.field-description');
+    if (originalDescription && originalDescription.textContent.trim() === unitText) {
+      originalDescription.style.display = 'none';
+    }
+
+    wrapper.dataset.unitLabelInit = 'true';
+  };
+
+  const scan = () => {
+    document.querySelectorAll('.field-wrapper.preserve-unit-label[data-description]').forEach((wrapper) => {
+      initWrapper(wrapper);
+
+      // Re-check on every scan: toggle the original description's
+      // visibility based on whether it currently holds the original
+      // unit text or a validation error message.
+      const originalDescription = wrapper.querySelector('.field-description');
+      const unitLabel = wrapper.querySelector('.field-unit-label');
+      if (originalDescription && unitLabel) {
+        const isOriginalText = originalDescription.textContent.trim()
+          === unitLabel.textContent.trim();
+        originalDescription.style.display = isOriginalText ? 'none' : '';
+      }
+    });
+  };
+
+  scan();
+
+  const observer = new MutationObserver(() => scan());
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+preserveFieldUnitLabels();
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -1227,4 +1317,5 @@ export {
   validateMaxCheckbox,
   replaceother,
   formatNumberWithCommas,
+  formatCappedNumberWithCommas,
 };

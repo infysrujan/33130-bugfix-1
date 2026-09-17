@@ -120,6 +120,10 @@
                 {
                   "name": "Right Aligned Last Line",
                   "value": "header-right-aligned-last-line"
+                },
+                {
+                  "name": "No Header",
+                  "value": "no-header"
                 }
               ]
             },

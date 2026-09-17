@@ -13418,6 +13418,10 @@
               {
                 "name": "Right Aligned Last Line",
                 "value": "header-right-aligned-last-line"
+              },
+              {
+                "name": "No Header",
+                "value": "no-header"
               }
             ]
           },
@@ -13876,6 +13880,10 @@
           {
             "name": "Section type",
             "children": [
+              {
+                "name": "No Style",
+                "value": "no-style"
+              },
               {
                 "name": "Central Aligned",
                 "value": "central-aligned"
