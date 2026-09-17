@@ -107,6 +107,25 @@
   object-fit: cover;
 }
 
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item {
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-viewport {
   overflow: hidden;
   width: 100%;
@@ -138,25 +157,6 @@
   flex-direction: column;
   opacity: 1;
   transition: none;
-}
-
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active {
-  width: 100%;
-  overflow: hidden;
-  aspect-ratio: 16 / 9;
-}
-
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active picture {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }
 
 .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow {
@@ -209,6 +209,14 @@
   width: calc(100% + 1px);
 }
 
+.carousel-dotted.show-arrows-dots.mixed-image-slides:has(.simple-carousel):not(:has(.with-default-image, .with-circular-image)) .carousel-track-wrapper .carousel-dotted-item.simple-carousel {
+  margin-bottom: 0;
+}
+
+.carousel-dotted.show-arrows-dots.mixed-image-slides:has(.simple-carousel):not(:has(.with-default-image, .with-circular-image)) .carousel-track-viewport {
+  margin-bottom: 2.125rem;
+}
+
 @media (width > 47.5rem) {
   .carousel-dotted.show-arrows-dots .carousel-dotted-item {
     position: relative;
@@ -243,11 +251,6 @@
   .carousel-dotted.show-arrows-dots:has(.simple-carousel),
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) {
     position: relative;
-  }
-
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active {
-    display: block;
-    flex-direction: unset;
   }
 
   .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .all-mf-fund-cards, .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow {

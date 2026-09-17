@@ -288,9 +288,13 @@
   min-height: 9.375rem;
 }
 
-.cards-list-image.cards-list-image-default {
+.cards-list .cards-list-image.cards-list-image-default {
   max-height: 100%;
   height: calc(100vw);
+}
+
+.cards-list:is(.carousel) .cards-list-image.cards-list-image-default {
+  height: calc(85vw);
 }
 
 .card-list-modal-media picture {
@@ -586,7 +590,7 @@
     max-height: calc(100vw * 0.2);
   }
 
-  .cards-list-image.cards-list-image-default {
+  .card-list .cards-list-image.cards-list-image-default {
     max-height: calc(100vw * 0.4);
     height: 100vw;
   }
@@ -793,7 +797,7 @@
     min-height: calc(100px + 50 * ((100vw - 320px) / 1600));
   }
 
-  .cards-list-image.cards-list-image-default {
+  .card-list .cards-list-image.cards-list-image-default {
     height: calc(100vw * 0.25);
   }
 
@@ -834,6 +838,11 @@
 
   .cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
     min-height: calc(100px + 50 * ((100vw - 320px) / 1600));
+  }
+
+  .cards-list:is(.carousel) .cards-list-image.cards-list-image-default {
+    height: calc(100vw * .25);
+    max-height: calc(100vw * .4);
   }
 }
 
@@ -887,7 +896,7 @@
     max-height: calc(100vw * 0.2);
   }
 
-  .cards-list-image.cards-list-image-default {
+  .card-list.cards-list-image.cards-list-image-default {
     max-height: calc(100vw * 0.4);
     height: 100vw;
   }

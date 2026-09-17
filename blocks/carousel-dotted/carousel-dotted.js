@@ -427,9 +427,14 @@ export default async function decorate(block) {
     && slidesWithoutImage === 0
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
-  const arrowTrackVariant = circularOrDefaultImage || allFragmentTrack || isMfFundCardsCarousel;
   const isSimpleCarousel = slideEls.some((s) => s.classList.contains('simple-carousel'));
-  const shouldCloneTrack = (allFragmentTrack || isMfFundCardsCarousel || circularOrDefaultImage)
+  // simple-carousel reuses the same track-wrapper transform transition as the
+  // card-list-carousel (fragment) and circular/default-image variants so slides
+  // animate smoothly instead of jumping via display toggling.
+  const arrowTrackVariant = circularOrDefaultImage || allFragmentTrack
+    || isMfFundCardsCarousel || isSimpleCarousel;
+  const shouldCloneTrack = (allFragmentTrack || isMfFundCardsCarousel
+    || circularOrDefaultImage || isSimpleCarousel)
     && slideEls.length > 1 && !isAuthoring;
 
   function triggerBgZoom(slideEl) {
@@ -495,9 +500,6 @@ export default async function decorate(block) {
     if (showArrows && arrowTrackVariant) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
-    } else if (showArrows && isSimpleCarousel) {
-      prevArrow.disabled = false;
-      nextArrow.disabled = false;
     } else if (isMfCardListCarousel) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
@@ -512,6 +514,7 @@ export default async function decorate(block) {
       || allFragmentTrack
       || isMfFundCardsCarousel
       || circularOrDefaultImage
+      || isSimpleCarousel
     ) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       if (trackWrapper) {
@@ -541,7 +544,7 @@ export default async function decorate(block) {
             trackWrapper.getBoundingClientRect();
             trackWrapper.style.transition = '';
           }, 700);
-        } else if (circularOrDefaultImage) {
+        } else if (circularOrDefaultImage || isSimpleCarousel) {
           // Use viewport width — track may grow with flex children.
           const trackViewport = block.querySelector('.carousel-track-viewport');
           const slideWidthPx = (trackViewport && slidesDefaultImage > 0)
@@ -598,7 +601,7 @@ export default async function decorate(block) {
       // Enable circular navigation for showArrowsDots variant
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
       setActive(prevIndex, 'backward');
-    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel) {
+    } else if (isMfCardListCarousel) {
       setActive(currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1);
     } else if (currentIndex > 0) {
       setActive(currentIndex - 1, 'backward');
@@ -611,7 +614,7 @@ export default async function decorate(block) {
       // Enable circular navigation for showArrowsDots variant
       const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
       setActive(nextSlideIndex, 'forward');
-    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel) {
+    } else if (isMfCardListCarousel) {
       setActive(currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0);
     } else if (currentIndex < slideEls.length - 1) {
       setActive(currentIndex + 1, 'forward');
@@ -662,13 +665,13 @@ export default async function decorate(block) {
       const cloneFirst = slideEls[0].cloneNode(true);
       cloneFirst.setAttribute('aria-hidden', 'true');
       trackWrapper.replaceChildren(cloneLast, ...slideEls, cloneFirst);
-      if (allFragmentTrack || circularOrDefaultImage) {
+      if (allFragmentTrack || circularOrDefaultImage || isSimpleCarousel) {
         trackWrapper.style.transform = 'translate3d(-100%, 0px, 0px)';
       }
     } else {
       trackWrapper.replaceChildren(...slideEls);
     }
-    if (allFragmentTrack || isMfFundCardsCarousel || circularOrDefaultImage) {
+    if (allFragmentTrack || isMfFundCardsCarousel || circularOrDefaultImage || isSimpleCarousel) {
       const trackViewport = document.createElement('div');
       trackViewport.className = 'carousel-track-viewport';
       if (shouldCloneTrack) {
@@ -687,7 +690,8 @@ export default async function decorate(block) {
 
   if (showArrows || isMfCardListCarousel) {
     if (showArrows && arrowTrackVariant) {
-      const trackContainer = (allFragmentTrack || isMfFundCardsCarousel || circularOrDefaultImage)
+      const trackContainer = (allFragmentTrack || isMfFundCardsCarousel
+        || circularOrDefaultImage || isSimpleCarousel)
         ? block.querySelector('.carousel-track-viewport')
         : block.querySelector('.carousel-track-wrapper');
       if (!noNav) {
@@ -721,7 +725,8 @@ export default async function decorate(block) {
 
   if (slideEls.length) {
     setActive(0);
-    if ((allFragmentTrack || isMfFundCardsCarousel || circularOrDefaultImage) && shouldCloneTrack) {
+    if ((allFragmentTrack || isMfFundCardsCarousel || circularOrDefaultImage || isSimpleCarousel)
+      && shouldCloneTrack) {
       requestAnimationFrame(() => {
         const trackWrapper = block.querySelector('.carousel-track-wrapper');
         const trackViewport = block.querySelector('.carousel-track-viewport');
@@ -754,7 +759,7 @@ export default async function decorate(block) {
             }
           };
           requestAnimationFrame(() => applyMfFundCentering(0));
-        } else if (circularOrDefaultImage && trackWrapper) {
+        } else if ((circularOrDefaultImage || isSimpleCarousel) && trackWrapper) {
           const width = (trackViewport || trackWrapper).offsetWidth;
           trackWrapper.style.transform = `translate3d(${-width}px, 0px, 0px)`;
           trackWrapper.getBoundingClientRect();
@@ -816,7 +821,7 @@ export default async function decorate(block) {
     });
   }
 
-  if (circularOrDefaultImage) {
+  if (circularOrDefaultImage || isSimpleCarousel) {
     // Snap the track to the active slide's resting position with no animation.
     const snapToActive = () => {
       const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
