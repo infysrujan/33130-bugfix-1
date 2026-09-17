@@ -60,6 +60,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     margin-inline: auto;
   }
 
+  & :is(.form) {
+    min-height: 700px;
+  }
+
   /* Page + panel titles — form legend tokens (1.125rem live), global line-height */
   & :is(
     h3,
