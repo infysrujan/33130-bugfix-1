@@ -347,6 +347,10 @@ main img {
     text-align: left;
 }
 
+:is(.section, .accordion-panel):is(.left-content) > .default-content-wrapper:has(+ .table-wrapper) > ul {
+    margin-top: 0;
+}
+
 @media (width > 47.5rem) {
     .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
     .section.underline-image .section-image-item,
