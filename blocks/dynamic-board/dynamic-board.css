@@ -666,6 +666,7 @@
   font-weight: var(--bbl-body-b1-weight);
   line-height: var(--bbl-body-b1-line-height);
   color: var(--bbl-color-black);
+  font-family: var(--bbl-font-family-medium);
   text-align: center;
   border-bottom: var(--bbl-space-025) solid var(--bbl-color-grey-20);
   border-right: 0.0625rem solid var(--bbl-color-grey-20);
@@ -834,6 +835,7 @@
   color: var(--bbl-color-grey-70);
   vertical-align: middle;
   height: 4.6875rem;
+  font-family: var(--bbl-font-family-primary);
 }
 
 .dynamic-board .db-table tbody tr:last-child td {
