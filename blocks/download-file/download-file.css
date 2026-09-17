@@ -50,3 +50,10 @@
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-primary);
 }
+
+@media (width > 64rem) {
+  .download-file-container:has(> .download-file-wrapper) {
+    width: 53.583rem; 
+    padding-inline: 0;
+  }
+}
