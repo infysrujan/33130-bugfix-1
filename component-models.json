@@ -2228,6 +2228,22 @@
         }
       },
       {
+        "component": "boolean",
+        "name": "thumbSmaller",
+        "label": "Thumb Smaller",
+        "description": "If enabled, the card image uses the smaller thumbnail size instead of the default larger size.",
+        "valueType": "boolean",
+        "value": true,
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "contentInsertCarouselCards"
+          ]
+        }
+      },
+      {
         "component": "custom-asset-namespace:custom-asset",
         "name": "heroImagePickerDesktop",
         "label": "Image (Desktop)",
