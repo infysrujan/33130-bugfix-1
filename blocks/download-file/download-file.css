@@ -52,7 +52,7 @@
 }
 
 @media (width > 64rem) {
-  .download-file-container:has(> .download-file-wrapper) {
+  .download-file-container:has(.download-file.boxed-card) {
     width: 53.583rem; 
     padding-inline: 0;
   }
