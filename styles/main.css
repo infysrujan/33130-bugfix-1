@@ -343,6 +343,11 @@ main img {
     text-align: right;
 }
 
+.section.left-content > .default-content-wrapper:has(+ .table-wrapper) > p,
+.accordion-panel.left-content > .default-content-wrapper:has(+ .table-wrapper) > p {
+    text-align: left;
+}
+
 @media (width > 47.5rem) {
     .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
     .section.underline-image .section-image-item,
