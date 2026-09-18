@@ -114,6 +114,10 @@
   text-indent: 0;
 }
 
+.download-file-modal .privacy-modal-title :is(h3) {
+  color: var(--bbl-color-grey-28);
+}
+
 .privacy-modal-scroll-hint {
   display: none;
 }
@@ -356,6 +360,7 @@
   ol ol>li::marker {
     content: counters(item, ".");
     counter-increment: item;
+    font-weight: normal;
   }
 
   /* Level 3: "(1)" instead of continuing the dotted pattern */

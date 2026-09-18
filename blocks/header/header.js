@@ -562,6 +562,7 @@ function setupMobileMenuBehavior(headerNav, hamburger, mobileNavMenu, blocks) {
   };
 
   const openMobileMenu = () => {
+    window.scrollTo({ top: 0 });
     hamburger.setAttribute('aria-expanded', 'true');
     hamburger.setAttribute('aria-label', 'Close navigation');
     hamburger.classList.add('is-hidden');

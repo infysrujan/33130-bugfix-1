@@ -1,5 +1,7 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
+const LIFESTYLE_KEYWORDS = ['lifestyle', 'ไลฟ์สไตล์'];
+
 /**
  * Build a single filter option card: li > label > [input] [option-icon?] [option-text]
  *
@@ -183,7 +185,7 @@ function buildFilterState(block, filterGroups) {
         ?.textContent
         ?.trim() ?? '';
       const titleLower = group.displayTitle.toLowerCase();
-      if (titleLower.includes('income')) {
+      if (titleLower.includes('income') || titleLower.includes('รายได้ต่อเดือน')) {
         state.income = value;
       } else {
         state.benefit = value;
@@ -298,7 +300,8 @@ export default function decorate(block) {
     const sectionHint = parenMatch?.[0]?.trim() ?? '';
 
     const listItems = [...(cells[1]?.querySelectorAll('li') ?? [])];
-    const isLifestyle = rawTitle.toLowerCase().includes('lifestyle');
+    const isLifestyle = LIFESTYLE_KEYWORDS
+      .some((keyword) => rawTitle.toLowerCase().includes(keyword));
     if (listItems.length > 0) {
       filterGroups.push({
         displayTitle,

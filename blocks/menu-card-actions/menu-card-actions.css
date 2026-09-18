@@ -168,6 +168,9 @@ body.wealth .menu-card-action-inner {
   margin: 0;
 }
 
+.menu-card-action-description:has(> p.rte-inline-image) {
+  display: block;
+}
 
 .menu-card-action-title.has-description {
   flex-grow: 0;

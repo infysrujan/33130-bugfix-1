@@ -2,6 +2,9 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import {
+  plaintext, resolveApplyUrl, resolveCardPageUrl, resolveImageUrl,
+} from '../../scripts/utils/card-compare-fields.js';
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -9,22 +12,6 @@ import { fetchGet } from '../../scripts/utils/fetchApi.js';
 function norm(str) {
   return (str || '').toString().replace(/\u200B/g, '').replace(/\s+/g, ' ').toLowerCase()
     .trim();
-}
-
-// Extract plain text from a field that may be a string or a structured object
-function plaintext(field) {
-  if (!field) return '';
-  if (typeof field === 'string') return field;
-  return field.plaintext || field.html || '';
-}
-
-// Resolve a card's image URL whether stored as a plain string or a publish/author URL object
-function resolveImageUrl(card) {
-  const raw = card.image || '';
-  if (!raw) return '';
-  if (typeof raw === 'string') return raw;
-  // eslint-disable-next-line no-underscore-dangle
-  return raw._publishUrl || raw._authorUrl || '';
 }
 
 // ── Icon loading ───────────────────────────────────────────────────────────────
@@ -123,24 +110,6 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
 
 // ── DOM builders ───────────────────────────────────────────────────────────────
 
-// Resolve the learn-more URL from cardPageUrl (object with _publishUrl/_authorUrl)
-function resolveCardPageUrl(card) {
-  const raw = card.cardPageUrl;
-  if (raw && typeof raw === 'object') {
-    // eslint-disable-next-line no-underscore-dangle
-    return raw._publishUrl || raw._authorUrl || raw._path || '';
-  }
-  return '';
-}
-
-// Resolve a URL field that may be a plain string or a publish/author URL object
-function resolveApplyUrl(urlField) {
-  if (!urlField) return '';
-  if (typeof urlField === 'string') return urlField;
-  // eslint-disable-next-line no-underscore-dangle
-  return urlField._publishUrl || urlField._authorUrl || urlField._path || '';
-}
-
 // Build the apply area with desktop (single) and mobile (two-button) variants.
 // icons: { web: svgString, mweb: svgString } — inline SVG fetched from /icons/
 function buildApplyArea(card, doc, labels, icons) {
@@ -195,7 +164,7 @@ function buildApplyArea(card, doc, labels, icons) {
 //              > .ccr-button-group > a.ccr-learn-more
 function buildCompareCard(card, doc, labels, icons) {
   const name = card.name || '';
-  const imgSrc = resolveImageUrl(card);
+  const imgSrc = resolveImageUrl(card, 'image');
   let learnHref = resolveCardPageUrl(card);
   // Remove "/content/bangkokbank" from the start of learnHref, if present
   if (learnHref.startsWith('/content/bangkokbank')) {
@@ -245,6 +214,8 @@ function buildCompareCard(card, doc, labels, icons) {
     { key: 'qualification', label: labels.qualification, value: plaintext(card.qualification) },
     { key: 'rewardPoints', label: labels.rewardPoints, value: plaintext(card.rewardPointsCashback) },
     { key: 'mileage', label: labels.mileage, value: plaintext(card.mileageRedemption) },
+    { key: 'cardBenefits', label: labels.cardBenefits, value: plaintext(card.cardBenefits) },
+    { key: 'fees', label: labels.fees, value: plaintext(card.fees) },
   ];
 
   fields.forEach(({ key, label, value }) => {
@@ -515,7 +486,7 @@ function equalizeRowHeights(grid) {
   // Cards may omit dls for empty field values, so index-based matching would
   // silently compare the wrong fields across cards (e.g. card 1's Mileage dl
   // at index 3 paired with card 2's Reward Points dl also at index 3).
-  const fieldKeys = ['slogan', 'privileges', 'qualification', 'rewardPoints', 'mileage'];
+  const fieldKeys = ['slogan', 'privileges', 'qualification', 'rewardPoints', 'mileage', 'cardBenefits', 'fees'];
   fieldKeys.forEach((key) => {
     const dls = cards.map((c) => c.querySelector(`dl[data-field="${key}"]`)).filter(Boolean);
     if (dls.length < 2) return;
@@ -545,6 +516,8 @@ export default async function decorate(block) {
     qualification: ph.cardQualification || 'Qualification',
     rewardPoints: ph.cardRewardPoints || 'Reward Points/ Cash Back',
     mileage: ph.cardMileage || 'Mileage Redemption',
+    cardBenefits: ph.cardBenefits || 'Card Benefits',
+    fees: ph.cardFees || 'Fees',
     noResults: ph.cardNoResultsFound || 'No results found',
   };
 

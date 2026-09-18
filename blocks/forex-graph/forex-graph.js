@@ -33,11 +33,21 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function buildGraphTitle(template, currName, currFamily, fromIso, toIso) {
-  const fromParsed = parseIsoDate(fromIso);
-  const toParsed = parseIsoDate(toIso);
-  const startDate = fromParsed ? `${fromParsed.month}/${fromParsed.day}/${fromParsed.year}` : '';
-  const endDate = toParsed ? `${toParsed.month}/${toParsed.day}/${toParsed.year}` : '';
+function buildGraphTitle(template, currName, currFamily, fromIso, toIso, buddhistYearOffset = 0) {
+  const formatTitleDate = (parsed) => {
+    if (!parsed) return '';
+    // Thai: day/month/Buddhist-year, no leading zeros (e.g. 1/9/2569).
+    if (buddhistYearOffset) {
+      const day = Number(parsed.day);
+      const month = Number(parsed.month);
+      const year = Number(parsed.year) + buddhistYearOffset;
+      return `${day}/${month}/${year}`;
+    }
+    // Other locales: keep the original month/day/year format (e.g. 09/01/2026).
+    return `${parsed.month}/${parsed.day}/${parsed.year}`;
+  };
+  const startDate = formatTitleDate(parseIsoDate(fromIso));
+  const endDate = formatTitleDate(parseIsoDate(toIso));
 
   // Normalise template: ensure spaces around family code, colon and dash
   const base = template
@@ -351,10 +361,13 @@ function renderBlock(
     state.selectedFamily,
     state.from.selectedDate,
     state.to.selectedDate,
+    buddhistYearOffset,
   );
 
   const errorStyle = state.error ? '' : ' style="display:none"';
   const dropdownOpen = state.dropdownOpen ? ' is-open' : '';
+  const showNoData = !state.loading && !state.chartData.length;
+  const noDataStyle = showNoData ? '' : ' style="display:none"';
 
   block.innerHTML = `<section class="forex-graph-content">
     <div class="forex-graph-controls">
@@ -396,6 +409,7 @@ function renderBlock(
       </div>
     </div>
     <div class="forex-graph-error"${errorStyle}><p class="forex-graph-error-text">${escapeHtml(state.error)}</p></div>
+    <p class="forex-graph-no-data"${noDataStyle}>${escapeHtml(placeholders.noDataLabel || 'No Data')}</p>
     <div class="forex-graph-chart-section">
       <div class="forex-graph-chart-header">
         <h5 class="forex-graph-chart-title">${escapeHtml(graphTitle)}</h5>
@@ -476,7 +490,7 @@ export default async function decorate(block) {
 
   async function drawChart() {
     const canvas = block.querySelector('.forex-graph-canvas');
-    if (!canvas || !state.chartData.length) return;
+    if (!canvas) return;
 
     const Chart = await loadChartJs();
 
@@ -489,8 +503,8 @@ export default async function decorate(block) {
     const buyingData = state.chartData.map((d) => d.buyingRate);
     const sellingData = state.chartData.map((d) => d.sellingRate);
 
-    // Single-day range pins to the axis origin; pad both sides with a blank category to center it.
-    if (labels.length === 1) {
+    // Single-day range (or no data at all) pins to the axis origin;
+    if (labels.length <= 1) {
       labels.unshift('');
       labels.push('');
       buyingData.unshift(null);
@@ -500,8 +514,9 @@ export default async function decorate(block) {
     }
 
     const allValues = [...buyingData, ...sellingData].filter((v) => v !== null);
-    const minVal = Math.min(...allValues) - 0.5;
-    const maxVal = Math.ceil(Math.max(...allValues));
+    const hasData = allValues.length > 0;
+    const minVal = hasData ? Math.min(...allValues) - 0.5 : -1;
+    const maxVal = hasData ? Math.ceil(Math.max(...allValues)) : 1;
 
     // Breakpoints (see forex-graph.css): mobile < 760px, tablet 760–1024px, desktop 1024px+.
     const viewportWidth = window.innerWidth;
@@ -572,6 +587,7 @@ export default async function decorate(block) {
     const pointGridPlugin = {
       id: 'pointGrid',
       beforeDatasetsDraw(chart) {
+        if (!hasData) return; // empty state: horizontal gridlines only, no vertical ticks
         const { ctx, chartArea, scales } = chart;
         const xScale = scales.x;
         const meta = chart.getDatasetMeta(0);
@@ -698,11 +714,17 @@ export default async function decorate(block) {
               display: true,
               color: 'rgba(0,0,0,0.08)',
             },
+            border: {
+              display: hasData,
+            },
             ticks: {
               stepSize: 1,
               font: { size: 13, weight: '700' },
               color: '#000',
-              callback: (value) => (Number.isInteger(value) ? value : null),
+              callback: (value) => {
+                if (!hasData && value < 0) return null;
+                return Number.isInteger(value) ? value : null;
+              },
             },
           },
         },

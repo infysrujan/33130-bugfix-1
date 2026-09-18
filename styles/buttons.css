@@ -203,13 +203,15 @@ button.secondary,
 }
 
 /* Hover */
-.button-secondary:hover,
-button.secondary:hover,
-.button-m.secondary:hover {
-  background: var(--bbl-color-active-blue);
-  border-color: var(--bbl-color-blue-70);
-  color: var(--bbl-color-white);
-  text-decoration: none;
+@media (hover: hover) and (pointer: fine) {
+  .button-secondary:hover,
+  button.secondary:hover,
+  .button-m.secondary:hover {
+    background: var(--bbl-color-active-blue);
+    border-color: var(--bbl-color-blue-70);
+    color: var(--bbl-color-white);
+    text-decoration: none;
+  }
 }
 
 /* Active/Pressed */
@@ -544,7 +546,6 @@ a.link-inverted[aria-disabled="true"] {
 
 .global-dropdown-trigger:hover {
     box-shadow: none;
-    border-color: var(--bbl-color-white);
     text-decoration: none;
 }
 

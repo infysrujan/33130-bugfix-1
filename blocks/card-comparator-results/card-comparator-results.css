@@ -51,8 +51,9 @@
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-radius: var(--bbl-radius-md);
   overflow: hidden;
-  flex: 0 0 16.875rem;
+  flex: 0 0 17.5rem;
   scroll-snap-align: center;
+  box-sizing: border-box;
 }
 
 /* ── Image area — .thumb-default.card .inner + .thumb ────────────────────── */
@@ -63,6 +64,7 @@
   height: calc(100vw * 0.12);
   overflow: hidden;
   padding: var(--bbl-space-250) var(--bbl-space-250) 0;
+  box-sizing: border-box;
 }
 
 .card-comparator-results .ccr-thumb {
@@ -315,6 +317,6 @@
   }
 
   .card-comparator-results .ccr-card {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+    flex: 0 0 calc((100% - 1.8 * var(--bbl-space-500)) / 3);
   }
 }

@@ -215,7 +215,7 @@ main .section.form-container.custom-forms .form .form-message.success-message {
   text-align: center;
   white-space: pre-line;
   line-height: var(--bbl-line-height-b1-mobile);
-  padding: var(--bbl-space-200) var(--bbl-space-150);
+  padding: var(--bbl-space-400) var(--bbl-space-150);
 }
 
 main .section.form-container.custom-forms .form .form-message.success-message::first-line {

@@ -1,6 +1,6 @@
 import fetchBlockConfig from '../../scripts/block-config.js';
 import { fetchConfigs } from '../../scripts/config.js';
-import { fetchPost } from '../../scripts/utils/fetchApi.js';
+import { fetchGet, fetchPost } from '../../scripts/utils/fetchApi.js';
 
 // ─── Utilities ─────────────────────────────────────────────────────────────────
 
@@ -59,21 +59,34 @@ function buildNotes(title, noteLines) {
 
 // ─── Data ───────────────────────────────────────────────────────────────────────
 
+// Single source for the tax deduction limits, replacing the individual tax-calculator-*-max configs
+async function fetchTaxLimits(url) {
+  if (!url) return null;
+  try {
+    const response = await fetchGet(url, { throwOnError: false });
+    return response?.data?.TaxReduceLimit?.items?.[0] || null;
+  } catch {
+    return null;
+  }
+}
+
 async function loadData() {
-  const [siteConfig, labels] = await Promise.all([
-    fetchConfigs(),
+  const siteConfig = await fetchConfigs();
+  const [labels, taxLimits] = await Promise.all([
     fetchBlockConfig('/tax-savings-config.json'),
+    fetchTaxLimits(siteConfig.taxCalculatorValuesApi),
   ]);
   return {
     labels,
     apiCalculateTax: siteConfig.taxCalculatorCalculateTaxWithReduce,
     apiCalculateSaving: siteConfig.taxCalculatorCalculateSavingTaxBySelf,
-    combinedInsuranceMax: parseFloat(labels.individualMaxesCombinedLifeHealthMax) || 100000,
-    fatherInsureMax: parseFloat(labels.individualMaxesParentInsurance) || 15000,
-    homeInterestMax: parseFloat(labels.individualMaxesHomeInterest) || 100000,
-    otherDeductionsMax: parseFloat(labels.individualMaxesOtherDeductions) || 1000000,
+    combinedInsuranceMax: parseFloat(taxLimits?.InsureLimit) || 100000,
+    fatherInsureMax: parseFloat(taxLimits?.Father_MotherInsureLimit) || 15000,
+    homeInterestMax: parseFloat(taxLimits?.HomeInterestLimit) || 100000,
+    otherDeductionsMax: parseFloat(taxLimits?.OtherReduceLimit) || 1000000,
+    esgMax: parseFloat(taxLimits?.esgreducelimit) || 300000,
     donateMax: parseFloat(labels.individualMaxesDonate) || 999999999,
-    maxChildrenCount: parseInt(labels.individualMaxesChildrenCount, 10) || 10,
+    maxChildrenCount: parseInt(taxLimits?.MaxChildReduce, 10) || 10,
     providentFundMaxPct: parseFloat(labels.individualMaxesProvidentFundPercent) || 15,
   };
 }
@@ -518,8 +531,10 @@ function buildInputField(fieldDef, savedValue) {
 
   // Empty on blur → 0, then reformat
   input.addEventListener('blur', () => {
-    const val = stripCommas(input.value).trim();
-    input.value = formatValue(val === '' ? 0 : val, fieldDef.allowDecimal);
+    const raw = stripCommas(input.value).trim();
+    let val = raw === '' ? 0 : raw;
+    if (fieldDef.allowDecimal) val = raw === '' ? 0 : (parseFloat(raw) || 0);
+    input.value = formatValue(val, fieldDef.allowDecimal);
     inputWrapper.classList.remove('tax-calc-input-wrap-focus');
   });
 
@@ -1141,15 +1156,13 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   // ── Invest table (only when tax is payable) ──
   const rmfPensionMax = Math.round(apiResult1.MaxRMFSSFInsure60 || 0);
 
-  const individualMaxesThaiEsg = parseInt(labels.individualMaxesThaiEsg || '300000', 10);
-
   const notesElement = buildNotes(
     getString(labels, 'configNotesTitle', 'Notes'),
     [
       getString(labels, 'configNotesInvestmentCalculation', 'Calculate the maximum amount that you can invest according to the conditions of the Revenue Department.'),
       getString(labels, 'configNotesRmfAndPension', `* The combined amount of RMF and pension insurance premiums must not exceed ${formatNumber(rmfPensionMax)} baht`).replace('{combinedRMFPensionMax}', formatNumber(rmfPensionMax)),
       getString(labels, 'configNotesLifeAndHealthInsurance', `** The combined amount of life insurance premiums and health insurance premiums must not exceed ${formatNumber(data.combinedInsuranceMax)} baht`).replace('{combinedLifeHealthMax}', formatNumber(data.combinedInsuranceMax)),
-      getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(individualMaxesThaiEsg)} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(individualMaxesThaiEsg)),
+      getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(data.esgMax)} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(data.esgMax)),
     ],
   );
 

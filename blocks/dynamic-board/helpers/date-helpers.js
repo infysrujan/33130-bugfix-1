@@ -18,11 +18,17 @@ export function formatMaturityDate(isoStr, monthLabels, yearOffset = 0) {
   return `${pad2(d.getDate())} ${monthShort} ${String(d.getFullYear() + yearOffset).slice(-2)}`;
 }
 
-export function formatRemainTerm(remainTerm) {
+export function formatRemainTerm(remainTerm, isThai = false) {
   const parts = remainTerm.split('.');
   const years = parseInt(parts[0], 10);
   const months = parseInt(parts[1], 10);
   const days = parseInt(parts[2] || '0', 10);
+  if (isThai) {
+    if (years === 0 && months === 0) return `${days} วัน`;
+    if (years === 0) return `${months} เดือน`;
+    if (months === 0) return `${years} ปี`;
+    return `${years} ปี ${months} เดือน`;
+  }
   if (years === 0 && months === 0) return `${days}D`;
   if (years === 0) return `${months}M`;
   if (months === 0) return `${years}Y`;

@@ -1,7 +1,6 @@
 /* Tab Block Core Styles */
 .tabs-container {
   margin: 0 auto;
-   max-width: 79.5rem;
 }
 
 /* Tab Navigation Base */
@@ -71,7 +70,6 @@
   border: solid 0.0625rem var(--bbl-color-black);
   position: relative;
   text-align: left;
-  margin-top: 1.875rem;
 }
 
 .tabs-nav-wrapper .tabs-dropdown:hover,
@@ -508,6 +506,7 @@
   .tabs.simple-tab .tabs-nav button,
   .tabs.media-tab .tabs-nav button {
     padding: 0;
+    text-align: left;
     margin: 0 1.1rem;
     min-height: var(--bbl-space-200);
     height: unset;
@@ -532,9 +531,8 @@
     gap: var(--bbl-space-300);
     overflow-x: auto;
     flex-flow: row nowrap;
-    justify-content: flex-start;
-    margin: 0;
-    padding: 0;
+    justify-content: space-between;
+    padding: 0 1.43rem;
   }
 
   .tabs.tiled-tab .tabs-nav li {
@@ -591,7 +589,7 @@
   }
 
   .tabs.tiled-tab .tabs-nav button {
-    min-width: 17.5rem;
+    min-width: 17.9rem;
     min-height: 8.3125rem;
   }
 }

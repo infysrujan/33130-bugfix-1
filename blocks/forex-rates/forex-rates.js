@@ -92,8 +92,10 @@ function renderBlock(block, state, authoring) {
 
   const rows = state.rates.map((rate) => `<tr>
     <td class="forex-rates-currency">
-      <img src="/icons/${escapeHtml(rate.family)}.svg" alt="${escapeHtml(rate.family)} flag" loading="lazy" class="forex-rates-flag">
-      <span>${escapeHtml(rate.family)}</span>
+      <span class="forex-rates-currency-inner">
+        <img src="/icons/${escapeHtml(rate.family)}.svg" alt="${escapeHtml(rate.family)} flag" loading="lazy" class="forex-rates-flag">
+        <span>${escapeHtml(rate.family)}</span>
+      </span>
     </td>
     <td>${escapeHtml(rate.description)}</td>
     <td class="is-right">${escapeHtml(rate.buyingRates)}</td>
@@ -180,8 +182,25 @@ function printForexRates(block) {
     }
     brandLogo = logoClone.outerHTML;
   }
+  if (!brandLogo) {
+    brandLogo = '<img src="/icons/logo.svg" alt="Bangkok Bank" loading="eager">';
+  }
 
   const pageTitle = getPageTitle(doc);
+  const documentTitle = doc.title || doc.querySelector('title')?.textContent || pageTitle;
+
+  const tabsHtml = (() => {
+    const tabs = [...doc.querySelectorAll('.tabs-nav [role="tab"]')]
+      .map((b) => ({
+        text: b.textContent.trim(),
+        active: b.classList.contains('active') || b.getAttribute('aria-selected') === 'true',
+      }))
+      .filter((t) => t.text);
+    if (!tabs.length) return '';
+    return `<div class="print-tabs">${tabs
+      .map((t) => `<span class="print-tab${t.active ? ' is-active' : ''}">${escapeHtml(t.text)}</span>`)
+      .join('')}</div>`;
+  })();
 
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }
@@ -191,7 +210,7 @@ function printForexRates(block) {
 
     /* Logo */
     .print-logo { margin-bottom: var(--bbl-space-075); }
-    .print-logo img { height: 1.5rem; width: auto; }
+    .print-logo img { height: 1.5rem; width: auto; filter: brightness(0); }
 
     /* Horizontal rule after logo */
     .print-divider { border: none; border-top: 0.0625rem solid var(--bbl-color-grey-125); margin: var(--bbl-space-075) 0 var(--bbl-space-100); }
@@ -205,6 +224,14 @@ function printForexRates(block) {
       content: ''; position: absolute; bottom: 0; left: 0;
       width: 2.25rem; height: var(--bbl-space-025); background: var(--bbl-color-blue-105);
     }
+
+    /* Tabs */
+    .print-tabs {
+      display: flex; justify-content: center; gap: 1.25rem;
+      margin: 0 0 var(--bbl-space-075);
+    }
+    .print-tab { font-size: 0.75rem; font-weight: 700; color: var(--bbl-color-black); }
+    .print-tab.is-active { text-decoration: underline; }
 
     /* Controls */
     .forex-rates-control-row {
@@ -262,11 +289,13 @@ function printForexRates(block) {
     }
   `;
 
+  const baseHref = doc.location?.origin || window.location.origin;
   const printHtml = `<!DOCTYPE html>
   <html lang="en">
     <head>
       <meta charset="utf-8"/>
-      <title>${escapeHtml(pageTitle)}</title>
+      <base href="${baseHref}">
+      <title>${escapeHtml(documentTitle)}</title>
       <link rel="stylesheet" href="/styles/tokens.css">
       <link rel="stylesheet" href="/styles/fonts.css">
       <style>${printCss}</style>
@@ -275,6 +304,7 @@ function printForexRates(block) {
       <div class="print-logo">${brandLogo}</div>
       <hr class="print-divider">
       <h1 class="print-title">${escapeHtml(pageTitle)}</h1>
+      ${tabsHtml}
       <div class="forex-rates block" data-block-status="loaded">
         ${cloned.outerHTML}
       </div>
@@ -286,6 +316,9 @@ function printForexRates(block) {
   doc.body.appendChild(iframe);
 
   iframe.onload = () => {
+    try {
+      iframe.contentWindow.history.replaceState(null, '', window.location.href);
+    } catch (e) { /* fall back to about:blank */ }
     setTimeout(() => {
       iframe.contentWindow.focus();
       iframe.contentWindow.print();
@@ -298,6 +331,7 @@ function printForexRates(block) {
   const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
   iframeDoc.open();
   iframeDoc.write(printHtml);
+  iframeDoc.title = documentTitle;
   iframeDoc.close();
 }
 

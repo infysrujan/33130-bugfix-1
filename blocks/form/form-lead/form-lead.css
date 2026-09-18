@@ -208,9 +208,9 @@ main .lead-forms .form form .field-title {
   padding: 0;
 }
 
-main .lead-forms .form form .field-infotext {
+/* main .lead-forms .form form .field-infotext {
   margin: var(--bbl-space-500) 0 var(--bbl-space-250);
-}
+} */
 
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
   color: var(--bbl-color-grey-90);
@@ -224,8 +224,16 @@ main .lead-forms .form form .plain-text-wrapper p:last-child {
   margin-bottom: 0;
 }
 
-main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textw, .field-text1) p {
+main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textt, .field-or, .field-textw, .field-text1) p {
   text-align: left;
+}
+
+/* Privacy consent text — b1 body tokens (regular) + 20.8px line-height, all breakpoints */
+main .lead-forms .form form .plain-text-wrapper.field-wrapper.tnc-text-decoration p {
+  font-size: var(--bbl-body-b1-size);
+  line-height: 1.3rem;
+  font-weight: var(--bbl-body-b1-weight);
+  font-family: var(--bbl-font-family-primary);
 }
 
 main .lead-forms .form form .plain-text-wrapper :is(.custom-wffm-form) {
@@ -456,7 +464,7 @@ main .lead-forms .form form .email-wrapper::before {
   justify-content: center;
   width: var(--bbl-space-250);
   height: 1.1875rem;
-  color: var(--bbl-color-grey-40);
+  color: var(--bbl-color-grey-90);
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -959,7 +967,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     line-height: var(--bbl-line-height-b1-desktop);
   }
 
-  main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textw, .field-text1) > p {
+  main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textt, .field-or, .field-textw, .field-text1) > p {
     padding-inline: var(--bbl-form-padding-10);
   }
 

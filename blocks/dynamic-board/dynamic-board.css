@@ -626,10 +626,9 @@
 /* ── Table ─────────────────────────────────────────────────── */
 
 .dynamic-board .db-table-wrap {
-  overflow: auto;
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   margin-top: var(--bbl-space-150);
-  max-height: 40rem;
 
   /* scroll bar fix */
   width: calc(100% + var(--bbl-space-050));
@@ -657,26 +656,29 @@
 
 .dynamic-board .db-table thead {
   background: var(--bbl-color-blue-9);
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-152);
 }
 
 .dynamic-board .db-table thead th {
+  box-sizing: border-box;
   padding: 0.375rem 0.625rem;
-  font-size: var(--bbl-font-size-b1-mobile);
-  font-weight: 700;
+  font-size: var(--bbl-body-b1-size);
+  font-weight: var(--bbl-body-b1-weight);
+  line-height: var(--bbl-body-b1-line-height);
   color: var(--bbl-color-black);
+  font-family: var(--bbl-font-family-medium);
   text-align: center;
   border-bottom: var(--bbl-space-025) solid var(--bbl-color-grey-20);
   border-right: 0.0625rem solid var(--bbl-color-grey-20);
   white-space: normal;
-  line-height: 1.4;
   vertical-align: middle;
-  position: sticky;
-  z-index: 1;
   background: var(--bbl-color-blue-6);
-  height: 3.125rem;
+  height: 3.75rem;
   border: none;
 }
 
+.dynamic-board .db-table thead th[data-sort="BID_PRICE"],
+.dynamic-board .db-table thead th[data-sort="BID_YIELD"],
 .dynamic-board .db-table thead th[data-sort="OFFER_PRICE"],
 .dynamic-board .db-table thead th[data-sort="OFFER_YIELD"],
 .dynamic-board .db-table thead th[data-sort="REMAIN_TERM"],
@@ -747,17 +749,7 @@
   border-right: none;
 }
 
-/* The group-header row must always paint above the sub-header row, so that
-   even if the JS-measured sticky offset is momentarily stale, the sub-headers
-   can never obscure "Bidding Price"/"Offering Price" as you scroll. */
-.dynamic-board .db-table thead tr:first-child th {
-  top: 0;
-  z-index: 3;
-}
-
 .dynamic-board .db-table thead tr:last-child th {
-  top: 3.125rem;
-  z-index: 2;
   border-top: 0.0625rem solid var(--bbl-color-grey-152);
 }
 
@@ -802,17 +794,48 @@
 }
 
 .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr {
-  position: sticky;
-  z-index: 1;
   background: var(--bbl-color-blue-steel);
 }
 
+.dynamic-board .db-table-wrap #db-tbody-sel,
+.dynamic-board .db-table-wrap #db-tbody-all {
+  display: block;
+}
+
+.dynamic-board .db-table-wrap #db-tbody-all {
+  max-height: 33.375rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dynamic-board .db-table-wrap #db-tbody-all::-webkit-scrollbar {
+  width: var(--bbl-space-050);
+  height: var(--bbl-space-050);
+}
+
+.dynamic-board .db-table-wrap #db-tbody-all::-webkit-scrollbar-thumb {
+  background: var(--bbl-color-grey-40);
+  border-radius: var(--bbl-rounded-050);
+}
+
+.dynamic-board .db-table thead,
+.dynamic-board .db-table-wrap #db-tbody-sel tr,
+.dynamic-board .db-table-wrap #db-tbody-all tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
 .dynamic-board .db-table tbody td {
+  box-sizing: border-box;
   padding-right: 0.3125rem;
-  font-size: var(--bbl-font-size-b1-mobile);
+  font-size: var(--bbl-body-b1-size);
+  line-height: var(--bbl-body-b1-line-height);
+  font-weight: var(--bbl-body-b1-weight);
   color: var(--bbl-color-grey-70);
   vertical-align: middle;
   height: 4.6875rem;
+  font-family: var(--bbl-font-family-primary);
 }
 
 .dynamic-board .db-table tbody tr:last-child td {
@@ -821,15 +844,20 @@
 
 /* ── Cell types ────────────────────────────────────────────── */
 
+.dynamic-board .db-td-check {
+  width: 3%;
+}
+
 .dynamic-board .db-td-symbol {
+  width: 7%;
   white-space: nowrap;
   color: var(--bbl-color-active-blue);
 }
 
 .dynamic-board .db-td-name {
+  width: 20%;
   position: relative;
   min-width: 12rem;
-  line-height: 1.4;
 }
 
 .dynamic-board .db-td-name[data-title]::after {
@@ -840,7 +868,7 @@
   width: 18.75rem;
   padding: 0.3125rem 0.9375rem 0.5rem;
   color: var(--bbl-color-white);
-  line-height: 1.5;
+  line-height: var(--bbl-body-b1-line-height);
   white-space: pre-line;
   border-radius: 0.625rem;
   font-weight: 100;
@@ -862,6 +890,7 @@
 }
 
 .dynamic-board .db-td-num {
+  width: 10%;
   text-align: right;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -1141,6 +1170,20 @@
   .dynamic-board .db-table-wrap {
     overflow: visible;
     max-height: none;
+  }
+
+  .dynamic-board .db-table-wrap #db-tbody-sel,
+  .dynamic-board .db-table-wrap #db-tbody-all {
+    display: table-row-group;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .dynamic-board .db-table thead,
+  .dynamic-board .db-table-wrap #db-tbody-sel tr,
+  .dynamic-board .db-table-wrap #db-tbody-all tr {
+    display: revert;
+    width: auto;
   }
 
   .dynamic-board .db-table {

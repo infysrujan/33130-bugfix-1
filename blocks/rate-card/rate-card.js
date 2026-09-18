@@ -15,35 +15,45 @@ function getPageLang() {
  * Format date string from API format to display format
  * @param {string} dateString - Date string in format DD/MM/YYYY or YYYY-MM-DD
  * @param {string} timeString - Optional time string in format HH:MM
+ * @param {string} lang - Current page language ('en' or 'th')
  * @returns {string} - Formatted date string
  */
-function formatDate(dateString, timeString = '') {
+function formatDate(dateString, timeString = '', lang = 'en') {
   if (!dateString) return '';
 
   try {
-    let formattedDate = '';
+    let date;
 
     // Handle DD/MM/YYYY format
     if (dateString.includes('/')) {
       const [day, month, year] = dateString.split('/');
-      const date = new Date(year, month - 1, day);
-      formattedDate = `as of ${day} ${date.toLocaleString('en-US', { month: 'long' })} ${year}`;
+      date = new Date(year, month - 1, day);
     } else if (dateString.includes('-')) {
       // Handle YYYY-MM-DD format
-      const date = new Date(dateString);
-      formattedDate = `as of ${date.getDate()} ${date.toLocaleString('en-US', { month: 'long' })} ${date.getFullYear()}`;
+      date = new Date(dateString);
     } else {
-      formattedDate = `as of ${dateString}`;
+      return dateString;
     }
 
-    // Add time if provided
-    if (timeString && timeString.trim()) {
-      formattedDate += ` at ${timeString.trim()}`;
+    let formattedDate;
+    if (lang === 'th') {
+      // Thai locale: Thai month name and Buddhist Era year (CE + 543)
+      const month = date.toLocaleString('th-TH', { month: 'long' });
+      formattedDate = `${date.getDate()} ${month} ${date.getFullYear() + 543}`;
+      if (timeString && timeString.trim()) {
+        formattedDate += ` เวลา ${timeString.trim()} น.`;
+      }
+    } else {
+      const month = date.toLocaleString('en-US', { month: 'long' });
+      formattedDate = `as of ${date.getDate()} ${month} ${date.getFullYear()}`;
+      if (timeString && timeString.trim()) {
+        formattedDate += ` at ${timeString.trim()}`;
+      }
     }
 
     return formattedDate;
   } catch (error) {
-    return dateString ? `as of ${dateString}` : '';
+    return dateString || '';
   }
 }
 
@@ -212,8 +222,9 @@ function parseColumnNames(rteElement) {
  * @param {string} dateString - Date string
  * @param {string} timeString - Time string
  * @param {Object} buttonData - Button data
+ * @param {string} lang - Current page language ('en' or 'th')
  */
-function appendTableMeta(container, dateString, timeString, buttonData) {
+function appendTableMeta(container, dateString, timeString, buttonData, lang) {
   const buttonElement = createButtonElement(buttonData);
 
   if (!dateString && !buttonElement) {
@@ -229,7 +240,7 @@ function appendTableMeta(container, dateString, timeString, buttonData) {
 
     const dateUpdate = document.createElement('span');
     dateUpdate.className = 'date-update';
-    dateUpdate.textContent = formatDate(dateString, timeString);
+    dateUpdate.textContent = formatDate(dateString, timeString, lang);
     dateWrap.appendChild(dateUpdate);
     wrapper.appendChild(dateWrap);
   }
@@ -268,12 +279,12 @@ function createTabContent(tabData, apiData, lang) {
 
   const cardNameLower = cardName.toLowerCase();
 
-  if (cardNameLower.includes('exchange')) {
+  if (cardNameLower.includes('exchange') || cardNameLower.includes('แลกเปลี่ยน')) {
     dataType1 = 'exchange';
     apiData1 = apiData.exchange || [];
     dateString1 = apiData.exchangeDate || '';
     timeString1 = apiData.exchangeTime || '';
-  } else if (cardNameLower.includes('rate')) {
+  } else if (cardNameLower.includes('rate') || cardNameLower.includes('ดอกเบี้ย')) {
     // Rates tab has both deposit and loan
     dataType1 = 'deposit';
     dataType2 = 'loan';
@@ -307,7 +318,7 @@ function createTabContent(tabData, apiData, lang) {
       const list = document.createElement('div');
       list.className = 'currency-list';
       list.appendChild(tableElement);
-      appendTableMeta(list, dateString1, timeString1, table1Data.button);
+      appendTableMeta(list, dateString1, timeString1, table1Data.button, lang);
       content.appendChild(list);
     }
   }
@@ -325,7 +336,7 @@ function createTabContent(tabData, apiData, lang) {
       const list = document.createElement('div');
       list.className = 'currency-list full';
       list.appendChild(tableElement);
-      appendTableMeta(list, dateString2, timeString2, table2Data.button);
+      appendTableMeta(list, dateString2, timeString2, table2Data.button, lang);
       content.appendChild(list);
     }
   }

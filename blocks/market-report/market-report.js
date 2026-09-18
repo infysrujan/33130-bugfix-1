@@ -141,6 +141,15 @@ function padToColumnCount(values, colCount) {
   return out;
 }
 
+function setCellText(cell, text) {
+  const wrapper = cell.querySelector(':scope > strong, :scope > b');
+  if (wrapper) {
+    wrapper.textContent = text;
+  } else {
+    cell.textContent = text;
+  }
+}
+
 /**
  * @param {HTMLTableRowElement} tr
  * @param {string[]} texts
@@ -149,11 +158,7 @@ function fillInterestRateRowCells(tr, texts) {
   const cells = tr.querySelectorAll('td');
   texts.forEach((text, j) => {
     if (cells[j]) {
-      if (j === 1) {
-        cells[j].textContent = `${text}%`;
-      } else {
-        cells[j].textContent = text;
-      }
+      setCellText(cells[j], j === 1 ? `${text}%` : text);
     }
   });
 }
@@ -627,10 +632,9 @@ function applyTextSmallToTableFollowParagraphs(panel) {
 }
 
 function hideToolsAndAssistanceFromPrint(content) {
-  const heading = [...content.querySelectorAll('h1, h2, h3, h4, h5, h6')].find(
-    (element) => element.textContent.trim().toLowerCase() === 'tools & assistance',
-  );
-  heading?.closest('.section')?.classList.add('market-report-tools-assistance');
+  content.querySelectorAll('.menu-banner').forEach((block) => {
+    block.closest('.section')?.classList.add('market-report-tools-assistance');
+  });
 }
 
 function printElement() {
