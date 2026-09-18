@@ -619,6 +619,7 @@
           "valueType": "string",
           "name": "heroImage",
           "label": "Hero Image",
+          "description": "Select the default image here, but do not choose any presets.For Smart Crop presets, use the separate Desktop and Mobile fields available at the bottom of the page.",
           "multi": false,
           "condition": {
             "or": [
