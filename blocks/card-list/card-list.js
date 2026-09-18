@@ -19,7 +19,7 @@ function formatMenuCardDate(dateStr, monthYearOnly = false) {
     return monthYearOnly ? `${month} ${year}` : `${date.getDate()} ${month} ${year}`;
   }
   const options = { month: 'long', year: 'numeric', ...(monthYearOnly ? {} : { day: 'numeric' }) };
-  return date.toLocaleDateString('en-US', options);
+  return date.toLocaleDateString('en-GB', options);
 }
 
 function parseBooleanFlag(value, defaultValue = false) {
