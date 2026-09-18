@@ -73,6 +73,14 @@ function playBannerVideo(item) {
   }
 }
 
+function syncHeaderOverlap(activeItem) {
+  const header = document.querySelector('header');
+  if (!header) return;
+  const hasVideo = !!activeItem?.querySelector('.hero-banner-video-wrapper');
+  const isDesktopViewport = window.matchMedia('(min-width: 1025px)').matches;
+  header.classList.toggle('is-not-overlapped', hasVideo && !isDesktopViewport);
+}
+
 function changeBanner(block) {
   function activateThumbnail(thumbnail) {
     const { index } = thumbnail.dataset;
@@ -83,6 +91,7 @@ function changeBanner(block) {
       el.classList.toggle('hero-banner-item-active', el.classList.contains('hero-banner-item') && el.dataset.index === index);
       el.classList.toggle('hero-banner-thumbnail-item-active', el.classList.contains('hero-banner-thumbnail-item') && el.dataset.index === index);
     });
+    syncHeaderOverlap(block.querySelector('.hero-banner-item.hero-banner-item-active'));
   }
 
   block.addEventListener('mouseenter', (e) => {
@@ -707,6 +716,7 @@ export default async function decorate(block) {
   block.replaceChildren(wrapper);
   changeBanner(block);
   lazyLoadThumbnails(block);
+  syncHeaderOverlap(block.querySelector('.hero-banner-item.hero-banner-item-active'));
 
   block.addEventListener('click', (event) => {
     const button = event.target.closest('.button-m.primary');
