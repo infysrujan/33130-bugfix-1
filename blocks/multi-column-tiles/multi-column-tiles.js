@@ -26,6 +26,7 @@ function buildTile(row, doc) {
 
   const linkAnchor = imageLinkDiv?.querySelector('a');
   const linkHref = linkAnchor?.getAttribute('href') || imageLinkDiv?.textContent?.trim() || '';
+  const linkTarget = linkAnchor?.getAttribute('target') || linkAnchor?.target || '';
   const title = titleDiv?.textContent?.trim() || '';
 
   const tile = doc.createElement('div');
@@ -50,8 +51,12 @@ function buildTile(row, doc) {
     const anchor = doc.createElement('a');
     anchor.href = linkHref;
     anchor.className = 'multi-column-tiles-link';
-    anchor.target = '_blank';
-    anchor.rel = 'noopener noreferrer';
+    if (linkTarget) {
+      anchor.target = linkTarget;
+      if (linkTarget === '_blank') {
+        anchor.rel = 'noopener noreferrer';
+      }
+    }
     if (title) anchor.setAttribute('title', title);
     anchor.setAttribute('aria-label', title);
     anchor.appendChild(imageWrapper);
