@@ -228,17 +228,6 @@ function syncExpandAllToolbarButton(expandBtn, block) {
 }
 
 /**
- * @param {string} s
- */
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-/**
  * Build the print document HTML with every panel expanded.
  * @param {Element} block
  */
@@ -328,14 +317,6 @@ function buildAccordionPrintDocument(block) {
     bodyHtml = clone.outerHTML;
   }
 
-  const docTitle = block.querySelector('.accordion-block-title')?.textContent?.trim()
-    || document.querySelector('title')?.textContent
-    || placeholders.printLabel;
-
-  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
-    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
-
   const printCss = `
     @page {
       size: A4 portrait;
@@ -344,16 +325,6 @@ function buildAccordionPrintDocument(block) {
 
     .header {
       position: unset;
-    }
-
-    .brand-logo-container {
-      width: 12.5rem;
-      height: 3.125rem;
-      margin-block: 3rem 1rem;
-    }
-
-    .accordion-print-brandbar {
-      margin-bottom: 1rem;
     }
 
     .accordion { border: 0; }
@@ -365,7 +336,8 @@ function buildAccordionPrintDocument(block) {
     .accordion-header { display: none; }
     .accordion-heading { display: none; }
     .accordion-block-toolbar { display: none; }
-    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: center; margin: 0 auto; }
+    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: center; margin: 1rem auto; font-size: 2.5rem; line-height: 1; }
+    html[lang="en"] .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: left; margin: 1rem 0; }
     .accordion-block-container > .default-content-wrapper { margin-bottom: 1.875rem; }
     .download-section .default-content-wrapper { text-align:center;}
     .download-section .default-content-wrapper h4 { font-size: 1.125rem;}
@@ -379,19 +351,20 @@ function buildAccordionPrintDocument(block) {
     .promo-detail-image { display: none !important; }
     .promo-detail-content { display: none !important; }
     .accordion-print-heading{ font-family: var(--bbl-font-family-primary);}
+    .button-container { display: none !important; }
 
   `;
 
+  const pageLang = document.documentElement.lang || 'en';
+
   return `
   <!DOCTYPE html>
-  <html lang="en">
+  <html lang="${pageLang}">
     <head>
       <meta charset="utf-8"/>
-      <title>${escapeHtml(docTitle)}</title>
       <link rel="stylesheet" href="/styles/styles.css">
       <link rel="stylesheet" href="/styles/fonts.css">
       <link rel="stylesheet" href="/blocks/header/header.css">
-      <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
      ${promoBlock ? '<link rel="stylesheet" href="/blocks/promotional-details/promotional-details.css">' : ''}
       <link rel="stylesheet" href="/blocks/accordion-block/accordion-block.css">
       <link rel="stylesheet" href="/blocks/table/table.css">
@@ -399,11 +372,6 @@ function buildAccordionPrintDocument(block) {
     </head>
     <body class="appear">
       <main>
-       <div class="accordion-print-brandbar">
-          <div class="brand-logo-container">
-            ${brandLogo}
-          </div>
-        </div>
         <div class="section accordion-block-container">
           ${bodyHtml}
         </div>
