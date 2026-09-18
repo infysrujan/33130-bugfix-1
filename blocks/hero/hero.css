@@ -561,6 +561,10 @@
   margin: var(--bbl-space-100) 0 0;
 }
 
+.hero-banner-private-wealth-banking .hero-banner-content-inner-text {
+  margin: var(--bbl-space-100) 0 0;
+}
+
 .hero-banner-private-wealth-banking .hero-banner-content-inner {
   padding: 0 0 4rem;
 }
@@ -595,11 +599,11 @@
   -webkit-box-orient: vertical;
 }
 
-.hero-banner-hero-with-thumbnail-images :has(.hero-banner-video-wrapper) .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
+.hero-banner-hero-with-thumbnail-images .hero-banner-video-wrapper + .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
   color: var(--bbl-color-black);
 }
 
-.hero-banner-hero-with-thumbnail-images :has(.hero-banner-video-wrapper) .hero-banner-content-inner {
+.hero-banner-hero-with-thumbnail-images .hero-banner-video-wrapper + .hero-banner-content > .hero-banner-content-inner {
   margin-top: 0.9375rem;
   padding-block: 1.25rem 0.5625rem;
 }
@@ -1099,6 +1103,10 @@
 
   .hero-banner-private-wealth-banking .hero-banner-content-inner-text p {
     line-height: 1.625rem;
+    margin: var(--bbl-space-200) 0 0;
+  }
+
+  .hero-banner-private-wealth-banking .hero-banner-content-inner-text {
     margin: var(--bbl-space-200) 0 0;
   }
 

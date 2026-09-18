@@ -314,7 +314,7 @@
     min-width: 0;
     box-sizing: border-box;
 
-    & .field-description {
+    & .checkbox-wrapper ~.field-description {
       bottom: -6.25rem;
     }
 

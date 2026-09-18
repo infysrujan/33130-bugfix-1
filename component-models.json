@@ -1816,6 +1816,7 @@
         "valueType": "string",
         "name": "heroImage",
         "label": "Hero Image",
+        "description": "Select the default image here, but do not choose any presets.For Smart Crop presets, use the separate Desktop and Mobile fields available at the bottom of the page.",
         "multi": false,
         "condition": {
           "or": [
@@ -13351,6 +13352,10 @@
               {
                 "name": "No Border Bottom",
                 "value": "no-border-bottom"
+              },
+              {
+                "name": "No Border Top",
+                "value": "no-border-top"
               }
             ]
           },
@@ -13417,6 +13422,10 @@
               {
                 "name": "Right Aligned Last Line",
                 "value": "header-right-aligned-last-line"
+              },
+              {
+                "name": "No Header",
+                "value": "no-header"
               }
             ]
           },
@@ -13875,6 +13884,10 @@
           {
             "name": "Section type",
             "children": [
+              {
+                "name": "No Style",
+                "value": "no-style"
+              },
               {
                 "name": "Central Aligned",
                 "value": "central-aligned"
