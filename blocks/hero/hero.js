@@ -221,7 +221,7 @@ function buildControls(bannerItem) {
       </div>
       <span class="hero-ctrl-time">0:00 / 0:00</span>
       <div class="hero-ctrl-right">
-        <button class="hero-ctrl-btn hero-ctrl-share" aria-label="Share">${VI.share}<span class="hero-ctrl-share-tip">Link copied!</button></span>
+        <button class="hero-ctrl-btn hero-ctrl-share" aria-label="Share">${VI.share}<span class="hero-ctrl-share-tip">Link copied!</span></button>
         <button class="hero-ctrl-btn hero-ctrl-fullscreen" aria-label="Enter fullscreen">${VI.fullscreen}</button>
       </div>
     </div>`;
