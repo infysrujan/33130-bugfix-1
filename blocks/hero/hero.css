@@ -561,6 +561,10 @@
   margin: var(--bbl-space-100) 0 0;
 }
 
+.hero-banner-private-wealth-banking .hero-banner-content-inner-text {
+  margin: var(--bbl-space-100) 0 0;
+}
+
 .hero-banner-private-wealth-banking .hero-banner-content-inner {
   padding: 0 0 4rem;
 }
@@ -1099,6 +1103,10 @@
 
   .hero-banner-private-wealth-banking .hero-banner-content-inner-text p {
     line-height: 1.625rem;
+    margin: var(--bbl-space-200) 0 0;
+  }
+
+  .hero-banner-private-wealth-banking .hero-banner-content-inner-text {
     margin: var(--bbl-space-200) 0 0;
   }
 
