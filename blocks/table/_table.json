@@ -54,6 +54,10 @@
                 {
                   "name": "No Border Bottom",
                   "value": "no-border-bottom"
+                },
+                {
+                  "name": "No Border Top",
+                  "value": "no-border-top"
                 }
               ]
             },

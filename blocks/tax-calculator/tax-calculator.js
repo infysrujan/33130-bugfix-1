@@ -531,8 +531,10 @@ function buildInputField(fieldDef, savedValue) {
 
   // Empty on blur → 0, then reformat
   input.addEventListener('blur', () => {
-    const val = stripCommas(input.value).trim();
-    input.value = formatValue(val === '' ? 0 : val, fieldDef.allowDecimal);
+    const raw = stripCommas(input.value).trim();
+    let val = raw === '' ? 0 : raw;
+    if (fieldDef.allowDecimal) val = raw === '' ? 0 : (parseFloat(raw) || 0);
+    input.value = formatValue(val, fieldDef.allowDecimal);
     inputWrapper.classList.remove('tax-calc-input-wrap-focus');
   });
 

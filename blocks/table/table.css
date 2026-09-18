@@ -278,6 +278,11 @@
   border-bottom: none;
 }
 
+/* No Border Top — remove the top border from the first row only */
+.table table.no-border-top > :where(tbody) > tr:first-child > td {
+  border-top: none;
+}
+
 /* --------------------------------------------------------------------------
    VARIANT: BORDER BOTTOM TIGHT COLS — first two columns (specificity 0,3,4)
    -------------------------------------------------------------------------- */
