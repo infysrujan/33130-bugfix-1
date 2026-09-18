@@ -7,12 +7,12 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
-function filterCards(activeCards, tabText, isTopPromo) {
+function filterCards(activeCards, categoryValue, isTopPromo) {
   if (isTopPromo) {
     return activeCards.filter((card) => card.topPromotion === true);
   }
   return activeCards.filter(
-    (card) => card.category?.toLowerCase() === tabText.toLowerCase(),
+    (card) => card.category === categoryValue,
   );
 }
 
@@ -21,11 +21,12 @@ function setupPanel(panel, activeCards, placeholders) {
   const btnId = panel.getAttribute('aria-labelledby');
   const btn = btnId ? document.getElementById(btnId) : null;
   const tabText = btn?.textContent?.trim() || '';
+  const tabTags = btn?.dataset.tabCategoryTag;
 
   const topPromoTabLabel = (placeholders.topPromotionsTabLabel || 'toppromotions').toLowerCase().replace(/\s+/g, '');
   const isTopPromo = tabText.toLowerCase().replace(/\s+/g, '') === topPromoTabLabel;
 
-  let cards = sortCards(filterCards(activeCards, tabText, isTopPromo));
+  let cards = sortCards(filterCards(activeCards, tabTags, isTopPromo));
   if (isTopPromo) {
     if (!cards.length) {
       panel.hidden = true;
@@ -46,7 +47,7 @@ function setupPanel(panel, activeCards, placeholders) {
   const grid = document.createElement('div');
   grid.className = 'promo-selector-grid top-promo-grid listing-card-grid';
   grid.innerHTML = cards.length
-    ? cards.map((card) => buildCardHtml(card, card.category || tabText, placeholders, buildCardOptions(card))).join('')
+    ? cards.map((card) => buildCardHtml(card, tabText, placeholders, buildCardOptions(card))).join('')
     : `<p class="top-promo-empty">${noResultsText}</p>`;
 
   panel.append(grid);

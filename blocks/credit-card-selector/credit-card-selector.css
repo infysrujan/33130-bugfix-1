@@ -26,14 +26,6 @@
   padding-bottom: var(--bbl-space-400);
 }
 
-@media (width > 64rem) {
-  .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
-  .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
-    max-width: unset;
-    padding-inline: 12rem;
-  }
-}
-
 .credit-card-selector .card-selector-title {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-h1-desktop);
@@ -196,7 +188,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--bbl-space-100);
-  min-height: var(--bbl-space-700);
+  min-height: 3.375rem;
   width: 100%;
   box-sizing: border-box;
   background-color: var(--bbl-color-white);
@@ -215,7 +207,8 @@
   flex-direction: column;
   justify-content: center;
   gap: var(--bbl-space-100);
-  padding: var(--bbl-space-200) var(--bbl-space-100);
+  
+  /* padding: var(--bbl-space-200) var(--bbl-space-100); */
   min-height: 7rem;
   font-size: var(--bbl-font-size-b2);
 }
@@ -421,7 +414,7 @@
     flex-flow: row wrap;
     overflow: visible;
     scroll-snap-type: none;
-    gap: 0 var(--bbl-space-250);
+    gap: var(--bbl-space-250);
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
@@ -477,5 +470,10 @@
 
   .credit-card-selector .card-selector-content {
     gap: var(--bbl-space-400) 3rem;
+    padding-inline: 12rem;
+  }
+
+  .section.full-bleed-bg.credit-card-selector-container .content {
+    padding-inline: 0;
   }
 }

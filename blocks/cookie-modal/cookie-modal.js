@@ -43,8 +43,12 @@ const toCookieName = (text) => text.replace(/[^a-zA-Z0-9]/g, '');
 function resolveCookieName(labelText) {
   const lower = labelText.toLowerCase();
   if (COOKIE_NAME_MAP[lower]) return COOKIE_NAME_MAP[lower];
-  if (lower.includes('analytic') || lower.includes('analysis')) return 'AnalysisCookie';
-  if (lower.includes('advertis')) return 'AdvertisingCookie';
+  if (lower.includes('analytic') || lower.includes('analysis') || labelText.includes('วิเคราะห์')) {
+    return 'AnalysisCookie';
+  }
+  if (lower.includes('advertis') || labelText.includes('โฆษณา')) {
+    return 'AdvertisingCookie';
+  }
   return toCookieName(labelText);
 }
 

@@ -198,6 +198,10 @@
   margin: 0.3125rem;
   padding: 0.3125rem;
   color: var(--bbl-color-grey-85);
+
+  &.hidden {
+    display: none;
+  }
 }
 
 .prop-for-sale-label {

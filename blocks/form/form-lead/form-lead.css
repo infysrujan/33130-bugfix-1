@@ -71,8 +71,11 @@
   --bbl-form-line-height-1-5: 1.5;
   --bbl-form-line-height-14: 0.875rem;               /* 14px */
   --bbl-form-line-height-17: 1.0625rem;              /* 17px */
+  --bbl-form-line-height-18: 1.125rem;               /* 18px */
   --bbl-form-line-height-19: 1.2031rem;              /* ~19px */
+  --bbl-form-line-height-19-25:  1.2031rem;           /* 19.25px */
   --bbl-form-line-height-21: 1.2891rem;              /* 20.625px */
+  --bbl-form-line-height-22: 1.375rem;               /* 22px */
   --bbl-form-line-height-25: 1.5625rem;              /* 25px */
   --bbl-form-line-height-32: 2rem;                   /* 32px */
   --bbl-form-line-height-44: 2.75rem;                /* 44px */
@@ -85,7 +88,7 @@
 }
 
 main .section.form-container.lead-forms .form .form-message.success-message {
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     background-color: transparent;
     border-color: unset;
     padding: unset;
@@ -115,7 +118,7 @@ main .lead-forms .form form p {
 }
 
 main .lead-forms.section.central-aligned > .default-content-wrapper p{
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-19);
 }
@@ -169,7 +172,7 @@ main .lead-forms .form form {
   max-width: 46.25rem;
   width: 100%;
   margin: 0 auto;
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b1);
   line-height: var(--bbl-form-line-height-1-3);
@@ -205,14 +208,14 @@ main .lead-forms .form form .field-title {
   padding: 0;
 }
 
-main .lead-forms .form form .field-infotext {
+/* main .lead-forms .form form .field-infotext {
   margin: var(--bbl-space-500) 0 var(--bbl-space-250);
-}
+} */
 
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1-mobile);
-  line-height: var(--bbl-form-line-height-14);
+  line-height: var(--bbl-form-line-height-19-25);
   padding-right: 0;
   margin-bottom: var(--bbl-form-margin-10);
 }
@@ -221,8 +224,11 @@ main .lead-forms .form form .plain-text-wrapper p:last-child {
   margin-bottom: 0;
 }
 
-main .lead-forms .form form .plain-text-wrapper :is(a, .custom-wffm-form) {
-  color: inherit;
+main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textt, .field-or, .field-textw, .field-text1) p {
+  text-align: left;
+}
+
+main .lead-forms .form form .plain-text-wrapper :is(.custom-wffm-form) {
   font-size: inherit;
 }
 
@@ -287,7 +293,7 @@ main .section.form-container.lead-forms .form form select {
   border-color: var(--bbl-color-grey-23);
   cursor: pointer;
   appearance: none;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin-bottom: var(--bbl-form-margin-14);
   background: var(--bbl-color-white) url('../../../icons/dropdown.svg') no-repeat right var(--bbl-space-150) center /25px;
   font-family: var(--bbl-font-family-medium);
@@ -329,6 +335,10 @@ main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number
 
 main .lead-forms .form form .field-wrapper[class*='icon-'] select {
   margin-top: var(--bbl-form-margin-8);
+}
+
+main .section.form-container.lead-forms .form form select:valid {
+  color: var(--bbl-color-black);
 }
 
 main .section.form-container.lead-forms .section.form-container.custom-forms .drop-down-wrapper.field-wrapper select {
@@ -376,7 +386,7 @@ main .lead-forms .form select option {
 
 main .lead-forms .form :is(input, textarea)::placeholder {
   opacity: 1;
-  color: var(--bbl-color-grey-150);
+  color: var(--bbl-color-grey-40);
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-form-line-height-44);
@@ -446,7 +456,7 @@ main .lead-forms .form form .email-wrapper::before {
   justify-content: center;
   width: var(--bbl-space-250);
   height: 1.1875rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -854,7 +864,7 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label
   height: 100%;
   margin: 0;
   padding: 0 var(--bbl-form-padding-10);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1-mobile);
   font-weight: var(--bbl-font-weight-medium);
   text-align: center;
@@ -932,7 +942,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
 
   main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
     font-size: var(--bbl-font-size-b1-desktop);
-    line-height: 1.3rem;
+    line-height: var(--bbl-form-line-height-22);
   }
 
   main .lead-forms .form form h2{
@@ -947,6 +957,10 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   main .lead-forms.section.central-aligned > .default-content-wrapper p{
     font-size: var(--bbl-font-size-b1-desktop);
     line-height: var(--bbl-line-height-b1-desktop);
+  }
+
+  main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textt, .field-or, .field-textw, .field-text1) > p {
+    padding-inline: var(--bbl-form-padding-10);
   }
 
   main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {

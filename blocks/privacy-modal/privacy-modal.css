@@ -114,6 +114,10 @@
   text-indent: 0;
 }
 
+.download-file-modal .privacy-modal-title :is(h3) {
+  color: var(--bbl-color-grey-28);
+}
+
 .privacy-modal-scroll-hint {
   display: none;
 }
@@ -136,6 +140,10 @@
   scrollbar-gutter: stable;
 }
 
+.privacy-modal-overlay.download-file-modal .privacy-modal-body {
+  max-height: unset;
+}
+
 .privacy-modal-body::-webkit-scrollbar-button {
   display: none;
 }
@@ -147,6 +155,10 @@
 
 .privacy-modal-body p:last-child {
   margin-bottom: 0;
+}
+
+.privacy-modal-overlay.download-file-modal .privacy-modal-body p {
+  text-indent: 0;
 }
 
 .privacy-modal-body ul,
@@ -387,6 +399,10 @@
     font-size: 1rem;
     overflow-y: scroll;
     scrollbar-gutter: stable;
+  }
+
+  .privacy-modal-overlay.download-file-modal .privacy-modal-body {
+    max-height: unset;
   }
 
   .privacy-modal-checkbox-row {

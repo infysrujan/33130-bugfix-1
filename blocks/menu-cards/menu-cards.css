@@ -26,6 +26,11 @@
   transition: all 0.2s ease;
 }
 
+.menu-cards .tips-insight-quick-access-item:hover {
+  border: 1px solid var(--bbl-color-active-blue);
+  box-shadow: 0.3125rem 0.3125rem 0 var(--bbl-color-blue-105-alpha-17);
+}
+
 .menu-cards .tips-insight-quick-access-title {
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
@@ -53,13 +58,34 @@
   object-fit: contain;
 }
 
-.menu-cards .tips-insight-quick-access-item:hover {
-    border: 1px solid var(--bbl-color-active-blue);
-    box-shadow: 0.3125rem 0.3125rem 0 rgb(0 51 153 / 17%);
+/* Four cards */
+
+.menu-cards .tips-insight-quick-access.four-cards {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(clamp(10rem, 28vw, 13.5rem), 1fr)
+  );
+  gap: var(--bbl-space-100);
 }
 
+.menu-cards .tips-insight-quick-access.four-cards
+  .tips-insight-quick-access-item {
+  flex: none;
+  height: 8.125rem;
+  box-sizing: border-box;
+}
+
+.menu-cards .tips-insight-quick-access.four-cards
+  .tips-insight-quick-access-item
+  .tips-insight-quick-access-title {
+  font-size: var(--bbl-heading-h2-size);
+  font-weight: var(--bbl-heading-h2-weight);
+  line-height: var(--bbl-heading-h2-line-height);
+}
 
 /* Tablet: width > 760px */
+
 @media (width > 47.5rem) {
   .menu-cards .tips-insight-quick-access {
     gap: var(--bbl-space-200);
@@ -76,10 +102,28 @@
     max-width: var(--bbl-space-600);
     max-height: var(--bbl-space-600);
   }
+
+  .menu-cards .tips-insight-quick-access.four-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--bbl-space-200);
+  }
+
+  .menu-cards .tips-insight-quick-access.four-cards
+    .tips-insight-quick-access-item {
+    flex: none;
+    height: 13.4375rem;
+    box-sizing: border-box;
+  }
 }
 
 /* Desktop: width > 1024px */
+
 @media (width > 64rem) {
+  .menu-cards .tips-insight-quick-access-title {
+    font-size: var(--bbl-font-size-h3-desktop);
+    line-height: var(--bbl-line-height-h3-desktop);
+  }
+
   .menu-cards .tips-insight-quick-access {
     gap: var(--bbl-space-300);
   }
@@ -88,4 +132,15 @@
     flex: calc(32.33% - 4rem);
   }
 
+  .menu-cards .tips-insight-quick-access.four-cards {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(16rem, 1fr)
+    );
+    gap: var(--bbl-space-300);
+  }
+
+  .menu-cards .tips-insight-quick-access.four-cards .tips-insight-quick-access-item {
+    flex: none;
+  }
 }

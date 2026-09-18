@@ -64,6 +64,14 @@ function resolvePhotoSrc(photo) {
   return `data:image/jpeg;base64,${photo}`;
 }
 
+function resolveGps(item) {
+  if (item.GPS_LATITUDE && item.GPS_LONGTITUDE) {
+    return { lat: item.GPS_LATITUDE, lng: item.GPS_LONGTITUDE };
+  }
+  const [lat, lng] = (item.GPS_DATA || '').split(',').map((s) => s.trim());
+  return lat && lng ? { lat, lng } : null;
+}
+
 function formatPrice(price) {
   if (!price) return '';
   return new Intl.NumberFormat('en-US', {
@@ -133,7 +141,9 @@ function buildFilterHtml(p, propertyTypes, priceRanges) {
 function buildPropCardHtml(item, detailPath, p, category, pfsData) {
   const photo = item.PHOTO_FILE_1;
   const currency = p.propertyForSaleCurrency || 'บาท';
-  const price = item.PR_PRICE ? `${formatPrice(item.PR_PRICE)} ${currency}` : '';
+  const price = Number(item.PR_PRICE) > 0
+    ? `${formatPrice(item.PR_PRICE)} ${currency}`
+    : (p.propertyForSaleContactStaff || 'ติดต่อเจ้าหน้าที่');
   const specialPrice = item.SPECIAL_PRICE ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}` : '';
   const location = [item.LOCATION_AMPHUR, item.LOCATION_PROVINCE].filter(Boolean).join(', ');
   const tag = pfsData.categoryLabel[category] || item.MAIN_ASSET || '';
@@ -145,8 +155,9 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData) {
     specialPrice ? `<p class="pfs-card-price pfs-card-special-price">${specialPrice}</p>` : '',
   ].filter(Boolean).join('');
 
-  const mapUrl = item.GPS_LATITUDE && item.GPS_LONGTITUDE && pfsData.mapBaseUrl
-    ? `${pfsData.mapBaseUrl}N ${item.GPS_LATITUDE} E ${item.GPS_LONGTITUDE}`
+  const gps = resolveGps(item);
+  const mapUrl = gps && pfsData.mapBaseUrl
+    ? `${pfsData.mapBaseUrl}N ${gps.lat} E ${gps.lng}`
     : '';
 
   const card = {
@@ -234,12 +245,13 @@ async function loadPfsData(configUrl) {
 
 function buildSearchUrl(apiBase, params, validCategories) {
   const v = validateSearchParams(params, validCategories);
-  const location = v.district || v.province;
+  const province = v.province ? encodeURIComponent(v.province) : 0;
+  const district = v.district ? encodeURIComponent(v.district) : 0;
   const segments = [
     v.page,
     v.regionId,
-    location ? encodeURIComponent(location) : 0,
-    0,
+    province,
+    district,
     v.keyword ? v.keyword.split(',').map((s) => encodeURIComponent(s.trim())).join(',') : 0,
     v.priceRangeKey,
     v.category,
@@ -463,6 +475,8 @@ export default async function decorate(block) {
   const provinceDefault = placeholders.propertyForSaleProvince || 'เลือกจังหวัด';
   const districtDefault = placeholders.propertyForSaleDistrict || 'เลือกเขต/อำเภอ';
   const priceDefault = placeholders.propertyForSalePrice || 'เลือกช่วงราคา';
+  const allProvinceLabel = placeholders.propertyForSaleAllProvince || 'ทั้งหมด';
+  const allDistrictLabel = placeholders.propertyForSaleAllDistrict || 'ทั้งหมด';
 
   const provinceFilter = filterWrapper.querySelector('[data-filter="province"]');
   const provinceDropdown = provinceFilter.querySelector('[role="listbox"]');
@@ -509,14 +523,16 @@ export default async function decorate(block) {
     if (regionId) {
       provinceFilter.classList.remove('is-hidden');
       districtFilter.classList.remove('is-hidden');
+      districtDropdown.innerHTML = buildOptions([{ value: '', label: allDistrictLabel }]);
       const provinces = await fetchJson(`${apiBase}/GetProvince/${regionId}`);
       if (Array.isArray(provinces) && provinces.length) {
-        provinceDropdown.innerHTML = buildOptions(
-          provinces.map((pv) => {
+        provinceDropdown.innerHTML = buildOptions([
+          { value: '', label: allProvinceLabel },
+          ...provinces.map((pv) => {
             const name = (pv.LOCATION_PROVINCE ?? pv.ProvinceName ?? pv.Name ?? '').trim();
             return { value: name, label: name };
           }).filter((o) => o.label),
-        );
+        ]);
       }
     } else {
       provinceFilter.classList.add('is-hidden');
@@ -535,13 +551,16 @@ export default async function decorate(block) {
     if (provinceName) {
       const districts = await fetchJson(`${apiBase}/GetDistrict/${encodeURIComponent(provinceName)}`);
       if (Array.isArray(districts) && districts.length) {
-        districtDropdown.innerHTML = buildOptions(
-          districts.map((d) => {
+        districtDropdown.innerHTML = buildOptions([
+          { value: '', label: allDistrictLabel },
+          ...districts.map((d) => {
             const name = (d.LOCATION_AMPHUR ?? d.DistrictName ?? d.Name ?? '').trim();
             return { value: name, label: name };
           }).filter((o) => o.label),
-        );
+        ]);
       }
+    } else {
+      districtDropdown.innerHTML = buildOptions([{ value: '', label: allDistrictLabel }]);
     }
     updateSearchBtn();
   });

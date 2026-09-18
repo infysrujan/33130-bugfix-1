@@ -25,15 +25,16 @@
   overflow: auto hidden;
 }
 
+.accordion-item .table {
+  overflow: auto hidden;
+}
+
 /* Table element */
 .table table {
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
   background: transparent;
-  font-family: var(--bbl-font-family-primary);
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-85);
 }
 
 /* Column Width variant: authored widths (colgroup, set in JS) only take effect
@@ -59,10 +60,13 @@
 
 /* --------------------------------------------------------------------------
    BORDER TYPE VARIANTS (specificity 0,2,3)
+   Cells are scoped via `> :where(tbody) > :where(tr) >` so a variant on an
+   outer table never bleeds into a nested table's own rows/cells — the
+   :where() wrapper keeps the added structural steps at zero specificity.
    -------------------------------------------------------------------------- */
 
 /* No Border — remove all borders */
-.table table.no-border td {
+.table table.no-border > :where(tbody) > :where(tr) > td {
   border: none;
 }
 
@@ -71,12 +75,12 @@
   border: 0.0625rem solid var(--bbl-color-grey-30);
 }
 
-.table table.outline-border td {
+.table table.outline-border > :where(tbody) > :where(tr) > td {
   border: none;
 }
 
 /* Border Bottom — only bottom border on each row */
-.table table.border-bottom td {
+.table table.border-bottom > :where(tbody) > :where(tr) > td {
   border: none;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
 }
@@ -86,17 +90,17 @@
    -------------------------------------------------------------------------- */
 
 /* Border Black — #000 */
-.table table.border-black td {
+.table table.border-black > :where(tbody) > :where(tr) > td {
   border-color: var(--bbl-color-black);
 }
 
 /* Border Light Gray — lightgray */
-.table table.border-light-gray td {
+.table table.border-light-gray > :where(tbody) > :where(tr) > td {
   border-color: var(--bbl-color-grey-27);
 }
 
 /* Border Gray — #cacaca */
-.table table.border-gray td {
+.table table.border-gray > :where(tbody) > :where(tr) > td {
   border-color: var(--bbl-color-grey-21);
 }
 
@@ -106,17 +110,21 @@
 .table table tr.header-row td {
   padding: 0.625rem 0.75rem;
   text-align: left;
-  font-weight: 400;
-  font-size: 0.875rem;
-  font-family: var(--bbl-font-family-primary);
-  color: var(--bbl-color-grey-85);
   vertical-align: top;
   background: transparent;
 }
 
+/* Right Aligned Last Line — the trailing <br>-separated section of a
+   header cell (split out in JS into its own span) sits right-aligned on
+   its own line, independent of whichever alignment variant the table uses. */
+.table table.header-right-aligned-last-line tr.header-row td .table-header-last-line {
+  display: block;
+  text-align: right;
+}
+
 .table table tr.header-row td :is(strong, b) {
   font-family: var(--bbl-font-family-medium);
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-85);
 }
 
@@ -136,7 +144,7 @@
 /* --------------------------------------------------------------------------
    VARIANT: STRIPED (targets tr, not td — no specificity conflict)
    -------------------------------------------------------------------------- */
-.table table.striped tr:nth-child(even) {
+.table table.striped > :where(tbody) > tr:nth-child(even) {
   background: var(--bbl-color-grey-10);
 }
 
@@ -154,24 +162,32 @@
 /* --------------------------------------------------------------------------
    VARIANT: COMPACT PADDING (specificity 0,2,4 — must precede 0,3,x td rules)
    -------------------------------------------------------------------------- */
-.table table.compact-padding tbody tr td {
+.table table.compact-padding > tbody > tr > td {
   padding: 0.3125rem 0.625rem;
 }
 
 /* --------------------------------------------------------------------------
    VARIANT: BORDER BOTTOM TIGHT COLS — generic td (specificity 0,2,4)
    -------------------------------------------------------------------------- */
-.table table.border-bottom-tight-cols tbody tr td {
+.table table.border-bottom-tight-cols > tbody > tr > td {
   padding: 0.9375rem 0.625rem;
 }
 
-/* --------------------------------------------------------------------------
-   CELL VARIANTS — dash highlight (specificity 0,3,2)
-   -------------------------------------------------------------------------- */
+.table table.outline-border.currency-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  padding: 0.625rem 0;
+}
 
-/* Dash Cell Highlight — #d9d9d9 background for cells containing only "-" */
-.table table.dash-cell-highlight td.cell-dash {
+.table table.dash-cell-highlight > :where(tbody) > :where(tr) > td.cell-dash {
   background: var(--bbl-color-grey-26);
+}
+
+/* Highlight All Cells — background for every body cell in the table.
+   Defaults to a light-blue background; when a Header variant is also
+   applied, the body cells' background matches that variant's color. */
+.table table.highlight-all-cells > :where(tbody) > tr:not(.header-row) > td {
+  background: var(--bbl-color-blue-steel-light);
 }
 
 /* --------------------------------------------------------------------------
@@ -179,52 +195,62 @@
    -------------------------------------------------------------------------- */
 
 /* Center Aligned header */
-.table table.header-center-aligned tr.header-row td {
+.table table.header-center-aligned > :where(tbody) > tr.header-row > td {
   text-align: center;
   vertical-align: middle;
 }
 
 /* Header Blue — #deeaf6 background */
-.table table.header-blue tr.header-row td {
+.table table.header-blue > :where(tbody) > tr.header-row > td {
   background: var(--bbl-color-blue-steel-dark);
 }
 
 /* Header Light Blue — #e6eef4 background */
-.table table.header-light-blue tr.header-row td {
+.table table.header-light-blue > :where(tbody) > tr.header-row > td {
   background: var(--bbl-color-blue-steel-light);
 }
 
-.table table.header-light-gray tr.header-row td {
+.table table.header-light-gray > :where(tbody) > tr.header-row > td {
   background: var(--bbl-color-grey-19);
 }
 
 /* Header Right Aligned */
-.table table.header-right-aligned tr.header-row td {
+.table table.header-right-aligned > :where(tbody) > tr.header-row > td {
   text-align: right;
   vertical-align: middle;
 }
 
 /* Header Pastel Blue — #A1C6FF background */
-.table table.header-primary-blue-s01 .header-row {
+.table table.header-primary-blue-s01 > :where(tbody) > .header-row {
   background-color: var(--bbl-color-blue-40);
+}
+
+/* Header Top Aligned — overrides vertical-align: middle from Center/Right Aligned */
+.table table.header-top-aligned > :where(tbody) > tr.header-row > td {
+  vertical-align: top;
+}
+
+/* Header Middle Aligned — overrides default vertical-align: top */
+.table table.header-middle-aligned > :where(tbody) > tr.header-row > td {
+  vertical-align: middle;
 }
 
 /* Highlight Bold Cells — background for any cell containing a <strong>,
    matching whichever Header variant is also applied to the table. No
    background is applied when no matching Header variant is set. */
-.table table.highlight-bold-cells.header-blue td:has(strong) {
+.table table.highlight-bold-cells.header-blue > :where(tbody) > :where(tr) > td:has(strong) {
   background: var(--bbl-color-blue-steel-dark);
 }
 
-.table table.highlight-bold-cells.header-light-blue td:has(strong) {
+.table table.highlight-bold-cells.header-light-blue > :where(tbody) > :where(tr) > td:has(strong) {
   background: var(--bbl-color-blue-steel-light);
 }
 
-.table table.highlight-bold-cells.header-light-gray td:has(strong) {
+.table table.highlight-bold-cells.header-light-gray > :where(tbody) > :where(tr) > td:has(strong) {
   background: var(--bbl-color-grey-19);
 }
 
-.table table.highlight-bold-cells.header-primary-blue-s01 td:has(strong) {
+.table table.highlight-bold-cells.header-primary-blue-s01 > :where(tbody) > :where(tr) > td:has(strong) {
   background: var(--bbl-color-blue-40);
 }
 
@@ -233,13 +259,13 @@
    -------------------------------------------------------------------------- */
 
 /* Cells Center Aligned */
-.table table.cells-center-aligned tr:not(.header-row) td {
+.table table.cells-center-aligned > :where(tbody) > tr:not(.header-row) > td {
   text-align: center;
   vertical-align: middle;
 }
 
 /* Cells Middle Aligned */
-.table table.cells-middle-aligned tr:not(.header-row) td {
+.table table.cells-middle-aligned > :where(tbody) > tr:not(.header-row) > td {
   vertical-align: middle;
 }
 
@@ -248,7 +274,7 @@
    -------------------------------------------------------------------------- */
 
 /* No Border Bottom — remove the bottom border from the last row only */
-.table table.no-border-bottom tr:last-child td {
+.table table.no-border-bottom > :where(tbody) > tr:last-child > td {
   border-bottom: none;
 }
 
@@ -261,16 +287,71 @@
 }
 
 /* --------------------------------------------------------------------------
+   CELL VARIANTS — highlight first column (specificity 0,4,2)
+   -------------------------------------------------------------------------- */
+
+/* Highlight First Column — background for every cell in the first column,
+   matching whichever Header variant is also applied to the table. No
+   background is applied when no matching Header variant is set. */
+.table table.highlight-first-column.header-blue > :where(tbody) > :where(tr) > td:first-child {
+  background: var(--bbl-color-blue-steel-dark);
+}
+
+.table table.highlight-first-column.header-light-blue > :where(tbody) > :where(tr) > td:first-child {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.highlight-first-column.header-light-gray > :where(tbody) > :where(tr) > td:first-child {
+  background: var(--bbl-color-grey-19);
+}
+
+.table table.highlight-first-column.header-primary-blue-s01 > :where(tbody) > :where(tr) > td:first-child {
+  background: var(--bbl-color-blue-40);
+}
+
+/* --------------------------------------------------------------------------
+   CELL VARIANTS — highlight all cells except header (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+
+/* Highlight All Cells — override the default light-blue background with
+   whichever Header variant is also applied to the table. */
+.table table.highlight-all-cells.header-blue > :where(tbody) > tr:not(.header-row) > td {
+  background: var(--bbl-color-blue-steel-dark);
+}
+
+.table table.highlight-all-cells.header-light-blue > :where(tbody) > tr:not(.header-row) > td {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.highlight-all-cells.header-light-gray > :where(tbody) > tr:not(.header-row) > td {
+  background: var(--bbl-color-grey-19);
+}
+
+.table table.highlight-all-cells.header-primary-blue-s01 > :where(tbody) > tr:not(.header-row) > td {
+  background: var(--bbl-color-blue-40);
+}
+
+/* --------------------------------------------------------------------------
    HEADER VARIANTS — mixed blue (specificity 0,4,3)
    -------------------------------------------------------------------------- */
 
 /* Header Mixed Blue — first half light blue, second half dark blue */
-.table table.header-mixed-blue tr.header-row td.mixed-blue-light {
+.table table.header-mixed-blue > :where(tbody) > tr.header-row > td.mixed-blue-light {
   background: var(--bbl-color-blue-steel-light);
 }
 
-.table table.header-mixed-blue tr.header-row td.mixed-blue-dark {
+.table table.header-mixed-blue > :where(tbody) > tr.header-row > td.mixed-blue-dark {
   background: var(--bbl-color-blue-steel-dark);
+}
+
+/* --------------------------------------------------------------------------
+   HEADER VARIANTS — right aligned except first (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+
+/* Header Right Aligned (exclude first column) */
+.table table.header-right-aligned-except-first > :where(tbody) > tr.header-row > td:not(:first-child) {
+  text-align: right;
+  vertical-align: middle;
 }
 
 /* --------------------------------------------------------------------------
@@ -278,9 +359,23 @@
    -------------------------------------------------------------------------- */
 
 /* Cells Center Aligned (exclude first column) */
-.table table.cells-center-aligned-except-first tr:not(.header-row) td:not(:first-child) {
+.table table.cells-center-aligned-except-first > :where(tbody) > tr:not(.header-row) > td:not(:first-child) {
   text-align: center;
   vertical-align: middle;
+}
+
+/* Cells Right Aligned (exclude first column) */
+.table table.cells-right-aligned-except-first > :where(tbody) > tr:not(.header-row) > td:not(:first-child) {
+  text-align: right;
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
+   CURRENCY TABLE — cell padding (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+.table table.outline-border.currency-table tr.header-row td,
+.table table.outline-border.currency-table tr:not(.header-row) td {
+  padding: 0.9375rem;
 }
 
 /* --------------------------------------------------------------------------
@@ -301,7 +396,7 @@
 /* --------------------------------------------------------------------------
    ROW VARIANTS — center aligned except first (specificity 0,4,3)
    -------------------------------------------------------------------------- */
-.table table.zebra-light-gray tr:nth-child(odd) {
+.table table.zebra-light-gray > :where(tbody) > tr:nth-child(odd) {
   background-color: var(--bbl-color-grey-10);
 }
 
@@ -321,6 +416,10 @@
   min-width: 61.9375rem;
 }
 
+.accordion-item .table table {
+  min-width: 61.9375rem;
+}
+
 /* --------------------------------------------------------------------------
    ICON STYLES
    -------------------------------------------------------------------------- */
@@ -331,6 +430,16 @@ td .icon img {
 
 td .icon {
   margin-right: 0.9375rem;
+}
+
+.table table.currency-table td .icon{
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+.table table.currency-table td .icon img {
+   height: 100%;
+   width:100%;
 }
 
 /* ==========================================================================
@@ -344,16 +453,16 @@ td .icon {
   .table.scroll {
     overflow: auto hidden;
   }
+
+  .accordion-item .table {
+    overflow: auto hidden;
+  }
 }
 
 /* ==========================================================================
    DESKTOP (> 64rem) — 16px = 1rem
    ========================================================================== */
 @media (width > 64rem) {
-  .table table {
-    font-size: 1rem;
-  }
-
   .table.scroll {
     overflow: visible;
   }
@@ -362,12 +471,20 @@ td .icon {
     min-width: 0;
   }
 
-  .table table tr.header-row td {
-    font-size: 1rem;
+  .accordion-item .table{
+    overflow: visible;
+  }
+
+  .accordion-item .table table {
+    min-width: 0;
   }
 
   .table table tr:not(.header-row) td {
     font-size: 1rem;
+  }
+
+  .table table.outline-border.currency-table {
+    padding: 0.9375rem 1.25rem;
   }
 }
 

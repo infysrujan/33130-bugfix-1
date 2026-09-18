@@ -126,7 +126,7 @@ function createConvertGroup(
       <span class="guide-txt">${label}</span>
       <div class="country-select">
         <img src="${defaultCurrency?.icon ?? ''}" alt="${defaultCurrency?.code ?? ''}">
-        <span class="code">${defaultCurrency?.name ?? ''}</span>
+        <span class="code">${defaultCurrency?.code ?? ''}</span>
       </div>
       <span class="icon-dropdown"></span>
     </div>
@@ -164,7 +164,7 @@ function createConvertGroup(
 
       if (flag) flag.src = selectedIcon;
       if (flag) flag.alt = selectedCode;
-      if (code) code.textContent = item.dataset?.description ?? selectedCode;
+      if (code) code.textContent = selectedCode ?? '';
       onSelect?.(selectedCode);
 
       // Remove active class from all items and add to selected

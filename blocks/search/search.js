@@ -42,7 +42,7 @@ export default function decorate(block) {
   const searchPlaceholder = document.createElement('span');
   searchPlaceholder.className = 'search-placeholder';
   searchPlaceholder.setAttribute('aria-hidden', 'true');
-  searchPlaceholder.textContent = 'Search';
+  searchPlaceholder.textContent = ariaLabel;
   searchLink.appendChild(searchPlaceholder);
 
   searchWrapper.appendChild(searchLink);

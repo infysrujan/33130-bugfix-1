@@ -1,4 +1,5 @@
 import { fetchGet } from '../../../scripts/utils/fetchApi.js';
+import fetchLatestRates from '../../../scripts/utils/latest-rates-cache.js';
 
 export function trimValue(value) {
   if (value === null || value === undefined) return '-';
@@ -22,9 +23,11 @@ export function createApiEndpoints(configs) {
   const dayInMonthTemplate = configs?.forexRatesGetDayInMonth || '';
   const chartTemplate = configs?.forexGraphGetFxrateChart || '';
   const downloadTemplate = configs?.forexRatesGetFxrateDownload || '';
+  const latestRatesUrl = configs?.forexRatesGetLatestRates || '';
 
   return {
     fxFamily: () => fxFamilyUrl,
+    latestRates: () => latestRatesUrl,
     dayInMonth: (year, month) => replaceTemplateTokens(dayInMonthTemplate, {
       YEAR: year,
       MONTH: month,
@@ -60,6 +63,10 @@ export function createApiEndpoints(configs) {
 
 export async function getFxFamily(endpoints) {
   return fetchGet(endpoints.fxFamily());
+}
+
+export async function getLatestRates(endpoints) {
+  return fetchLatestRates(endpoints.latestRates());
 }
 
 export async function getEnabledDays(endpoints, year, month) {

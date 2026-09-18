@@ -182,11 +182,20 @@ export default function decorate(fieldDiv, fd) {
     if (!form) return;
 
     // Set initial state
-    applyState(nav, getActiveIndex(form, panelNames));
+    let currentIndex = getActiveIndex(form, panelNames);
+    applyState(nav, currentIndex);
 
     // Watch each tracked panel fieldset for data-visible changes
     const observer = new MutationObserver(() => {
-      applyState(nav, getActiveIndex(form, panelNames));
+      const newIndex = getActiveIndex(form, panelNames);
+      if (newIndex !== currentIndex) {
+        currentIndex = newIndex;
+        applyState(nav, newIndex);
+        // Scroll the step indicator back into view on every step change —
+        // otherwise the user lands mid-page on the new step's content
+        // with the ①──②──③ indicator scrolled out of view above.
+        nav.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
 
     steps.forEach(({ panel }) => {

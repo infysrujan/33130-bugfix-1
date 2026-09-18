@@ -12,7 +12,6 @@ main .custom-forms .form fieldset.radio-group-wrapper legend,
 main .custom-forms .form form p {
   font-weight: var(--form-label-font-weight);
   font-size: var(--bbl-font-size-h4-mobile);
-  color: var(--bbl-color-grey-90);
 }
 
 .debt-support .form-container.custom-forms .form :is(h1, h2, h3, h4, h5, h6){
@@ -71,17 +70,28 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
 main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) {
   padding-inline: 0.9375rem;
 
-  & :is(.form-wrapper, .form.block, .form),
-  & .form form,
+  & :is(.form-wrapper, .form.block, .form) {
+    width: 100%;
+    margin-inline: auto;
+    padding: 0;
+    box-shadow: unset;
+  }
+
   & .form form fieldset.panel-wrapper.field-main-form-panel {
     width: 100%;
     max-width: 46.25rem;
     margin-inline: auto;
+    padding: 0;
   }
 
-  & :is(.form-wrapper, .form.block, .form) {
-    padding: 0;
-    box-shadow: unset;
+  & .form form,
+  & .form form > fieldset.panel-wrapper.field-wrapper {
+    max-width: none;
+  }
+
+  & .form form fieldset.panel-wrapper.field-title-panel {
+    width: 100%;
+    max-width: none;
   }
 
   /* Typography base — form tokens first, global tokens for line-height / family */
@@ -91,11 +101,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     font-size: var(--form-font-size-xs);
     font-weight: var(--form-label-font-weight);
     line-height: var(--bbl-text-default-line-height);
-    color: var(--bbl-color-grey-85);
-  }
-
-  & .form form fieldset.panel-wrapper.field-main-form-panel {
-    padding: 0;
+    color: var(--bbl-color-grey-90);
   }
 
   /* Inputs */
@@ -115,7 +121,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
 
   & .drop-down-wrapper.field-wrapper select {
     padding-right: var(--bbl-space-500);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     background: var(--form-input-background-color) url('../../../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
     font-family: var(--bbl-font-family-medium);
     font-weight: var(--bbl-body-b1-medium-weight);
@@ -232,7 +238,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     font-size: var(--form-fieldset-legend-font-size);
     font-weight: var(--bbl-form-font-weight-bold);
     line-height: var(--bbl-heading-h4-line-height);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     background: unset;
     text-decoration: underline;
   }
@@ -347,4 +353,8 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
   min-width: 0;
   width: auto;
   margin: 0;
+}
+
+.debt-support main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) .form form .radio-group-wrapper.radio-tabs.field-invalid > .radio-wrapper {
+  min-width: min-content;
 }

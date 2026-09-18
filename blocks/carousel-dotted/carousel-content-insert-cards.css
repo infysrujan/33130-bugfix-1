@@ -98,7 +98,11 @@
   z-index: 1;
   background-color: var(--bbl-color-blue-140);
   color: var(--bbl-color-white);
-  padding: 0.4375rem var(--bbl-space-200) 0.3125rem;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 1.4375rem;
+  padding: var(--bbl-space-025) var(--bbl-space-100);
   border-radius: 1.25rem;
   font-size: var(--bbl-text-label-tag-size);
   line-height: var(--bbl-text-label-tag-line-height);
@@ -169,7 +173,6 @@
   line-height: var(--bbl-text-default-line-height);
   font-weight: var(--bbl-text-default-weight);
   font-family: var(--bbl-font-family-primary);
-  color: var(--bbl-color-grey-85);
   margin: 0;
   overflow: hidden;
   display: -webkit-box;
@@ -302,4 +305,11 @@
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .btn-primary {
   font-size: var(--bbl-body-b1-size);
 }
+}
+
+@media (width > 64rem) {
+  .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .category {
+    height: 1.875rem;
+    padding: var(--bbl-space-050) var(--bbl-space-100);
+  }
 }

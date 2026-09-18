@@ -39,6 +39,7 @@ function getLinkLogoHref(anchorHref) {
     }
 
     anchorUrl.pathname = currentPathSegments.join('/') || '/';
+    anchorUrl.search = window.location.search;
     return anchorUrl.toString();
   } catch {
     return anchorHref;

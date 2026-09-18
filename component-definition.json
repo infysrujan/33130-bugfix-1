@@ -242,7 +242,8 @@
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
                   "name": "Card List Item",
-                  "model": "card-list-item"
+                  "model": "card-list-item",
+                  "filter": "card-list-item-rte"
                 }
               }
             }
@@ -1671,7 +1672,8 @@
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
                   "name": "Menu Card Item",
-                  "model": "menu-card-item"
+                  "model": "menu-card-item",
+                  "filter": "menu-card-item-rte"
                 }
               }
             }
@@ -1913,7 +1915,8 @@
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
                   "name": "Promotional Details",
-                  "model": "promotional-details"
+                  "model": "promotional-details",
+                  "filter": "promotional-details-rte"
                 }
               }
             }

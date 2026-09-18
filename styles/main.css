@@ -119,6 +119,10 @@ strong{
   font-weight: var(--bbl-font-weight-regular);
 }
 
+sup {
+  font-size: 0.75rem;
+}
+
 p,
 dl,
 ol,
@@ -384,6 +388,13 @@ main img {
     text-align: center;
 }
 
+.section.center-aligned-first-paragraph .default-content-wrapper > p:first-of-type,
+.accordion-panel.center-aligned-first-paragraph .default-content-wrapper > p:first-of-type,
+.tab-panel.center-aligned-first-paragraph .default-content-wrapper > p:first-of-type {
+    max-width: var(--bbl-layout-central-aligned-max-width);
+    margin: 0 auto;
+}
+
 /* =========================================================================
    SECTION-FULL-BLEED-BG - Global Styles
    ========================================================================= */
@@ -497,8 +508,38 @@ main img {
 .full-bleed-bg.card-list-container .content,
 .full-bleed-bg.menu-card-actions-container .content,
 .full-bleed-bg.teaser-with-bg-image-container .content,
-.full-bleed-bg.content-insert-cards-wrapper .content {
+.full-bleed-bg.content-insert-cards-container .content {
     max-width: var(--bbl-layout-content-max-width-desktop);
+}
+
+@media (width > 47.5rem) {
+    .full-bleed-bg[class*="columns-"]  {
+        padding-inline: var(--bbl-space-section-sm);
+    }
+
+    .full-bleed-bg[class*="columns-"] .content {
+        padding-inline: 0
+    }
+}
+
+@media (width > 64rem) {
+    .full-bleed-bg[class*="columns-"] {
+        padding-inline: var(--bbl-space-section-xl);
+    }
+
+    .full-bleed-bg[class*="columns-"] .content {
+        padding-inline: 0
+    }
+}
+
+@media (width > 87.5rem) {
+    .full-bleed-bg[class*="columns-"] {
+        padding-inline: calc((100% - var(--bbl-layout-content-max-width-desktop)) / 2);
+    }
+    
+    .full-bleed-bg[class*="columns-"] .content {
+        padding-inline: 0
+    }
 }
  
 /* =========================================================================
@@ -660,13 +701,20 @@ main img {
     .section.columns-2-33 > *:first-child,
     .accordion-panel.columns-2-33 > *:first-child,
     .tab-panel.columns-2-33 > *:first-child {
-        flex: 33;
+        flex: 32.5;
     }
     
     .section.columns-2-33 > *:last-child,
     .accordion-panel.columns-2-33 > *:last-child,
     .tab-panel.columns-2-33 > *:last-child {
         flex: 67;
+    }
+
+    /* Make the first column an exact third so the Grow Club card matches the
+       width of the Rates and Bank News card (a columns-3 third). */
+    .section.columns-2-33.menu-cards-container > .carousel-dotted-wrapper:first-child {
+        flex: 33.3333%;
+        max-width: 33.3333%;
     }
 
     /* .section.columns-2-65 > *,

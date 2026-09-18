@@ -119,7 +119,7 @@ function setupAccordion(block) {
   headers.forEach((header) => {
     header.addEventListener('click', () => {
       // Only work on mobile/tablet (< 1024px)
-      if (window.innerWidth >= DESKTOP_BREAKPOINT) return;
+      if (window.innerWidth > DESKTOP_BREAKPOINT) return;
 
       const parent = header.closest('.footer-group');
       const isActive = parent.classList.contains('active');
@@ -147,7 +147,7 @@ export default async function decorate(block) {
   let footerPath = '';
   if (document.querySelector('body.error-page')) {
     const lang = getLang();
-    footerPath = `/${lang}/footer`;
+    footerPath = ['EN', 'TH'].includes(lang.toUpperCase()) ? `/${lang}/footer` : '/en/footer';
   } else {
     const footerMeta = getMetadata('footer');
     footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';

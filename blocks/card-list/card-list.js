@@ -97,7 +97,6 @@ function createCardListItem(cardElement, doc) {
   const cardLinkAnchor = cells[base + 3]?.querySelector('a');
   const cardLinkHref = cardLinkAnchor?.getAttribute('href') || '';
   const cardLinkTarget = cardLinkAnchor?.target || '';
-  const cardLinkTitle = cardLinkAnchor?.title || '';
   const cell4Text = cells[base + 4]?.textContent?.trim();
   const isCell4Boolean = isBooleanLikeValue(cell4Text);
   let overlayHref;
@@ -184,6 +183,7 @@ function createCardListItem(cardElement, doc) {
     temp.querySelectorAll('a').forEach((anchor) => {
       const downloadLink = createDownloadLink(anchor, doc);
       if (downloadLink) {
+        downloadLink.classList.remove('content');
         downloadLink.classList.add('multiple-download-wrapper');
         downloadLink.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
         buttonWrapper.appendChild(downloadLink);
@@ -206,18 +206,18 @@ function createCardListItem(cardElement, doc) {
     // true when the card opens a modal instead of navigating
     const willUseModal = enableOverlayModal && !!overlayHref;
 
-    if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle); // skip title for modal triggers
     if (cardLinkTarget) wrapper.setAttribute('target', cardLinkTarget);
     if (cardLinkTarget === '_blank') wrapper.setAttribute('rel', 'noopener noreferrer');
 
     wrapper.target = openInNewTab ? '_blank' : '_self';
     if (openInNewTab) wrapper.setAttribute('rel', 'noopener noreferrer');
 
+    wrapper.removeAttribute('title');
+    addAutoBlockingExclusion(wrapper, 'title'); // stop later decoration passes from adding a hover tooltip
+
     if (willUseModal) {
       wrapper.setAttribute('data-modal', overlayHref);
       wrapper.setAttribute('href', '#');
-      wrapper.removeAttribute('title');
-      addAutoBlockingExclusion(wrapper, 'title'); // stop later decoration passes from re-adding title
     } else {
       wrapper.setAttribute('href', cardLinkHref);
     }

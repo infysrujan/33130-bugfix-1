@@ -28,6 +28,21 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+function getPageTitle(root = document) {
+  const tabsContainer = root.querySelector('.tabs-container');
+  if (!tabsContainer) {
+    return 'Foreign Exchange Rates';
+  }
+
+  let previous = tabsContainer.previousElementSibling;
+  while (previous && !previous.classList.contains('section')) {
+    previous = previous.previousElementSibling;
+  }
+
+  return previous?.querySelector('h1, h2, h3, h4, h5, h6')?.textContent?.trim()
+    || 'Foreign Exchange Rates';
+}
+
 function isNextMonthDisabled(titleText, rawLang) {
   const text = String(titleText || '').trim();
   const lastSpace = text.lastIndexOf(' ');
@@ -77,8 +92,10 @@ function renderBlock(block, state, authoring) {
 
   const rows = state.rates.map((rate) => `<tr>
     <td class="forex-rates-currency">
-      <img src="/icons/${escapeHtml(rate.family)}.svg" alt="${escapeHtml(rate.family)} flag" loading="lazy" class="forex-rates-flag">
-      <span>${escapeHtml(rate.family)}</span>
+      <span class="forex-rates-currency-inner">
+        <img src="/icons/${escapeHtml(rate.family)}.svg" alt="${escapeHtml(rate.family)} flag" loading="lazy" class="forex-rates-flag">
+        <span>${escapeHtml(rate.family)}</span>
+      </span>
     </td>
     <td>${escapeHtml(rate.description)}</td>
     <td class="is-right">${escapeHtml(rate.buyingRates)}</td>
@@ -138,6 +155,13 @@ function printForexRates(block) {
     '.forex-rates-print-btn, .forex-rates-go-btn, .forex-rates-time-list, .forex-rates-time-chevron, .forex-rates-date-trigger',
   ).forEach((el) => el.remove());
 
+  // Force eager loading for the print snapshot — Safari/WebKit does not paint
+  // loading="lazy" images that never entered the viewport when it rasterizes
+  // for print, so the currency flags would come out blank.
+  cloned.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+    img.setAttribute('loading', 'eager');
+  });
+
   const dateInput = cloned.querySelector('.forex-rates-date-text-input');
   if (dateInput) {
     const span = block.ownerDocument.createElement('span');
@@ -149,9 +173,17 @@ function printForexRates(block) {
   const doc = block.ownerDocument;
   const logoEl = doc.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
     || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+  let brandLogo = '';
+  if (logoEl) {
+    const logoClone = logoEl.cloneNode(true);
+    logoClone.querySelectorAll?.('img[loading="lazy"]').forEach((img) => img.setAttribute('loading', 'eager'));
+    if (logoClone.tagName === 'IMG' && logoClone.getAttribute('loading') === 'lazy') {
+      logoClone.setAttribute('loading', 'eager');
+    }
+    brandLogo = logoClone.outerHTML;
+  }
 
-  const pageTitle = doc.querySelector('h1')?.textContent?.trim() || 'Foreign Exchange Rates';
+  const pageTitle = getPageTitle(doc);
 
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }
@@ -204,9 +236,9 @@ function printForexRates(block) {
       border-bottom: 0.0625rem solid var(--bbl-color-black); border-right: 0.0625rem solid var(--bbl-color-black); text-align: left;
     }
     .forex-rates-table thead th:last-child { border-right: none; }
-    .forex-rates-table thead th:nth-child(n+3) { text-align: center; width: 9%; }
+    .forex-rates-table thead th:nth-child(n+3) { text-align: center; width: 9%; padding-inline: 4px;  }
     .forex-rates-table thead th:nth-child(1) { width: 15%; }
-    .forex-rates-table thead th:nth-child(2) { width: 40%; }
+    .forex-rates-table thead th:nth-child(2) { width: 35%; }
     .forex-rates-table tbody tr { height: auto; }
     .forex-rates-table tbody td {
       padding-block: 0.15rem; padding-inline: 20px; font-size: 0.5rem; height: auto; vertical-align: middle;
@@ -215,7 +247,7 @@ function printForexRates(block) {
     }
     .forex-rates-table tbody td:last-child { border-right: none; }
     .forex-rates-table tbody tr:last-child td { border-bottom: none; }
-    .forex-rates-table tbody td.is-right { text-align: right; }
+    .forex-rates-table tbody td.is-right { text-align: right; padding-inline: 4px; white-space: nowrap;  }
     .forex-rates-currency { display: table-cell; vertical-align: middle; white-space: nowrap; }
     .forex-rates-flag { display: inline-block; vertical-align: middle; margin-right: var(--bbl-space-075); width: var(--bbl-space-150); height: var(--bbl-space-150); object-fit: contain; }
 

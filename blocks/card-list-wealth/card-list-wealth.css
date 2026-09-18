@@ -141,6 +141,7 @@
   text-align: center;
   height: auto;
   min-height: 2.75rem;
+  padding:0;
 }
 
 @media (width > 47.5rem) {

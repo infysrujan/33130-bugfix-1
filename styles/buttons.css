@@ -267,14 +267,14 @@ button.tertiary {
   background: transparent;
   color: var(--bbl-color-active-blue);
   border: none;
-  padding: 0;
   height: auto;
+  padding-right: 0.9375rem;
+  position: relative;
   font-weight: var(--bbl-text-link-primary-weight);
   font-size: var(--bbl-text-link-primary-size);
   line-height: var(--bbl-text-link-primary-line-height);
   font-family: var(--bbl-font-family-medium);
   text-decoration: none;
-  gap: var(--bbl-space-050);
   display: inline-flex;
   align-items: center;
 }
@@ -282,28 +282,25 @@ button.tertiary {
 /* Arrow icon */
 .adobe-ue-edit .button-container > a.button::after,/* Authoring support: added class for better button visibility in Adobe UE */
 .button-tertiary::after {
-  content: '';
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  background-color: var(--bbl-color-active-blue);
-  vertical-align: middle;
-  flex: 0 0 auto;
+  content: '\e901';
+  position: absolute;
+  font-family: icomoon, sans-serif;
+  font-size: 0.625rem;
+  top: 55%;
+  right: 0;
+  transform: translateY(-50%);
   text-decoration: none;
-  /* stylelint-disable-next-line property-no-vendor-prefix */
-  -webkit-mask: url('../icons/Chevron-right.svg') no-repeat center / 100% 100%;
-  mask: url('../icons/Chevron-right.svg') no-repeat center / 100% 100%;
   transition: transform 0.2s ease-in-out;
 }
 
 /* Hover */
 .button-tertiary:hover {
-  color: var(--bbl-color-blue-70);
+  color: var(--bbl-color-blue-90);
   text-decoration: none;
 }
 
 .button-tertiary:hover::after {
-  transform: translateX(4px);
+  right: -0.3125rem;
 }
 
 /* Active/Pressed */
@@ -547,13 +544,12 @@ a.link-inverted[aria-disabled="true"] {
 
 .global-dropdown-trigger:hover {
     box-shadow: none;
-    border-color: var(--bbl-color-white);
     text-decoration: none;
 }
 
 .global-dropdown-panel {
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     left: 0;
     width: 100%;
     min-width: 100%;

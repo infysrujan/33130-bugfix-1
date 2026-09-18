@@ -158,13 +158,21 @@ export default function decorateTabs(main) {
       tabsBlock.dataset.panelClasses = JSON.stringify(panelClassList);
     }
 
-    const buttonRowIndex = firstVariant === 'media-tab' ? 1 : 0;
+    const variantRowIndex = firstVariant === 'media-tab' ? 1 : 0;
+    const variantRow = tabsBlock.children[variantRowIndex];
+    if (variantRow) {
+      [...variantRow.children].forEach((cell, index) => {
+        if (index < validTabs.length) cell.dataset.variant = validTabs[index].tabVariant;
+      });
+    }
+
+    const buttonRowIndex = (firstVariant === 'media-tab' || firstVariant === 'icon-tab-carousel') ? 1 : 0;
     const buttonRow = tabsBlock.children[buttonRowIndex];
     if (buttonRow) {
-      const buttonCells = [...buttonRow.children];
-      buttonCells.forEach((cell, index) => {
+      [...buttonRow.children].forEach((cell, index) => {
         if (index < validTabs.length) {
-          cell.dataset.variant = validTabs[index].tabVariant;
+          const tabCategoryTag = validTabs[index].sectionMetadata['tab-category-tag'];
+          if (tabCategoryTag) cell.dataset.tabCategoryTag = tabCategoryTag;
         }
       });
     }

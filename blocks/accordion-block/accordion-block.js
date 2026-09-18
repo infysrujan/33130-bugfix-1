@@ -155,6 +155,10 @@ function extractTitleAndBody(section) {
 }
 
 function wireAccordionHeader(header, panel) {
+  panel.querySelectorAll('img').forEach((img) => {
+    img.removeAttribute('loading');
+  });
+
   header.addEventListener('click', () => {
     const expanded = header.getAttribute('aria-expanded') === 'true';
     if (expanded) {
@@ -164,7 +168,7 @@ function wireAccordionHeader(header, panel) {
     } else {
       header.setAttribute('aria-expanded', 'true');
       panel.hidden = false;
-      panel.style.maxHeight = `${panel.scrollHeight}px`;
+      panel.style.maxHeight = `${panel.scrollHeight + 40}px`;
     }
   });
 }
@@ -195,7 +199,7 @@ function setAllAccordionPanels(block, expand) {
     if (!header || !panel) return;
     header.setAttribute('aria-expanded', expand ? 'true' : 'false');
     panel.hidden = !expand;
-    panel.style.maxHeight = expand ? `${panel.scrollHeight}px` : '0px';
+    panel.style.maxHeight = expand ? `${panel.scrollHeight + 40}px` : '0px';
   });
 }
 
@@ -207,13 +211,14 @@ function syncExpandAllToolbarButton(expandBtn, block) {
   const expanded = allAccordionPanelsExpanded(block);
   const label = expandBtn.querySelector('.accordion-toolbar-label');
   const icon = expandBtn.querySelector('.accordion-toolbar-icon');
-  // Label stays "Expand All" in both states — only the icon reflects the change.
-  // aria-pressed carries the toggle state for assistive tech.
   if (label) {
-    label.textContent = placeholders.expandAllLabel;
+    label.textContent = expanded ? placeholders.collapseAllLabel : placeholders.expandAllLabel;
   }
   expandBtn.setAttribute('aria-pressed', expanded ? 'true' : 'false');
-  expandBtn.setAttribute('aria-label', placeholders.ariaLabelExpandAll);
+  expandBtn.setAttribute(
+    'aria-label',
+    expanded ? placeholders.ariaLabelCollapseAll : placeholders.ariaLabelExpandAll,
+  );
   if (icon) {
     icon.className = expanded ? 'accordion-toolbar-icon icon-close' : 'accordion-toolbar-icon icon-expand';
     icon.src = expanded
@@ -234,22 +239,12 @@ function escapeHtml(s) {
 }
 
 /**
- * Snapshot panel open state, expand all, build HTML, restore.
+ * Build the print document HTML with every panel expanded.
  * @param {Element} block
  */
 function buildAccordionPrintDocument(block) {
-  const items = [...block.querySelectorAll(':scope > .content > .accordion-item')];
-  const states = items.map((item) => {
-    const header = item.querySelector('.accordion-header');
-    const panel = item.querySelector('.accordion-panel');
-    return {
-      expanded: header?.getAttribute('aria-expanded') === 'true',
-      hidden: panel?.hidden ?? true,
-    };
-  });
-
-  setAllAccordionPanels(block, true);
-
+  // Expand only the detached clone below (not `block`) so the live accordion
+  // never visibly flashes open/closed while the print document is assembled.
   const clone = block.cloneNode(true);
   clone.querySelectorAll('.accordion-block-toolbar').forEach((el) => el.remove());
 
@@ -266,45 +261,56 @@ function buildAccordionPrintDocument(block) {
     if (panel) {
       panel.hidden = false;
       panel.removeAttribute('hidden');
+      // Frozen from the live page's layout width; let the print CSS size it instead.
+      panel.style.maxHeight = '';
     }
   });
 
+  clone.querySelectorAll('img').forEach((img) => {
+    img.removeAttribute('loading');
+    img.setAttribute('loading', 'eager');
+  });
+
   const wrapper = block.closest('.accordion-block-wrapper');
-  const container = wrapper?.parentElement?.classList.contains('accordion-block-container')
-    ? wrapper.parentElement
-    : null;
-  let wrapperIsDirectChild = false;
+  // The title is authored as a sibling `default-content-wrapper` next to the block's own
+  // wrapper — true whether that wrapper's parent is a top-level section (common case) or a
+  // nested container like a tabs panel, so this check works regardless of nesting depth.
+  // Authors often leave a stray empty paragraph (e.g. "&nbsp;") next to the block, which also
+  // lands in its own `default-content-wrapper`; that must not be mistaken for a real title.
+  const wrapperParent = wrapper?.parentElement || null;
+  const hasSiblingTitle = Boolean(
+    wrapperParent && [...wrapperParent.children].some(
+      (child) => child !== wrapper
+        && child.classList.contains('default-content-wrapper')
+        && child.textContent.trim(),
+    ),
+  );
+
   /** @type {string|null} */
   let prependHtml = null;
-  if (container) {
-    // includes title / text within the same section of the accordion block
-    wrapperIsDirectChild = Boolean(
-      container && [...container.children].includes(wrapper),
-    );
-  } else {
-    // includes title, text from the previous section if the accordion block is within tab section
+  if (!hasSiblingTitle) {
+    // Common authoring pattern: the title lives in its own section directly above the
+    // accordion's section (not just when the accordion sits inside a tabs panel).
     const section = block.closest('.section');
-    if (section?.classList.contains('tabs-container')) {
-      const prevSection = section.previousElementSibling;
-      if (prevSection?.classList.contains('section')) {
-        const contentWrapper = prevSection.querySelector(':scope > .default-content-wrapper:first-child');
-        if (contentWrapper) {
-          prependHtml = contentWrapper.cloneNode(true).outerHTML;
-        }
+    const prevSection = section?.previousElementSibling;
+    if (prevSection?.classList.contains('section')) {
+      const contentWrapper = prevSection.querySelector(':scope > .default-content-wrapper:first-child');
+      if (contentWrapper) {
+        prependHtml = contentWrapper.cloneNode(true).outerHTML;
       }
     }
   }
 
   let bodyHtml;
   const promoBlock = document.querySelector('.promotional-details');
-  if (wrapperIsDirectChild) {
+  if (hasSiblingTitle) {
     const shell = document.createElement('div');
     if (promoBlock) {
       const promoClone = promoBlock.cloneNode(true);
       promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
       shell.appendChild(promoClone);
     }
-    [...container.children].forEach((child) => {
+    [...wrapperParent.children].forEach((child) => {
       if (child === wrapper) {
         shell.appendChild(clone);
       } else if (child.classList.contains('default-content-wrapper')) {
@@ -322,18 +328,13 @@ function buildAccordionPrintDocument(block) {
     bodyHtml = clone.outerHTML;
   }
 
-  items.forEach((item, i) => {
-    const header = item.querySelector('.accordion-header');
-    const panel = item.querySelector('.accordion-panel');
-    const s = states[i];
-    if (!header || !panel || !s) return;
-    header.setAttribute('aria-expanded', s.expanded ? 'true' : 'false');
-    panel.hidden = s.hidden;
-  });
-
   const docTitle = block.querySelector('.accordion-block-title')?.textContent?.trim()
     || document.querySelector('title')?.textContent
     || placeholders.printLabel;
+
+  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
   const printCss = `
     @page {
@@ -351,12 +352,16 @@ function buildAccordionPrintDocument(block) {
       margin-block: 3rem 1rem;
     }
 
+    .accordion-print-brandbar {
+      margin-bottom: 1rem;
+    }
+
     .accordion { border: 0; }
     .accordion-block-intro { padding: 0 0 1rem; }
     .accordion-block-title { font-size: 1.5rem; margin: 0 0 0.5rem; }
     .accordion-item { border-bottom: 0; padding-bottom: 1rem; margin-bottom: 1rem; }
     .accordion-print-heading { font-size: 1rem; margin: 0 0 0.5rem; border-block: 1px solid var(--bbl-color-gray-146); padding-block: 10px; }
-    .accordion-panel { display: block !important; padding: 0; }
+    .accordion-panel { display: block !important; padding: 0; max-height: none !important; overflow: visible !important; }
     .accordion-header { display: none; }
     .accordion-heading { display: none; }
     .accordion-block-toolbar { display: none; }
@@ -366,6 +371,8 @@ function buildAccordionPrintDocument(block) {
     .download-section .default-content-wrapper h4 { font-size: 1.125rem;}
     .download-button-wrapper .download-files { background: none; box-shadow: none; padding: 0; margin: 0; }
     .table.scroll table {min-width: unset;}
+    .accordion-block-container .accordion-item .table { overflow: visible; }
+    .accordion-block-container .accordion-item .table table { min-width: 0; }
     .download-button-wrapper .download-files {padding-right: 2.125rem;}
     .download-files.icon-download::before, .download-files .icon-download::before {right: -0.27rem;}
 
@@ -392,6 +399,11 @@ function buildAccordionPrintDocument(block) {
     </head>
     <body class="appear">
       <main>
+       <div class="accordion-print-brandbar">
+          <div class="brand-logo-container">
+            ${brandLogo}
+          </div>
+        </div>
         <div class="section accordion-block-container">
           ${bodyHtml}
         </div>
@@ -399,6 +411,21 @@ function buildAccordionPrintDocument(block) {
     </body>
   </html>
   `;
+}
+
+// Waits on each <link> directly — readyState/load only prove the browser
+// finished attempting the stylesheets, not that they applied.
+function waitForStylesheets(doc) {
+  const links = [...doc.querySelectorAll('link[rel="stylesheet"]')];
+  return Promise.all(links.map((link) => new Promise((resolve) => {
+    // Already loaded (e.g. served from cache before the listener attached).
+    if (link.sheet) {
+      resolve();
+      return;
+    }
+    link.addEventListener('load', resolve, { once: true });
+    link.addEventListener('error', resolve, { once: true });
+  }))).then(() => undefined);
 }
 
 /**
@@ -409,21 +436,18 @@ function openAccordionPrintWindow(block) {
   const printWindow = window.open('', '', 'height=500,width=800');
   if (!printWindow) return;
 
-  const runPrint = () => {
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 100);
-  };
-  if (printWindow.document.readyState === 'complete') {
-    requestAnimationFrame(runPrint);
-  } else {
-    printWindow.addEventListener('load', runPrint);
-  }
-
   printWindow.document.write(printHtml);
   printWindow.document.close();
+
+  waitForStylesheets(printWindow.document).then(() => {
+    requestAnimationFrame(() => {
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 100);
+    });
+  });
 }
 
 /**
@@ -818,7 +842,6 @@ export default async function decorate(block) {
     placeholders.accordionPlaceholder,
   );
   content.appendChild(item);
-  wireAccordionHeader(header, panel);
 
   const fragmentSection = fragment.querySelector(':scope .section');
   if (fragmentSection) {
@@ -836,6 +859,7 @@ export default async function decorate(block) {
     }
     panel.appendChild(contentFrag);
   }
+  wireAccordionHeader(header, panel);
   block.classList.add('accordion-panel-loaded');
   wireAccordionToolbarAndNavigation(block, toolbarButtons);
 }

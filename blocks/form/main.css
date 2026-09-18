@@ -10,7 +10,7 @@
     --form-font-size-s: 18px;
     --form-font-size-xs: 16px;
     --form-background-color: var(--background-color-primary);
-    --form-padding: 0 10px;
+    --form-padding: 10px;
     --form-columns: 12;
     --form-field-horz-gap: 40px;
     --form-field-vert-gap: 20px;
@@ -91,7 +91,7 @@ form:not(.edit-mode) [data-visible="false"] {
 
 main .form-container {
     background-color: var(--form-background-color);
-    padding: var(--form-padding);
+    padding-inline: var(--form-padding);
     width: var(--form-width);
 }
 
@@ -121,12 +121,10 @@ main .form form fieldset fieldset {
 
 main .form .field-description {
     color: var(--form-label-color);
-    font-size: var(--form-font-size-xs);
 }
 
 main .form form .field-invalid .field-description {
     color: var(--form-error-color);
-    font-weight: 700;
 }
 
 
@@ -249,14 +247,13 @@ main .form form p,
 main .form form .repeat-wrapper,
 main .form form .field-wrapper {
     margin: var(--form-field-gap);
-    color: var(--form-label-color);
+    color: var(--bbl-color-grey-90);
     grid-column: span 12;
 }
 
 main .form form p {
     font-size: var(--form-paragraph-font-size);
     font-style: var(--form-paragraph-font-style);
-    color: var(--form-paragraph-color);
     margin: var(--form-paragraph-margin);
 }
 
@@ -526,10 +523,16 @@ main .form .button-wrapper button {
     cursor:pointer
 }
 
-main .form .button-wrapper button:hover {
-    border: 3px solid #fff;
-    color: #fff;
-    background-color: var(--button-secondary-color);
+main .form .button-wrapper button.secondary:hover {
+    border: 3px solid var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
+    background-color: var(--bbl-color-active-blue);
+}
+
+main .form .button-wrapper button.primary:hover {
+    border: 3px solid var(--bbl-color-blue-90);
+    color: var(--bbl-color-white);
+    background-color: var(--bbl-color-blue-90);
 }
 
 main .form .button-wrapper button[disabled] {

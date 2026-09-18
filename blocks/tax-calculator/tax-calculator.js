@@ -422,9 +422,12 @@ function buildStepIndicator(labels, activeStep) {
     let stepModifier = '';
     if (stepNumber === activeStep) stepModifier = 'tax-calc-step-active';
     else if (stepNumber < activeStep) stepModifier = 'tax-calc-step-done';
+    const stepContent = stepNumber < activeStep
+      ? '<img src="/icons/tick.svg" class="tax-calc-step-check" alt="" aria-hidden="true">'
+      : stepNumber;
     const step = parseHTML(`
       <div class="tax-calc-step ${stepModifier}">
-        <div class="tax-calc-step-circle"><span>${stepNumber < activeStep ? '✓' : stepNumber}</span></div>
+        <div class="tax-calc-step-circle"><span>${stepContent}</span></div>
         <div class="tax-calc-step-label">${label}</div>
       </div>
     `);

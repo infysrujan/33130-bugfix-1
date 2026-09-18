@@ -55,11 +55,6 @@
   padding: 0;
 }
 
-.rate-card .default-wrap > a {
-  font-size: var(--bbl-font-size-b2-desktop);
-  line-height: var(--bbl-line-height-b2-desktop);
-}
-
 .rate-card .tab-header a:any-link {
   color: var(--bbl-color-gray-121);
   font-size: var(--bbl-text-label-tag-size);
@@ -301,6 +296,7 @@
     flex-direction: row;
     align-items: center;
     margin-top: 1.5rem;
+    padding-bottom: 1.5625rem;
   }
 }
 
@@ -327,6 +323,10 @@
 
   .rate-card table thead th:not(:first-child) {
     width: 4.375rem;
+  }
+
+  .rate-card table thead th:nth-child(2) {
+    padding-right: 0.625rem;
   }
 
   .rate-card table tbody td:not(:first-child) {

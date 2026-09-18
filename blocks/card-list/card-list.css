@@ -116,7 +116,6 @@
   gap: 0 var(--bbl-space-250);
   overflow: auto hidden;
   padding: 0.625rem 0;
-  scroll-snap-type: x mandatory;
   scrollbar-width: thin;
 }
 
@@ -329,8 +328,11 @@
   font-family: var(--bbl-font-family-medium);
   max-width: max-content;
   background: var(--bbl-color-blue-140);
-  display: inline-block;
-  padding: var(--bbl-space-050) 0.4375rem;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 1.4375rem;
+  padding: var(--bbl-space-025) var(--bbl-space-100);
   margin-bottom: 0.875rem;
   color: var(--bbl-color-white);
   border-radius: var(--bbl-rounded-200);
@@ -339,9 +341,8 @@
 .cards-list:has(.cards-list-promo-tag) .cards-list-content:not(:has(.cards-list-promo-tag))::before {
   content: '';
   display: block;
-  height: 0.9844rem;
+  height: 1.4375rem;
   margin-bottom: 0.875rem;
-  padding-block: var(--bbl-space-050);
 }
 
 .cards-list-inner .cards-list-button {
@@ -496,6 +497,10 @@
 .cards-list-button + .cards-list-date {
   padding-top: 0.625rem;
   color: var(--bbl-color-grey-85);
+}
+
+.cards-list-inner:has(.download-button-wrapper) .cards-list-date {
+  padding-top: 1.875rem;
 }
 
 .cards-list-button .global-dropdown {
@@ -658,6 +663,15 @@
   .cards-list-date p,
   .cards-list-subtitle p{
     line-height: 1.375rem;
+  }
+
+  .cards-list-promo-tag {
+    height: 1.875rem;
+    padding: var(--bbl-space-050) var(--bbl-space-100);
+  }
+
+  .cards-list:has(.cards-list-promo-tag) .cards-list-content:not(:has(.cards-list-promo-tag))::before {
+    height: 1.875rem;
   }
 
   .cards-list-remark p {

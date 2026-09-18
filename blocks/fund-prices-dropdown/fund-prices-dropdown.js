@@ -172,6 +172,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
 
   const isMobileView = typeof window !== 'undefined' && window.innerWidth < 768;
   const useRotation = hasData && points.length > 1 && (period !== '1W' || isMobileView);
+  const xLabelFontSize = useRotation ? '0.6875rem' : 'var(--bbl-body-b1-size)';
   const padB = useRotation ? 70 : 40;
   const H = useRotation ? 360 : 300;
   const padL = 58;
@@ -218,7 +219,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
       x: padL - 8,
       y: y + 4,
       'text-anchor': 'end',
-      'font-size': 'var(--bbl-body-b3-size)',
+      'font-size': 'var(--bbl-body-b1-size)',
       fill: 'var(--bbl-color-black)',
       'font-weight': 'bold',
       'font-family': 'var(--bbl-font-family-primary)',
@@ -265,7 +266,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
         x: clampedX,
         y: H - padB + (useRotation ? 14 : 20),
         'text-anchor': anchor,
-        'font-size': 11,
+        'font-size': xLabelFontSize,
         fill: 'var(--bbl-color-black)',
         'font-weight': 'bold',
         'font-family': 'BangkokBank-Bold,Arial,sans-serif',
@@ -285,8 +286,8 @@ function renderChart(svgEl, history, period, noDataLabel) {
       cx,
       cy,
       r: 1.8,
-      fill: 'var(--bbl-color-truthful-blue)',
-      stroke: 'var(--bbl-color-truthful-blue)',
+      fill: 'var(--bbl-color-blue-indigo)',
+      stroke: 'var(--bbl-color-blue-indigo)',
       'stroke-width': 1,
     }, svgEl);
   });
@@ -294,7 +295,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
   el('polyline', {
     points: pts,
     fill: 'none',
-    stroke: 'var(--bbl-color-truthful-blue)',
+    stroke: 'var(--bbl-color-blue-indigo)',
     'stroke-width': 2,
     'stroke-linejoin': 'round',
     'stroke-linecap': 'round',
@@ -489,7 +490,7 @@ export default async function decorate(block) {
       <div class="fdd-header-top">
         <button class="fdd-back-btn" aria-label="Back to ${labels.backLabel}">&#8249; ${labels.backLabel}</button>
       </div>
-      <div class="fdd-title">${labels.title}</div>
+      <h2 class="fdd-title">${labels.title}</h2>
       <hr class="fdd-title-rule" />
     </div>
 
@@ -524,7 +525,7 @@ export default async function decorate(block) {
     </div>
 
     <div class="stat-tables-print-row">
-      <div class="fdd-fund-label"></div>
+      <h5 class="fdd-fund-label"></h5>
       <div class="fund-prices-print-label icon-print"><p>${labels.printLabel}</p></div>
     </div>
     <div class="stat-tables-row">
