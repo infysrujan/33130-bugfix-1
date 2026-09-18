@@ -248,16 +248,6 @@ header.is-not-overlapped ~ main {
 }
 
 @media (width > 64rem) {
-  /*
-   * Header model (mirrors the client site): the top-nav (white) and main-nav
-   * (blue) are ONE normal-flow block inside .header (position:absolute, top:0).
-   * Below the sticky threshold the whole header simply scrolls away with the
-   * page, so the two bars move together and can NEVER separate to expose the
-   * background — that is what eliminates the gap. Past the threshold (= the
-   * top-nav's height, so the swap is seamless) JS adds .is-scrolled: the header
-   * pins as position:fixed and the top-nav collapses to height:0, leaving only
-   * the solid-blue main-nav. No independently-positioned layers to desync.
-   */
   .header-nav>.top-nav {
     position: static;
     background: var(--bbl-bg-primary);
