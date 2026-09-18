@@ -6,7 +6,7 @@
 .header-banner-slide-wrapper {
   min-height: 11.875rem;
   background:
-    linear-gradient(180deg, rgb(255 255 255 / 18%) 0%, transparent 2.5rem),
+    linear-gradient(180deg, rgb(255 255 255) 0 0.0625rem, transparent 0.0625rem),
     linear-gradient(0deg, var(--bbl-hbs-gradient-start) 50%, var(--bbl-hbs-gradient-end) 100%) top / 100% 10rem no-repeat;
   margin-block: 0 -4.5rem;
 }
