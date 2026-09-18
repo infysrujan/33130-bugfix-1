@@ -183,39 +183,21 @@ function setupLoginPanelEvents(loginBlock, options = {}) {
 }
 
 /**
- * Desktop scroll: hide top-nav when scrolled past, add/remove is-scrolled on main nav.
- * @param {Element|null} topNavBlock
- * @param {HTMLElement} mainNavDesktop
+ * Desktop scroll: pin the header as a compact bar once the page scrolls past the
+ * top-nav. Below that point the whole header (top-nav + main-nav — one normal-flow
+ * block inside .header) just scrolls away with the page, so the two bars move
+ * together and can never separate to expose the background. is-scrolled switches
+ * the header to position:fixed and collapses the top-nav to height:0 (see CSS).
+ * @param {HTMLElement} headerNav .header-nav element
  * @param {() => boolean} getIsNavItemActive
  */
-function setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, getIsNavItemActive) {
-  let lastScrollY = window.scrollY;
+function setupDesktopScrollBehavior(headerNav, getIsNavItemActive) {
   const handleDesktopScroll = () => {
-    const currentScrollY = window.scrollY;
-
-    // Wheel/trackpad scroll events don't move in a clean straight line — they
-    // wobble by a few px even during a steady downward scroll. Reacting to every
-    // such tick flips isScrollingUp back and forth, which flickers is-hidden.
-    // Ignoring sub-threshold deltas keeps direction stable across that jitter.
-    const scrollDelta = currentScrollY - lastScrollY;
-    if (Math.abs(scrollDelta) < 5) return;
-    const isScrollingUp = scrollDelta < 0;
-    lastScrollY = currentScrollY;
-
-    if (currentScrollY >= TOP_NAV_HEIGHT && TOP_NAV_HEIGHT > 0) {
-      if (topNavBlock) topNavBlock.classList.add('is-hidden');
-      mainNavDesktop.classList.add('is-scrolled');
-    } else if (!getIsNavItemActive()) {
-      if (topNavBlock) topNavBlock.classList.remove('is-hidden');
-      mainNavDesktop.classList.remove('is-scrolled');
-    }
-    if (isScrollingUp) {
-      if (topNavBlock) topNavBlock.classList.remove('is-hidden');
-    }
+    const scrolled = (window.scrollY >= TOP_NAV_HEIGHT && TOP_NAV_HEIGHT > 0)
+      || getIsNavItemActive();
+    headerNav.classList.toggle('is-scrolled', scrolled);
   };
-  if (mainNavDesktop) {
-    handleDesktopScroll();
-  }
+  handleDesktopScroll();
   window.addEventListener('scroll', handleDesktopScroll, { passive: true });
 }
 
@@ -232,7 +214,6 @@ function setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, getIsNavItemAct
 function setupDesktopMegamenuBehavior(
   mainNavDesktop,
   mainNavBlocks,
-  topNavBlock,
   desktopState,
   headerNav,
 ) {
@@ -246,9 +227,8 @@ function setupDesktopMegamenuBehavior(
     });
     desktopState.isNavItemActive = false;
     releaseHeaderNavBackdrop(headerNav, NAV_BACKDROP_MEGAMENU);
-    if (window.scrollY <= TOP_NAV_HEIGHT) {
-      mainNavDesktop.classList.remove('is-scrolled');
-      if (topNavBlock) topNavBlock.classList.remove('is-hidden');
+    if (window.scrollY < TOP_NAV_HEIGHT) {
+      headerNav.classList.remove('is-scrolled');
     }
   };
 
@@ -270,8 +250,7 @@ function setupDesktopMegamenuBehavior(
       if (!isAlreadyActive) {
         navBlock.classList.add('is-active');
         desktopState.isNavItemActive = true;
-        mainNavDesktop.classList.add('is-scrolled');
-        if (topNavBlock) topNavBlock.classList.add('is-hidden');
+        headerNav.classList.add('is-scrolled');
         acquireHeaderNavBackdrop(headerNav, NAV_BACKDROP_MEGAMENU);
         slideDown(megamenuPanel);
       } else {
@@ -438,12 +417,11 @@ function buildDesktopLayout(header, blocks) {
 
   const desktopState = { isNavItemActive: false };
   document.addEventListener('header-decorated', () => {
-    setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, () => desktopState.isNavItemActive);
+    setupDesktopScrollBehavior(header, () => desktopState.isNavItemActive);
   });
   const closeMegamenu = setupDesktopMegamenuBehavior(
     mainNavDesktop,
     mainNavBlocks,
-    topNavBlock,
     desktopState,
     header,
   );

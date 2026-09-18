@@ -249,44 +249,29 @@ header.is-not-overlapped ~ main {
 
 @media (width > 64rem) {
   /*
-   * Top nav - fixed to the viewport (not just the top of the document) so it
-   * can be revealed again via is-hidden removal when the user scrolls up,
-   * no matter how far down the page they are.
+   * Header model (mirrors the client site): the top-nav (white) and main-nav
+   * (blue) are ONE normal-flow block inside .header (position:absolute, top:0).
+   * Below the sticky threshold the whole header simply scrolls away with the
+   * page, so the two bars move together and can NEVER separate to expose the
+   * background — that is what eliminates the gap. Past the threshold (= the
+   * top-nav's height, so the swap is seamless) JS adds .is-scrolled: the header
+   * pins as position:fixed and the top-nav collapses to height:0, leaving only
+   * the solid-blue main-nav. No independently-positioned layers to desync.
    */
   .header-nav>.top-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    transform: translateY(0);
-    transition: transform 0.3s ease;
+    position: static;
+    background: var(--bbl-bg-primary);
+    overflow: hidden;
   }
 
-  /* Transform-only hide: an opacity fade would blend the hero through this bar. */
-  .header-nav>.top-nav.is-hidden {
-    transform: translateY(-100%);
-    pointer-events: none;
-  }
-
-  /*
-   * Main nav - full-width background container. Always fixed so that the
-   * top:0 <-> top:var(--main-nav-top) move (JS-set to the top-nav's measured
-   * height) is a real CSS transition instead of an unanimatable position
-   * (static <-> fixed) snap.
-   */
   .header .main-nav-desktop {
     width: 100%;
     max-width: none;
     background-color: transparent;
-    position: fixed;
-    top: var(--main-nav-top, 41px);
-    left: 0;
-    right: 0;
-    z-index: 101;
+    position: relative;
 
-    /* top only: animating background-color blends the hero behind it into the bar. */
-    transition: top 0.3s ease;
+    /* pull up 1px to overlap the top-nav so no hairline seam shows between them */
+    top: -1px;
   }
 
   .header .main-nav-inner {
@@ -298,18 +283,28 @@ header.is-not-overlapped ~ main {
     padding: 1.25rem 5.25rem;
   }
 
-  /* Main nav - scrolled state: slides up to the very top with a dark background */
-  .header .main-nav-desktop.is-scrolled {
-    top: 41px;
+  /* Non-hero pages: main-nav is solid blue from the start (no transparency). */
+  header.is-not-overlapped .main-nav-desktop {
     background-color: var(--bbl-color-truthful-blue);
   }
 
-  .header-nav>.top-nav.is-hidden +
-  .main-nav-desktop.is-scrolled{
+  /* Sticky compact: the whole header pins to the top as one unit. */
+  .header-nav.is-scrolled {
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
   }
 
-  header.is-not-overlapped .main-nav-desktop {
+  /* Compact: the white top-nav collapses away, leaving the blue bar pinned. */
+  .header-nav.is-scrolled>.top-nav {
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .header-nav.is-scrolled .main-nav-desktop {
     background-color: var(--bbl-color-truthful-blue);
   }
 
@@ -336,7 +331,6 @@ header.is-not-overlapped ~ main {
 
   /* desktop styles LOGIN */
   .header .is-scrolled .login-button {
-    transition: all .5s;
     background-color: transparent;
   }
 
