@@ -3136,8 +3136,8 @@ const submit = async (context, success, error, submitAs = 'multipart/form-data',
     let submitContentType = submitAs;
 
     // Exclude "_exclude" fields before hashing so the hash matches the payload actually sent
-    const filteredData = filterExcludeFields(data);
-    const payloadHash = await generatePayloadHash(replaceUndefinedWithNull(filteredData));
+    const filteredData = replaceUndefinedWithNull(filterExcludeFields(data));
+    const payloadHash = await generatePayloadHash(filteredData);
 
     // Structure: data contains payload and payload-hash
     const dataWithHash = {
