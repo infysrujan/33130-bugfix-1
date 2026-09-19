@@ -3,7 +3,7 @@ export function buildChartLegend(labels, getIcon) {
     <div class="saving-plan-chart-legend">
       <div class="saving-plan-chart-legend-row">
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-dot saving-plan-chart-legend-dot-result"></span>
+          <span class="saving-plan-chart-legend-dot saving-plan-chart-legend-dot-result" aria-hidden="true">${getIcon('legend-dot-result')}</span>
           <span class="saving-plan-chart-legend-text">${labels.legendResult}</span>
         </span>
         <span class="saving-plan-chart-legend-item">
@@ -14,7 +14,7 @@ export function buildChartLegend(labels, getIcon) {
       </div>
       <div class="saving-plan-chart-legend-row" data-newplan-row hidden>
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-dot saving-plan-chart-legend-dot-newplan"></span>
+          <span class="saving-plan-chart-legend-dot saving-plan-chart-legend-dot-newplan" aria-hidden="true">${getIcon('legend-dot-newplan')}</span>
           <span class="saving-plan-chart-legend-text">${labels.legendNewPlan}</span>
         </span>
         <span class="saving-plan-chart-legend-item">
@@ -311,7 +311,7 @@ function buildChartConfig(originalSeries, newSeries, labels, overlayPlugin, colo
             const top = axis.max;
             const step = niceStep(top / 4);
             const ticks = [];
-            for (let v = 0; v < top - step / 2; v += step) ticks.push({ value: v });
+            for (let v = 0; v <= top - step; v += step) ticks.push({ value: v });
             ticks.push({ value: top });
             axis.ticks = ticks;
           },

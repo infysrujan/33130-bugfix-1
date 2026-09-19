@@ -28,7 +28,7 @@
     & fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper) > legend.field-label {
         margin-top: 0;
         margin-bottom: 0;
-        padding-left: 1rem;
+        padding-left: var(--bbl-form-padding-10);
     }
 
     /* Section legends: full-width grey bar with underline */
@@ -36,8 +36,8 @@
         display: block;
         width: 100%;
         max-width: 100%;
-        margin: var(--bbl-form-margin-10) 0 var(--bbl-form-margin-5);
-        padding: var(--bbl-form-margin-5) 0 var(--bbl-form-margin-5) var(--bbl-form-padding-16);
+        margin: 0;
+        padding: 0 0 var(--bbl-form-margin-5) var(--bbl-form-padding-10);
         font-family: var(--bbl-font-family-primary);
         font-size: var(--bbl-form-font-size-20);
         font-weight: 700;
@@ -186,7 +186,7 @@
         display: flex;
         flex-flow: row wrap;
         gap: 0;
-        margin: 0 0 var(--bbl-form-margin-10);
+        margin: 0 0 var(--bbl-form-margin-15);
     }
 
     & .radio-group-wrapper.radio-tabs > .radio-wrapper {
@@ -194,7 +194,7 @@
         display: flex;
         flex: 1 1 0;
         min-width: 0;
-        margin: 0;
+        margin: var(--bbl-form-margin-5) 0 0;
         padding: 0;
         gap: 0;
         align-items: center;
@@ -243,7 +243,6 @@
         position: static;
         display: block;
         width: 100%;
-        margin-top: var(--bbl-form-margin-5);
         text-align: left;
         z-index: auto;
     }
@@ -412,6 +411,12 @@
         & fieldset.panel-wrapper:has(.date-wrapper) > legend.field-label:not([data-visible="false"]),
         & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > legend.field-label {
             font-size: var(--bbl-form-font-size-16);
+        }
+
+        /* Select chevron: 9.43 x 6, matching production's bold icon (Chevron-down.svg is a hairline stroke that vanishes at this size) */
+        & select {
+            background-image: url('/icons/icon_chevron_down.svg');
+            background-size: 0.5894rem 0.375rem;
         }
     }
 }

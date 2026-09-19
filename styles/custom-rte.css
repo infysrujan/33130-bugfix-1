@@ -79,7 +79,7 @@
 
 .default-content-wrapper > p.rte-inline-image:not(.rte-image-link):has(+ p:not(.rte-inline-image)),
 .block p.rte-inline-image:not(.rte-image-link):has(+ p:not(.rte-inline-image)) {
-  display: inline-block;
+  display: inline;
   vertical-align: middle;
   margin-block: 0;
 }
@@ -88,6 +88,18 @@
 .block p.rte-inline-image:not(.rte-image-link) + p:not(.rte-inline-image) {
   display: inline;
   vertical-align: middle;
+}
+
+.default-content-wrapper > p:not(.rte-inline-image):has(+ p.rte-inline-image:not(.rte-image-link)),
+.block p:not(.rte-inline-image):has(+ p.rte-inline-image:not(.rte-image-link)) {
+  display: inline;
+  vertical-align: middle;
+}
+
+.section.center-content .default-content-wrapper:has(> p:is(.rte-inline-image, .rte-has-icon)),
+.accordion-panel.center-content .default-content-wrapper:has(> p:is(.rte-inline-image, .rte-has-icon)),
+.tab-panel.center-content .default-content-wrapper:has(> p:is(.rte-inline-image, .rte-has-icon)) {
+  text-align: center;
 }
 
 .default-content-wrapper > p.rte-has-icon:not(.rte-image-link):has(+ p.rte-has-icon:not(.rte-image-link)),
@@ -110,6 +122,3 @@
   margin: 0 0 0.625rem var(--bbl-space-250);
 }
 
-/* .default-content-wrapper > :not(.button-container, .footer-container) a:any-link {
-  color: inherit;
-} */

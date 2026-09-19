@@ -54,6 +54,10 @@
                 {
                   "name": "No Border Bottom",
                   "value": "no-border-bottom"
+                },
+                {
+                  "name": "No Border Top",
+                  "value": "no-border-top"
                 }
               ]
             },
@@ -120,6 +124,10 @@
                 {
                   "name": "Right Aligned Last Line",
                   "value": "header-right-aligned-last-line"
+                },
+                {
+                  "name": "No Header",
+                  "value": "no-header"
                 }
               ]
             },
@@ -150,6 +158,10 @@
                 {
                   "name": "Cells Right Aligned Except First",
                   "value": "cells-right-aligned-except-first"
+                },
+                {
+                  "name": "Cells Center Aligned Last Column",
+                  "value": "cells-center-aligned-last-column"
                 },
                 {
                   "name": "Cells Middle Aligned",
@@ -192,6 +204,10 @@
                 {
                   "name": "Merge Tables",
                   "value": "merge-tables"
+                },
+                {
+                  "name": "Group Tables",
+                  "value": "group-tables"
                 },
                 {
                   "name": "Nested Table",

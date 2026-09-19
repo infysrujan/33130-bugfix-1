@@ -33,6 +33,8 @@
 }
 
 .download-file .download-file-date {
+  font-size: var(--bbl-body-b2-size);
+  line-height: var(--bbl-body-b2-line-height);
   margin-top: 1.5rem;
   margin-bottom: 0;
 }

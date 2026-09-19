@@ -12,6 +12,11 @@
 }
 
 /* Back button: circular, white outline, left chevron */
+.sub-nav .sub-nav-back-wrapper {
+    display: inline-flex;
+    align-items: center;
+}
+
 .sub-nav .sub-nav-back {
     display: inline-flex;
     align-items: center;
@@ -24,6 +29,7 @@
     border-radius: 50%;
     background: transparent;
     color: var(--bbl-color-white);
+    text-decoration: none;
     cursor: pointer;
     flex-shrink: 0;
     transition: opacity 0.2s ease, background-color 0.2s ease;
@@ -32,6 +38,8 @@
 .sub-nav .sub-nav-back:hover {
     opacity: 0.9;
     border-color: var(--bbl-color-white);
+    color: var(--bbl-color-white);
+    text-decoration: none;
 }
 
 .sub-nav .sub-nav-back:focus-visible {

@@ -184,7 +184,7 @@ main .lead-forms .form form :is(p, .repeat-wrapper, .field-wrapper) {
 
 main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .page-header) {
   position: relative;
-  margin: var(--bbl-space-500) 0 var(--bbl-space-300);
+  margin: var(--bbl-space-500) 0 var(--bbl-form-margin-30);
   padding: 0 0 var(--bbl-form-padding-35);
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-form-font-weight-bold);
@@ -228,6 +228,14 @@ main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext
   text-align: left;
 }
 
+/* Privacy consent text — b1 body tokens (regular) + 20.8px line-height, all breakpoints */
+main .lead-forms .form form .plain-text-wrapper.field-wrapper.tnc-text-decoration p {
+  font-size: var(--bbl-body-b1-size);
+  line-height: 1.3rem;
+  font-weight: var(--bbl-body-b1-weight);
+  font-family: var(--bbl-font-family-primary);
+}
+
 main .lead-forms .form form .plain-text-wrapper :is(.custom-wffm-form) {
   font-size: inherit;
 }
@@ -268,7 +276,7 @@ main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
   font-weight: var(--bbl-form-font-weight-bold);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-1);
-  margin-block: var(--bbl-space-500) 0;
+  margin: 0;
 }
 
 main .lead-forms .form form .field-initialfielditemname.field-invalid > .field-label {
@@ -619,6 +627,52 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper {
   padding: 0;
 }
 
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
+  padding: 0 0 0 var(--bbl-form-padding-35);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
+  .field-other-required-product-panel) {
+  border: var(--bbl-form-border-grey);
+  border-radius: var(--bbl-form-border-radius-7);
+  padding: var(--bbl-space-300) var(--bbl-space-500);
+  padding: var(--bbl-form-padding-10) var(--bbl-form-padding-10) var(--bbl-form-padding-10) 0;
+  margin-bottom: var(--bbl-form-margin-10);
+}
+
+main .section.form-container.lead-forms:has(.field-title-30, .field-title-40) {
+  padding-inline: 0.9375rem;
+ 
+  & :is(div.form-wrapper, .form.block, .form) {
+    width: 100%;
+    max-width: none;
+    margin-inline: auto;
+    padding: 0;
+  }
+ 
+  & .form form,
+  & .form form > fieldset.panel-wrapper.field-wrapper {
+    max-width: none;
+  }
+ 
+  & .form form fieldset.panel-wrapper.field-main-form-panel {
+    width: 100%;
+    max-width: 46.25rem;
+    margin-inline: auto;
+  }
+ 
+  & .form form fieldset.panel-wrapper.field-title-30,
+  & .form form fieldset.panel-wrapper.field-title-40 {
+    width: 100%;
+    max-width: 56.25rem;
+    margin-inline: auto;
+  }
+  
+  & .form form fieldset.panel-wrapper.field-title-40 {
+    margin-bottom: var(--bbl-form-margin-10);
+  }
+}
+
 main .lead-forms .form form fieldset.panel-wrapper.field-button-panel {
   display: flex;
   flex-direction: row;
@@ -631,10 +685,6 @@ main .lead-forms .form form fieldset.panel-wrapper.field-button-panel .field-sub
 main .lead-forms .form form fieldset.panel-wrapper.field-button-panel .field-reset {
   width: auto;
   margin: 0;
-}
-
-main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
-  padding: 0 0 0 var(--bbl-form-padding-35);
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
@@ -877,22 +927,13 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs.field-invalid .radio
   outline: none;
 }
 
-main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
-  .field-other-required-product-panel) {
-  border: var(--bbl-form-border-grey);
-  border-radius: var(--bbl-form-border-radius-7);
-  padding: var(--bbl-space-300) var(--bbl-space-500);
-  padding: var(--bbl-form-padding-10) var(--bbl-form-padding-10) var(--bbl-form-padding-10) 0;
-  margin-bottom: var(--bbl-form-margin-10);
-}
-
 main .lead-forms .form form :is(.field-wrapper:is(.icon-money, .icon-email),
   label:is(.icon-money, .icon-email))::before {
   font-size: var(--bbl-form-font-size-11);
   width: var(--bbl-space-200);
   height: var(--bbl-space-200);
   line-height: var(--bbl-space-200);
-  top: var(--bbl-space-350);
+  top: 1.875rem;
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .checkbox-group-wrapper .checkbox-wrapper {
@@ -937,7 +978,6 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   main .section.form-container.lead-forms .form .form-message.success-message {
     font-size: var(--bbl-font-size-b1-desktop);
   }
-
 
 
   main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
