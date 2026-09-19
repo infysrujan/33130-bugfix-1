@@ -54,28 +54,6 @@ function filterExcludeFields(obj) {
 }
 
 /**
- * Recursively replaces undefined values with null in an object
- * @param {any} value - The value to process
- * @returns {any} - Value with undefined replaced by null
- */
-function replaceUndefinedWithNull(value) {
-  if (value === undefined) {
-    return null;
-  }
-  if (Array.isArray(value)) {
-    return value.map(replaceUndefinedWithNull);
-  }
-  if (value !== null && typeof value === 'object') {
-    const result = {};
-    for (const [key, val] of Object.entries(value)) {
-      result[key] = replaceUndefinedWithNull(val);
-    }
-    return result;
-  }
-  return value;
-}
-
-/**
  * Generates SHA256 hash of payload and returns Base64 encoded string
  *
  * @async
@@ -84,11 +62,8 @@ function replaceUndefinedWithNull(value) {
  */
 async function generatePayloadHash(payload) {
   try {
-    // 1. Replace undefined with null so they are included in the hash
-    const sanitizedPayload = replaceUndefinedWithNull(payload);
-
-    // 2. Convert payload to compacted JSON string (no whitespace)
-    const compactedBodyString = JSON.stringify(sanitizedPayload);
+    // 1. Convert payload to compacted JSON string (no whitespace)
+    const compactedBodyString = JSON.stringify(payload);
 
     // 2. Convert string to Uint8Array for hashing
     const encoder = new TextEncoder();
@@ -1230,7 +1205,6 @@ export {
   addCustomHeader,
   filterExcludeFields,
   generatePayloadHash,
-  replaceUndefinedWithNull,
   fetchBranchesByProvince,
   getBranchEnum,
   getBranchEnumNames,
