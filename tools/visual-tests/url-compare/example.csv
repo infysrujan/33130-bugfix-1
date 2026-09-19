@@ -1,0 +1,3 @@
+name,baseUrl,destinationUrl,threshold
+Home,https://main--site--org.aem.page/en,https://feature--site--org.aem.page/en,0.01
+Contact Us,https://main--site--org.aem.page/en/contact-us,https://feature--site--org.aem.page/en/contact-us,0.01

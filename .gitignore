@@ -23,6 +23,7 @@ playwright-report/
 test-results/
 tools/visual-tests/playwright-report/
 tools/visual-tests/test-results/
+tools/visual-tests/url-compare/results/
  
 # Environment variables
 .env

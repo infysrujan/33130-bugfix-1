@@ -1,7 +1,6 @@
 #!/bin/sh
 node .husky/pre-commit.mjs
 
-#!/usr/bin/env sh
 . "$(dirname -- "$0")/husky.sh"
 
 # Run lint-staged first

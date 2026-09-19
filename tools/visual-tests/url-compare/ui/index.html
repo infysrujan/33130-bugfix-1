@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>URL Visual Comparison</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="page-header">
+    <h1>URL Visual Comparison</h1>
+    <p class="subtitle">Capture and pixel-diff a base URL against a destination URL, one page or a whole CSV batch at a time.</p>
+    <div id="server-status" class="server-status" data-state="checking">
+      <span class="dot"></span>
+      <span class="label">Checking server&hellip;</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab active" data-tab="single" role="tab" aria-selected="true">Single Page</button>
+      <button type="button" class="tab" data-tab="csv" role="tab" aria-selected="false">CSV Batch</button>
+    </div>
+
+    <section class="panel" data-panel="single">
+      <form id="single-form" class="form-card">
+        <div class="field">
+          <label for="single-name">Name <span class="optional">(optional)</span></label>
+          <input type="text" id="single-name" placeholder="e.g. Home page" />
+        </div>
+        <div class="field">
+          <label for="single-base">Base URL</label>
+          <input type="url" id="single-base" placeholder="https://main--site--org.aem.page/en" required />
+        </div>
+        <div class="field">
+          <label for="single-dest">Destination URL</label>
+          <input type="url" id="single-dest" placeholder="https://feature--site--org.aem.page/en" required />
+        </div>
+        <div class="field field-inline">
+          <label for="single-threshold">Diff threshold %</label>
+          <input type="number" id="single-threshold" min="0" max="100" step="0.1" value="1" />
+        </div>
+        <button type="submit" class="btn btn-primary" id="single-run">Run Comparison</button>
+      </form>
+    </section>
+
+    <section class="panel hidden" data-panel="csv">
+      <form id="csv-form" class="form-card">
+        <div class="field">
+          <label for="csv-threshold">Default diff threshold % <span class="optional">(used when a row has no threshold column)</span></label>
+          <input type="number" id="csv-threshold" min="0" max="100" step="0.1" value="1" />
+        </div>
+        <div id="dropzone" class="dropzone">
+          <input type="file" id="csv-file" accept=".csv" hidden />
+          <p class="dropzone-text">Drag &amp; drop a CSV here, or <button type="button" id="browse-btn" class="link-btn">browse</button></p>
+          <p class="dropzone-hint">Columns: name, baseUrl, destinationUrl, threshold (optional)</p>
+          <p id="csv-filename" class="csv-filename hidden"></p>
+        </div>
+        <button type="submit" class="btn btn-primary" id="csv-run" disabled>Run Batch</button>
+      </form>
+    </section>
+
+    <section id="results" class="results hidden">
+      <div class="summary-tiles">
+        <div class="tile total"><span class="count" id="tile-total">0</span><span class="tile-label">Total</span></div>
+        <div class="tile passed"><span class="count" id="tile-passed">0</span><span class="tile-label">Passed</span></div>
+        <div class="tile failed"><span class="count" id="tile-failed">0</span><span class="tile-label">Failed</span></div>
+      </div>
+
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-fill" style="width: 0%"></div>
+      </div>
+      <p class="progress-label" id="progress-label"></p>
+
+      <div id="rows" class="rows"></div>
+
+      <div id="error-banner" class="error-banner hidden"></div>
+
+      <div class="results-actions">
+        <a id="view-report-btn" class="btn btn-secondary hidden" href="#" target="_blank" rel="noopener">View Full Report</a>
+        <button type="button" id="reset-btn" class="btn btn-ghost hidden">Run another comparison</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

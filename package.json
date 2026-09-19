@@ -23,7 +23,8 @@
     "test:visual:block": "playwright test",
     "test:visual:block:update": "playwright test blocks --update-snapshots",
     "test:visual:server": "node tools/visual-tests/start-visual-test-server.js",
-    "start": "concurrently -k \"npm run test:visual:server\" \"aem up --url https://dev--site-dev--bangkok-bank.aem.page --open /en\" --kill-others-on-fail",
+    "test:visual:url-compare": "node tools/visual-tests/url-compare/cli.js",
+    "start": "concurrently -k \"npm run test:visual:server\" \"aem up --url https://visual-test--site-dev--bangkok-bank.aem.page --open /en\" --kill-others-on-fail",
     "test:visual:docker:build": "docker compose build",
     "test:visual:docker": "docker compose run --rm playwright",
     "test:visual:docker:update": "docker compose run --rm playwright npx playwright test --update-snapshots"
