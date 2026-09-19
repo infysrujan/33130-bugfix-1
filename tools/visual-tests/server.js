@@ -25,6 +25,10 @@ const urlCompareJobs = new Map();
 // create-then-stream pattern as urlCompareJobs above so no progress events are ever missed.
 const urlCompareFixJobs = new Map();
 const JOB_TTL_MS = 30 * 60 * 1000; // drop jobs whose stream was never opened after 30 minutes
+// Above this ratio on every viewport, the pair isn't a small regression — it's two structurally
+// different pages (e.g. the new EDS build vs. the old legacy site). No single-file edit fixes
+// that, so refuse the job instead of burning a Claude Code run on an unanswerable diagnosis.
+const MAX_FIXABLE_DIFF_RATIO = 0.15;
 
 setInterval(() => {
   const now = Date.now();
@@ -370,6 +374,14 @@ app.post('/api/url-compare/fix/jobs', (req, res) => {
 
   if (!baseUrl || !destUrl || !Array.isArray(viewports) || !viewports.length || !resultsBaseUrl) {
     return res.status(400).json({ error: 'Provide baseUrl, destUrl, viewports, and resultsBaseUrl' });
+  }
+
+  if (viewports.every((v) => v.diffRatio >= MAX_FIXABLE_DIFF_RATIO)) {
+    return res.status(422).json({
+      error: `Diff is too large to auto-fix (every viewport is at or above ${MAX_FIXABLE_DIFF_RATIO * 100}% of pixels differing). `
+        + 'This looks like two structurally different pages rather than a small regression — '
+        + 'compare two environments of the same EDS site, or fix this manually.',
+    });
   }
 
   const runIdMatch = /^\/url-compare-results\/([^/]+)\/?$/.exec(resultsBaseUrl);
