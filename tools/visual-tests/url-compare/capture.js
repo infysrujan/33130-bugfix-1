@@ -16,6 +16,10 @@ const SETTLE_TIMEOUT = 1500;
  */
 export async function captureFullPageScreenshot(browser, url, viewport) {
   const context = await browser.newContext({ viewport });
+  // Pre-accept cookie consent so the fixed cookie-alert banner never renders during
+  // capture — Playwright's fullPage screenshot mispositions `position: fixed` elements,
+  // making the banner overlap page content and produce large false-positive diffs.
+  await context.addCookies([{ url, name: 'ConsentAlert', value: 'ALERT' }]);
   const page = await context.newPage();
   try {
     await page.goto(url, { waitUntil: 'load', timeout: NAV_TIMEOUT });
