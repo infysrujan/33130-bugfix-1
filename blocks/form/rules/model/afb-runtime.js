@@ -3111,7 +3111,7 @@ const urlEncoded = (data) => {
  */
 const replaceUndefinedWithNull = (value) => {
   if (value === undefined) {
-    return null;
+    return "";
   }
   if (Array.isArray(value)) {
     return value.map(replaceUndefinedWithNull);
