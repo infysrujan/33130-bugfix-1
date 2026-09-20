@@ -259,7 +259,6 @@ export default async function decorate(block) {
   let loading = false;
 
   const messagePlaceholders = {
-    minSearchLength: (placeholders.minSearchLengthMessage || '').replace(/\$\{MIN_SEARCH_LENGTH\}/, MIN_SEARCH_LENGTH),
     somethingWrong: placeholders.somethingWrongMessage,
   };
 
@@ -324,7 +323,7 @@ export default async function decorate(block) {
         searchResult.style.display = 'block';
         searchHistory.style.display = 'none';
         divLoadMore.style.display = 'none';
-        showMessage(messagePlaceholders.minSearchLength);
+        showMessage('');
       }
       return;
     }
