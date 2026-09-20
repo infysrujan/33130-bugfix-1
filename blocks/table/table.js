@@ -252,6 +252,33 @@ function isAuthoringInstance(block) {
   return hasAueAttrs && window.self !== window.top;
 }
 
+// Same button-detection logic as decorateButtonsV1 (scripts/bbl-decorators.js),
+// but anchored on TD instead of P since table cell content isn't paragraph-wrapped.
+function decorateTableButtons(table) {
+  table.querySelectorAll('a').forEach((a) => {
+    if (a.querySelector('img')) return;
+    const up = a.parentElement;
+    const twoup = up.parentElement;
+
+    if (up.childNodes.length === 1 && up.tagName === 'STRONG' && twoup.tagName === 'TD') {
+      a.className = 'button-m primary';
+      return;
+    }
+
+    if (up.childNodes.length === 1 && up.tagName === 'EM' && twoup.tagName === 'TD') {
+      a.className = 'button-m secondary';
+      return;
+    }
+
+    if (up.childNodes.length === 1 && up.tagName === 'TD') {
+      const alreadyVariant = a.className.includes('primary') || a.className.includes('secondary');
+      if (!alreadyVariant) {
+        a.className = 'button-tertiary';
+      }
+    }
+  });
+}
+
 function appendRows(targetTable, sourceTable) {
   const targetBody = targetTable.tBodies[0] || targetTable;
   const sourceRows = [...sourceTable.querySelectorAll('tr')];
@@ -425,6 +452,7 @@ export default async function decorate(block) {
     block.append(parentTable);
     decorateNewTabLinks(parentTable);
     decorateIconInContainer(parentTable);
+    decorateTableButtons(parentTable);
     if (isAuthoring) {
       rows.slice(tableRowIndex + 1).forEach((row) => block.append(row));
     }
@@ -445,6 +473,7 @@ export default async function decorate(block) {
   block.append(parentTable);
   decorateNewTabLinks(parentTable);
   decorateIconInContainer(parentTable);
+  decorateTableButtons(parentTable);
 
   scheduleMergeTables(block, parentTable);
   scheduleGroupTables(block, parentTable);

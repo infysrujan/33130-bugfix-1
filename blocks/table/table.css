@@ -54,6 +54,10 @@
   color: inherit;
 }
 
+.table table td a.button-m {
+  display: inline-flex;
+}
+
 .table td :is(p, ul) {
   text-wrap: auto;
 }
@@ -373,6 +377,11 @@
 .table table.cells-right-aligned-except-first > :where(tbody) > tr:not(.header-row) > td:not(:first-child) {
   text-align: right;
   vertical-align: middle;
+}
+
+/* Cells Center Aligned (last column only) */
+.table table.cells-center-aligned-last-column > :where(tbody) > tr:not(.header-row) > td:last-child {
+  text-align: center;
 }
 
 /* --------------------------------------------------------------------------
