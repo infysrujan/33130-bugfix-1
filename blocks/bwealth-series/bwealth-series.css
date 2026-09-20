@@ -8,6 +8,7 @@
 .bwealth-series-section {
   --bwealth-series-factsheet-bg: #f2f2f7;
   --bwealth-series-factsheet-color: #1c1c1e;
+  --bwealth-series-fund-detail-value-color: #111;
 
   font-weight: var(--bbl-font-weight-regular);
 }
@@ -679,14 +680,13 @@
 .bwealth-series-fund-detail-label {
   flex: 0 0 6.75rem;
   width: 6.75rem;
-  color: var(--bbl-color-grey-70);
 }
 
 .bwealth-series-fund-detail-value {
   flex: 1;
   min-width: 0;
   font-family: var(--bbl-font-family-medium);
-  color: var(--bbl-text-primary);
+  color: var(--bwealth-series-fund-detail-value-color);
 }
 
 .bwealth-series-fund-actions {
@@ -750,8 +750,8 @@
 .bwealth-series-funds-dots {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 0.4375rem;
+  margin-top: 2.1875rem;
 }
 
 .bwealth-series-funds-dots[hidden] {
@@ -761,8 +761,8 @@
 /* min-height: 28px จาก styles/buttons.css ทำให้ dot ยืดเป็นวงรี ต้อง reset */
 .bwealth-series-dot {
   box-sizing: border-box;
-  width: 0.625rem;
-  height: 0.625rem;
+  width: 8.25px;
+  height: 8.25px;
   min-height: 0;
   padding: 0;
   border: 0;
