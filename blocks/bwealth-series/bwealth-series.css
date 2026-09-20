@@ -406,96 +406,6 @@
   line-height: var(--bbl-line-height-button);
 }
 
-.bwealth-series-btn {
-  /* ปุ่มบางตัวเป็น <a> ซึ่งไม่ได้ border-box จาก UA แบบ <button> — ตั้งให้เท่ากันทั้งหมด */
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 7.1875rem;
-
-  /* ต้องประกาศ width เอง ไม่งั้นโดน `button { width: 6.25rem }` ของ styles/buttons.css กิน */
-  width: 7.1875rem;
-  height: 2.1875rem;
-  padding: 0.4375rem 0.875rem;
-  border-radius: 0.375rem;
-  border: 0.0625rem solid var(--bbl-color-grey-30);
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-gray-143);
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1-mobile);
-  font-weight: var(--bbl-font-weight-medium);
-  line-height: var(--bbl-line-height-button);
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  transition: opacity 150ms ease, background-color 150ms ease, border-color 150ms ease;
-}
-
-.bwealth-series-actions .bwealth-series-btn {
-  min-width: 7.1875rem;
-  width: 7.1875rem;
-}
-
-/* ปุ่มบางตัว (modal) เป็น <a> ต้อง :any-link เพื่อชนะสีลิงก์ของ styles/main.css */
-.bwealth-series-btn-secondary,
-.bwealth-series-btn-secondary:any-link {
-  background: transparent;
-  color: var(--bbl-color-active-blue);
-  border: 0.125rem solid var(--bbl-color-active-blue);
-  font-weight: var(--bbl-font-weight-regular);
-}
-
-.bwealth-series-actions .bwealth-series-btn-secondary {
-  border: 0.125rem solid var(--bbl-color-grey-20);
-}
-
-.bwealth-series-actions .bwealth-series-btn-secondary:not(:disabled) {
-  border: 0.125rem solid var(--bbl-color-active-blue);
-  font-weight: var(--bbl-font-weight-regular);
-}
-
-.bwealth-series-actions .bwealth-series-btn-secondary:disabled {
-  background: transparent;
-}
-
-.bwealth-series-btn-secondary:not(:disabled):hover {
-  background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-}
-
-.bwealth-series-btn-primary,
-.bwealth-series-btn-primary:any-link {
-  background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  border-color: var(--bbl-color-active-blue);
-}
-
-/* ลำดับสำคัญ: generic disabled -> primary disabled -> hover (specificity ไล่ขึ้น) */
-.bwealth-series-btn:disabled,
-.bwealth-series-btn.is-disabled {
-  background: var(--bbl-bg-secondary);
-  border: 0.125rem solid var(--bbl-color-grey-20);
-  color: var(--bbl-color-grey-60);
-  font-weight: var(--bbl-font-weight-regular);
-  cursor: not-allowed;
-}
-
-.bwealth-series-btn.is-disabled {
-  pointer-events: none;
-}
-
-.bwealth-series-btn-primary:disabled {
-  background: var(--bbl-color-grey-20);
-  border-color: var(--bbl-color-grey-20);
-}
-
-.bwealth-series-btn-primary:hover:not(:disabled) {
-  background: var(--bbl-color-blue-90);
-  border-color: var(--bbl-color-blue-90);
-}
-
 /* ------------------------------------------------------------------ result */
 
 .bwealth-series-result-card {
@@ -831,8 +741,7 @@
  * คือสูง 40px มุม 8px เต็มความกว้าง และไม่มีเส้นขอบ
  */
 
-/* font-family/size/weight ปล่อยให้ตกทอดจาก .bwealth-series-btn ซึ่งใช้ค่าเดียวกับ saving-plan */
-.bwealth-series-fund-actions .bwealth-series-btn {
+.bwealth-series-fund-actions .button-m {
   width: 100%;
   height: 2.5rem;
   padding: 0 1rem;
@@ -1284,14 +1193,14 @@ body.bwealth-series-modal-open {
 /* ปุ่มใน modal ก็เป็น shadcn Button size=default เหมือนกัน — สูง 40px, min-width 115px */
 
 /* shadcn size=default คือ min-w-[115px] + width อัตโนมัติ ไม่ใช่ความกว้างคงที่แบบปุ่มในฟอร์ม */
-.bwealth-series-modal-footer .bwealth-series-btn {
+.bwealth-series-modal-footer .button-m {
   width: auto;
   height: 2.5rem;
   padding: 0 1rem;
 }
 
 /* ปุ่มคู่นี้ต้นฉบับใช้ h-12 min-w-0 whitespace-normal leading-5 — สูงกว่าปุ่มอื่นและตัดบรรทัดได้ */
-.bwealth-series-modal-invest-actions .bwealth-series-btn {
+.bwealth-series-modal-invest-actions .button-m {
   flex: 1;
   width: auto;
   min-width: 0;
@@ -1303,12 +1212,17 @@ body.bwealth-series-modal-open {
 }
 
 /*
- * ปุ่มที่เป็น <a> โดน `a:hover { text-decoration: underline }` ของ styles/main.css ทับ
- * (0,1,1 ชนะ .bwealth-series-btn ที่เป็น 0,1,0) ต้องใช้ :any-link เพื่อดันให้สูงกว่า
+ * ปุ่มที่เป็น <a> (one-time/DCA) โดน `a:hover { text-decoration: underline }` ของ styles/main.css ทับ
+ * (0,1,1 ชนะ .button-m ที่เป็น 0,1,0) ต้องใช้ :any-link เพื่อดันให้สูงกว่า — สโคปไว้แค่ในบล็อกนี้ไม่ทับ .button-m ที่อื่น
  */
-.bwealth-series-btn:any-link,
-.bwealth-series-btn:any-link:hover {
+.bwealth-series-modal-invest-actions a.button-m:any-link,
+.bwealth-series-modal-invest-actions a.button-m:any-link:hover {
   text-decoration: none;
+}
+
+/* <a> กด disabled ไม่ได้ด้วย attribute ต้องกัน pointer-events เอง (.button-m.disabled ของ styles/buttons.css ไม่ได้กันไว้) */
+.bwealth-series-modal-invest-actions .button-m.disabled {
+  pointer-events: none;
 }
 
 /* -------------------------------------------------------------- responsive */
@@ -1333,10 +1247,6 @@ body.bwealth-series-modal-open {
   .bwealth-series-actions {
     flex-direction: row;
     align-items: center;
-  }
-
-  .bwealth-series-actions .bwealth-series-btn {
-    min-width: var(--bbl-space-1050);
   }
 
   .bwealth-series-chart-wrap {
@@ -1441,12 +1351,6 @@ body.bwealth-series-modal-open {
 
   .bwealth-series-field-input::placeholder {
     font-size: var(--bbl-font-size-h4-desktop);
-  }
-
-  .bwealth-series-btn {
-    font-size: var(--bbl-font-size-b1-desktop);
-    height: 2.5rem;
-    padding: 0.5rem 1rem;
   }
 
   .bwealth-series-result-card {

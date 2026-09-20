@@ -815,8 +815,8 @@ function buildShellMarkup(data) {
           </div>
 
           <div class="bwealth-series-actions">
-            <button type="button" class="bwealth-series-btn bwealth-series-btn-secondary" data-action="clear" disabled>${escapeHtml(common.clearButton)}</button>
-            <button type="button" class="bwealth-series-btn bwealth-series-btn-primary" data-action="calculate" disabled>${escapeHtml(common.calculateButtonText)}</button>
+            <button type="button" class="button-m secondary" data-action="clear" disabled>${escapeHtml(common.clearButton)}</button>
+            <button type="button" class="button-m primary" data-action="calculate" disabled>${escapeHtml(common.calculateButtonText)}</button>
           </div>
         </div>
 
@@ -909,7 +909,7 @@ function buildFundCard(fund, labels) {
               <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </a>
-          <button type="button" class="bwealth-series-btn bwealth-series-btn-primary" data-action="fund-detail">
+          <button type="button" class="button-m primary" data-action="fund-detail">
             ${escapeHtml(labels.viewDetails)}
           </button>
         </div>
@@ -940,8 +940,8 @@ function buildFundDetailMarkup(fund, labels, remarkHtml) {
       ${remarkHtml ? `<div class="bwealth-series-modal-remark">${remarkHtml}</div>` : ''}
     </div>
     <div class="bwealth-series-modal-footer">
-      <button type="button" class="bwealth-series-btn bwealth-series-btn-secondary" data-modal-close>${escapeHtml(labels.close)}</button>
-      <button type="button" class="bwealth-series-btn bwealth-series-btn-primary" data-action="invest">${escapeHtml(labels.invest)}</button>
+      <button type="button" class="button-m secondary" data-modal-close>${escapeHtml(labels.close)}</button>
+      <button type="button" class="button-m primary" data-action="invest">${escapeHtml(labels.invest)}</button>
     </div>
   `;
 }
@@ -960,9 +960,9 @@ const CHEVRON_DOWN = `
 function buildInvestButtons(labels, links) {
   return `
     <div class="bwealth-series-modal-invest-actions">
-      <a class="bwealth-series-btn bwealth-series-btn-secondary${links.oneTime ? '' : ' is-disabled'}"
+      <a class="button-m secondary${links.oneTime ? '' : ' disabled'}"
          href="${escapeHtml(links.oneTime || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(labels.oneTime)}</a>
-      <a class="bwealth-series-btn bwealth-series-btn-primary${links.dca ? '' : ' is-disabled'}"
+      <a class="button-m primary${links.dca ? '' : ' disabled'}"
          href="${escapeHtml(links.dca || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(labels.dcaHeader)}</a>
     </div>
   `;
