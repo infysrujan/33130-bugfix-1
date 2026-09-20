@@ -28,6 +28,23 @@ import {
 const DOMPURIFY_SRC = `${window.hlx.codeBasePath}/scripts/dompurify.min.js`;
 const DEFAULT_CONFIG_PATH = '/bwealth-series-config.json';
 
+const ICON_BASE = '/icons/saving-plan';
+const ICONS_CACHE = {};
+
+async function loadIcons() {
+  const names = ['chevron-down', 'check'];
+  await Promise.all(names.map(async (name) => {
+    try {
+      const resp = await fetch(`${ICON_BASE}/${name}.svg`);
+      if (resp.ok) ICONS_CACHE[name] = await resp.text();
+    } catch { /* empty */ }
+  }));
+}
+
+function getIcon(name) {
+  return ICONS_CACHE[name] || '';
+}
+
 // HARDCODE: ปกติมาจาก Sitecore Content-Provider (VITE_INFLATION_API_*)
 const FALLBACK_INFLATION_RATE = 2.5;
 
@@ -696,8 +713,6 @@ function generateSavingGraphData(payload, monthlySaving) {
 
 /* ------------------------------------------------------------------- markup */
 
-const CHEVRON = '<span class="bwealth-series-chevron" aria-hidden="true"></span>';
-
 const ICON_AMOUNT = `
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path d="M2.82609 23L5.56522 22H15.6087L22 18C21.5435 16 19.4435 15 17.8 16L14.6957 18H8.30435H13.6913C14.1478 18 14.513 17.5 14.4217 16.9L14.3304 16.7C14.0565 15.7 13.1435 14.9 12.2304 14.8L5.56522 14L1 16" stroke="#0064FF" stroke-width="2" stroke-miterlimit="10"/>
@@ -716,7 +731,7 @@ function buildDropdown(name, label, options, placeholder) {
   const optionsMarkup = options
     .map((opt) => `
       <li class="bwealth-series-dropdown-option" role="option" data-value="${escapeHtml(opt.value)}" tabindex="-1">
-        <span class="bwealth-series-dropdown-option-check icon-check" aria-hidden="true"></span>
+        <span class="bwealth-series-dropdown-option-check" aria-hidden="true">${getIcon('check')}</span>
         <span class="bwealth-series-dropdown-option-label">${escapeHtml(opt.label)}</span>
       </li>`)
     .join('');
@@ -726,7 +741,7 @@ function buildDropdown(name, label, options, placeholder) {
     <div class="bwealth-series-field bwealth-series-field-dropdown" data-field="${name}" data-value="">
       <button type="button" class="bwealth-series-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
         <span class="bwealth-series-dropdown-current">${escapeHtml(placeholder || label)}</span>
-        ${CHEVRON}
+        <span class="bwealth-series-chevron" aria-hidden="true">${getIcon('chevron-down')}</span>
       </button>
       <ul class="bwealth-series-dropdown-panel" role="listbox" tabindex="-1">${optionsMarkup}</ul>
     </div>
@@ -1766,6 +1781,7 @@ export default async function decorate(block) {
     fetchBlockConfig(),
     ensureDomPurify(),
     loadChartJs(),
+    loadIcons(),
   ]);
 
   const configJson = config.raw;
