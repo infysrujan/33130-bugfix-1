@@ -215,13 +215,11 @@ async function fetchJson(rawUrl, { useCache = true } = {}) {
   }
 }
 
-function toPropertyTypeValue(key, label) {
+function toPropertyTypeValue(key, value) {
   const trimmedKey = String(key).trim();
-  const trimmedLabel = String(label).trim();
-  if (trimmedKey === '0') return 'all';
-  if (trimmedLabel === 'อื่นๆ') return 'Other';
-  if (trimmedLabel.replace(/\s+/g, '') === 'โกดัง,โรงสี') return 'โกดัง,โรงสี';
-  return trimmedLabel;
+  const trimmedValue = String(value || '').trim();
+  if (trimmedValue) return trimmedValue;
+  return trimmedKey === '0' ? 'all' : '';
 }
 
 async function loadPfsData(configUrl) {
@@ -234,7 +232,7 @@ async function loadPfsData(configUrl) {
     categoryLabel: Object.fromEntries(categories.map((r) => [r.Key, r.Label])),
     propertyTypes: types.map((r) => ({
       label: r.Label,
-      value: toPropertyTypeValue(r.Key, r.Label),
+      value: toPropertyTypeValue(r.Key, r.Value),
     })),
     priceRanges: ranges.map((r) => ({ label: r.Label, key: r.Key.trim() })),
   };
