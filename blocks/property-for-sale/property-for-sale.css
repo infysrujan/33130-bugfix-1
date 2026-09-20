@@ -1,5 +1,9 @@
 @import url("../../styles/components/listing-card.css");
 
+.pfs-tabs-wrapper {
+   --header-scroll-offset: var(--header-d-height);
+}
+
 .pfs-filters {
   padding: 1.875rem 0 0;
 }
