@@ -317,7 +317,6 @@
 .bwealth-series-field-dropdown.drop-up .bwealth-series-dropdown-panel {
   top: auto;
   bottom: calc(100% + 0.25rem);
-  transform: translateY(0.375rem);
 }
 
 .bwealth-series-dropdown-option {
