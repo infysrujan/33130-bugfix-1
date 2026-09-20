@@ -225,9 +225,10 @@
 }
 
 .cards-list-image.cards-list-image-logo {
-  height: 5rem;
+  min-height: 5rem;
   max-height: 100%;
-  margin: 0.9375rem;
+  padding: 1.25rem 1.25rem 0;
+  box-sizing: border-box;
 }
 
 .card-list-modal-media img {
@@ -240,6 +241,11 @@
   height: calc(100vw);
   max-height: calc(15.625rem + 40 * ((100vw - 20rem) / 1600));
   overflow: hidden;
+}
+
+.cards-list-image.cards-list-image-logo > picture {
+  height: 5rem;
+  display: flex;
 }
 
 .cards-list-image.cards-list-image-logo img {
@@ -372,7 +378,7 @@
   color: var(--bbl-color-black);
   min-height: 4.4375rem;
   font-size: var(--bbl-text-thumbnail-card-title-size);
-  line-height: var(--bbl-text-thumbnail-card-title-line-height);
+  line-height: 1.625rem;
   font-weight: var(--bbl-text-thumbnail-card-title-weight);
   padding-bottom: 0.9375rem;
   margin-block: 0 0.9375rem;
