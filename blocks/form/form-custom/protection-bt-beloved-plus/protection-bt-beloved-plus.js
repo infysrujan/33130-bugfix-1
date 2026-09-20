@@ -26,7 +26,9 @@ function fixRadioGroupTooltip(fieldset) {
   if (!tooltipText) return;
   if (fieldset.dataset.tooltipFixed === 'true') return;
 
-  const generalDescription = toPlainText(fieldset.getAttribute('data-description') || '');
+  const FALLBACK_DESCRIPTION = '*ค่าห้อง หมายความรวมถึงค่าอาหาร ค่าบริการในโรงพยาบาล (ผู้ป่วยใน) ต่อการเข้าพักรักษาเป็นผู้ป่วยในครั้งใดครั้งหนึ่งด้วย';
+  const generalDescription = toPlainText(fieldset.getAttribute('data-description') || '') || FALLBACK_DESCRIPTION;
+
   const allOptions = fieldset.querySelectorAll('.radio-wrapper');
   const targetOption = fieldset.querySelector(TOOLTIP_TARGET_OPTION_SELECTOR);
 
@@ -38,7 +40,7 @@ function fixRadioGroupTooltip(fieldset) {
 
     if (optionWrapper === targetOption) {
       label.title = tooltipText;
-    } else if (generalDescription) {
+    } else {
       label.title = generalDescription;
     }
   });
