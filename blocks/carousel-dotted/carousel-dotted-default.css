@@ -359,6 +359,7 @@
   left: 50%;
   transform: translateX(-50%);
   right: auto;
+  margin-bottom: 5rem;
 }
 
 .carousel-dotted.dots-right-outside-container .slick-dots {
