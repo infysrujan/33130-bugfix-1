@@ -375,7 +375,7 @@
   left: 50%;
   top: calc(100% + 0.625rem);
   transform: translateX(-50%);
-  width: min(20rem, calc(100vw - 2rem));
+  width: min(18rem, calc(100vw - 2rem));
   padding: var(--bbl-space-150) var(--bbl-space-200);
   background: var(--bbl-color-truthful-blue);
   color: var(--bbl-color-white);
@@ -671,7 +671,7 @@
 }
 
 .tax-calculator .tax-calc-summary-subtitle {
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-primary);
   font-size: 0.825rem;
   font-weight: var(--bbl-font-weight-regular);
   line-height: 1rem;

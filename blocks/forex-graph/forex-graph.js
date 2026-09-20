@@ -84,18 +84,38 @@ function printForexGraph(block, state) {
   // interactive/error bits (dropdown list, calendar popups, text inputs, buttons).
   cloned.querySelectorAll('.forex-graph-error').forEach((el) => el.remove());
   cloned.querySelectorAll(
-    '.forex-graph-dropdown-list, .forex-graph-dropdown-chevron, .forex-graph-datepicker, .forex-graph-date-input, .forex-graph-go-btn, .forex-graph-actions',
+    '.forex-graph-dropdown-list, .forex-graph-dropdown-chevron, .forex-graph-datepicker, .forex-graph-date-input, .forex-graph-go-btn, .forex-graph-print-btn',
   ).forEach((el) => el.remove());
 
   // <canvas> pixels do not survive cloneNode — swap in a snapshot image.
   const canvasWrap = cloned.querySelector('.forex-graph-canvas-wrap');
   if (canvasWrap) {
     canvasWrap.innerHTML = '';
-    if (state.chartInstance) {
+    if (state.chartInstance && window.ForexChart) {
+      const { config } = state.chartInstance;
+      const printCanvas = doc.createElement('canvas');
+      printCanvas.width = 1600;
+      printCanvas.height = 600;
+      const printChart = new window.ForexChart(printCanvas, {
+        type: config.type,
+        data: JSON.parse(JSON.stringify(config.data)),
+        options: {
+          ...config.options,
+          responsive: false,
+          maintainAspectRatio: false,
+          animation: false,
+          devicePixelRatio: 1,
+        },
+        plugins: config.plugins,
+      });
+      printChart.draw();
+
       const img = doc.createElement('img');
-      img.src = state.chartInstance.toBase64Image();
+      img.src = printChart.toBase64Image();
       img.className = 'forex-graph-print-chart';
       canvasWrap.appendChild(img);
+
+      printChart.destroy();
     }
   }
 
@@ -118,6 +138,37 @@ function printForexGraph(block, state) {
       .join('')}</div>`;
   })();
 
+  const calcHtml = (() => {
+    const calcBlock = doc.querySelector('.currency-converter-expanded');
+    if (!calcBlock) return '';
+    const section = calcBlock.closest('.section');
+    const calcTitle = section?.querySelector('h1, h2, h3, h4')?.textContent?.trim() || 'Currency Calculator';
+    const calcSubtitle = section?.querySelector('.default-content-wrapper p')?.textContent?.trim() || '';
+    const rowHtml = (group) => {
+      if (!group) return '';
+      const label = group.querySelector('.guide-txt')?.textContent?.trim() || '';
+      const code = group.querySelector('.code')?.textContent?.trim() || '';
+      const iconSrc = group.querySelector('.country-select img')?.getAttribute('src') || '';
+      return `<div class="print-calc-row">
+        <span class="print-calc-label">${escapeHtml(label)}</span>
+        <span class="print-calc-value">${iconSrc ? `<img src="${escapeHtml(iconSrc)}" alt="" loading="eager">` : ''}<span>${escapeHtml(code)}</span><i class="icon-dropdown print-calc-chevron" aria-hidden="true"></i></span>
+      </div>`;
+    };
+    const amountGroup = calcBlock.querySelector('.amount-input')?.closest('.convert-group');
+    const amountLabel = amountGroup?.querySelector('.guide-txt')?.textContent?.trim() || 'AMOUNT';
+    return `<div class="print-page-break"></div>
+      <h1 class="print-title">${escapeHtml(calcTitle)}</h1>
+      ${calcSubtitle ? `<p class="print-calc-subtitle">${escapeHtml(calcSubtitle)}</p>` : ''}
+      <div class="print-calc">
+        ${rowHtml(calcBlock.querySelector('#currency1'))}
+        ${rowHtml(calcBlock.querySelector('#currency2'))}
+        <div class="print-calc-row">
+          <span class="print-calc-label">${escapeHtml(amountLabel)}</span>
+          <span class="print-calc-amount-box"></span>
+        </div>
+      </div>`;
+  })();
+
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }
     body { font-family: sans-serif; margin: 0; padding: 0; }
@@ -129,7 +180,11 @@ function printForexGraph(block, state) {
 
     .print-title {
       font-size: 2.25rem; font-weight: 500; color: var(--bbl-color-black);
-      margin: 0.25rem 0 1rem;
+      margin: 0.25rem 0 1rem; position: relative; padding-bottom: 0.5rem;
+    }
+    .print-title::after {
+      content: ''; position: absolute; left: 0; bottom: 0;
+      width: 2.25rem; height: 0.1875rem; background: var(--bbl-color-blue-105);
     }
 
     .print-tabs {
@@ -142,18 +197,24 @@ function printForexGraph(block, state) {
     /* Read-only controls (currency + From/To) */
     .forex-graph-control-row {
       display: flex; flex-direction: column; align-items: flex-start;
-      gap: 0.75rem; margin-bottom: 1.25rem;
+      gap: 0.75rem; margin-bottom: 1.25rem; position: relative;
     }
-    .forex-graph-dropdown { position: static; }
+    .forex-graph-dropdown { position: static; margin-left: 1.25rem; }
     .forex-graph-dropdown-trigger {
       display: inline-flex; align-items: center; gap: 0.25rem;
-      border: none; background: none; padding: 0; margin-left: 1.25rem;
+      border: 0.0625rem solid var(--bbl-color-grey-40); border-radius: 0.375rem;
+      background: none; padding: 0.5rem 0.75rem;
       font-size: 0.8125rem; font-weight: 700; color: var(--bbl-color-black);
     }
     .forex-graph-date-fields { display: flex; flex-direction: column; gap: 0.75rem; }
     .forex-graph-date-field { display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
     .forex-graph-date-label { display: block; margin: 0; font-size: 0.8125rem; font-weight: 400; color: var(--bbl-color-black); }
-    .forex-graph-date-group { position: static; display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 1.25rem; }
+    .forex-graph-date-group {
+      position: static; display: inline-flex; align-items: center; gap: 0.4rem;
+      margin-left: 1.25rem;
+      border: 0.0625rem solid var(--bbl-color-grey-40); border-radius: 0.375rem;
+      padding: 0.5rem 0.75rem;
+    }
     .forex-graph-date-display {
       display: inline-block; font-size: 0.8125rem; color: var(--bbl-color-black);
       border: none; padding: 0;
@@ -163,6 +224,16 @@ function printForexGraph(block, state) {
       padding: 0; border: none; background: none;
       color: var(--bbl-color-gray-142); font-size: 0.85rem;
       display: inline-flex; align-items: center;
+    }
+    /* Keep the Download link visible in print (Print button is stripped),
+       pinned to the top-right on the currency-dropdown row like the client. */
+    .forex-graph-actions { position: absolute; top: 0; right: 0; display: flex; gap: 0.5rem; }
+    .forex-graph-print-btn { display: none; }
+    .forex-graph-download-btn {
+      display: inline-flex; flex-direction: row-reverse; align-items: center; gap: 0.5rem;
+      background: none; border: none; padding: 0;
+      font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.0313rem;
+      text-transform: uppercase; color: var(--bbl-color-black);
     }
 
     .forex-graph-chart-section {
@@ -184,6 +255,17 @@ function printForexGraph(block, state) {
     .forex-graph-disclaimer { font-size: 0.5rem; line-height: 1.4; margin-top: 1.5rem; color: #555; }
     .forex-graph-disclaimer p { margin: 0; }
     .forex-graph-disclaimer p:first-child { font-weight: 700; color: var(--bbl-color-black); padding-bottom: 0.2rem; }
+
+    /* Currency Calculator (second page) */
+    .print-page-break { break-before: page; }
+    .print-calc-subtitle { color: var(--bbl-color-blue-105); font-size: 0.8125rem; margin: 0 0 1.5rem; }
+    .print-calc { display: flex; flex-direction: column; gap: 1.25rem; max-width: 24rem; }
+    .print-calc-row { display: flex; align-items: center; gap: 1rem; }
+    .print-calc-label { width: 9rem; font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; color: var(--bbl-color-black); }
+    .print-calc-value { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; font-weight: 700; color: var(--bbl-color-black); }
+    .print-calc-value img { width: 1.25rem; height: 1.25rem; object-fit: contain; }
+    .print-calc-chevron { font-size: 0.375rem; color: var(--bbl-color-black); margin-left: 0.5rem; }
+    .print-calc-amount-box { display: inline-block; width: 10rem; height: 2rem; border: 0.0625rem solid var(--bbl-color-grey-40); border-radius: 0.375rem; }
   `;
 
   const printHtml = `<!DOCTYPE html>
@@ -203,6 +285,7 @@ function printForexGraph(block, state) {
       <div class="forex-graph block" data-block-status="loaded">
         ${cloned.outerHTML}
       </div>
+      ${calcHtml}
     </body>
   </html>`;
 
@@ -366,7 +449,7 @@ function renderBlock(
 
   const errorStyle = state.error ? '' : ' style="display:none"';
   const dropdownOpen = state.dropdownOpen ? ' is-open' : '';
-  const showNoData = !state.loading && !state.chartData.length;
+  const showNoData = state.hasSearched && !state.loading && !state.chartData.length;
   const noDataStyle = showNoData ? '' : ' style="display:none"';
 
   block.innerHTML = `<section class="forex-graph-content">
@@ -457,6 +540,9 @@ export default async function decorate(block) {
     loading: false,
     error: '',
     chartInstance: null,
+    // False until the user clicks GO: the chart stays blank (no chart drawn, no
+    // "No Data" text). "No Data" only shows after a search returns nothing.
+    hasSearched: false,
   };
 
   let outsideClickHandlers = {};
@@ -491,6 +577,15 @@ export default async function decorate(block) {
   async function drawChart() {
     const canvas = block.querySelector('.forex-graph-canvas');
     if (!canvas) return;
+
+    // Before the first GO, leave the chart area blank (no axes, no "No Data").
+    if (!state.hasSearched) {
+      if (state.chartInstance) {
+        state.chartInstance.destroy();
+        state.chartInstance = null;
+      }
+      return;
+    }
 
     const Chart = await loadChartJs();
 
@@ -543,19 +638,17 @@ export default async function decorate(block) {
       ? new Set(pickEvenlySpacedIndices(labels.length, mobileIntermediateCount))
       : null;
 
-    // Tablet: same-month range wants 9 evenly (position-)spaced labels; a range
-    // starting in the month before "to" wants 10.
+    // Tablet: a same-month range shows every working day
     let tabletTickIndices = null;
-    if (isTabletViewport && sameMonth) {
-      tabletTickIndices = new Set(pickEvenlySpacedIndices(labels.length, 7));
-    } else if (isTabletViewport && isPrevMonthRange) {
+    if (isTabletViewport && isPrevMonthRange) {
       tabletTickIndices = new Set(pickEvenlySpacedIndices(labels.length, 8));
     }
 
     const customTickIndices = mobileTickIndices || tabletTickIndices;
 
-    // Desktop: when from/to fall in the same month, show every working day instead of autoSkipping.
-    const sameMonthDesktop = !isMobileViewport && !isTabletViewport && sameMonth;
+    // Tablet + desktop: for a same-month range show every working day instead of
+    // autoSkipping (matches the client, which lists all days rotated on tablet).
+    const sameMonthNoSkip = !isMobileViewport && sameMonth;
 
     // Plugin: draw halo on the cross-dataset point at the same index
     const crossHighlightPlugin = {
@@ -608,6 +701,33 @@ export default async function decorate(block) {
           ctx.moveTo(point.x, chartArea.top);
           ctx.lineTo(point.x, lineBottom);
           ctx.stroke();
+        });
+
+        const lineLeft = chartArea.left - 10;
+        scales.y.ticks.forEach((_tick, i) => {
+          const y = scales.y.getPixelForTick(i);
+          ctx.beginPath();
+          ctx.moveTo(lineLeft, y);
+          ctx.lineTo(chartArea.left, y);
+          ctx.stroke();
+        });
+        ctx.restore();
+      },
+
+      afterDatasetsDraw(chart) {
+        const { ctx, scales } = chart;
+        const yScale = scales.y;
+        ctx.save();
+        ctx.font = `700 13px ${Chart.defaults.font.family}`;
+        ctx.fillStyle = '#000';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        yScale.ticks.forEach((tick, i) => {
+          if (!Number.isInteger(tick.value)) return;
+          // Empty state: don't render negative placeholder ticks (matches the
+          // y-axis callback), so the "No Data" view shows no stray numbers.
+          if (!hasData && tick.value < 0) return;
+          ctx.fillText(String(tick.value), 0, yScale.getPixelForTick(i));
         });
         ctx.restore();
       },
@@ -695,10 +815,10 @@ export default async function decorate(block) {
               display: false,
             },
             ticks: {
-              maxRotation: 45,
-              minRotation: 0,
+              maxRotation: (isMobileViewport || isTabletViewport) ? 50 : 45,
+              minRotation: (isMobileViewport || isTabletViewport) ? 50 : 0,
               // Mobile/tablet: blank labels outside our indices via callback; else autoSkip.
-              autoSkip: !customTickIndices && !sameMonthDesktop,
+              autoSkip: !customTickIndices && !sameMonthNoSkip,
               autoSkipPadding: 10,
               callback: (value) => (
                 customTickIndices && !customTickIndices.has(value) ? null : labels[value]
@@ -713,14 +833,19 @@ export default async function decorate(block) {
             grid: {
               display: true,
               color: 'rgba(0,0,0,0.08)',
+              tickLength: 22,
+              tickColor: 'transparent',
             },
             border: {
               display: hasData,
             },
             ticks: {
               stepSize: 1,
+              padding: 0,
               font: { size: 13, weight: '700' },
-              color: '#000',
+              // Labels are hidden here and redrawn flush-left by the pointGrid
+              // plugin; transparent keeps their reserved width (and the plot gap).
+              color: 'transparent',
               callback: (value) => {
                 if (!hasData && value < 0) return null;
                 return Number.isInteger(value) ? value : null;
@@ -977,6 +1102,7 @@ export default async function decorate(block) {
     if (goButton) {
       goButton.addEventListener('click', async () => {
         if (state.loading) return;
+        state.hasSearched = true;
         await fetchAndRenderChart();
         render({ redrawChart: true });
       });
@@ -1130,9 +1256,8 @@ export default async function decorate(block) {
       state.to.viewYear = year;
       state.to.viewMonth = month;
 
-      // Auto-trigger the GO action so the chart is populated on load,
-      // instead of requiring the user to click GO first.
-      await fetchAndRenderChart();
+      // No auto-generate: the chart stays in its empty "No Data" state until the
+      // user picks a range and clicks GO.
     } finally {
       state.loading = false;
       render({ redrawChart: true });

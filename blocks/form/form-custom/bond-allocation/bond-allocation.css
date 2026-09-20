@@ -339,27 +339,23 @@
 
   /* Stack buttons only on phones; tablets keep the side-by-side base layout */
   @media (width < 47.5rem) {
-    & .form form .field-bond-allocation-review fieldset.field-button-panel {
+    & .form form :is(.field-bond-allocation-review, .field-bond-allocation-notfound) fieldset.field-button-panel {
       flex-direction: column;
       align-items: stretch;
       gap: 0.75rem;
-    }
 
-    & .form form .field-bond-allocation-review fieldset.field-button-panel .button-wrapper,
-    & .form form .field-bond-allocation-review fieldset.field-button-panel .submit-wrapper {
-      width: 100%;
-      max-width: 100%;
-    }
+      & .button-wrapper,
+      & .submit-wrapper,
+      & .button {
+        width: 100%;
+        max-width: 100%;
+      }
 
-    & .form form .field-bond-allocation-review fieldset.field-button-panel .button {
-      width: 100%;
-      max-width: 100%;
-    }
-
-    /* Primary/details button first on mobile */
-    & .form form .field-bond-allocation-review fieldset.field-button-panel .button-wrapper:has(.button.primary),
-    & .form form .field-bond-allocation-review fieldset.field-button-panel .submit-wrapper {
-      order: -1;
+      /* Primary/details button first on mobile */
+      & .submit-wrapper,
+      & .button-wrapper:has(.button.primary) {
+        order: -1;
+      }
     }
   }
 

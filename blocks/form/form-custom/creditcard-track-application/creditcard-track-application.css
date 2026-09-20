@@ -10,6 +10,7 @@
 
   /* font size */
   --bbl-form-font-size-6: 0.375rem;                /* 6px */
+  --bbl-form-font-size-14: 0.875rem;               /* 14px */
   --bbl-form-font-size-21: 1.3125rem;              /* 21px */
 
   /* font weight */
@@ -672,11 +673,11 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         }
 
         & > .cc-panel-item-timeline-caption p {
-          font-size: var(--bbl-text-small-size);
+          font-size: var(--bbl-form-font-size-14);
           line-height: var(--bbl-text-small-line-height);
           color: var(--bbl-color-grey-28);
           font-weight: var(--bbl-text-small-weight);
-          padding-right:0.75rem;
+          padding-left: 0.375rem;
         }
 
         & > .cc-panel-item-timeline-muted p {
@@ -802,7 +803,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & > .cc-panel-item-timeline-status {
           top: calc(var(--timeline-height) * 0.23);
-          left: 16%;
+          left: 14%;
         }
 
         & > .cc-panel-item-timeline-message {
@@ -813,7 +814,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & > .cc-panel-item-timeline-caption {
           top: calc(var(--timeline-height) * 0.63);
-          left: 44%;
+          left: auto;
+          right: 2.0625rem;
           width: min(13.75rem, 58%);
           max-width: none;
         }
@@ -856,7 +858,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & > .cc-panel-item-timeline-status {
           top: calc(var(--timeline-height) * 0.07);
-          left: 8%;
+          left: 7%;
         }
 
         & > .cc-panel-item-timeline-message {
@@ -867,7 +869,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & > .cc-panel-item-timeline-caption {
           top: calc(var(--timeline-height) * 0.79);
-          left: 38%;
+          left: auto;
+          right: 2.0625rem;
           width: min(13.75rem, 58%);
           max-width: none;
         }
@@ -931,7 +934,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       }
 
       & > .cc-panel-item-timeline-message.cc-panel-item-timeline-message p {
-        font-size: 1.25rem;
+        font-size: 1.1875rem;
         line-height: 1.5rem;
       }
     }
@@ -976,6 +979,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     
     & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .plain-text-wrapper p {
         font-size: var(--bbl-font-size-h4-mobile);
+    }
+
+    & .form form fieldset.panel-wrapper.field-wrapper.cc-app-notfound > .cc-panel-item-timeline-caption p {
+      padding-left: 1.1875rem;
     }
   }
 
@@ -1039,16 +1046,25 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           left: 44%;
           width: 12.5rem;
         }
+
+        & > .cc-panel-item-timeline-caption p {
+          padding-left: 0.375rem;
+        }
       }
 
       &:is(.cc-app-denied, .cc-app-cancel, .cc-app-pending, .cc-app-incomplete, .cc-app-callback) {
+        & > .cc-panel-item-timeline-status {
+          left: 16%;
+        }
+
         & > .cc-panel-item-timeline-message {
           left: 16.2%;
           width: 75%;
         }
 
         & > .cc-panel-item-timeline-caption {
-          left: 44%;
+          left: auto;
+          right: 2.0625rem;
           width: 13.75rem;
         }
 
@@ -1058,14 +1074,23 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       }
 
       &.cc-app-notfound {
+        & > .cc-panel-item-timeline-status {
+          left: 8%;
+        }
+
         & > .cc-panel-item-timeline-message {
           left: 8%;
           width: 82%;
         }
 
         & > .cc-panel-item-timeline-caption {
-          left: 46%;
+          left: auto;
+          right: 2.0625rem;
           width: 13.75rem;
+        }
+
+        & > .cc-panel-item-timeline-caption p {
+          padding-left: 0;
         }
       }
     }

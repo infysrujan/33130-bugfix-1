@@ -12,6 +12,7 @@
 .section .carousel-video-wrapper.content {
   box-sizing: border-box;
   padding-inline: 1rem;
+  padding-bottom: 1.875rem;
 }
 
 /* ── Block positioning context ───────────────────────────────────────────── */
@@ -255,6 +256,7 @@
   .section .carousel-video-wrapper.content {
     box-sizing: content-box;
     padding-inline: 0;
+    padding-bottom: 0;
   }
 
   .carousel-video .cv-main-player {
