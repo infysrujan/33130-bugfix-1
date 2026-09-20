@@ -32,13 +32,22 @@ const ICON_BASE = '/icons/saving-plan';
 const ICONS_CACHE = {};
 
 async function loadIcons() {
-  const names = ['chevron-down', 'check'];
-  await Promise.all(names.map(async (name) => {
-    try {
-      const resp = await fetch(`${ICON_BASE}/${name}.svg`);
-      if (resp.ok) ICONS_CACHE[name] = await resp.text();
-    } catch { /* empty */ }
-  }));
+  const names = ['chevron-down', 'check', 'legend-dot-result'];
+  const ownNames = ['download'];
+  await Promise.all([
+    ...names.map(async (name) => {
+      try {
+        const resp = await fetch(`${ICON_BASE}/${name}.svg`);
+        if (resp.ok) ICONS_CACHE[name] = await resp.text();
+      } catch { /* empty */ }
+    }),
+    ...ownNames.map(async (name) => {
+      try {
+        const resp = await fetch(`/icons/bwealth-series/${name}.svg`);
+        if (resp.ok) ICONS_CACHE[name] = await resp.text();
+      } catch { /* empty */ }
+    }),
+  ]);
 }
 
 function getIcon(name) {
@@ -810,7 +819,10 @@ function buildShellMarkup(data) {
           </div>
 
           <div class="bwealth-series-inflation">
-            <input type="checkbox" id="bws-include-inflation" class="bwealth-series-checkbox" />
+            <span class="bwealth-series-checkbox-wrap">
+              <input type="checkbox" id="bws-include-inflation" class="bwealth-series-checkbox" />
+              <span class="bwealth-series-checkbox-check" aria-hidden="true">${getIcon('check')}</span>
+            </span>
             <label for="bws-include-inflation" data-inflation-label></label>
           </div>
 
@@ -836,7 +848,7 @@ function buildShellMarkup(data) {
 
       <section class="bwealth-series-results" hidden>
         <div class="bwealth-series-chart-wrap">
-          ${buildChartLegend(results.graph, false)}
+          ${buildChartLegend(results.graph, false, getIcon)}
           <div class="bwealth-series-chart-canvas-wrap">
             <canvas class="bwealth-series-chart" aria-label="${escapeHtml(results.graph.yAxisLabel)}"></canvas>
           </div>
@@ -905,9 +917,7 @@ function buildFundCard(fund, labels) {
           <a class="bwealth-series-fund-factsheet${factSheetHref ? '' : ' is-disabled'}"
              href="${escapeHtml(factSheetHref || '#')}" target="_blank" rel="noopener noreferrer">
             <span>${escapeHtml(labels.factSheet)}</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <span class="bwealth-series-fund-factsheet-icon" aria-hidden="true">${getIcon('download')}</span>
           </a>
           <button type="button" class="button-m primary" data-action="fund-detail">
             ${escapeHtml(labels.viewDetails)}
@@ -1123,7 +1133,7 @@ function renderResult(state, calculation) {
   const futureText = fillTemplate(texts.common.toHaveMoney, {
     money: `<strong>${escapeHtml(formatNumber(calculation.FutureValue))}</strong>`,
     unit: escapeHtml(texts.common.unit),
-    years: `<strong>${escapeHtml(String(inputs.yearsToSave))}</strong>`,
+    years: `${escapeHtml(String(inputs.yearsToSave))}`,
   });
   const futureEl = root.querySelector('[data-result="future"]');
   if (futureEl) futureEl.innerHTML = futureText;
