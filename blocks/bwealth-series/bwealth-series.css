@@ -314,17 +314,36 @@
   pointer-events: auto;
 }
 
+.bwealth-series-field-dropdown.drop-up .bwealth-series-dropdown-panel {
+  top: auto;
+  bottom: calc(100% + 0.25rem);
+  transform: translateY(0.375rem);
+}
+
 .bwealth-series-dropdown-option {
-  padding: 0.625rem 0.875rem;
+  position: relative;
+  padding: 0.375rem 0.5rem 0.375rem 2rem;
   cursor: pointer;
   font-size: var(--bbl-body-b2-size);
   color: var(--bbl-text-primary);
-  line-height: 1.4;
   transition: background-color 120ms ease;
 }
 
-.bwealth-series-dropdown-option:hover,
-.bwealth-series-dropdown-option.is-selected {
+.bwealth-series-dropdown-option-check {
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  color: var(--bbl-color-grey-100);
+  font-size: 0.6rem;
+  visibility: hidden;
+  transform: translateY(-40%);
+}
+
+.bwealth-series-dropdown-option.is-selected .bwealth-series-dropdown-option-check {
+  visibility: visible;
+}
+
+.bwealth-series-dropdown-option:hover {
   background: var(--bbl-bg-brand-light);
 }
 

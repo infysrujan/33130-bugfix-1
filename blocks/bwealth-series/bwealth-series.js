@@ -716,7 +716,8 @@ function buildDropdown(name, label, options, placeholder) {
   const optionsMarkup = options
     .map((opt) => `
       <li class="bwealth-series-dropdown-option" role="option" data-value="${escapeHtml(opt.value)}" tabindex="-1">
-        ${escapeHtml(opt.label)}
+        <span class="bwealth-series-dropdown-option-check icon-check" aria-hidden="true"></span>
+        <span class="bwealth-series-dropdown-option-label">${escapeHtml(opt.label)}</span>
       </li>`)
     .join('');
   // โครงเดียวกับ buildDropdownField ของ saving-plan — ไม่มี label ลอยข้างบน
@@ -1451,6 +1452,14 @@ function attachDropdown(state, name, onSelect) {
     e.stopPropagation();
     const open = wrap.classList.toggle('is-open');
     trigger.setAttribute('aria-expanded', String(open));
+    if (open) {
+      const { bottom, top } = trigger.getBoundingClientRect();
+      const panelHeight = panel.scrollHeight;
+      const spaceBelow = window.innerHeight - bottom;
+      const spaceAbove = top;
+      const dropUp = spaceBelow < panelHeight && spaceAbove > spaceBelow;
+      wrap.classList.toggle('drop-up', dropUp);
+    }
   });
 
   panel.addEventListener('click', (e) => {
