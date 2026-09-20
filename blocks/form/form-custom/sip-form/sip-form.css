@@ -7,7 +7,7 @@
 .sip-form main .form-container.custom-forms .form h4 {
   font-size: var(--bbl-form-font-size-14);
   margin: 0;
-  padding: 0 0 var(--bbl-form-padding-70) 0;
+  padding: 0 0 var(--bbl-form-padding-20) 0;
   color: var(--bbl-color-grey-90);
 }
 
@@ -148,9 +148,11 @@
         margin-bottom: 0;
     }
 
+    & :is(.field-wrapper, .radio-group-wrapper).col-4,
     & :is(.field-wrapper, .radio-group-wrapper).col-5,
     & :is(.field-wrapper, .radio-group-wrapper).col-6,
-    & :is(.field-wrapper, .radio-group-wrapper).col-7 {
+    & :is(.field-wrapper, .radio-group-wrapper).col-7,
+    & :is(.field-wrapper, .radio-group-wrapper).col-8 {
       grid-column: span 12;
     }
 
@@ -192,6 +194,11 @@
         }
       }
 
+      & .field-wrapper.col-4 {
+        grid-column: span 4;
+        width: auto;
+      }
+
       & .field-wrapper.col-5 {
         grid-column: span 5;
         width: auto;
@@ -204,6 +211,11 @@
 
       & .field-wrapper.col-7 {
         grid-column: span 7;
+        width: auto;
+      }
+
+      & .field-wrapper.col-8 {
+        grid-column: span 8;
         width: auto;
       }
 
@@ -250,3 +262,4 @@
       margin: 0;
   }
 }
+ 

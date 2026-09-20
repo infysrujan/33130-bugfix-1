@@ -207,7 +207,7 @@
   flex-direction: column;
   justify-content: center;
   gap: var(--bbl-space-100);
-
+  
   /* padding: var(--bbl-space-200) var(--bbl-space-100); */
   min-height: 7rem;
   font-size: var(--bbl-font-size-b2);

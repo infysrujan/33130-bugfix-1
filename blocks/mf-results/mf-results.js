@@ -64,16 +64,25 @@ function readUrl(row) {
 // ── Data fetching ──────────────────────────────────────────────────────────────
 
 /**
+ * The single combined filtering-matrix sheet now carries both languages in one
+ * file (columns "Fund Name (EN)" / "Fund Name (TH)"), so the fund-name column is
+ * picked by the current locale instead of fetching separate en/th sheets.
+ */
+function fundNameKey() {
+  return getLang() === 'th' ? 'Fund Name (TH)' : 'Fund Name (EN)';
+}
+
+/**
  * Fetch the MF filtering matrix sheet.
- * Config key: mf-suggestor-data (→ mfSuggestorData after toCamelCase)
- * Expected columns: Fund Name | Fund Risk Level | Fund Has Exchange Rate Risk
+ * Config key: mf-suggestor (→ mfSuggestor after toCamelCase) — one combined
+ * sheet for both languages.
+ * Expected columns: Fund Name (EN) | Fund Name (TH) | Fund Risk Level
+ *   | Fund Has Exchange Rate Risk | Is an RMF/SSF/Thai ESG/Thai ESGX Fund
  */
 async function loadMatrix() {
   try {
     const configs = await fetchConfigs();
-    const lang = getLang();
-    const langKey = `mfSuggestorData${lang.charAt(0).toUpperCase() + lang.slice(1)}`;
-    const url = configs[langKey] || configs.mfSuggestorDataEn;
+    const url = configs.mfSuggestor;
     if (!url) return [];
     const json = await fetchGet(url, { throwOnError: false });
     return (json?.data || []).map(normalizeRow);
@@ -184,9 +193,10 @@ function matchesRow(row, { riskLevel, fxRisk, taxBenefit }) {
  * Extract the fund names from matrix rows matched by the filters.
  */
 function getMatchedFundNames(matrix, answers) {
+  const nameKey = fundNameKey();
   return matrix
     .filter((row) => matchesRow(row, answers))
-    .map((row) => norm(row['Fund Name'] || ''))
+    .map((row) => norm(row[nameKey] || ''))
     .filter(Boolean);
 }
 
@@ -199,6 +209,27 @@ function filterFundsByMatrix(funds, matchedNames) {
   return funds.filter((fund) => {
     const name = norm(fund.FundName || '');
     return matchedNames.some((n) => name === n);
+  });
+}
+
+/**
+ * Sort funds to match the row order they're authored in the mf-suggestor
+ * filtering-matrix sheet (top-to-bottom, drag-reorderable there) — mirrors
+ * sortBySheetOrder in credit-card-results.js, keyed on Fund Name instead of
+ * Product Name.
+ */
+function sortBySheetOrder(funds, matrix) {
+  const nameKey = fundNameKey();
+  const orderMap = {};
+  matrix.forEach((row, index) => {
+    const name = norm(row[nameKey] || '');
+    if (name && !(name in orderMap)) orderMap[name] = index;
+  });
+
+  return [...funds].sort((a, b) => {
+    const orderA = orderMap[norm(a.FundName || '')] ?? Number.MAX_SAFE_INTEGER;
+    const orderB = orderMap[norm(b.FundName || '')] ?? Number.MAX_SAFE_INTEGER;
+    return orderA - orderB;
   });
 }
 
@@ -243,7 +274,7 @@ function buildCardBlock(funds, doc, labels) {
     // Image
     if (imgSrc) {
       const imageWrapper = doc.createElement('div');
-      imageWrapper.className = 'cards-list-image cards-list-image-default';
+      imageWrapper.className = 'cards-list-image cards-list-image-full';
       const img = doc.createElement('img');
       img.src = imgSrc;
       img.alt = name;
@@ -477,7 +508,7 @@ export default async function decorate(block) {
     renderCards([]);
   } else {
     const matchedNames = getMatchedFundNames(matrix, answers);
-    const filteredFunds = filterFundsByMatrix(allFunds, matchedNames);
+    const filteredFunds = sortBySheetOrder(filterFundsByMatrix(allFunds, matchedNames), matrix);
     renderCards(filteredFunds);
   }
 

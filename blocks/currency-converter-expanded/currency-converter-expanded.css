@@ -32,7 +32,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
-  padding: 1.25rem 0;
+  padding: 1.25rem 0 1.875rem;
   margin: auto;
   max-width: 22.5rem;
 }
@@ -380,6 +380,10 @@
   padding-bottom: 0;
 }
 
+.section.currency-converter-expanded-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+  padding-bottom: 1.875rem;
+}
+
 /* Disclaimer text */
 .currency-converter-expanded .converter-expanded-disclaimer {
   margin: 0;
@@ -429,6 +433,11 @@
 .currency-converter-expanded .converter-expanded-result-content p:last-child,
 .currency-converter-expanded .converter-expanded-disclaimer p:last-child {
   margin-bottom: 0;
+}
+
+/* Print-only clone of the disclaimer (see currency-converter-expanded.js); hidden on screen */
+.converter-expanded-disclaimer-print {
+  display: none;
 }
 
 
@@ -495,4 +504,49 @@
   }
 }
 
+@media (width > 64rem) {
+  .section.currency-converter-expanded-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    width: min-content;
+    margin-inline: auto;
+  }
 
+  :lang(th) .section.currency-converter-expanded-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    width: fit-content;
+    max-width: 15rem;
+  }
+}
+
+/* Print layout: show the disclaimer beside the title instead of below the form */
+@media print {
+  .currency-converter-expanded .converter-expanded-disclaimer {
+    display: none;
+  }
+
+  .section:has(> .currency-converter-expanded) > .default-content-wrapper:has(.converter-expanded-disclaimer-print) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 1.875rem;
+  }
+
+  .section:has(> .currency-converter-expanded) > .default-content-wrapper:has(.converter-expanded-disclaimer-print) > :not(.converter-expanded-disclaimer-print) {
+    grid-column: 1;
+  }
+
+  .converter-expanded-disclaimer-print {
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    text-align: center;
+    font-weight: var(--bbl-font-weight-regular);
+  }
+
+  .converter-expanded-disclaimer-print p {
+    margin: 0 0 0.5rem;
+  }
+
+  .converter-expanded-disclaimer-print p:last-child {
+    margin-bottom: 0;
+  }
+}

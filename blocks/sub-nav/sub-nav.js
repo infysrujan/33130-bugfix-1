@@ -1,4 +1,5 @@
 import { getMetadata } from '../../scripts/aem.js';
+import { getLang } from '../../scripts/scripts.js';
 import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import { getParentPageUrl } from '../breadcrumb/breadcrumb.js';
 
@@ -136,12 +137,25 @@ export default function decorate(block) {
   const wrapper = document.createElement('div');
   wrapper.className = 'wrapper content';
 
-  const backButton = document.createElement('button');
-  backButton.type = 'button';
+  const backWrapper = document.createElement('span');
+  backWrapper.className = 'sub-nav-back-wrapper';
+
+  const defaultHref = `/${getLang()}`;
+  const backButton = document.createElement('a');
   backButton.className = 'sub-nav-back';
+  backButton.href = defaultHref;
   backButton.setAttribute('aria-label', 'Go back to previous page');
   backButton.innerHTML = '<span class="sub-nav-back-circle icon-dropdown"></span>';
-  backButton.addEventListener('click', async () => {
+  backWrapper.appendChild(backButton);
+
+  getParentPageUrl().then((parentUrl) => {
+    if (parentUrl) {
+      backButton.href = parentUrl;
+    }
+  });
+
+  backButton.addEventListener('click', async (e) => {
+    e.preventDefault();
     const parentUrl = await getParentPageUrl();
     if (parentUrl) {
       window.location.href = parentUrl;
@@ -176,9 +190,9 @@ export default function decorate(block) {
         tabList.appendChild(btn);
       });
       bindLocateUsContainersToTabs(tabButtons);
-      wrapper.append(backButton, tabList);
+      wrapper.append(backWrapper, tabList);
     } else {
-      wrapper.append(backButton);
+      wrapper.append(backWrapper);
     }
   } else if (hasDropdownClass) {
     const sections = collectSections();
@@ -216,13 +230,13 @@ export default function decorate(block) {
         });
       });
 
-      wrapper.append(backButton, subNavSelect);
+      wrapper.append(backWrapper, subNavSelect);
     } else {
-      wrapper.append(backButton);
+      wrapper.append(backWrapper);
     }
   } else {
     // only back button on the left, no dropdown on the right
-    wrapper.append(backButton);
+    wrapper.append(backWrapper);
   }
 
   block.textContent = '';

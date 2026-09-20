@@ -1,3 +1,8 @@
+:root {
+  /* font weight */
+  --bbl-form-font-weight-regular: 400;
+}
+
 /* Bond Allocation — scoped via .field-bond-allocation-review (Bond_Allocation_TH) */
 .bond-allocation-form main .section.form-container.custom-forms {
   .field-heading, .field-heading2 {
@@ -182,7 +187,7 @@
     border-bottom: 2px solid var(--bbl-color-gray-300);
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-b1-desktop);
-    font-weight: var(--bbl-form-font-weight-bold);
+    font-weight: var(--bbl-form-font-weight-regular);
     padding: 0.9375rem;
     min-height: 2.75rem;
     box-sizing: border-box;
@@ -334,27 +339,23 @@
 
   /* Stack buttons only on phones; tablets keep the side-by-side base layout */
   @media (width < 47.5rem) {
-    & .form form .field-bond-allocation-review fieldset.field-button-panel {
+    & .form form :is(.field-bond-allocation-review, .field-bond-allocation-notfound) fieldset.field-button-panel {
       flex-direction: column;
       align-items: stretch;
       gap: 0.75rem;
-    }
 
-    & .form form .field-bond-allocation-review fieldset.field-button-panel .button-wrapper,
-    & .form form .field-bond-allocation-review fieldset.field-button-panel .submit-wrapper {
-      width: 100%;
-      max-width: 100%;
-    }
+      & .button-wrapper,
+      & .submit-wrapper,
+      & .button {
+        width: 100%;
+        max-width: 100%;
+      }
 
-    & .form form .field-bond-allocation-review fieldset.field-button-panel .button {
-      width: 100%;
-      max-width: 100%;
-    }
-
-    /* Primary/details button first on mobile */
-    & .form form .field-bond-allocation-review fieldset.field-button-panel .button-wrapper:has(.button.primary),
-    & .form form .field-bond-allocation-review fieldset.field-button-panel .submit-wrapper {
-      order: -1;
+      /* Primary/details button first on mobile */
+      & .submit-wrapper,
+      & .button-wrapper:has(.button.primary) {
+        order: -1;
+      }
     }
   }
 
@@ -362,7 +363,11 @@
   & .form form .field-bond-allocation-notfound .plain-text-wrapper p:last-child p {
     text-align: left;
   }
-  
+
+  & .form form .field-subheading.plain-text-wrapper p:last-child p {
+    text-align: center;
+  }
+
   & .form form .field-loadingtext + fieldset.panel-wrapper.field-button-panel.field-wrapper {
     justify-content: space-between;
     padding: 0 1.375rem;

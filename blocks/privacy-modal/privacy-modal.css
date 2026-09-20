@@ -360,6 +360,7 @@
   ol ol>li::marker {
     content: counters(item, ".");
     counter-increment: item;
+    font-weight: normal;
   }
 
   /* Level 3: "(1)" instead of continuing the dotted pattern */
