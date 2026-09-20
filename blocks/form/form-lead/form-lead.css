@@ -721,6 +721,11 @@ input[name='BBLAdvancedCheckbox'] {
   appearance: none;
 }
 
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:disabled,
+input[name='BBLAdvancedCheckbox']:disabled {
+  cursor: default;
+}
+
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:checked,
 input[name='BBLAdvancedCheckbox']:checked {
   background-color: var(--bbl-color-blue-105);
