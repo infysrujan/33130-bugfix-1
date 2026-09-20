@@ -16,7 +16,7 @@ function getFullName(firstname, lastname) {
  * @param {scope} globals
  */
 function submitFormArrayToString(globals) {
-  const data = globals.functions.exportData();
+  const data = replaceUndefined(globals.functions.exportData());
   Object.keys(data).forEach((key) => {
     if (Array.isArray(data[key])) {
       data[key] = data[key].join(',');
@@ -155,7 +155,7 @@ async function addCsrfToken(payload) {
 
   if (token) {
     return {
-      body: payload,
+      body: replaceUndefined(payload),
       headers: {
         'X-CSRF-Token': token,
       },
@@ -1189,6 +1189,30 @@ function formatNumberWithCommas(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
+/**
+ * Recursively replaces undefined values with null in an object
+ * @param {any} value - The value to process
+ * @returns {any} - Value with undefined replaced by null
+ */
+function replaceUndefined(value) {
+  if (value === undefined) return '';            // use null if the API wants null
+  if (Array.isArray(value)) return value.map(replaceUndefined);
+  if (value !== null && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([k, v]) => [k, replaceUndefined(v)]),
+    );
+  }
+  return value;
+};
+
+/**
+ * @name submitSanitized
+ * @param {scope} globals
+ */
+function submitSanitized(globals) {
+  const data = replaceUndefined(globals.functions.exportData());
+  globals.functions.submitForm(data, true, 'application/json');
+}
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -1227,4 +1251,5 @@ export {
   validateMaxCheckbox,
   replaceother,
   formatNumberWithCommas,
+  submitSanitized,
 };

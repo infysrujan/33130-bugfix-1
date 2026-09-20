@@ -3104,27 +3104,6 @@ const urlEncoded = (data) => {
     });
     return formData;
 };
-/**
- * Recursively replaces undefined values with null in an object
- * @param {any} value - The value to process
- * @returns {any} - Value with undefined replaced by null
- */
-const replaceUndefinedWithNull = (value) => {
-  if (value === undefined) {
-    return "";
-  }
-  if (Array.isArray(value)) {
-    return value.map(replaceUndefinedWithNull);
-  }
-  if (value !== null && typeof value === 'object') {
-    const result = {};
-    for (const [key, val] of Object.entries(value)) {
-      result[key] = replaceUndefinedWithNull(val);
-    }
-    return result;
-  }
-  return value;
-}
 
 const submit = async (context, success, error, submitAs = 'multipart/form-data', input_data = null, action = '', metadata = null) => {
     const endpoint = action || context.form.action;
@@ -3136,7 +3115,7 @@ const submit = async (context, success, error, submitAs = 'multipart/form-data',
     let submitContentType = submitAs;
 
     // Exclude "_exclude" fields before hashing so the hash matches the payload actually sent
-    const filteredData = replaceUndefinedWithNull(filterExcludeFields(data));
+    const filteredData = filterExcludeFields(data);
     const payloadHash = await generatePayloadHash(filteredData);
 
     // Structure: data contains payload and payload-hash
