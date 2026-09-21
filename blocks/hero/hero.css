@@ -762,6 +762,12 @@
     max-width: 100%;
   }
 
+
+  :is(.hero-banner-simple) .hero-banner-content-inner-text:has(br),
+  :is(.hero-banner-simple) .hero-banner-content-inner-text:has(br) p {
+    -webkit-line-clamp: none;
+  }
+
   /* .hero-banner-content-group .button-container a {
     margin-bottom: 4.0625rem;
   } */
