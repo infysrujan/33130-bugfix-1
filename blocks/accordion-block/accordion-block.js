@@ -455,10 +455,6 @@ function openAccordionPrintWindow(block) {
  * @returns {{ expandBtn: HTMLButtonElement | null, printBtn: HTMLButtonElement | null }}
  */
 function renderAccordionToolbar(container, baseId, { showExpandAll, showPrint }) {
-  if (!showExpandAll && !showPrint) {
-    return { expandBtn: null, printBtn: null };
-  }
-
   const toolbar = document.createElement('div');
   toolbar.className = 'accordion-block-toolbar';
   toolbar.setAttribute('role', 'toolbar');
