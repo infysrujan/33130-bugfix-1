@@ -299,7 +299,6 @@
         text-align: center;
     }
 
-
     /* Modal text */
     & .modal .plain-text-wrapper p {
         font-family: var(--bbl-font-family-primary);
