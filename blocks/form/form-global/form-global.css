@@ -599,3 +599,46 @@ main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.
     line-height: 1.5625rem;
   }
 }
+
+/* Date-Format-Change: description text becomes placeholder, calendar icon is the only trigger */
+main .section.form-container .form form .date-wrapper.date-format-change-active .date-format-change-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+main .section.form-container .form form .date-wrapper.date-format-change-active .date-format-change-field input {
+  pointer-events: none;
+  padding-right: 2.75rem;
+  flex: 1;
+}
+
+main .section.form-container .form form .date-wrapper.date-format-change-active .date-format-change-icon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: var(--bbl-color-grey-85, #555);
+  line-height: 1;
+}
+
+main .section.form-container .form form .date-wrapper.date-format-change-active .date-format-change-icon:focus-visible {
+  outline: 0.125rem solid var(--bbl-color-blue-90, #0070d2);
+  outline-offset: 0.125rem;
+  border-radius: 0.25rem;
+}
+
+/* Hide description initially; show it only when validation error is present */
+main .section.form-container .form form .date-wrapper.date-format-change-active .field-description {
+  display: none;
+}
+
+main .section.form-container .form form .date-wrapper.date-format-change-active.field-invalid .field-description {
+  display: block;
+}
