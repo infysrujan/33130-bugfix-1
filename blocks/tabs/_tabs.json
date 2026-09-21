@@ -319,6 +319,10 @@
               "name": "Section type",
               "children": [
                 {
+                  "name": "No Style",
+                  "value": "no-style"
+                },
+                {
                   "name": "Central Aligned",
                   "value": "central-aligned"
                 },

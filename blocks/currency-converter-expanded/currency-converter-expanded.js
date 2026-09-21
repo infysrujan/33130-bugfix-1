@@ -343,6 +343,17 @@ export default async function decorate(block) {
   const converter = mainContainer.querySelector('.converter');
   const calculateBtn = mainContainer.querySelector('#convert-btn');
 
+  // Print-only clone of the disclaimer, placed beside the title so it doesn't
+  // affect the on-screen layout (only shown/positioned via @media print)
+  const disclaimerEl = mainContainer.querySelector('.converter-expanded-disclaimer');
+  const sectionTitleWrapper = block.closest('.section')
+    ?.querySelector(':scope > .default-content-wrapper');
+  if (sectionTitleWrapper && disclaimerEl) {
+    const printDisclaimer = disclaimerEl.cloneNode(true);
+    printDisclaimer.classList.add('converter-expanded-disclaimer-print');
+    sectionTitleWrapper.append(printDisclaimer);
+  }
+
   // Reference to the amount group's selected-currency label, set once the amount group is created
   let selectedCurrencyEl = null;
 

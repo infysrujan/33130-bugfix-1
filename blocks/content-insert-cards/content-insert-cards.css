@@ -224,6 +224,10 @@
 }
 
 @media (width > 64rem) {
+.content-insert-cards-container {
+  max-width: var(--bbl-layout-content-max-width-desktop);
+}
+
 .content-insert-cards .text-default {
   font-size: var(--bbl-body-b1-size);
   line-height: 1.375;

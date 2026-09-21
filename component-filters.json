@@ -94,7 +94,8 @@
       "mf-questionnaire",
       "cc-campaign",
       "header-banner-slide",
-      "custom-button"
+      "custom-button",
+      "debit-prepaid"
     ]
   },
   {
@@ -352,7 +353,8 @@
       "forms-menu-card",
       "forms-card-list",
       "forms-card-list-item",
-      "bbl-wizard"
+      "bbl-wizard",
+      "calendar"
     ]
   },
   {

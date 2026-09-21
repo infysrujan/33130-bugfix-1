@@ -144,3 +144,11 @@
     flex: none;
   }
 }
+
+/* Desktop: width >= 1920px */
+
+@media (width >= 120rem) {
+  .menu-cards .tips-insight-quick-access.four-cards {
+    grid-template-columns: repeat(4, minmax(16rem, 1fr));
+  }
+}

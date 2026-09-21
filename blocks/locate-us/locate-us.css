@@ -1117,17 +1117,20 @@
 
   .locate-us .locate-us-map {
     height: 100%;
-    width: 60%;
+    width: 66.6667%;
+    padding-right: 0.625rem;
+    background-color: var(--bbl-color-blue-145);
   }
 
   .locate-us .locate-us-map-sidebar {
-    width: 40%;
+    width: 33.3333%;
     box-sizing: border-box;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 0;
-    padding: var(--bbl-space-250);
+    padding: 0.625rem;
+    padding-left: 0;
     background-color: var(--bbl-color-blue-145);
   }
 
@@ -1323,7 +1326,7 @@
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-cards {
-    display: grid;
+    display: flex;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--bbl-space-250);
     width: auto;
@@ -1376,10 +1379,13 @@
 
   .locate-us .locate-us-map {
     width: 75%;
+    padding-right: var(--bbl-space-250);
   }
 
   .locate-us .locate-us-map-sidebar {
     width: 25%;
+    padding: var(--bbl-space-250);
+    padding-left: 0;
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-cards {
@@ -1417,7 +1423,7 @@
     padding-left: 1.75rem;
     padding-right: 1.75rem;
     margin: auto;
-    margin-left: 25%;
+    margin-left: 23.5%;
     margin-bottom: 1.875rem;
     width: calc(50% - 2.09rem);
   }
@@ -1538,13 +1544,15 @@
 
   .locate-us.block .content>*:not(.locate-us-filter-bar) {
     max-width: var(--bbl-layout-content-max-width-1920);
-    margin: auto;
+    margin-inline: auto;
   }
 
   .locate-us .locate-us-filter-bar {
     padding-left: 2rem;
     padding-right: 2rem;
     width: calc(50% - 2.8rem);
+    max-width: var(--bbl-layout-content-max-width-1920);
+    margin-left: auto;
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {

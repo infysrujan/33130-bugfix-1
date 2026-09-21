@@ -23,4 +23,7 @@ export default function decorateContactUsForm(form) {
   if (!isContactUsForm(form)) return;
   document.body.classList.add('contact-us');
   form.addEventListener('submit', trackContactFormSubmit);
+  form.addEventListener('reset', () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  });
 }
