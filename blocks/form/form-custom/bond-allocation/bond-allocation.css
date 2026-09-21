@@ -264,15 +264,19 @@
     margin-right: auto;
   }
 
-  /* ── Bondholder number: centered inline ── */
+  /* ── Bondholder number: centered inline on desktop/tablet, left-aligned on mobile ── */
   & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper:not(.panel-wrapper) {
     justify-content: center;
     background-color: transparent;
     border: none;
+
+    @media (width < 47.5rem) {
+      justify-content: flex-start;
+    }
   }
 
   & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper > label.field-label {
-    width: 100%;
+    width: auto;
     flex-shrink: 1;
     background-color: transparent;
     border: none;
@@ -280,14 +284,13 @@
     font-size: var(--bbl-font-size-h2-mobile);
     font-weight: var(--bbl-font-weight-regular);
     color: var(--bbl-color-grey-90);
-    padding-right: 0;
+    padding: 0;
     white-space: nowrap;
-    justify-content: right;
   }
 
   & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper > input,
   & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper > p {
-    width: 100%;
+    width: auto;
     flex-shrink: 1;
     background-color: transparent;
     border: none;
