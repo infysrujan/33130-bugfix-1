@@ -16,6 +16,11 @@ const FIELD_BOOST = {
 // Pages that must never show in results (~ ShowPageInSearchResults / BasePage check)
 const EXCLUDED_PATH_PATTERNS = [/\/fragments\//, /\/nav$/, /\/footer$/];
 
+// true  = pages with the most occurrences of the search words come first,
+//         the Sitecore boosted score breaks ties
+// false = pure Sitecore order: boosted score first, occurrences ignored
+const MOST_MATCHES_FIRST = true;
+
 export function normalizeSearchTerm(term = '') {
   return term.trim().replace(/\s+/g, ' ');
 }
@@ -154,14 +159,26 @@ function scoreEntry({ fields }, tokens) {
   ), 0);
 }
 
+/** How many times the search words appear in total, across all fields. */
+function countMatches({ fields }, tokens) {
+  return Object.values(fields).reduce((sum, text) => (
+    sum + tokens.reduce((s, t) => s + (text ? text.split(t).length - 1 : 0), 0)
+  ), 0);
+}
+
 function rankEntries(entries, tokens) {
   const seen = new Set();
 
   return entries
     .map((entry, order) => ({ entry, order, score: scoreEntry(entry, tokens) }))
     .filter(({ entry, score }) => score > 0 && isSearchable(entry))
-    // OrderByDescending(Score); ties keep index order (like Solr)
-    .sort((a, b) => b.score - a.score || a.order - b.order)
+    // count only pages that already matched (keeps it cheap)
+    .map((item) => ({
+      ...item,
+      matches: MOST_MATCHES_FIRST ? countMatches(item.entry, tokens) : 0,
+    }))
+    // most matches -> boosted score (Sitecore) -> index order
+    .sort((a, b) => b.matches - a.matches || b.score - a.score || a.order - b.order)
     // The de-duplication the Sitecore code intended (by ItemID = path)
     .filter(({ entry }) => {
       if (seen.has(entry.path)) return false;
