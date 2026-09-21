@@ -1,21 +1,21 @@
 export default class GoogleReCaptcha {
   id;
- 
+
   name;
- 
+
   config;
- 
+
   formName;
- 
+
   loadPromise;
- 
+
   constructor(config, id, name, formName) {
     this.config = config;
     this.name = name;
     this.id = id;
     this.formName = formName;
   }
- 
+
   #loadScript(url) {
     if (!this.loadPromise) {
       this.loadPromise = new Promise((resolve, reject) => {
@@ -29,7 +29,7 @@ export default class GoogleReCaptcha {
       });
     }
   }
- 
+
   loadCaptcha(form) {
     if (form && this.config.siteKey) {
       // A form can have more than one native submit-type button (e.g. one per
@@ -66,7 +66,7 @@ export default class GoogleReCaptcha {
       alert('Captcha can not be loaded. Captcha configuration in missing.');
     }
   }
- 
+
   async getToken() {
     if (!this.config.siteKey) {
       return null;
