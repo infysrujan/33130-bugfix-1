@@ -736,7 +736,8 @@ function printElement(block) {
     .dynamic-board .db-table {
       width: 100%;
       min-width: 0;
-      table-layout: auto;
+
+      table-layout: fixed;
       border: 0.0625rem solid var(--bbl-color-grey-18);
       border-collapse: collapse;
       font-size: 0.625rem;
@@ -744,10 +745,15 @@ function printElement(block) {
       color: var(--bbl-color-grey-90);
     }
 
-    /* Every cell stays on one line; Name (below) is the sole exception. */
     .dynamic-board .db-table th,
     .dynamic-board .db-table td {
       white-space: nowrap;
+    }
+
+    .dynamic-board .db-table td.db-td-symbol,
+    .dynamic-board .db-table td.db-td-num {
+      white-space: normal;
+      overflow-wrap: break-word;
     }
 
     /* min-width:0 clears the base stylesheet's 12rem floor so Name can wrap. */
@@ -781,8 +787,9 @@ function printElement(block) {
       font-size: 0.625rem;
       font-weight: ${headerFontWeight};
       height: auto;
-      /* Headers may wrap onto 2 lines; tight line-height keeps the row compact. */
+      /* Wraps onto multiple lines; break-word covers labels wider than a fixed column. */
       white-space: normal;
+      overflow-wrap: break-word;
       line-height: 1.15;
       padding: 0.2rem 0.3rem;
       vertical-align: middle;
@@ -846,28 +853,33 @@ function printElement(block) {
       font-weight: 900;
     }
 
+    .dynamic-board .db-table-wrap {
+      overflow: visible;
+      max-height: none;
+    }
+
+    .dynamic-board .db-table thead {
+      display: table-header-group;
+    }
+
+    .dynamic-board .db-table tbody {
+      display: table-row-group;
+    }
+
+    .dynamic-board .db-table-wrap #db-tbody-sel,
+    .dynamic-board .db-table-wrap #db-tbody-all {
+      display: table-row-group;
+      max-height: none;
+      overflow-y: visible;
+    }
+
+    .dynamic-board .db-table-wrap #db-tbody-sel tr,
+    .dynamic-board .db-table-wrap #db-tbody-all tr {
+      display: table-row;
+      width: auto;
+    }
+
     @media print {
-      .dynamic-board .db-table thead {
-        display: table-header-group;
-      }
-
-      .dynamic-board .db-table tbody {
-        display: table-row-group;
-      }
-
-      .dynamic-board .db-table-wrap #db-tbody-sel,
-      .dynamic-board .db-table-wrap #db-tbody-all {
-        display: table-row-group;
-        max-height: none;
-        overflow-y: visible;
-      }
-
-      .dynamic-board .db-table-wrap #db-tbody-sel tr,
-      .dynamic-board .db-table-wrap #db-tbody-all tr {
-        display: table-row;
-        width: auto;
-      }
-
       .dynamic-board .db-table {
         break-inside: auto;
       }
@@ -883,6 +895,7 @@ function printElement(block) {
   <html lang="en">
     <head>
       <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
       <title>${escapeHtml(pageTitle)}</title>
       <link rel="stylesheet" href="/styles/styles.css">
       <link rel="stylesheet" href="/styles/fonts.css">
