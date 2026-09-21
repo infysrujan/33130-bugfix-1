@@ -8,6 +8,8 @@ const MOBILE_MQ = `(width <= ${
   getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-mobile-max').trim()
 })`;
 
+const DESKTOP_MIN_WIDTH = '1025px';
+
 const windowLoaded = document.readyState === 'complete'
   ? Promise.resolve()
   : new Promise((resolve) => { window.addEventListener('load', resolve, { once: true }); });
@@ -77,7 +79,7 @@ function syncHeaderOverlap(activeItem) {
   const header = document.querySelector('header');
   if (!header) return;
   const hasVideo = !!activeItem?.querySelector('.hero-banner-video-wrapper');
-  const isDesktopViewport = window.matchMedia('(min-width: 1025px)').matches;
+  const isDesktopViewport = window.matchMedia(`(min-width: ${DESKTOP_MIN_WIDTH})`).matches;
   header.classList.toggle('is-not-overlapped', hasVideo && !isDesktopViewport);
 }
 
