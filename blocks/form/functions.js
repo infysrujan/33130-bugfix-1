@@ -1208,10 +1208,11 @@ restrictNumberOnlyInputs();
 
 /**
  * Validates that a numeric-range field's value stays within 11–75, live,
- * on every keystroke. Targets fields marked with the `age-range` CSS
- * class on the input or its ancestors. Creates the field's description
- * element if it doesn't already exist, so the error always has
- * somewhere to render even on fields with no authored description.
+ * on typing (input/keyup) and on blur, targeting fields marked with the
+ * `age-range` CSS class on the input or its ancestors. Listening on
+ * multiple events guards against edge cases where a single event type
+ * doesn't fire reliably (e.g. paste, fast typing, or first interaction
+ * right after the field is dynamically inserted into the DOM).
  *
  * @name validateAgeRangeInputs
  * @returns {void}
@@ -1223,17 +1224,7 @@ function validateAgeRangeInputs() {
   const MAX = 75;
   const MESSAGE = 'อายุต้องอยู่ระหว่าง 11-75 ปี';
 
-  document.addEventListener('input', (event) => {
-    const input = event.target;
-    if (!(input instanceof HTMLInputElement)) {
-      return;
-    }
-    const isAgeRange = input.classList.contains('age-range')
-      || input.closest('.age-range') !== null;
-    if (!isAgeRange) {
-      return;
-    }
-
+  const runCheck = (input) => {
     const wrapper = input.closest('.field-wrapper');
     if (!wrapper) return;
 
@@ -1259,6 +1250,19 @@ function validateAgeRangeInputs() {
         description.textContent = '';
       }
     }
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    const isAgeRange = input.classList.contains('age-range')
+      || input.closest('.age-range') !== null;
+    if (!isAgeRange) return;
+    runCheck(input);
+  };
+
+  ['input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
   });
 }
 validateAgeRangeInputs();
