@@ -532,7 +532,7 @@ export default async function decorate(block) {
   const isBbmPage = isBbm;
   const cardRef = isBbmPage ? searchParams.get('card_ref') : '';
   const forcedCardType = getCardTypeFromRef(cardRefConfig, cardRef);
-  const disableFilters = Boolean(forcedCardType);
+  const disableFilters = isBbmPath;
   const activeCategories = activeData?.categories || [];
 
   if (isAuthoringInstance(block)) {
