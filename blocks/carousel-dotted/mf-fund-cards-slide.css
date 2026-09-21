@@ -26,7 +26,7 @@
 }
 
 .mf-fund-cards-description {
-  margin: var(--bbl-space-300) auto 0 auto;
+  margin: var(--bbl-space-1000) auto 0 auto;
   max-width: 56.25rem;
   padding: 0 var(--bbl-space-300);
   font-family: var(--bbl-font-family-primary);
@@ -201,8 +201,16 @@
   flex: 0 0 70%;
 }
 
+.carousel-dotted.show-arrows-dots.all-mf-fund-cards .slick-dots {
+  margin-top: 1.875rem;
+}
+
 .card-list.mf-card-list .cards-list.scrollable.cards-3 .cards-list-item {
   margin-bottom: 0;
+}
+
+.card-list.mf-card-list .cards-list.scrollable.cards-3 {
+  padding: 0;
 }
 
 @media (width > 47.5rem) {
@@ -252,10 +260,6 @@
 }
 
 @media (width > 64rem) {
-  .mf-fund-cards-description {
-    margin: var(--bbl-space-400) auto 0 auto;
-  }
-
   .card-list.mf-card-list .cards-list.scrollable.cards-3 {
     gap: 0 var(--bbl-space-500);
   }
