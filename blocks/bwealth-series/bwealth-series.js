@@ -28,6 +28,32 @@ import {
 const DOMPURIFY_SRC = `${window.hlx.codeBasePath}/scripts/dompurify.min.js`;
 const DEFAULT_CONFIG_PATH = '/bwealth-series-config.json';
 
+const ICON_BASE = '/icons/saving-plan';
+const ICONS_CACHE = {};
+
+async function loadIcons() {
+  const names = ['chevron-down', 'check', 'legend-dot-result'];
+  const ownNames = ['download'];
+  await Promise.all([
+    ...names.map(async (name) => {
+      try {
+        const resp = await fetch(`${ICON_BASE}/${name}.svg`);
+        if (resp.ok) ICONS_CACHE[name] = await resp.text();
+      } catch { /* empty */ }
+    }),
+    ...ownNames.map(async (name) => {
+      try {
+        const resp = await fetch(`/icons/bwealth-series/${name}.svg`);
+        if (resp.ok) ICONS_CACHE[name] = await resp.text();
+      } catch { /* empty */ }
+    }),
+  ]);
+}
+
+function getIcon(name) {
+  return ICONS_CACHE[name] || '';
+}
+
 // HARDCODE: ปกติมาจาก Sitecore Content-Provider (VITE_INFLATION_API_*)
 const FALLBACK_INFLATION_RATE = 2.5;
 
@@ -696,8 +722,6 @@ function generateSavingGraphData(payload, monthlySaving) {
 
 /* ------------------------------------------------------------------- markup */
 
-const CHEVRON = '<span class="bwealth-series-chevron" aria-hidden="true"></span>';
-
 const ICON_AMOUNT = `
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path d="M2.82609 23L5.56522 22H15.6087L22 18C21.5435 16 19.4435 15 17.8 16L14.6957 18H8.30435H13.6913C14.1478 18 14.513 17.5 14.4217 16.9L14.3304 16.7C14.0565 15.7 13.1435 14.9 12.2304 14.8L5.56522 14L1 16" stroke="#0064FF" stroke-width="2" stroke-miterlimit="10"/>
@@ -716,7 +740,8 @@ function buildDropdown(name, label, options, placeholder) {
   const optionsMarkup = options
     .map((opt) => `
       <li class="bwealth-series-dropdown-option" role="option" data-value="${escapeHtml(opt.value)}" tabindex="-1">
-        ${escapeHtml(opt.label)}
+        <span class="bwealth-series-dropdown-option-check" aria-hidden="true">${getIcon('check')}</span>
+        <span class="bwealth-series-dropdown-option-label">${escapeHtml(opt.label)}</span>
       </li>`)
     .join('');
   // โครงเดียวกับ buildDropdownField ของ saving-plan — ไม่มี label ลอยข้างบน
@@ -725,7 +750,7 @@ function buildDropdown(name, label, options, placeholder) {
     <div class="bwealth-series-field bwealth-series-field-dropdown" data-field="${name}" data-value="">
       <button type="button" class="bwealth-series-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
         <span class="bwealth-series-dropdown-current">${escapeHtml(placeholder || label)}</span>
-        ${CHEVRON}
+        <span class="bwealth-series-chevron" aria-hidden="true">${getIcon('chevron-down')}</span>
       </button>
       <ul class="bwealth-series-dropdown-panel" role="listbox" tabindex="-1">${optionsMarkup}</ul>
     </div>
@@ -794,13 +819,16 @@ function buildShellMarkup(data) {
           </div>
 
           <div class="bwealth-series-inflation">
-            <input type="checkbox" id="bws-include-inflation" class="bwealth-series-checkbox" />
+            <span class="bwealth-series-checkbox-wrap">
+              <input type="checkbox" id="bws-include-inflation" class="bwealth-series-checkbox" />
+              <span class="bwealth-series-checkbox-check" aria-hidden="true">${getIcon('check')}</span>
+            </span>
             <label for="bws-include-inflation" data-inflation-label></label>
           </div>
 
           <div class="bwealth-series-actions">
-            <button type="button" class="bwealth-series-btn bwealth-series-btn-secondary" data-action="clear" disabled>${escapeHtml(common.clearButton)}</button>
-            <button type="button" class="bwealth-series-btn bwealth-series-btn-primary" data-action="calculate" disabled>${escapeHtml(common.calculateButtonText)}</button>
+            <button type="button" class="button-m secondary" data-action="clear" disabled>${escapeHtml(common.clearButton)}</button>
+            <button type="button" class="button-m primary" data-action="calculate" disabled>${escapeHtml(common.calculateButtonText)}</button>
           </div>
         </div>
 
@@ -820,7 +848,7 @@ function buildShellMarkup(data) {
 
       <section class="bwealth-series-results" hidden>
         <div class="bwealth-series-chart-wrap">
-          ${buildChartLegend(results.graph, false)}
+          ${buildChartLegend(results.graph, false, getIcon)}
           <div class="bwealth-series-chart-canvas-wrap">
             <canvas class="bwealth-series-chart" aria-label="${escapeHtml(results.graph.yAxisLabel)}"></canvas>
           </div>
@@ -889,11 +917,9 @@ function buildFundCard(fund, labels) {
           <a class="bwealth-series-fund-factsheet${factSheetHref ? '' : ' is-disabled'}"
              href="${escapeHtml(factSheetHref || '#')}" target="_blank" rel="noopener noreferrer">
             <span>${escapeHtml(labels.factSheet)}</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <span class="bwealth-series-fund-factsheet-icon" aria-hidden="true">${getIcon('download')}</span>
           </a>
-          <button type="button" class="bwealth-series-btn bwealth-series-btn-primary" data-action="fund-detail">
+          <button type="button" class="button-m primary" data-action="fund-detail">
             ${escapeHtml(labels.viewDetails)}
           </button>
         </div>
@@ -924,8 +950,8 @@ function buildFundDetailMarkup(fund, labels, remarkHtml) {
       ${remarkHtml ? `<div class="bwealth-series-modal-remark">${remarkHtml}</div>` : ''}
     </div>
     <div class="bwealth-series-modal-footer">
-      <button type="button" class="bwealth-series-btn bwealth-series-btn-secondary" data-modal-close>${escapeHtml(labels.close)}</button>
-      <button type="button" class="bwealth-series-btn bwealth-series-btn-primary" data-action="invest">${escapeHtml(labels.invest)}</button>
+      <button type="button" class="button-m secondary" data-modal-close>${escapeHtml(labels.close)}</button>
+      <button type="button" class="button-m primary" data-action="invest">${escapeHtml(labels.invest)}</button>
     </div>
   `;
 }
@@ -944,9 +970,9 @@ const CHEVRON_DOWN = `
 function buildInvestButtons(labels, links) {
   return `
     <div class="bwealth-series-modal-invest-actions">
-      <a class="bwealth-series-btn bwealth-series-btn-secondary${links.oneTime ? '' : ' is-disabled'}"
+      <a class="button-m secondary${links.oneTime ? '' : ' disabled'}"
          href="${escapeHtml(links.oneTime || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(labels.oneTime)}</a>
-      <a class="bwealth-series-btn bwealth-series-btn-primary${links.dca ? '' : ' is-disabled'}"
+      <a class="button-m primary${links.dca ? '' : ' disabled'}"
          href="${escapeHtml(links.dca || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(labels.dcaHeader)}</a>
     </div>
   `;
@@ -1107,7 +1133,7 @@ function renderResult(state, calculation) {
   const futureText = fillTemplate(texts.common.toHaveMoney, {
     money: `<strong>${escapeHtml(formatNumber(calculation.FutureValue))}</strong>`,
     unit: escapeHtml(texts.common.unit),
-    years: `<strong>${escapeHtml(String(inputs.yearsToSave))}</strong>`,
+    years: `${escapeHtml(String(inputs.yearsToSave))}`,
   });
   const futureEl = root.querySelector('[data-result="future"]');
   if (futureEl) futureEl.innerHTML = futureText;
@@ -1451,6 +1477,14 @@ function attachDropdown(state, name, onSelect) {
     e.stopPropagation();
     const open = wrap.classList.toggle('is-open');
     trigger.setAttribute('aria-expanded', String(open));
+    if (open) {
+      const { bottom, top } = trigger.getBoundingClientRect();
+      const panelHeight = panel.scrollHeight;
+      const spaceBelow = window.innerHeight - bottom;
+      const spaceAbove = top;
+      const dropUp = spaceBelow < panelHeight && spaceAbove > spaceBelow;
+      wrap.classList.toggle('drop-up', dropUp);
+    }
   });
 
   panel.addEventListener('click', (e) => {
@@ -1757,6 +1791,7 @@ export default async function decorate(block) {
     fetchBlockConfig(),
     ensureDomPurify(),
     loadChartJs(),
+    loadIcons(),
   ]);
 
   const configJson = config.raw;

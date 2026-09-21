@@ -11,6 +11,20 @@
 const COLOR_ORIGINAL = '#0064FF';
 const COLOR_NEW = '#002850';
 
+const TABLET_MIN = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim();
+const DESKTOP_MIN = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-desktop-min').trim();
+
+function isDesktopViewport() {
+  return window.matchMedia(`(min-width: ${DESKTOP_MIN})`).matches;
+}
+
+// scriptable font สำหรับ tick/title ของแกน — >=1025px ใช้ 16/24, ต่ำกว่านั้นคงเดิม 14/21
+function axisFont() {
+  return isDesktopViewport()
+    ? { size: 16, lineHeight: '24px', family: '"BBL Sans", system-ui, sans-serif' }
+    : { size: 14, lineHeight: '21px', family: '"BBL Sans", system-ui, sans-serif' };
+}
+
 export async function loadChartJs() {
   if (window.Chart) return window.Chart;
   await new Promise((resolve) => {
@@ -38,9 +52,23 @@ function formatNumberToK(value) {
   }
   if (abs >= 1000) {
     const k = value / 1000;
-    return `${k % 1 === 0 ? k : k.toFixed(1)}K`;
+    return `${k % 1 === 0 ? k : k.toFixed(1)}k`;
   }
   return String(Math.round(value));
+}
+
+const NICE_STEP_FRACTIONS = [
+  1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10,
+];
+
+// เหมือน niceStep ของ saving-plan-chart.js — ปัด step ของแกน Y ให้เป็นเลขกลม
+function niceStep(raw) {
+  if (!Number.isFinite(raw) || raw <= 0) return 1;
+  const exponent = Math.floor(Math.log10(raw));
+  const base = 10 ** exponent;
+  const fraction = raw / base;
+  const nice = NICE_STEP_FRACTIONS.find((f) => f >= fraction - 1e-9) || 10;
+  return nice * base;
 }
 
 function drawRoundedRect(ctx, x, y, w, h, r) {
@@ -58,31 +86,37 @@ function drawRoundedRect(ctx, x, y, w, h, r) {
 }
 
 /* กล่อง "ลงทุนเดือนละ" — เทียบเท่า renderMonthlySavingAnnotation ใน recharts */
-function drawMonthlyTag(ctx, x, y, label, value, unit, bg) {
+function drawMonthlyTag(ctx, x, y, label, value, unit, bg, isDesktop) {
   const boxW = 138;
   const boxH = 56;
+  const labelSize = isDesktop ? 12.8 : 12.6;
+  const valueSize = isDesktop ? 14.4 : 12.6;
+  const gap = isDesktop ? 17.28 : 17;
   ctx.save();
   ctx.fillStyle = bg;
   drawRoundedRect(ctx, x, y, boxW, boxH, 6);
   ctx.fill();
   ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
-  ctx.font = '12px "BBL Sans", system-ui, sans-serif';
+  ctx.font = `${labelSize}px "BBL Sans", system-ui, sans-serif`;
   ctx.fillText(label, x + boxW / 2, y + 20);
-  ctx.font = 'bold 15px "BBL Sans", system-ui, sans-serif';
-  ctx.fillText(`${formatNumber(value)} ${unit}`, x + boxW / 2, y + 41);
+  ctx.font = `bold ${valueSize}px "BBL Sans", system-ui, sans-serif`;
+  ctx.fillText(`${formatNumber(value)} ${unit}`, x + boxW / 2, y + 20 + gap);
   ctx.restore();
 }
 
 /* ป้าย "เงินลงทุนเป้าหมาย" — เทียบเท่า renderSavingGoalAnnotation */
-function drawGoalLabel(ctx, x, y, label, value, unit, color) {
+function drawGoalLabel(ctx, x, y, label, value, unit, color, isDesktop) {
+  const labelSize = isDesktop ? 12.8 : 12.6;
+  const valueSize = isDesktop ? 14.4 : 12.6;
+  const gap = isDesktop ? 17.28 : 17;
   ctx.save();
   ctx.fillStyle = color;
   ctx.textAlign = 'right';
-  ctx.font = '12px "BBL Sans", system-ui, sans-serif';
+  ctx.font = `${labelSize}px "BBL Sans", system-ui, sans-serif`;
   ctx.fillText(label, x, y);
-  ctx.font = 'bold 15px "BBL Sans", system-ui, sans-serif';
-  ctx.fillText(`${formatNumber(value)} ${unit}`, x, y + 20);
+  ctx.font = `bold ${valueSize}px "BBL Sans", system-ui, sans-serif`;
+  ctx.fillText(`${formatNumber(value)} ${unit}`, x, y + gap);
   ctx.restore();
 }
 
@@ -105,6 +139,7 @@ function buildOverlayPlugin({
       const { ctx, scales: { x: xScale, y: yScale } } = chart;
       if (!xScale || !yScale) return;
 
+      const isDesktop = isDesktopViewport();
       const first = original[0];
       const last = original[original.length - 1];
 
@@ -118,6 +153,7 @@ function buildOverlayPlugin({
         originalResult.SavingMonth,
         unit,
         COLOR_ORIGINAL,
+        isDesktop,
       );
 
       drawGoalLabel(
@@ -128,6 +164,7 @@ function buildOverlayPlugin({
         originalResult.FutureValue,
         unit,
         COLOR_ORIGINAL,
+        isDesktop,
       );
 
       if (!current || !currentResult) return;
@@ -143,6 +180,7 @@ function buildOverlayPlugin({
           currentResult.SavingMonth,
           unit,
           COLOR_NEW,
+          isDesktop,
         );
       }
       if (currentResult.FutureValue !== 0) {
@@ -154,13 +192,14 @@ function buildOverlayPlugin({
           currentResult.FutureValue,
           unit,
           COLOR_NEW,
+          isDesktop,
         );
       }
     },
   };
 }
 
-export function buildChartLegend(graphTexts, hasStepUp) {
+export function buildChartLegend(graphTexts, hasStepUp, getIcon) {
   const stepUpIcon = `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M21.6 20.9999H3V2.3999" stroke="${COLOR_ORIGINAL}" stroke-width="2" stroke-miterlimit="10"></path>
@@ -176,7 +215,7 @@ export function buildChartLegend(graphTexts, hasStepUp) {
     <div class="bwealth-series-legend">
       <div class="bwealth-series-legend-row">
         <span class="bwealth-series-legend-item">
-          <span class="bwealth-series-legend-dot"></span>
+          <span class="bwealth-series-legend-dot" aria-hidden="true">${getIcon('legend-dot-result')}</span>
           <span class="bwealth-series-legend-text">${graphTexts.originalCalculationLabel || ''}</span>
         </span>
         ${stepUpItem}
@@ -245,24 +284,37 @@ function buildConfig({
           border: { display: true, color: '#C8C8CC' },
           ticks: {
             color: '#636366',
-            font: { size: 12, family: '"BBL Sans", system-ui, sans-serif' },
+            font: axisFont,
             callback: (value) => `${value / 12}`,
           },
           title: {
             display: true,
             text: graphTexts.xAxisLabel || '',
             color: '#636366',
-            font: { size: 12, family: '"BBL Sans", system-ui, sans-serif' },
+            font: axisFont,
           },
         },
         y: {
           min: 0,
           max: yMax,
+          afterBuildTicks: (axis) => {
+            const top = axis.max;
+            const step = niceStep(top / 4);
+            const isTablet = window.matchMedia(`(min-width: ${TABLET_MIN})`).matches;
+            const ticks = [];
+            if (isTablet) {
+              for (let v = 0; v <= top - step; v += step) ticks.push({ value: v });
+            } else {
+              for (let v = 0; v < top; v += step) ticks.push({ value: v });
+            }
+            ticks.push({ value: top });
+            axis.ticks = ticks;
+          },
           grid: { color: '#E6E6EA', drawTicks: false, borderDash: [3, 3] },
           border: { display: false, dash: [3, 3] },
           ticks: {
             color: '#636366',
-            font: { size: 12, family: '"BBL Sans", system-ui, sans-serif' },
+            font: axisFont,
             padding: 8,
             callback: (value) => formatNumberToK(value),
           },
@@ -270,7 +322,7 @@ function buildConfig({
             display: true,
             text: graphTexts.yAxisLabel || '',
             color: '#636366',
-            font: { size: 12, family: '"BBL Sans", system-ui, sans-serif' },
+            font: axisFont,
           },
         },
       },

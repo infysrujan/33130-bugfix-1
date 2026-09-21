@@ -289,11 +289,6 @@
   line-height: var(--bbl-line-height-button);
 }
 
-.saving-plan-form-actions .button-m {
-  min-width: 7.1875rem;
-  box-sizing: border-box;
-}
-
 .saving-plan-result-card {
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
