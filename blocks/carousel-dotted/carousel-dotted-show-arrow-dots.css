@@ -66,10 +66,6 @@
   flex-shrink: 0;
 }
 
-.carousel-dotted.show-arrows-dots .carousel-arrow:hover {
-  border-color: var(--bbl-color-grey-150);
-}
-
 .carousel-dotted.show-arrows-dots .carousel-arrow::before {
   content: '';
   display: block;
@@ -177,6 +173,14 @@
 }
 
 .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:active {
+  background-color: var(--bbl-color-gray-300);
+}
+
+.carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow:hover {
+  border-color: var(--bbl-color-grey-150);
+}
+
+.carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow:active {
   background-color: var(--bbl-color-gray-300);
 }
 
