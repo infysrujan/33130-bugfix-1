@@ -347,6 +347,7 @@ function createOptimizedPicture(
     } else {
       const img = document.createElement('img');
       img.setAttribute('loading', eager ? 'eager' : 'lazy');
+      if (eager) img.setAttribute('fetchpriority', 'high');
       img.setAttribute('alt', alt);
       picture.appendChild(img);
       img.setAttribute('src', `${pathname}?width=${br.width}&format=${ext}&optimize=medium`);
@@ -354,6 +355,15 @@ function createOptimizedPicture(
   });
 
   return picture;
+}
+
+function promoteFirstImage(section) {
+  const image = section?.querySelector('img');
+  if (!image) return;
+  image.loading = 'eager';
+  image.setAttribute('loading', 'eager');
+  image.fetchPriority = 'high';
+  image.setAttribute('fetchpriority', 'high');
 }
 
 /**
@@ -693,10 +703,10 @@ async function loadFooter(footer) {
  * @param {Element} section section element
  */
 async function waitForFirstImage(section) {
+  promoteFirstImage(section);
   const lcpCandidate = section.querySelector('img');
   await new Promise((resolve) => {
-    if (lcpCandidate && !lcpCandidate.complete) {
-      lcpCandidate.setAttribute('loading', 'eager');
+    if (lcpCandidate && !lcpCandidate.complete && lcpCandidate.currentSrc) {
       lcpCandidate.addEventListener('load', resolve);
       lcpCandidate.addEventListener('error', resolve);
     } else {
@@ -711,6 +721,7 @@ async function waitForFirstImage(section) {
  */
 
 async function loadSection(section, loadCallback) {
+  if (!section) return;
   const status = section.dataset.sectionStatus;
   if (!status || status === 'initialized') {
     section.dataset.sectionStatus = 'loading';
@@ -718,6 +729,7 @@ async function loadSection(section, loadCallback) {
     for (let i = 0; i < blocks.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop
       await loadBlock(blocks[i]);
+      if (loadCallback) promoteFirstImage(section);
     }
     if (loadCallback) await loadCallback(section);
     section.dataset.sectionStatus = 'loaded';
@@ -748,6 +760,7 @@ if (typeof window !== 'undefined') {
 export {
   buildBlock,
   createOptimizedPicture,
+  promoteFirstImage,
   decorateBlock,
   decorateBlocks,
   decorateButtons,

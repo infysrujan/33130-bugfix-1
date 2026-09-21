@@ -10,6 +10,7 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  promoteFirstImage,
   getMetadata,
   toClassName,
 } from './aem.js';
@@ -360,6 +361,7 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    promoteFirstImage(main);
     document.body.classList.add('appear');
     await Promise.all([
       loadSection(main.querySelector('.section'), waitForFirstImage),
@@ -433,6 +435,9 @@ async function loadLazy(doc) {
 
   initRteAnchors(main, doc);
   decorateIconInContainer(main);
+  const firstBlock = main?.querySelector('div.block');
+  if (firstBlock) promoteFirstImage(firstBlock);
+  promoteFirstImage(main);
   decorateNewTabLinks(main);
 
   if (!disabledSections.has('footer')) {
