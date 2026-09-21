@@ -172,6 +172,10 @@
   overflow-x: hidden;
 }
 
+.pfs-grid.listing-card-grid {
+  --header-scroll-offset: 14.875rem;
+}
+
 .pfs-grid.listing-card-grid:has(.listing-card-empty) {
   margin: 0 -1px;
   width: 100%;

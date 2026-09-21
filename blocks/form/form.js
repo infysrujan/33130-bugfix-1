@@ -16,6 +16,7 @@ import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
 import decorateReliefMeasures from './form-custom/relief-measures/relief-measures.js';
 import decorateCreditCardForm from './form-custom/credit-card-form/credit-card-form.js';
 import decorateContactUsForm from './form-custom/contact-us/contact-us.js';
+import decorateProtectionBtBelovedPlus from './form-custom/protection-bt-beloved-plus/protection-bt-beloved-plus.js';
 import {
   checkValidation,
   createButton,
@@ -372,6 +373,38 @@ function isDocumentBasedForm(formDef) {
   return formDef?.[':type'] === 'sheet' && formDef?.data;
 }
 
+function decorateDateFormatChange(form) {
+  form.querySelectorAll('.date-wrapper.Date-Format-Change').forEach((wrapper) => {
+    const input = wrapper.querySelector('input[edit-value]');
+    const descEl = wrapper.querySelector('.field-description');
+    if (!input || !descEl) return;
+    const temp = document.createElement('div');
+    temp.innerHTML = descEl.innerHTML;
+    const descText = temp.textContent.trim();
+    if (!descText) return;
+    input.setAttribute('placeholder', descText);
+    input.setAttribute('tabindex', '-1');
+    const fieldEl = document.createElement('div');
+    fieldEl.className = 'date-format-change-field';
+    input.insertAdjacentElement('beforebegin', fieldEl);
+    fieldEl.append(input);
+    const calBtn = document.createElement('button');
+    calBtn.type = 'button';
+    calBtn.className = 'date-format-change-icon';
+    calBtn.setAttribute('aria-label', input.getAttribute('aria-label') || 'Select date');
+    calBtn.setAttribute('aria-controls', input.id);
+    calBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+      <line x1="16" y1="2" x2="16" y2="6"></line>
+      <line x1="8" y1="2" x2="8" y2="6"></line>
+      <line x1="3" y1="10" x2="21" y2="10"></line>
+    </svg>`;
+    calBtn.addEventListener('click', () => input.focus());
+    fieldEl.append(calBtn);
+    wrapper.classList.add('date-format-change-active');
+  });
+}
+
 async function createFormForAuthoring(formDef) {
   const form = document.createElement('form');
   await generateFormRendition(formDef, form, formDef.id, (container) => {
@@ -389,6 +422,8 @@ async function createFormForAuthoring(formDef) {
   decorateReliefMeasures(form);
   decorateCreditCardForm(form);
   decorateContactUsForm(form);
+  decorateProtectionBtBelovedPlus(form);
+  decorateDateFormatChange(form);
   return form;
 }
 
@@ -452,6 +487,8 @@ export async function createForm(formDef, data, source = 'aem') {
   decorateReliefMeasures(form);
   decorateCreditCardForm(form);
   decorateContactUsForm(form);
+  decorateProtectionBtBelovedPlus(form);
+  decorateDateFormatChange(form);
   return {
     form,
     captcha,
@@ -547,6 +584,7 @@ function addRequestContextToForm(formDef) {
         formDef.properties.queryParams[key?.toLowerCase()] = value;
       });
     } catch (e) {
+      // eslint-disable-next-line
       console.warn('Error reading URL parameters:', e);
     }
 
@@ -561,6 +599,7 @@ function addRequestContextToForm(formDef) {
         }
       });
     } catch (e) {
+      // eslint-disable-next-line
       console.warn('Error reading cookies:', e);
     }
   }
@@ -574,6 +613,7 @@ function loadFormCustomStyles(formDef) {
       const stylePath = style.startsWith('/') ? style : `/${style}`;
       loadCSS(`${base}${stylePath}`);
     } catch (error) {
+      // eslint-disable-next-line
       console.error('Failed to load form CSS:', error);
     }
   }
