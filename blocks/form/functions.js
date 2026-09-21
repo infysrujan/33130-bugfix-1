@@ -1207,6 +1207,63 @@ function restrictNumberOnlyInputs() {
 restrictNumberOnlyInputs();
 
 /**
+ * Validates that a numeric-range field's value stays within 11–75, live,
+ * on every keystroke. Targets fields marked with the `age-range` CSS
+ * class on the input or its ancestors. Creates the field's description
+ * element if it doesn't already exist, so the error always has
+ * somewhere to render even on fields with no authored description.
+ *
+ * @name validateAgeRangeInputs
+ * @returns {void}
+ */
+function validateAgeRangeInputs() {
+  if (typeof document === 'undefined') return;
+
+  const MIN = 11;
+  const MAX = 75;
+  const MESSAGE = 'อายุต้องอยู่ระหว่าง 11-75 ปี';
+
+  document.addEventListener('input', (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+    const isAgeRange = input.classList.contains('age-range')
+      || input.closest('.age-range') !== null;
+    if (!isAgeRange) {
+      return;
+    }
+
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+
+    const num = Number(input.value);
+    const isInvalid = input.value !== '' && (Number.isNaN(num) || num < MIN || num > MAX);
+
+    if (isInvalid) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = MESSAGE;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  });
+}
+validateAgeRangeInputs();
+
+/**
  * Formats a number with comma separators
  * @name formatNumberWithCommas
  * @param {string} value - The numeric value to format
