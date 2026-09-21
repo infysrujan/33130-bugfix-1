@@ -969,7 +969,7 @@
   }
 
   .dynamic-board .db-go-btn {
-    --db-go-btn-width: 7.5rem; /* 120px — tablet */
+    flex: auto;
   }
 
   .dynamic-board .db-controls-right {
