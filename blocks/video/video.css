@@ -31,8 +31,7 @@
     height: calc((100vw - 1.875rem) / 1.8);
   }
 
-
-  .section:has(> .video-wrapper) {
+.section:has(> .video-wrapper) {
     padding-inline: 3rem;
   }
 }
