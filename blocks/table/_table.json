@@ -54,6 +54,10 @@
                 {
                   "name": "No Border Bottom",
                   "value": "no-border-bottom"
+                },
+                {
+                  "name": "No Border Top",
+                  "value": "no-border-top"
                 }
               ]
             },
@@ -154,6 +158,10 @@
                 {
                   "name": "Cells Right Aligned Except First",
                   "value": "cells-right-aligned-except-first"
+                },
+                {
+                  "name": "Cells Center Aligned Last Column",
+                  "value": "cells-center-aligned-last-column"
                 },
                 {
                   "name": "Cells Middle Aligned",

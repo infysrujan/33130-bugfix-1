@@ -201,6 +201,12 @@ function fmtTime(sec) {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+function updateSeekFill(seekBar) {
+  const max = Number(seekBar.max) || 1;
+  const pct = (Number(seekBar.value) / max) * 100;
+  seekBar.style.background = `linear-gradient(to right, var(--bbl-color-red-130) ${pct}%, var(--bbl-color-white-alpha-35) ${pct}%)`;
+}
+
 function buildControls(bannerItem) {
   const bar = createElement('div', 'hero-banner-video-controls');
   bar.innerHTML = `
@@ -309,9 +315,13 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem, shareUrl) {
   video.addEventListener('timeupdate', () => {
     const pct = video.duration ? (video.currentTime / video.duration) * 1000 : 0;
     seekBar.value = pct;
+    updateSeekFill(seekBar);
     timeEl.textContent = `${fmtTime(video.currentTime)} / ${fmtTime(video.duration)}`;
   });
-  seekBar.addEventListener('input', () => { if (video.duration) video.currentTime = (seekBar.value / 1000) * video.duration; });
+  seekBar.addEventListener('input', () => {
+    if (video.duration) video.currentTime = (seekBar.value / 1000) * video.duration;
+    updateSeekFill(seekBar);
+  });
 
   wireShare(bar.querySelector('.hero-ctrl-share'));
   wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), videoWrapper);
@@ -394,6 +404,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
                 const cur = target.getCurrentTime();
                 const dur = target.getDuration();
                 seekBar.value = dur ? (cur / dur) * 1000 : 0;
+                updateSeekFill(seekBar);
                 timeEl.textContent = `${fmtTime(cur)} / ${fmtTime(dur)}`;
               }, 500);
             }
@@ -431,6 +442,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
     seekBar.addEventListener('input', () => {
       const dur = player.getDuration();
       if (dur) player.seekTo((seekBar.value / 1000) * dur, true);
+      updateSeekFill(seekBar);
     });
 
     wireShare(bar.querySelector('.hero-ctrl-share'), shareUrl);
@@ -711,7 +723,6 @@ export default async function decorate(block) {
   block.addEventListener('click', (event) => {
     const button = event.target.closest('.button-m.primary');
     if (!button) return;
-    console.log('Hero banner CTA clicked');
     trackLinkClick(
       event,
       button,

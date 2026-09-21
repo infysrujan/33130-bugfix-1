@@ -474,16 +474,19 @@ main .section.form-container.wizard-forms .form form fieldset[name="insuranceSum
 }
 
 main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 {
+  align-items: baseline;
+  align-self: baseline;
+  gap: 0.5rem;
   padding: 0;
-  gap: 0;
   border: unset;
 }
 
 main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 .field-label {
-  white-space: nowrap;
+  white-space: normal;
 }
 
 main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 input {
+  field-sizing: content;
   font-size: var(--bbl-wizard-font-size-summary-input-mobile);
   color: var(--bbl-color-black, #000);
   font-weight: var(--bbl-font-weight-regular);
@@ -494,7 +497,7 @@ main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.fiel
   width: max-content;
   padding: var(--bbl-space-050) 0 0 var(--bbl-wizard-padding-col1-left);
   border: unset;
-  align-self: center;
+  align-self: baseline;
 }
 
 main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper[name="css-summaryWithHR"] {
@@ -518,7 +521,6 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
 main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 label.field-label {
   margin-bottom: 0;
   flex: 0 1 auto;
-  max-width: 61.5%;
   min-width: 0;
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-medium);

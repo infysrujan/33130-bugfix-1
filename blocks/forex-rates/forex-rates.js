@@ -303,7 +303,7 @@ function printForexRates(block) {
     <body>
       <div class="print-logo">${brandLogo}</div>
       <hr class="print-divider">
-      <h1 class="print-title">${escapeHtml(documentTitle)}</h1>
+      <h1 class="print-title">${escapeHtml(pageTitle)}</h1>
       ${tabsHtml}
       <div class="forex-rates block" data-block-status="loaded">
         ${cloned.outerHTML}
