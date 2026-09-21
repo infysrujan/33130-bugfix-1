@@ -69,10 +69,9 @@
 .bwealth-series-form-title {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-h3-mobile);
-  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
+  line-height: 1.5356rem;
   margin: 0 0 0.875rem;
-  line-height: var(--bbl-heading-h5-line-height);
 }
 
 .bwealth-series-result-title {
@@ -452,7 +451,7 @@
 
 .bwealth-series-result-unit {
   font-size: 0.7875rem;
-  line-height: 1.0625rem;
+  line-height: 1.0631rem;
   color: var(--bbl-color-grey-40);
   opacity: 0.9;
 }
@@ -548,7 +547,7 @@
 
 /* ต้นฉบับกำหนด fontSize 16 / lineHeight 1.7 ตรง ๆ ไม่ใช่ b3 (12px) */
 .bwealth-series-remark:not(:empty) {
-  margin-top: 0.6563rem;
+  margin-top: 1.9375rem;
   color: var(--bwealth-series-remark-color);
   font-size: var(--bbl-font-size-b1-desktop);
   line-height: 1.375rem;
@@ -1267,6 +1266,11 @@ body.bwealth-series-modal-open {
   .bwealth-series-chart-wrap {
     height: auto;
     align-self: stretch;
+    padding: var(--bbl-space-200);
+  }
+
+  .bwealth-series-chart {
+    padding-inline: var(--bbl-space-100);
   }
 
   .bwealth-series-legend-row {
@@ -1285,8 +1289,14 @@ body.bwealth-series-modal-open {
     padding-bottom: 3rem;
   }
 
-  .bwealth-series-header {
-    margin-bottom: 4.375rem;
+  .bwealth-series-result-unit {
+    font-size: 0.7875rem;
+    line-height: 1.08rem;
+  }
+
+  .bwealth-series-funds .bwealth-series-header {
+    margin-bottom: 3.375rem;
+    padding-top: var(--bbl-space-600);
   }
 
   .bwealth-series-checkbox {
@@ -1311,46 +1321,64 @@ body.bwealth-series-modal-open {
   }
 
   /*
-   * การ์ดผลลัพธ์ต้องสูงลงมาจบที่แถว checkbox ไม่รวมปุ่ม Clear/Calculate
-   * ทำโดยกาง .bwealth-series-form ด้วย display:contents ให้ลูกกลายเป็น grid item
-   * แล้วให้คอลัมน์ผลลัพธ์ span แค่แถว title..checkbox
-   * row-gap เป็น 0 เพราะระยะห่างระหว่างแถวใช้ margin เดิมของแต่ละชิ้นอยู่แล้ว
+   * ต้นฉบับ (fincal-grid) เป็น grid แถวเดียว 3 คอลัมน์ ไม่ได้แยก sub-row
+   * ฝั่งฟอร์มจึงเป็น block ปกติ 1 grid item เดียว (title/fields/checkbox/actions
+   * ไหลตาม margin ของตัวเองตามปกติ) ผลลัพธ์อีกคอลัมน์ยืดตาม align-items:stretch
    */
   .bwealth-series-calculator {
     grid-template-columns: repeat(2, minmax(0, 1fr)) 32%;
     gap: 0 1rem;
+    padding-bottom: 1rem;
     align-items: stretch;
   }
 
-  .bwealth-series-form {
-    display: contents;
+  .bwealth-series-results {
+    margin-top: var(--bbl-space-200);
   }
 
-  .bwealth-series-form-title {
+  .bwealth-series-form {
     grid-column: 1 / 3;
     grid-row: 1;
   }
 
   .bwealth-series-form-grid {
-    grid-column: 1 / 3;
-    grid-row: 2;
+    gap: 1rem;
+    padding-bottom: var(--bbl-space-200);
+  }
+
+  .bwealth-series-legend-item {
+    gap: var(--bbl-space-100);
+    padding: var(--bbl-space-100);
+    font-size: 0.8rem;
+    line-height: 1.08rem;
+  }
+
+  .bwealth-series-legend {
+    margin-bottom: var(--bbl-space-100);
   }
 
   .bwealth-series-inflation {
-    grid-column: 1 / 3;
-    grid-row: 3;
+    gap: 0.75rem;
+    margin-block: var(--bbl-space-200);
   }
 
   .bwealth-series-actions {
-    grid-column: 1 / 3;
-    grid-row: 4;
     margin-top: 1rem;
     margin-bottom: 1rem;
+    gap: var(--bbl-space-200);
+  }
+
+  .bwealth-series-dropdown-trigger {
+    padding: var(--bbl-space-100) var(--bbl-space-200);
+  }
+
+  .bwealth-series-field-row {
+    padding: 0 var(--bbl-space-200);
   }
 
   .bwealth-series-result {
     grid-column: 3;
-    grid-row: 1 / 4;
+    grid-row: 1;
     display: flex;
     flex-direction: column;
   }
@@ -1369,18 +1397,14 @@ body.bwealth-series-modal-open {
     padding: 1rem;
     margin-bottom: 0.25rem;
     border: 0.0417rem solid var(--bbl-color-grey-30);
-    line-height: var(--bbl-line-height-h3-mobile);
   }
 
   .bwealth-series-result-future {
     font-size: var(--bbl-font-size-b1-desktop);
     margin-bottom: 3rem;
-    line-height: var(--bbl-line-height-button);
   }
 
   .bwealth-series-result-lead {
-    /* ดันบล็อก "ลงทุนเดือนละ + ตัวเลข" ไปชิดล่างของการ์ด */
-    margin-top: auto;
     font-size: var(--bbl-font-size-h3-desktop);
     line-height: var(--bbl-line-height-h3-desktop);
   }
@@ -1393,11 +1417,21 @@ body.bwealth-series-modal-open {
   .bwealth-series-funds-track {
     justify-content: center;
     overflow: visible;
+    gap: var(--bbl-space-300);
   }
 
   .bwealth-series-fund {
     width: 100%;
     max-width: 21.75rem;
+    box-sizing: unset;
+  }
+
+  .bwealth-series-fund-body {
+    padding: var(--bbl-space-300);
+  }
+
+  .bwealth-series-remark:not(:empty) {
+    margin-top: 2.25rem;
   }
 
   /* ค่าฝั่ง lg: ของ Tailwind — title 96px, แถว detail 44px, ตัวอักษรโตขึ้น clamp 2 บรรทัด */

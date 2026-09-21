@@ -12,6 +12,18 @@ const COLOR_ORIGINAL = '#0064FF';
 const COLOR_NEW = '#002850';
 
 const TABLET_MIN = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim();
+const DESKTOP_MIN = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-desktop-min').trim();
+
+function isDesktopViewport() {
+  return window.matchMedia(`(min-width: ${DESKTOP_MIN})`).matches;
+}
+
+// scriptable font สำหรับ tick/title ของแกน — >=1025px ใช้ 16/24, ต่ำกว่านั้นคงเดิม 14/21
+function axisFont() {
+  return isDesktopViewport()
+    ? { size: 16, lineHeight: '24px', family: '"BBL Sans", system-ui, sans-serif' }
+    : { size: 14, lineHeight: '21px', family: '"BBL Sans", system-ui, sans-serif' };
+}
 
 export async function loadChartJs() {
   if (window.Chart) return window.Chart;
@@ -74,31 +86,37 @@ function drawRoundedRect(ctx, x, y, w, h, r) {
 }
 
 /* กล่อง "ลงทุนเดือนละ" — เทียบเท่า renderMonthlySavingAnnotation ใน recharts */
-function drawMonthlyTag(ctx, x, y, label, value, unit, bg) {
+function drawMonthlyTag(ctx, x, y, label, value, unit, bg, isDesktop) {
   const boxW = 138;
   const boxH = 56;
+  const labelSize = isDesktop ? 12.8 : 12.6;
+  const valueSize = isDesktop ? 14.4 : 12.6;
+  const gap = isDesktop ? 17.28 : 17;
   ctx.save();
   ctx.fillStyle = bg;
   drawRoundedRect(ctx, x, y, boxW, boxH, 6);
   ctx.fill();
   ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
-  ctx.font = '12.6px "BBL Sans", system-ui, sans-serif';
+  ctx.font = `${labelSize}px "BBL Sans", system-ui, sans-serif`;
   ctx.fillText(label, x + boxW / 2, y + 20);
-  ctx.font = 'bold 12.6px "BBL Sans", system-ui, sans-serif';
-  ctx.fillText(`${formatNumber(value)} ${unit}`, x + boxW / 2, y + 37);
+  ctx.font = `bold ${valueSize}px "BBL Sans", system-ui, sans-serif`;
+  ctx.fillText(`${formatNumber(value)} ${unit}`, x + boxW / 2, y + 20 + gap);
   ctx.restore();
 }
 
 /* ป้าย "เงินลงทุนเป้าหมาย" — เทียบเท่า renderSavingGoalAnnotation */
-function drawGoalLabel(ctx, x, y, label, value, unit, color) {
+function drawGoalLabel(ctx, x, y, label, value, unit, color, isDesktop) {
+  const labelSize = isDesktop ? 12.8 : 12.6;
+  const valueSize = isDesktop ? 14.4 : 12.6;
+  const gap = isDesktop ? 17.28 : 17;
   ctx.save();
   ctx.fillStyle = color;
   ctx.textAlign = 'right';
-  ctx.font = '12.6px "BBL Sans", system-ui, sans-serif';
+  ctx.font = `${labelSize}px "BBL Sans", system-ui, sans-serif`;
   ctx.fillText(label, x, y);
-  ctx.font = 'bold 12.6px "BBL Sans", system-ui, sans-serif';
-  ctx.fillText(`${formatNumber(value)} ${unit}`, x, y + 17);
+  ctx.font = `bold ${valueSize}px "BBL Sans", system-ui, sans-serif`;
+  ctx.fillText(`${formatNumber(value)} ${unit}`, x, y + gap);
   ctx.restore();
 }
 
@@ -121,6 +139,7 @@ function buildOverlayPlugin({
       const { ctx, scales: { x: xScale, y: yScale } } = chart;
       if (!xScale || !yScale) return;
 
+      const isDesktop = isDesktopViewport();
       const first = original[0];
       const last = original[original.length - 1];
 
@@ -134,6 +153,7 @@ function buildOverlayPlugin({
         originalResult.SavingMonth,
         unit,
         COLOR_ORIGINAL,
+        isDesktop,
       );
 
       drawGoalLabel(
@@ -144,6 +164,7 @@ function buildOverlayPlugin({
         originalResult.FutureValue,
         unit,
         COLOR_ORIGINAL,
+        isDesktop,
       );
 
       if (!current || !currentResult) return;
@@ -159,6 +180,7 @@ function buildOverlayPlugin({
           currentResult.SavingMonth,
           unit,
           COLOR_NEW,
+          isDesktop,
         );
       }
       if (currentResult.FutureValue !== 0) {
@@ -170,6 +192,7 @@ function buildOverlayPlugin({
           currentResult.FutureValue,
           unit,
           COLOR_NEW,
+          isDesktop,
         );
       }
     },
@@ -261,18 +284,14 @@ function buildConfig({
           border: { display: true, color: '#C8C8CC' },
           ticks: {
             color: '#636366',
-            font: {
-              size: 14, lineHeight: '21px', family: '"BBL Sans", system-ui, sans-serif',
-            },
+            font: axisFont,
             callback: (value) => `${value / 12}`,
           },
           title: {
             display: true,
             text: graphTexts.xAxisLabel || '',
             color: '#636366',
-            font: {
-              size: 14, lineHeight: '21px', family: '"BBL Sans", system-ui, sans-serif',
-            },
+            font: axisFont,
           },
         },
         y: {
@@ -295,9 +314,7 @@ function buildConfig({
           border: { display: false, dash: [3, 3] },
           ticks: {
             color: '#636366',
-            font: {
-              size: 14, lineHeight: '21px', family: '"BBL Sans", system-ui, sans-serif',
-            },
+            font: axisFont,
             padding: 8,
             callback: (value) => formatNumberToK(value),
           },
@@ -305,9 +322,7 @@ function buildConfig({
             display: true,
             text: graphTexts.yAxisLabel || '',
             color: '#636366',
-            font: {
-              size: 14, lineHeight: '21px', family: '"BBL Sans", system-ui, sans-serif',
-            },
+            font: axisFont,
           },
         },
       },
