@@ -67,7 +67,7 @@
 }
 
 .carousel-dotted.show-arrows-dots .carousel-arrow:hover {
-  background-color: var(--bbl-color-grey-10);
+  border-color: var(--bbl-color-grey-150);
 }
 
 .carousel-dotted.show-arrows-dots .carousel-arrow::before {
@@ -257,6 +257,15 @@
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
+  }
+
+  /* all-mf-fund-cards only: nudge arrows toward the slide on hover */
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-prev:hover {
+    transform: translateY(-50%) translateX(-0.3125rem);
+  }
+
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-next:hover {
+    transform: translateY(-50%) translateX(0.3125rem);
   }
 
   .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
