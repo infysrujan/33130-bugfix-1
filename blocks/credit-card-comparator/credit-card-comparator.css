@@ -62,6 +62,10 @@
   white-space: nowrap;
 }
 
+.credit-card-comparator .inner-container .button {
+  width: 100%;
+}
+
 /* ── Each product card — inline-table so thumb and info sit side by side ─── */
 
 .credit-card-comparator .product-comparing {
