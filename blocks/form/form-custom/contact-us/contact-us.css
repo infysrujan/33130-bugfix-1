@@ -27,8 +27,8 @@
     /* Personal Information panel legend: tighter spacing (the only panel with a nested radio group) */
     & fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper) > legend.field-label {
         margin-top: 0;
-        margin-bottom: 0;
-        padding-left: 1rem;
+        margin-bottom: var(--bbl-form-margin-5);
+        padding-left: var(--bbl-form-padding-10);
     }
 
     /* Section legends: full-width grey bar with underline */
@@ -36,8 +36,8 @@
         display: block;
         width: 100%;
         max-width: 100%;
-        margin: var(--bbl-form-margin-10) 0 var(--bbl-form-margin-5);
-        padding: var(--bbl-form-margin-5) 0 var(--bbl-form-margin-5) var(--bbl-form-padding-16);
+        margin: 0;
+        padding: var(--bbl-form-padding-10) 0 0 var(--bbl-form-padding-10);
         font-family: var(--bbl-font-family-primary);
         font-size: var(--bbl-form-font-size-20);
         font-weight: 700;
@@ -95,7 +95,6 @@
         align-items: start;
     }
 
-    /* General panels (no date field): grid column spacing */
     & fieldset.panel-wrapper:not(:has(.date-wrapper)) {
         margin-bottom: 0;
         column-gap: var(--bbl-form-margin-10);
@@ -104,7 +103,6 @@
     /* Service Branch panel: spacing (matched structurally: two adjacent dropdowns,
        no date field, since it's reused verbatim under multiple tabs) */
     & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) {
-        margin-bottom: var(--bbl-space-250);
         row-gap: 0.4688rem;
     }
 
@@ -186,7 +184,11 @@
         display: flex;
         flex-flow: row wrap;
         gap: 0;
-        margin: 0 0 var(--bbl-form-margin-10);
+        margin: 0;
+    }
+
+    & fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper) > fieldset.radio-group-wrapper.radio-tabs:has(> .radio-wrapper:first-of-type input:checked) {
+        margin-bottom: var(--bbl-form-margin-8);
     }
 
     & .radio-group-wrapper.radio-tabs > .radio-wrapper {
@@ -194,7 +196,7 @@
         display: flex;
         flex: 1 1 0;
         min-width: 0;
-        margin: 0;
+        margin: var(--bbl-form-margin-5) 0 0;
         padding: 0;
         gap: 0;
         align-items: center;
@@ -243,18 +245,13 @@
         position: static;
         display: block;
         width: 100%;
-        margin-top: var(--bbl-form-margin-5);
         text-align: left;
         z-index: auto;
     }
 
     /* Text fields: spacing below valid inputs */
     & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .multiline-wrapper, .field-wrapper:not(.button-wrapper, .submit-wrapper, .reset-wrapper)):not(.field-invalid) :is(input:not([type='radio'], [type='checkbox'], [type='submit'], [type='button'], [type='reset']), textarea) {
-        margin-bottom: var(--bbl-form-margin-5);
-    }
-
-    & .field-wrapper:not(.field-invalid, .button-wrapper, .submit-wrapper, .reset-wrapper) select {
-        margin-bottom: var(--bbl-form-margin-5);
+        margin-bottom: 0;
     }
 
     & .field-wrapper.field-invalid:not(.button-wrapper, .submit-wrapper, .reset-wrapper) :is(input:not([type='radio'], [type='checkbox'], [type='submit'], [type='button'], [type='reset']), select, textarea) {
@@ -407,11 +404,17 @@
 }
 
 /* Desktop only (Transaction Date/Time & Service Branch legends stay 14px through tablet) */
-@media (width >= 64rem) {
+@media (width > 64rem) {
     .contact-us main .section.form-container.custom-forms .form form {
         & fieldset.panel-wrapper:has(.date-wrapper) > legend.field-label:not([data-visible="false"]),
         & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > legend.field-label {
             font-size: var(--bbl-form-font-size-16);
+        }
+
+        /* Select chevron: 9.43 x 6, matching production's bold icon (Chevron-down.svg is a hairline stroke that vanishes at this size) */
+        & select {
+            background-image: url('/icons/icon_chevron_down.svg');
+            background-size: 0.5894rem 0.375rem;
         }
     }
 }

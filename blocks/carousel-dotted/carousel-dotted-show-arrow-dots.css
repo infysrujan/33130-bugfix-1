@@ -196,17 +196,16 @@
   overflow: visible;
 }
 
+.carousel-dotted.show-arrows-dots:has(.with-default-image) .slick-dots {
+  margin-top: 1.875rem;
+}
+
 .carousel-dotted.show-arrows-dots .carousel-track-viewport:has(.with-default-image.carousel-dotted-item.is-active),
 .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-viewport:has(.with-default-image.carousel-dotted-item) {
   box-sizing: border-box;
   border: 0.063rem solid var(--bbl-color-black-alpha-10);
   box-shadow: 0 0 0.625rem transparent;
   border-radius: var(--bbl-rounded-100);
-}
-
-.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper .carousel-dotted-item.with-default-image {
-  flex-basis: calc(100% + 1px);
-  width: calc(100% + 1px);
 }
 
 .carousel-dotted.show-arrows-dots.mixed-image-slides:has(.simple-carousel):not(:has(.with-default-image, .with-circular-image)) .carousel-track-wrapper .carousel-dotted-item.simple-carousel {

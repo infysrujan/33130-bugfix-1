@@ -30,6 +30,7 @@
   & .form form,
   & .form form > fieldset.panel-wrapper.field-wrapper {
     max-width: none;
+    margin-inline: auto;
   }
 
   & .form form fieldset.panel-wrapper.field-title-panel {

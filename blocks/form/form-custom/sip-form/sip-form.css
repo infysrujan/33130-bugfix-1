@@ -7,7 +7,7 @@
 .sip-form main .form-container.custom-forms .form h4 {
   font-size: var(--bbl-form-font-size-14);
   margin: 0;
-  padding: 0 0 var(--bbl-form-padding-70) 0;
+  padding: 0 0 var(--bbl-form-padding-20) 0;
   color: var(--bbl-color-grey-90);
 }
 
