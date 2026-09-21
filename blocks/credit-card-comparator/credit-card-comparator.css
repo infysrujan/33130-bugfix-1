@@ -216,10 +216,6 @@
     margin: 0;
     display: inline-block;
   }
-  
-  .credit-card-comparator .inner-container .button {
-    max-width: 9.6875rem;
-  }
 }
 
 @media (width > 120rem) {
