@@ -191,7 +191,12 @@ function createInterestRateRow(texts) {
 
 /**
  * @param {HTMLTableElement} table
- * @param {Array<{ LoanNameEn?: string, LoanNameTh?: string, LoanName?: string, LoanRates?: string }>} rows
+ * @param {Array<{
+ *   LoanNameEn?: string,
+ *   LoanNameTh?: string,
+ *   LoanName?: string,
+ *   LoanRates?: string,
+ * }>} rows
  */
 function populateLoanRateTableFromApi(table, rows) {
   if (!table || !Array.isArray(rows)) return;
@@ -218,7 +223,12 @@ function populateLoanRateTableFromApi(table, rows) {
 
 /**
  * @param {HTMLTableElement} table
- * @param {Array<{ DepositNameEn?: string, DepositNameTh?: string, DepositName?: string, DepositRates?: string }>} rows
+ * @param {Array<{
+ *   DepositNameEn?: string,
+ *   DepositNameTh?: string,
+ *   DepositName?: string,
+ *   DepositRates?: string,
+ * }>} rows
  */
 function populateDepositRateTableFromApi(table, rows) {
   if (!table || !Array.isArray(rows)) return;
