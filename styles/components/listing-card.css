@@ -249,10 +249,6 @@
   .listing-card-desc p {
     font-size: var(--bbl-font-size-b2);
   }
-
-  .listing-card-pagination {
-    margin-inline: 0.625rem;
-  }
 }
 
 @media (width > 64rem) {
@@ -295,8 +291,5 @@
     font-size: 0.8rem;
     line-height: 1.04rem;
   }
-
-  .listing-card-pagination {
-    margin-inline: 0.625rem;
-  }
 }
+

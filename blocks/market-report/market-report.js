@@ -1,5 +1,12 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { getLang } from '../../scripts/scripts.js';
+
+function getPageLang() {
+  const first = window.location.pathname.split('/').filter(Boolean)[0];
+  if (first === 'th' || first === 'en') return first;
+  return getLang();
+}
 
 const ALL_MAPPED_CODES = new Set([
   'RR',
@@ -184,17 +191,26 @@ function createInterestRateRow(texts) {
 
 /**
  * @param {HTMLTableElement} table
- * @param {Array<{ LoanNameEn?: string, LoanName?: string, LoanRates?: string }>} rows
+ * @param {Array<{
+ *   LoanNameEn?: string,
+ *   LoanNameTh?: string,
+ *   LoanName?: string,
+ *   LoanRates?: string,
+ * }>} rows
  */
 function populateLoanRateTableFromApi(table, rows) {
   if (!table || !Array.isArray(rows)) return;
   const tbody = getTableBodyForDataRows(table);
   const existingRows = [...tbody.querySelectorAll('tr')];
   const colCount = columnCountForInterestTable(table, tbody);
+  const isThai = getPageLang() === 'th';
 
   rows.forEach((item, i) => {
+    const loanName = isThai
+      ? (item.LoanNameTh || item.LoanNameEn || item.LoanName || '')
+      : (item.LoanNameEn || item.LoanNameTh || item.LoanName || '');
     const texts = padToColumnCount(
-      [item.LoanNameEn ?? item.LoanName ?? '', item.LoanRates ?? ''],
+      [loanName, item.LoanRates ?? ''],
       colCount,
     );
     if (i < existingRows.length) {
@@ -207,17 +223,26 @@ function populateLoanRateTableFromApi(table, rows) {
 
 /**
  * @param {HTMLTableElement} table
- * @param {Array<{ DepositNameEn?: string, DepositName?: string, DepositRates?: string }>} rows
+ * @param {Array<{
+ *   DepositNameEn?: string,
+ *   DepositNameTh?: string,
+ *   DepositName?: string,
+ *   DepositRates?: string,
+ * }>} rows
  */
 function populateDepositRateTableFromApi(table, rows) {
   if (!table || !Array.isArray(rows)) return;
   const tbody = getTableBodyForDataRows(table);
   const existingRows = [...tbody.querySelectorAll('tr')];
   const colCount = columnCountForInterestTable(table, tbody);
+  const isThai = getPageLang() === 'th';
 
   rows.forEach((item, i) => {
+    const depositName = isThai
+      ? (item.DepositNameTh || item.DepositNameEn || item.DepositName || '')
+      : (item.DepositNameEn || item.DepositNameTh || item.DepositName || '');
     const texts = padToColumnCount(
-      [item.DepositNameEn ?? item.DepositName ?? '', item.DepositRates ?? ''],
+      [depositName, item.DepositRates ?? ''],
       colCount,
     );
     if (i < existingRows.length) {
