@@ -188,6 +188,10 @@
     }
 
     & fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper) > fieldset.radio-group-wrapper.radio-tabs:has(> .radio-wrapper:first-of-type input:checked) {
+        margin-bottom: var(--bbl-form-margin-15);
+    }
+
+    & fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper) > fieldset.radio-group-wrapper.radio-tabs:has(> .radio-wrapper:not(:first-of-type) input:checked) {
         margin-bottom: var(--bbl-form-margin-8);
     }
 
@@ -330,6 +334,10 @@
         margin-bottom: var(--bbl-form-margin-32);
     }
 
+    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) {
+        padding: 0 0 0 1.75rem;
+    }
+
     /* Placeholder text */
     & input::placeholder {
         font-family: var(--bbl-font-family-primary);
@@ -340,6 +348,7 @@
     /* Approval checkbox alignment */
     & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) input[type='checkbox'] {
         top: 0;
+        left:-4px;
     }
 
     /* Button panel */

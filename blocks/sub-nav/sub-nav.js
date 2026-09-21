@@ -154,16 +154,6 @@ export default function decorate(block) {
     }
   });
 
-  backButton.addEventListener('click', async (e) => {
-    e.preventDefault();
-    const parentUrl = await getParentPageUrl();
-    if (parentUrl) {
-      window.location.href = parentUrl;
-      return;
-    }
-    window.history.back();
-  });
-
   if (hasTabClass) {
     const rows = [...block.children];
     // Model order:
