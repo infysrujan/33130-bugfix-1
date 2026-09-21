@@ -928,63 +928,15 @@
 }
 
 .dynamic-board .db-remarks-content {
-  height: 9.375rem; /* 150px — collapsed height matching BBL */
-  overflow: hidden;
+  height: auto;
+  overflow: visible;
   font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-150);
   line-height: 1.675rem;
 }
 
-.dynamic-board .db-remarks-content.db-remarks-expanded {
-  height: auto;
-}
-
-
 .dynamic-board .db-remarks-content p {
   margin-bottom: 0;
-}
-
-/* Shadow sits at the bottom of the 150px content area */
-.dynamic-board .db-remarks-shadow {
-  position: absolute;
-  top: calc(9.375rem - var(--bbl-space-600));
-  left: 0;
-  right: 0;
-  height: var(--bbl-space-600);
-  background: linear-gradient(to bottom, transparent, var(--bbl-color-white));
-  pointer-events: none;
-}
-
-.dynamic-board .db-remarks-controls {
-  padding-top: var(--bbl-space-100);
-}
-
-.dynamic-board .db-remarks-toggle {
-  background: none;
-  border: none;
-  font-size: var(--bbl-font-size-b2);
-  color: var(--bbl-color-grey-150);
-  cursor: pointer;
-  padding: var(--bbl-space-050) 0;
-  display: flex;
-  align-items: center;
-  gap: var(--bbl-space-050);
-  opacity: 0.5;
-  width: fit-content;
-}
-
-.dynamic-board .db-remarks-arrow {
-  font-size: 0.375rem;
-  transition: transform 0.2s ease;
-}
-
-.dynamic-board .db-remarks-toggle:hover,
-.dynamic-board .db-remarks-arrow:hover {
-  opacity: 1;
-}
-
-.dynamic-board .db-remarks-toggle.is-expanded .db-remarks-arrow {
-  transform: rotate(180deg);
 }
 
 /* ── Tablet: 47.5rem+ (760px) ──────────────────────────────── */
@@ -1017,7 +969,7 @@
   }
 
   .dynamic-board .db-go-btn {
-    --db-go-btn-width: 8.75rem; /* 140px — tablet */
+    flex: auto;
   }
 
   .dynamic-board .db-controls-right {
@@ -1046,16 +998,6 @@
   .dynamic-board .db-filter-reset {
     flex: 0 0 11.5625rem;
     width: 11.5625rem;
-  }
-
-  .dynamic-board .db-remarks-content {
-    height: auto;
-    overflow: visible;
-  }
-
-  .dynamic-board .db-remarks-shadow,
-  .dynamic-board .db-remarks-controls {
-    display: none;
   }
 
 }
@@ -1116,13 +1058,8 @@
   }
 
   .dynamic-board .db-date-display,
-  .dynamic-board .db-time-select,
-  .dynamic-board .db-go-btn {
+  .dynamic-board .db-time-select {
     font-size: var(--bbl-font-size-b1);
-  }
-
-  .dynamic-board .db-go-btn {
-    --db-go-btn-width: 10rem; /* 160px — desktop */
   }
 
   .dynamic-board .db-remarks-content {
@@ -1141,9 +1078,7 @@
 
 @media print {
   .dynamic-board .db-controls-right,
-  .dynamic-board .db-filter-wrapper,
-  .dynamic-board .db-remarks-shadow,
-  .dynamic-board .db-remarks-controls {
+  .dynamic-board .db-filter-wrapper {
     display: none;
   }
 

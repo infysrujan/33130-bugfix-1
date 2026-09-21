@@ -545,10 +545,14 @@ export default async function decorate(block) {
             trackWrapper.style.transition = '';
           }, 700);
         } else if (circularOrDefaultImage || isSimpleCarousel) {
-          // Use viewport width — track may grow with flex children.
+          // Measure an actual slide, not the viewport/wrapper container: clientWidth
+          // and offsetWidth round to whole pixels, so when the true layout width is
+          // fractional (e.g. 966.4px), each translate step is off by that fraction
+          // and the error compounds with every slide change, gradually revealing a
+          // growing sliver of the next slide at the edge.
           const trackViewport = block.querySelector('.carousel-track-viewport');
-          const slideWidthPx = (trackViewport && slidesDefaultImage > 0)
-            ? trackViewport.clientWidth
+          const slideWidthPx = slideEls[0]
+            ? slideEls[0].getBoundingClientRect().width
             : (trackViewport || trackWrapper).offsetWidth;
           const cloneOffset = shouldCloneTrack ? 1 : 0;
           const isLoopingBackward = index === slideEls.length - 1 && prevIndex === 0;
@@ -760,7 +764,11 @@ export default async function decorate(block) {
           };
           requestAnimationFrame(() => applyMfFundCentering(0));
         } else if ((circularOrDefaultImage || isSimpleCarousel) && trackWrapper) {
-          const width = (trackViewport || trackWrapper).offsetWidth;
+          // Measure an actual slide instead of the viewport/wrapper — see setActive()
+          // above for why (avoids the rounded-width drift that grows with each slide).
+          const width = slideEls[0]
+            ? slideEls[0].getBoundingClientRect().width
+            : (trackViewport || trackWrapper).offsetWidth;
           trackWrapper.style.transform = `translate3d(${-width}px, 0px, 0px)`;
           trackWrapper.getBoundingClientRect();
           trackWrapper.style.transition = '';
@@ -828,8 +836,8 @@ export default async function decorate(block) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       const trackViewport = block.querySelector('.carousel-track-viewport');
       if (!trackWrapper) return;
-      const width = (trackViewport && slidesDefaultImage > 0)
-        ? trackViewport.clientWidth
+      const width = slideEls[0]
+        ? slideEls[0].getBoundingClientRect().width
         : (trackViewport || trackWrapper).offsetWidth;
       if (!width) return; // still hidden (display:none) — nothing meaningful to set yet
       const idx = currentIndex >= 0 ? currentIndex : 0;
