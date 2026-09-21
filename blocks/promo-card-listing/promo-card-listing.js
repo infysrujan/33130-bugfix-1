@@ -278,7 +278,7 @@ function setupPanel(
   if (disableFilters) {
     panel.innerHTML = `
       <div class="promo-selector-content pad-top-30 pad-bot-30">
-        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
+        <div class="listing-card-grid promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
         <div class="promo-selector-pagination"></div>
       </div>`;
   } else {
