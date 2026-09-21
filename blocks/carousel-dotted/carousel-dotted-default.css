@@ -170,9 +170,12 @@
   display: block;
 }
 
+.carousel-dotted .carousel-dotted-item.with-default-image .img-thumb picture,
 .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb img {
-  max-width: 100%;
-  height: calc(100vw);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /* Without-image slides don't need background */
@@ -900,11 +903,18 @@ p.text-large.text-light {
     color: var(--bbl-color-black);
   }
 
-  .carousel-dotted .carousel-dotted-item.with-circular-image,
-  .carousel-dotted .carousel-dotted-item.with-default-image {
+  .carousel-dotted .carousel-dotted-item.with-circular-image {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+  }
+
+  /* Stretch to the caption's height so the image always fills down to the
+     bottom border, regardless of the source image's own aspect ratio. */
+  .carousel-dotted .carousel-dotted-item.with-default-image {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
   }
 
   .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb {
