@@ -63,7 +63,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
   
   & :is(.form) {
-    min-height: 700px;
+    min-height: 994px;
   }
 
   /* Page + panel titles — form legend tokens (1.125rem live), global line-height */
