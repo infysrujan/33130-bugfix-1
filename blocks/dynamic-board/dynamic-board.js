@@ -300,27 +300,6 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
   state.mpToMode = 'month';
 }
 
-// ─── remarks expand/collapse (mobile only) ────────────────────────────────────
-function initRemarks(remarksEl, placeholders) {
-  const content = remarksEl.querySelector('.db-remarks-content');
-  const shadow = remarksEl.querySelector('.db-remarks-shadow');
-  const toggle = remarksEl.querySelector('.db-remarks-toggle');
-  if (!toggle) return;
-
-  const viewMore = placeholders?.dynamicBoardViewMore || 'View More';
-  const viewLess = placeholders?.dynamicBoardViewLess || 'View Less';
-  toggle.innerHTML = `<span class="db-remarks-label">${viewMore}</span><i class="icon-dropdown db-remarks-arrow" aria-hidden="true"></i>`;
-
-  let expanded = false;
-  toggle.addEventListener('click', () => {
-    expanded = !expanded;
-    content.classList.toggle('db-remarks-expanded', expanded);
-    if (shadow) shadow.hidden = expanded;
-    toggle.querySelector('.db-remarks-label').textContent = expanded ? viewLess : viewMore;
-    toggle.classList.toggle('is-expanded', expanded);
-  });
-}
-
 // ─── data loaders ─────────────────────────────────────────────────────────────
 async function loadUpdates(state) {
   try {
@@ -1027,10 +1006,6 @@ export default async function decorate(block) {
     </div>
     <div class="db-remarks" id="db-remarks">
       <div class="db-remarks-content">${authoring.remarksHtml}</div>
-      <div class="db-remarks-shadow" aria-hidden="true"></div>
-      <div class="db-remarks-controls">
-        <button type="button" class="db-remarks-toggle"></button>
-      </div>
     </div>`;
 
   [
@@ -1240,7 +1215,4 @@ export default async function decorate(block) {
 
   // ── print ──
   printBtn.addEventListener('click', () => printElement(block));
-
-  // ── remarks ──
-  initRemarks(block.querySelector('#db-remarks'), placeholders);
 }
