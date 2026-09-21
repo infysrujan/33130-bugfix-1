@@ -46,10 +46,7 @@
     height: 30.625rem;
   }
 
-
-  
-
-  .section:has(> .video-wrapper) {
+.section:has(> .video-wrapper) {
     padding-inline: 5.25rem;
   }
 }
