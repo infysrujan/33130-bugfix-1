@@ -28,6 +28,10 @@ body.bangkok-bankm-promotion .sub-title-medium {
   color:  var(--bbl-color-white);
 }
 
+body.bangkok-bankm-promotion .menu-banner .mobile-tools :is(h1, h2, h3, h4, h5, h6) {
+    color: black;
+}
+
 body.bangkok-bankm-promotion .menu-banner .sub-title-medium.line::after {
   background: var(--bbl-color-white);
 }
