@@ -1017,7 +1017,7 @@
   }
 
   .dynamic-board .db-go-btn {
-    --db-go-btn-width: 8.75rem; /* 140px — tablet */
+    --db-go-btn-width: 7.5rem; /* 120px — tablet */
   }
 
   .dynamic-board .db-controls-right {
@@ -1116,13 +1116,8 @@
   }
 
   .dynamic-board .db-date-display,
-  .dynamic-board .db-time-select,
-  .dynamic-board .db-go-btn {
+  .dynamic-board .db-time-select {
     font-size: var(--bbl-font-size-b1);
-  }
-
-  .dynamic-board .db-go-btn {
-    --db-go-btn-width: 10rem; /* 160px — desktop */
   }
 
   .dynamic-board .db-remarks-content {
