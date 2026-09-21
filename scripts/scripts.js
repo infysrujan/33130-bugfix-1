@@ -133,6 +133,68 @@ export function createElementFromHTML(html, doc) {
   template.innerHTML = html.trim();
   return template.content.firstElementChild;
 }
+function loadStylesheet(href) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`head > link[href="${href}"]`)) {
+      resolve();
+      return;
+    }
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.media = 'print';
+    link.onload = () => {
+      link.media = 'all';
+      resolve();
+    };
+    link.onerror = reject;
+    document.head.append(link);
+  });
+}
+
+function activateHeadStylesheet() {
+  const link = document.querySelector('head > link[href="/styles/styles.css"]');
+  if (!link) return Promise.resolve();
+  return new Promise((resolve) => {
+    const apply = () => {
+      link.media = 'all';
+      resolve();
+    };
+    if (link.sheet) apply();
+    else link.addEventListener('load', apply, { once: true });
+  });
+}
+
+function loadPageStyles() {
+  const base = `${window.hlx.codeBasePath}/styles`;
+  [
+    'theme-wealth.css',
+    'theme-private.css',
+    'theme-bbm.css',
+    'theme-global-section.css',
+    'overlay.css',
+    'calendar-picker.css',
+    'error-page.css',
+    'custom-rte.css',
+  ].forEach((file) => loadStylesheet(`${base}/${file}`));
+  return Promise.all([
+    activateHeadStylesheet(),
+    ...[
+      'tokens/breakpoints.css',
+      'tokens/colors.css',
+      'tokens/typography.css',
+      'tokens/spacing.css',
+      'tokens/border-radius.css',
+      'buttons.css',
+      'background.css',
+      'icomoon.css',
+      'main.css',
+    ].map((file) => loadStylesheet(`${base}/${file}`)),
+  ]);
+}
+
+const pageStylesReady = loadPageStyles();
+
 /**
  * load fonts.css and set a session storage flag
  */
@@ -348,6 +410,83 @@ export function removePictureOptimizationParams(root) {
   });
 }
 
+// function preloadHeroLcpImage(doc) {
+//   console.log(doc)
+//   const heroBlock = doc.querySelector('main .hero-banner.block');
+//   console.log(
+//     [...doc.querySelectorAll('main .block')].map((block) => block.className)
+//   );
+//   if (!heroBlock) return;
+
+//   const rows = [...heroBlock.children];
+
+//   // Find the first/default hero row.
+//   // The hero block may contain a variant row before the actual slides.
+//   const heroRows = rows.slice(1);
+
+//   if (!heroRows.length) return;
+
+//   let defaultRow = heroRows.find(
+//     (row) => row.children[1]?.textContent?.trim() === 'true',
+//   );
+
+//   if (!defaultRow) {
+//     defaultRow = heroRows[0];
+//   }
+
+//   let col = 1;
+
+//   // Skip isDefault column
+//   const possibleIsDefault = defaultRow.children[col]?.textContent?.trim();
+
+//   if (possibleIsDefault === 'true' || possibleIsDefault === 'false') {
+//     col += 1;
+//   }
+
+//   // Desktop image
+//   col += 1;
+
+//   // Mobile image
+//   const mobileImageCell = defaultRow.children[col];
+
+//   const mobilePicture = mobileImageCell?.querySelector('picture');
+
+//   if (!mobilePicture) return;
+
+//   const mobileImg = mobilePicture.querySelector('img');
+
+//   if (!mobileImg) return;
+
+//   // Get the actual mobile source from <source>
+//   const mobileSource = [...mobilePicture.querySelectorAll('source')]
+//     .find((source) => {
+//       const media = source.getAttribute('media') || '';
+//       return media.includes('max-width') || media.includes('47.5rem');
+//     });
+
+//   const srcset = mobileSource?.getAttribute('srcset');
+
+//   const href = srcset
+//     ? srcset.split(',')[0].trim().split(/\s+/)[0]
+//     : mobileImg.getAttribute('src');
+
+//   if (!href) return;
+
+//   const existing = document.head.querySelector(
+//     `link[rel="preload"][as="image"][href="${CSS.escape(href)}"]`,
+//   );
+
+//   if (existing) return;
+
+//   const preload = document.createElement('link');
+
+//   preload.rel = 'preload';
+//   preload.as = 'image';
+//   preload.href = href;
+//   preload.setAttribute('fetchpriority', 'high');
+
+//   document.head.appendChild(preload);
+// }
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -360,8 +499,10 @@ async function loadEager(doc) {
   decorateOgImage();
   const main = doc.querySelector('main');
   if (main) {
+    // preloadHeroLcpImage(doc);
     decorateMain(main);
     promoteFirstImage(main);
+    await pageStylesReady;
     document.body.classList.add('appear');
     await Promise.all([
       loadSection(main.querySelector('.section'), waitForFirstImage),
