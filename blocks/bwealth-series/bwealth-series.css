@@ -1383,11 +1383,6 @@ body.bwealth-series-modal-open {
     flex-direction: column;
   }
 
-  .bwealth-series-field-text,
-  .bwealth-series-dropdown-current {
-    font-size: var(--bbl-font-size-b1-desktop);
-  }
-
   .bwealth-series-field-input::placeholder {
     font-size: var(--bbl-font-size-h4-desktop);
   }
