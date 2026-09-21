@@ -62,11 +62,6 @@
   white-space: nowrap;
 }
 
-.credit-card-comparator .inner-container .button {
-  max-width: 100%;
-  width: 100%;
-}
-
 /* ── Each product card — inline-table so thumb and info sit side by side ─── */
 
 .credit-card-comparator .product-comparing {
@@ -188,10 +183,6 @@
   .credit-card-comparator .compare-group {
     overflow-x: visible;
     white-space: normal;
-  }
-
-  .credit-card-comparator .inner-container .button {
-    max-width: 8.4375rem;
   }
 
   .credit-card-comparator .product-comparing {
