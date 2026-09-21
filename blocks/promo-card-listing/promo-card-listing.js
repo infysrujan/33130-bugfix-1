@@ -622,7 +622,7 @@ export default async function decorate(block) {
     const dataCategories = dataSet?.categories || [];
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
-    const isHighlightsPanel = isBbm && !forcedCardType
+    const isHighlightsPanel = isBbm
       && (index === 0 || isTopPromotionsLabel(tabText, placeholders));
     let category = tabTags || '';
     if (!category) category = isHighlightsPanel ? tabText : forcedCardType && NO_MATCH_VALUE;
