@@ -11,7 +11,7 @@
   position: relative;
   width: 100%;
   padding-top: 0;
-  height: 13.375rem;
+  height: clamp(13.375rem, -1.373rem + 55.522vw, 25rem);
   overflow: hidden;
   background-color: var(--bbl-color-black);
 }
@@ -33,11 +33,17 @@
   }
 
   .video .video-embed {
-    height: 25.625rem;
+    height: clamp(25rem, -34.375rem + 125vw, 25.625rem);
   }
 
   .section:has(> .video-wrapper) {
     padding-inline: 3rem;
+  }
+}
+
+@media (width > 48rem) {
+  .video .video-embed {
+    height: clamp(25.625rem, 10.625rem + 31.25vw, 30.625rem);
   }
 }
 
