@@ -1,9 +1,11 @@
 import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
-import { filterExcludeFields } from './functions.js';
+import { filterExcludeFields, replaceUndefined } from './functions.js';
 
 // Strip _exclude fields from AEM forms submit payload (afb-runtime posts via fetch internally).
 // Note: afb-runtime already filters these out before computing the payload hash, so this is a
 // safety net for any other submission path that still carries _exclude fields.
+// Note: undefined values cannot be repaired here — JSON.stringify has already dropped those keys
+// by the time the body reaches fetch. Sanitize before submit (see customSubmit in functions.js).
 (function installExcludeFieldsInterceptor() {
   if (window.aemFormExcludeInterceptor) return;
   window.aemFormExcludeInterceptor = true;
@@ -133,7 +135,8 @@ export function submitFailure(_e, form) {
   form.prepend(errorMessage);
   closeModalsAndScrollTo(errorMessage);
   form.setAttribute('data-submitting', 'false');
-  form.querySelector('button[type="submit"]').disabled = false;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = false;
 }
 
 function generateUnique() {
@@ -143,16 +146,21 @@ function generateUnique() {
 function getFieldValue(fe, payload) {
   if (fe.type === 'radio') {
     return fe.form.elements[fe.name].value;
-  } if (fe.type === 'checkbox') {
+  }
+  if (fe.type === 'checkbox') {
     if (payload[fe.name]) {
       if (fe.checked) {
         return `${payload[fe.name]},${fe.value}`;
       }
       return payload[fe.name];
-    } if (fe.checked) {
+    }
+    if (fe.checked) {
       return fe.value;
     }
-  } else if (fe.type !== 'file') {
+    // Unchecked checkbox with no previous value: was implicitly undefined before
+    return '';
+  }
+  if (fe.type !== 'file') {
     // For date fields with a valueFormat, use the pre-formatted submitValue
     if (fe.dataset.submitValue !== undefined && fe.dataset.valueFormat) {
       return fe.dataset.submitValue;
@@ -174,7 +182,9 @@ function constructPayload(form) {
       }
     }
   });
-  return { payload };
+  // Replace any undefined value with "" so the key is not dropped by JSON.stringify.
+  // Pass { includeNull: true } if null (e.g. file inputs) should also become "".
+  return { payload: replaceUndefined(payload) };
 }
 
 async function prepareRequest(form) {
@@ -205,6 +215,8 @@ async function submitDocBasedForm(form, captcha) {
       token = await captcha.getToken();
       body.data['g-recaptcha-response'] = token;
     }
+    // Final safety net right before serialization (covers anything added after constructPayload)
+    body.data = replaceUndefined(body.data);
     const response = await fetch(url, {
       method: 'POST',
       headers,

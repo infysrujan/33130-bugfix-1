@@ -12,17 +12,64 @@ function getFullName(firstname, lastname) {
 }
 
 /**
- * Custom submit function
+ * Recursively replaces undefined values with "" (optionally null as well).
+ * Only plain objects and arrays are walked; File, Date, FormData, etc. are left untouched.
+ * JSON.stringify silently drops keys whose value is undefined, so this must run
+ * BEFORE the payload is serialized / submitted.
+ *
+ * @private
+ * @param {*} data - value to sanitize
+ * @param {{includeNull?: boolean}} [options]
+ * @returns {*} sanitized copy
+ */
+function replaceUndefined(data, { includeNull = false } = {}) {
+  if (data === undefined || (includeNull && data === null)) return '';
+
+  if (Array.isArray(data)) {
+    return data.map((item) => replaceUndefined(item, { includeNull }));
+  }
+
+  if (data && typeof data === 'object') {
+    const proto = Object.getPrototypeOf(data);
+    if (proto === Object.prototype || proto === null) {
+      return Object.keys(data).reduce((acc, key) => {
+        acc[key] = replaceUndefined(data[key], { includeNull });
+        return acc;
+      }, {});
+    }
+  }
+
+  return data;
+}
+
+/**
+ * Custom submit function.
+ * 1. Validates the form (stops if any field is invalid)
+ * 2. Exports the form data
+ * 3. Converts array values to comma-separated strings
+ * 4. Replaces any undefined value with ""
+ * 5. Submits the sanitized data
+ *
  * @param {scope} globals
  */
 function submitFormArrayToString(globals) {
-  const data = replaceUndefined(globals.functions.exportData());
+  // Early exit on invalid form — runtime marks the invalid fields and shows messages
+  const errors = globals.functions.validate();
+  if (Array.isArray(errors) && errors.length > 0) {
+    return;
+  }
+
+  const data = globals.functions.exportData();
   Object.keys(data).forEach((key) => {
     if (Array.isArray(data[key])) {
       data[key] = data[key].join(',');
     }
   });
-  globals.functions.submitForm(data, true, 'application/json');
+
+  const cleanData = replaceUndefined(data);
+
+  // validate_form stays true as a final gate inside the runtime
+  globals.functions.submitForm(cleanData, true, 'application/json');
 }
 
 /**
@@ -155,7 +202,7 @@ async function addCsrfToken(payload) {
 
   if (token) {
     return {
-      body: replaceUndefined(payload),
+      body: payload,
       headers: {
         'X-CSRF-Token': token,
       },
@@ -1189,30 +1236,6 @@ function formatNumberWithCommas(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-/**
- * Recursively replaces undefined values with null in an object
- * @param {any} value - The value to process
- * @returns {any} - Value with undefined replaced by null
- */
-function replaceUndefined(value) {
-  if (value === undefined) return '';            // use null if the API wants null
-  if (Array.isArray(value)) return value.map(replaceUndefined);
-  if (value !== null && typeof value === 'object') {
-    return Object.fromEntries(
-      Object.entries(value).map(([k, v]) => [k, replaceUndefined(v)]),
-    );
-  }
-  return value;
-};
-
-/**
- * @name submitSanitized
- * @param {scope} globals
- */
-function submitSanitized(globals) {
-  const data = replaceUndefined(globals.functions.exportData());
-  globals.functions.submitForm(data, true, 'application/json');
-}
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -1228,6 +1251,7 @@ export {
   addCsrfToken,
   addCustomHeader,
   filterExcludeFields,
+  replaceUndefined,
   generatePayloadHash,
   fetchBranchesByProvince,
   getBranchEnum,
@@ -1251,5 +1275,4 @@ export {
   validateMaxCheckbox,
   replaceother,
   formatNumberWithCommas,
-  submitSanitized,
 };
