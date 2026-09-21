@@ -71,7 +71,6 @@
 
 .credit-card-form main .section.form-container.custom-forms .form .form-message.success-message {
   line-height: 1.1244rem;
-  white-space: normal;
 }
 
 @media (width < 47.5rem) {
