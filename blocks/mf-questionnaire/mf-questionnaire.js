@@ -8,6 +8,11 @@ import buildThumbSquareList from '../../scripts/utils/thumb-square-list.js';
 
 const COOKIE_NAME = 'mfSurveyAnswers';
 
+// Screen 1 risk options are always authored in this fixed order, regardless of locale —
+// mf-results.js's RISK_NUMERIC_RANGES keys on these same 5 values, so the stored answer
+// must stay locale-independent instead of being derived from the (translated) label text.
+const RISK_VALUES = ['low', 'medium-to-low', 'medium-to-high', 'high', 'very-high'];
+
 function getSurveyAnswers() {
   try {
     const match = document.cookie.split('; ').find((row) => row.startsWith(`${COOKIE_NAME}=`));
@@ -189,10 +194,10 @@ export default async function decorate(block) {
     const wrap = document.createElement('div');
     wrap.className = 'mfq-screen mfq-risk-options';
 
-    const listItems = cfg.screen1RiskItems.map(({ iconEl, label }) => ({
+    const listItems = cfg.screen1RiskItems.map(({ iconEl, label }, index) => ({
       iconEl,
       label,
-      dataset: { riskValue: label.toLowerCase().replace(/\s+/g, '-') },
+      dataset: { riskValue: RISK_VALUES[index] },
     }));
 
     const cardList = buildThumbSquareList(listItems, document);

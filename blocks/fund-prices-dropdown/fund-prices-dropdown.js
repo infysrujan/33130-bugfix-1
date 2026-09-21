@@ -49,6 +49,12 @@ function isToBeforeFrom(fromDate, toDate) {
   return toDate < fromDate;
 }
 
+function isSameCalendarDay(a, b) {
+  return a.getFullYear() === b.getFullYear()
+    && a.getMonth() === b.getMonth()
+    && a.getDate() === b.getDate();
+}
+
 function isWeekendOrAfterYesterday(date) {
   const day = date.getDay();
   if (day === 0 || day === 6) return true;
@@ -696,6 +702,25 @@ export default async function decorate(block) {
     value: drTo,
     isDateDisabled: isWeekendOrAfterYesterday,
     onChange: (d) => { drTo = d; validateAndRenderDetail(); },
+  });
+
+  drFromInput.addEventListener('blur', () => {
+    window.setTimeout(() => {
+      const value = drFromPicker.getValue();
+      if (value && !isSameCalendarDay(value, drFrom)) {
+        drFrom = value;
+        validateAndRenderDetail();
+      }
+    }, 0);
+  });
+  drToInput.addEventListener('blur', () => {
+    window.setTimeout(() => {
+      const value = drToPicker.getValue();
+      if (value && !isSameCalendarDay(value, drTo)) {
+        drTo = value;
+        validateAndRenderDetail();
+      }
+    }, 0);
   });
 
   /* Period dropdown */

@@ -13458,6 +13458,10 @@
                 "value": "cells-right-aligned-except-first"
               },
               {
+                "name": "Cells Center Aligned Last Column",
+                "value": "cells-center-aligned-last-column"
+              },
+              {
                 "name": "Cells Middle Aligned",
                 "value": "cells-middle-aligned"
               },

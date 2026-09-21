@@ -22,6 +22,14 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
+function formatPrintTimestamp(date = new Date()) {
+  const shortYear = String(date.getFullYear()).slice(-2);
+  const time = date.toLocaleTimeString('en-US', {
+    hour: 'numeric', minute: '2-digit', hour12: true,
+  });
+  return `${date.getMonth() + 1}/${date.getDate()}/${shortYear}, ${time}`;
+}
+
 // ─── formatting ───────────────────────────────────────────────────────────────
 function fmtPrice(val) {
   if (!val || val === '-') return '-';
@@ -35,8 +43,7 @@ function fmtPct(val) {
   return Number.isNaN(n) ? val : `${n.toFixed(2)}%`;
 }
 
-// Tolerates minor authoring variations like {{ SYMBOL }} or {{symbol}}, and
-// warns instead of silently 404ing when the template is missing the token.
+// Tolerates authoring variations like {{ SYMBOL }} or {{symbol}}.
 const SYMBOL_PLACEHOLDER = /\{\{\s*SYMBOL\s*\}\}/i;
 
 function buildDownloadHref(downloadUrl, symbol) {
@@ -47,9 +54,8 @@ function buildDownloadHref(downloadUrl, symbol) {
     return downloadUrl;
   }
   const resolved = downloadUrl.replace(SYMBOL_PLACEHOLDER, symbol.toLowerCase());
-  // A path missing its leading slash resolves relative to the current page's
-  // directory (e.g. /en/...) instead of the site root, so force it root-relative
-  // here rather than relying on every config value being typed exactly right.
+  // Force root-relative so a config value without a leading slash doesn't
+  // resolve under the current page's directory instead of the site root.
   return /^(https?:)?\//.test(resolved) ? resolved : `/${resolved}`;
 }
 
@@ -188,7 +194,9 @@ function renderTable(tbodySel, tbodyAll, state) {
     tbodyAll.innerHTML = `<tr><td colspan="99" class="db-no-results">${state.placeholders?.dynamicBoardNoResults || 'No results found'}</td></tr>`;
     return;
   }
-  const selRates = state.rates.filter((r) => state.selectedIds.includes(String(r.AutoID)));
+  const selRates = state.selectedIds
+    .map((id) => state.rates.find((r) => String(r.AutoID) === id))
+    .filter(Boolean);
   const unsel = state.rates.filter((r) => !state.selectedIds.includes(String(r.AutoID)));
   unsel.sort((a, b) => {
     const av = sortValue(a, state.sortKey, state.isThai);
@@ -280,8 +288,8 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
         </div>`).join('')}
       <div class="db-filter-divider"></div>
       <div class="db-filter-actions">
-        <button type="button" class="db-filter-apply">${placeholders?.dynamicBoardApplyLabel || 'Apply'}</button>
-        <button type="button" class="db-filter-reset">${escapeHtml(authoring.clearFilterLabel)}</button>
+        <button type="button" class="db-filter-apply button-m primary">${placeholders?.dynamicBoardApplyLabel || 'Apply'}</button>
+        <button type="button" class="db-filter-reset button-m secondary">${escapeHtml(authoring.clearFilterLabel)}</button>
       </div>
     </div>`;
 
@@ -500,30 +508,11 @@ function wireFilterEvents(
 }
 
 // ─── print ────────────────────────────────────────────────────────────────────
-/** Same approach as blocks/bcap/bcap.js: print an isolated document instead of
- * the live page, so the fixed header/nav and the site's max-width layout
- * don't shrink the table or swallow the logo.
- *
- * COLUMN SIZING STRATEGY (print):
- * The rule is simple and browser-enforced — ONLY the Name column may wrap;
- * every other column stays on a single line, sized end-to-end to its content.
- * This is achieved with table-layout: auto + white-space: nowrap on every
- * column except Name (which is white-space: normal and absorbs the leftover
- * width). No JS width measurement / colgroup is needed: the browser sizes each
- * nowrap column to exactly fit its longest single-line value, and Name takes
- * whatever remains. Tradeoff (accepted): if the combined natural width of all
- * non-Name columns ever exceeds the page, the table could overflow, since only
- * Name can relieve width pressure. With this board's short numeric/date values
- * that doesn't happen at the chosen print font-size. */
+// Prints an isolated document (like blocks/bcap/bcap.js), since the live
+// page's fixed header/nav and max-width layout would shrink the table.
 function printElement(block) {
-  // Capture real computed styles from the LIVE (un-cloned) elements before
-  // any cloning/stripping happens below. Baking these actual resolved
-  // values into printCss — instead of hardcoded rem guesses — is what makes
-  // the print date/time box and the "Updated as of" label match the live
-  // board, since it reads whatever this site's real --bbl-* tokens resolve
-  // to. NOTE: the table header background is intentionally NOT read from the
-  // live header — the client PDF wants a plain WHITE header (not the live
-  // blue tint), so that's forced to white in printCss below.
+  // Captures real computed styles from the LIVE elements before cloning, so
+  // printCss matches the live board instead of guessing rem values.
   const liveDateInput = block.querySelector('.db-date-display');
   const liveTimeTrigger = block.querySelector('.db-time-trigger');
   const liveCalLabel = block.querySelector('.db-cal-label');
@@ -535,9 +524,8 @@ function printElement(block) {
   const timeCs = cs(liveTimeTrigger);
   const calLabelCs = cs(liveCalLabel);
 
-  // Header text color/weight still come from live (only the *background* is
-  // forced white); black is a safe fallback matching the client PDF.
-  const headerColor = headerCs?.color || '#000000';
+  // Header text color/weight still come from live; black is a safe fallback.
+  const headerColor = headerCs?.color || 'var(--bbl-color-black)';
   const headerFontWeight = headerCs?.fontWeight || '700';
   const dateBorder = dateCs
     ? `${dateCs.borderTopWidth} solid ${dateCs.borderTopColor}`
@@ -551,8 +539,7 @@ function printElement(block) {
   const section = block.closest('.section') || block;
   const content = section.cloneNode(true);
 
-  // Heading centering is handled separately below via the always-present
-  // `table-container` class rather than depending on authored classes here.
+  // Ensures heading-centering CSS applies regardless of authored classes.
   const sectionClasses = new Set(content.classList);
   sectionClasses.add('table-container');
 
@@ -566,11 +553,8 @@ function printElement(block) {
     '.db-td-dl',
   ].join(', ')).forEach((el) => el.remove());
 
-  // After the download link (.db-td-dl) is stripped above, the Maturity Date
-  // cell still contains the leftover whitespace/text nodes that surrounded
-  // it, which render as an empty second line — that's what pushed the date
-  // to the TOP of a too-tall cell. Collapse each maturity cell down to just
-  // its trimmed date text so the cell is exactly one line tall.
+  // Strip leftover whitespace left behind by the removed .db-td-dl link,
+  // which otherwise renders as an empty second line in the cell.
   content.querySelectorAll('.db-td-maturity').forEach((td) => {
     td.textContent = td.textContent.trim();
   });
@@ -582,13 +566,9 @@ function printElement(block) {
     td.removeAttribute('data-title');
   });
 
-  // The live header's Symbol column has colspan=2 for layout reasons the
-  // body doesn't match (only one Symbol cell, since the checkbox column is
-  // stripped above) — fixed by position (first header cell only), not by
-  // matching rowspan/colspan shape generally. Matching by shape alone could
-  // also strip a legitimate colspan from a different column further down
-  // the row if it happened to have the same rowspan="2" colspan="2" shape,
-  // which would desync the header's column count from the body's.
+  // Symbol header's colspan=2 no longer matches the body once the checkbox
+  // column is stripped above; target it by position, not shape, so a
+  // same-shaped column elsewhere isn't stripped by mistake.
   const symbolHeaderCell = content.querySelector(
     '.db-table thead tr:first-child th:first-child[rowspan="2"][colspan="2"]',
   );
@@ -596,29 +576,24 @@ function printElement(block) {
 
   content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
 
-  // Authored rich text renders the first remark paragraph's bold as an
-  // inline style; strip it here (on the print clone only) so font-weight
-  // is controlled by printCss instead.
+  // Strip the authored inline bold so printCss controls font-weight instead.
   content.querySelector('.db-remarks-content p:first-child')?.removeAttribute('style');
 
-  // cloneNode carries over an <input>'s live value as a DOM property, but
-  // content.innerHTML below only serializes attributes — promote it so the
-  // date survives that string round-trip into the print window.
+  // Promote the live <input> value to an attribute so it survives the
+  // innerHTML string round-trip into the print window.
   const dateInput = content.querySelector('.db-date-display');
   if (dateInput) dateInput.setAttribute('value', dateInput.value);
 
-  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+  // Prefer the dedicated black print logo; fall back to the white nav logo.
+  const printLogoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img');
+  const logoEl = printLogoEl
     || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  if (!logoEl) return;
-  // A cloned <picture>'s relative srcset can fail to resolve in the print
-  // window, so use the browser's already-resolved absolute image URL.
-  const logoImg = logoEl.tagName === 'IMG' ? logoEl : logoEl.querySelector('img');
-  if (!logoImg) return;
-  const logoSrc = logoImg.currentSrc || logoImg.src;
-  const brandLogo = `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoImg.alt || 'Bangkok Bank')}">`;
+  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+  const fallbackLogoClass = printLogoEl ? '' : ' print-logo-fallback';
 
   const pageTitle = section.querySelector('.default-content-wrapper > :is(h1, h2, h3, h4, h5, h6)')
     ?.textContent?.trim() || document.querySelector('h1')?.textContent?.trim() || 'Print';
+  const printTimestamp = formatPrintTimestamp();
 
   const printWindow = window.open('', '', 'height=500,width=800');
 
@@ -628,9 +603,8 @@ function printElement(block) {
       margin: 8mm;
     }
 
-    /* Chrome's "Background graphics" print toggle is off by default and
-       would otherwise drop background-color/-image, e.g. the underline
-       below, even though it renders fine in a normal on-screen view. */
+    /* Forces background-color/-image to print even with Chrome's
+       "Background graphics" toggle off (e.g. the underline below). */
     html, body, * {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
@@ -650,28 +624,57 @@ function printElement(block) {
       background-color: transparent;
     }
 
+    .header-wrapper,
+    .header,
+    .header-content,
+    .main-nav-desktop {
+      background: transparent;
+      min-height: 0;
+    }
+
     .brand-logo-container {
-      width: 12.5rem;
-      height: 3.125rem;
-      margin-block: 3rem 1rem;
+      width: 10rem;
+      height: 2.5rem;
+      margin: 0.25rem 0 1rem;
     }
 
     .brand-logo-container img {
       display: block;
-      width: 12.5rem;
-      height: 3.125rem;
+      width: 10rem;
+      height: 2.5rem;
       object-fit: contain;
+      object-position: left center;
     }
 
-    /* Scoped to the always-present .table-container rather than
-       center-title/underline-title, so it centers regardless of authoring.
-       line-height set explicitly (1.2) — without it the two title lines
-       inherited a too-tight leading in the print popup and looked cramped. */
+    .brand-logo-container.print-logo-fallback img {
+      filter: brightness(0);
+    }
+
+    /* Rendered in-document since the isolated print window reports itself
+       as about:blank, so Chrome's native print header can't be used. */
+    .dynamic-board-print-masthead {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: start;
+      min-height: 0.75rem;
+      font-family: var(--bbl-font-family-primary, Arial, sans-serif);
+      font-size: 0.5rem;
+      line-height: 1.2;
+      color: var(--bbl-color-black);
+    }
+
+    .dynamic-board-print-masthead__title {
+      text-align: center;
+      font-weight: 700;
+    }
+
+    /* Scoped to the always-present .table-container so it centers regardless
+       of authoring; explicit line-height avoids cramped leading in print. */
     .table-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
       position: relative;
       margin: 0;
       padding: 0 0 0.75rem;
-      font-size: 2rem;
+      font-size: var(--bbl-font-size-h2-desktop);
       line-height: 1.2;
       text-align: center;
     }
@@ -684,7 +687,7 @@ function printElement(block) {
       transform: translateX(-50%);
       width: 2.25rem;
       height: 0.125rem;
-      background-color: #9E9E9E;
+      background-color: var(--bbl-color-grey-150);
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
@@ -693,38 +696,34 @@ function printElement(block) {
       margin-top: 0.5rem;
     }
 
-    /* A4's print width falls under the 47.5rem breakpoint where these are
-       each width:100% (stacked), so shrink them to sit side by side. */
+    /* Below A4's print width these stack at width:100% — shrink to sit side by side. */
     .dynamic-board .db-date-wrap,
     .dynamic-board .db-time-wrap {
       flex: 0 1 auto;
     }
 
     .dynamic-board .db-date-wrap {
-      width: 160px;
+      width: 10rem;
     }
 
     .dynamic-board .db-time-wrap {
-      width: 100px;
+      width: 6.25rem;
     }
 
-    /* "Updated as of" label — real weight/size/color captured from the live
-       .db-cal-label, so it matches instead of being missing/unstyled. */
+    /* "Updated as of" label — weight/color captured from the live .db-cal-label. */
     .dynamic-board .db-cal-label {
       font-weight: ${calLabelWeight};
-      font-size: 12px;
+      font-size: var(--bbl-font-size-b3-mobile);
       color: ${calLabelColor};
       margin-bottom: 0.375rem;
     }
 
-    /* Date/time boxes — real border/radius/font captured from the live
-       .db-date-display and .db-time-trigger, so the bordered box shape
-       that was missing in print now actually renders. */
+    /* Bordered box shape captured from the live .db-date-display/.db-time-trigger. */
     .dynamic-board .db-date-display,
     .dynamic-board .db-time-trigger {
       border: ${dateBorder};
       border-radius: ${dateRadius};
-      font-size: 12px;
+      font-size: var(--bbl-font-size-b3-mobile);
       color: ${dateColor};
       height: 2rem;
       box-sizing: border-box;
@@ -736,42 +735,32 @@ function printElement(block) {
 
     .dynamic-board .db-table {
       width: 100%;
-      /* table-layout: AUTO (not fixed). Combined with white-space: nowrap on
-         every column except Name below, the browser sizes each non-Name
-         column to exactly fit its longest single-line value (end-to-end, no
-         wrapping) and lets Name — the only wrapping column — absorb the
-         remaining width. This directly enforces the rule "only Name wraps".
-         No colgroup / JS width measurement is used. */
+      min-width: 0;
       table-layout: auto;
-      /* Thin 1px outer border to match the reference PDF. Single border only,
-         no outline layered on top. */
-      border: 1px solid #EBEBEB;
+      border: 0.0625rem solid var(--bbl-color-grey-18);
       border-collapse: collapse;
       font-size: 0.625rem;
       line-height: 1.2;
-      color: #46464D;
+      color: var(--bbl-color-grey-90);
     }
 
-    /* Default: every cell stays on ONE line (end-to-end). Name is the sole
-       exception, overridden below. */
+    /* Every cell stays on one line; Name (below) is the sole exception. */
     .dynamic-board .db-table th,
     .dynamic-board .db-table td {
       white-space: nowrap;
     }
 
-    /* Name is the ONLY column allowed to wrap — it takes the leftover width
-       and breaks long names onto multiple lines. min-width:0 clears the base
-       stylesheet's 12rem floor so auto layout can size it freely. */
+    /* min-width:0 clears the base stylesheet's 12rem floor so Name can wrap. */
     .dynamic-board .db-table td.db-td-name {
       white-space: normal;
       overflow-wrap: break-word;
       word-break: break-word;
       min-width: 0;
-      width: 176px;
+      width: 11rem;
     }
     /* The Name header cell should also be allowed to wrap if needed. */
     .dynamic-board .db-table thead th.db-th-name {
-      white-space: normal !important;
+      white-space: normal;
     }
 
     .dynamic-board .db-table thead,
@@ -783,35 +772,26 @@ function printElement(block) {
     .dynamic-board .db-table thead th,
     .dynamic-board .db-table thead tr:first-child th,
     .dynamic-board .db-table thead tr:last-child th {
-      /* Client PDF wants a plain WHITE header (not the live blue tint), so
-         force white here rather than reading the live header background.
-         Chrome's print engine frequently drops a background painted at the
-         thead/tr level even with print-color-adjust: exact set globally —
-         setting it directly on each th is what actually survives printing. */
-      background-color: #FFFFFF;
+      /* Plain white header per the client PDF (not the live blue tint) — set
+         directly on each th since a thead/tr-level background can drop out
+         of print even with print-color-adjust: exact set globally. */
+      background-color: var(--bbl-color-white);
       background-image: none;
       color: ${headerColor};
       font-size: 0.625rem;
-      font-weight: ${headerFontWeight} !important;
+      font-weight: ${headerFontWeight};
       height: auto;
-      /* Headers may wrap onto 2 lines (e.g. "Indicative Yield* (%)") — that's
-         fine and matches the reference. Tight line-height keeps the header
-         row from growing too tall. */
-      white-space: normal !important;
+      /* Headers may wrap onto 2 lines; tight line-height keeps the row compact. */
+      white-space: normal;
       line-height: 1.15;
       padding: 0.2rem 0.3rem;
       vertical-align: middle;
-      /* Thin 1px borders to match the reference. */
-      border: 0.0625rem solid var(--bbl-color-grey-20) !important;
+      border: 0.0625rem solid var(--bbl-color-grey-20);
     }
 
     .dynamic-board .db-table tbody td {
-      /* Thin 1px borders to match the reference. */
-      color: black !important;
-      /* Compact rows: kill the live table's min-height: 4.6875rem floor and
-         keep padding tight so rows are only as tall as their content needs.
-         Slightly wider horizontal padding so single-line columns aren't
-         cramped edge-to-edge. */
+      color: var(--bbl-color-black);
+      /* Compact rows: clears the live table's 4.6875rem min-height floor. */
       padding: 0.15rem 0.3rem;
       vertical-align: middle;
       font-size: 0.625rem;
@@ -821,17 +801,17 @@ function printElement(block) {
     }
 
     .dynamic-board .db-td-symbol {
-      color: #0064FF !important;
+      color: var(--bbl-color-active-blue);
     }
 
-    /* Same as the thead case above: set row-striping/selection backgrounds
-       on the td itself, since a tr-level background can fail to print. */
+    /* Set row-striping/selection backgrounds on the td, like the thead case
+       above, since a tr-level background can fail to print. */
     .dynamic-board .db-table tbody tr:nth-child(even) td {
-      background-color: white;
+      background-color: var(--bbl-color-white);
     }
 
     .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr td {
-      background-color: #e5edf4;
+      background-color: var(--bbl-color-blue-steel);
     }
 
     .dynamic-board .db-table tbody tr:nth-child(even),
@@ -839,9 +819,7 @@ function printElement(block) {
       position: static;
     }
 
-    /* Maturity date cell: the download icon and its leftover whitespace are
-       stripped in JS (cell collapsed to date-only text). Plain right-aligned,
-       single line, vertically centered like every other cell. */
+    /* Download icon + its leftover whitespace are already stripped in JS. */
     .dynamic-board .db-td-maturity {
       white-space: nowrap;
       text-align: right;
@@ -856,16 +834,16 @@ function printElement(block) {
     .dynamic-board .db-remarks-content {
       height: auto;
       overflow: visible;
-      font-size: 0.75rem;
-      line-height: 1.25rem !important;
+      font-size: var(--bbl-font-size-b3-mobile);
+      line-height: 1.25rem;
     }
 
     .dynamic-board .db-remarks-content p {
-      color: black !important;
+      color: var(--bbl-color-black);
     }
 
     .dynamic-board .db-remarks-content p:first-child {
-      font-weight: 900 !important;
+      font-weight: 900;
     }
 
     @media print {
@@ -914,12 +892,17 @@ function printElement(block) {
       <style>${printCss}</style>
     </head>
     <body class="appear">
+      <div class="dynamic-board-print-masthead">
+        <div>${escapeHtml(printTimestamp)}</div>
+        <div class="dynamic-board-print-masthead__title">${escapeHtml(pageTitle)}</div>
+        <div></div>
+      </div>
       <header class="header-wrapper">
         <div class="header block" data-block-status="loaded">
           <div class="header-content">
             <div class="main-nav-desktop">
               <div class="brand-logo block" data-block-status="loaded">
-                <div class="brand-logo-container">
+                <div class="brand-logo-container${fallbackLogoClass}">
                   ${brandLogo}
                 </div>
               </div>
@@ -938,20 +921,16 @@ function printElement(block) {
   printWindow.document.write(printHtml);
   printWindow.document.close();
 
-  // window.open('') leaves the popup's location at about:blank, which is what
-  // Chrome's print header/footer shows — replace it with the real page URL
-  // (same-origin, so this doesn't trigger a navigation).
+  // Replace the about:blank popup location with the real (same-origin) URL,
+  // since that's what Chrome's print header/footer would otherwise show.
   try {
     printWindow.history.replaceState(null, '', window.location.href);
   } catch {
     // ignore — footer just falls back to about:blank
   }
 
-  // Wait on the popup's own <link> stylesheets and web fonts to actually
-  // finish loading before printing, capped by a generous safety timeout so a
-  // genuinely stuck resource can't hang the print forever. A too-short cap
-  // here is what causes intermittent broken print layouts (unstyled table,
-  // visible remarks-shadow overlay) on a cold cache/slow network.
+  // Wait for the popup's stylesheets/fonts before printing, capped by a
+  // generous timeout so a stuck resource can't hang the print forever.
   const waitForStylesheets = () => Promise.all(
     [...printWindow.document.querySelectorAll('link[rel="stylesheet"]')].map((link) => new Promise((resolve) => {
       if (link.sheet) { resolve(); return; }
@@ -971,10 +950,8 @@ function printElement(block) {
     timeout(8000),
   ]).then(() => {
     printWindow.focus();
-    // Double rAF: the first callback fires before the browser has applied
-    // the styles/fonts that just resolved above, so the table's column
-    // widths and the remarks-shadow removal can still reflect a stale layout
-    // — waiting a second frame lets that layout pass complete before print.
+    // Double rAF: gives the browser a frame to apply the just-resolved
+    // styles/fonts before the layout-dependent print pass runs.
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         printWindow.print();
@@ -995,13 +972,10 @@ export default async function decorate(block) {
   const isGov = authoring.boardType.toLowerCase().includes('government');
   state.api = createApiService(configs, authoring.boardType);
   state.placeholders = placeholders;
-  // Relative /content/dam paths resolve directly on this domain (same as the
-  // download-file block's authored links), so no base URL needs prepending.
+  // Relative /content/dam paths resolve directly on this domain, so no base URL needs prepending.
   state.downloadUrl = (isGov
     ? configs?.dynamicBoardCorpBondDownloadUrl
     : configs?.dynamicBoardBondRatesDownloadUrl) || '';
-  // eslint-disable-next-line no-console
-  console.log('Config Download URL:', state.downloadUrl);
   state.isGov = isGov;
   state.isThai = language === 'th';
   state.columns = parseTableHeading(authoring.tableHeadingEl, isGov);
