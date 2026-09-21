@@ -1091,6 +1091,11 @@
     height: 100%;
   }
 
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper):fullscreen .hero-banner-video-wrapper iframe {
+    width: 100%;
+    margin-left: 0;
+  }
+
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-controls {
     pointer-events: auto;
   }
@@ -1152,7 +1157,7 @@
   width: 100%;
   height: 100%;
   aspect-ratio: unset;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 /* ── Fullscreen: bannerItem (YouTube cross-origin iframe) ──────────────────── */
