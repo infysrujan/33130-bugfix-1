@@ -33,7 +33,6 @@
   }
 
   .video .video-embed {
-    /* Tablet (768-991px): (100vw - 1.875rem) / 1.8. */
     height: calc((100vw - 1.875rem) / 1.8);
   }
 
