@@ -61,6 +61,11 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     margin-inline: auto;
   }
 
+  
+  & :is(.form) {
+    min-height: 700px;
+  }
+
   /* Page + panel titles — form legend tokens (1.125rem live), global line-height */
   & :is(
     h3,
@@ -151,6 +156,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
     & :is(.form select, .drop-down-wrapper.field-wrapper select) {
       height: 3.4375rem;
+    }
+    
+    & :is(.form) {
+      min-height: unset;
     }
   }
 
