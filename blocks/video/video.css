@@ -7,7 +7,7 @@
 }
 
 /* YouTube embed */
-.video .video-embed {
+.video .video-embed, .video .video-embed iframe {
   position: relative;
   width: 100%;
   padding-top: 0;
@@ -20,23 +20,18 @@
   object-fit: cover;
 }
 
-/* YouTube's player letterboxes/pillarboxes internally to preserve 16:9,
-   so the embed container must match that ratio instead of using a fixed height */
-.video .video-embed:has(iframe) {
-  height: auto;
-  aspect-ratio: 16 / 9;
-}
+
 
 @media (width > 47.5rem) {
   .video .video-wrapper {
     margin: 0 auto;
   }
 
-  .video .video-embed {
+  .video .video-embed, .video .video-embed iframe {
     height: calc((100vw - 1.875rem) / 1.8);
   }
 
-  .section:has(> .video-wrapper) {
+.section:has(> .video-wrapper) {
     padding-inline: 3rem;
   }
 }
@@ -47,11 +42,11 @@
     margin: 0 auto;
   }
 
-   .video .video-embed {
+   .video .video-embed, .video .video-embed iframe {
     height: 30.625rem;
   }
 
-  .section:has(> .video-wrapper) {
+.section:has(> .video-wrapper) {
     padding-inline: 5.25rem;
   }
 }
