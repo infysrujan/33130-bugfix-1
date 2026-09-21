@@ -1,9 +1,5 @@
 @import url("../../styles/components/listing-card.css");
 
-.pfs-tabs-wrapper {
-   --header-scroll-offset: var(--header-d-height);
-}
-
 .pfs-filters {
   padding: 1.875rem 0 0;
 }
@@ -174,6 +170,10 @@
   flex-wrap: wrap;
   justify-content: center;
   overflow-x: hidden;
+}
+
+.pfs-grid.listing-card-grid {
+  --header-scroll-offset: 14.875rem;
 }
 
 .pfs-grid.listing-card-grid:has(.listing-card-empty) {

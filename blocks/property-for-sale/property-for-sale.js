@@ -341,7 +341,7 @@ function setupPanel(panel, state, config) {
     render();
   }
 
-  bindPaginationClick(paginationEl, pageRef, renderPage, panel.closest('.tabs'));
+  bindPaginationClick(paginationEl, pageRef, renderPage, gridEl);
 
   function reset() {
     if (observer) { observer.disconnect(); observer = null; }
