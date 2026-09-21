@@ -574,6 +574,20 @@ function printElement(block) {
   );
   if (symbolHeaderCell) symbolHeaderCell.removeAttribute('colspan');
 
+  // With a two-row header, fixed-layout tables use the header cells (not the
+  // body-cell widths) to calculate their columns. A colgroup is therefore
+  // required to guarantee the wider Name column in the print document.
+  const printTable = content.querySelector('.db-table');
+  if (printTable) {
+    const colgroup = document.createElement('colgroup');
+    [10, 30, 11, 9, 11, 9, 8, 6, 6].forEach((width) => {
+      const col = document.createElement('col');
+      col.style.width = `${width}%`;
+      colgroup.append(col);
+    });
+    printTable.prepend(colgroup);
+  }
+
   content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
 
   // Strip the authored inline bold so printCss controls font-weight instead.
@@ -588,7 +602,15 @@ function printElement(block) {
   const printLogoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img');
   const logoEl = printLogoEl
     || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+  const printLogo = logoEl?.cloneNode(true);
+  const printLogoImage = printLogo?.tagName === 'IMG' ? printLogo : printLogo?.querySelector('img');
+  // A cloned lazy image in the separate print window can be omitted from the
+  // print render. Force it to load eagerly, then wait for it below.
+  if (printLogoImage) {
+    printLogoImage.loading = 'eager';
+    printLogoImage.decoding = 'sync';
+  }
+  const brandLogo = printLogo?.outerHTML || '';
   const fallbackLogoClass = printLogoEl ? '' : ' print-logo-fallback';
 
   const pageTitle = section.querySelector('.default-content-wrapper > :is(h1, h2, h3, h4, h5, h6)')
@@ -736,7 +758,7 @@ function printElement(block) {
     .dynamic-board .db-table {
       width: 100%;
       min-width: 0;
-      table-layout: auto;
+      table-layout: fixed;
       border: 0.0625rem solid var(--bbl-color-grey-18);
       border-collapse: collapse;
       font-size: 0.625rem;
@@ -750,13 +772,11 @@ function printElement(block) {
       white-space: nowrap;
     }
 
-    /* min-width:0 clears the base stylesheet's 12rem floor so Name can wrap. */
     .dynamic-board .db-table td.db-td-name {
       white-space: normal;
       overflow-wrap: break-word;
       word-break: break-word;
       min-width: 0;
-      width: 11rem;
     }
     /* The Name header cell should also be allowed to wrap if needed. */
     .dynamic-board .db-table thead th.db-th-name {
@@ -798,6 +818,7 @@ function printElement(block) {
       line-height: 1.2;
       min-height: 0;
       height: auto;
+      border-block-end: 0.0625rem solid var(--bbl-color-grey-20);
     }
 
     .dynamic-board .db-td-symbol {
@@ -943,10 +964,17 @@ function printElement(block) {
     })),
   );
   const waitForFonts = () => printWindow.document.fonts?.ready ?? Promise.resolve();
+  const waitForImages = () => Promise.all(
+    [...printWindow.document.images].map((image) => new Promise((resolve) => {
+      if (image.complete) { resolve(); return; }
+      image.addEventListener('load', resolve, { once: true });
+      image.addEventListener('error', resolve, { once: true });
+    })),
+  );
   const timeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
 
   Promise.race([
-    Promise.all([waitForStylesheets(), waitForFonts()]),
+    Promise.all([waitForStylesheets(), waitForFonts(), waitForImages()]),
     timeout(8000),
   ]).then(() => {
     printWindow.focus();
