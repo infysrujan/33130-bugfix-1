@@ -5,7 +5,9 @@
 
 .header-banner-slide-wrapper {
   min-height: 11.875rem;
-  background: linear-gradient(0deg, var(--bbl-hbs-gradient-start) 50%, var(--bbl-hbs-gradient-end) 100%) top / 100% 10rem no-repeat;
+  background:
+    linear-gradient(180deg, rgb(255 255 255) 0 0.0625rem, transparent 0.0625rem),
+    linear-gradient(0deg, var(--bbl-hbs-gradient-start) 50%, var(--bbl-hbs-gradient-end) 100%) top / 100% 10rem no-repeat;
   margin-block: 0 -4.5rem;
 }
 
@@ -22,6 +24,7 @@
   cursor: grab;
   width: 89.662%;
   margin-block-end: -6rem;
+  margin-inline: auto;
 }
 
 .header-banner-slide-carousel::before {
@@ -71,7 +74,7 @@
 @media (width > 47.5rem) {
   .header-banner-slide-wrapper {
     min-height: 10rem;
-    background-size: 100% 10rem;
+    background: linear-gradient(0deg, var(--bbl-hbs-gradient-start) 50%, var(--bbl-hbs-gradient-end) 100%) top / 100% 10rem no-repeat;
     margin-block: 0 -6rem;
   }
 
@@ -87,7 +90,7 @@
 @media (width > 64rem) {
   .header-banner-slide-wrapper {
     min-height: 12.1875rem;
-    background-size: 100% 12.1875rem;
+    background: linear-gradient(0deg, var(--bbl-hbs-gradient-start) 50%, var(--bbl-hbs-gradient-end) 100%) top / 100% 12.1875rem no-repeat;
     margin-block: 0 -3.8rem;
   }
 
@@ -96,7 +99,9 @@
   }
 
   .header-banner-slide-carousel {
-    width: 93.1%;
+    width: 100%;
+    max-width: 55.625rem;
+    margin-inline: auto;
   }
 
   .header-banner-slide-carousel::before {

@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    Credit Card Application Status Tracking
    Scoped: :has(.cc-app-main-form)
    Panel roles: creditcard-tract-application.js
@@ -217,19 +217,19 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
   & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
     position: relative;
     clear: both;
-    margin-bottom: 2.19rem;;
+    margin-bottom: 2.19rem;
   }
 
-  & .form form fieldset.panel-wrapper.field-wrapper.cc-app-message-form :is(
-  .text-wrapper,
-  .number-wrapper,
-  .email-wrapper,
-  .telephone-wrapper,
-  .drop-down-wrapper,
-  .date-wrapper
-) {
-  margin-bottom: 0.625rem;
-}
+  & .form form fieldset.cc-app-message-form :is(
+    .text-wrapper,
+    .number-wrapper,
+    .email-wrapper,
+    .telephone-wrapper,
+    .drop-down-wrapper,
+    .date-wrapper
+  ) {
+    margin-bottom: 0.625rem;
+  }
 
   /* Mobile: stack half-width fields in a single column */
   & .form form .field-wrapper.col-6:not(.button-wrapper) {
@@ -434,7 +434,13 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     }
 
     & .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image),
-    & .cc-panel-item-form-cover .image-wrapper,
+    & .cc-panel-item-form-cover .image-wrapper {
+      width: 100%;
+      vertical-align: middle;
+      border-radius: 0.25rem;
+      overflow: hidden;
+    }
+
     & .cc-panel-item-timeline-bg .image-wrapper {
       width: 100%;
       vertical-align: middle;
@@ -448,6 +454,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       aspect-ratio: 440 / 275;
       object-fit: cover;
       vertical-align: middle;
+      border-radius: 0.25rem;
     }
 
     & .cc-panel-item-timeline-bg .image-wrapper img {
@@ -534,6 +541,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           width: 100%;
         }
 
+        & > .cc-panel-item-form-input {
+          margin-bottom: 0.625rem;
+        }
+
         & > .cc-panel-item-form-title {
           font-family: var(--bbl-font-family-medium);
           font-size: var(--form-fieldset-legend-font-size);
@@ -567,8 +578,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           & > legend.field-label {
             flex: 0 0 auto;
             width: 100%;
-            margin-bottom: 0;
-            padding-bottom: 0.625rem;
+            margin-bottom: var(--bbl-space-100);
+            padding-bottom: 0;
           }
 
           & .radio-wrapper {
@@ -1118,6 +1129,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         clear: none;
       }
 
+      & > .field-wrapper.cc-panel-item-form-title {
+        margin-bottom: var(--bbl-form-margin-35);
+      }
+
       & > .field-wrapper.cc-panel-item-form-cover {
         grid-column: 2;
         grid-row: 1 / span 3;
@@ -1159,6 +1174,13 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         flex-flow: row wrap;
         gap: var(--bbl-space-200);
         justify-content: space-between;
+
+        & > legend.field-label {
+          width: 100%;
+          flex: 0 0 100%;
+          margin-bottom: var(--bbl-space-100);
+          padding-bottom: 0;
+        }
 
         & .radio-wrapper {
           width: auto;
