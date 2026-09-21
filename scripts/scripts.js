@@ -396,11 +396,43 @@ function stripSrcsetOptimizationParams(srcset) {
 }
 
 /**
+ * Viewport LCP image (hero mobile/desktop of the default slide).
+ * @param {Document|Element} root
+ * @returns {HTMLImageElement|null}
+ */
+function getLcpImage(root) {
+  const main = root.querySelector?.('main')
+    || (root.matches?.('main') ? root : null)
+    || root;
+  const isMobile = window.matchMedia('(width <= 47.5rem)').matches;
+  const hero = main.querySelector?.('.hero');
+  if (hero) {
+    const rows = [...hero.children].slice(1, 8);
+    const defaultRow = rows.find((row) => row.children[1]?.textContent?.trim() === 'true') || rows[0];
+    const pictures = defaultRow?.querySelectorAll('picture') || [];
+    const picture = (isMobile ? pictures[1] : pictures[0]) || pictures[0] || pictures[1];
+    const img = picture?.querySelector('img');
+    if (img) return img;
+  }
+  return main.querySelector?.('img') || null;
+}
+
+function hintLcpImage(img) {
+  if (!img) return;
+  img.loading = 'eager';
+  img.setAttribute('loading', 'eager');
+  img.fetchPriority = 'high';
+  img.setAttribute('fetchpriority', 'high');
+}
+
+/**
  * Remove optimization params from all picture source/img URLs in the document.
  * @param {Document|Element} root
  */
 export function removePictureOptimizationParams(root) {
+  const lcpImg = getLcpImage(root);
   root.querySelectorAll('picture').forEach((picture) => {
+    if (lcpImg && picture.contains(lcpImg)) return;
     picture.querySelectorAll('source[srcset]').forEach((source) => {
       source.setAttribute('srcset', stripSrcsetOptimizationParams(source.getAttribute('srcset')));
     });
@@ -410,96 +442,19 @@ export function removePictureOptimizationParams(root) {
   });
 }
 
-// function preloadHeroLcpImage(doc) {
-//   console.log(doc)
-//   const heroBlock = doc.querySelector('main .hero-banner.block');
-//   console.log(
-//     [...doc.querySelectorAll('main .block')].map((block) => block.className)
-//   );
-//   if (!heroBlock) return;
-
-//   const rows = [...heroBlock.children];
-
-//   // Find the first/default hero row.
-//   // The hero block may contain a variant row before the actual slides.
-//   const heroRows = rows.slice(1);
-
-//   if (!heroRows.length) return;
-
-//   let defaultRow = heroRows.find(
-//     (row) => row.children[1]?.textContent?.trim() === 'true',
-//   );
-
-//   if (!defaultRow) {
-//     defaultRow = heroRows[0];
-//   }
-
-//   let col = 1;
-
-//   // Skip isDefault column
-//   const possibleIsDefault = defaultRow.children[col]?.textContent?.trim();
-
-//   if (possibleIsDefault === 'true' || possibleIsDefault === 'false') {
-//     col += 1;
-//   }
-
-//   // Desktop image
-//   col += 1;
-
-//   // Mobile image
-//   const mobileImageCell = defaultRow.children[col];
-
-//   const mobilePicture = mobileImageCell?.querySelector('picture');
-
-//   if (!mobilePicture) return;
-
-//   const mobileImg = mobilePicture.querySelector('img');
-
-//   if (!mobileImg) return;
-
-//   // Get the actual mobile source from <source>
-//   const mobileSource = [...mobilePicture.querySelectorAll('source')]
-//     .find((source) => {
-//       const media = source.getAttribute('media') || '';
-//       return media.includes('max-width') || media.includes('47.5rem');
-//     });
-
-//   const srcset = mobileSource?.getAttribute('srcset');
-
-//   const href = srcset
-//     ? srcset.split(',')[0].trim().split(/\s+/)[0]
-//     : mobileImg.getAttribute('src');
-
-//   if (!href) return;
-
-//   const existing = document.head.querySelector(
-//     `link[rel="preload"][as="image"][href="${CSS.escape(href)}"]`,
-//   );
-
-//   if (existing) return;
-
-//   const preload = document.createElement('link');
-
-//   preload.rel = 'preload';
-//   preload.as = 'image';
-//   preload.href = href;
-//   preload.setAttribute('fetchpriority', 'high');
-
-//   document.head.appendChild(preload);
-// }
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
+  hintLcpImage(getLcpImage(doc));
   removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
   decorateOgTitle();
   decorateOgImage();
   const main = doc.querySelector('main');
   if (main) {
-    // preloadHeroLcpImage(doc);
     decorateMain(main);
     promoteFirstImage(main);
     await pageStylesReady;
