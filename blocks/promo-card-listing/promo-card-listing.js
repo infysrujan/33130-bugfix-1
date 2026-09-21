@@ -98,6 +98,8 @@ async function fetchPromotionalData(url) {
   return fetchJson(url);
 }
 
+const NO_MATCH_VALUE = '__promo_card_ref_no_match__';
+
 function getCardTypeFromRef(mapping, cardRef) {
   if (!mapping || !cardRef) return '';
   if (typeof mapping === 'string') return '';
@@ -531,7 +533,8 @@ export default async function decorate(block) {
   const activeAreas = activeData?.areas || [];
   const isBbmPage = isBbm;
   const cardRef = isBbmPage ? searchParams.get('card_ref') : '';
-  const forcedCardType = getCardTypeFromRef(cardRefConfig, cardRef);
+  const resolvedCardType = getCardTypeFromRef(cardRefConfig, cardRef);
+  const forcedCardType = cardRef ? (resolvedCardType || NO_MATCH_VALUE) : '';
   const disableFilters = isBbmPath;
   const activeCategories = activeData?.categories || [];
 
@@ -619,8 +622,10 @@ export default async function decorate(block) {
     const dataCategories = dataSet?.categories || [];
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
-    const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText, placeholders));
-    const category = tabTags || (isHighlightsPanel ? tabText : '');
+    const isHighlightsPanel = isBbm && !forcedCardType
+      && (index === 0 || isTopPromotionsLabel(tabText, placeholders));
+    let category = tabTags || '';
+    if (!category) category = isHighlightsPanel ? tabText : forcedCardType && NO_MATCH_VALUE;
     const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
     setupPanel(
