@@ -188,6 +188,10 @@
     }
 
     & fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper) > fieldset.radio-group-wrapper.radio-tabs:has(> .radio-wrapper:first-of-type input:checked) {
+        margin-bottom: var(--bbl-form-margin-15);
+    }
+
+    & fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper) > fieldset.radio-group-wrapper.radio-tabs:has(> .radio-wrapper:not(:first-of-type) input:checked) {
         margin-bottom: var(--bbl-form-margin-8);
     }
 
@@ -293,6 +297,10 @@
     /* Subtitle under the title */
     & .field-title + .plain-text-wrapper p {
         text-align: center;
+    }
+
+    & fieldset.panel-wrapper:has(.date-wrapper) > .plain-text-wrapper{
+        padding-top: var(--bbl-form-padding-35);
     }
 
     /* Modal text */
