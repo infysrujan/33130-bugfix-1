@@ -7,7 +7,7 @@
 }
 
 /* YouTube embed */
-.video .video-embed {
+.video .video-embed, .video .video-embed iframe {
   position: relative;
   width: 100%;
   padding-top: 0;
@@ -20,9 +20,6 @@
   object-fit: cover;
 }
 
-.video .video-embed iframe {
-  height:  calc((100vw - 2.5rem) / 1.8); 
-}
 
 
 @media (width > 47.5rem) {
@@ -30,13 +27,10 @@
     margin: 0 auto;
   }
 
-  .video .video-embed {
+  .video .video-embed, .video .video-embed iframe {
     height: calc((100vw - 1.875rem) / 1.8);
   }
 
-  .video .video-embed iframe {
-  height: calc((100vw - 1.875rem) / 1.8);
-}
 
   .section:has(> .video-wrapper) {
     padding-inline: 3rem;
@@ -49,14 +43,11 @@
     margin: 0 auto;
   }
 
-   .video .video-embed {
+   .video .video-embed, .video .video-embed iframe {
     height: 30.625rem;
   }
 
 
-   .video .video-embed iframe {
-  height: 30.625rem;
-}
   
 
   .section:has(> .video-wrapper) {
