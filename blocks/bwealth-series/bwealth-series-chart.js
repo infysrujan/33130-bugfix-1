@@ -11,6 +11,8 @@
 const COLOR_ORIGINAL = '#0064FF';
 const COLOR_NEW = '#002850';
 
+const TABLET_MIN = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim();
+
 export async function loadChartJs() {
   if (window.Chart) return window.Chart;
   await new Promise((resolve) => {
@@ -279,8 +281,13 @@ function buildConfig({
           afterBuildTicks: (axis) => {
             const top = axis.max;
             const step = niceStep(top / 4);
+            const isTablet = window.matchMedia(`(min-width: ${TABLET_MIN})`).matches;
             const ticks = [];
-            for (let v = 0; v < top; v += step) ticks.push({ value: v });
+            if (isTablet) {
+              for (let v = 0; v <= top - step; v += step) ticks.push({ value: v });
+            } else {
+              for (let v = 0; v < top; v += step) ticks.push({ value: v });
+            }
             ticks.push({ value: top });
             axis.ticks = ticks;
           },
