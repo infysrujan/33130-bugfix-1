@@ -548,7 +548,6 @@
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content-inner-text, .hero-banner-content-inner-text p) {
   color: var(--bbl-color-black);
   margin: 0;
-  overflow: hidden;
 }
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) {
@@ -757,10 +756,9 @@
 
   :is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content-inner-text, .hero-banner-content-inner-text p) {
     color: var(--bbl-color-white);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    display: block;
     max-width: 100%;
+    overflow: visible;
   }
 
   /* .hero-banner-content-group .button-container a {
