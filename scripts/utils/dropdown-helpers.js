@@ -82,7 +82,10 @@ export default function createGlobalDropdown(label = 'Select', linksHTML = '', d
 
   trigger.addEventListener('click', () => updateDropdown(root, !root.classList.contains('is-open')));
   root.addEventListener('keydown', ({ key }) => key === 'Escape' && updateDropdown(root, false));
-  doc.addEventListener('click', ({ target }) => !root.contains(target) && updateDropdown(root, false));
+  doc.addEventListener('click', ({ target }) => {
+    if (root.classList.contains('sub-nav-select')) return;
+    if (!root.contains(target)) updateDropdown(root, false);
+  });
 
   root.append(trigger, panel);
   return root;

@@ -71,7 +71,7 @@
   font-family:var(--bbl-font-family-medium);
 }
 
-.accordion-toolbar-label:hover {
+.accordion-toolbar-button:hover .accordion-toolbar-label {
   color: var(--bbl-color-blue-90);
 }
 

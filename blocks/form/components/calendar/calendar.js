@@ -150,6 +150,7 @@ export default function decorate(block) {
   input.setAttribute('aria-haspopup', 'dialog');
   input.setAttribute('aria-expanded', 'false');
   input.setAttribute('autocomplete', 'off');
+  input.setAttribute('tabindex', '0');
 
   const calIcon = document.createElement('span');
   calIcon.className = 'dpth-icon icon-calendar';
@@ -292,10 +293,47 @@ export default function decorate(block) {
     if (!btn || btn.disabled) return;
     commitDay(Number.parseInt(btn.dataset.day, 10));
     closePopover();
+    input.focus();
+  });
+
+  // Keyboard: Enter/Space selects the focused day button inside the grid
+  grid.addEventListener('keydown', (e) => {
+    const btn = document.activeElement;
+    if (!btn || !btn.classList.contains('dpth-day') || btn.disabled) return;
+
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      commitDay(Number.parseInt(btn.dataset.day, 10));
+      closePopover();
+      input.focus();
+      return;
+    }
+
+    // Arrow key navigation within the grid
+    const days = [...grid.querySelectorAll('button.dpth-day:not([disabled])')]
+      .filter((b) => !b.classList.contains('dpth-day--empty'));
+    const idx = days.indexOf(btn);
+    let next = -1;
+    if (e.key === 'ArrowRight') next = idx + 1;
+    else if (e.key === 'ArrowLeft') next = idx - 1;
+    else if (e.key === 'ArrowDown') next = idx + 7;
+    else if (e.key === 'ArrowUp') next = idx - 7;
+    if (next >= 0 && next < days.length) {
+      e.preventDefault();
+      days[next].focus();
+    }
   });
 
   btnPrev.addEventListener('click', (e) => { e.stopPropagation(); shiftMonth(-1); });
   btnNext.addEventListener('click', (e) => { e.stopPropagation(); shiftMonth(+1); });
+
+  // Keyboard: Enter/Space on the trigger opens/closes the popover
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (isOpen) closePopover(); else openPopover();
+    }
+  });
 
   fieldEl.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -307,8 +345,23 @@ export default function decorate(block) {
     if (!popover.contains(e.target) && !fieldEl.contains(e.target)) closePopover();
   });
 
+  // Focus trap inside the dialog — Tab/Shift+Tab wraps within popover focusable elements
+  popover.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.stopPropagation(); closePopover(); input.focus(); return; }
+    if (e.key !== 'Tab') return;
+    const focusable = [...popover.querySelectorAll('button:not([disabled])')];
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  });
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen) { e.stopPropagation(); closePopover(); }
+    if (e.key === 'Escape' && isOpen) { e.stopPropagation(); closePopover(); input.focus(); }
   });
 
   const onReposition = () => { if (isOpen) positionPopover(fieldEl, popover); };

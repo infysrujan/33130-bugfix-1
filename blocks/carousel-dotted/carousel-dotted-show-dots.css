@@ -1,9 +1,5 @@
 /* simple carousel section */
 
-.carousel-dotted-wrapper .simple-carousel{
-  margin : 3.125rem auto 1.25rem;
-}
-
 .slick-dots.simple-carousel-dots{
   margin-bottom: 3.125rem;
 }
@@ -66,11 +62,17 @@
 
 .carousel-dotted .carousel-dotted-item.simple-carousel {
     margin-top: 0;
-    margin-bottom: 2.125rem;
+    margin-bottom: 0;
 } 
 
-/* @media (width>64rem) {
-  .carousel-dotted-wrapper .simple-carousel {
-    margin: 3.125rem auto 2.125rem;
-  }
-} */
+@media (width > 47.5rem) {
+  .carousel-dotted .carousel-dotted-item.simple-carousel {
+    margin-bottom: 2.125rem;
+  } 
+}
+
+@media (width > 64rem) {
+  .carousel-dotted .carousel-dotted-item.simple-carousel {
+    margin-bottom: 1rem;
+  } 
+}

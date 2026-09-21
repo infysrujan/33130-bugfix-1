@@ -1,5 +1,6 @@
 .sme-loan-form main .section.form-container.custom-forms {
   padding-inline: 0.9375rem;
+  min-height: 3574px;
 
   &.central-aligned > .default-content-wrapper {
     & h2 {
@@ -30,6 +31,7 @@
   & .form form,
   & .form form > fieldset.panel-wrapper.field-wrapper {
     max-width: none;
+    margin-inline: auto;
   }
 
   & .form form fieldset.panel-wrapper.field-title-panel {
@@ -314,7 +316,7 @@
     min-width: 0;
     box-sizing: border-box;
 
-    & .field-description {
+    & .checkbox-wrapper ~.field-description {
       bottom: -6.25rem;
     }
 
@@ -414,6 +416,7 @@
 
   @media (width > 47.5rem) {
     padding-inline: 0;
+    min-height: unset;
 
     &.central-aligned > .default-content-wrapper {
       & h2 {
