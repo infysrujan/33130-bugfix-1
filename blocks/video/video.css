@@ -11,7 +11,7 @@
   position: relative;
   width: 100%;
   padding-top: 0;
-  height: 13.375rem;
+  height: calc((100vw - 2.5rem) / 1.8);
   overflow: hidden;
   background-color: var(--bbl-color-black);
 }
@@ -33,7 +33,7 @@
   }
 
   .video .video-embed {
-    height: 25.625rem;
+    height: calc((100vw - 1.875rem) / 1.8);
   }
 
   .section:has(> .video-wrapper) {
@@ -47,7 +47,7 @@
     margin: 0 auto;
   }
 
-  .video .video-embed {
+   .video .video-embed {
     height: 30.625rem;
   }
 
