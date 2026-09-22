@@ -44,6 +44,9 @@
     },
     {
       "...": "./components/bblwizard/_bblwizard.json#/definitions"
+    },
+    {
+      "...": "./components/calendar/_calendar.json#/definitions"
     }
   ],
   "models": [
@@ -125,7 +128,8 @@
         "forms-menu-card",
         "forms-card-list",
         "forms-card-list-item",
-        "bbl-wizard"
+        "bbl-wizard",
+        "calendar"
       ]
     },
     {

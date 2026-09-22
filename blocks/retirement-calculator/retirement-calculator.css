@@ -185,8 +185,8 @@
 }
 
 .retirement-calculator .rc-income-unit {
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b4);
+  font-family: var(--bbl-font-family-looped);
+  font-size: 0.6125rem;
   font-weight: 400;
   color: var(--bbl-color-white);
   opacity: 0.8;
@@ -358,7 +358,8 @@
 }
 
 .retirement-calculator .rc-j1-summary-unit {
-  font-size: var(--bbl-font-size-b3);
+  font-family: var(--bbl-font-family-looped);
+  font-size: 0.6125rem;
   font-weight: 400;
   color: var(--bbl-color-gray-121);
 }
@@ -489,7 +490,7 @@
 
 .retirement-calculator .rc-savings-card-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h3-desktop);
+  font-size: var(--bbl-heading-h3-size);
   font-weight: 400;
   line-height: 1.5rem;
   margin: 0 0 var(--bbl-space-100);
@@ -587,7 +588,7 @@
 
 .retirement-calculator .rc-summary-value {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-heading-h1-size);
+  font-size: var(--bbl-heading-h3-size);
   font-weight: 400;
   color: var(--bbl-color-black);
   text-align: right;
@@ -596,7 +597,7 @@
   display: flex;
   align-items: baseline;
   gap: var(--bbl-space-075);
-  line-height: var(--bbl-heading-h1-line-height);
+  line-height: var(--bbl-heading-h3-line-height);
 }
 
 .retirement-calculator .rc-summary-value-arrow {
@@ -606,8 +607,8 @@
 }
 
 .retirement-calculator .rc-summary-unit {
-  font-family: var(--bbl-font-family-medium);
-  font-size: 0.6875rem;
+  font-family: var(--bbl-font-family-looped);
+  font-size: 0.6125rem;
   font-weight: 400;
   line-height: normal;
   color: var(--bbl-color-grey-60);
@@ -872,7 +873,7 @@
   }
 
   .retirement-calculator .rc-summary-table {
-    gap: 0.8rem;
+    gap: 0.5rem;
     margin-bottom: var(--bbl-space-200);
   }
 
@@ -998,6 +999,10 @@
 
   .retirement-calculator .rc-summary-value {
     font-size: 1.5rem;
+  }
+
+  .retirement-calculator .rc-summary-unit {
+    font-size: 0.6rem;
   }
 
   .retirement-calculator .rc-savings-card-recommended,

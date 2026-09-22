@@ -1,15 +1,10 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { resolvePhotoSrc, formatPrice, isPromotionOverDate } from '../../scripts/utils/card-helpers.js';
 
 function getFileId() {
   return new URLSearchParams(window.location.search).get('FILE_ID') || '';
-}
-
-function resolvePhotoSrc(photo) {
-  if (!photo) return '';
-  if (photo.startsWith('data:')) return photo;
-  return `data:image/jpeg;base64,${photo}`;
 }
 
 function getPhotos(data) {
@@ -75,14 +70,6 @@ function buildCarousel(photos, data, p) {
   </div>`;
 }
 
-function formatPrice(price) {
-  if (!price) return '';
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(price);
-}
-
 function formatArea(data) {
   return `${data.AREA_RAI ?? 0}-${data.AREA_QUARTER ?? 0}-${data.AREA_SQUARE_WAH ?? 0}-${data.AREA_SQUARE_METER ?? 0}`;
 }
@@ -125,7 +112,7 @@ function getFieldValue(field, data, currency, openMapLabel, mapBaseUrl, contactL
     case 'AREA': return formatArea(data);
     case 'LOCATION': return buildLocation(data);
     case 'PR_PRICE': return Number(data.PR_PRICE) > 0 ? `${formatPrice(data.PR_PRICE)} ${currency}` : contactLabel;
-    case 'SPECIAL_PRICE': return data.SPECIAL_PRICE ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
+    case 'SPECIAL_PRICE': return !isPromotionOverDate(data) ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
     case 'MAP': return buildMapLink(data, openMapLabel, mapBaseUrl);
     default: {
       const raw = data[field];
@@ -152,7 +139,7 @@ function buildDetailHtml(data, placeholders, detailRows, mapBaseUrl) {
     label, value, special, starting,
   }) => {
     const cls = `prop-for-sale-value${special ? ' prop-for-sale-special-price' : ''}${starting ? ' prop-for-sale-starting-price' : ''}`;
-    const hideRow = special && (value === '-' || !!value) ? 'hidden' : '';
+    const hideRow = special && value === '-' ? 'hidden' : '';
     return `
     <div class="prop-for-sale-row ${hideRow}">
       <div class="prop-for-sale-label">${label}</div>

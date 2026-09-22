@@ -4,6 +4,11 @@
    1rem = 16px  |  tokens: colors, border-radius, spacing
    ============================================================ */
 
+/* Mobile tab-dropdown override, scoped to this page only (tabs.css stays untouched) */
+.tabs-container:has(.forex-rates) .tabs-nav-wrapper .tabs-dropdown select {
+  font-size: 0.9375rem;
+}
+
 /* ── Controls ─────────────────────────────────────────────── */
 
 .forex-rates .forex-rates-control-row {
@@ -105,7 +110,7 @@
   justify-content: space-between;
   width: 100%;
   height: 2.75rem;
-  padding: 0 1rem;
+  padding: 0 1rem 0 1.25rem;
   font-size: var(--bbl-font-size-b1);
   font-weight: 700;
   color: var(--bbl-color-grey-85);
@@ -166,7 +171,7 @@
 }
 
 .forex-rates .forex-rates-time-item {
-  padding: 0.625rem 1.25rem;
+  padding: 0.625rem 1.875rem;
   font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-black);
@@ -258,15 +263,20 @@
   border: 0.0625rem solid var(--bbl-color-grey-18);
 }
 
+.forex-rates .forex-rates-table th,
+.forex-rates .forex-rates-table td {
+  box-sizing: border-box;
+}
+
 .forex-rates .forex-rates-table thead tr {
   background: var(--bbl-color-blue-steel-light);
-  height: 4.5rem;
+  height: 4.375rem;
 }
 
 .forex-rates .forex-rates-table thead th {
   padding: 0 0.625rem;
   font-size: var(--bbl-body-b1-size);
-  line-height: var(--bbl-body-b1-line-height);
+  line-height: calc(1.125rem - 0.25px);
   color: var(--bbl-color-black);
   text-align: left;
   border-bottom: 0.125rem solid var(--bbl-color-grey-20);
@@ -279,15 +289,32 @@
 }
 
 .forex-rates .forex-rates-table thead th:nth-child(n+3) {
+  width: 6.56%;
   text-align: center;
 }
 
 .forex-rates .forex-rates-table thead th:nth-child(1) {
-  width: 30%;
+  width: 19.71%;
 }
 
 .forex-rates .forex-rates-table thead th:nth-child(2) {
-  width: 70%;
+  width: 41.42%;
+}
+
+.forex-rates .forex-rates-table thead th:nth-child(4) {
+  width: 7.32%;
+}
+
+.forex-rates .forex-rates-table thead th:nth-child(5) {
+  width: 8.31%;
+}
+
+.forex-rates .forex-rates-table thead th:nth-child(6) {
+  width: 8.35%;
+}
+
+.forex-rates .forex-rates-table thead th:nth-child(7) {
+  width: 8.26%;
 }
 
 .forex-rates .forex-rates-table tbody tr {
@@ -377,6 +404,10 @@
   .forex-rates .forex-rates-print-btn {
     margin-left: auto;
   }
+
+  .forex-rates .forex-rates-currency-inner {
+    gap: 1.25rem;
+  }
 }
 
 /* ── Desktop: 64rem+ (1024px) ──────────────────────────────── */
@@ -389,11 +420,6 @@
   .forex-rates .forex-rates-time-trigger {
     font-size: 0.95rem;
     width:auto;
-  }
-
-  .forex-rates .forex-rates-date-group {
-    flex: 0 0 11.25rem;
-    width: 11.25rem;
   }
 
   .forex-rates .forex-rates-time-wrap {
@@ -414,11 +440,34 @@
 
   .forex-rates .forex-rates-table thead th {
     padding: 0 var(--bbl-space-250);
+    line-height: var(--bbl-body-b1-line-height);
     white-space: nowrap;
   }
 
   .forex-rates .forex-rates-table tbody td {
-    padding: 0.75rem 1rem;
+    padding: 0 1.25rem;
+  }
+
+  .forex-rates .forex-rates-table thead th:nth-child(1) {
+    width: 17.3%;
+  }
+
+  .forex-rates .forex-rates-table thead th:nth-child(2) {
+    width: 37.57%;
+  }
+
+  .forex-rates .forex-rates-table thead th:nth-child(3),
+  .forex-rates .forex-rates-table thead th:nth-child(5),
+  .forex-rates .forex-rates-table thead th:nth-child(6) {
+    width: 9.05%;
+  }
+
+  .forex-rates .forex-rates-table thead th:nth-child(4) {
+    width: 8.95%;
+  }
+
+  .forex-rates .forex-rates-table thead th:nth-child(7) {
+    width: 8.98%;
   }
 
   .forex-rates .forex-rates-time-item {

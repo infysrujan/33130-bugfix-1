@@ -8,6 +8,8 @@ const MOBILE_MQ = `(width <= ${
   getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-mobile-max').trim()
 })`;
 
+const DESKTOP_MIN_WIDTH = '1025px';
+
 const windowLoaded = document.readyState === 'complete'
   ? Promise.resolve()
   : new Promise((resolve) => { window.addEventListener('load', resolve, { once: true }); });
@@ -73,6 +75,14 @@ function playBannerVideo(item) {
   }
 }
 
+function syncHeaderOverlap(activeItem) {
+  const header = document.querySelector('header');
+  if (!header) return;
+  const hasVideo = !!activeItem?.querySelector('.hero-banner-video-wrapper');
+  const isDesktopViewport = window.matchMedia(`(min-width: ${DESKTOP_MIN_WIDTH})`).matches;
+  header.classList.toggle('is-not-overlapped', hasVideo && !isDesktopViewport);
+}
+
 function changeBanner(block) {
   function activateThumbnail(thumbnail) {
     const { index } = thumbnail.dataset;
@@ -83,6 +93,7 @@ function changeBanner(block) {
       el.classList.toggle('hero-banner-item-active', el.classList.contains('hero-banner-item') && el.dataset.index === index);
       el.classList.toggle('hero-banner-thumbnail-item-active', el.classList.contains('hero-banner-thumbnail-item') && el.dataset.index === index);
     });
+    syncHeaderOverlap(block.querySelector('.hero-banner-item.hero-banner-item-active'));
   }
 
   block.addEventListener('mouseenter', (e) => {
@@ -201,6 +212,12 @@ function fmtTime(sec) {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+function updateSeekFill(seekBar) {
+  const max = Number(seekBar.max) || 1;
+  const pct = (Number(seekBar.value) / max) * 100;
+  seekBar.style.background = `linear-gradient(to right, var(--bbl-color-red-130) ${pct}%, var(--bbl-color-white-alpha-35) ${pct}%)`;
+}
+
 function buildControls(bannerItem) {
   const bar = createElement('div', 'hero-banner-video-controls');
   bar.innerHTML = `
@@ -309,9 +326,13 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem, shareUrl) {
   video.addEventListener('timeupdate', () => {
     const pct = video.duration ? (video.currentTime / video.duration) * 1000 : 0;
     seekBar.value = pct;
+    updateSeekFill(seekBar);
     timeEl.textContent = `${fmtTime(video.currentTime)} / ${fmtTime(video.duration)}`;
   });
-  seekBar.addEventListener('input', () => { if (video.duration) video.currentTime = (seekBar.value / 1000) * video.duration; });
+  seekBar.addEventListener('input', () => {
+    if (video.duration) video.currentTime = (seekBar.value / 1000) * video.duration;
+    updateSeekFill(seekBar);
+  });
 
   wireShare(bar.querySelector('.hero-ctrl-share'));
   wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), videoWrapper);
@@ -394,6 +415,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
                 const cur = target.getCurrentTime();
                 const dur = target.getDuration();
                 seekBar.value = dur ? (cur / dur) * 1000 : 0;
+                updateSeekFill(seekBar);
                 timeEl.textContent = `${fmtTime(cur)} / ${fmtTime(dur)}`;
               }, 500);
             }
@@ -431,6 +453,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
     seekBar.addEventListener('input', () => {
       const dur = player.getDuration();
       if (dur) player.seekTo((seekBar.value / 1000) * dur, true);
+      updateSeekFill(seekBar);
     });
 
     wireShare(bar.querySelector('.hero-ctrl-share'), shareUrl);
@@ -707,11 +730,11 @@ export default async function decorate(block) {
   block.replaceChildren(wrapper);
   changeBanner(block);
   lazyLoadThumbnails(block);
+  syncHeaderOverlap(block.querySelector('.hero-banner-item.hero-banner-item-active'));
 
   block.addEventListener('click', (event) => {
     const button = event.target.closest('.button-m.primary');
     if (!button) return;
-    console.log('Hero banner CTA clicked');
     trackLinkClick(
       event,
       button,
