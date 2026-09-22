@@ -1501,7 +1501,7 @@ const FUND_DETAIL_MAX_LINES = { desktop: 2, tabletMobile: 3 };
  * เท่ากันและ metrics ฟอนต์ชุดเดียวกัน แล้วเทียบกับ lineHeight * จำนวนบรรทัด
  */
 function isClampedTextOverflowing(textEl, text, maxLines) {
-  const width = textEl.getBoundingClientRect().width;
+  const { width } = textEl.getBoundingClientRect();
   if (width <= 0) return false;
 
   const cs = window.getComputedStyle(textEl);
