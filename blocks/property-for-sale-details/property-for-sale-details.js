@@ -20,7 +20,7 @@ function getPhotos(data) {
 function buildCarousel(photos, data, p) {
   // Strip zero-width/invisible characters that .trim() leaves behind, so a
   // value made only of blank/invisible characters is treated as empty.
-  const videoId = (data?.WEBSITE_REMARK || '').replace(/[​-‍﻿]/g, '').trim();
+  const videoId = (data?.WEBSITE_REMARK || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
   const hasVideo = !!videoId;
 
   if (!photos.length && !hasVideo) return '';
