@@ -88,7 +88,7 @@
     right: 0;
     width: max-content;
     min-width: 100%;
-    max-width: min(90vw, 22rem);
+    max-width: 72vw;
 }
 
 .sub-nav .sub-nav-select .global-dropdown-panel li a {
