@@ -33,6 +33,16 @@
   background: transparent;
 }
 
+/* Without this, a horizontal drag is also read by the browser as an edge-swipe
+   back/forward navigation gesture (visible as a circular arrow overlay), since
+   the touch listeners are passive and never call preventDefault(). This tells
+   the browser to keep native vertical scrolling but leave horizontal gestures
+   on this element to our own drag handling. */
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) {
+  touch-action: pan-y;
+  overscroll-behavior-x: contain;
+}
+
 .carousel-dotted.show-arrows-dots .carousel-dotted-item {
   position: relative;
   inset: unset;
