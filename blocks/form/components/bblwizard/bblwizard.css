@@ -289,9 +289,6 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   margin: 0;
   width: 100%;
   margin-bottom: var(--bbl-margin-block-10px);
-}
-
-main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) {
   position: relative;
 }
 
@@ -317,6 +314,7 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   text-align: right;
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-wizard-line-height-base-mobile);
+  padding-left: var(--bbl-space-500);
 }
 
 main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) > label.field-label::before {
@@ -330,10 +328,6 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   pointer-events: none;
   z-index: 1;
   font-size: var(--bbl-font-size-b1-mobile);
-}
-
-main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) input {
-  padding-left: var(--bbl-space-500);
 }
 
 main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) input::placeholder {
