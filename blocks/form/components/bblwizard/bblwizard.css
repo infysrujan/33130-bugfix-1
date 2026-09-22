@@ -291,7 +291,7 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   margin-bottom: var(--bbl-margin-block-10px);
 }
 
-main .section.wizard-forms .form form .field-prospectage {
+main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) {
   position: relative;
 }
 
@@ -319,7 +319,7 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   line-height: var(--bbl-wizard-line-height-base-mobile);
 }
 
-main .section.wizard-forms .form form .field-prospectage > label.field-label::before {
+main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) > label.field-label::before {
   content: attr(title);
   position: absolute;
   left: var(--bbl-margin-block-14px);
@@ -332,11 +332,11 @@ main .section.wizard-forms .form form .field-prospectage > label.field-label::be
   font-size: var(--bbl-font-size-b1-mobile);
 }
 
-main .section.wizard-forms .form form .field-prospectage input {
+main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) input {
   padding-left: var(--bbl-space-500);
 }
 
-main .section.wizard-forms .form form .field-prospectage input::placeholder {
+main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) input::placeholder {
   color: transparent;
 }
 
@@ -603,7 +603,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
     scroll-margin-top: 9.5rem;
   }
 
-  main .section.wizard-forms .form form .field-prospectage > label.field-label::before {
+  main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) > label.field-label::before {
     height: 3.625rem;
     top: 1.8125rem;
     font-size: var(--bbl-font-size-b1-desktop);
