@@ -163,8 +163,9 @@ function parseAuthoredOptions(rows) {
 }
 
 function parseAuthoredMeta(rows, placeholders) {
-  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel || 'Search for Reports';
-  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
+  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel;
+  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim()
+    || placeholders.reportsModalTitle;
   const modalDescRow = rows[2];
   const modalDesc = modalDescRow?.firstElementChild?.textContent?.trim() || '';
   const resultsPageUrl = rows[3]?.querySelector('a')?.href || window.location.pathname;

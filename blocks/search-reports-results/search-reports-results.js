@@ -7,10 +7,10 @@ import createTaggedElement from '../../scripts/utils/dom.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 
 function getDownloadLabel(mimeType, placeholders = {}) {
-  if (mimeType === 'application/pdf') return placeholders.reportsDownloadPdf || 'Download PDF';
-  if (mimeType.includes('spreadsheetml') || mimeType.includes('excel')) return placeholders.reportsDownloadExcel || 'Download Excel';
-  if (mimeType.includes('wordprocessingml') || mimeType.includes('msword')) return placeholders.reportsDownloadWord || 'Download Word';
-  return placeholders.reportsDownloadFile || 'Download File';
+  if (mimeType === 'application/pdf') return placeholders.reportsDownloadPdf;
+  if (mimeType.includes('spreadsheetml') || mimeType.includes('excel')) return placeholders.reportsDownloadExcel;
+  if (mimeType.includes('wordprocessingml') || mimeType.includes('msword')) return placeholders.reportsDownloadWord;
+  return placeholders.reportsDownloadFile;
 }
 
 function getPreviousPagePath() {
