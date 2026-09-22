@@ -175,6 +175,10 @@
   list-style-type: circle;
 }
 
+.accordion-panel .default-content-wrapper ul ul ul {
+  list-style-type: square;
+}
+
 .accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper):has(> p) {
   margin-bottom: 1.25rem;
 }
