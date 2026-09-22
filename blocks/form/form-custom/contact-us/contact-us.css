@@ -299,6 +299,10 @@
         text-align: center;
     }
 
+    & fieldset.panel-wrapper:has(.date-wrapper) > .plain-text-wrapper.field-note{
+        padding: 0 var(--bbl-form-padding-20);
+    }
+
     /* Modal text */
     & .modal .plain-text-wrapper p {
         font-family: var(--bbl-font-family-primary);
