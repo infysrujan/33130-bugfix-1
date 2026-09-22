@@ -1,38 +1,39 @@
-const DEFAULT_API_URL = 'https://bbl-sea-apim-u.azure-api.net/api/uat/BondConnectService/GetBondConnectDetail';
+const DEFAULT_API_URL =
+  "https://bbl-sea-apim-u.azure-api.net/api/uat/BondConnectService/GetBondConnectDetail";
 const LOCAL_API_URL = DEFAULT_API_URL;
-const LOCAL_API_KEY = '';
-const API_PATH_FRAGMENT = '/BondConnectService/GetBondConnectDetail';
+const LOCAL_API_KEY = "67efba92bc174fa09212ece7c741fddf";
+const API_PATH_FRAGMENT = "/BondConnectService/GetBondConnectDetail";
 const BOND_CONNECT_PANEL_SELECTOR = [
-  '.bond-connect-panel',
-  '.field-bond-connect',
-  '.field-bondconnecttable',
-].join(',');
+  ".bond-connect-panel",
+  ".field-bond-connect",
+  ".field-bondconnecttable",
+].join(",");
 const TABLE_TARGET_SELECTOR = [
-  '.bond-connect-table',
-  '.field-bond-connect-table',
-  '.field-bondconnecttable',
-  '.field-table-bond',
-  '[data-bond-connect-table]',
-].join(',');
+  ".bond-connect-table",
+  ".field-bond-connect-table",
+  ".field-bondconnecttable",
+  ".field-table-bond",
+  "[data-bond-connect-table]",
+].join(",");
 
 const LABEL_FIELDS = {
-  symbol: ['hdConnectSymbol', 'ConnectSymbol', 'connectSymbol'],
-  referenceNo: ['hdConnectRefNo', 'ConnectRefNo', 'connectRefNo', 'RefNo'],
+  symbol: ["hdConnectSymbol", "ConnectSymbol", "connectSymbol"],
+  referenceNo: ["hdConnectRefNo", "ConnectRefNo", "connectRefNo", "RefNo"],
   reserve: [
-    'hdConnectReserve',
-    'ConnectReserve',
-    'connectReserve',
-    'TotalPurchaseAmount',
+    "hdConnectReserve",
+    "ConnectReserve",
+    "connectReserve",
+    "TotalPurchaseAmount",
   ],
   allocate: [
-    'hdConnectAllocate',
-    'ConnectAllocate',
-    'connectAllocate',
-    'TotalAllotment',
+    "hdConnectAllocate",
+    "ConnectAllocate",
+    "connectAllocate",
+    "TotalAllotment",
   ],
-  channel: ['hdConnectChannel', 'ConnectChannel', 'connectChannel', 'Channel'],
-  total: ['hdConnectTotal', 'ConnectTotal', 'connectTotal'],
-  grandTotal: ['hdConnectGrandTotal', 'ConnectGrandTotal', 'connectGrandTotal'],
+  channel: ["hdConnectChannel", "ConnectChannel", "connectChannel", "Channel"],
+  total: ["hdConnectTotal", "ConnectTotal", "connectTotal"],
+  grandTotal: ["hdConnectGrandTotal", "ConnectGrandTotal", "connectGrandTotal"],
 };
 
 const serviceResponseRenderers = new Set();
@@ -44,16 +45,16 @@ function isBondConnectForm(form) {
   // The authored form is still a copy of Bond Allocation — every panel and field carries the
   // same name — so nothing in the markup tells the two apart. The page path does. Replace
   // this with a formCode check once that field is given a value in AEM.
-  return window.location.pathname.toLowerCase().includes('bond-connect');
+  return window.location.pathname.toLowerCase().includes("bond-connect");
 }
 
 function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function getInputValue(form, names, fallback) {
@@ -64,45 +65,47 @@ function getInputValue(form, names, fallback) {
     `.field-${CSS.escape(name.toLowerCase())} p`,
     `.field-${CSS.escape(name.toLowerCase())} .field-label`,
   ]);
-  const element = form.querySelector(selectors.join(','));
+  const element = form.querySelector(selectors.join(","));
   return element?.value || element?.textContent?.trim() || fallback;
 }
 
 function getLocale() {
-  const lang = document.documentElement.lang?.toLowerCase() || '';
+  const lang = document.documentElement.lang?.toLowerCase() || "";
   const path = window.location.pathname.toLowerCase();
-  return lang.startsWith('th') || path.startsWith('/th/') ? 'th' : 'en';
+  return lang.startsWith("th") || path.startsWith("/th/") ? "th" : "en";
 }
 
 function getLabels(form) {
-  const isThai = getLocale() === 'th';
+  const isThai = getLocale() === "th";
 
   return {
     symbol: isThai
-      ? 'รุ่น'
-      : getInputValue(form, LABEL_FIELDS.symbol, 'Symbol'),
+      ? "รุ่น"
+      : getInputValue(form, LABEL_FIELDS.symbol, "Symbol"),
     referenceNo: isThai
-      ? 'เลขที่อ้างอิง (Ref No.)'
-      : getInputValue(form, LABEL_FIELDS.referenceNo, 'Ref No.'),
-    reserve: getInputValue(form, LABEL_FIELDS.reserve, 'Reserve Amount'),
-    allocate: getInputValue(form, LABEL_FIELDS.allocate, 'Allocated Amount'),
+      ? "เลขที่อ้างอิง (Ref No.)"
+      : getInputValue(form, LABEL_FIELDS.referenceNo, "Ref No."),
+    reserve: isThai
+      ? getInputValue(form, LABEL_FIELDS.reserve, "Reserve Amount")
+      : "Total\u00a0Purchase",
+    allocate: getInputValue(form, LABEL_FIELDS.allocate, "Allocated Amount"),
     channel: isThai
-      ? 'ช่องทาง'
-      : getInputValue(form, LABEL_FIELDS.channel, 'Channel'),
-    total: isThai ? 'รวม' : getInputValue(form, LABEL_FIELDS.total, 'Total'),
-    grandTotal: getInputValue(form, LABEL_FIELDS.grandTotal, 'Total Summary'),
+      ? "ช่องทาง"
+      : getInputValue(form, LABEL_FIELDS.channel, "Channel"),
+    total: isThai ? "รวม" : getInputValue(form, LABEL_FIELDS.total, "Total"),
+    grandTotal: getInputValue(form, LABEL_FIELDS.grandTotal, "Total Summary"),
   };
 }
 
 function parseAmount(value) {
-  if (value == null || value === '') return 0;
-  const normalized = String(value).replace(/,/g, '');
+  if (value == null || value === "") return 0;
+  const normalized = String(value).replace(/,/g, "");
   const amount = Number.parseFloat(normalized);
   return Number.isNaN(amount) ? 0 : amount;
 }
 
 function formatAmount(value) {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
@@ -110,7 +113,7 @@ function formatAmount(value) {
 
 function sumBy(items, keys) {
   return items.reduce((total, item) => {
-    const key = keys.find((name) => item[name] != null && item[name] !== '');
+    const key = keys.find((name) => item[name] != null && item[name] !== "");
     return total + parseAmount(key ? item[key] : 0);
   }, 0);
 }
@@ -144,15 +147,15 @@ function groupAllocations(result) {
 
 function getBondName(bond, symbol) {
   if (!bond) return symbol;
-  return getLocale() === 'th'
+  return getLocale() === "th"
     ? bond.BondName_Th || bond.BondName_En || symbol
     : bond.BondName_En || bond.BondName_Th || symbol;
 }
 
 function getChannel(row) {
-  return getLocale() === 'th'
-    ? row.ChannelTH || row.ChannelEN || ''
-    : row.ChannelEN || row.ChannelTH || '';
+  return getLocale() === "th"
+    ? row.ChannelTH || row.ChannelEN || ""
+    : row.ChannelEN || row.ChannelTH || "";
 }
 
 function createTableHtml(result, form) {
@@ -167,20 +170,24 @@ function createTableHtml(result, form) {
   const totalAllocatedItem = allocations.find(
     (item) => item.TotalAllocatedByIDFmt,
   );
-  const grandTotalPurchase = totalReserveItem?.TotalReserveByIDFmt
-    || formatAmount(sumBy(allocations, ['Amount', 'AmountFmt']));
-  const grandTotalAllocated = totalAllocatedItem?.TotalAllocatedByIDFmt
-    || formatAmount(sumBy(allocations, ['AllocatedAmount', 'AllocatedAmountFmt']));
+  const grandTotalPurchase =
+    totalReserveItem?.TotalReserveByIDFmt ||
+    formatAmount(sumBy(allocations, ["Amount", "AmountFmt"]));
+  const grandTotalAllocated =
+    totalAllocatedItem?.TotalAllocatedByIDFmt ||
+    formatAmount(sumBy(allocations, ["AllocatedAmount", "AllocatedAmountFmt"]));
 
   let html = '<table class="bond-connect-result-table"><tbody>';
 
   groups.forEach((group, index) => {
     const bondName = getBondName(bondMap.get(group.symbol), group.symbol);
-    const subTotalPurchase = group.subTotalPurchase
-      || formatAmount(sumBy(group.items, ['Amount', 'AmountFmt']));
-    const subTotalAllocated = group.subTotalAllocated
-      || formatAmount(
-        sumBy(group.items, ['AllocatedAmount', 'AllocatedAmountFmt']),
+    const subTotalPurchase =
+      group.subTotalPurchase ||
+      formatAmount(sumBy(group.items, ["Amount", "AmountFmt"]));
+    const subTotalAllocated =
+      group.subTotalAllocated ||
+      formatAmount(
+        sumBy(group.items, ["AllocatedAmount", "AllocatedAmountFmt"]),
       );
 
     html += `
@@ -190,7 +197,7 @@ function createTableHtml(result, form) {
       <tr class="bond-connect-heading-row">
         <th>${escapeHtml(labels.symbol)}</th>
         <th>${escapeHtml(labels.referenceNo)}</th>
-        <th class="is-numeric">${escapeHtml(labels.reserve)}</th>
+        <th class="is-numeric">${escapeHtml(labels.reserve)}${getLocale() === "en" ? "<br>(baht)" : ""}</th>
         <th class="is-numeric">${escapeHtml(labels.allocate)}</th>
         <th>${escapeHtml(labels.channel)}</th>
       </tr>
@@ -239,28 +246,50 @@ function createTableHtml(result, form) {
     `;
   }
 
-  html += '</tbody></table>';
+  html += "</tbody></table>";
   return html;
 }
 
+function holdsAnInput(element) {
+  return (
+    element.matches("input, textarea, select") ||
+    element.querySelector("input, textarea, select") !== null
+  );
+}
+
 function findTableTarget(form) {
-  const target = form.querySelector(TABLE_TARGET_SELECTOR);
+  // The authored form carries the bond-connect-table name twice in the same panel: a
+  // plain-text component and a leftover text input. Only the plain-text one can hold a
+  // table, and querySelector() would just take whichever comes first, so pick the usable
+  // host explicitly and hide the rest instead of leaving an empty labelled box on the page.
+  const hosts = [...form.querySelectorAll(TABLE_TARGET_SELECTOR)]
+    .map((element) => (
+      element.matches("input, textarea")
+        ? element.closest(".field-wrapper")
+        : element
+    ))
+    .filter((element, index, all) => element && all.indexOf(element) === index);
+
+  const target = hosts.find((element) => !holdsAnInput(element)) || hosts[0];
   if (target) {
-    return target.matches('input, textarea')
-      ? target.closest('.field-wrapper')
-      : target;
+    hosts
+      .filter((element) => element !== target)
+      .forEach((element) => {
+        element.dataset.visible = "false";
+      });
+    return target;
   }
 
   // Nothing authored to hold the table. Create the slot instead of giving up: the leftover
   // Bond Allocation fields sitting in the same panel are already hidden by bond-connect.css,
   // so appending here puts the table where those fields used to show.
-  const successPanel = form.querySelector('.field-successpanel');
+  const successPanel = form.querySelector(".field-successpanel");
   if (!successPanel) return null;
 
-  let host = successPanel.querySelector('[data-bond-connect-table]');
+  let host = successPanel.querySelector("[data-bond-connect-table]");
   if (!host) {
-    host = document.createElement('div');
-    host.dataset.bondConnectTable = '';
+    host = document.createElement("div");
+    host.dataset.bondConnectTable = "";
     successPanel.append(host);
   }
   return host;
@@ -270,59 +299,62 @@ function renderBondConnectTable(form, result) {
   const target = findTableTarget(form);
   if (!target) return false;
 
-  const hasData = Array.isArray(result?.Allocations) && result.Allocations.length > 0;
-  target.innerHTML = hasData ? createTableHtml(result, form) : '';
+  target.classList.add("bond-connect-table");
+  const hasData =
+    Array.isArray(result?.Allocations) && result.Allocations.length > 0;
+  target.innerHTML = hasData ? createTableHtml(result, form) : "";
   target.hidden = !hasData;
   return hasData;
 }
 
 function getFieldValue(form, selectors) {
-  const element = form.querySelector(selectors.join(','));
-  return element?.value?.trim() || '';
+  const element = form.querySelector(selectors.join(","));
+  return element?.value?.trim() || "";
 }
 
 function getMaskedCitizenId(form, result) {
   return (
-    getFieldValue(form, ['[name="citizenID"]', '.field-citizenid input'])
-    || result?.Allocations?.[0]?.CizID
-    || ''
+    getFieldValue(form, ['[name="citizenID"]', ".field-citizenid input"]) ||
+    result?.Allocations?.[0]?.CizID ||
+    ""
   );
 }
 
 function renderResultSubHeader(form, result) {
-  const subHeader = form.querySelector('.field-resultsbondsubheader');
+  const subHeader = form.querySelector(".field-resultsbondsubheader");
   if (!subHeader) return;
 
   const citizenId = getMaskedCitizenId(form, result);
   if (!citizenId) return;
 
   subHeader.replaceChildren();
-  const text = document.createElement('p');
-  text.className = 'bond-connect-result-subheader';
-  text.textContent = getLocale() === 'th'
-    ? `เลขบัตรประจำตัวประชาชน XXXXXXXXX${citizenId}`
-    : `Citizen ID No. XXXXXXXXX${citizenId}`;
+  const text = document.createElement("p");
+  text.className = "bond-connect-result-subheader";
+  text.textContent =
+    getLocale() === "th"
+      ? `เลขบัตรประจำตัวประชาชน XXXXXXXXX${citizenId}`
+      : `Citizen ID No. XXXXXXXXX${citizenId}`;
   subHeader.append(text);
 }
 
 function isLocalhost() {
-  return ['localhost', '127.0.0.1'].includes(window.location.hostname);
+  return ["localhost", "127.0.0.1"].includes(window.location.hostname);
 }
 
 function getApiConfig() {
   return {
     url:
-      sessionStorage.getItem('bondConnectApiUrl')
-      || (isLocalhost() ? LOCAL_API_URL : DEFAULT_API_URL),
+      sessionStorage.getItem("bondConnectApiUrl") ||
+      (isLocalhost() ? LOCAL_API_URL : DEFAULT_API_URL),
     subscriptionKey:
-      sessionStorage.getItem('bondConnectApiKey')
-      || (isLocalhost() ? LOCAL_API_KEY : ''),
+      sessionStorage.getItem("bondConnectApiKey") ||
+      (isLocalhost() ? LOCAL_API_KEY : ""),
   };
 }
 
 function isBondConnectServiceRequest(input) {
-  const url = typeof input === 'string' ? input : input?.url;
-  return String(url || '').includes(API_PATH_FRAGMENT);
+  const url = typeof input === "string" ? input : input?.url;
+  return String(url || "").includes(API_PATH_FRAGMENT);
 }
 
 function notifyServiceResponseRenderers(result) {
@@ -333,7 +365,7 @@ function notifyServiceResponseRenderers(result) {
 
 function parseServiceResponse(response) {
   if (!response) return null;
-  if (typeof response === 'object') return response;
+  if (typeof response === "object") return response;
   try {
     return JSON.parse(response);
   } catch {
@@ -348,7 +380,9 @@ function bindFetchResponseCapture() {
   const fetchWithBondConnectCapture = async (...args) => {
     const response = await originalFetch(...args);
     if (isBondConnectServiceRequest(args[0])) {
-      response.clone().json()
+      response
+        .clone()
+        .json()
         .then((result) => notifyServiceResponseRenderers(result))
         .catch(() => {});
     }
@@ -361,7 +395,8 @@ function bindFetchResponseCapture() {
 
 function bindXhrResponseCapture() {
   const XhrConstructor = window.XMLHttpRequest;
-  if (!XhrConstructor || XhrConstructor.prototype.bondConnectCaptureBound) return;
+  if (!XhrConstructor || XhrConstructor.prototype.bondConnectCaptureBound)
+    return;
 
   const originalOpen = XhrConstructor.prototype.open;
   const originalSend = XhrConstructor.prototype.send;
@@ -373,12 +408,13 @@ function bindXhrResponseCapture() {
 
   XhrConstructor.prototype.send = function send(...args) {
     if (isBondConnectServiceRequest(this.bondConnectRequestUrl)) {
-      this.addEventListener('load', () => {
+      this.addEventListener("load", () => {
         if (this.status < 200 || this.status >= 300) return;
 
-        const result = this.responseType === 'json'
-          ? parseServiceResponse(this.response)
-          : parseServiceResponse(this.responseText);
+        const result =
+          this.responseType === "json"
+            ? parseServiceResponse(this.response)
+            : parseServiceResponse(this.responseText);
         if (result) notifyServiceResponseRenderers(result);
       });
     }
@@ -393,11 +429,11 @@ function setPanelVisible(form, selector, visible) {
   if (!panel) return;
   panel.dataset.visible = String(visible);
   panel.hidden = !visible;
-  panel.style.display = visible ? '' : 'none';
+  panel.style.display = visible ? "" : "none";
 }
 
 function setLoading(form, visible) {
-  setPanelVisible(form, '.field-loadingtext', visible);
+  setPanelVisible(form, ".field-loadingtext", visible);
   form
     .querySelectorAll('[name="submitCTA"], .field-submitcta button')
     .forEach((button) => {
@@ -407,32 +443,32 @@ function setLoading(form, visible) {
 
 async function fetchBondConnectDetail(form) {
   const bondHolderNumber = getFieldValue(form, [
-    '[name="Bond Holder Number"]',
-    '.field-bond-holder-number input',
+    '[name="BondHolderNumber"]',
+    ".field-bondholdernumber input",
   ]);
   const bondCitizenId = getFieldValue(form, [
     '[name="citizenID"]',
-    '.field-citizenid input',
+    ".field-citizenid input",
   ]);
   const { url, subscriptionKey } = getApiConfig();
   const requestUrl = new URL(url);
 
-  if (requestUrl.hostname.includes('azure-api.net')) {
-    requestUrl.searchParams.set('BondHolderNumber', bondHolderNumber);
-    requestUrl.searchParams.set('BondCitizenIDorPassportNumber', bondCitizenId);
+  if (requestUrl.hostname.includes("azure-api.net")) {
+    requestUrl.searchParams.set("BondHolderNumber", bondHolderNumber);
+    requestUrl.searchParams.set("BondCitizenIDorPassportNumber", bondCitizenId);
   } else {
-    requestUrl.searchParams.set('bondHolderNumber', bondHolderNumber);
-    requestUrl.searchParams.set('bondCitizenIDorPassportNumber', bondCitizenId);
+    requestUrl.searchParams.set("bondHolderNumber", bondHolderNumber);
+    requestUrl.searchParams.set("bondCitizenIDorPassportNumber", bondCitizenId);
   }
 
-  const headers = { Accept: 'application/json' };
+  const headers = { Accept: "application/json" };
   if (subscriptionKey) {
-    headers['Ocp-Apim-Subscription-Key'] = subscriptionKey;
+    headers["Ocp-Apim-Subscription-Key"] = subscriptionKey;
   }
 
-  const options = { method: 'GET', headers };
+  const options = { method: "GET", headers };
   if (requestUrl.origin !== window.location.origin) {
-    options.credentials = 'include';
+    options.credentials = "include";
   }
 
   const response = await fetch(requestUrl.toString(), options);
@@ -445,14 +481,14 @@ async function fetchBondConnectDetail(form) {
 function showResult(form, result) {
   renderResultSubHeader(form, result);
   const hasData = renderBondConnectTable(form, result);
-  setPanelVisible(form, '.field-mainformpanel', false);
-  setPanelVisible(form, '.field-bond-allocation-review', hasData);
-  setPanelVisible(form, '.field-bond-allocation-notfound', !hasData);
+  setPanelVisible(form, ".field-mainformpanel", false);
+  setPanelVisible(form, ".field-bond-allocation-review", hasData);
+  setPanelVisible(form, ".field-bond-allocation-notfound", !hasData);
   return hasData;
 }
 
 function showApiError(form, visible = true) {
-  setPanelVisible(form, '.field-errorloading', visible);
+  setPanelVisible(form, ".field-errorloading", visible);
 }
 
 function bindServiceResponseRendering(form) {
@@ -473,7 +509,7 @@ function bindLocalApiSubmit(form) {
   if (!submitButton) return;
 
   submitButton.addEventListener(
-    'click',
+    "click",
     async (event) => {
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -507,15 +543,15 @@ function getResultFields(form) {
   return [
     ...form.querySelectorAll(
       [
-        '#BondConnectResult',
-        '#bondConnectResult',
+        "#BondConnectResult",
+        "#bondConnectResult",
         '[name="BondConnectResult"]',
         '[name="bondConnectResult"]',
-        '.bond-connect-result-json textarea',
-        '.bond-connect-result-json input',
-        '.field-bondconnectresult textarea',
-        '.field-bondconnectresult input',
-      ].join(','),
+        ".bond-connect-result-json textarea",
+        ".bond-connect-result-json input",
+        ".field-bondconnectresult textarea",
+        ".field-bondconnectresult input",
+      ].join(","),
     ),
   ];
 }
@@ -527,8 +563,8 @@ function bindResultFieldRendering(form) {
       if (result) showResult(form, result);
     };
 
-    field.addEventListener('change', renderFromField);
-    field.addEventListener('input', renderFromField);
+    field.addEventListener("change", renderFromField);
+    field.addEventListener("input", renderFromField);
     renderFromField();
   });
 }
@@ -538,20 +574,19 @@ export { renderBondConnectTable };
 export default function decorateBondConnectForm(form) {
   if (!isBondConnectForm(form)) return;
 
-  document.body.classList.add('bond-connect-form');
+  document.body.classList.add("bond-connect-form");
   bindResultFieldRendering(form);
   bindServiceResponseRendering(form);
   bindLocalApiSubmit(form);
 
   window.BondConnectAem = window.BondConnectAem || {};
-  window.BondConnectAem.render = (result, targetForm = form) => (
-    showResult(targetForm, result)
-  );
+  window.BondConnectAem.render = (result, targetForm = form) =>
+    showResult(targetForm, result);
   window.BondConnectAem.setApiKey = (key) => {
-    sessionStorage.setItem('bondConnectApiKey', key);
+    sessionStorage.setItem("bondConnectApiKey", key);
   };
   window.BondConnectAem.setApiUrl = (url) => {
-    sessionStorage.setItem('bondConnectApiUrl', url);
+    sessionStorage.setItem("bondConnectApiUrl", url);
   };
   window.BondConnectAem.fetchAndRender = async (targetForm = form) => {
     const result = await fetchBondConnectDetail(targetForm);
@@ -559,7 +594,7 @@ export default function decorateBondConnectForm(form) {
     return result;
   };
 
-  form.addEventListener('bondconnect:render', (event) => {
+  form.addEventListener("bondconnect:render", (event) => {
     showResult(form, event.detail);
   });
 }

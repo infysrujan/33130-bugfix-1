@@ -98,6 +98,8 @@ async function fetchPromotionalData(url) {
   return fetchJson(url);
 }
 
+const NO_MATCH_VALUE = '__promo_card_ref_no_match__';
+
 function getCardTypeFromRef(mapping, cardRef) {
   if (!mapping || !cardRef) return '';
   if (typeof mapping === 'string') return '';
@@ -297,7 +299,7 @@ function setupPanel(
   if (disableFilters) {
     panel.innerHTML = `
       <div class="promo-selector-content pad-top-30 pad-bot-30">
-        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
+        <div class="listing-card-grid promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
         <div class="promo-selector-pagination"></div>
       </div>`;
   } else {
@@ -591,8 +593,9 @@ export default async function decorate(block) {
   const activeAreas = activeData?.areas || [];
   const isBbmPage = isBbm;
   const cardRef = isBbmPage ? searchParams.get('card_ref') : '';
-  const forcedCardType = getCardTypeFromRef(cardRefConfig, cardRef);
-  const disableFilters = Boolean(forcedCardType);
+  const resolvedCardType = getCardTypeFromRef(cardRefConfig, cardRef);
+  const forcedCardType = cardRef ? (resolvedCardType || NO_MATCH_VALUE) : '';
+  const disableFilters = isBbmPath;
   const activeCategories = activeData?.categories || [];
 
   if (isAuthoringInstance(block)) {
@@ -681,8 +684,10 @@ export default async function decorate(block) {
     const dataCategories = dataSet?.categories || [];
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
-    const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText, placeholders));
-    const category = tabTags || (isHighlightsPanel ? tabText : '');
+    const isHighlightsPanel = isBbm
+      && (index === 0 || isTopPromotionsLabel(tabText, placeholders));
+    let category = tabTags || '';
+    if (!category) category = isHighlightsPanel ? tabText : forcedCardType && NO_MATCH_VALUE;
     const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
     setupPanel(
