@@ -171,12 +171,6 @@
   margin-bottom: 0.4em;
 }
 
-.privacy-modal-body strong,
-.privacy-modal-body b {
-  font-weight: 700;
-  font-family: var(--bbl-font-family-medium);
-}
-
 .privacy-modal-body a {
   color: inherit;
   text-decoration: none;
