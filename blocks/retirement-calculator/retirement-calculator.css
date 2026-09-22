@@ -149,7 +149,7 @@
 .retirement-calculator .rc-income-title {
   font-family: var(--bbl-font-family-medium);
   font-size: 1.125rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   margin: 0;
   white-space: pre-line;
   line-height: 1.5356rem;
@@ -171,7 +171,7 @@
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-medium);
   font-size: 1.4rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 1.35;
   padding: 0;
   margin: 0;
@@ -187,7 +187,7 @@
 .retirement-calculator .rc-income-unit {
   font-family: var(--bbl-font-family-looped);
   font-size: 0.625rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 0.875rem;
   color: var(--bbl-color-white);
   opacity: 0.8;
@@ -220,7 +220,7 @@
 
 .retirement-calculator .rc-present-value {
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-system-green);
   text-align: right;
   flex: 1;
@@ -343,7 +343,7 @@
 .retirement-calculator .rc-j1-summary-label {
   font-family: var(--bbl-font-family-medium);
   font-size: 1.125rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-gray-121);
   text-align: left;
   margin: 0 0 0.4rem;
@@ -352,7 +352,7 @@
 
 .retirement-calculator .rc-j1-summary-value {
   font-size: 1.375rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-active-blue);
   text-align: right;
   margin: 0;
@@ -364,7 +364,7 @@
   font-family: var(--bbl-font-family-looped);
   font-size: 0.625rem;
   line-height: 0.875rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-gray-121);
 }
 
@@ -497,7 +497,7 @@
 .retirement-calculator .rc-savings-card-title {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-heading-h3-size);
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 1.375rem;
   margin: 0 0 var(--bbl-space-100);
   white-space: pre-line;
@@ -512,7 +512,7 @@
   font-family: var(--bbl-font-family-medium);
   font-size: 1.375rem;
   line-height: 1.875rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   text-align: right;
   margin: auto 0 0 var(--bbl-space-100);
   color: var(--bbl-color-white);
@@ -526,7 +526,7 @@
   font-family: var(--bbl-font-family-looped);
   font-size: 0.625rem;
   line-height: 0.875rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-white);
 }
 
@@ -538,7 +538,7 @@
 .retirement-calculator .rc-savings-card-note {
   font-family: var(--bbl-font-family-medium);
   font-size: 0.8rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 1.35;
   text-align: right;
   margin: var(--bbl-space-050) 0 0;
@@ -579,7 +579,7 @@
 .retirement-calculator .rc-summary-label {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-heading-h3-size);
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-truthful-blue);
   margin: 0;
   line-height: var(--bbl-heading-h3-line-height);
@@ -589,7 +589,7 @@
   font-size: 0.75rem;
   font-family: var(--bbl-font-family-looped);
   line-height: 1rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-active-blue);
   margin: var(--bbl-space-025) 0 0;
   display: block;
@@ -599,7 +599,7 @@
 .retirement-calculator .rc-summary-value {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-heading-h3-size);
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-truthful-blue);
   text-align: right;
   margin: 0 0 0 auto;
@@ -624,7 +624,7 @@
 .retirement-calculator .rc-summary-unit {
   font-family: var(--bbl-font-family-looped);
   font-size: 0.625rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 0.875rem;
   color: var(--bbl-color-grey-70);
 }
@@ -656,7 +656,7 @@
 .retirement-calculator .rc-progress-label {
   font-family: var(--bbl-font-family-medium);
   font-size: 1.125rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   margin: 0;
   line-height: 1.5rem;
@@ -674,7 +674,7 @@
 .retirement-calculator .rc-progress-current {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-heading-h1-size);
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 1.35;
   color: var(--bbl-color-active-blue);
   margin: 0;
@@ -682,7 +682,7 @@
 }
 
 .retirement-calculator .rc-progress-total {
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   font-size: 1.125rem;
   line-height: 1.5rem;
   font-family: var(--bbl-font-family-medium);
@@ -693,7 +693,7 @@
 
 .retirement-calculator .rc-progress-unit {
   font-size: 0.625rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 0.875rem;
   color: var(--bbl-color-black);
   font-family: var(--bbl-font-family-looped);
@@ -1028,7 +1028,7 @@
   .retirement-calculator .rc-savings-card-amount {
     flex-shrink: 0;
     font-size: var(--bbl-font-size-h1-desktop);
-    font-weight: 400;
+    font-weight: var(--bbl-font-weight-regular);
     line-height: 3.4375rem;
     text-align: right;
     margin: auto 0 0;
