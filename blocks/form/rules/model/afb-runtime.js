@@ -3115,8 +3115,14 @@ const submit = async (context, success, error, submitAs = 'multipart/form-data',
 
     // Exclude "_exclude" fields before hashing so the hash matches the payload actually sent
     const filteredData = filterExcludeFields(data);
-    const payloadHash = await generatePayloadHash(filteredData);
 
+    // Replace undefined values with "" so JSON.stringify retains every field in both
+    // the payload hash and the final request body instead of silently dropping them.
+    const normalizedData = Object.fromEntries(
+        Object.entries(filteredData).map(([k, v]) => [k, v === undefined ? '' : v])
+    );
+
+    const payloadHash = await generatePayloadHash(normalizedData);
     // Structure: data contains payload and payload-hash
     const dataWithHash = {
         'payload': filteredData,
