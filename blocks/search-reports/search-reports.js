@@ -122,6 +122,14 @@ async function fetchSearchParams(searchParamsUrl) {
   return Array.isArray(parsed) ? parsed[0] : parsed;
 }
 
+function resolveSearchParamsUrl(rawUrl, lang) {
+  if (!rawUrl) return '';
+  if (rawUrl.includes('{{lang}}')) {
+    return rawUrl.replace(/\{\{lang\}\}/g, lang);
+  }
+  return rawUrl.replace(/\.searchparams(?:\.[a-z]{2})?\.json/, `.searchparams.${lang}.json`);
+}
+
 // Rows 0-3 are ctaLabel/modalTitle/modalDescription/resultsPageUrl (read in parseAuthoredMeta);
 // row 4 is a structural row with no corresponding model field — skip to option rows.
 const OPTION_ROWS_START = 5;
@@ -280,7 +288,7 @@ export default async function decorate(block) {
   const lang = getLang();
 
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
-  const searchParamsUrl = configs.reportsSearchParamsUrl || '';
+  const searchParamsUrl = resolveSearchParamsUrl(configs.reportsSearchParamsUrl, lang);
 
   const {
     ctaLabel, modalTitle, modalDesc, resultsPageUrl,
