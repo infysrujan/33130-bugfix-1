@@ -68,9 +68,8 @@
         },
         {
           "component": "boolean",
-          "name": "breadcrumb",
-          "value": true,
-          "label": "Hide the entire breadcrumb from the current page",
+          "name": "hideCurrentPageBreadcrumb",
+          "label": "Hide breadcrumb from current page",
           "valueType": "boolean"
         },
         {
@@ -88,8 +87,8 @@
         },
         {
           "component": "boolean",
-          "name": "hide-from-breadcrumb",
-          "label": "Hide only the current page’s breadcrumb from the breadcrumb trail.",
+          "name": "hidebreadcrumb",
+          "label": "Hide from breadcrumb trail in child pages",
           "valueType": "boolean"
         }
       ]

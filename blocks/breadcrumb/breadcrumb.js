@@ -26,8 +26,8 @@ export function pagePathToUrl(pagePath) {
 }
 
 /**
- * Checks whether a page object or page metadata indicates
- * it should be hidden from the breadcrumb trail.
+ * Checks whether a page object indicates it should be hidden
+ * from the breadcrumb trail in child pages.
  * @param {Object} page Page object from API
  * @param {boolean} isCurrentPage Whether this is the current page
  * @returns {boolean}
@@ -35,11 +35,18 @@ export function pagePathToUrl(pagePath) {
 function isPageHiddenFromBreadcrumb(page, isCurrentPage = false) {
   if (!page) return false;
 
-  if (page.hidebreadcrumb) {
+  // Current page: hide if hideCurrentPageBreadcrumb is enabled
+  if (isCurrentPage && (page.hideCurrentPageBreadcrumb === true
+    || page.hideCurrentPageBreadcrumb === 'true'
+    || getMetadata('hidecurrentpagebreadcrumb') === 'true'
+    || getMetadata('hideCurrentPageBreadcrumb') === 'true'
+    || getMetadata('hide-current-page-breadcrumb') === 'true'
+    || getMetadata('breadcrumb') === 'false')) {
     return true;
   }
 
-  if (isCurrentPage && getMetadata('hide-from-breadcrumb') === 'true') {
+  // Parent/ancestor pages: hide from child trails if hidebreadcrumb is enabled
+  if (!isCurrentPage && (page.hidebreadcrumb === true || page.hidebreadcrumb === 'true')) {
     return true;
   }
 
@@ -224,10 +231,13 @@ function getParentPageLabel(page) {
  * @param {Element} block The breadcrumb block element
  */
 export default async function decorate(block) {
-  const breadcrumb = getMetadata('breadcrumb');
+  const hideCurrentPageBreadcrumb = getMetadata('hidecurrentpagebreadcrumb') === 'true'
+    || getMetadata('hide-current-page-breadcrumb') === 'true'
+    || getMetadata('hideCurrentPageBreadcrumb') === 'true'
+    || getMetadata('breadcrumb') === 'false';
 
-  // Hide breadcrumb block if metadata value is 'false'
-  if (breadcrumb === 'false') {
+  // Hide breadcrumb block if current page has breadcrumb hidden
+  if (hideCurrentPageBreadcrumb) {
     block.style.display = 'none';
 
     // Also hide social-icons block if it exists
@@ -239,6 +249,18 @@ export default async function decorate(block) {
   }
 
   const { breadcrumbPages, currentPageData } = await fetchBreadcrumbData();
+
+  // Also hide if backend API indicates current page breadcrumb is hidden
+  if (currentPageData?.hideCurrentPageBreadcrumb === true
+    || currentPageData?.hideCurrentPageBreadcrumb === 'true') {
+    block.style.display = 'none';
+
+    const socialIconsBlock = document.querySelector('.social-icons.block');
+    if (socialIconsBlock) {
+      socialIconsBlock.style.display = 'none';
+    }
+    return;
+  }
 
   const innerContainer = document.createElement('div');
   innerContainer.className = 'inner-container content';
