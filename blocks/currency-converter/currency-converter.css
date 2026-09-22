@@ -23,7 +23,6 @@
   position: relative;
   z-index: 1;
   border: 0.0625rem solid rgb(255 255 255 / 30%);
-  border-radius: 0.4375rem;
   padding: var(--bbl-space-300);
   margin-bottom: var(--bbl-space-250);
   margin-left: auto;
@@ -104,7 +103,7 @@
   font-size: 1.625rem;
   font-weight: 400;
   line-height: 1.875rem;
-  height: auto;
+  height: 4.25rem;
 }
 
 .currency-converter .amount-input::placeholder {
