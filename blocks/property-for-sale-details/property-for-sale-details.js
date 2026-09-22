@@ -17,8 +17,17 @@ function getPhotos(data) {
   return photos;
 }
 
+function extractYoutubeId(raw) {
+  const value = (raw || '').trim();
+  if (!value) return '';
+  const urlMatch = value.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|watch\?v=|v\/|shorts\/))([A-Za-z0-9_-]{11})/);
+  if (urlMatch) return urlMatch[1];
+  if (/^[A-Za-z0-9_-]{11}$/.test(value)) return value;
+  return '';
+}
+
 function buildCarousel(photos, data, p) {
-  const videoId = (data?.WEBSITE_REMARK || '').trim();
+  const videoId = extractYoutubeId(data?.WEBSITE_REMARK);
   const hasVideo = !!videoId;
 
   if (!photos.length && !hasVideo) return '';
