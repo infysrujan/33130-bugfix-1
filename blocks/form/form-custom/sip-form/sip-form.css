@@ -25,6 +25,10 @@
   gap: 0;
 }
 
+.sip-form main .section.form-container .form form fieldset.panel-wrapper.field-main-panel.field-wrapper fieldset.panel-wrapper:not(:last-of-type):has(>legend:not([data-visible="false"])) {
+  margin-bottom: 0.75rem;
+}
+
 .sip-form main .form form .field-wrapper {
   margin: 0;
 }
@@ -273,6 +277,11 @@
   & p {
       margin: 0;
   }
+}
+
+.sip-form main .section.form-container .form form .field-wrapper.field-invalid select {
+  border-color: inherit;
+  box-shadow:unset;
 }
 
 .sip-form main .section.form-container .form form  fieldset.panel-wrapper.field-wrapper.field-thankyou-visible-panel {
