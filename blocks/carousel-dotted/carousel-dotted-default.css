@@ -222,6 +222,10 @@
   line-height: var(--bbl-text-article-card-title-line-height);
   color: var(--bbl-color-black);
   margin-bottom: 1.875rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .carousel-dotted .carousel-dotted-header {
