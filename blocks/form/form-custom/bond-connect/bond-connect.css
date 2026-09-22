@@ -35,11 +35,11 @@
     }
   }
 
-  & .form form .field-bondholdernumber {
+  & .form form .field-bond-holder-number {
     margin-bottom: 10px;
   }
 
-  & .form form .field-bondholdernumber p {
+  & .form form .field-bond-holder-number p {
     padding-left: 1.375rem;
     color: var(--bbl-color-grey-153);
     font-family: var(--bbl-font-family-primary);
@@ -66,14 +66,11 @@
     justify-content: center;
     margin-right: auto;
     margin-left: auto;
-    padding: 0;
+    padding: 0 0 1.25rem;
     text-align: center;
   }
 
   & .form form .field-bond-allocation-review fieldset.field-successpanel {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
     background-color: transparent;
     overflow: hidden;
     padding-bottom: 0;
@@ -121,23 +118,17 @@
 
   & .form form .bond-connect-table,
   & .form form .field-bond-connect-table,
-  & .form form .field-bondconnecttable,
   & .form form .field-table-bond,
   & .form form [data-bond-connect-table] {
     grid-column: 1 / -1;
     width: 100%;
-    min-width: 0;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  & .form form .field-bond-allocation-review .field-successpanel > .bond-connect-table {
-    padding: 0;
-  }
-
   & .form form .bond-connect-result-table {
     width: 100%;
-    min-width: 700px;
+    min-width: 760px;
     border-collapse: collapse;
     background-color: transparent;
     color: var(--bbl-color-grey-85);
@@ -185,9 +176,13 @@
     border-bottom-width: 2px;
   }
 
+  & .form form .bond-connect-result-table .bond-connect-heading-row th:not(:first-child) {
+    text-align: center;
+  }
+
   & .form form .bond-connect-result-table td:first-child {
-    font-family: var(--bbl-font-family-primary);
-    font-weight: var(--bbl-font-weight-regular);
+    font-family: var(--bbl-font-family-medium);
+    font-weight: var(--bbl-form-font-weight-bold);
   }
 
   & .form form .bond-connect-result-table .bond-connect-total-row td {
@@ -216,5 +211,19 @@
   & .form form .field-bond-allocation-review fieldset.field-button-panel .button-wrapper .button.primary:not(:disabled):hover {
     border-color: transparent;
     background-color: var(--bbl-color-blue-90);
+  }
+
+  @media (width < 64rem) {
+    & .form form .field-bond-allocation-review fieldset.field-successpanel {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    & .form form .bond-connect-result-table {
+      min-width: 700px;
+    }
   }
 }
