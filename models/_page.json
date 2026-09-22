@@ -68,8 +68,8 @@
         },
         {
           "component": "boolean",
-          "name": "hideCurrentPageBreadcrumb",
-          "label": "Hide breadcrumb from current page",
+           "name": "hidebreadcrumb",
+          "label": "Hide from breadcrumb trail in child pages",
           "valueType": "boolean"
         },
         {
@@ -87,8 +87,8 @@
         },
         {
           "component": "boolean",
-          "name": "hidebreadcrumb",
-          "label": "Hide from breadcrumb trail in child pages",
+          "name": "hideCurrentPageBreadcrumb",
+          "label": "Hide breadcrumb from current page",
           "valueType": "boolean"
         }
       ]
