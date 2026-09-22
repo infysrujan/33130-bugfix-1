@@ -66,6 +66,10 @@
   flex-shrink: 0;
 }
 
+.carousel-dotted.show-arrows-dots .carousel-arrow:hover {
+  background-color: var(--bbl-color-grey-10);
+}
+
 .carousel-dotted.show-arrows-dots .carousel-arrow::before {
   content: '';
   display: block;
@@ -178,6 +182,7 @@
 
 .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow:hover {
   border-color: var(--bbl-color-grey-150);
+  background-color: unset;
 }
 
 .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow:active {
