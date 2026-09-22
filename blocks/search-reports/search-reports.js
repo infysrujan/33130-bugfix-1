@@ -280,7 +280,10 @@ export default async function decorate(block) {
   const lang = getLang();
 
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
-  const searchParamsUrl = configs.reportsSearchParamsUrl || '';
+  const rawSearchParamsUrl = configs.reportsSearchParamsUrl || '';
+  const searchParamsUrl = rawSearchParamsUrl.includes('{{lang}}')
+    ? rawSearchParamsUrl.replace(/\{\{lang\}\}/g, lang)
+    : rawSearchParamsUrl.replace(/\/en\.reports\./, `/${lang}.reports.`);
 
   const {
     ctaLabel, modalTitle, modalDesc, resultsPageUrl,
