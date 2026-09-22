@@ -90,15 +90,6 @@ function createMenuBannerCard(cardElement, doc) {
   return cardItem;
 }
 
-function addTitleBreakSpacing(block) {
-  block?.querySelectorAll('.inner-container.mobile-tools .title-1 br').forEach((br) => {
-    const next = br.nextSibling;
-    if (next?.nodeType === Node.TEXT_NODE && !/^\s/.test(next.textContent)) {
-      next.textContent = ` ${next.textContent}`;
-    }
-  });
-}
-
 /**
  * Create inner content structure (eyebrow, title, cards)
  * @param {string} eyebrow - Eyebrow text
@@ -214,6 +205,4 @@ export default function decorate(block) {
   // Replace block content
   block.textContent = '';
   block.appendChild(wrapper);
-
-  addTitleBreakSpacing(block);
 }
