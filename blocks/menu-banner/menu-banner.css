@@ -138,6 +138,10 @@
   color: var(--bbl-color-blue-130);
 }
 
+.menu-banner .inner-container.mobile-tools .title-1 br {
+  display: none;
+}
+
 /* Card list */
 
 /* Individual card */
@@ -215,6 +219,10 @@
 
   .menu-banner .title-1 {
     margin: 0.625rem 0 var(--bbl-space-250);
+  }
+
+  .menu-banner .inner-container.mobile-tools .title-1 br {
+    display: block;
   }
 
   .menu-banner .list-thumb-square {
