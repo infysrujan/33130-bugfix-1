@@ -9,7 +9,6 @@
 
 import { loadFragment } from '../fragment/fragment.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { fetchConfigs } from '../../scripts/config.js';
 import { getCookie, setCookie } from '../../scripts/utils/cookies.js';
 
 const COOKIE_DURATION_DAYS = 365;
@@ -99,7 +98,7 @@ async function ensureCookieModal(fragmentPath) {
 }
 
 export default function decorate(block) {
-  async function init() {
+  function init() {
     /* Skip in Universal Editor — the section must not be removed while authoring. */
     if (window.self !== window.top) return;
 
@@ -114,7 +113,12 @@ export default function decorate(block) {
       return;
     }
 
-    const configs = await fetchConfigs();
+    let cookieAlertCookieModalPath = '';
+    import('../../scripts/config.js').then(({ fetchConfigs }) => {
+      fetchConfigs().then(({ cookieAlertCookieModalPath: modalPath }) => {
+        cookieAlertCookieModalPath = modalPath;
+      });
+    });
 
     // Create banner structure while preserving block attributes
     const banner = document.createElement('div');
@@ -163,9 +167,8 @@ export default function decorate(block) {
             copyAnchorAttributes(anchor, btn);
             moveInstrumentation(anchor, btn);
 
-            const fragmentPath = href || configs.cookieAlertCookieModalPath;
             btn.addEventListener('click', async () => {
-              const loaded = await ensureCookieModal(fragmentPath);
+              const loaded = await ensureCookieModal(href || cookieAlertCookieModalPath);
               if (loaded && typeof window.showCookieModal === 'function') {
                 window.showCookieModal(btn);
               }

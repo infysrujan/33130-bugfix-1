@@ -103,3 +103,11 @@
     top: 67%;
   }
 }
+
+body.credit-card-form .header-banner-slide-container{
+  min-height: 201px;
+  
+  @media (width > 64rem){
+    min-height: 401.5px;
+  }
+}

@@ -417,6 +417,14 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  const themeStyles = `${window.hlx.codeBasePath}/styles`;
+  [
+    'theme-wealth.css',
+    'theme-private.css',
+    'theme-bbm.css',
+    'theme-global-section.css',
+  ].forEach((file) => loadCSS(`${themeStyles}/${file}`));
+
   const disabledSections = new Set(
     getMetadata('disable-sections', doc)
       .split(',')
@@ -430,37 +438,43 @@ async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
 
-  await loadMarketingModules();
-  const martechLoadedPromise = martech.initMartech(
-    {
-      datastreamId: dataStreamConfig[env],
-      orgId,
-      edgeDomain: 'edge.bangkokbank.com',
-      onBeforeEventSend: (payload) => {
-        if (payload.xdm.eventType === 'pageLoaded') {
-          // eslint-disable-next-line no-console
-          console.debug('Prevented custom `pageLoaded` event trigger', payload);
-          return false;
-        }
-        return true;
+  if (!isEnabled) {
+    await buildCookieAlert(main);
+    // Keep the page rendering flow intact, but skip martech/third-party loading.
+    // Remaining non-marketing work continues below.
+  } else {
+    await loadMarketingModules();
+    const martechLoadedPromise = martech.initMartech(
+      {
+        datastreamId: dataStreamConfig[env],
+        orgId,
+        edgeDomain: 'edge.bangkokbank.com',
+        onBeforeEventSend: (payload) => {
+          if (payload.xdm.eventType === 'pageLoaded') {
+            // eslint-disable-next-line no-console
+            console.debug('Prevented custom `pageLoaded` event trigger', payload);
+            return false;
+          }
+          return true;
+        },
       },
-    },
-    {
-      analytics: isEnabled,
-      personalization: !!getMetadata('target') && isEnabled,
-      launchUrls: launchConfig[env],
-      trackPageView: false,
-    },
-  );
+      {
+        analytics: isEnabled,
+        personalization: !!getMetadata('target') && isEnabled,
+        launchUrls: launchConfig[env],
+        trackPageView: false,
+      },
+    );
 
-  await Promise.all([
-    martechLoadedPromise.then(martech.martechEager),
-    gtmMartech.eager(),
-  ]);
+    await Promise.all([
+      martechLoadedPromise.then(martech.martechEager),
+      gtmMartech.eager(),
+    ]);
 
-  // Load the gtm-martech library in the lazy phase.
-  await gtmMartech.lazy();
-  await buildCookieAlert(main);
+    // Load the gtm-martech library in the lazy phase.
+    await gtmMartech.lazy();
+    await buildCookieAlert(main);
+  }
 
   // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
   decorateButtonsV1(main);
@@ -476,9 +490,10 @@ async function loadLazy(doc) {
   if (!disabledSections.has('footer')) {
     loadFooter(doc.querySelector('footer'));
   }
-
-  // Load the martech library in the lazy phase.
-  await martech.martechLazy();
+  if (isEnabled) {
+    // Load the martech library in the lazy phase.
+    await martech.martechLazy();
+  }
 
   await loadBreadcrumb(doc);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
@@ -505,6 +520,7 @@ async function bblMartechDelayed() {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  if (!isEnabled) return;
   // load the gtm-martech library in the delayed phase
   window.setTimeout(() => gtmMartech?.delayed(), 1000);
 
