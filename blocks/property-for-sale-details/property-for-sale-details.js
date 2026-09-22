@@ -18,7 +18,7 @@ function getPhotos(data) {
 }
 
 function buildCarousel(photos, data, p) {
-  const videoId = (data?.WEBSITE_REMARK || '').substr(0,100).trim();
+  const videoId = (data?.WEBSITE_REMARK || '').substr(0, 100).trim();
   const hasVideo = !!videoId;
 
   if (!photos.length && !hasVideo) return '';
