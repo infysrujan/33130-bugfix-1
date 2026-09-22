@@ -139,7 +139,7 @@
   left: 0;
   right: 0;
   z-index: 10;
-  background: linear-gradient(transparent, var(--bbl-color-black));
+  background: var(--bbl-color-black);
   padding: var(--bbl-space-300) var(--bbl-space-200) var(--bbl-space-150);
   display: flex;
   flex-direction: column;
