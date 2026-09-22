@@ -1027,15 +1027,17 @@ function getSelectedLabelFromDropdown(dropdown) {
  * formatDateTime("2024-01-05", "", "30") // returns ""
  */
 function formatDateTime(date, hour, minute) {
-  if (!date || !hour || !minute) return '';
+  const parsedDate = new Date(date);
+  const [date1] = parsedDate.toISOString().split('T');
+  if (!date1 || !hour || !minute) return '';
   let day;
   let month;
   let year;
 
-  if (String(date).includes('-')) {
-    [year, month, day] = String(date).split('-');
+  if (String(date1).includes('-')) {
+    [year, month, day] = String(date1).split('-');
   } else {
-    [day, month, year] = String(date).split('/');
+    [day, month, year] = String(date1).split('/');
   }
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
