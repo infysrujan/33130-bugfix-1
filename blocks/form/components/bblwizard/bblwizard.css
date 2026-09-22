@@ -391,6 +391,7 @@ main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.r
 }
 
 .bbl-wizard-step-title {
+  display: none;
   text-align: center;
   color: var(--bbl-color-grey-85);
   transition: color 0.25s ease, font-weight 0.25s ease;
@@ -578,6 +579,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   }
 
   .bbl-wizard-step-title {
+    display: block;
     width: auto;
     min-width: unset;
     white-space: nowrap;
