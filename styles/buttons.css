@@ -90,6 +90,22 @@ button,
   font-size: var(--bbl-body-b1-size);
 }
 
+/* --- Small (hug, 28px height) - compact inline actions --- */
+.button-s {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: fit-content;
+  max-height: 1.75rem;
+  padding: var(--bbl-space-050) var(--bbl-space-100);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-body-b1-medium-size);
+  font-weight: var(--bbl-body-b1-medium-weight);
+  line-height: var(--bbl-body-b1-medium-line-height);
+  border-radius: var(--bbl-rounded-100);
+  text-decoration: none;
+}
+
 /* Responsive: M size on desktop */
 @media (width >= 1025px) {
   button,
@@ -109,7 +125,8 @@ button,
 .button-primary,
 button[type="submit"],
 button.primary,
-.button-m.primary {
+.button-m.primary,
+.button-s.primary {
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
   border: none;
@@ -125,7 +142,8 @@ button:focus-visible,
 .button:hover,
 .button-primary:hover,
 button[type="submit"]:hover,
-.button-m.primary:hover {
+.button-m.primary:hover,
+.button-s.primary:hover {
   background: var(--bbl-color-blue-90);
   text-decoration: none;
 }
