@@ -35,10 +35,6 @@
   display: none;
 }
 
-button.login-button.primary {
-  background-color: transparent;
-}
-
 /* Hide panel by default - slide from right on all devices */
 .login-panel {
   position: fixed;
