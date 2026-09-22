@@ -171,6 +171,10 @@
   margin-top:0
 }
 
+.accordion-panel .default-content-wrapper ul ul {
+  list-style-type: circle;
+}
+
 .accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper):has(> p) {
   margin-bottom: 1.25rem;
 }
