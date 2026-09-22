@@ -90,7 +90,7 @@
 /* Amount Input Field */
 .currency-converter .amount-input {
   float: left;
-  padding: 0 0.3125rem;
+  padding: 0 0;
   background: transparent;
   border: none;
   color: var(--bbl-color-white);
