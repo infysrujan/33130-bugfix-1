@@ -3125,7 +3125,7 @@ const submit = async (context, success, error, submitAs = 'multipart/form-data',
     const payloadHash = await generatePayloadHash(normalizedData);
     // Structure: data contains payload and payload-hash
     const dataWithHash = {
-        'payload': filteredData,
+        'payload': normalizedData,
         ...(payloadHash && { 'payload-hash': payloadHash })
     };
 
