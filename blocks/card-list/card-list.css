@@ -168,9 +168,9 @@
   scroll-snap-align: start;
 }
 
-.cards-list:is(.scrollable, .carousel).center:not(:has(.cards-list-item + .cards-list-item)) {
+/* .cards-list:is(.scrollable, .carousel).center:not(:has(.cards-list-item + .cards-list-item)) {
   justify-content: center;
-}
+} */
 
 @media (width <= 47.5rem) {
   .cards-list:is(.scrollable, .carousel).center .cards-list-item {
