@@ -358,12 +358,13 @@ function createOptimizedPicture(
 }
 
 function promoteFirstImage(section) {
-  const image = section?.querySelector('img');
+  const image = section?.querySelector('img[fetchpriority="high"]')
+    || section?.querySelector('img');
   if (!image) return;
-  image.loading = 'eager';
-  image.setAttribute('loading', 'eager');
   image.fetchPriority = 'high';
   image.setAttribute('fetchpriority', 'high');
+  image.setAttribute('loading', 'eager');
+  image.loading = 'eager';
 }
 
 /**
@@ -704,7 +705,8 @@ async function loadFooter(footer) {
  */
 async function waitForFirstImage(section) {
   promoteFirstImage(section);
-  const lcpCandidate = section.querySelector('img');
+  const lcpCandidate = section.querySelector('img[fetchpriority="high"]')
+    || section.querySelector('img');
   await new Promise((resolve) => {
     if (lcpCandidate && !lcpCandidate.complete && lcpCandidate.currentSrc) {
       lcpCandidate.addEventListener('load', resolve);

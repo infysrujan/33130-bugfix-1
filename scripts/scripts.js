@@ -357,10 +357,10 @@ function getLcpImage(root) {
 
 function hintLcpImage(img) {
   if (!img) return;
-  img.loading = 'eager';
-  img.setAttribute('loading', 'eager');
   img.fetchPriority = 'high';
   img.setAttribute('fetchpriority', 'high');
+  img.setAttribute('loading', 'eager');
+  img.loading = 'eager';
 }
 
 /**

@@ -616,10 +616,10 @@ export default async function decorate(block) {
           if (img) {
             img.className = 'hero-banner-img';
             if (i === defaultIndex) {
-              img.loading = 'eager';
-              img.setAttribute('loading', 'eager');
               img.fetchPriority = 'high';
               img.setAttribute('fetchpriority', 'high');
+              img.setAttribute('loading', 'eager');
+              img.loading = 'eager';
             }
           }
           bannerItem.append(heroPicture);
