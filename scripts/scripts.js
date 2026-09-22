@@ -133,68 +133,6 @@ export function createElementFromHTML(html, doc) {
   template.innerHTML = html.trim();
   return template.content.firstElementChild;
 }
-function loadStylesheet(href) {
-  return new Promise((resolve, reject) => {
-    if (document.querySelector(`head > link[href="${href}"]`)) {
-      resolve();
-      return;
-    }
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = href;
-    link.media = 'print';
-    link.onload = () => {
-      link.media = 'all';
-      resolve();
-    };
-    link.onerror = reject;
-    document.head.append(link);
-  });
-}
-
-function activateHeadStylesheet() {
-  const link = document.querySelector('head > link[href="/styles/styles.css"]');
-  if (!link) return Promise.resolve();
-  return new Promise((resolve) => {
-    const apply = () => {
-      link.media = 'all';
-      resolve();
-    };
-    if (link.sheet) apply();
-    else link.addEventListener('load', apply, { once: true });
-  });
-}
-
-function loadPageStyles() {
-  const base = `${window.hlx.codeBasePath}/styles`;
-  [
-    'theme-wealth.css',
-    'theme-private.css',
-    'theme-bbm.css',
-    'theme-global-section.css',
-    'overlay.css',
-    'calendar-picker.css',
-    'error-page.css',
-    'custom-rte.css',
-  ].forEach((file) => loadStylesheet(`${base}/${file}`));
-  return Promise.all([
-    activateHeadStylesheet(),
-    ...[
-      'tokens/breakpoints.css',
-      'tokens/colors.css',
-      'tokens/typography.css',
-      'tokens/spacing.css',
-      'tokens/border-radius.css',
-      'buttons.css',
-      'background.css',
-      'icomoon.css',
-      'main.css',
-    ].map((file) => loadStylesheet(`${base}/${file}`)),
-  ]);
-}
-
-const pageStylesReady = loadPageStyles();
-
 /**
  * load fonts.css and set a session storage flag
  */
@@ -457,7 +395,6 @@ async function loadEager(doc) {
   if (main) {
     decorateMain(main);
     promoteFirstImage(main);
-    await pageStylesReady;
     document.body.classList.add('appear');
     await Promise.all([
       loadSection(main.querySelector('.section'), waitForFirstImage),

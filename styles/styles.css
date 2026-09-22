@@ -1,9 +1,13 @@
-/* Keep first paint from flashing unstyled HTML. All other CSS loads
-   non-blocking via loadStylesheet() in scripts.js. */
-body {
-    display: none;
-}
-
-body.appear {
-    display: block;
-}
+@import url('./tokens.css');
+@import url('./buttons.css');
+@import url('./background.css');
+@import url('./icomoon.css');
+@import url('./main.css');
+@import url('./theme-wealth.css');
+@import url('./theme-private.css');
+@import url('./theme-bbm.css');
+@import url('./theme-global-section.css');
+@import url('./overlay.css');
+@import url('./calendar-picker.css');
+@import url('./error-page.css');
+@import url('./custom-rte.css');
