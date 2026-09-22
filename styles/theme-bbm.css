@@ -36,12 +36,12 @@ body.bangkok-bankm-promotion .menu-banner .sub-title-medium.line::after {
   background: var(--bbl-color-grey-150);
 }
 
+body.bangkok-bankm-card .bbm-glow-card-container .title-card {
+  color: var(--bbl-color-white);
+}
+
 @media (width > 47.5rem) {
   body.bangkok-bankm-promotion .menu-banner .sub-title-medium.line::after {
     background: var(--bbl-color-white);
   }
-}
-
-body.bangkok-bankm-card .bbm-glow-card-container .title-card {
-  color: var(--bbl-color-white);
 }
