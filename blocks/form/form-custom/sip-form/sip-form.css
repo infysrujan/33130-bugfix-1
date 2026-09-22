@@ -228,6 +228,17 @@
         width: calc(50% - var(--bbl-space-200));
       }
     }
+
+    @media (width > 47.5rem) and (width <= 64rem) {
+      & .field-wrapper.col-4,
+      & .field-wrapper.col-5,
+      & .field-wrapper.col-6,
+      & .field-wrapper.col-7,
+      & .field-wrapper.col-8 {
+        grid-column: span 12;
+        width: 100%;
+      }
+    }
   }
 
   & .field-thankyou-visible-panel .field-icon {
