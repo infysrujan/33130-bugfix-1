@@ -76,7 +76,15 @@ function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
       attrs: { type: 'button', 'aria-label': `Preview ${fileName}` },
     });
     previewBtn.append(createTaggedElement('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
-    previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfViewer({ path: fetchPath, name: fileName, googleViewerUrl }); });
+    previewBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openPdfViewer({
+        path: fetchPath,
+        name: fileName,
+        googleViewerUrl,
+        downloadLabel: placeholders.reportsDownloadButton,
+      });
+    });
     iconGroup.append(previewBtn);
   }
 

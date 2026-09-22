@@ -200,7 +200,7 @@ function discardGenericModalWrapper(placeholder) {
 }
 
 function buildModalDom({
-  lang, ctaLabel, modalTitle, modalDesc,
+  lang, ctaLabel, modalTitle, modalDesc, typePlaceholder, yearPlaceholder,
 }) {
   const overlay = createTaggedElement('div', {
     className: 'search-reports-overlay',
@@ -242,8 +242,12 @@ function buildModalDom({
     searchBtn.disabled = !(getType() && getYear());
   }
 
-  const { wrapper: typeDropdown, getValue: getTypeVal, populateOptions: populateTypes } = buildDropdown('Type of report', updateSearchBtn);
-  const { wrapper: yearDropdown, getValue: getYearVal, populateOptions: populateYears } = buildDropdown('Year', updateSearchBtn);
+  const {
+    wrapper: typeDropdown, getValue: getTypeVal, populateOptions: populateTypes,
+  } = buildDropdown(typePlaceholder, updateSearchBtn);
+  const {
+    wrapper: yearDropdown, getValue: getYearVal, populateOptions: populateYears,
+  } = buildDropdown(yearPlaceholder, updateSearchBtn);
   getType = getTypeVal;
   getYear = getYearVal;
 
@@ -305,7 +309,12 @@ export default async function decorate(block) {
   const {
     overlay, dialog, closeBtn, searchBtn, getType, getYear, populateTypes, populateYears,
   } = buildModalDom({
-    lang, ctaLabel, modalTitle, modalDesc,
+    lang,
+    ctaLabel,
+    modalTitle,
+    modalDesc,
+    typePlaceholder: placeholders.reportsTypePlaceholder,
+    yearPlaceholder: placeholders.reportsYearPlaceholder,
   });
 
   wireModalEvents({
