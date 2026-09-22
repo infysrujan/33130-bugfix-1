@@ -340,28 +340,9 @@
     }
     }
 
-  /* Not-found panel: always stack the two buttons in two lines, primary/details first */
-  & .form form .field-bond-allocation-notfound fieldset.field-button-panel {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-
-    & .button-wrapper,
-    & .submit-wrapper,
-    & .button {
-      width: 100%;
-      max-width: 100%;
-    }
-
-    & .submit-wrapper,
-    & .button-wrapper:has(.button.primary) {
-      order: -1;
-    }
-  }
-
-  /* Stack buttons only on phones; tablets keep the side-by-side base layout */
+  /* Stack buttons only on phones; tablets/desktop keep the side-by-side base layout */
   @media (width < 47.5rem) {
-    & .form form .field-bond-allocation-review fieldset.field-button-panel {
+    & .form form :is(.field-bond-allocation-review, .field-bond-allocation-notfound) fieldset.field-button-panel {
       flex-direction: column;
       align-items: stretch;
       gap: 0.75rem;
