@@ -20,14 +20,6 @@
   display: block;
 }
 
-.login-button {
-  max-height: 2rem;
-  font-size: .9rem;
-  line-height: 1.125rem;
-  padding: 0.375rem 0.625rem;
-  border-radius: 0.4375rem;
-}
-
 .login .icon-login::before {
   font-size: 1.25rem;
   font-weight: 700;
@@ -146,18 +138,6 @@ a.login-link:hover {
 
   .login-panel-title {
     display: none;
-  }
-
-  .login-button {
-    min-width: 7.5rem;
-  }
-
-  button.login-button.primary {
-    background-color: var(--bbl-color-active-blue);
-  }
-
-  button.login-button.primary:hover {
-    background: var(--bbl-color-blue-90);
   }
 
   .login .icon-login::before,
