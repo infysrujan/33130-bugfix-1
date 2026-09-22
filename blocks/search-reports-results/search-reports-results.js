@@ -38,6 +38,11 @@ function getFileNameFromPath(path) {
   return `${base}.${ext}`;
 }
 
+function buildReportsApiUrl(apiBase, lang, type, year) {
+  const suffix = lang === 'en' ? '' : `.${lang}`;
+  return `${apiBase}/en.reports.${type}.${year}${suffix}.json`;
+}
+
 function sortAssets(assets, type) {
   return [...assets].sort((a, b) => {
     if (type === 'summary-statement') {
@@ -123,9 +128,9 @@ async function fetchAndRender(block, type, year) {
     if (isLocal) {
       data = await fetchGet('/blocks/search-reports-results/results.mock.json');
     } else {
-      data = await fetchGet(`${apiBase}/${lang}.reports.${type}.${year}.json`, { throwOnError: false });
+      data = await fetchGet(buildReportsApiUrl(apiBase, lang, type, year), { throwOnError: false });
       if (!data && lang !== 'en') {
-        data = await fetchGet(`${apiBase}/en.reports.${type}.${year}.json`, { throwOnError: false });
+        data = await fetchGet(buildReportsApiUrl(apiBase, 'en', type, year), { throwOnError: false });
       }
     }
     if (!data) throw new Error('no content');
