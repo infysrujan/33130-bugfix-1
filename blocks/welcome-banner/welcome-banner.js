@@ -23,7 +23,8 @@ function isSessionDismissed() {
 }
 
 /**
- * Marks the welcome banner as dismissed in sessionStorage for the remainder of this browser session.
+ * Marks the welcome banner as dismissed in sessionStorage for the remainder
+ * of this browser session.
  * Silently ignores write failures in restrictive environments.
  */
 function markSessionDismissed() {

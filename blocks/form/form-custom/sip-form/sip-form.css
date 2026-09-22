@@ -7,7 +7,7 @@
 .sip-form main .form-container.custom-forms .form h4 {
   font-size: var(--bbl-form-font-size-14);
   margin: 0;
-  padding: 0 0 var(--bbl-form-padding-70) 0;
+  padding: 0 0 var(--bbl-form-padding-20) 0;
   color: var(--bbl-color-grey-90);
 }
 
@@ -17,7 +17,7 @@
   transition: none;
 }
 
-.sip-form main .section.form-container .form form fieldset.panel-wrapper.field-wrapper{
+.sip-form main .section.form-container .form form fieldset.panel-wrapper.field-wrapper {
   gap: 1.25rem;
 }
 
@@ -25,7 +25,7 @@
   gap: 0;
 }
 
-.sip-form main .form form .field-wrapper{
+.sip-form main .form form .field-wrapper {
   margin: 0;
 }
 
@@ -89,7 +89,7 @@
       flex-flow: row wrap;
       justify-content: flex-start;
       gap: var(--form-field-gap) var(--bbl-space-250);
-      padding-left: 10px;
+      padding-left: 0.625rem;
 
       & .radio-wrapper {
         min-width: auto;
@@ -252,14 +252,36 @@
   align-items: center;
   gap: var(--bbl-form-margin-10);
   margin-bottom: var(--bbl-space-250);
+  margin-top: 0.625rem;
 }
 
 .sip-form main .section.form-container.custom-forms .form form .field-icon.panel-wrapper .plain-text-wrapper,
 .sip-form main .section.form-container.custom-forms .form form .field-icon.panel-wrapper .image-wrapper.field-icon {
   width: auto ;
 
-  & p{
+  & p {
       margin: 0;
+  }
+}
+
+.sip-form main .section.form-container .form form  fieldset.panel-wrapper.field-wrapper.field-thankyou-visible-panel {
+  gap: 0;
+
+  & .plain-text-wrapper p:last-child p {
+    line-height: 1.7rem;
+
+    & a {
+      color: #4e4e4e;
+      text-decoration: underline;
+    }
+
+    & strong {
+      font-size: 1.125rem;
+    }
+  }
+
+  & .field-submitcta {
+    margin-top: 1.25rem;
   }
 }
  

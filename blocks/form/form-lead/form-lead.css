@@ -109,6 +109,10 @@ main .form-container.lead-forms {
   padding-inline: var(--bbl-space-section-xs);
 }
 
+main .section.form-container.lead-forms.pad-top-30:has(.plain-text-wrapper.field-text) {
+  padding-top: 0;
+}
+
 main .lead-forms .form form p {
   margin-bottom: 0;
   padding: 0;
@@ -627,6 +631,19 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper {
   padding: 0;
 }
 
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
+  padding: 0 0 0 var(--bbl-form-padding-35);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
+  .field-other-required-product-panel) {
+  border: var(--bbl-form-border-grey);
+  border-radius: var(--bbl-form-border-radius-7);
+  padding: var(--bbl-space-300) var(--bbl-space-500);
+  padding: var(--bbl-form-padding-10) var(--bbl-form-padding-10) var(--bbl-form-padding-10) 0;
+  margin-bottom: var(--bbl-form-margin-10);
+}
+
 main .section.form-container.lead-forms:has(.field-title-30, .field-title-40) {
   padding-inline: 0.9375rem;
  
@@ -674,10 +691,6 @@ main .lead-forms .form form fieldset.panel-wrapper.field-button-panel .field-res
   margin: 0;
 }
 
-main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
-  padding: 0 0 0 var(--bbl-form-padding-35);
-}
-
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
   display: none;
 }
@@ -706,6 +719,11 @@ input[name='BBLAdvancedCheckbox'] {
   border: var(--bbl-form-border-grey);
   background-color: var(--bbl-color-white);
   appearance: none;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:disabled,
+input[name='BBLAdvancedCheckbox']:disabled {
+  cursor: default;
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:checked,
@@ -918,22 +936,13 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs.field-invalid .radio
   outline: none;
 }
 
-main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
-  .field-other-required-product-panel) {
-  border: var(--bbl-form-border-grey);
-  border-radius: var(--bbl-form-border-radius-7);
-  padding: var(--bbl-space-300) var(--bbl-space-500);
-  padding: var(--bbl-form-padding-10) var(--bbl-form-padding-10) var(--bbl-form-padding-10) 0;
-  margin-bottom: var(--bbl-form-margin-10);
-}
-
 main .lead-forms .form form :is(.field-wrapper:is(.icon-money, .icon-email),
   label:is(.icon-money, .icon-email))::before {
   font-size: var(--bbl-form-font-size-11);
   width: var(--bbl-space-200);
   height: var(--bbl-space-200);
   line-height: var(--bbl-space-200);
-  top: var(--bbl-space-350);
+  top: 1.875rem;
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .checkbox-group-wrapper .checkbox-wrapper {

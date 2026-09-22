@@ -30,6 +30,7 @@
   & .form form,
   & .form form > fieldset.panel-wrapper.field-wrapper {
     max-width: none;
+    margin-inline: auto;
   }
 
   & .form form fieldset.panel-wrapper.field-title-panel {
@@ -434,7 +435,7 @@
       left: 1.25rem
     }
 
-    & .form form fieldset.field-salutation-panel .text-wrapper .field-description {
+    & .form form fieldset:is(.field-salutation-panel, .field-contact-panel) .text-wrapper .field-description {
       left: -14.125rem;
     }
 

@@ -336,6 +336,10 @@
 
 /* Columns per view by breakpoint (mobile shows fewer, desktop more). */
 @media (width > 47.5rem) {
+  .tabs.icon-tab-carousel .tabs-nav-next {
+    right: -0.875rem;
+  }
+
   .tabs.icon-tab-carousel .tabs-nav {
     --tabs-per-view: 5;
   }
