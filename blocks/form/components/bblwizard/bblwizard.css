@@ -429,7 +429,7 @@ main .section.form-container.wizard-forms .form form fieldset:has(> fieldset[nam
   color: var(--bbl-color-black);
 }
 
-main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper:is(.field-veiwplanstext, .field-infotext2) :is(h1, h2, h3, h4, h5, h6, p),
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper:is(.field-veiwplanstext, .field-infotext2, .field-plantitle) :is(h1, h2, h3, h4, h5, h6, p),
 main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-infotext2 p p {
   text-align: center;
 }
@@ -438,19 +438,23 @@ main .section.form-container.wizard-forms .form form fieldset[name="insuranceSum
   color: var(--bbl-color-black, #000);
 }
 
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-plantitle + .plain-text-wrapper p {
+  text-align: center;
+}
+
 main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .plain-text-wrapper.field-wrapper.col-1 p {
   font-size: var(--bbl-font-size-base);
   line-height: var(--bbl-wizard-line-height-base-mobile);
   color: var(--bbl-color-black);
 }
 
-main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper:is(.field-veiwplanstext, .field-plantitle) :is(h1, h2, h3, h4, h5, h6) {
   position: relative;
   padding-bottom: var(--bbl-space-250);
   margin-block: var(--bbl-wizard-margin-1875);
 }
 
-main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6)::after {
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper:is(.field-veiwplanstext, .field-plantitle) :is(h1, h2, h3, h4, h5, h6)::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -579,7 +583,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
     white-space: nowrap;
   }
 
-  main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
+  main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper:is(.field-veiwplanstext, .field-plantitle) :is(h1, h2, h3, h4, h5, h6) {
     padding-bottom: var(--bbl-wizard-margin-1875);
   }
 
