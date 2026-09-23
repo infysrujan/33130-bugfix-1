@@ -71,14 +71,14 @@
   font-size: inherit;
 }
 
-.cards-list-description ul{
+.cards-list-description :is(ul, ol) {
   margin: 0;
   padding: 0.625rem 0 0;
   line-height: 1.4613rem;
   color: var(--bbl-color-grey-85);
 }
 
-.cards-list-description ul li {
+.cards-list-description :is(ul, ol) li {
   padding: 0.2rem;
   margin: 0 0 0.625rem 0.875rem;
 }
@@ -687,7 +687,7 @@
     font-size: 0.8rem;
   }
 
-  .cards-list-description ul{
+  .cards-list-description :is(ul, ol) {
     line-height: 1.67rem;
   }
 
