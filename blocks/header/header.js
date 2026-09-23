@@ -213,10 +213,26 @@ function setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, getIsNavItemAct
       if (topNavBlock) topNavBlock.classList.remove('is-hidden');
     }
   };
-  if (mainNavDesktop) {
+
+  const scheduleDesktopScroll = () => {
+    if (window.requestAnimationFrame) {
+      window.requestAnimationFrame(handleDesktopScroll);
+      return;
+    }
     handleDesktopScroll();
+  };
+
+  if (mainNavDesktop) {
+    scheduleDesktopScroll();
   }
-  window.addEventListener('scroll', handleDesktopScroll, { passive: true });
+
+  window.addEventListener('scroll', () => {
+    if (window.requestAnimationFrame) {
+      window.requestAnimationFrame(handleDesktopScroll);
+      return;
+    }
+    handleDesktopScroll();
+  }, { passive: true });
 }
 
 /**

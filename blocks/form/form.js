@@ -3,20 +3,7 @@ import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './co
 import {
   emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE,
 } from './constant.js';
-import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
-import { handleSubmit } from './submit.js';
-import DocBasedFormToAF from './transform.js';
-import decorateCreditCardTractApplication from './form-custom/creditcard-track-application/creditcard-track-application.js';
-import decorateBondAllocationForm from './form-custom/bond-allocation/bond-allocation.js';
-import decorateBondConnectForm from './form-custom/bond-connect/bond-connect.js';
-import decorateSipForm from './form-custom/sip-form/sip-form.js';
-import decorateDebtSupportForm from './form-custom/debt-support/debt-support.js';
-import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
-import decorateReliefMeasures from './form-custom/relief-measures/relief-measures.js';
-import decorateCreditCardForm from './form-custom/credit-card-form/credit-card-form.js';
-import decorateContactUsForm from './form-custom/contact-us/contact-us.js';
-import decorateProtectionBtBelovedPlus from './form-custom/protection-bt-beloved-plus/protection-bt-beloved-plus.js';
 import {
   checkValidation,
   createButton,
@@ -35,9 +22,31 @@ import {
   createInput,
 } from './util.js';
 
-export const DELAY_MS = 0;
 let captchaField;
 let afModule;
+
+const loadCustomDecorators = () => Promise.all([
+  import('./form-custom/creditcard-track-application/creditcard-track-application.js'),
+  import('./form-custom/bond-allocation/bond-allocation.js'),
+  import('./form-custom/bond-connect/bond-connect.js'),
+  import('./form-custom/sip-form/sip-form.js'),
+  import('./form-custom/debt-support/debt-support.js'),
+  import('./form-custom/sme-loan-form/sme-loan-form.js'),
+  import('./form-custom/relief-measures/relief-measures.js'),
+  import('./form-custom/credit-card-form/credit-card-form.js'),
+  import('./form-custom/contact-us/contact-us.js'),
+  import('./form-custom/protection-bt-beloved-plus/protection-bt-beloved-plus.js'),
+]).then((modules) => modules.map((module) => module.default));
+
+const decorateCustomForms = async (form) => {
+  const decorators = await loadCustomDecorators();
+
+  decorators.forEach((decorator) => {
+    if (typeof decorator === 'function') {
+      decorator(form);
+    }
+  });
+};
 
 const withFieldWrapper = (element) => (fd) => {
   const wrapper = createFieldWrapper(fd);
@@ -381,16 +390,6 @@ async function createFormForAuthoring(formDef) {
     }
     return [];
   });
-  decorateCreditCardTractApplication(form);
-  decorateBondAllocationForm(form);
-  decorateBondConnectForm(form);
-  decorateSipForm(form);
-  decorateDebtSupportForm(form);
-  decorateSmeLoanForm(form);
-  decorateReliefMeasures(form);
-  decorateCreditCardForm(form);
-  decorateContactUsForm(form);
-  decorateProtectionBtBelovedPlus(form);
   return form;
 }
 
@@ -408,6 +407,7 @@ export async function createForm(formDef, data, source = 'aem') {
 
   let captcha;
   if (captchaField) {
+    const { default: GoogleReCaptcha } = await import('./integrations/recaptcha.js');
     let config = captchaField?.properties?.['fd:captcha']?.config;
     if (!config) {
       config = {
@@ -428,9 +428,15 @@ export async function createForm(formDef, data, source = 'aem') {
   transferRepeatableDOM(form, formDef, form, formId);
 
   if (afModule && typeof Worker === 'undefined') {
-    window.setTimeout(async () => {
+    const loadRules = () => {
       afModule.loadRuleEngine(formDef, form, captcha, generateFormRendition, data);
-    }, DELAY_MS);
+    };
+
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(loadRules, { timeout: 2000 });
+    } else {
+      window.setTimeout(loadRules, 0);
+    }
   }
 
   form.addEventListener('reset', async () => {
@@ -438,23 +444,18 @@ export async function createForm(formDef, data, source = 'aem') {
     const response = await createForm(formDef, undefined, currentSource);
     if (response?.form) {
       document.querySelector(`[data-action="${form?.dataset?.action}"]`)?.replaceWith(response?.form);
+      decorateCustomForms(response.form).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('Failed to load custom form decorators:', error);
+      });
     }
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
+    const { handleSubmit } = await import('./submit.js');
     handleSubmit(e, form, captcha);
   });
 
-  decorateCreditCardTractApplication(form);
-  decorateBondAllocationForm(form);
-  decorateBondConnectForm(form);
-  decorateSipForm(form);
-  decorateDebtSupportForm(form);
-  decorateSmeLoanForm(form);
-  decorateReliefMeasures(form);
-  decorateCreditCardForm(form);
-  decorateContactUsForm(form);
-  decorateProtectionBtBelovedPlus(form);
   return {
     form,
     captcha,
@@ -513,12 +514,11 @@ export async function fetchForm(pathname) {
     }
     path += '/jcr:content/root/section/form.html';
   }
-  let resp = await fetch(path);
+  const resp = await fetch(path);
 
   if (resp?.headers?.get('Content-Type')?.includes('application/json')) {
     data = await resp.json();
   } else if (resp?.headers?.get('Content-Type')?.includes('text/html')) {
-    resp = await fetch(path);
     data = await resp.text().then((html) => {
       try {
         const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -585,63 +585,115 @@ function loadFormCustomStyles(formDef) {
   }
 }
 
-export default async function decorate(block) {
-  let container = block.querySelector('a[href]');
-  let formDef;
-  let pathname;
-  if (container) {
-    ({ pathname } = new URL(container.href));
-    formDef = await fetchForm(container.href);
-  } else {
-    ({ container, formDef } = extractFormDefinition(block));
-  }
-  let source = 'aem';
-  let rules = true;
-  let form;
-  if (formDef) {
-    const submitProps = formDef?.properties?.['fd:submit'];
-    const actionType = submitProps?.actionName || formDef?.properties?.actionType;
-    const spreadsheetUrl = submitProps?.spreadsheet?.spreadsheetUrl
-      || formDef?.properties?.spreadsheetUrl;
+function createFormLoadingSkeleton() {
+  const skeleton = document.createElement('div');
+  skeleton.className = 'form-loading-skeleton';
+  skeleton.setAttribute('aria-live', 'polite');
+  skeleton.setAttribute('aria-busy', 'true');
 
-    if (actionType === 'spreadsheet' && spreadsheetUrl) {
-      // Check if we're in an iframe and use parent window path if available
-      const iframePath = window.frameElement ? window.parent.location.pathname
-        : window.location.pathname;
-      formDef.action = SUBMISSION_SERVICE + btoa(pathname || iframePath);
+  skeleton.innerHTML = `
+    <div class="form-loading-skeleton-header"></div>
+    <div class="form-loading-skeleton-row"></div>
+    <div class="form-loading-skeleton-row short"></div>
+    <div class="form-loading-skeleton-row"></div>
+    <div class="form-loading-skeleton-button-row">
+      <span class="form-loading-skeleton-button"></span>
+      <span class="form-loading-skeleton-button secondary"></span>
+    </div>
+  `;
+
+  return skeleton;
+}
+
+function promoteFormLcpImage(form) {
+  const image = form?.querySelector('img');
+  if (!image) return;
+
+  image.loading = 'eager';
+  image.fetchPriority = 'high';
+  image.setAttribute('fetchpriority', 'high');
+}
+
+export default async function decorate(block) {
+  async function init() {
+    const sourceMarkup = block.cloneNode(true);
+    const skeleton = createFormLoadingSkeleton();
+    block.replaceChildren(skeleton);
+
+    let container = sourceMarkup.querySelector('a[href]');
+    let formDef;
+    let pathname;
+    if (container) {
+      ({ pathname } = new URL(container.href));
+      formDef = await fetchForm(container.href);
     } else {
-      formDef.action = getSubmitBaseUrl() + (formDef.action || '');
+      ({ container, formDef } = extractFormDefinition(sourceMarkup));
     }
-    if (isDocumentBasedForm(formDef)) {
-      const transform = new DocBasedFormToAF();
-      formDef = transform.transform(formDef, { block });
-      source = 'sheet';
-      loadFormCustomStyles(formDef);
-      const response = await createForm(formDef, null, source);
-      form = response?.form;
-      const docRuleEngine = await import('./rules-doc/index.js');
-      docRuleEngine.default(formDef, form);
-      rules = false;
-    } else {
-      loadFormCustomStyles(formDef);
-      afModule = await import('./rules/index.js');
-      addRequestContextToForm(formDef);
-      if (afModule && afModule.initAdaptiveForm && !block.classList.contains('edit-mode')) {
-        form = await afModule.initAdaptiveForm(formDef, createForm);
+    let source = 'aem';
+    let rules = true;
+    let form;
+    if (formDef) {
+      const submitProps = formDef?.properties?.['fd:submit'];
+      const actionType = submitProps?.actionName || formDef?.properties?.actionType;
+      const spreadsheetUrl = submitProps?.spreadsheet?.spreadsheetUrl
+        || formDef?.properties?.spreadsheetUrl;
+
+      if (actionType === 'spreadsheet' && spreadsheetUrl) {
+        // Check if we're in an iframe and use parent window path if available
+        const iframePath = window.frameElement ? window.parent.location.pathname
+          : window.location.pathname;
+        formDef.action = SUBMISSION_SERVICE + btoa(pathname || iframePath);
       } else {
-        form = await createFormForAuthoring(formDef);
+        formDef.action = getSubmitBaseUrl() + (formDef.action || '');
       }
+      if (isDocumentBasedForm(formDef)) {
+        const { default: DocBasedFormToAF } = await import('./transform.js');
+        const transform = new DocBasedFormToAF();
+        formDef = transform.transform(formDef, { block });
+        source = 'sheet';
+        loadFormCustomStyles(formDef);
+        const response = await createForm(formDef, null, source);
+        form = response?.form;
+        const docRuleEngine = await import('./rules-doc/index.js');
+        docRuleEngine.default(formDef, form);
+        rules = false;
+      } else {
+        loadFormCustomStyles(formDef);
+        afModule = await import('./rules/index.js');
+        addRequestContextToForm(formDef);
+        if (afModule && afModule.initAdaptiveForm && !block.classList.contains('edit-mode')) {
+          form = await afModule.initAdaptiveForm(formDef, createForm);
+        } else {
+          form = await createFormForAuthoring(formDef);
+        }
+      }
+      form.dataset.redirectUrl = formDef.redirectUrl || formDef.properties?.redirectUrl || '';
+      form.dataset.thankYouMsg = formDef.thankYouMessage || formDef.thankYouMsg
+        || formDef.properties?.thankYouMessage || formDef.properties?.thankYouMsg || '';
+      form.dataset.action = formDef.action || pathname?.split('.json')[0];
+      form.dataset.source = source;
+      form.dataset.rules = rules;
+      form.dataset.id = formDef.id;
+      if (source === 'aem' && formDef.properties && formDef.properties['fd:path']) {
+        form.dataset.formpath = formDef.properties['fd:path'];
+      }
+      promoteFormLcpImage(form);
+      block.replaceChildren(form);
+
+      decorateCustomForms(form).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('Failed to load custom form decorators:', error);
+      });
+    } else {
+      block.replaceChildren();
+      block.textContent = 'Unable to load form. Please try again later.';
     }
-    form.dataset.redirectUrl = formDef.redirectUrl || formDef.properties?.redirectUrl || '';
-    form.dataset.thankYouMsg = formDef.thankYouMessage || formDef.thankYouMsg
-      || formDef.properties?.thankYouMessage || formDef.properties?.thankYouMsg || '';
-    form.dataset.action = formDef.action || pathname?.split('.json')[0];
-    form.dataset.source = source;
-    form.dataset.rules = rules;
-    form.dataset.id = formDef.id;
-    if (source === 'aem' && formDef.properties && formDef.properties['fd:path']) {
-      form.dataset.formpath = formDef.properties['fd:path'];
-    }
-    container.replaceWith(form);
   }
+  init().catch((error) => {
+    console.error('Error initializing form:', error);
+    if (block) {
+      block.replaceChildren();
+      block.textContent = 'Error loading form. Please try again later.';
+    }
+  });
 }

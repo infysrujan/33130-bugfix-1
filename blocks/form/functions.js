@@ -57,7 +57,10 @@ function isEmptyFieldValue(value) {
  */
 function applyDefaultValues(obj, defaultValue = '-') {
   return Object.fromEntries(
-    Object.entries(obj).map(([key, value]) => [key, isEmptyFieldValue(value) ? defaultValue : value]),
+    Object.entries(obj).map(([key, value]) => [
+      key,
+      isEmptyFieldValue(value) ? defaultValue : value,
+    ]),
   );
 }
 
@@ -272,21 +275,31 @@ function addCustomHeader(payload, headerName, headerValue) {
  * @param {string} key - The config key to look up (e.g., 'get-province-en', 'cc-apply-status')
  * @returns {string} - The base URL from configs.json, or empty string if not found/error
  */
+const configCache = { data: null, loaded: false };
+
 function getBaseUrl(key) {
-  let baseUrl = '';
-  const cfgXhr = new XMLHttpRequest();
-  cfgXhr.open('GET', '/configs.json', false);
-  cfgXhr.send(null);
-  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
-    try {
-      const entry = JSON.parse(cfgXhr.responseText)
-        .data?.find((c) => c.Key === key);
-      baseUrl = entry?.Value || '';
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('CcApplicationStatus: failed to read configs.json', e);
+  if (!configCache.loaded) {
+    const cfgXhr = new XMLHttpRequest();
+    cfgXhr.open('GET', '/configs.json', false);
+    cfgXhr.send(null);
+
+    if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
+      try {
+        configCache.data = JSON.parse(cfgXhr.responseText)?.data || [];
+      } catch (e) {
+        configCache.data = [];
+        // eslint-disable-next-line no-console
+        console.error('CcApplicationStatus: failed to read configs.json', e);
+      }
+    } else {
+      configCache.data = [];
     }
+
+    configCache.loaded = true;
   }
+
+  const entry = configCache.data.find((c) => c.Key === key);
+  const baseUrl = entry?.Value || '';
 
   if (!baseUrl) {
     // eslint-disable-next-line no-console
@@ -463,8 +476,16 @@ function getProvinceEnumNamesTh() {
  *   }
  * }
  */
+const branchCache = new Map();
+
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
+
+  const cacheKey = `${lang}:${province}`;
+  if (branchCache.has(cacheKey)) {
+    return branchCache.get(cacheKey);
+  }
+
   const branchesByProvinceUrl = getBaseUrl('branches-by-province');
   const provinceBaseUrl = branchesByProvinceUrl.endsWith('/') ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
   const encoded = encodeURIComponent(province);
@@ -483,7 +504,9 @@ function fetchBranchesByProvince(province, lang = 'th') {
   }
 
   const data = JSON.parse(xhr.responseText);
-  return Array.isArray(data) ? data : [];
+  const normalized = Array.isArray(data) ? data : [];
+  branchCache.set(cacheKey, normalized);
+  return normalized;
 }
 
 /**

@@ -1,5 +1,3 @@
-import { trackContactFormSubmit } from '../../../../scripts/analytics.js';
-
 const SUBJECT_FIELDSET_SELECTOR = 'fieldset[name="Subject"]';
 
 /**
@@ -71,7 +69,12 @@ function isContactUsForm(form) {
 export default function decorateContactUsForm(form) {
   if (!isContactUsForm(form)) return;
   document.body.classList.add('contact-us');
-  form.addEventListener('submit', trackContactFormSubmit);
+
+  form.addEventListener('submit', async (event) => {
+    const { trackContactFormSubmit } = await import('../../../../scripts/analytics.js');
+    trackContactFormSubmit(event);
+  });
+
   form.addEventListener('reset', () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   });

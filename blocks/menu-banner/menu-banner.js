@@ -156,10 +156,11 @@ export default function decorate(block) {
   const [bgImageRow, eyebrowRow, titleDesktopRow, titleMobileRow, ...cardRows] = children;
 
   const bgImg = bgImageRow?.querySelector('img');
-  const bgImageUrl = bgImg?.src || '';
+  const bgImageUrl = bgImg?.src?.concat('&fetchpriority=high') || '';
   const eyebrow = eyebrowRow?.textContent.trim() || '';
   const titleDesktop = titleDesktopRow?.firstElementChild;
   const titleMobile = titleMobileRow?.firstElementChild;
+  bgImageUrl.concat('&fetchpriority=high&loading=eager');
 
   // Limit to max 4 cards
   const cards = cardRows.slice(0, 4);

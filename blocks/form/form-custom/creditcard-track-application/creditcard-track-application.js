@@ -118,7 +118,8 @@ function isCreditCardTractApplicationForm(form) {
  * @returns {string | undefined}
  */
 function getPanelLayoutKey(panel) {
-  return [...panel.classList].find((cls) => PANEL_LAYOUTS[cls]);
+  const classNames = [...panel.classList];
+  return classNames.find((className) => PANEL_LAYOUTS[className]);
 }
 
 /**
@@ -127,7 +128,8 @@ function getPanelLayoutKey(panel) {
  */
 function getVisibleDirectItems(panel) {
   return [...panel.children].filter(
-    (element) => element.classList?.contains('field-wrapper') && element.dataset.visible !== 'false',
+    (element) => element.classList?.contains('field-wrapper')
+      && element.dataset.visible !== 'false',
   );
 }
 
@@ -148,6 +150,8 @@ function applyPanelItemRole(element, role, stepIndex) {
  * @param {HTMLElement} panel
  */
 function decoratePanel(panel) {
+  if (panel.dataset.ccPanelDecorated === 'true') return;
+
   const layoutKey = getPanelLayoutKey(panel);
   if (!layoutKey) return;
 
@@ -167,10 +171,15 @@ function decoratePanel(panel) {
 
     applyPanelItemRole(item, role);
 
-    if (item.classList.contains('panel-wrapper') && item.classList.contains('field-wrapper')) {
+    if (
+      item.classList.contains('panel-wrapper')
+      && item.classList.contains('field-wrapper')
+    ) {
       decoratePanel(item);
     }
   });
+
+  panel.dataset.ccPanelDecorated = 'true';
 }
 
 /**
@@ -182,18 +191,30 @@ function decoratePanel(panel) {
  * @param {HTMLFormElement} form
  */
 function scrollToTopWhenResultPanelRevealed(form) {
-  const resultPanels = [...form.querySelectorAll(RESULT_PANEL_SELECTOR)];
+  const resultPanels = form.querySelectorAll(RESULT_PANEL_SELECTOR);
   if (resultPanels.length === 0) return;
 
+  let revealed = false;
+
   const observer = new MutationObserver((mutations) => {
-    const revealed = mutations.some((mutation) => mutation.target.dataset.visible === 'true');
-    if (revealed) {
+    if (revealed) return;
+
+    const hasRevealedPanel = mutations.some(
+      (mutation) => mutation.target.dataset.visible === 'true',
+    );
+
+    if (hasRevealedPanel) {
+      revealed = true;
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      observer.disconnect();
     }
   });
 
   resultPanels.forEach((panel) => {
-    observer.observe(panel, { attributes: true, attributeFilter: ['data-visible'] });
+    observer.observe(panel, {
+      attributes: true,
+      attributeFilter: ['data-visible'],
+    });
   });
 }
 

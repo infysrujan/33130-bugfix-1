@@ -14,3 +14,79 @@
 @import url("./form-custom/protection-bt-beloved-plus/protection-bt-beloved-plus.css");
 @import url("./form-custom/credit-card-form/credit-card-form.css");
 @import url("./form-custom/contact-us/contact-us.css");
+
+main .section.form-container .form-loading-skeleton,
+main .section.form-container.custom-forms .form-loading-skeleton {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-height: 20rem;
+    padding: 1.5rem 1.25rem;
+    background: linear-gradient(90deg,
+            var(--bbl-color-grey-24) 25%,
+            var(--bbl-color-blue-3) 50%,
+            var(--bbl-color-grey-24) 75%);
+    background-size: 200% 100%;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    animation: form-loading-shimmer 1.25s linear infinite;
+}
+
+main .section.form-container .form-loading-skeleton::before,
+main .section.form-container.custom-forms .form-loading-skeleton::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--bbl-color-white-alpha-10);
+    pointer-events: none;
+}
+
+.form-loading-skeleton-header,
+.form-loading-skeleton-row,
+.form-loading-skeleton-button {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: var(--bbl-color-grey-23);
+}
+
+.form-loading-skeleton-header {
+    width: min(18rem, 60%);
+    height: 1.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.form-loading-skeleton-row {
+    height: 3.125rem;
+    margin-bottom: 0.875rem;
+}
+
+.form-loading-skeleton-row.short {
+    width: 75%;
+}
+
+.form-loading-skeleton-button-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.form-loading-skeleton-button {
+    display: inline-block;
+    width: 8.75rem;
+    height: 2.875rem;
+}
+
+.form-loading-skeleton-button.secondary {
+    width: 7.5rem;
+}
+
+@keyframes form-loading-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}

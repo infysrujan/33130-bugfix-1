@@ -559,8 +559,12 @@ export async function initializeRuleEngineWorker(formDef, renderHTMLForm) {
 
 export async function initAdaptiveForm(formDef, createForm) {
   preloadFunctionScripts(formDef?.properties?.customFunctionsPath, window.hlx?.codeBasePath);
-  await registerCustomFunctions(formDef?.properties?.customFunctionsPath || '/blocks/form/functions.js', window.hlx?.codeBasePath);
+  const customFunctionsReady = registerCustomFunctions(
+    formDef?.properties?.customFunctionsPath || '/blocks/form/functions.js',
+    window.hlx?.codeBasePath,
+  );
   const response = await initializeRuleEngineWorker(formDef, createForm);
+  await customFunctionsReady;
   return response?.form;
 }
 
