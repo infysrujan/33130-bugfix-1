@@ -17,6 +17,11 @@ const MONTHS_EN = [
 // Calendar header always renders in Thai
 const WEEKDAYS_TH = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
 
+// Any parsed year above this is assumed to be a Buddhist Era year an author
+// typed directly into the Gregorian config field (e.g. 2569 instead of 2026),
+// and gets normalized back to Gregorian before any date math happens.
+const BE_YEAR_THRESHOLD = 2400;
+
 /* ── Formatting ──────────────────────────────────────────────────────────── */
 
 /**
@@ -52,28 +57,99 @@ function sameDay(a, b) {
     && a.getDate() === b.getDate();
 }
 
+function normalizeBeYear(year) {
+  return year > BE_YEAR_THRESHOLD ? year - BE_OFFSET : year;
+}
+
+/**
+ * Parses a config-authored date string into a Gregorian Date, transparently
+ * normalizing a Buddhist Era year (e.g. an author typing 2569 instead of 2026
+ * into the min/max date field) back to Gregorian first.
+ * Handles the AEM ISO form (YYYY-MM-DD...) and slash forms (M/D/YYYY).
+ */
+function parseConfigDate(str) {
+  if (!str) return null;
+
+  let year;
+  let month; // 0-indexed
+  let day;
+
+  const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  const slashMatch = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+
+  if (isoMatch) {
+    year = Number(isoMatch[1]);
+    month = Number(isoMatch[2]) - 1;
+    day = Number(isoMatch[3]);
+  } else if (slashMatch) {
+    // AEM's date-time widget displays M/D/YYYY (as seen in the config panel)
+    month = Number(slashMatch[1]) - 1;
+    day = Number(slashMatch[2]);
+    year = Number(slashMatch[3]);
+  } else {
+    const fallback = new Date(str);
+    if (Number.isNaN(fallback.getTime())) return null;
+    year = fallback.getFullYear();
+    month = fallback.getMonth();
+    day = fallback.getDate();
+  }
+
+  year = normalizeBeYear(year);
+
+  const result = new Date(year, month, day);
+  return Number.isNaN(result.getTime()) ? null : result;
+}
+
+function getDisplayLang() {
+  const raw = (document.documentElement.lang || 'en').toLowerCase().trim();
+  return (raw === 'th' || raw.startsWith('th-')) ? 'th' : 'en';
+}
+
 /* ── Block config ────────────────────────────────────────────────────────── */
+
+function toKebab(str) {
+  return str
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2') // camelCase -> camel-Case
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-');
+}
 
 function parseBlockConfig(block) {
   const config = {};
   block.querySelectorAll(':scope > div').forEach((row) => {
     const cells = [...row.querySelectorAll(':scope > div')];
     if (cells.length < 2) return;
-    const key = cells[0].textContent.trim().toLowerCase().replace(/\s+/g, '-');
-    config[key] = cells[1].textContent.trim();
+
+    const value = cells[1].textContent.trim();
+
+    // Preferred: Universal Editor stamps the actual model field name
+    // (e.g. "minimumDate") on the row/cell via data-aue-prop. This is
+    // stable regardless of label text, whitespace, or description bleed.
+    const aueProp = row.dataset.aueProp
+      || cells[0].dataset.aueProp
+      || cells[1].dataset.aueProp;
+
+    if (aueProp) {
+      config[toKebab(aueProp)] = value;
+    }
+
+    // Fallback: derive a key from the visible label text, for blocks
+    // authored/exported without UE instrumentation attributes.
+    const labelKey = toKebab(cells[0].textContent.trim());
+    if (labelKey && config[labelKey] === undefined) {
+      config[labelKey] = value;
+    }
   });
   return config;
 }
 
-function parseConfigDate(str) {
-  if (!str) return null;
-  const d = new Date(str);
-  return Number.isNaN(d.getTime()) ? null : d;
-}
-
-function getDisplayLang() {
-  const raw = (document.documentElement.lang || 'en').toLowerCase().trim();
-  return (raw === 'th' || raw.startsWith('th-')) ? 'th' : 'en';
+function getConfigValue(config, ...candidateKeys) {
+  for (let i = 0; i < candidateKeys.length; i += 1) {
+    const val = config[candidateKeys[i]];
+    if (val !== undefined && val !== '') return val;
+  }
+  return undefined;
 }
 
 /* ── Popover positioning ─────────────────────────────────────────────────── */
@@ -123,14 +199,15 @@ export default function decorate(block) {
   const placeholder = config.placeholder || (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
   const fieldName = config.name || 'date';
 
-  // FIX: config keys are derived from the model's field *labels*
-  // ("Minimum date" / "Maximum date"), which parseBlockConfig turns into
-  // "minimum-date" / "maximum-date" — not "min-date" / "max-date".
-  // Also normalize both to startOfDay so a full ISO datetime value
-  // (per the model's date-time valueFormat) can't shift the boundary
-  // by a day due to timezone offsets.
-  const rawMinDate = parseConfigDate(config['minimum-date']);
-  const rawMaxDate = parseConfigDate(config['maximum-date']);
+  // Look up min/max under every key shape we've seen this config produce
+  // (data-aue-prop derived, label-derived, camelCase, legacy short form),
+  // then normalize any Buddhist Era year and clamp to startOfDay.
+  const rawMinDate = parseConfigDate(
+    getConfigValue(config, 'minimum-date', 'minimumdate', 'min-date'),
+  );
+  const rawMaxDate = parseConfigDate(
+    getConfigValue(config, 'maximum-date', 'maximumdate', 'max-date'),
+  );
   const minDate = rawMinDate ? startOfDay(rawMinDate) : null;
   const maxDate = rawMaxDate ? startOfDay(rawMaxDate) : startOfDay(new Date());
 
@@ -233,7 +310,6 @@ export default function decorate(block) {
 
     for (let i = 0; i < firstDayOfWeek; i += 1) {
       const empty = document.createElement('div');
-      // FIX: was "dpth-day--empty" (double hyphen), CSS defines "dpth-day-empty".
       empty.className = 'dpth-day dpth-day-empty';
       empty.setAttribute('aria-hidden', 'true');
       grid.append(empty);
@@ -255,7 +331,6 @@ export default function decorate(block) {
       }
 
       if (selected && sameDay(cellDate, selected)) {
-        // FIX: was "dpth-day--selected" (double hyphen), CSS defines "dpth-day-selected".
         btn.classList.add('dpth-day-selected');
         btn.setAttribute('aria-pressed', 'true');
       }
