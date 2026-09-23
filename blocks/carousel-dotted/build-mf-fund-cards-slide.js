@@ -42,6 +42,18 @@ function matchesCategory(fundCategory, pageCategory) {
     .some((fc) => fc === pc || fc.replace(/s$/, '') === pc.replace(/s$/, ''));
 }
 
+// Drops repeat funds (same ProductID/FundName tagged twice upstream) so no card duplicates.
+function dedupeFunds(funds) {
+  const seen = new Set();
+  return funds.filter((fund) => {
+    const key = fund.ProductID || fund.FundName || '';
+    if (!key) return true;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 // ── Data fetching ──────────────────────────────────────────────────────────────
 
 async function loadFundsData() {
@@ -215,7 +227,7 @@ export default async function buildMfFundCardsSlide(row, index) {
   const noResultsLabel = ph.mfNoResultsText || 'No results found';
 
   const filteredFunds = sortFundsBySheetOrder(
-    allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory)),
+    dedupeFunds(allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory))),
     matrix,
   );
 
