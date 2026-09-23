@@ -1,6 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
-import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { trackLinkClick } from '../../scripts/analytics.js';
 
@@ -597,22 +596,23 @@ export default function decorate(block) {
       } else {
         const pictureDesktop = imageCellDesktop?.querySelector('picture');
         const pictureMobile = imageCellMobile?.querySelector('picture');
+        const heroPicture = (isMobile ? pictureMobile : pictureDesktop)
+          || pictureDesktop
+          || pictureMobile;
 
-        if (pictureDesktop || pictureMobile) {
-          const heroPicture = createSmartImage(
-            pictureDesktop,
-            pictureMobile,
-            imageAlt,
-            i === defaultIndex,
-          );
-          if (heroPicture) {
-            const img = heroPicture.querySelector('img');
-            if (img) {
-              img.className = 'hero-banner-img';
-              if (i === defaultIndex) img.fetchPriority = 'high';
+        if (heroPicture) {
+          const img = heroPicture.querySelector('img');
+          if (img) {
+            img.className = 'hero-banner-img';
+            const alt = imageAlt?.textContent?.trim();
+            if (alt) img.alt = alt;
+            if (i === defaultIndex) {
+              img.fetchPriority = 'high';
+              img.setAttribute('fetchpriority', 'high');
+              img.loading = 'eager';
             }
-            bannerItem.append(heroPicture);
           }
+          bannerItem.append(heroPicture);
         }
       }
 
