@@ -236,9 +236,9 @@ header.is-not-overlapped .mobile-top-bar {
   background-color: var(--bbl-color-truthful-blue);
 }
 
-header.is-not-overlapped ~ main {
+header.is-not-overlapped  {
   /* matches header height */
-  padding-top: var(--header-m-height, 4.95rem);
+  min-height: var(--header-m-height, 4.95rem);
 }
 
 @media (width > 47.5rem) {
@@ -342,10 +342,10 @@ header.is-not-overlapped ~ main {
     background-color: transparent;
   }
 
-  header.is-not-overlapped ~ main {
+  header.is-not-overlapped {
     /* matches header height */
 
-    padding-top: var(--header-d-height, 7.73rem);
+    min-height: var(--header-d-height, 7.73rem);
   } 
 
   .header .megamenu-panel .megamenu-inner .megamenu-column-links {
@@ -362,14 +362,5 @@ header.is-not-overlapped ~ main {
     max-width: var(--bbl-layout-content-max-width-1920);
     margin: 0 auto;
     padding-inline: 0;
-  }
-}
-
-body.credit-card-form header.is-not-overlapped ~ main {
-  padding-top:0;
-  min-height: var(--header-m-height, 4.95rem);
-  
-  @media (width > 64rem){
-    min-height: var(--header-d-height, 7.73rem);
   }
 }
