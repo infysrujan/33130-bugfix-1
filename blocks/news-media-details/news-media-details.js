@@ -28,14 +28,7 @@ function readFromBlock(block) {
     return clone.innerHTML.trim();
   };
   const getText = (cell) => cell?.textContent?.trim() || '';
-  const getPictureHtml = (cell) => {
-    if (!cell) return '';
-    const picture = cell.querySelector('picture');
-    if (!picture) return '';
-    const clone = picture.cloneNode(true);
-    stripInstrumentation(clone);
-    return clone.outerHTML;
-  };
+  const getPicture = (cell) => cell?.querySelector('picture') || null;
 
   const firstRowCols = rows[0].children.length;
 
@@ -50,7 +43,7 @@ function readFromBlock(block) {
     return {
       aboutUsId: getText(cellMap.aboutusid),
       title: getHtml(cellMap.title),
-      detailImage: getPictureHtml(cellMap.detailimageurl),
+      detailImage: getPicture(cellMap.detailimageurl),
       detailDescription: getHtml(cellMap.detaildescription),
       publishDate: getText(cellMap.publishdate),
     };
@@ -61,7 +54,7 @@ function readFromBlock(block) {
     return {
       aboutUsId: getText(cells[0]),
       title: getHtml(cells[1]),
-      detailImage: getPictureHtml(cells[3]),
+      detailImage: getPicture(cells[3]),
       detailDescription: getHtml(cells[5]),
       publishDate: getText(cells[7]),
     };
@@ -70,22 +63,25 @@ function readFromBlock(block) {
   return {
     aboutUsId: getText(rows[0]?.children[0]),
     title: getHtml(rows[1]?.children[0]),
-    detailImage: getPictureHtml(rows[3]?.children[0]),
+    detailImage: getPicture(rows[3]?.children[0]),
     detailDescription: getHtml(rows[5]?.children[0]),
     publishDate: getText(rows[7]?.children[0]),
   };
 }
 
-function buildDetailHtml(card, locale) {
-  return `
+function renderDetail(container, card, locale) {
+  container.innerHTML = `
     <div class="news-media-detail-inner">
       <div class="news-media-detail-content">
         ${card.title ? `<div class="news-media-detail-title pad-bot-30">${card.title}</div>` : ''}
         ${card.publishDate ? `<p class="news-media-detail-date pad-bot-30">${formatDate(card.publishDate, locale)}</p>` : ''}
-        ${card.detailImage ? `<div class="news-media-detail-image">${card.detailImage}</div>` : ''}
+        ${card.detailImage ? '<div class="news-media-detail-image"></div>' : ''}
         ${card.detailDescription ? `<div class="news-media-detail-description">${card.detailDescription}</div>` : ''}
       </div>
     </div>`;
+  if (card.detailImage) {
+    container.querySelector('.news-media-detail-image')?.append(card.detailImage);
+  }
 }
 
 async function renderNewsDetail(block) {
@@ -110,7 +106,7 @@ async function renderNewsDetail(block) {
     }
 
     if (previewData && (previewData.title || previewData.detailDescription)) {
-      previewContainer.innerHTML = buildDetailHtml(previewData, locale);
+      renderDetail(previewContainer, previewData, locale);
     }
 
     const hidden = block.ownerDocument.createElement('div');
@@ -125,7 +121,7 @@ async function renderNewsDetail(block) {
     return;
   }
 
-  block.innerHTML = buildDetailHtml(card, locale);
+  renderDetail(block, card, locale);
 }
 
 export default function decorate(block) {

@@ -5,6 +5,10 @@
     min-height: 4.563rem;
 }
 
+.sub-nav.subnav-dropdown{
+    min-height: 6.063rem;
+}
+
 .sub-nav .wrapper {
     display: flex;
     align-items: center;
