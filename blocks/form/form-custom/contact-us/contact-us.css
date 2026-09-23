@@ -123,8 +123,8 @@
         height: 2.6389rem;
     }
 
-    & .date-wrapper.field-wrapper {
-        --bbl-form-date-icon-height: 2.6389rem;
+    & .date-wrapper.field-wrapper::after {
+        top: 0;
     }
 
     /* Hour/Minute separator colon (turned on for desktop below) */
@@ -165,7 +165,11 @@
     }
 
     /* Dropdown selects */
-    & .drop-down-wrapper select {
+        & .drop-down-wrapper select:has(option:disabled:checked) {
+        color: var(--bbl-color-grey-70);
+    }
+    
+    & .drop-down-wrapper select option{
         max-width: 100%;
         height: 2.6389rem;
         overflow: hidden;
