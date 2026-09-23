@@ -646,15 +646,14 @@
 .dynamic-board .db-table thead th {
   box-sizing: border-box;
   padding: 0.375rem 0.625rem;
-  font-size: var(--bbl-body-b1-size);
-  font-weight: var(--bbl-body-b1-weight);
-  line-height: var(--bbl-body-b1-line-height);
+  font-size: var(--bbl-font-size-b1-mobile);
+  font-weight: 700;
   color: var(--bbl-color-black);
-  font-family: var(--bbl-font-family-medium);
   text-align: center;
   border-bottom: var(--bbl-space-025) solid var(--bbl-color-grey-20);
   border-right: 0.0625rem solid var(--bbl-color-grey-20);
   white-space: normal;
+  line-height: 1.4;
   vertical-align: middle;
   background: var(--bbl-color-blue-6);
   height: 3.75rem;
@@ -723,7 +722,6 @@
 
 .dynamic-board .db-table thead th[rowspan='2'] {
   height: 6.25rem;
-  border-bottom: 0.0625rem solid var(--bbl-color-grey-152);
 }
 
 .dynamic-board .db-table thead tr {
@@ -735,7 +733,7 @@
 }
 
 .dynamic-board .db-table thead tr:last-child th {
-  border-bottom: 0.0625rem solid var(--bbl-color-grey-152);
+  border-top: 0.0625rem solid var(--bbl-color-grey-152);
 }
 
 .dynamic-board .db-table thead tr:first-child th:nth-child(2) {
@@ -814,13 +812,10 @@
 .dynamic-board .db-table tbody td {
   box-sizing: border-box;
   padding-right: 0.3125rem;
-  font-size: var(--bbl-body-b1-size);
-  line-height: var(--bbl-body-b1-line-height);
-  font-weight: var(--bbl-body-b1-weight);
+  font-size: var(--bbl-font-size-b1-mobile);
   color: var(--bbl-color-grey-70);
   vertical-align: middle;
   height: 4.6875rem;
-  font-family: var(--bbl-font-family-primary);
 }
 
 .dynamic-board .db-table tbody tr:last-child td {
@@ -843,6 +838,7 @@
   width: 20%;
   position: relative;
   min-width: 12rem;
+  line-height: 1.4;
 }
 
 .dynamic-board .db-td-name[data-title]::after {
@@ -853,7 +849,7 @@
   width: 18.75rem;
   padding: 0.3125rem 0.9375rem 0.5rem;
   color: var(--bbl-color-white);
-  line-height: var(--bbl-body-b1-line-height);
+  line-height: 1.5;
   white-space: pre-line;
   border-radius: 0.625rem;
   font-weight: 100;
