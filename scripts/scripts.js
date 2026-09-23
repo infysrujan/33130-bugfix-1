@@ -10,7 +10,6 @@ import {
   loadSection,
   loadSections,
   loadCSS,
-  promoteFirstImage,
   getMetadata,
   toClassName,
 } from './aem.js';
@@ -368,6 +367,12 @@ function hintLcpImage(img) {
   img.loading = 'eager';
 }
 
+function promoteFirstImage(section) {
+  const image = section?.querySelector('img[fetchpriority="high"]')
+    || section?.querySelector('img');
+  hintLcpImage(image);
+}
+
 /**
  * Remove optimization params from all picture source/img URLs in the document.
  * @param {Document|Element} root
@@ -419,7 +424,10 @@ async function loadEager(doc) {
     promoteFirstImage(main);
     document.body.classList.add('appear');
     await Promise.all([
-      loadSection(main.querySelector('.section'), waitForFirstImage),
+      loadSection(main.querySelector('.section'), async (section) => {
+        promoteFirstImage(section);
+        await waitForFirstImage(section);
+      }),
       loadWelcomeBanner(doc),
     ]);
   }

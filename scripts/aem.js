@@ -357,16 +357,6 @@ function createOptimizedPicture(
   return picture;
 }
 
-function promoteFirstImage(section) {
-  const image = section?.querySelector('img[fetchpriority="high"]')
-    || section?.querySelector('img');
-  if (!image) return;
-  image.fetchPriority = 'high';
-  image.setAttribute('fetchpriority', 'high');
-  image.setAttribute('loading', 'eager');
-  image.loading = 'eager';
-}
-
 /**
  * Set template (page structure) and theme (page styles).
  */
@@ -704,7 +694,6 @@ async function loadFooter(footer) {
  * @param {Element} section section element
  */
 async function waitForFirstImage(section) {
-  promoteFirstImage(section);
   const lcpCandidate = section.querySelector('img[fetchpriority="high"]')
     || section.querySelector('img');
   await new Promise((resolve) => {
@@ -723,7 +712,6 @@ async function waitForFirstImage(section) {
  */
 
 async function loadSection(section, loadCallback) {
-  if (!section) return;
   const status = section.dataset.sectionStatus;
   if (!status || status === 'initialized') {
     section.dataset.sectionStatus = 'loading';
@@ -731,7 +719,6 @@ async function loadSection(section, loadCallback) {
     for (let i = 0; i < blocks.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop
       await loadBlock(blocks[i]);
-      if (loadCallback) promoteFirstImage(section);
     }
     if (loadCallback) await loadCallback(section);
     section.dataset.sectionStatus = 'loaded';
@@ -762,7 +749,6 @@ if (typeof window !== 'undefined') {
 export {
   buildBlock,
   createOptimizedPicture,
-  promoteFirstImage,
   decorateBlock,
   decorateBlocks,
   decorateButtons,
