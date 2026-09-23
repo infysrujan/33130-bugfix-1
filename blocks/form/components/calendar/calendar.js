@@ -199,9 +199,6 @@ export default function decorate(block) {
   const placeholder = config.placeholder || (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
   const fieldName = config.name || 'date';
 
-  // Look up min/max under every key shape we've seen this config produce
-  // (data-aue-prop derived, label-derived, camelCase, legacy short form),
-  // then normalize any Buddhist Era year and clamp to startOfDay.
   const rawMinDate = parseConfigDate(
     getConfigValue(config, 'minimum-date', 'minimumdate', 'min-date'),
   );
