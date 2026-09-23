@@ -1621,9 +1621,6 @@ a.link-inverted[aria-disabled="true"] {
 	font-variant: normal;
 	text-transform: none;
 	line-height: 1;
-	display: inline-block;
-	width: 1em;
-	height: 1em;
 
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
@@ -1764,21 +1761,6 @@ body {
 
 body.appear {
     display: block;
-}
-
-.menu-banner-container {
-    min-height: calc(50vw + 14rem);
-}
-
-.latest-news-container,
-.news-media-container {
-    min-height: 22rem;
-}
-
-@media (width > 47.5rem) {
-    .menu-banner-container {
-        min-height: 28.125rem;
-    }
 }
 
 header .header,
