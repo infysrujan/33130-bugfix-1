@@ -92,17 +92,14 @@ function getCardName(card) {
   return card.name || card.title || card.FundName || card.fundName || '';
 }
 
-function filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap) {
-  const normalizedNames = selectedNames.map(norm);
+function filterAndSortCards(allCards, selectedIDs, sourcingMap) {
   const matched = allCards.filter((card) => selectedIDs.includes(card.ProductID));
 
   if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
-    return normalizedNames
-      .map((n) => matched.find((c) => {
-        const cardName = norm(getCardName(c));
-        const found = cardName === n;
-        return found;
-      }))
+    // Preserve the order the user selected the cards in, matching by ID
+    // (not by name, since the cached name may be stale after a language switch).
+    return selectedIDs
+      .map((id) => matched.find((c) => c.ProductID === id))
       .filter(Boolean);
   }
 
@@ -373,9 +370,8 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
     return;
   }
 
-  const selectedNames = cards.map((c) => c.name);
   const selectedIDs = cards.map((c) => c.id);
-  const sorted = filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap);
+  const sorted = filterAndSortCards(allCards, selectedIDs, sourcingMap);
 
   const displayCards = sorted.length > 0
     ? sorted
