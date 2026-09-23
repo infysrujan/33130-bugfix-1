@@ -403,7 +403,13 @@ function setupPanel(
     observer.observe(panel);
   }
 
-  if (disableFilters) return;
+  function resetPage() {
+    if (state.page === 1) return;
+    state.page = 1;
+    if (hasRenderedOnce) render();
+  }
+
+  if (disableFilters) return { resetPage };
 
   const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
   // After an option is chosen the dropdown closes; a double-click's 2nd click can
@@ -547,6 +553,8 @@ function setupPanel(
 
   const scrollTarget = panel.closest('.tabs') || gridEl;
   bindPaginationClick(paginationEl, state, render, scrollTarget);
+
+  return { resetPage };
 }
 
 export default async function decorate(block) {
@@ -670,6 +678,7 @@ export default async function decorate(block) {
     : [...document.querySelectorAll('[role="tabpanel"]')];
 
   const filterSync = createFilterSync();
+  const panelHandles = new Map();
 
   tabPanels.forEach((panel, index) => {
     const tabBtnId = panel.getAttribute('aria-labelledby');
@@ -690,7 +699,7 @@ export default async function decorate(block) {
     if (!category) category = isHighlightsPanel ? tabText : forcedCardType && NO_MATCH_VALUE;
     const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
-    setupPanel(
+    const panelHandle = setupPanel(
       panel,
       isHighlightsPanel ? topPromoCards : activeCards,
       category,
@@ -714,6 +723,11 @@ export default async function decorate(block) {
         panelId: index,
       },
     );
+    panelHandles.set(index, panelHandle);
+  });
+
+  tabsContainer?.addEventListener('tab-activated', (e) => {
+    panelHandles.get(e.detail.index)?.resetPage();
   });
 
   document.addEventListener('click', () => {

@@ -56,6 +56,9 @@ function buildSlide(row, index) {
  * @param {Function} setActive - Function to set active slide
  * @param {number} dragThreshold - Minimum drag distance to trigger slide change
  * @param {boolean} enableLooping - Whether to enable infinite looping
+ * @param {{trackWrapper: HTMLElement, getOffset: (index: number) => number} | null} liveTrack -
+ *   When provided, the track visually follows the pointer while dragging (instead of only
+ *   snapping on release), then either completes the slide change or springs back.
  */
 
 function initializeDragSwipe(
@@ -64,11 +67,13 @@ function initializeDragSwipe(
   setActive,
   dragThreshold = 50,
   enableLooping = false,
+  liveTrack = null,
 ) {
   let isDragging = false;
   let startX = 0;
   let currentX = 0;
   let hasMoved = false;
+  let dragBaseOffset = 0;
 
   const handleStart = (e) => {
     if (e.target.closest('a, button')) return;
@@ -77,12 +82,23 @@ function initializeDragSwipe(
     startX = e.type === 'touchstart' ? e.touches[0].pageX : (e.pageX || e.clientX);
     currentX = startX;
     block.classList.add('is-dragging');
+
+    if (liveTrack) {
+      const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
+      dragBaseOffset = liveTrack.getOffset(currentIndex);
+      liveTrack.trackWrapper.style.transition = 'none';
+    }
   };
 
   const handleMove = (e) => {
     if (!isDragging) return;
     currentX = e.type === 'touchmove' ? e.touches[0].pageX : (e.pageX || e.clientX);
     if (Math.abs(currentX - startX) > 5) hasMoved = true;
+
+    if (liveTrack) {
+      const deltaX = currentX - startX;
+      liveTrack.trackWrapper.style.transform = `translate3d(${-dragBaseOffset + deltaX}px, 0px, 0px)`;
+    }
   };
 
   const handleEnd = () => {
@@ -92,6 +108,10 @@ function initializeDragSwipe(
     block.classList.remove('is-dragging');
 
     const deltaX = currentX - startX;
+
+    if (liveTrack) liveTrack.trackWrapper.style.transition = '';
+
+    let committed = false;
 
     if (hasMoved && Math.abs(deltaX) > dragThreshold) {
       const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
@@ -103,7 +123,10 @@ function initializeDragSwipe(
         } else {
           nextIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : currentIndex;
         }
-        if (nextIndex !== currentIndex) setActive(nextIndex, 'forward');
+        if (nextIndex !== currentIndex) {
+          setActive(nextIndex, 'forward');
+          committed = true;
+        }
       } else if (deltaX > dragThreshold) {
         let prevIndex;
         if (enableLooping) {
@@ -111,8 +134,16 @@ function initializeDragSwipe(
         } else {
           prevIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex;
         }
-        if (prevIndex !== currentIndex) setActive(prevIndex, 'backward');
+        if (prevIndex !== currentIndex) {
+          setActive(prevIndex, 'backward');
+          committed = true;
+        }
       }
+    }
+
+    // Below threshold (or clamped at an edge) — spring back to the current slide.
+    if (liveTrack && !committed) {
+      liveTrack.trackWrapper.style.transform = `translate3d(${-dragBaseOffset}px, 0px, 0px)`;
     }
 
     // Reset drag state
@@ -125,6 +156,10 @@ function initializeDragSwipe(
     if (isDragging) {
       isDragging = false;
       block.classList.remove('is-dragging');
+      if (liveTrack) {
+        liveTrack.trackWrapper.style.transition = '';
+        liveTrack.trackWrapper.style.transform = `translate3d(${-dragBaseOffset}px, 0px, 0px)`;
+      }
       startX = 0;
       currentX = 0;
       hasMoved = false;
@@ -812,7 +847,27 @@ export default async function decorate(block) {
     || slidesFragment > 0
     || (isMfCardListCarousel && slideEls.length > 1)
     || (isMfFundCardsCarousel && slideEls.length > 1);
-  initializeDragSwipe(block, slideEls, setActive, 50, enableLooping);
+
+  // simple-carousel: make dragging visually follow the pointer (partial reveal)
+  // instead of only snapping to the next/previous slide on release.
+  let simpleCarouselDragTrack = null;
+  if (isSimpleCarousel) {
+    const trackWrapperEl = block.querySelector('.carousel-track-wrapper');
+    if (trackWrapperEl) {
+      simpleCarouselDragTrack = {
+        trackWrapper: trackWrapperEl,
+        getOffset(index) {
+          const trackViewport = block.querySelector('.carousel-track-viewport');
+          const slideWidthPx = slideEls[0]
+            ? slideEls[0].getBoundingClientRect().width
+            : (trackViewport || trackWrapperEl).offsetWidth;
+          const cloneOffset = shouldCloneTrack ? 1 : 0;
+          return (index + cloneOffset) * slideWidthPx;
+        },
+      };
+    }
+  }
+  initializeDragSwipe(block, slideEls, setActive, 50, enableLooping, simpleCarouselDragTrack);
 
   if (allFragmentTrack) {
     const breakpoint = window.matchMedia(`(max-width: ${tabletMin})`);

@@ -116,11 +116,6 @@
   text-decoration: none;
 }
 
-.story-card-content .button-container .button-m {
-  min-width:  8.4375rem;
-  box-sizing: border-box;
-}
-
 /* ========================================================================
    Responsive Overrides
    ======================================================================== */
@@ -188,10 +183,6 @@
   .story-card .text-default {
     font-size: 1rem;
     line-height: 1.375rem;
-  }
-
-  .story-card-content .button-container .button-m {
-    min-width: 9.688rem;
   }
 
   :lang(th){

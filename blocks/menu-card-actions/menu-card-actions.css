@@ -124,16 +124,11 @@ body.wealth .menu-card-action-inner {
 }
 
 .menu-card-action-inner .button-m {
-  display: block;
-  width: auto;
-  max-width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  text-align: center;
-  line-height: 2.75rem;
-  box-sizing: border-box;
   margin-top: var(--bbl-space-250);
+  min-width: 100%;
 }
 
 .menu-card-action-inner .global-dropdown {

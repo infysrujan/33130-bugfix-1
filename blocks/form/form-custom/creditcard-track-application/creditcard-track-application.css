@@ -449,6 +449,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       aspect-ratio: 440 / 275;
       object-fit: cover;
       vertical-align: middle;
+      border-radius: 0.25rem;
     }
 
     & .cc-panel-item-timeline-bg .image-wrapper img {
@@ -1201,7 +1202,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & .radio-wrapper {
           width: auto;
-          flex: 0 1 auto;
+          flex: 0 1 calc(33% - 1.25rem);
         }
       }
     }
