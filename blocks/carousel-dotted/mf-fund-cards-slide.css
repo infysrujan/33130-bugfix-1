@@ -26,7 +26,7 @@
 }
 
 .mf-fund-cards-description {
-  margin: var(--bbl-space-300) auto 0 auto;
+  margin: var(--bbl-space-600) auto 0 auto;
   max-width: 56.25rem;
   padding: 0 var(--bbl-space-300);
   font-family: var(--bbl-font-family-primary);
@@ -278,6 +278,6 @@
   }
 
   .mf-fund-cards-description {
-  margin: var(--bbl-space-400) auto 0 auto;
+  margin: var(--bbl-space-800) auto 0 auto;
   }
 }
