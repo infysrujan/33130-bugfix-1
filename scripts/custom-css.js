@@ -9,7 +9,6 @@ const UNSAFE_CSS_PATTERNS = [
   /-moz-binding\s*:/gi,
   /url\s*\(\s*['"]?\s*javascript:/gi,
   /url\s*\(\s*['"]?data:(?!image\/)/gi,
-  /<\/style/gi,
 ];
 
 /**

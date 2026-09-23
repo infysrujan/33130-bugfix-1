@@ -244,9 +244,11 @@ function alignHeaderLastLine(table) {
   });
 }
 
-// Authors write their own CSS wrapped in <style> tags, targeting the table
-// via the Id field (e.g. #my-table-id td:nth-child(2) { ... }). This gives
-// full control over per-cell alignment/background without new variant classes.
+// Authors write their own CSS targeting the table via the Id field
+// (e.g. #my-table-id td:nth-child(2) { ... }). This gives full control over
+// per-cell alignment/background without new variant classes. The rules can
+// either be wrapped in <style> tags, or written as plain CSS across the
+// field's paragraphs/code block (each line authored as its own <p>).
 function applyCustomCellCss(block, row) {
   if (!row) return;
 
@@ -256,8 +258,9 @@ function applyCustomCellCss(block, row) {
     : [...row.querySelectorAll('p')].map((p) => p.textContent).join('\n');
   if (!encoded.trim()) return;
 
-  const { css } = extractStyles(decodeHtmlEntities(encoded));
-  const sanitized = sanitizeCss(css);
+  const decoded = decodeHtmlEntities(encoded);
+  const { css } = extractStyles(decoded);
+  const sanitized = sanitizeCss(css || decoded);
   if (!sanitized) return;
 
   const styleEl = document.createElement('style');
