@@ -190,6 +190,10 @@
     padding-block: 0 1.875rem;
     width: 100%;
   }
+
+  .teaser-bg-image-cta .button-container a {
+    min-width: 7.5rem;
+  }
 }
 
 @media (width > 64rem) {
