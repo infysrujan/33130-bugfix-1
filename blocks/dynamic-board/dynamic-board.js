@@ -22,6 +22,17 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
+// Header labels for these columns are forced onto two lines (design requirement).
+// A real <br> is used instead of a word-spacing hack so the break survives both
+// print paths without depending on viewport units.
+const FORCE_LINE_BREAK_SORT_KEYS = new Set(['REMAIN_TERM', 'CURRENT_COUPON']);
+
+function renderThLabel(label) {
+  const spaceIdx = label.indexOf(' ');
+  if (spaceIdx === -1) return escapeHtml(label);
+  return `${escapeHtml(label.slice(0, spaceIdx))}<br>${escapeHtml(label.slice(spaceIdx + 1))}`;
+}
+
 function formatPrintTimestamp(date = new Date()) {
   const shortYear = String(date.getFullYear()).slice(-2);
   const time = date.toLocaleTimeString('en-US', {
@@ -150,7 +161,10 @@ function renderThead(thead, state) {
       });
     } else {
       const cs = col.colspan > 1 ? `colspan="${col.colspan}"` : '';
-      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}"><span class="db-th-label">${escapeHtml(col.label)}</span></th>`;
+      const labelHtml = FORCE_LINE_BREAK_SORT_KEYS.has(col.sortKey)
+        ? renderThLabel(col.label)
+        : escapeHtml(col.label);
+      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}"><span class="db-th-label">${labelHtml}</span></th>`;
     }
   });
   row1 += '</tr>';

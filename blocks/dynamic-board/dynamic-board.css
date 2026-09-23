@@ -680,11 +680,6 @@
   width: 10%;
 }
 
-.dynamic-board .db-table thead th[data-sort="REMAIN_TERM"],
-.dynamic-board .db-table thead th[data-sort="CURRENT_COUPON"] {
-  word-spacing: 100vw;
-}
-
 .dynamic-board .db-table thead th[data-sort="NAME_ENG"] {
   width: 20%;
 }
