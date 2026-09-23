@@ -4,15 +4,17 @@ import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { trackLinkClick } from '../../scripts/analytics.js';
 
-const MOBILE_MQ = `(width <= ${
-  getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-mobile-max').trim()
-})`;
+const MOBILE_MQ = `(width <= ${getComputedStyle(document.documentElement)
+  .getPropertyValue('--bbl-breakpoint-mobile-max')
+  .trim()})`;
 
 const DESKTOP_MIN_WIDTH = '1025px';
 
 const windowLoaded = document.readyState === 'complete'
   ? Promise.resolve()
-  : new Promise((resolve) => { window.addEventListener('load', resolve, { once: true }); });
+  : new Promise((resolve) => {
+    window.addEventListener('load', resolve, { once: true });
+  });
 
 let globalMuted = true;
 
@@ -23,10 +25,12 @@ function getYouTubeId(url) {
 }
 
 function getAssetSrc(cell) {
-  return cell?.querySelector('a')?.href
+  return (
+    cell?.querySelector('a')?.href
     || cell?.querySelector('img')?.src
     || cell?.textContent?.trim()
-    || '';
+    || ''
+  );
 }
 
 function pauseBannerVideo(item) {
@@ -34,8 +38,17 @@ function pauseBannerVideo(item) {
   const iframe = item?.querySelector('iframe.hero-banner-video');
   if (iframe) {
     delete iframe.dataset.ytPendingPlay;
-    if (iframe.ytPlayer) try { iframe.ytPlayer.pauseVideo(); } catch (_) { /* not ready */ }
-    iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
+    if (iframe.ytPlayer) {
+      try {
+        iframe.ytPlayer.pauseVideo();
+      } catch (_) {
+      /* not ready */
+      }
+    }
+    iframe.contentWindow?.postMessage(
+      JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }),
+      '*',
+    );
   }
 }
 
@@ -45,7 +58,8 @@ function applyGlobalMute(heroBanner) {
   });
   heroBanner.querySelectorAll('iframe.hero-banner-video').forEach((iframe) => {
     if (iframe.ytPlayer && iframe.ytPlayerReady) {
-      if (globalMuted) iframe.ytPlayer.mute(); else iframe.ytPlayer.unMute();
+      if (globalMuted) iframe.ytPlayer.mute();
+      else iframe.ytPlayer.unMute();
       if (typeof iframe.syncYTMuteUI === 'function') iframe.syncYTMuteUI(globalMuted);
     }
   });
@@ -65,10 +79,13 @@ function playBannerVideo(item) {
   if (iframe) {
     if (iframe.ytPlayer && iframe.ytPlayerReady) {
       try {
-        if (globalMuted) iframe.ytPlayer.mute(); else iframe.ytPlayer.unMute();
+        if (globalMuted) iframe.ytPlayer.mute();
+        else iframe.ytPlayer.unMute();
         iframe.ytPlayer.playVideo();
         if (typeof iframe.syncYTMuteUI === 'function') iframe.syncYTMuteUI(globalMuted);
-      } catch (_) { /* player not ready yet */ }
+      } catch (_) {
+        /* player not ready yet */
+      }
     } else {
       iframe.dataset.ytPendingPlay = '1';
     }
@@ -79,41 +96,64 @@ function syncHeaderOverlap(activeItem) {
   const header = document.querySelector('header');
   if (!header) return;
   const hasVideo = !!activeItem?.querySelector('.hero-banner-video-wrapper');
-  const isDesktopViewport = window.matchMedia(`(min-width: ${DESKTOP_MIN_WIDTH})`).matches;
+  const isDesktopViewport = window.matchMedia(
+    `(min-width: ${DESKTOP_MIN_WIDTH})`,
+  ).matches;
   header.classList.toggle('is-not-overlapped', hasVideo && !isDesktopViewport);
 }
 
 function changeBanner(block) {
   function activateThumbnail(thumbnail) {
     const { index } = thumbnail.dataset;
-    const currentItem = block.querySelector('.hero-banner-item.hero-banner-item-active');
+    const currentItem = block.querySelector(
+      '.hero-banner-item.hero-banner-item-active',
+    );
     if (currentItem?.dataset.index === index) return;
     pauseBannerVideo(currentItem);
     block.querySelectorAll('[data-index]').forEach((el) => {
-      el.classList.toggle('hero-banner-item-active', el.classList.contains('hero-banner-item') && el.dataset.index === index);
-      el.classList.toggle('hero-banner-thumbnail-item-active', el.classList.contains('hero-banner-thumbnail-item') && el.dataset.index === index);
+      el.classList.toggle(
+        'hero-banner-item-active',
+        el.classList.contains('hero-banner-item') && el.dataset.index === index,
+      );
+      el.classList.toggle(
+        'hero-banner-thumbnail-item-active',
+        el.classList.contains('hero-banner-thumbnail-item')
+          && el.dataset.index === index,
+      );
     });
-    syncHeaderOverlap(block.querySelector('.hero-banner-item.hero-banner-item-active'));
+    syncHeaderOverlap(
+      block.querySelector('.hero-banner-item.hero-banner-item-active'),
+    );
   }
 
-  block.addEventListener('mouseenter', (e) => {
-    const thumbnail = e.target.closest('.hero-banner-thumbnail-item');
-    if (!thumbnail) return;
-    activateThumbnail(thumbnail);
-    playBannerVideo(block.querySelector('.hero-banner-item.hero-banner-item-active'));
-  }, true);
+  block.addEventListener(
+    'mouseenter',
+    (e) => {
+      const thumbnail = e.target.closest('.hero-banner-thumbnail-item');
+      if (!thumbnail) return;
+      activateThumbnail(thumbnail);
+      playBannerVideo(
+        block.querySelector('.hero-banner-item.hero-banner-item-active'),
+      );
+    },
+    true,
+  );
 
-  block.addEventListener('click', (e) => {
-    const thumbnail = e.target.closest('.hero-banner-thumbnail-item');
-    if (!thumbnail) return;
-    activateThumbnail(thumbnail);
-  }, true);
+  block.addEventListener(
+    'click',
+    (e) => {
+      const thumbnail = e.target.closest('.hero-banner-thumbnail-item');
+      if (!thumbnail) return;
+      activateThumbnail(thumbnail);
+    },
+    true,
+  );
 }
 
 function lazyLoadThumbnails(block) {
   const outer = block.querySelector('.hero-banner-thumbnail-outer');
   if (!outer) return;
-  if (window.matchMedia('(max-width: 47.5rem)').matches) {
+  if (window.matchMedia('(max-width: 64rem)').matches) {
     outer.classList.add('hero-banner-thumbnail-outer-active');
     return;
   }
@@ -128,7 +168,10 @@ function lazyLoadThumbnails(block) {
 function stripInstrumentation(el) {
   [...el.querySelectorAll('*'), el].forEach((node) => {
     [...node.attributes]
-      .filter(({ nodeName }) => nodeName.startsWith('data-aue-') || nodeName.startsWith('data-richtext-'))
+      .filter(
+        ({ nodeName }) => nodeName.startsWith('data-aue-')
+          || nodeName.startsWith('data-richtext-'),
+      )
       .forEach(({ nodeName }) => node.removeAttribute(nodeName));
   });
 }
@@ -157,15 +200,20 @@ function normalizeCellContent(cell, className) {
 }
 
 function addDesktopBreakClass(textCell) {
-  textCell?.querySelectorAll('.hero-banner-content-inner-text p').forEach((p) => {
-    p.classList.add('hero-banner-desktop-break');
-    p.querySelectorAll('br').forEach((br) => {
-      const next = br.nextSibling;
-      if (next?.nodeType === Node.TEXT_NODE && !/^\s/.test(next.textContent)) {
-        next.textContent = ` ${next.textContent}`;
-      }
+  textCell
+    ?.querySelectorAll('.hero-banner-content-inner-text p')
+    .forEach((p) => {
+      p.classList.add('hero-banner-desktop-break');
+      p.querySelectorAll('br').forEach((br) => {
+        const next = br.nextSibling;
+        if (
+          next?.nodeType === Node.TEXT_NODE
+          && !/^\s/.test(next.textContent)
+        ) {
+          next.textContent = ` ${next.textContent}`;
+        }
+      });
     });
-  });
 }
 
 function addHeadingDesktopBreakClass(headingCell) {
@@ -180,14 +228,22 @@ function addHeadingDesktopBreakClass(headingCell) {
   });
 }
 
-function createThumbItem(picture, index, { strip = false, active = false } = {}) {
+function createThumbItem(
+  picture,
+  index,
+  { strip = false, active = false } = {},
+) {
   const item = createElement('li', 'hero-banner-thumbnail-item');
   if (active) item.classList.add('hero-banner-thumbnail-item-active');
   item.dataset.index = index;
   if (picture) {
     if (strip) stripInstrumentation(picture);
     const img = picture.querySelector('img');
-    if (img) { img.className = 'hero-banner-thumbnail-img'; img.loading = 'eager'; item.append(img); }
+    if (img) {
+      img.className = 'hero-banner-thumbnail-img';
+      img.loading = 'eager';
+      item.append(img);
+    }
   }
   return item;
 }
@@ -200,9 +256,13 @@ async function loadHeroIcons() {
   const base = window.hlx?.codeBasePath ?? '';
   const names = ['play', 'pause', 'muted', 'volume', 'fullscreen', 'share'];
   const svgs = await Promise.all(
-    names.map((name) => fetch(`${base}/icons/hero-${name}.svg`).then((r) => (r.ok ? r.text() : '')).catch(() => '')),
+    names.map((name) => fetch(`${base}/icons/hero-${name}.svg`)
+      .then((r) => (r.ok ? r.text() : ''))
+      .catch(() => '')),
   );
-  names.forEach((name, i) => { VI[name] = svgs[i]; });
+  names.forEach((name, i) => {
+    VI[name] = svgs[i];
+  });
 }
 
 function fmtTime(sec) {
@@ -254,7 +314,10 @@ function wireFullscreen(btn, bannerItem) {
     else bannerItem.requestFullscreen();
   });
   document.addEventListener('fullscreenchange', () => {
-    btn.setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen');
+    btn.setAttribute(
+      'aria-label',
+      document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen',
+    );
   });
 }
 
@@ -282,12 +345,21 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem, shareUrl) {
   };
 
   const togglePlay = () => {
-    if (video.paused) { triggerFlash(VI.play, 'Play'); video.play(); } else { triggerFlash(VI.pause, 'Pause'); video.pause(); }
+    if (video.paused) {
+      triggerFlash(VI.play, 'Play');
+      video.play();
+    } else {
+      triggerFlash(VI.pause, 'Pause');
+      video.pause();
+    }
   };
 
   video.addEventListener('click', togglePlay);
   playBtn.addEventListener('click', togglePlay);
-  centerBtn.addEventListener('click', (e) => { e.stopPropagation(); togglePlay(); });
+  centerBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePlay();
+  });
 
   video.addEventListener('play', () => {
     playBtn.innerHTML = VI.pause;
@@ -299,7 +371,10 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem, shareUrl) {
     playBtn.setAttribute('aria-label', 'Play');
     centerBtn.innerHTML = VI.play;
     centerBtn.setAttribute('aria-label', 'Play');
-    centerBtn.classList.remove('hero-banner-center-play-hidden', 'hero-banner-center-play-flash');
+    centerBtn.classList.remove(
+      'hero-banner-center-play-hidden',
+      'hero-banner-center-play-flash',
+    );
   });
 
   const syncMuteBtn = () => {
@@ -322,9 +397,13 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem, shareUrl) {
     video.muted = Number(volSlider.value) === 0;
   });
 
-  video.addEventListener('loadedmetadata', () => { timeEl.textContent = `0:00 / ${fmtTime(video.duration)}`; });
+  video.addEventListener('loadedmetadata', () => {
+    timeEl.textContent = `0:00 / ${fmtTime(video.duration)}`;
+  });
   video.addEventListener('timeupdate', () => {
-    const pct = video.duration ? (video.currentTime / video.duration) * 1000 : 0;
+    const pct = video.duration
+      ? (video.currentTime / video.duration) * 1000
+      : 0;
     seekBar.value = pct;
     updateSeekFill(seekBar);
     timeEl.textContent = `${fmtTime(video.currentTime)} / ${fmtTime(video.duration)}`;
@@ -351,12 +430,18 @@ window.onYouTubeIframeAPIReady = () => {
 };
 
 function onYTReady(cb) {
-  if (ytReady) { cb(); return; }
+  if (ytReady) {
+    cb();
+    return;
+  }
   ytQueue.push(cb);
 }
 
 function loadYTScript(src) {
-  if (window.YT || document.querySelector('script[src*="youtube.com/iframe_api"]')) return;
+  if (
+    window.YT
+    || document.querySelector('script[src*="youtube.com/iframe_api"]')
+  ) return;
   const s = document.createElement('script');
   s.src = src || 'https://www.youtube.com/iframe_api';
   document.head.append(s);
@@ -370,7 +455,10 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
   const seekBar = bar.querySelector('.hero-ctrl-seek');
   const timeEl = bar.querySelector('.hero-ctrl-time');
 
-  if (!iframe.id) { ytCounter += 1; iframe.id = `hero-yt-${ytCounter}`; }
+  if (!iframe.id) {
+    ytCounter += 1;
+    iframe.id = `hero-yt-${ytCounter}`;
+  }
 
   const overlay = createElement('div', 'hero-banner-iframe-overlay');
   iframe.insertAdjacentElement('afterend', overlay);
@@ -392,7 +480,8 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
             && bannerItem.classList.contains('hero-banner-item-active');
           if (isDesktopActiveSlide) {
             if (iframe.dataset.ytPendingPlay) delete iframe.dataset.ytPendingPlay;
-            if (globalMuted) target.mute(); else target.unMute();
+            if (globalMuted) target.mute();
+            else target.unMute();
             target.playVideo();
           }
           target.setVolume(50);
@@ -420,8 +509,12 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
               }, 500);
             }
           } else {
-            clearInterval(pollId); pollId = null;
-            if (data === PlayerState.ENDED) { target.seekTo(0); target.playVideo(); }
+            clearInterval(pollId);
+            pollId = null;
+            if (data === PlayerState.ENDED) {
+              target.seekTo(0);
+              target.playVideo();
+            }
           }
         },
       },
@@ -477,7 +570,11 @@ export default async function decorate(block) {
   let thumbnailList = '';
 
   if (variant === 'hero-with-thumbnail-images') {
-    thumbnailList = createElement('ul', 'hero-banner-thumbnail-list', 'content');
+    thumbnailList = createElement(
+      'ul',
+      'hero-banner-thumbnail-list',
+      'content',
+    );
   }
 
   const heroRows = [...block.children].slice(1, 8);
@@ -506,28 +603,45 @@ export default async function decorate(block) {
     if (possibleIsDefault === 'true' || possibleIsDefault === 'false') col += 1;
 
     // All 5 conditional media cells are always present in the DOM (empty when unused)
-    const imageCellDesktop = row.children[col]; col += 1;
-    const imageCellMobile = row.children[col]; col += 1;
-    const imageAlt = row.children[col]; col += 1;
-    const youtubeUrlCell = row.children[col]; col += 1;
-    const damVideoCell = row.children[col]; col += 1;
+    const imageCellDesktop = row.children[col];
+    col += 1;
+    const imageCellMobile = row.children[col];
+    col += 1;
+    const imageAlt = row.children[col];
+    col += 1;
+    const youtubeUrlCell = row.children[col];
+    col += 1;
+    const damVideoCell = row.children[col];
+    col += 1;
 
-    const logoImageCell = row.children[col]; col += 1;
-    const thumbImgCell = row.children[col]; col += 1;
-    const preTitleCell = row.children[col]; col += 1;
-    const headingCell = row.children[col]; col += 1;
-    const textCell = row.children[col]; col += 1;
-    const linkCell = row.children[col]; col += 1;
+    const logoImageCell = row.children[col];
+    col += 1;
+    const thumbImgCell = row.children[col];
+    col += 1;
+    const preTitleCell = row.children[col];
+    col += 1;
+    const headingCell = row.children[col];
+    col += 1;
+    const textCell = row.children[col];
+    col += 1;
+    const linkCell = row.children[col];
+    col += 1;
     const skipCell = row.children[col];
     const isSkippable = skipCell
       && !skipCell.querySelector('picture, a[href]')
-      && (!skipCell.textContent?.trim() || /^(true|false)$/i.test(skipCell.textContent.trim()));
+      && (!skipCell.textContent?.trim()
+        || /^(true|false)$/i.test(skipCell.textContent.trim()));
     if (isSkippable) col += 1;
-    const appStoreImageCell = row.children[col]; col += 1;
-    const appStoreLinkCell = row.children[col]; col += 1;
-    const googlePlayImageCell = row.children[col]; col += 1;
-    const googlePlayLinkCell = row.children[col]; col += 1;
-    const enableAppCtaMobileCell = row.children[col]; col += 1;
+    const appStoreImageCell = row.children[col];
+    col += 1;
+    const appStoreLinkCell = row.children[col];
+    col += 1;
+    const googlePlayImageCell = row.children[col];
+    col += 1;
+    const googlePlayLinkCell = row.children[col];
+    col += 1;
+    const enableAppCtaMobileCell = row.children[col];
+    col += 1;
     const targetCell = row.children[col];
     const targetValue = targetCell?.textContent?.trim() || '';
 
@@ -541,7 +655,10 @@ export default async function decorate(block) {
         const ytId = getYouTubeId(youtubeUrl);
         const iframe = document.createElement('iframe');
         iframe.className = 'hero-banner-video';
-        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        iframe.setAttribute(
+          'allow',
+          'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
+        );
         iframe.setAttribute('allowfullscreen', '');
         iframe.setAttribute('loading', 'lazy');
         const iframeWrapper = createElement('div', 'hero-banner-video-wrapper');
@@ -549,13 +666,19 @@ export default async function decorate(block) {
         bannerItem.append(iframeWrapper);
         const bar = buildControls(iframeWrapper);
         if (isMobile) {
-          iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=0&controls=0&enablejsapi=1&playsinline=1` : youtubeUrl;
+          iframe.src = ytId
+            ? `https://www.youtube.com/embed/${ytId}?autoplay=0&controls=0&enablejsapi=1&playsinline=1`
+            : youtubeUrl;
           wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc, youtubeUrl);
         } else {
           windowLoaded.then(() => {
-            const isActive = bannerItem.classList.contains('hero-banner-item-active');
+            const isActive = bannerItem.classList.contains(
+              'hero-banner-item-active',
+            );
             const autoplay = isActive ? 1 : 0;
-            iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=${autoplay}&mute=1&controls=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}` : youtubeUrl;
+            iframe.src = ytId
+              ? `https://www.youtube.com/embed/${ytId}?autoplay=${autoplay}&mute=1&controls=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`
+              : youtubeUrl;
             wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc, youtubeUrl);
           });
         }
@@ -580,7 +703,7 @@ export default async function decorate(block) {
         wireDAMControls(video, bar, videoWrapper, bannerItem, damVideoSrc);
 
         if (isMobile) {
-        // Start paused on mobile
+          // Start paused on mobile
           video.pause();
 
           // Reset play button to play state since video starts paused on mobile
@@ -596,9 +719,7 @@ export default async function decorate(block) {
           );
 
           if (centerBtn) {
-            centerBtn.classList.remove(
-              'hero-banner-center-play-hidden',
-            );
+            centerBtn.classList.remove('hero-banner-center-play-hidden');
           }
         } else if (i === defaultIndex) {
           windowLoaded.then(() => video.play().catch(() => {}));
@@ -650,7 +771,12 @@ export default async function decorate(block) {
     // content right) via the .hero-banner-content-inner flex layout, so the logo
     // must be a sibling of the content group rather than nested inside it.
     const logoInInner = variant === 'private-wealth-banking';
-    const cells = [preTitleCell, headingCell, textCell, ...(hasButtonLink ? [linkCell] : [])];
+    const cells = [
+      preTitleCell,
+      headingCell,
+      textCell,
+      ...(hasButtonLink ? [linkCell] : []),
+    ];
     cells.forEach((cell, idx) => {
       if (!cell) return;
       while (cell.firstChild) {
@@ -661,20 +787,22 @@ export default async function decorate(block) {
 
     if (isAppCta) {
       const appCtasEl = createElement('div', 'hero-app-ctas');
-      [[appStoreImageCell, appStoreLinkCell], [googlePlayImageCell, googlePlayLinkCell]]
-        .forEach(([imgCell, linkCtaCell]) => {
-          const pic = imgCell?.querySelector('picture');
-          const anchor = linkCtaCell?.querySelector('a');
-          if (!pic || !anchor) return;
-          const ctaLink = document.createElement('a');
-          ctaLink.href = anchor.href;
-          ctaLink.target = '_blank';
-          ctaLink.rel = 'noopener noreferrer';
-          if (anchor.title) ctaLink.title = anchor.title;
-          ctaLink.classList.add('hero-app-cta-link');
-          ctaLink.append(pic.cloneNode(true));
-          appCtasEl.append(ctaLink);
-        });
+      [
+        [appStoreImageCell, appStoreLinkCell],
+        [googlePlayImageCell, googlePlayLinkCell],
+      ].forEach(([imgCell, linkCtaCell]) => {
+        const pic = imgCell?.querySelector('picture');
+        const anchor = linkCtaCell?.querySelector('a');
+        if (!pic || !anchor) return;
+        const ctaLink = document.createElement('a');
+        ctaLink.href = anchor.href;
+        ctaLink.target = '_blank';
+        ctaLink.rel = 'noopener noreferrer';
+        if (anchor.title) ctaLink.title = anchor.title;
+        ctaLink.classList.add('hero-app-cta-link');
+        ctaLink.append(pic.cloneNode(true));
+        appCtasEl.append(ctaLink);
+      });
       if (appCtasEl.children.length) contentGroup.append(appCtasEl);
 
       const enableAppCtaMobile = enableAppCtaMobileCell?.textContent?.trim() === 'true';
@@ -706,7 +834,9 @@ export default async function decorate(block) {
         bannerItem.append(thumbImg);
       }
       if (i !== defaultIndex) {
-        thumbnailList.append(createThumbItem(cloned, i, { strip: true, active: false }));
+        thumbnailList.append(
+          createThumbItem(cloned, i, { strip: true, active: false }),
+        );
       }
     }
 
@@ -730,16 +860,13 @@ export default async function decorate(block) {
   block.replaceChildren(wrapper);
   changeBanner(block);
   lazyLoadThumbnails(block);
-  syncHeaderOverlap(block.querySelector('.hero-banner-item.hero-banner-item-active'));
+  syncHeaderOverlap(
+    block.querySelector('.hero-banner-item.hero-banner-item-active'),
+  );
 
   block.addEventListener('click', (event) => {
     const button = event.target.closest('.button-m.primary');
     if (!button) return;
-    trackLinkClick(
-      event,
-      button,
-      'hero-banner-cta',
-      'hero-banner',
-    );
+    trackLinkClick(event, button, 'hero-banner-cta', 'hero-banner');
   });
 }
