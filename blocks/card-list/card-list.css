@@ -45,6 +45,10 @@
   margin: 0;
 }
 
+.cards-list-description:has(> p.rte-inline-image) {
+  display: block;
+}
+
 .cards-list-inner:has(.cards-list-remark) .cards-list-description {
   margin-bottom: 0.625rem;
 }
@@ -168,9 +172,9 @@
   scroll-snap-align: start;
 }
 
-.cards-list:is(.scrollable, .carousel).center:not(:has(.cards-list-item + .cards-list-item)) {
+/* .cards-list:is(.scrollable, .carousel).center:not(:has(.cards-list-item + .cards-list-item)) {
   justify-content: center;
-}
+} */
 
 @media (width <= 47.5rem) {
   .cards-list:is(.scrollable, .carousel).center .cards-list-item {
@@ -291,6 +295,10 @@
 .cards-list-image.cards-list-image-default {
   max-height: 100%;
   height: calc(100vw);
+}
+
+.carousel-dotted-item.carousel-fragment .cards-list:is(.carousel) .cards-list-image.cards-list-image-default {
+  height: calc(85vw);
 }
 
 .card-list-modal-media picture {
@@ -637,7 +645,7 @@
 
   .cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
     max-height: 9.5625rem;
-    min-height: 110px;
+    min-height: 6.875rem;
   }
 }
 
@@ -783,14 +791,14 @@
   }
 
   .cards-list-image.cards-list-image-card {
-    min-height: calc(50px + 30 * ((100vw - 320px) / 1600));
+    min-height: calc(3.125rem + 30 * ((100vw - 20rem) / 1600));
     max-height: calc(8.75rem + 25 * ((100vw - 20rem) / 1600));
     height: calc(15.625rem + 60 * ((100vw - 20rem) / 1600));
   }
 
   .cards-list-image.cards-list-image-full {
     height: calc(5.625rem + 75 * ((100vw - 20rem) / 1600));
-    min-height: calc(100px + 50 * ((100vw - 320px) / 1600));
+    min-height: calc(6.25rem + 50 * ((100vw - 20rem) / 1600));
   }
 
   .cards-list-image.cards-list-image-default {
@@ -833,7 +841,12 @@
   }
 
   .cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
-    min-height: calc(100px + 50 * ((100vw - 320px) / 1600));
+    min-height: calc(6.25rem + 50 * ((100vw - 20rem) / 1600));
+  }
+
+  .carousel-dotted-item.carousel-fragment .cards-list:is(.carousel) .cards-list-image.cards-list-image-default {
+    height: calc(100vw * .25);
+    max-height: calc(100vw * .4);
   }
 }
 

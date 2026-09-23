@@ -1,7 +1,6 @@
 /* Tab Block Core Styles */
 .tabs-container {
   margin: 0 auto;
-   max-width: 79.5rem;
 }
 
 /* Tab Navigation Base */
@@ -71,7 +70,6 @@
   border: solid 0.0625rem var(--bbl-color-black);
   position: relative;
   text-align: left;
-  margin-top: 1.875rem;
 }
 
 .tabs-nav-wrapper .tabs-dropdown:hover,
@@ -338,6 +336,10 @@
 
 /* Columns per view by breakpoint (mobile shows fewer, desktop more). */
 @media (width > 47.5rem) {
+  .tabs.icon-tab-carousel .tabs-nav-next {
+    right: -0.875rem;
+  }
+
   .tabs.icon-tab-carousel .tabs-nav {
     --tabs-per-view: 5;
   }
@@ -508,6 +510,7 @@
   .tabs.simple-tab .tabs-nav button,
   .tabs.media-tab .tabs-nav button {
     padding: 0;
+    text-align: left;
     margin: 0 1.1rem;
     min-height: var(--bbl-space-200);
     height: unset;

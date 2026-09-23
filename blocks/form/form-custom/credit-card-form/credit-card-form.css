@@ -70,7 +70,7 @@
 }
 
 .credit-card-form main .section.form-container.custom-forms .form .form-message.success-message {
-  line-height: 1;
+  line-height: 1.1244rem;
 }
 
 @media (width < 47.5rem) {

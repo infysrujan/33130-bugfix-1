@@ -23,15 +23,15 @@
   font-weight: var(--bbl-text-breadcrumb-weight);
   font-family: var(--bbl-font-family-looped);
   color: var(--bbl-text-link);
-  padding-right: var(--bbl-space-075);
+  padding-right: 0.9375rem;
   position: relative;
 }
 
 .breadcrumb ol>li::before {
   content: "";
   display: inline-block;
-  width: 0.188rem;
-  height: 0.188rem;
+  width: 0.1875rem;
+  height: 0.1875rem;
   border-radius: 50%;
   background: var(--bbl-text-link);
   vertical-align: baseline;

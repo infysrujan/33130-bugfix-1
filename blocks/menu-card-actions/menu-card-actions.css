@@ -97,6 +97,7 @@ body.wealth .menu-card-action-inner {
   height: 5rem;
   width: auto;
   object-fit: contain;
+  display:flex;
 }
 
 .menu-card-action-title {
@@ -163,11 +164,13 @@ body.wealth .menu-card-action-inner {
 }
 
 .menu-card-action-description p {
-  font: var(--bbl-font-weight-regular) var(--bbl-font-size-b2)/1.1244rem var(--bbl-font-family-regular);
   flex-grow: 1;
   margin: 0;
 }
 
+.menu-card-action-description:has(> p.rte-inline-image) {
+  display: block;
+}
 
 .menu-card-action-title.has-description {
   flex-grow: 0;
@@ -309,10 +312,6 @@ body.wealth .menu-card-action-inner {
     scroll-snap-align: none;
     margin: 0;
     box-sizing: border-box;
-  }
-
-  .menu-card-action-description p {
-    font: var(--bbl-font-weight-regular) var(--bbl-font-size-base) / 1.375rem var(--bbl-font-family-regular);
   }
 
   .menu-card-action-date {

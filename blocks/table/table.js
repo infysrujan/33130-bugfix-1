@@ -195,6 +195,8 @@ function applyColumnWidths(table, raw) {
 }
 
 function markHeaderRows(table) {
+  if (table.classList.contains('no-header')) return;
+
   const rows = [...table.querySelectorAll('tr')];
   if (!rows.length) return;
 
@@ -250,6 +252,33 @@ function isAuthoringInstance(block) {
   return hasAueAttrs && window.self !== window.top;
 }
 
+// Same button-detection logic as decorateButtonsV1 (scripts/bbl-decorators.js),
+// but anchored on TD instead of P since table cell content isn't paragraph-wrapped.
+function decorateTableButtons(table) {
+  table.querySelectorAll('a').forEach((a) => {
+    if (a.querySelector('img')) return;
+    const up = a.parentElement;
+    const twoup = up.parentElement;
+
+    if (up.childNodes.length === 1 && up.tagName === 'STRONG' && twoup.tagName === 'TD') {
+      a.className = 'button-m primary';
+      return;
+    }
+
+    if (up.childNodes.length === 1 && up.tagName === 'EM' && twoup.tagName === 'TD') {
+      a.className = 'button-m secondary';
+      return;
+    }
+
+    if (up.childNodes.length === 1 && up.tagName === 'TD') {
+      const alreadyVariant = a.className.includes('primary') || a.className.includes('secondary');
+      if (!alreadyVariant) {
+        a.className = 'button-tertiary';
+      }
+    }
+  });
+}
+
 function appendRows(targetTable, sourceTable) {
   const targetBody = targetTable.tBodies[0] || targetTable;
   const sourceRows = [...sourceTable.querySelectorAll('tr')];
@@ -275,6 +304,32 @@ function mergeTablesInSection(block) {
   applyMixedBlueHeader(targetTable);
   highlightDashCells(targetTable);
   alignHeaderLastLine(targetTable);
+}
+
+function groupTablesInSection(block) {
+  const section = block.closest('.section');
+  if (!section) return;
+
+  const wrappers = [...section.querySelectorAll('.table-wrapper:has(table.group-tables)')];
+  if (wrappers.length < 2) return;
+
+  let run = [];
+  const flushRun = () => {
+    if (run.length > 1 && !run[0].parentElement.classList.contains('table-group-scroll')) {
+      const container = document.createElement('div');
+      container.className = 'table-group-scroll';
+      run[0].before(container);
+      run.forEach((wrapper) => container.append(wrapper));
+    }
+    run = [];
+  };
+
+  wrappers.forEach((wrapper) => {
+    const previous = run[run.length - 1];
+    if (previous && previous.nextElementSibling !== wrapper) flushRun();
+    run.push(wrapper);
+  });
+  flushRun();
 }
 
 function hasMatchingPlaceholders(table, nestedTables) {
@@ -344,6 +399,17 @@ function scheduleMergeTables(block, parentTable) {
   });
 }
 
+function scheduleGroupTables(block, parentTable) {
+  if (!parentTable.classList.contains('group-tables')) return;
+  if (isAuthoringInstance(block)) return;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      groupTablesInSection(block);
+    });
+  });
+}
+
 export default async function decorate(block) {
   const rows = [...block.children];
   if (rows.length < 2) return;
@@ -386,6 +452,7 @@ export default async function decorate(block) {
     block.append(parentTable);
     decorateNewTabLinks(parentTable);
     decorateIconInContainer(parentTable);
+    decorateTableButtons(parentTable);
     if (isAuthoring) {
       rows.slice(tableRowIndex + 1).forEach((row) => block.append(row));
     }
@@ -406,7 +473,9 @@ export default async function decorate(block) {
   block.append(parentTable);
   decorateNewTabLinks(parentTable);
   decorateIconInContainer(parentTable);
+  decorateTableButtons(parentTable);
 
   scheduleMergeTables(block, parentTable);
+  scheduleGroupTables(block, parentTable);
   scheduleResolveAdjacentNestedTables(block);
 }

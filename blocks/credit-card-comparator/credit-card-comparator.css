@@ -63,7 +63,6 @@
 }
 
 .credit-card-comparator .inner-container .button {
-  max-width: 100%;
   width: 100%;
 }
 
@@ -190,10 +189,6 @@
     white-space: normal;
   }
 
-  .credit-card-comparator .inner-container .button {
-    max-width: 8.4375rem;
-  }
-
   .credit-card-comparator .product-comparing {
     width: calc(30% - 0.5rem);
   }
@@ -216,14 +211,14 @@
     padding: 0;
     margin-bottom: 0;
   }
+
+  .credit-card-comparator .product-comparing {
+    width: auto;
+  }
   
   .credit-card-comparator .btn-primary {
     margin: 0;
     display: inline-block;
-  }
-  
-  .credit-card-comparator .inner-container .button {
-    max-width: 9.6875rem;
   }
 }
 

@@ -20,7 +20,7 @@ const MOBILE_BREAKPOINT = `(width < ${TABLET_MIN})`;
 const BENEFIT_ALIASES = {
   rewards: 'point',
   เครดิตเงินคืน: 'cash back',
-  ช็อปปิง: 'point',
+  คะแนนสะสม: 'point',
 };
 const LIFESTYLE_ALIASES = {
   ใช้จ่ายทั่วไป: 'everyday',
@@ -29,7 +29,6 @@ const LIFESTYLE_ALIASES = {
   ทำบุญ: 'donation',
   รถยนต์: 'automotive',
   ช้อปปิ้ง: 'shopping',
-  คะแนนสะสม: 'shopping',
 };
 
 // ── String / data utilities ────────────────────────────────────────────────────
@@ -81,11 +80,30 @@ function normalizeLifestyle(str) {
   return LIFESTYLE_ALIASES[n] || n;
 }
 
-function sortBySourcing(cards) {
-  return [...cards].sort((a, b) => {
-    const an = parseInt(getCardField(a, 'Sourcing', 'sourcingNumber', 'Sourcing Number', 'order') || 9999, 10);
-    const bn = parseInt(getCardField(b, 'Sourcing', 'sourcingNumber', 'Sourcing Number', 'order') || 9999, 10);
-    return an - bn;
+/**
+ * Sort the initial (unfiltered) card list to match the row order the cards are authored
+ * in the filtering-matrix sheet (top-to-bottom, drag-reorderable there) — not the
+ * Sourcing/Initial Ordering column values, since those can change independently of the
+ * author's intended display order.
+ */
+function sortBySheetOrder(rawCards, sheetCards, lang) {
+  const productNameKey = lang === 'th' ? 'Product Name (TH)' : 'Product Name (EN)';
+  const cardNameKeys = lang === 'th'
+    ? ['nameTH', 'Product Name (TH)', 'cardNameTH', 'name']
+    : ['nameEN', 'Product Name (EN)', 'name', 'cardName'];
+
+  const orderMap = {};
+  sheetCards.forEach((row, index) => {
+    const name = norm(row[productNameKey] || '');
+    if (name && !(name in orderMap)) orderMap[name] = index;
+  });
+
+  return [...rawCards].sort((a, b) => {
+    const nameA = norm(getCardField(a, ...cardNameKeys));
+    const nameB = norm(getCardField(b, ...cardNameKeys));
+    const orderA = orderMap[nameA] ?? Number.MAX_SAFE_INTEGER;
+    const orderB = orderMap[nameB] ?? Number.MAX_SAFE_INTEGER;
+    return orderA - orderB;
   });
 }
 
@@ -525,7 +543,8 @@ export default async function decorate(block) {
 
   // Fetch both data sources in parallel for initial render
   const [sheetCards, rawCards] = await Promise.all([loadSheetData(), loadCardData()]);
-  const allCards = sortBySourcing(rawCards); // used for initial (unfiltered) display
+  // used for initial (unfiltered) display
+  const allCards = sortBySheetOrder(rawCards, sheetCards, lang);
 
   const {
     cardListContainer, toggleWrap, toggleBtn,

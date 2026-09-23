@@ -54,7 +54,7 @@ main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper
     text-align: left;
   }
 
-  main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper::after {
+  main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *)::after {
     content: "\e912";
     font-family: icomoon, sans-serif;
     font-size: var(--bbl-font-size-h3-mobile);

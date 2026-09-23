@@ -54,6 +54,10 @@
   color: inherit;
 }
 
+.table table td a.button-m {
+  display: inline-flex;
+}
+
 .table td :is(p, ul) {
   text-wrap: auto;
 }
@@ -278,6 +282,11 @@
   border-bottom: none;
 }
 
+/* No Border Top — remove the top border from the first row only */
+.table table.no-border-top > :where(tbody) > tr:first-child > td {
+  border-top: none;
+}
+
 /* --------------------------------------------------------------------------
    VARIANT: BORDER BOTTOM TIGHT COLS — first two columns (specificity 0,3,4)
    -------------------------------------------------------------------------- */
@@ -370,6 +379,11 @@
   vertical-align: middle;
 }
 
+/* Cells Center Aligned (last column only) */
+.table table.cells-center-aligned-last-column > :where(tbody) > tr:not(.header-row) > td:last-child {
+  text-align: center;
+}
+
 /* --------------------------------------------------------------------------
    CURRENCY TABLE — cell padding (specificity 0,4,3)
    -------------------------------------------------------------------------- */
@@ -409,6 +423,23 @@
    -------------------------------------------------------------------------- */
 .table table table {
   margin: 0.5rem 0;
+}
+
+/* --------------------------------------------------------------------------
+   GROUP TABLES — adjacent tables sharing the "group-tables" variation are
+   wrapped (in JS) in a `.table-group-scroll` container so they scroll
+   horizontally together as one unit instead of each having its own
+   independent scrollbar.
+   -------------------------------------------------------------------------- */
+@media (width <= 64rem) {
+  .table-group-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-group-scroll .table, .accordion-item .table-group-scroll .table {
+    overflow: visible;
+  }
 }
 
 /* Scroll variant: minimum table width for horizontal overflow */
