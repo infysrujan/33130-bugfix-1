@@ -69,6 +69,10 @@
   margin-top: var(--bbl-space-300);
 }
 
+.cookie-alert-btn.button-m:is(.secondary, .primary) {
+  width: unset;
+}
+
 .cookie-alert-btn:focus-visible {
   outline: 0.125rem solid var(--bbl-color-active-blue);
   outline-offset: 0.125rem;
