@@ -403,9 +403,6 @@ function setupPanel(
     observer.observe(panel);
   }
 
-  // Reset to page 1 whenever the user navigates back to this tab. Without this,
-  // switching away mid-pagination and returning re-shows the stale page instead
-  // of starting over, since `state` (and its page) persists for the panel's lifetime.
   function resetPage() {
     if (state.page === 1) return;
     state.page = 1;
