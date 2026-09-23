@@ -7,7 +7,6 @@
 // eslint-disable-next-line import/no-cycle
 import {
   decorateMain,
-  removePictureOptimizationParams,
 } from '../../scripts/scripts.js';
 
 import {
@@ -28,7 +27,6 @@ export async function loadFragment(path) {
     if (html) {
       const main = document.createElement('main');
       main.innerHTML = html;
-      removePictureOptimizationParams(main);
 
       // reset base path for media to fragment base
       const resetAttributeBase = (tag, attr) => {
