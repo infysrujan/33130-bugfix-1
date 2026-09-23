@@ -85,6 +85,10 @@
   top: calc(100% + 1rem);
 }
 
+.news-media-tabs .tabs-content{
+  min-height: 33.563rem;
+}
+
 @media (width > 47.5rem) {
   .news-media-tabs .tabs-nav-wrapper .tabs-nav button {
     height: unset;
@@ -99,6 +103,10 @@
 }
 
 @media (width > 64rem) {
+  .news-media-tabs .tabs-content{
+    min-height: unset;
+  }
+  
   .news-media-grid {
     flex-wrap: wrap;
     overflow-x: unset;
