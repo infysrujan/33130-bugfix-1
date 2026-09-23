@@ -57,7 +57,9 @@ function isEmptyFieldValue(value) {
  */
 function applyDefaultValues(obj, defaultValue = '-') {
   return Object.fromEntries(
-    Object.entries(obj).map(([key, value]) => [key, isEmptyFieldValue(value) ? defaultValue : value]),
+    Object.entries(obj).map(
+      ([key, value]) => [key, isEmptyFieldValue(value) ? defaultValue : value],
+    ),
   );
 }
 
