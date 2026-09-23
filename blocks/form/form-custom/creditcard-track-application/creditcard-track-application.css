@@ -360,45 +360,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     max-width: none;
   }
 
-  & .form :is(
-    .button.primary:not(:disabled),
-    .button.tertiary:not(:disabled),
-    .submit-wrapper .button:not(:disabled),
-    .cc-panel-item-panel-action-primary .button:not(:disabled),
-    .cc-panel-item-panel-action .button.primary:not(:disabled)
-  ) {
-    border: 0.0625rem solid transparent;
-    background-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
-  }
-
-  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) .button:not(:disabled),
-  & .form .button.secondary {
-    border: 0.0625rem solid var(--bbl-color-active-blue);
-    background-color: var(--bbl-color-white);
-    color: var(--bbl-color-active-blue);
-  }
-
-  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) .button:not(:disabled):hover,
-  & .form .button.secondary:hover {
-    border-color: var(--bbl-color-active-blue);
-    background-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
-  }
-
-  & .form :is(
-    .button.primary:disabled,
-    .button.tertiary:disabled,
-    .submit-wrapper .button:disabled,
-    :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) .button:disabled
-  ) {
-    color: var(--bbl-color-grey-60);
-    border: 0.0625rem solid var(--bbl-color-gray-300);
-    background-color: var(--bbl-color-gray-300);
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-
   & .form form {
     display: block;
     gap: 0;
