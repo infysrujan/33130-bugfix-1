@@ -44,13 +44,36 @@ function days(endDate, startDate) {
   return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 }
 
+function isEmptyFieldValue(value) {
+  return value === null || value === undefined || (typeof value === 'string' && value.trim() === '');
+}
+
 /**
- * Removes top-level fields whose key contains "_exclude" from a payload object.
+ * Replaces empty/unfilled field values in a payload object with a default placeholder,
+ * so every field that is part of the outbound payload always carries a value.
  * @param {object} obj - The payload object
- * @returns {object} - A new object without the excluded fields
+ * @param {string} [defaultValue] - Placeholder used for empty fields
+ * @returns {object} - A new object with empty values replaced
+ */
+function applyDefaultValues(obj, defaultValue = '-') {
+  return Object.fromEntries(
+    Object.entries(obj).map(
+      ([key, value]) => [key, isEmptyFieldValue(value) ? defaultValue : value],
+    ),
+  );
+}
+
+/**
+ * Removes top-level fields whose key contains "_exclude" from a payload object, then fills
+ * any remaining empty/unfilled field with a default placeholder value.
+ * @param {object} obj - The payload object
+ * @returns {object} - A new object without the excluded fields, with empty fields defaulted
  */
 function filterExcludeFields(obj) {
-  return Object.fromEntries(Object.entries(obj).filter(([key]) => !key.includes('_exclude')));
+  const withoutExcluded = Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !key.includes('_exclude')),
+  );
+  return applyDefaultValues(withoutExcluded);
 }
 
 /**
@@ -1207,6 +1230,67 @@ function restrictNumberOnlyInputs() {
 restrictNumberOnlyInputs();
 
 /**
+ * Validates that a numeric-range field's value stays within 11–75, live,
+ * on typing (input/keyup) and on blur, targeting fields marked with the
+ * `age-range` CSS class on the input or its ancestors. Listening on
+ * multiple events guards against edge cases where a single event type
+ * doesn't fire reliably (e.g. paste, fast typing, or first interaction
+ * right after the field is dynamically inserted into the DOM).
+ *
+ * @name validateAgeRangeInputs
+ * @returns {void}
+ */
+function validateAgeRangeInputs() {
+  if (typeof document === 'undefined') return;
+
+  const MIN = 11;
+  const MAX = 75;
+  const MESSAGE = 'อายุต้องอยู่ระหว่าง 11-75 ปี';
+
+  const runCheck = (input) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+
+    const num = Number(input.value);
+    const isInvalid = input.value !== '' && (Number.isNaN(num) || num < MIN || num > MAX);
+
+    if (isInvalid) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = MESSAGE;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    const isAgeRange = input.classList.contains('age-range')
+      || input.closest('.age-range') !== null;
+    if (!isAgeRange) return;
+    runCheck(input);
+  };
+
+  ['input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+}
+validateAgeRangeInputs();
+
+/**
  * Formats a number with comma separators
  * @name formatNumberWithCommas
  * @param {string} value - The numeric value to format
@@ -1341,6 +1425,7 @@ export {
   addCsrfToken,
   addCustomHeader,
   filterExcludeFields,
+  applyDefaultValues,
   generatePayloadHash,
   fetchBranchesByProvince,
   getBranchEnum,

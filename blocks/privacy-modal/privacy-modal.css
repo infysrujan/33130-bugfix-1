@@ -140,10 +140,6 @@
   scrollbar-gutter: stable;
 }
 
-.privacy-modal-overlay.download-file-modal .privacy-modal-body {
-  max-height: unset;
-}
-
 .privacy-modal-body::-webkit-scrollbar-button {
   display: none;
 }
@@ -169,12 +165,6 @@
 
 .privacy-modal-body li {
   margin-bottom: 0.4em;
-}
-
-.privacy-modal-body strong,
-.privacy-modal-body b {
-  font-weight: 700;
-  font-family: var(--bbl-font-family-medium);
 }
 
 .privacy-modal-body a {
@@ -382,6 +372,10 @@
     width: 50rem;
     max-width: 50rem;
     border-radius: var(--bbl-rounded-050);
+  }
+
+  .download-file-modal .privacy-modal-dialog {
+    width: 46.25rem;
   }
 
   .privacy-modal-overlay {

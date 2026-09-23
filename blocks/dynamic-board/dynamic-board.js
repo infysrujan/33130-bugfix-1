@@ -300,27 +300,6 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
   state.mpToMode = 'month';
 }
 
-// ─── remarks expand/collapse (mobile only) ────────────────────────────────────
-function initRemarks(remarksEl, placeholders) {
-  const content = remarksEl.querySelector('.db-remarks-content');
-  const shadow = remarksEl.querySelector('.db-remarks-shadow');
-  const toggle = remarksEl.querySelector('.db-remarks-toggle');
-  if (!toggle) return;
-
-  const viewMore = placeholders?.dynamicBoardViewMore || 'View More';
-  const viewLess = placeholders?.dynamicBoardViewLess || 'View Less';
-  toggle.innerHTML = `<span class="db-remarks-label">${viewMore}</span><i class="icon-dropdown db-remarks-arrow" aria-hidden="true"></i>`;
-
-  let expanded = false;
-  toggle.addEventListener('click', () => {
-    expanded = !expanded;
-    content.classList.toggle('db-remarks-expanded', expanded);
-    if (shadow) shadow.hidden = expanded;
-    toggle.querySelector('.db-remarks-label').textContent = expanded ? viewLess : viewMore;
-    toggle.classList.toggle('is-expanded', expanded);
-  });
-}
-
 // ─── data loaders ─────────────────────────────────────────────────────────────
 async function loadUpdates(state) {
   try {
@@ -574,6 +553,20 @@ function printElement(block) {
   );
   if (symbolHeaderCell) symbolHeaderCell.removeAttribute('colspan');
 
+  // With a two-row header, fixed-layout tables use the header cells (not the
+  // body-cell widths) to calculate their columns. A colgroup is therefore
+  // required to guarantee the wider Name column in the print document.
+  const printTable = content.querySelector('.db-table');
+  if (printTable) {
+    const colgroup = document.createElement('colgroup');
+    [10, 30, 11, 9, 11, 9, 8, 6, 6].forEach((width) => {
+      const col = document.createElement('col');
+      col.style.width = `${width}%`;
+      colgroup.append(col);
+    });
+    printTable.prepend(colgroup);
+  }
+
   content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
 
   // Strip the authored inline bold so printCss controls font-weight instead.
@@ -588,7 +581,15 @@ function printElement(block) {
   const printLogoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img');
   const logoEl = printLogoEl
     || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+  const printLogo = logoEl?.cloneNode(true);
+  const printLogoImage = printLogo?.tagName === 'IMG' ? printLogo : printLogo?.querySelector('img');
+  // A cloned lazy image in the separate print window can be omitted from the
+  // print render. Force it to load eagerly, then wait for it below.
+  if (printLogoImage) {
+    printLogoImage.loading = 'eager';
+    printLogoImage.decoding = 'sync';
+  }
+  const brandLogo = printLogo?.outerHTML || '';
   const fallbackLogoClass = printLogoEl ? '' : ' print-logo-fallback';
 
   const pageTitle = section.querySelector('.default-content-wrapper > :is(h1, h2, h3, h4, h5, h6)')
@@ -738,6 +739,7 @@ function printElement(block) {
       min-width: 0;
 
       table-layout: fixed;
+      table-layout: fixed;
       border: 0.0625rem solid var(--bbl-color-grey-18);
       border-collapse: collapse;
       font-size: 0.625rem;
@@ -750,19 +752,11 @@ function printElement(block) {
       white-space: nowrap;
     }
 
-    .dynamic-board .db-table td.db-td-symbol,
-    .dynamic-board .db-table td.db-td-num {
-      white-space: normal;
-      overflow-wrap: break-word;
-    }
-
-    /* min-width:0 clears the base stylesheet's 12rem floor so Name can wrap. */
     .dynamic-board .db-table td.db-td-name {
       white-space: normal;
       overflow-wrap: break-word;
       word-break: break-word;
       min-width: 0;
-      width: 11rem;
     }
     /* The Name header cell should also be allowed to wrap if needed. */
     .dynamic-board .db-table thead th.db-th-name {
@@ -805,6 +799,7 @@ function printElement(block) {
       line-height: 1.2;
       min-height: 0;
       height: auto;
+      border-block-end: 0.0625rem solid var(--bbl-color-grey-20);
     }
 
     .dynamic-board .db-td-symbol {
@@ -956,10 +951,17 @@ function printElement(block) {
     })),
   );
   const waitForFonts = () => printWindow.document.fonts?.ready ?? Promise.resolve();
+  const waitForImages = () => Promise.all(
+    [...printWindow.document.images].map((image) => new Promise((resolve) => {
+      if (image.complete) { resolve(); return; }
+      image.addEventListener('load', resolve, { once: true });
+      image.addEventListener('error', resolve, { once: true });
+    })),
+  );
   const timeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
 
   Promise.race([
-    Promise.all([waitForStylesheets(), waitForFonts()]),
+    Promise.all([waitForStylesheets(), waitForFonts(), waitForImages()]),
     timeout(8000),
   ]).then(() => {
     printWindow.focus();
@@ -1040,10 +1042,6 @@ export default async function decorate(block) {
     </div>
     <div class="db-remarks" id="db-remarks">
       <div class="db-remarks-content">${authoring.remarksHtml}</div>
-      <div class="db-remarks-shadow" aria-hidden="true"></div>
-      <div class="db-remarks-controls">
-        <button type="button" class="db-remarks-toggle"></button>
-      </div>
     </div>`;
 
   [
@@ -1253,7 +1251,4 @@ export default async function decorate(block) {
 
   // ── print ──
   printBtn.addEventListener('click', () => printElement(block));
-
-  // ── remarks ──
-  initRemarks(block.querySelector('#db-remarks'), placeholders);
 }

@@ -126,9 +126,5 @@
     height: calc(15.625rem + 60 * ((100vw - 20rem) / 1600));
     min-height: calc(3.125rem + 30 * ((100vw - 20rem) / 1600));
   }
-
-  .news-media-content .listing-card-pagination {
-    margin-inline: 0.625rem;
-  }
-
 }
+

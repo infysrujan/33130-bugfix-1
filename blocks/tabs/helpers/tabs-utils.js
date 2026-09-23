@@ -25,6 +25,8 @@ export function activateTab(tabsContainer, targetIndex) {
 
   const dropdown = tabsContainer.querySelector('.tabs-dropdown select');
   if (dropdown) dropdown.selectedIndex = targetIndex;
+
+  tabsContainer.dispatchEvent(new CustomEvent('tab-activated', { detail: { index: targetIndex } }));
 }
 
 export function enableMouseDragScroll(scroller) {

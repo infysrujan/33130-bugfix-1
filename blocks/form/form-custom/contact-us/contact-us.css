@@ -123,8 +123,8 @@
         height: 2.6389rem;
     }
 
-    & .date-wrapper.field-wrapper {
-        --bbl-form-date-icon-height: 2.6389rem;
+    & .date-wrapper.field-wrapper::after {
+        top: 0;
     }
 
     /* Hour/Minute separator colon (turned on for desktop below) */
@@ -165,7 +165,11 @@
     }
 
     /* Dropdown selects */
-    & .drop-down-wrapper select {
+        & .drop-down-wrapper select:has(option:disabled:checked) {
+        color: var(--bbl-color-grey-70);
+    }
+    
+    & .drop-down-wrapper select option{
         max-width: 100%;
         height: 2.6389rem;
         overflow: hidden;
@@ -188,6 +192,10 @@
     }
 
     & fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper) > fieldset.radio-group-wrapper.radio-tabs:has(> .radio-wrapper:first-of-type input:checked) {
+        margin-bottom: var(--bbl-form-margin-15);
+    }
+
+    & fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper) > fieldset.radio-group-wrapper.radio-tabs:has(> .radio-wrapper:not(:first-of-type) input:checked) {
         margin-bottom: var(--bbl-form-margin-8);
     }
 
@@ -295,6 +303,10 @@
         text-align: center;
     }
 
+    & fieldset.panel-wrapper:has(.date-wrapper) > .plain-text-wrapper.field-note{
+        padding: 0 var(--bbl-form-padding-20);
+    }
+
     /* Modal text */
     & .modal .plain-text-wrapper p {
         font-family: var(--bbl-font-family-primary);
@@ -330,6 +342,10 @@
         margin-bottom: var(--bbl-form-margin-32);
     }
 
+    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) {
+        padding: 0 0 0 1.75rem;
+    }
+
     /* Placeholder text */
     & input::placeholder {
         font-family: var(--bbl-font-family-primary);
@@ -340,6 +356,7 @@
     /* Approval checkbox alignment */
     & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) input[type='checkbox'] {
         top: 0;
+        left:-4px;
     }
 
     /* Button panel */
