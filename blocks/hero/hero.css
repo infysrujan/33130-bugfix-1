@@ -468,9 +468,6 @@
 }
 
 .hero-banner-private-wealth-banking .hero-banner-content-group .button-container a {
-  box-sizing: border-box;
-  min-width: 9.6875rem;
-  max-width: none;
   white-space: nowrap;
 }
 
@@ -638,22 +635,6 @@
   left: 0;
   right: 0;
   color: var(--bbl-color-white);
-}
-
-:is(.hero-banner-simple) .hero-banner-content-group .button-container a {
-  min-width: 8.4375rem;
-  box-sizing: border-box;
-  width:48%;
-}
-
-.wealth .hero-banner-private-wealth-banking .hero-banner-content-group .button-container a {
-  min-width: 8.4375rem;
-  width: 8.4375rem;
-}
-
-.hero-banner-hero-with-thumbnail-images .hero-banner-content-group .button-container .button-m {
-  min-width: 8.4375rem;
-  box-sizing: border-box;
 }
 
 .hero-banner-private-wealth-banking .hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) {
@@ -852,13 +833,7 @@
   }
 
   :is(.hero-banner-simple) .hero-banner-content-group .button-container a {
-    min-width: 11.25rem;
     margin: 0;
-    width:unset;
-  }
-
-  .wealth .hero-banner-private-wealth-banking .hero-banner-content-group .button-container a {
-    width: 11.25rem;
   }
 
   .hero-banner-item.no-mobile-app-cta .hero-app-ctas {
@@ -894,10 +869,6 @@
 
   .hero-banner-content-group .button-container a {
     margin-bottom: 0;
-  }
-
-  .hero-banner-hero-with-thumbnail-images .hero-banner-content-group .button-container .button-m {
-    min-width: 9.6875rem;
   }
 
   .hero-banner-video-controls {
