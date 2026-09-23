@@ -1608,7 +1608,7 @@ a.link-inverted[aria-disabled="true"] {
 	src: url('../fonts/icomoon.woff') format('woff');
 	font-weight: normal;
 	font-style: normal;
-	font-display: block;
+	font-display: swap;
 }
 
 [class^="icon-"]::before,
