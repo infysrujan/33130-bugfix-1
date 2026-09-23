@@ -599,28 +599,17 @@ export default function decorate(block) {
         const pictureMobile = imageCellMobile?.querySelector('picture');
 
         if (pictureDesktop || pictureMobile) {
-          // Keep the published picture for the visible slide so its
-          // ?width&format&optimize sources stay the LCP request.
-          const heroPicture = i === defaultIndex
-            ? (isMobile ? pictureMobile : pictureDesktop) || pictureDesktop || pictureMobile
-            : createSmartImage(
-              pictureDesktop,
-              pictureMobile,
-              imageAlt,
-              false,
-            );
+          const heroPicture = createSmartImage(
+            pictureDesktop,
+            pictureMobile,
+            imageAlt,
+            i === defaultIndex,
+          );
           if (heroPicture) {
             const img = heroPicture.querySelector('img');
             if (img) {
               img.className = 'hero-banner-img';
-              const altText = imageAlt?.textContent?.trim();
-              if (altText) img.alt = altText;
-              if (i === defaultIndex) {
-                img.fetchPriority = 'high';
-                img.setAttribute('fetchpriority', 'high');
-                img.setAttribute('loading', 'eager');
-                img.loading = 'eager';
-              }
+              if (i === defaultIndex) img.fetchPriority = 'high';
             }
             bannerItem.append(heroPicture);
           }
