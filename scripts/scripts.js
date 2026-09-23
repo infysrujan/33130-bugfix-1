@@ -375,6 +375,7 @@ function hintLcpImage(img) {
 export function removePictureOptimizationParams(root) {
   const lcpImg = getLcpImage(root);
   root.querySelectorAll('picture').forEach((picture) => {
+    if (picture.closest('.hero')) return;
     if (lcpImg && picture.contains(lcpImg)) return;
     picture.querySelectorAll('source[srcset]').forEach((source) => {
       source.setAttribute('srcset', stripSrcsetOptimizationParams(source.getAttribute('srcset')));
@@ -385,11 +386,24 @@ export function removePictureOptimizationParams(root) {
   });
 }
 
+function mainHasTabs(main) {
+  if (!main) return false;
+  return [...main.querySelectorAll('div.section-metadata > div > div:first-child')]
+    .some((cell) => toClassName(cell.textContent) === 'tab-name');
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
+// function startHeroBlock() {
+//   const base = window.hlx?.codeBasePath || '';
+//   loadCSS(`${base}/blocks/hero/hero.css`);
+//   import(`${base}/blocks/hero/hero.js`).catch(() => {});
+// }
+
 async function loadEager(doc) {
+  // if (doc.querySelector('.hero')) startHeroBlock();
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   hintLcpImage(getLcpImage(doc));
   removePictureOptimizationParams(doc);
@@ -397,7 +411,9 @@ async function loadEager(doc) {
   decorateOgTitle();
   decorateOgImage();
   const main = doc.querySelector('main');
-  ({ default: decorateTabs } = await import('../blocks/tabs/tabs-helper.js'));
+  if (mainHasTabs(main)) {
+    ({ default: decorateTabs } = await import('../blocks/tabs/tabs-helper.js'));
+  }
   if (main) {
     decorateMain(main);
     promoteFirstImage(main);
