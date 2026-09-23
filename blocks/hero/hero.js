@@ -609,17 +609,29 @@ export default async function decorate(block) {
       const pictureMobile = imageCellMobile?.querySelector('picture');
 
       if (pictureDesktop || pictureMobile) {
-        const heroPicture = createSmartImage(
-          pictureDesktop,
-          pictureMobile,
-          imageAlt,
-          i === defaultIndex,
-        );
+        let heroPicture;
+        if (i === defaultIndex) {
+          heroPicture = (isMobile ? pictureMobile : pictureDesktop)
+            || pictureDesktop
+            || pictureMobile;
+        } else {
+          heroPicture = createSmartImage(
+            pictureDesktop,
+            pictureMobile,
+            imageAlt,
+            false,
+          );
+        }
         if (heroPicture) {
           const img = heroPicture.querySelector('img');
           if (img) {
             img.className = 'hero-banner-img';
-            if (i === defaultIndex) img.fetchPriority = 'high';
+            if (i === defaultIndex) {
+              img.fetchPriority = 'high';
+              img.setAttribute('fetchpriority', 'high');
+              img.setAttribute('loading', 'eager');
+              img.loading = 'eager';
+            }
           }
           bannerItem.append(heroPicture);
         }

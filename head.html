@@ -12,6 +12,27 @@
 <link rel="preload" as="script" crossorigin="anonymous" nonce="aem" href="/plugins/martech/src/index.js"/>
 <link rel="preload" as="script" crossorigin="anonymous" nonce="aem" href="/plugins/martech/src/alloy.min.js"/>
 
-<script nonce="aem" src="/scripts/gtm-martech.js" type="module"></script>
+<script nonce="aem">
+  (() => {
+    if (new URLSearchParams(window.location.search).has('martech')) {
+      return;
+    }
+
+    const loadMartech = () => {
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = '/scripts/gtm-martech.js';
+      script.nonce = 'aem';
+
+      document.head.appendChild(script);
+    };
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadMartech, { timeout: 2000 });
+    } else {
+      setTimeout(loadMartech, 1000);
+    }
+  })();
+</script>
 <link rel="preload" as="script" crossorigin="anonymous" nonce="aem" href="/plugins/gtm-martech/src/index.js"/>
 <link rel="preconnect" href="https://www.googletagmanager.com"/>

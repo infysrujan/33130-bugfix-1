@@ -164,10 +164,16 @@ export default function decorate(block) {
   const track = document.createElement('div');
   track.className = 'header-banner-slide-track';
 
-  slideItems.forEach((item) => {
+  slideItems.forEach((item, i) => {
     const [imageCell] = item.children || [];
     const picture = imageCell?.querySelector('picture');
     const img = imageCell?.querySelector('img');
+    if (img) {
+      if (i < 4) {
+        img.loading = 'eager';
+        img.setAttribute('fetchpriority', 'high');
+      }
+    }
 
     const cardItem = document.createElement('div');
     cardItem.className = 'header-banner-slide-item';

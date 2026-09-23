@@ -10,6 +10,7 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  promoteFirstImage,
   getMetadata,
   toClassName,
 } from './aem.js';
@@ -28,28 +29,25 @@ import initRteAnchors, { decorateIconInContainer, decorateNewTabLinks, decorateE
 
 import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
-/**
- * Import the martech plugin.
- * See: https://github.com/adobe-rnd/aem-martech#launch-container-configuration for more information.
- */
-/* eslint-disable import/no-relative-packages -- martech lives under plugins/, not node_modules */
-import {
-  initMartech,
-  martechEager,
-  martechLazy,
-  martechDelayed,
-} from '../plugins/martech/src/index.js';
-/* eslint-enable import/no-relative-packages */
 
-/**
- * Import the gtm-martech plugin.
- * See: https://github.com/adobe-rnd/aem-gtm-martech#launch-container-configuration for more information.
- */
-import gtmMartech from './gtm-martech.js';
-import { initCdpEvents } from './analytics.js';
-import { initMarketingConsentListener } from './consent.js';
+let martech;
+let gtmMartech;
+let initCdpEvents;
 
-initMarketingConsentListener();
+async function loadMarketingModules() {
+  const [martechModule, gtmModule, analyticsModule, consentModule] = await Promise.all([
+    // eslint-disable-next-line import/no-relative-packages
+    import('../plugins/martech/src/index.js'),
+    import('./gtm-martech.js'),
+    import('./analytics.js'),
+    import('./consent.js'),
+  ]);
+
+  martech = martechModule;
+  gtmMartech = gtmModule.default;
+  ({ initCdpEvents } = analyticsModule);
+  consentModule.initMarketingConsentListener();
+}
 
 // Consent when AnalysisCookie is 'Analysis' (cookie-modal / cookie-alert).
 // Load martech unless the URL query includes martech=off (DA preview).
@@ -135,7 +133,6 @@ export function createElementFromHTML(html, doc) {
   template.innerHTML = html.trim();
   return template.content.firstElementChild;
 }
-
 /**
  * load fonts.css and set a session storage flag
  */
@@ -163,10 +160,6 @@ function buildAutoBlocks(main) {
   }
 }
 
-/**
- * Decorates the main element.
- * @param {Element} main The main element
- */
 function decorateSectionIds(main) {
   main.querySelectorAll('.section[data-id]').forEach((section) => {
     section.id = toClassName(section.dataset.id);
@@ -174,9 +167,12 @@ function decorateSectionIds(main) {
   });
 }
 
+/**
+ * Decorates the main element.
+ * @param {Element} main The container element
+ */
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
-  // hopefully forward compatible button decoration
   decorateButtons(main);
   decorateIcons(main);
   buildAutoBlocks(main);
@@ -338,11 +334,43 @@ function stripSrcsetOptimizationParams(srcset) {
 }
 
 /**
+ * Viewport LCP image (hero mobile/desktop of the default slide).
+ * @param {Document|Element} root
+ * @returns {HTMLImageElement|null}
+ */
+function getLcpImage(root) {
+  const main = root.querySelector?.('main')
+    || (root.matches?.('main') ? root : null)
+    || root;
+  const isMobile = window.matchMedia('(width <= 47.5rem)').matches;
+  const hero = main.querySelector?.('.hero');
+  if (hero) {
+    const rows = [...hero.children].slice(1, 8);
+    const defaultRow = rows.find((row) => row.children[1]?.textContent?.trim() === 'true') || rows[0];
+    const pictures = defaultRow?.querySelectorAll('picture') || [];
+    const picture = (isMobile ? pictures[1] : pictures[0]) || pictures[0] || pictures[1];
+    const img = picture?.querySelector('img');
+    if (img) return img;
+  }
+  return main.querySelector?.('img') || null;
+}
+
+function hintLcpImage(img) {
+  if (!img) return;
+  img.fetchPriority = 'high';
+  img.setAttribute('fetchpriority', 'high');
+  img.setAttribute('loading', 'eager');
+  img.loading = 'eager';
+}
+
+/**
  * Remove optimization params from all picture source/img URLs in the document.
  * @param {Document|Element} root
  */
 export function removePictureOptimizationParams(root) {
+  const lcpImg = getLcpImage(root);
   root.querySelectorAll('picture').forEach((picture) => {
+    if (lcpImg && picture.contains(lcpImg)) return;
     picture.querySelectorAll('source[srcset]').forEach((source) => {
       source.setAttribute('srcset', stripSrcsetOptimizationParams(source.getAttribute('srcset')));
     });
@@ -357,33 +385,8 @@ export function removePictureOptimizationParams(root) {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  const martechLoadedPromise = initMartech(
-    // WebSDK Configuration
-    // TODO: Remove the below comment once the WebSDK Configuration is updated.
-    // Docs: https://experienceleague.adobe.com/en/docs/experience-platform/web-sdk/commands/configure/overview#configure-js
-    {
-      datastreamId: dataStreamConfig[env],
-      orgId,
-      edgeDomain: 'edge.bangkokbank.com',
-      onBeforeEventSend: (payload) => {
-        if (payload.xdm.eventType === 'pageLoaded') {
-          // eslint-disable-next-line no-console
-          console.debug('Prevented custom `pageLoaded` event trigger', payload);
-          return false;
-        }
-        return true;
-      },
-    },
-    // 2. Library Configuration
-    {
-      analytics: isEnabled,
-      personalization: !!getMetadata('target') && isEnabled,
-      launchUrls: launchConfig[env],
-      trackPageView: false, // disables the first collect call
-    },
-  );
-
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
+  hintLcpImage(getLcpImage(doc));
   removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
   decorateOgTitle();
@@ -391,12 +394,9 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    promoteFirstImage(main);
     document.body.classList.add('appear');
     await Promise.all([
-      // Load the martech library in the eager phase.
-      martechLoadedPromise.then(martechEager),
-      // Load the gtm-martech library in the eager phase.
-      gtmMartech.eager(),
       loadSection(main.querySelector('.section'), waitForFirstImage),
       loadWelcomeBanner(doc),
     ]);
@@ -417,6 +417,14 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  const themeStyles = `${window.hlx.codeBasePath}/styles`;
+  [
+    'theme-wealth.css',
+    'theme-private.css',
+    'theme-bbm.css',
+    'theme-global-section.css',
+  ].forEach((file) => loadCSS(`${themeStyles}/${file}`));
+
   const disabledSections = new Set(
     getMetadata('disable-sections', doc)
       .split(',')
@@ -430,9 +438,43 @@ async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
 
-  // Load the gtm-martech library in the lazy phase.
-  await gtmMartech.lazy();
-  await buildCookieAlert(main);
+  if (!isEnabled) {
+    await buildCookieAlert(main);
+    // Keep the page rendering flow intact, but skip martech/third-party loading.
+    // Remaining non-marketing work continues below.
+  } else {
+    await loadMarketingModules();
+    const martechLoadedPromise = martech.initMartech(
+      {
+        datastreamId: dataStreamConfig[env],
+        orgId,
+        edgeDomain: 'edge.bangkokbank.com',
+        onBeforeEventSend: (payload) => {
+          if (payload.xdm.eventType === 'pageLoaded') {
+            // eslint-disable-next-line no-console
+            console.debug('Prevented custom `pageLoaded` event trigger', payload);
+            return false;
+          }
+          return true;
+        },
+      },
+      {
+        analytics: isEnabled,
+        personalization: !!getMetadata('target') && isEnabled,
+        launchUrls: launchConfig[env],
+        trackPageView: false,
+      },
+    );
+
+    await Promise.all([
+      martechLoadedPromise.then(martech.martechEager),
+      gtmMartech.eager(),
+    ]);
+
+    // Load the gtm-martech library in the lazy phase.
+    await gtmMartech.lazy();
+    await buildCookieAlert(main);
+  }
 
   // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
   decorateButtonsV1(main);
@@ -440,14 +482,18 @@ async function loadLazy(doc) {
 
   initRteAnchors(main, doc);
   decorateIconInContainer(main);
+  const firstBlock = main?.querySelector('div.block');
+  if (firstBlock) promoteFirstImage(firstBlock);
+  promoteFirstImage(main);
   decorateNewTabLinks(main);
 
   if (!disabledSections.has('footer')) {
     loadFooter(doc.querySelector('footer'));
   }
-
-  // Load the martech library in the lazy phase.
-  await martechLazy();
+  if (isEnabled) {
+    // Load the martech library in the lazy phase.
+    await martech.martechLazy();
+  }
 
   await loadBreadcrumb(doc);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
@@ -474,13 +520,14 @@ async function bblMartechDelayed() {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  if (!isEnabled) return;
   // load the gtm-martech library in the delayed phase
-  window.setTimeout(() => gtmMartech.delayed(), 1000);
+  window.setTimeout(() => gtmMartech?.delayed(), 1000);
 
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => {
     // Load the martech library in the delayed phase.
-    martechDelayed();
+    martech?.martechDelayed();
     // trigger the martech delayed phase
     bblMartechDelayed();
 
