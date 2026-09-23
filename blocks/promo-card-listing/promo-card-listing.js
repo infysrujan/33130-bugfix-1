@@ -339,7 +339,7 @@ function setupPanel(
     }, state.page, pageSize, isHighlightsPanel);
 
     gridEl.innerHTML = cards.length
-      ? cards.map((c) => {
+      ? cards.map((c, i) => {
         let cardData = c;
         if (isBbmPanel && queryLang && c.ctaLink) {
           try {
@@ -354,6 +354,7 @@ function setupPanel(
         }
         const cardOptions = buildCardOptions(cardData);
         cardOptions.baseUrl = options.baseUrl;
+        cardOptions.eager = i < 4;
         if (isBbmPanel) cardOptions.logoHtml = '';
         return buildCardHtml(cardData, displayTabText, placeholders, cardOptions);
       }).join('')

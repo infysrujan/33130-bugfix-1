@@ -42,11 +42,11 @@ async function renderLatestNews(block) {
   grid.className = 'news-media-grid';
 
   grid.innerHTML = latest.length
-    ? latest.map((c) => {
+    ? latest.map((c, i) => {
       const ctaLink = c.ctaLink && c.aboutUsId ? `${c.ctaLink}?ID=${c.aboutUsId}` : (c.ctaLink || '');
       const normalized = { ...c, ctaLink };
       const dateLine = formatDate(c.publishDate, locale);
-      return buildCardHtml(normalized, '', placeholders, { dateLine });
+      return buildCardHtml(normalized, '', placeholders, { dateLine, eager: i < 4 });
     }).join('')
     : `<p class="listing-card-empty">${placeholders.newsMediaNoResults || 'No results found.'}</p>`;
 
