@@ -889,7 +889,7 @@
 
 .dynamic-board .db-no-results {
   padding: var(--bbl-space-400) var(--bbl-space-200);
-  text-align: center;
+  text-align: left;
   color: var(--bbl-color-grey-40);
 }
 
@@ -992,6 +992,10 @@
   .dynamic-board .db-filter-reset {
     flex: 0 0 11.5625rem;
     width: 11.5625rem;
+  }
+
+  .dynamic-board .db-no-results {
+    text-align: center;
   }
 
 }
