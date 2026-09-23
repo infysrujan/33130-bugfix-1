@@ -1,134 +1,191 @@
-/* Thai Buddhist Era date picker — form-integrated component */
-const BE_OFFSET = 543;
-const MONTHS_TH = [
-  'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-  'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม',
-];
+/* eslint-env browser */
+
+import { BE_OFFSET, MONTHS_TH, MONTHS_EN } from '../../../../scripts/utils/datelang.js';
+
+/* ── Locale data ─────────────────────────────────────────────────────────── */
+
+// Calendar header always renders in Thai
 const WEEKDAYS_TH = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+
+/* ── Formatting ──────────────────────────────────────────────────────────── */
+
 /**
- * Parse a yyyy-MM-dd string as a LOCAL midnight Date.
- * Using new Date("yyyy-MM-dd") would give UTC midnight, which in UTC+7
- * falls on the previous calendar day — causing min/max comparisons to
- * incorrectly disable the boundary date itself.
+ * Returns the display string for the selected date in the input field.
+ * TH: "1 มกราคม 2569"   (day + full Thai month + Buddhist Era year)
+ * EN: "January 1, 2026" (full English month + day + comma + AD year)
  */
-function parseISODate(str) {
-  const m = String(str || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (!m) return null;
-  const d = new Date(+m[1], +m[2] - 1, +m[3]);
-  return Number.isNaN(d.getTime()) ? null : d;
+function formatDisplayDate(date, lang) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
+  const d = date.getDate();
+  if (lang === 'th') {
+    return `${d} ${MONTHS_TH[date.getMonth()]} ${date.getFullYear() + BE_OFFSET}`;
+  }
+  return `${MONTHS_EN[date.getMonth()]} ${d}, ${date.getFullYear()}`;
 }
-function toISODate(d) {
-  const y = d.getFullYear();
-  const mo = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${mo}-${day}`;
+
+/** Returns "มกราคม 2569" style header — always Thai/BE regardless of page language. */
+function formatMonthHeader(year, monthIndex) {
+  return `${MONTHS_TH[monthIndex]} ${year + BE_OFFSET}`;
 }
+
+/* ── Date helpers ────────────────────────────────────────────────────────── */
+
 function startOfDay(d) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
   return x;
 }
+
 function sameDay(a, b) {
   return a.getFullYear() === b.getFullYear()
     && a.getMonth() === b.getMonth()
     && a.getDate() === b.getDate();
 }
-function formatDisplay(date) {
-  return `${date.getDate()} ${MONTHS_TH[date.getMonth()]} ${date.getFullYear() + BE_OFFSET}`;
+
+/* ── Block config ────────────────────────────────────────────────────────── */
+
+function parseBlockConfig(block) {
+  const config = {};
+  block.querySelectorAll(':scope > div').forEach((row) => {
+    const cells = [...row.querySelectorAll(':scope > div')];
+    if (cells.length < 2) return;
+    const key = cells[0].textContent.trim().toLowerCase().replace(/\s+/g, '-');
+    config[key] = cells[1].textContent.trim();
+  });
+  return config;
 }
-function formatHeader(year, month) {
-  return `${MONTHS_TH[month]} ${year + BE_OFFSET}`;
+
+function parseConfigDate(str) {
+  if (!str) return null;
+  const d = new Date(str);
+  return Number.isNaN(d.getTime()) ? null : d;
 }
 
-let uid = 0;
+function getDisplayLang() {
+  const raw = (document.documentElement.lang || 'en').toLowerCase().trim();
+  return (raw === 'th' || raw.startsWith('th-')) ? 'th' : 'en';
+}
 
-export default function decorate(element, fd) {
-  /* inputDecorator (which runs before us) sets input.id = fd.id.
-     If displayFormat is configured it also changes input.type from "date" to "text",
-     so we cannot rely on [type="date"] — use the field id instead. */
-  const nativeInput = element.querySelector(`#${fd.id}`) || element.querySelector('input');
-  if (!nativeInput) return;
+/* ── Popover positioning ─────────────────────────────────────────────────── */
 
-  /* The calendar dialog model stores min/max as "minimumDate"/"maximumDate" with
-     valueFormat "YYYY-MM-DD[T]HH:mm:ss.000-00:00". Non-standard field names land
-     under fd.properties.*; standard AEM Forms constraints are fd.minimum/fd.maximum.
-     Always parse as local time — new Date("yyyy-MM-dd") returns UTC midnight which
-     in UTC+7 shifts the boundary date by one day, incorrectly disabling it. */
-  function getMin() {
-    return parseISODate(
-      fd.minimum
-      || fd.minimumDate
-      || fd.properties?.minimumDate
-      || nativeInput.getAttribute('min'),
-    );
-  }
-  function getMax() {
-    return parseISODate(
-      fd.maximum
-      || fd.maximumDate
-      || fd.properties?.maximumDate
-      || nativeInput.getAttribute('max'),
-    );
-  }
-  const initialDate = parseISODate(fd.value || nativeInput.value);
-  uid += 1;
-  const displayId = `cal-th-${uid}`;
-  /* Hide native input but keep it in the DOM for form submission and validation */
-  nativeInput.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none';
-  nativeInput.setAttribute('tabindex', '-1');
-  /* Display text input */
-  const displayInput = document.createElement('input');
-  displayInput.type = 'text';
-  displayInput.id = displayId;
-  displayInput.className = 'cal-th-input';
-  displayInput.readOnly = true;
-  displayInput.placeholder = 'วว เดือน ปปปป';
-  displayInput.setAttribute('aria-haspopup', 'dialog');
-  displayInput.setAttribute('aria-expanded', 'false');
-  if (nativeInput.disabled) displayInput.disabled = true;
-  /* Point existing label at the display input */
-  const label = element.querySelector('label');
-  if (label) label.htmlFor = displayId;
-  /* Calendar icon trigger */
-  const iconBtn = document.createElement('button');
-  iconBtn.type = 'button';
-  iconBtn.className = 'cal-th-icon icon-calendar';
-  iconBtn.setAttribute('aria-hidden', 'true');
-  iconBtn.tabIndex = -1;
-  const fieldRow = document.createElement('div');
-  fieldRow.className = 'cal-th-field';
-  fieldRow.append(displayInput, iconBtn);
-  nativeInput.insertAdjacentElement('afterend', fieldRow);
-  /* Popover */
+function positionPopover(trigger, popover) {
+  const rect = trigger.getBoundingClientRect();
+  const margin = 8;
+  let top = rect.bottom + margin;
+  // eslint-disable-next-line prefer-destructuring
+  let left = rect.left;
+
+  popover.style.visibility = 'hidden';
+  popover.style.top = `${top}px`;
+  popover.style.left = `${left}px`;
+
+  requestAnimationFrame(() => {
+    const pw = popover.offsetWidth;
+    const ph = popover.offsetHeight;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    if (left + pw > vw - margin) left = Math.max(margin, vw - margin - pw);
+    if (top + ph > vh - margin && rect.top - margin - ph > margin) {
+      top = rect.top - margin - ph;
+    }
+
+    popover.style.top = `${top}px`;
+    popover.style.left = `${left}px`;
+    popover.style.visibility = '';
+  });
+}
+
+/* ── Counter for unique IDs ──────────────────────────────────────────────── */
+
+let instanceCount = 0;
+
+/* ── Main decorate ───────────────────────────────────────────────────────── */
+
+export default function decorate(block) {
+  const config = parseBlockConfig(block);
+  const lang = getDisplayLang();
+
+  instanceCount += 1;
+  const inputId = `dpth-input-${instanceCount}`;
+
+  const labelText = config.label || (lang === 'th' ? 'เลือกวันที่' : 'Select date');
+  const placeholder = config.placeholder || (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
+  const fieldName = config.name || 'date';
+  // Dialog stores field as "minimumDate" / "maximumDate"; parseBlockConfig lowercases
+  // and replaces spaces with dashes, so try both label-based and property-name-based keys.
+  const minDate = parseConfigDate(config['minimum-date'] || config.minimumdate || config['min-date']);
+  const maxDate = parseConfigDate(config['maximum-date'] || config.maximumdate || config['max-date']) || null;
+  const initialDate = parseConfigDate(config.value);
+
+  /* ── Build DOM ── */
+  block.innerHTML = '';
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'dpth-wrapper';
+
+  const labelEl = document.createElement('label');
+  labelEl.className = 'dpth-label';
+  labelEl.htmlFor = inputId;
+  labelEl.textContent = labelText;
+
+  const fieldEl = document.createElement('div');
+  fieldEl.className = 'dpth-field';
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.id = inputId;
+  input.className = 'dpth-input';
+  input.placeholder = placeholder;
+  input.readOnly = true;
+  input.setAttribute('aria-label', labelText);
+  input.setAttribute('aria-haspopup', 'dialog');
+  input.setAttribute('aria-expanded', 'false');
+  input.setAttribute('autocomplete', 'off');
+  input.setAttribute('tabindex', '0');
+
+  const calIcon = document.createElement('span');
+  calIcon.className = 'dpth-icon icon-calendar';
+  calIcon.setAttribute('aria-hidden', 'true');
+
+  const hiddenInput = document.createElement('input');
+  hiddenInput.type = 'hidden';
+  hiddenInput.name = fieldName;
+
+  fieldEl.append(input, calIcon);
+  wrapper.append(labelEl, fieldEl, hiddenInput);
+  block.append(wrapper);
+
+  /* ── Build popover ── */
   const popover = document.createElement('div');
-  popover.className = 'cal-th-popover';
+  popover.className = 'dpth-popover';
   popover.setAttribute('role', 'dialog');
   popover.setAttribute('aria-modal', 'true');
-  popover.setAttribute('aria-label', 'ปฏิทิน');
+  popover.setAttribute('aria-label', lang === 'th' ? 'ปฏิทิน' : 'Calendar');
   popover.hidden = true;
 
   const popHeader = document.createElement('div');
-  popHeader.className = 'cal-th-header';
+  popHeader.className = 'dpth-header';
 
   const btnPrev = document.createElement('button');
   btnPrev.type = 'button';
-  btnPrev.className = 'cal-th-nav';
-  btnPrev.setAttribute('aria-label', 'เดือนก่อนหน้า');
+  btnPrev.className = 'dpth-nav';
+  btnPrev.setAttribute('aria-label', lang === 'th' ? 'เดือนก่อนหน้า' : 'Previous month');
   btnPrev.innerHTML = '<span aria-hidden="true">&#8249;</span>';
 
   const monthTitle = document.createElement('h2');
-  monthTitle.className = 'cal-th-month-title';
+  monthTitle.className = 'dpth-month-title';
 
   const btnNext = document.createElement('button');
   btnNext.type = 'button';
-  btnNext.className = 'cal-th-nav';
-  btnNext.setAttribute('aria-label', 'เดือนถัดไป');
+  btnNext.className = 'dpth-nav';
+  btnNext.setAttribute('aria-label', lang === 'th' ? 'เดือนถัดไป' : 'Next month');
   btnNext.innerHTML = '<span aria-hidden="true">&#8250;</span>';
 
   popHeader.append(btnPrev, monthTitle, btnNext);
 
   const weekRow = document.createElement('div');
-  weekRow.className = 'cal-th-weekdays';
+  weekRow.className = 'dpth-weekdays';
   WEEKDAYS_TH.forEach((day) => {
     const span = document.createElement('span');
     span.textContent = day;
@@ -136,149 +193,211 @@ export default function decorate(element, fd) {
   });
 
   const grid = document.createElement('div');
-  grid.className = 'cal-th-grid';
+  grid.className = 'dpth-grid';
   grid.setAttribute('role', 'grid');
 
   popover.append(popHeader, weekRow, grid);
   document.body.append(popover);
 
-  /* State */
+  /* ── State ── */
   let selected = initialDate ? startOfDay(initialDate) : null;
   let viewYear = (selected || new Date()).getFullYear();
   let viewMonth = (selected || new Date()).getMonth();
   let isOpen = false;
 
-  function positionPopover() {
-    const rect = fieldRow.getBoundingClientRect();
-    const margin = 8;
-    let top = rect.bottom + window.scrollY + margin;
-    let left = rect.left + window.scrollX;
-    popover.style.visibility = 'hidden';
-    popover.style.top = `${top}px`;
-    popover.style.left = `${left}px`;
-    requestAnimationFrame(() => {
-      const pw = popover.offsetWidth;
-      const ph = popover.offsetHeight;
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      if (left + pw > vw - margin) left = Math.max(margin, vw - margin - pw);
-      if (rect.bottom + ph > vh - margin && rect.top - margin - ph > 0) {
-        top = rect.top + window.scrollY - margin - ph;
-      }
-      popover.style.top = `${top}px`;
-      popover.style.left = `${left}px`;
-      popover.style.visibility = '';
-    });
-  }
+  /* ── Render calendar grid ── */
   function renderGrid() {
     grid.replaceChildren();
-    monthTitle.textContent = formatHeader(viewYear, viewMonth);
-    const minDate = getMin();
-    const maxDate = getMax();
-    /* Disable prev nav if we're at or before the min month */
-    if (minDate) {
-      btnPrev.disabled = viewYear < minDate.getFullYear()
-        || (viewYear === minDate.getFullYear() && viewMonth <= minDate.getMonth());
-    } else {
-      btnPrev.disabled = false;
-    }
-    /* Disable next nav if we're at or after the max month */
-    if (maxDate) {
-      btnNext.disabled = viewYear > maxDate.getFullYear()
-        || (viewYear === maxDate.getFullYear() && viewMonth >= maxDate.getMonth());
-    } else {
-      btnNext.disabled = false;
-    }
-    const firstDow = new Date(viewYear, viewMonth, 1).getDay();
+    monthTitle.textContent = formatMonthHeader(viewYear, viewMonth);
+
+    // Disable Prev when the entire previous month is before minDate
+    const prevMonthLast = new Date(viewYear, viewMonth, 0);
+    btnPrev.disabled = !!(minDate && startOfDay(prevMonthLast) < startOfDay(minDate));
+
+    // Disable Next when the first day of next month is after maxDate
+    const nextMonthFirst = new Date(viewYear, viewMonth + 1, 1);
+    btnNext.disabled = !!(maxDate && startOfDay(nextMonthFirst) > startOfDay(maxDate));
+
+    const firstDayOfWeek = new Date(viewYear, viewMonth, 1).getDay();
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-    for (let i = 0; i < firstDow; i += 1) {
+
+    for (let i = 0; i < firstDayOfWeek; i += 1) {
       const empty = document.createElement('div');
-      empty.className = 'cal-th-day cal-th-day--empty';
+      empty.className = 'dpth-day dpth-day--empty';
       empty.setAttribute('aria-hidden', 'true');
       grid.append(empty);
     }
+
     for (let day = 1; day <= daysInMonth; day += 1) {
       const cellDate = startOfDay(new Date(viewYear, viewMonth, day));
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'cal-th-day';
+      btn.className = 'dpth-day';
       btn.textContent = String(day);
       btn.setAttribute('role', 'gridcell');
       btn.dataset.day = String(day);
-      /* Compare local-midnight cell against local-midnight min/max — no UTC skew */
-      btn.disabled = (minDate && cellDate < minDate) || (maxDate && cellDate > maxDate);
+
+      const disabled = (minDate && cellDate < minDate) || (maxDate && cellDate > maxDate);
+      btn.disabled = disabled;
+
       if (selected && sameDay(cellDate, selected)) {
-        btn.classList.add('cal-th-day--selected');
+        btn.classList.add('dpth-day--selected');
         btn.setAttribute('aria-pressed', 'true');
       }
+
       grid.append(btn);
     }
   }
+
+  /* ── Commit a chosen day ── */
   function commitDay(day) {
     selected = startOfDay(new Date(viewYear, viewMonth, day));
-    displayInput.value = formatDisplay(selected);
-    nativeInput.value = toISODate(selected);
-    /* Fire events so the AFB rules engine and form validation pick up the change */
-    nativeInput.dispatchEvent(new Event('input', { bubbles: true }));
-    nativeInput.dispatchEvent(new Event('change', { bubbles: true }));
+    input.value = formatDisplayDate(selected, lang);
+    const [datePart] = selected.toISOString().split('T');
+    hiddenInput.value = datePart;
+    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
     renderGrid();
   }
+  /* ── Open / close ── */
   function openPopover() {
     isOpen = true;
-    if (selected) { viewYear = selected.getFullYear(); viewMonth = selected.getMonth(); }
-    displayInput.setAttribute('aria-expanded', 'true');
+    if (selected) {
+      viewYear = selected.getFullYear();
+      viewMonth = selected.getMonth();
+    }
+    input.setAttribute('aria-expanded', 'true');
     popover.hidden = false;
     renderGrid();
-    positionPopover();
+    positionPopover(fieldEl, popover);
   }
+
   function closePopover() {
     if (!isOpen) return;
     isOpen = false;
-    displayInput.setAttribute('aria-expanded', 'false');
+    input.setAttribute('aria-expanded', 'false');
     popover.hidden = true;
   }
+
+  /* ── Shift month ── */
   function shiftMonth(delta) {
     const d = new Date(viewYear, viewMonth + delta, 1);
     viewYear = d.getFullYear();
     viewMonth = d.getMonth();
     renderGrid();
   }
-  /* Event wiring */
+
+  /* ── Event wiring ── */
   grid.addEventListener('click', (e) => {
-    const btn = e.target.closest('button.cal-th-day');
+    const btn = e.target.closest('button.dpth-day');
     if (!btn || btn.disabled) return;
     commitDay(Number.parseInt(btn.dataset.day, 10));
     closePopover();
+    input.focus();
   });
+
+  // Keyboard: Enter/Space selects the focused day button inside the grid
+  grid.addEventListener('keydown', (e) => {
+    const btn = document.activeElement;
+    if (!btn || !btn.classList.contains('dpth-day') || btn.disabled) return;
+
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      commitDay(Number.parseInt(btn.dataset.day, 10));
+      closePopover();
+      input.focus();
+      return;
+    }
+
+    // Arrow key navigation within the grid
+    const days = [...grid.querySelectorAll('button.dpth-day:not([disabled])')]
+      .filter((b) => !b.classList.contains('dpth-day--empty'));
+    const idx = days.indexOf(btn);
+    let next = -1;
+    if (e.key === 'ArrowRight') next = idx + 1;
+    else if (e.key === 'ArrowLeft') next = idx - 1;
+    else if (e.key === 'ArrowDown') next = idx + 7;
+    else if (e.key === 'ArrowUp') next = idx - 7;
+    if (next >= 0 && next < days.length) {
+      e.preventDefault();
+      days[next].focus();
+    }
+  });
+
   btnPrev.addEventListener('click', (e) => { e.stopPropagation(); shiftMonth(-1); });
   btnNext.addEventListener('click', (e) => { e.stopPropagation(); shiftMonth(+1); });
-  fieldRow.addEventListener('click', (e) => {
+
+  // Keyboard: Enter/Space on the trigger opens/closes the popover
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (isOpen) closePopover(); else openPopover();
+    }
+  });
+
+  fieldEl.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (displayInput.disabled) return;
     if (isOpen) closePopover(); else openPopover();
   });
+
   document.addEventListener('click', (e) => {
     if (!isOpen) return;
-    if (!popover.contains(e.target) && !fieldRow.contains(e.target)) closePopover();
+    if (!popover.contains(e.target) && !fieldEl.contains(e.target)) closePopover();
   });
+
+  // Focus trap inside the dialog — Tab/Shift+Tab wraps within popover focusable elements
+  popover.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.stopPropagation(); closePopover(); input.focus(); return; }
+    if (e.key !== 'Tab') return;
+    const focusable = [...popover.querySelectorAll('button:not([disabled])')];
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  });
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen) { e.stopPropagation(); closePopover(); }
+    if (e.key === 'Escape' && isOpen) { e.stopPropagation(); closePopover(); input.focus(); }
   });
-  const onResize = () => { if (isOpen) positionPopover(); };
-  window.addEventListener('resize', onResize);
-  window.addEventListener('scroll', onResize, true);
-  /* Watch for dynamic min/max updates from the form rules engine */
-  new MutationObserver(() => { if (isOpen) renderGrid(); }).observe(nativeInput, {
-    attributes: true,
-    attributeFilter: ['min', 'max'],
-  });
-  /* Watch for disabled state changes from the form rules engine */
-  new MutationObserver(() => {
-    displayInput.disabled = nativeInput.disabled;
-  }).observe(nativeInput, {
-    attributes: true,
-    attributeFilter: ['disabled'],
-  });
-  /* Set initial display value */
-  if (selected) displayInput.value = formatDisplay(selected);
+
+  const onReposition = () => { if (isOpen) positionPopover(fieldEl, popover); };
+  window.addEventListener('resize', onReposition);
+  window.addEventListener('scroll', onReposition, true);
+
+  /* ── Set initial display value ── */
+  if (selected) {
+    input.value = formatDisplayDate(selected, lang);
+    const [datePart] = selected.toISOString().split('T');
+    hiddenInput.value = datePart;
+  }
+
+  /* ── Public API ── */
+  return {
+    open: openPopover,
+    close: closePopover,
+    getValue: () => (selected ? new Date(selected.getTime()) : null),
+    setValue(d) {
+      selected = d ? startOfDay(d) : null;
+      if (selected) {
+        viewYear = selected.getFullYear();
+        viewMonth = selected.getMonth();
+        input.value = formatDisplayDate(selected, lang);
+        const [datePart] = selected.toISOString().split('T');
+        hiddenInput.value = datePart;
+      } else {
+        input.value = '';
+        hiddenInput.value = '';
+      }
+      if (isOpen) renderGrid();
+    },
+    destroy() {
+      window.removeEventListener('resize', onReposition);
+      window.removeEventListener('scroll', onReposition, true);
+      popover.remove();
+    },
+  };
 }
