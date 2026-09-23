@@ -68,7 +68,7 @@
         },
         {
           "component": "boolean",
-           "name": "hidebreadcrumb",
+          "name": "breadcrumb",
           "label": "Hide from breadcrumb trail in child pages",
           "valueType": "boolean"
         },
