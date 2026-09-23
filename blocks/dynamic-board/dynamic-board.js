@@ -806,9 +806,9 @@ function printElement(block) {
       font-size: 0.625rem;
       font-weight: ${headerFontWeight};
       height: auto;
-      /* Wraps onto multiple lines; break-word covers labels wider than a fixed column. */
       white-space: normal;
-      overflow-wrap: break-word;
+      overflow-wrap: normal;
+      word-break: keep-all;
       line-height: 1.15;
       padding: 0.2rem 0.3rem;
       vertical-align: middle;

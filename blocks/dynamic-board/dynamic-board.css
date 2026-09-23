@@ -1110,6 +1110,11 @@
     padding: 0.1875rem;
   }
 
+  .dynamic-board .db-table thead th {
+    overflow-wrap: normal;
+    word-break: keep-all;
+  }
+
   /* Resets the 12rem min-width floor so the colgroup's percentage width wins. */
   .dynamic-board .db-td-name {
     min-width: 0;
