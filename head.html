@@ -6,6 +6,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1,  minimal-ui, user-scalable=no"/>
 <script nonce="aem">
   (() => {
+    const globalStyles = document.createElement('link');
+    globalStyles.rel = 'stylesheet';
+    globalStyles.href = '/styles/styles.css';
+    globalStyles.media = 'print';
+    globalStyles.onload = () => {
+      globalStyles.media = 'all';
+    };
+    document.head.append(globalStyles);
+
     let heroAssetsStarted = false;
     const preloadBlockAssets = (name) => {
       const script = document.createElement('script');
@@ -81,8 +90,9 @@
 </script>
 <script nonce="aem" src="/scripts/aem.js" type="module"></script>
 <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
-<link rel="stylesheet" href="/styles/styles.css"/>
+<noscript><link rel="stylesheet" href="/styles/styles.css"/></noscript>
 
+<style>body{display:none;margin:0}body.appear{display:block}</style>
 <link rel="preconnect" href="https://edge.bangkokbank.com"/>
 
 <script nonce="aem">
@@ -125,5 +135,3 @@
 <link rel="preload" as="script" crossorigin="anonymous" nonce="aem" href="/plugins/martech/src/alloy.min.js"/>
 <link rel="preload" as="script" crossorigin="anonymous" nonce="aem" href="/plugins/gtm-martech/src/index.js"/> -->
 <link rel="preconnect" href="https://www.googletagmanager.com"/>
-
-<link rel="preload"href="../fonts/BBLSans-regular.woff2"as="font"type="font/woff2"crossorigin ></linkrel>
