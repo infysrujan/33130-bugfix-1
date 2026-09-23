@@ -2,6 +2,7 @@
 
 .sub-nav.block {
     padding: 0.75rem 0;
+    min-height: 4.563rem;
 }
 
 .sub-nav .wrapper {
@@ -139,5 +140,11 @@
 @media print {
     .sub-nav.block {
         display: none;
+    }
+}
+
+@media (width > 64rem){
+    .sub-nav .block{
+       min-height: 6.063rem;
     }
 }

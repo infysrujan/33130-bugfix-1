@@ -397,6 +397,18 @@ function mainHasTabs(main) {
     .some((cell) => toClassName(cell.textContent) === 'tab-name');
 }
 
+function promoteFirstSectionImages(main) {
+  const wrapper = [...(main?.querySelectorAll(':scope > .section > .default-content-wrapper') || [])][0];
+  if (!wrapper) return;
+
+  wrapper.querySelectorAll('img').forEach((img) => {
+    img.loading = 'eager';
+    img.setAttribute('loading', 'eager');
+    img.fetchPriority = 'high';
+    img.setAttribute('fetchpriority', 'high');
+  });
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -420,13 +432,11 @@ async function loadEager(doc) {
   }
   if (main) {
     decorateMain(main);
+    promoteFirstSectionImages(main);
     promoteFirstImage(main);
     document.body.classList.add('appear');
     await Promise.all([
-      loadSection(main.querySelector('.section'), async (section) => {
-        promoteFirstImage(section);
-        await waitForFirstImage(section);
-      }),
+      loadSection(main.querySelector('.section'), waitForFirstImage),
       loadWelcomeBanner(doc),
     ]);
   }
