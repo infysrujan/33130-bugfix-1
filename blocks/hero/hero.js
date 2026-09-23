@@ -599,19 +599,12 @@ export default function decorate(block) {
         const pictureMobile = imageCellMobile?.querySelector('picture');
 
         if (pictureDesktop || pictureMobile) {
-          let heroPicture;
-          if (i === defaultIndex) {
-            heroPicture = (isMobile ? pictureMobile : pictureDesktop)
-            || pictureDesktop
-            || pictureMobile;
-          } else {
-            heroPicture = createSmartImage(
-              pictureDesktop,
-              pictureMobile,
-              imageAlt,
-              false,
-            );
-          }
+          const heroPicture = createSmartImage(
+            pictureDesktop,
+            pictureMobile,
+            imageAlt,
+            i === defaultIndex,
+          );
           if (heroPicture) {
             const img = heroPicture.querySelector('img');
             if (img) {
