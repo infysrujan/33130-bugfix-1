@@ -238,7 +238,7 @@ header.is-not-overlapped .mobile-top-bar {
 
 header.is-not-overlapped ~ main {
   /* matches header height */
-  padding-top: var(--header-m-height, 4.95rem);
+  padding-top: 0;
 }
 
 @media (width > 47.5rem) {
@@ -344,8 +344,9 @@ header.is-not-overlapped ~ main {
 
   header.is-not-overlapped ~ main {
     /* matches header height */
-    padding-top: var(--header-d-height, 7.73rem);
-  }
+
+    /* padding-top: var(--header-d-height, 7.73rem); */
+  } 
 
   .header .megamenu-panel .megamenu-inner .megamenu-column-links {
     display: block;
@@ -362,4 +363,8 @@ header.is-not-overlapped ~ main {
     margin: 0 auto;
     padding-inline: 0;
   }
+}
+
+body.credit-card-form header{
+  min-height: var(--header-d-height);
 }

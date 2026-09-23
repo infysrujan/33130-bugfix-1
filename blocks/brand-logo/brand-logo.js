@@ -40,6 +40,8 @@ export default function decorate(block) {
     if (clonedImg) {
       clonedImg.alt = altText;
       clonedImg.className = 'brand-logo-image';
+      clonedImg.loading = 'eager';
+      clonedImg.fetchPriority = 'high';
       clonedImg.setAttribute('loading', 'eager');
       clonedImg.setAttribute('fetchpriority', 'high');
     }
@@ -53,6 +55,8 @@ export default function decorate(block) {
     if (clonedImg) {
       clonedImg.alt = altText;
       clonedImg.className = 'brand-logo-image';
+      clonedImg.loading = 'eager';
+      clonedImg.fetchPriority = 'high';
       clonedImg.setAttribute('loading', 'eager');
       clonedImg.setAttribute('fetchpriority', 'high');
     }

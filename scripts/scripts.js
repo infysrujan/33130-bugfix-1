@@ -24,28 +24,33 @@ import {
   buildCookieAlert,
 } from './bbl-decorators.js';
 
-import decorateTabs from '../blocks/tabs/tabs-helper.js';
-import initRteAnchors, { decorateIconInContainer, decorateNewTabLinks, decorateEncodedNbsp } from './custom-rte.js';
-
-import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
+
+let decorateTabs;
+let initRteAnchors;
+let decorateIconInContainer;
+let decorateNewTabLinks;
+let decorateEncodedNbsp;
 
 let martech;
 let gtmMartech;
 let initCdpEvents;
+let env;
 
 async function loadMarketingModules() {
-  const [martechModule, gtmModule, analyticsModule, consentModule] = await Promise.all([
+  const [martechModule, gtmModule, analyticsModule, consentModule, envModule] = await Promise.all([
     // eslint-disable-next-line import/no-relative-packages
     import('../plugins/martech/src/index.js'),
     import('./gtm-martech.js'),
     import('./analytics.js'),
     import('./consent.js'),
+    import('./utils/env.js'),
   ]);
 
   martech = martechModule;
   gtmMartech = gtmModule.default;
   ({ initCdpEvents } = analyticsModule);
+  env = envModule.default;
   consentModule.initMarketingConsentListener();
 }
 
@@ -153,7 +158,7 @@ async function loadFonts() {
  */
 function buildAutoBlocks(main) {
   try {
-    decorateTabs(main);
+    decorateTabs?.(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -181,8 +186,8 @@ export function decorateMain(main) {
   decorateBlocks(main);
   decorateTertiaryButtons(main);
   decorateSvgWithAltText(main);
-  decorateNewTabLinks(main);
-  decorateEncodedNbsp(main);
+  decorateNewTabLinks?.(main);
+  decorateEncodedNbsp?.(main);
 
   const pageVariant = getMetadata('pagevariant');
   if (pageVariant) {
@@ -392,6 +397,7 @@ async function loadEager(doc) {
   decorateOgTitle();
   decorateOgImage();
   const main = doc.querySelector('main');
+  ({ default: decorateTabs } = await import('../blocks/tabs/tabs-helper.js'));
   if (main) {
     decorateMain(main);
     promoteFirstImage(main);
@@ -417,6 +423,13 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  ({
+    default: initRteAnchors,
+    decorateIconInContainer,
+    decorateNewTabLinks,
+    decorateEncodedNbsp,
+  } = await import('./custom-rte.js'));
+
   const themeStyles = `${window.hlx.codeBasePath}/styles`;
   [
     'theme-wealth.css',
@@ -436,6 +449,8 @@ async function loadLazy(doc) {
     loadHeader(doc.querySelector('header'));
   }
   const main = doc.querySelector('main');
+  decorateNewTabLinks(main);
+  decorateEncodedNbsp(main);
   await loadSections(main);
 
   if (!isEnabled) {
