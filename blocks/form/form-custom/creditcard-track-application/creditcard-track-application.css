@@ -121,7 +121,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     top: 0;
   }
 
-  & .cc-panel-item-form-input.date-wrapper.field-wrapper:has(label):not(.field-review-panel *)::after {
+  & .cc-panel-item-form-input.date-wrapper.field-wrapper:has(label:not([data-visible="false"])):not(.field-review-panel *)::after {
     top: 1.625rem;
   }
 
