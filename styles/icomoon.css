@@ -4,7 +4,7 @@
 	src: url('../fonts/icomoon.woff') format('woff');
 	font-weight: normal;
 	font-style: normal;
-	font-display: swap;
+	font-display: block;
 }
 
 [class^="icon-"]::before,
@@ -17,6 +17,9 @@
 	font-variant: normal;
 	text-transform: none;
 	line-height: 1;
+	display: inline-block;
+	width: 1em;
+	height: 1em;
 
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;

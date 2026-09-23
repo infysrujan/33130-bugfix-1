@@ -4,6 +4,7 @@
   move-to-http-header="true"
 >
 <meta name="viewport" content="width=device-width, initial-scale=1,  minimal-ui, user-scalable=no"/>
+<link rel="preload" href="/fonts/icomoon.woff" as="font" type="font/woff" crossorigin>
 <script nonce="aem">
   (() => {
     const globalStyles = document.createElement('link');
@@ -36,7 +37,24 @@
       if (!['/', '/en', '/th', '/jp', '/zh'].includes(path)) return;
       preloadBlockAssets('welcome-banner');
     };
+    const preloadBlockCss = (href) => {
+      if (document.querySelector(`link[href="${href}"]`)) return;
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
+      style.href = href;
+      document.head.append(style);
+    };
+    const preloadFoldCss = () => {
+      if (document.querySelector('.menu-banner')) {
+        preloadBlockCss('/blocks/menu-banner/menu-banner.css');
+      }
+      if (document.querySelector('.news-media, .latest-news')) {
+        preloadBlockCss('/styles/components/listing-card.css');
+        preloadBlockCss('/blocks/news-media/news-media.css');
+      }
+    };
     preloadWelcomeBanner();
+    preloadFoldCss();
 
     const promote = () => {
       const hero = document.querySelector('main .hero') || document.querySelector('.hero');
@@ -81,8 +99,12 @@
       return true;
     };
 
-    if (promote()) return;
+    if (promote()) {
+      preloadFoldCss();
+      return;
+    }
     const observer = new MutationObserver(() => {
+      preloadFoldCss();
       if (promote()) observer.disconnect();
     });
     observer.observe(document.documentElement, { childList: true, subtree: true });

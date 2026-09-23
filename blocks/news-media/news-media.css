@@ -104,7 +104,7 @@
 
 @media (width > 64rem) {
   .news-media-tabs .tabs-content{
-    min-height: unset;
+    min-height: 28rem;
   }
   
   .news-media-grid {
