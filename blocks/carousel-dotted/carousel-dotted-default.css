@@ -248,11 +248,6 @@
   margin: var(--bbl-space-000);
 }
 
-.carousel-dotted a.button.primary {
-  border-radius: var(--bbl-rounded-100);
-  height: 2.75rem;
-}
-
 .carousel-dotted .slick-dots {
   position: absolute;
   display: flex;

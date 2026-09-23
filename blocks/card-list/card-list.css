@@ -426,7 +426,6 @@
 
 .cards-list-button .button-m{
   min-width: 100%;
-  box-sizing: border-box;
 }
 
 .cards-list.scrollable::-webkit-scrollbar {
