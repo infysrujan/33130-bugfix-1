@@ -465,8 +465,19 @@ function getProvinceEnumNamesTh() {
  *   }
  * }
  */
+// Caches branch results per province+lang so repeated lookups for the same
+// selection (e.g. the rule engine's own change handler and the district
+// grouping watcher below both resolving the same province) reuse the
+// response instead of firing another blocking XHR.
+const branchesByProvinceCache = new Map();
+
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
+  const cacheKey = `${lang}::${province}`;
+  if (branchesByProvinceCache.has(cacheKey)) {
+    return branchesByProvinceCache.get(cacheKey);
+  }
+
   const branchesByProvinceUrl = getBaseUrl('branches-by-province');
   const provinceBaseUrl = branchesByProvinceUrl.endsWith('/') ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
   const encoded = encodeURIComponent(province);
@@ -485,7 +496,9 @@ function fetchBranchesByProvince(province, lang = 'th') {
   }
 
   const data = JSON.parse(xhr.responseText);
-  return Array.isArray(data) ? data : [];
+  const result = Array.isArray(data) ? data : [];
+  branchesByProvinceCache.set(cacheKey, result);
+  return result;
 }
 
 /**
@@ -609,10 +622,16 @@ function scheduleApplyBranchDistrictGroupingAuto(data) {
 // The Rule Engine worker can't touch the DOM, and this form's custom
 // dropdown widget may not dispatch real 'change' events — so instead of
 // listening for events, poll each <select>'s value directly for changes.
+// Only the page's own language is fetched here: the rule engine's change
+// handler already fetches that language to populate enum/enumNames, and
+// unconditionally also fetching the other language previously fired on
+// every province change (e.g. an English province name against the
+// Thai-language endpoint), which reliably returns an empty result.
 if (typeof document !== 'undefined') {
   const lastValues = new Map();
 
   setInterval(() => {
+    const lang = (document.documentElement.lang || 'en').toLowerCase().startsWith('th') ? 'th' : 'en';
     document.querySelectorAll('select').forEach((sel) => {
       const key = sel.name || sel.id;
       const prev = lastValues.get(key);
@@ -620,12 +639,10 @@ if (typeof document !== 'undefined') {
 
       if (current && current !== prev) {
         lastValues.set(key, current);
-        ['en', 'th'].forEach((lang) => {
-          const data = fetchBranchesByProvince(current, lang);
-          if (data.length) {
-            scheduleApplyBranchDistrictGroupingAuto(data);
-          }
-        });
+        const data = fetchBranchesByProvince(current, lang);
+        if (data.length) {
+          scheduleApplyBranchDistrictGroupingAuto(data);
+        }
       }
     });
   }, 300);
