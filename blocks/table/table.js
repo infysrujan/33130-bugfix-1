@@ -252,6 +252,10 @@ function alignHeaderLastLine(table) {
 function applyCustomCellCss(block, row) {
   if (!row) return;
 
+  // Stays in the DOM in authoring only (to remain editable); tagged so it
+  // can be hidden from the authoring canvas via CSS if desired.
+  row.classList.add('cell-css-row');
+
   const codeBlock = row.querySelector('pre, code');
   const encoded = codeBlock
     ? codeBlock.textContent
