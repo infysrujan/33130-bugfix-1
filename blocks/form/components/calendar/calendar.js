@@ -122,8 +122,18 @@ export default function decorate(block) {
   const labelText = config.label || (lang === 'th' ? 'เลือกวันที่' : 'Select date');
   const placeholder = config.placeholder || (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
   const fieldName = config.name || 'date';
-  const minDate = parseConfigDate(config['min-date']);
-  const maxDate = parseConfigDate(config['max-date']) ?? startOfDay(new Date());
+
+  // FIX: config keys are derived from the model's field *labels*
+  // ("Minimum date" / "Maximum date"), which parseBlockConfig turns into
+  // "minimum-date" / "maximum-date" — not "min-date" / "max-date".
+  // Also normalize both to startOfDay so a full ISO datetime value
+  // (per the model's date-time valueFormat) can't shift the boundary
+  // by a day due to timezone offsets.
+  const rawMinDate = parseConfigDate(config['minimum-date']);
+  const rawMaxDate = parseConfigDate(config['maximum-date']);
+  const minDate = rawMinDate ? startOfDay(rawMinDate) : null;
+  const maxDate = rawMaxDate ? startOfDay(rawMaxDate) : startOfDay(new Date());
+
   const initialDate = parseConfigDate(config.value);
 
   /* ── Build DOM ── */
@@ -223,7 +233,8 @@ export default function decorate(block) {
 
     for (let i = 0; i < firstDayOfWeek; i += 1) {
       const empty = document.createElement('div');
-      empty.className = 'dpth-day dpth-day--empty';
+      // FIX: was "dpth-day--empty" (double hyphen), CSS defines "dpth-day-empty".
+      empty.className = 'dpth-day dpth-day-empty';
       empty.setAttribute('aria-hidden', 'true');
       grid.append(empty);
     }
@@ -239,9 +250,13 @@ export default function decorate(block) {
 
       const disabled = (minDate && cellDate < minDate) || (maxDate && cellDate > maxDate);
       btn.disabled = disabled;
+      if (disabled) {
+        btn.setAttribute('aria-disabled', 'true');
+      }
 
       if (selected && sameDay(cellDate, selected)) {
-        btn.classList.add('dpth-day--selected');
+        // FIX: was "dpth-day--selected" (double hyphen), CSS defines "dpth-day-selected".
+        btn.classList.add('dpth-day-selected');
         btn.setAttribute('aria-pressed', 'true');
       }
 
@@ -251,7 +266,12 @@ export default function decorate(block) {
 
   /* ── Commit a chosen day ── */
   function commitDay(day) {
-    selected = startOfDay(new Date(viewYear, viewMonth, day));
+    const candidate = startOfDay(new Date(viewYear, viewMonth, day));
+
+    // Guard against programmatic/edge-case commits outside the allowed range.
+    if ((minDate && candidate < minDate) || (maxDate && candidate > maxDate)) return;
+
+    selected = candidate;
     input.value = formatDisplayDate(selected, lang);
     const [datePart] = selected.toISOString().split('T');
     hiddenInput.value = datePart;
@@ -259,6 +279,7 @@ export default function decorate(block) {
     input.dispatchEvent(new Event('change', { bubbles: true }));
     renderGrid();
   }
+
   /* ── Open / close ── */
   function openPopover() {
     isOpen = true;
@@ -311,7 +332,7 @@ export default function decorate(block) {
 
     // Arrow key navigation within the grid
     const days = [...grid.querySelectorAll('button.dpth-day:not([disabled])')]
-      .filter((b) => !b.classList.contains('dpth-day--empty'));
+      .filter((b) => !b.classList.contains('dpth-day-empty'));
     const idx = days.indexOf(btn);
     let next = -1;
     if (e.key === 'ArrowRight') next = idx + 1;
@@ -381,7 +402,11 @@ export default function decorate(block) {
     close: closePopover,
     getValue: () => (selected ? new Date(selected.getTime()) : null),
     setValue(d) {
-      selected = d ? startOfDay(d) : null;
+      const candidate = d ? startOfDay(d) : null;
+      if (candidate && ((minDate && candidate < minDate) || (maxDate && candidate > maxDate))) {
+        return; // reject out-of-range values from external callers too
+      }
+      selected = candidate;
       if (selected) {
         viewYear = selected.getFullYear();
         viewMonth = selected.getMonth();
