@@ -3,6 +3,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { loadMfSheetOrder, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -209,14 +210,19 @@ export default async function buildMfFundCardsSlide(row, index) {
     loadCSS(`${window.hlx.codeBasePath}/blocks/carousel-dotted/mf-fund-cards-slide.css`),
   ]);
 
-  const [allFunds, ph] = await Promise.all([loadFundsData(), fetchPlaceholders()]);
+  const [allFunds, matrix, ph] = await Promise.all([
+    loadFundsData(),
+    loadMfSheetOrder(),
+    fetchPlaceholders(),
+  ]);
 
   const readMoreLabel = ph.mfReadMoreText || 'Read more';
   const compareLabel = ph.mfCompareText || 'Compare';
   const noResultsLabel = ph.mfNoResultsText || 'No results found';
 
-  const filteredFunds = allFunds.filter(
-    (fund) => matchesCategory(fund.FundCategory || '', pageCategory),
+  const filteredFunds = sortFundsBySheetOrder(
+    allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory)),
+    matrix,
   );
 
   // eslint-disable-next-line no-console
