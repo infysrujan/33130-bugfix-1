@@ -43,16 +43,18 @@ function matchesCategory(fundCategory, pageCategory) {
 }
 
 // Drops repeat funds (same ProductID/FundName tagged twice upstream) so no card duplicates.
-function dedupeFunds(funds) {
-  const seen = new Set();
-  return funds.filter((fund) => {
-    const key = fund.ProductID || fund.FundName || '';
-    if (!key) return true;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
+// Commented out for testing so authored/data duplicates stay visible on screen.
+// Uncomment this function and its call in filteredFunds below to restore duplicate-hiding.
+// function dedupeFunds(funds) {
+//   const seen = new Set();
+//   return funds.filter((fund) => {
+//     const key = fund.ProductID || fund.FundName || '';
+//     if (!key) return true;
+//     if (seen.has(key)) return false;
+//     seen.add(key);
+//     return true;
+//   });
+// }
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
 
@@ -226,8 +228,11 @@ export default async function buildMfFundCardsSlide(row, index) {
   const compareLabel = ph.mfCompareText || 'Compare';
   const noResultsLabel = ph.mfNoResultsText || 'No results found';
 
+  // Dedup disabled for testing so authored/data duplicates stay visible on screen.
+  // Uncomment the dedupeFunds(...) wrap below to restore duplicate-hiding behavior.
   const filteredFunds = sortFundsBySheetOrder(
-    dedupeFunds(allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory))),
+    // dedupeFunds(allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory))),
+    allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory)),
     matrix,
   );
 
