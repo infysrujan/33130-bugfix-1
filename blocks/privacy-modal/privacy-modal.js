@@ -1,7 +1,7 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
 
-const COOKIE_DURATION_DAYS = 30;
+const COOKIE_DURATION_DAYS = 365;
 const COOKIE_NAME = 'HRPRIVACY';
 
 /* -------------------------------------------------------------------------

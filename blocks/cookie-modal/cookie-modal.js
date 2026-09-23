@@ -9,7 +9,7 @@ import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 import { deleteCookie, getCookie, setCookie } from '../../scripts/utils/cookies.js';
 
-const COOKIE_DURATION_DAYS = 30;
+const COOKIE_DURATION_DAYS = 365;
 const COOKIE_CONSENT = 'ConsentAlert';
 const CONSENT_SAVED_EVENT = 'cookie:consent-saved';
 const LAST_TRIGGER_KEY = 'cookieModalTrigger';

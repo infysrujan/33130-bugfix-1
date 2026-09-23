@@ -140,10 +140,6 @@
   scrollbar-gutter: stable;
 }
 
-.privacy-modal-overlay.download-file-modal .privacy-modal-body {
-  max-height: unset;
-}
-
 .privacy-modal-body::-webkit-scrollbar-button {
   display: none;
 }
