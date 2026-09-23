@@ -380,6 +380,10 @@
     border-radius: var(--bbl-rounded-050);
   }
 
+  .download-file-modal .privacy-modal-dialog {
+    width: 46.25rem;
+  }
+
   .privacy-modal-overlay {
     padding:0 var(--bbl-space-600);
   }
