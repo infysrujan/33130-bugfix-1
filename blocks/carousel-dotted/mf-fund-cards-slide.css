@@ -276,4 +276,8 @@
   .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow {
     display: flex;
   }
+
+  .mf-fund-cards-description {
+  margin: var(--bbl-space-400) auto 0 auto;
+  }
 }
