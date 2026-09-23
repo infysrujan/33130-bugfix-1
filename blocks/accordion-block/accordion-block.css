@@ -64,6 +64,10 @@
   height: 0.75rem;
 }
 
+.accordion-toolbar-icon.icon-print {
+  color: var(--bbl-color-grey-70);
+}
+
 .accordion-toolbar-label {
   color: var(--bbl-color-black);
   font-size: var(--bbl-text-accordion-size);

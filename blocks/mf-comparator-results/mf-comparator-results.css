@@ -251,11 +251,13 @@
   font-size: 0;
   line-height: 0;
   transition: all 180ms ease;
+  min-width: 0.5rem;
+  min-height: 0.5rem;
 }
 
 .mf-comparator-results .mfcr-scroll-dot.is-active {
-  width: 0.625rem;
-  height: 0.625rem;
+  width: 0.75rem;
+  height: 0.75rem;
   background: var(--bbl-color-active-blue);
   border-color: var(--bbl-color-active-blue);
 }
