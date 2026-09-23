@@ -20,7 +20,7 @@ const MOBILE_BREAKPOINT = `(width < ${TABLET_MIN})`;
 const BENEFIT_ALIASES = {
   rewards: 'point',
   เครดิตเงินคืน: 'cash back',
-  ช็อปปิง: 'point',
+  คะแนนสะสม: 'point',
 };
 const LIFESTYLE_ALIASES = {
   ใช้จ่ายทั่วไป: 'everyday',
@@ -29,7 +29,6 @@ const LIFESTYLE_ALIASES = {
   ทำบุญ: 'donation',
   รถยนต์: 'automotive',
   ช้อปปิ้ง: 'shopping',
-  คะแนนสะสม: 'shopping',
 };
 
 // ── String / data utilities ────────────────────────────────────────────────────
