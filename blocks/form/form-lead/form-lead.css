@@ -109,6 +109,10 @@ main .form-container.lead-forms {
   padding-inline: var(--bbl-space-section-xs);
 }
 
+main .section.form-container.lead-forms.pad-top-30:has(.plain-text-wrapper.field-text) {
+  padding-top: 0;
+}
+
 main .lead-forms .form form p {
   margin-bottom: 0;
   padding: 0;
@@ -715,6 +719,11 @@ input[name='BBLAdvancedCheckbox'] {
   border: var(--bbl-form-border-grey);
   background-color: var(--bbl-color-white);
   appearance: none;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:disabled,
+input[name='BBLAdvancedCheckbox']:disabled {
+  cursor: default;
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:checked,

@@ -98,6 +98,8 @@ async function fetchPromotionalData(url) {
   return fetchJson(url);
 }
 
+const NO_MATCH_VALUE = '__promo_card_ref_no_match__';
+
 function getCardTypeFromRef(mapping, cardRef) {
   if (!mapping || !cardRef) return '';
   if (typeof mapping === 'string') return '';
@@ -200,6 +202,23 @@ function buildSubOptions(items, defaultLabel) {
     .join(''));
 }
 
+function createFilterSync() {
+  const values = { cardType: '', area: '' };
+  const listeners = [];
+  return {
+    get(key) { return values[key]; },
+    set(key, val, sourceId) {
+      values[key] = val;
+      listeners.forEach(({ id, fn }) => {
+        if (id !== sourceId) fn(key, val);
+      });
+    },
+    subscribe(id, fn) {
+      listeners.push({ id, fn });
+    },
+  };
+}
+
 function isTruthyFlag(value) {
   if (value === true) return true;
   if (value === false || value == null) return false;
@@ -267,6 +286,8 @@ function setupPanel(
     isBbm: isBbmPanel = false,
     isHighlightsPanel = false,
     tabText: displayTabText = category,
+    filterSync = null,
+    panelId = category,
   } = options;
   const labelCategory = placeholders.promoFilterCategory || 'Category';
   const labelCardType = placeholders.promoFilterCardType || 'Card Type';
@@ -278,7 +299,7 @@ function setupPanel(
   if (disableFilters) {
     panel.innerHTML = `
       <div class="promo-selector-content pad-top-30 pad-bot-30">
-        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
+        <div class="listing-card-grid promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
         <div class="promo-selector-pagination"></div>
       </div>`;
   } else {
@@ -326,10 +347,15 @@ function setupPanel(
   const paginationEl = panel.querySelector('.promo-selector-pagination');
 
   const state = {
-    subcategory: '', cardType: '', area: '', page: 1,
+    subcategory: '',
+    cardType: filterSync ? filterSync.get('cardType') : '',
+    area: filterSync ? filterSync.get('area') : '',
+    page: 1,
   };
+  let hasRenderedOnce = false;
 
   function render() {
+    hasRenderedOnce = true;
     const activeCardType = forcedCardType || state.cardType;
     const { cards, total } = filterCards(allCards, {
       category,
@@ -413,7 +439,19 @@ function setupPanel(
     });
   });
 
-  function makeSingleSelect(filterAttr, stateKey, defaultLabel) {
+  // Reflects a filter value (own selection or one synced from another category
+  // panel) onto this panel's dropdown UI without firing click handlers.
+  function syncFilterUI(filterAttr, val, defaultLabel) {
+    const filterEl = panel.querySelector(`[data-filter="${filterAttr}"]`);
+    if (!filterEl) return;
+    const labelEl = filterEl.querySelector('.promo-selector-filter-label');
+    filterEl.querySelectorAll('.promo-selector-option').forEach((o) => {
+      o.classList.toggle('is-active', (o.dataset.value || '') === val);
+    });
+    if (labelEl) labelEl.textContent = val || defaultLabel;
+  }
+
+  function makeSingleSelect(filterAttr, stateKey, defaultLabel, syncKey) {
     const filterEl = panel.querySelector(`[data-filter="${filterAttr}"]`);
     const labelEl = filterEl?.querySelector('.promo-selector-filter-label');
     filterEl?.querySelectorAll('.promo-selector-option').forEach((opt) => {
@@ -443,14 +481,34 @@ function setupPanel(
         filterEl.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
         armClickThroughGuard();
         state.page = 1;
+        if (syncKey && filterSync) filterSync.set(syncKey, state[stateKey], panelId);
         if (isDesktop()) render();
       });
     });
   }
 
   makeSingleSelect('subcategory', 'subcategory', labelCategory);
-  makeSingleSelect('cardType', 'cardType', labelCardType);
-  makeSingleSelect('area', 'area', labelArea);
+  makeSingleSelect('cardType', 'cardType', labelCardType, 'cardType');
+  makeSingleSelect('area', 'area', labelArea, 'area');
+
+  if (filterSync) {
+    // Reflect any value already selected on another panel before this one existed.
+    syncFilterUI('cardType', state.cardType, labelCardType);
+    syncFilterUI('area', state.area, labelArea);
+    filterSync.subscribe(panelId, (key, val) => {
+      if (key === 'cardType') {
+        state.cardType = val;
+        syncFilterUI('cardType', val, labelCardType);
+      } else if (key === 'area') {
+        state.area = val;
+        syncFilterUI('area', val, labelArea);
+      } else {
+        return;
+      }
+      state.page = 1;
+      if (hasRenderedOnce) render();
+    });
+  }
 
   function resetFilters() {
     state.subcategory = '';
@@ -462,6 +520,10 @@ function setupPanel(
     panel.querySelector('[data-filter="subcategory"] .promo-selector-filter-label').textContent = labelCategory;
     panel.querySelector('[data-filter="cardType"] .promo-selector-filter-label').textContent = labelCardType;
     panel.querySelector('[data-filter="area"] .promo-selector-filter-label').textContent = labelArea;
+    if (filterSync) {
+      filterSync.set('cardType', '', panelId);
+      filterSync.set('area', '', panelId);
+    }
     render();
   }
 
@@ -531,8 +593,9 @@ export default async function decorate(block) {
   const activeAreas = activeData?.areas || [];
   const isBbmPage = isBbm;
   const cardRef = isBbmPage ? searchParams.get('card_ref') : '';
-  const forcedCardType = getCardTypeFromRef(cardRefConfig, cardRef);
-  const disableFilters = Boolean(forcedCardType);
+  const resolvedCardType = getCardTypeFromRef(cardRefConfig, cardRef);
+  const forcedCardType = cardRef ? (resolvedCardType || NO_MATCH_VALUE) : '';
+  const disableFilters = isBbmPath;
   const activeCategories = activeData?.categories || [];
 
   if (isAuthoringInstance(block)) {
@@ -606,6 +669,8 @@ export default async function decorate(block) {
     ? [...tabsContainer.querySelectorAll('.tabs-content .tab-panel')]
     : [...document.querySelectorAll('[role="tabpanel"]')];
 
+  const filterSync = createFilterSync();
+
   tabPanels.forEach((panel, index) => {
     const tabBtnId = panel.getAttribute('aria-labelledby');
     if (panel.hidden) return;
@@ -619,8 +684,10 @@ export default async function decorate(block) {
     const dataCategories = dataSet?.categories || [];
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
-    const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText, placeholders));
-    const category = tabTags || (isHighlightsPanel ? tabText : '');
+    const isHighlightsPanel = isBbm
+      && (index === 0 || isTopPromotionsLabel(tabText, placeholders));
+    let category = tabTags || '';
+    if (!category) category = isHighlightsPanel ? tabText : forcedCardType && NO_MATCH_VALUE;
     const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
     setupPanel(
@@ -643,6 +710,8 @@ export default async function decorate(block) {
         // full height before we scroll (otherwise a short doc clamps the scroll).
         immediate: autoScroll,
         baseUrl: promotionApi?.baseUrl,
+        filterSync,
+        panelId: index,
       },
     );
   });

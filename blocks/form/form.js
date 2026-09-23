@@ -16,6 +16,7 @@ import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
 import decorateReliefMeasures from './form-custom/relief-measures/relief-measures.js';
 import decorateCreditCardForm from './form-custom/credit-card-form/credit-card-form.js';
 import decorateContactUsForm from './form-custom/contact-us/contact-us.js';
+import decorateProtectionBtBelovedPlus from './form-custom/protection-bt-beloved-plus/protection-bt-beloved-plus.js';
 import {
   checkValidation,
   createButton,
@@ -389,6 +390,7 @@ async function createFormForAuthoring(formDef) {
   decorateReliefMeasures(form);
   decorateCreditCardForm(form);
   decorateContactUsForm(form);
+  decorateProtectionBtBelovedPlus(form);
   return form;
 }
 
@@ -452,6 +454,7 @@ export async function createForm(formDef, data, source = 'aem') {
   decorateReliefMeasures(form);
   decorateCreditCardForm(form);
   decorateContactUsForm(form);
+  decorateProtectionBtBelovedPlus(form);
   return {
     form,
     captcha,
@@ -547,6 +550,7 @@ function addRequestContextToForm(formDef) {
         formDef.properties.queryParams[key?.toLowerCase()] = value;
       });
     } catch (e) {
+      // eslint-disable-next-line
       console.warn('Error reading URL parameters:', e);
     }
 
@@ -561,6 +565,7 @@ function addRequestContextToForm(formDef) {
         }
       });
     } catch (e) {
+      // eslint-disable-next-line
       console.warn('Error reading cookies:', e);
     }
   }
@@ -574,6 +579,7 @@ function loadFormCustomStyles(formDef) {
       const stylePath = style.startsWith('/') ? style : `/${style}`;
       loadCSS(`${base}${stylePath}`);
     } catch (error) {
+      // eslint-disable-next-line
       console.error('Failed to load form CSS:', error);
     }
   }
