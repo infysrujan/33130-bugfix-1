@@ -100,11 +100,15 @@
 .bangkok-bankm-card .hero-banner-default .hero-banner-item {
     max-height: unset;
     height: unset;
-  }
+}
 
 .bangkok-bankm-card .hero-banner-container{
   margin-bottom: 30px;
 }
+
+.bangkok-bankm-card .tabs-nav-wrapper .tabs-nav button:hover{
+    color: var(--bbl-color-blue);
+  }
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner, .hero-banner-private-wealth-banking) .hero-banner-item {
   max-height: 21.875rem;
