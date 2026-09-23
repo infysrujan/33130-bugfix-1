@@ -24,7 +24,9 @@ function isCurrentPageBreadcrumbHidden(page) {
 }
 
 function isHiddenFromChildTrails(page) {
-  return isEnabled(page?.breadcrumb);
+  // Authored page metadata uses `breadcrumb`; the page-info API returns
+  // the equivalent property as `hidebreadcrumb`.
+  return isEnabled(page?.breadcrumb) || isEnabled(page?.hidebreadcrumb);
 }
 
 /**
