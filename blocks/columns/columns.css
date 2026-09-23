@@ -55,7 +55,7 @@
 }
 
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col {
-  width: 12.5rem;
+  flex: 0 0 calc(40% - 1.875rem);
 }
 
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col,
