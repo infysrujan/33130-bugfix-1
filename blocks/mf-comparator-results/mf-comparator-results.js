@@ -257,19 +257,69 @@ function initMobileCarousel(grid, doc) {
   dotsEl.className = 'mfcr-scroll-dots';
   grid.parentElement?.appendChild(dotsEl);
 
-  const getItems = () => [...grid.querySelectorAll('.mfcr-card')];
+  const getItems = () => [...grid.querySelectorAll('.mfcr-card:not(.mfcr-card-clone)')];
 
-  const scrollToItem = (item) => {
-    const offset = item.getBoundingClientRect().left
+  const scrollToItem = (item, instant = false) => {
+    const itemOffset = item.getBoundingClientRect().left
       - grid.getBoundingClientRect().left
       + grid.scrollLeft;
-    grid.scrollTo({ left: offset, behavior: 'smooth' });
+    const left = itemOffset - (grid.clientWidth - item.clientWidth) / 2;
+    if (instant) {
+      grid.scrollLeft = left;
+    } else {
+      grid.scrollTo({ left, behavior: 'smooth' });
+    }
+  };
+
+  const findNearest = () => {
+    const allItems = [...grid.querySelectorAll('.mfcr-card')];
+    const containerCenter = grid.getBoundingClientRect().left + grid.clientWidth / 2;
+    let nearest = null;
+    let minDistance = Infinity;
+    allItems.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      const dist = Math.abs((rect.left + rect.width / 2) - containerCenter);
+      if (dist < minDistance) { minDistance = dist; nearest = item; }
+    });
+    return nearest;
+  };
+
+  const setupLoopClones = (items) => {
+    grid.querySelectorAll('.mfcr-card-clone').forEach((el) => el.remove());
+    if (items.length < 2) return;
+
+    const makeClone = (item, realIndex) => {
+      const clone = item.cloneNode(true);
+      clone.classList.add('mfcr-card-clone');
+      clone.setAttribute('aria-hidden', 'true');
+      clone.querySelectorAll('a, button').forEach((el) => { el.tabIndex = -1; });
+      clone.dataset.cloneIndex = realIndex;
+      return clone;
+    };
+
+    grid.insertBefore(makeClone(items[items.length - 1], items.length - 1), items[0]);
+    grid.appendChild(makeClone(items[0], 0));
+  };
+
+  const centerWhenReady = (item) => {
+    const attempt = () => {
+      if (grid.clientWidth > 0) {
+        scrollToItem(item, true);
+      } else {
+        requestAnimationFrame(attempt);
+      }
+    };
+    requestAnimationFrame(attempt);
   };
 
   const buildDots = () => {
     dotsEl.innerHTML = '';
     const items = getItems();
+    setupLoopClones(items);
     if (items.length <= 1) return;
+
+    centerWhenReady(items[0]);
+
     items.forEach((item, i) => {
       const dot = doc.createElement('button');
       dot.type = 'button';
@@ -280,18 +330,26 @@ function initMobileCarousel(grid, doc) {
     });
   };
 
+  let scrollEndTimer;
   grid.addEventListener('scroll', () => {
     const dots = [...dotsEl.querySelectorAll('.mfcr-scroll-dot')];
     const items = getItems();
     if (!items.length || !dots.length) return;
-    const containerLeft = grid.getBoundingClientRect().left;
-    let activeIndex = 0;
-    let minDistance = Infinity;
-    items.forEach((item, i) => {
-      const dist = Math.abs(item.getBoundingClientRect().left - containerLeft);
-      if (dist < minDistance) { minDistance = dist; activeIndex = i; }
-    });
+
+    const nearest = findNearest();
+    const activeIndex = nearest?.dataset.cloneIndex !== undefined
+      ? Number(nearest.dataset.cloneIndex)
+      : items.indexOf(nearest);
     dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+
+    clearTimeout(scrollEndTimer);
+    scrollEndTimer = setTimeout(() => {
+      const settled = findNearest();
+      if (settled?.dataset.cloneIndex !== undefined) {
+        const target = items[Number(settled.dataset.cloneIndex)];
+        if (target) scrollToItem(target, true);
+      }
+    }, 120);
   }, { passive: true });
 
   return buildDots;
@@ -302,7 +360,7 @@ function initMobileCarousel(grid, doc) {
 function equalizeRowHeights(grid) {
   if (!window.matchMedia(`(width > ${TABLET_MIN})`).matches) return;
 
-  const cards = [...grid.querySelectorAll('.mfcr-card')];
+  const cards = [...grid.querySelectorAll('.mfcr-card:not(.mfcr-card-clone)')];
   if (cards.length < 2) return;
   if (grid.getBoundingClientRect().width === 0) return;
 
