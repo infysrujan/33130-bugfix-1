@@ -364,7 +364,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     .button.primary:not(:disabled),
     .button.tertiary:not(:disabled),
     .submit-wrapper .button:not(:disabled),
-    .cc-panel-item-panel-action-primary .button:not(:disabled)
+    .cc-panel-item-panel-action-primary .button:not(:disabled),
+    .cc-panel-item-panel-action .button.primary:not(:disabled)
   ) {
     border: 0.0625rem solid transparent;
     background-color: var(--bbl-color-active-blue);
