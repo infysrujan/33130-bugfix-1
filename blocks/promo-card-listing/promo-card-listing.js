@@ -402,6 +402,12 @@ function setupPanel(
     }, { rootMargin: '100px' });
     observer.observe(panel);
   }
+  new MutationObserver(() => {
+    if (panel.getAttribute('aria-hidden') === 'false' && state.page !== 1) {
+      state.page = 1;
+      if (hasRenderedOnce) render();
+    }
+  }).observe(panel, { attributes: true, attributeFilter: ['aria-hidden'] });
 
   if (disableFilters) return;
 
