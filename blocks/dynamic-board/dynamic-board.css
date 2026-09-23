@@ -1149,13 +1149,12 @@
     white-space: normal;
   }
 
-  /* Same as printCss: date + download icon stay on one line. */
   .dynamic-board .db-td-maturity {
     display: table-cell;
     align-items: center;
     justify-content: flex-end;
     gap: 0.1875rem;
-    white-space: nowrap;
+    white-space: normal;
   }
 
   /* Sort affordances are non-functional on paper — drop the arrow icons,
@@ -1167,6 +1166,7 @@
   }
 
   .dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort .db-th-label::after {
+    content: none;
     display: none;
   }
 

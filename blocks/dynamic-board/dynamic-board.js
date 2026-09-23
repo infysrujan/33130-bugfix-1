@@ -517,6 +517,9 @@ function printElement(block) {
   const timeCs = cs(liveTimeTrigger);
   const calLabelCs = cs(liveCalLabel);
 
+  const deviceWidth = window.innerWidth;
+  const printTableFontSize = deviceWidth < 760 ? '0.5rem' : deviceWidth < 1024 ? '0.5625rem' : '0.625rem';
+
   // Header text color/weight still come from live; black is a safe fallback.
   const headerColor = headerCs?.color || 'var(--bbl-color-black)';
   const headerFontWeight = headerCs?.fontWeight || '700';
@@ -756,15 +759,11 @@ function printElement(block) {
       table-layout: fixed;
       border: 0.0625rem solid var(--bbl-color-grey-18);
       border-collapse: collapse;
-      font-size: 0.625rem;
+      font-size: ${printTableFontSize};
       line-height: 1.2;
       color: var(--bbl-color-grey-90);
     }
 
-    /* Allowed to wrap rather than forced onto one line — a fixed rem font
-       sized for A4 reflow overflows and gets clipped when a mobile browser's
-       print pipeline renders the popup at its own (much narrower) viewport
-       instead of true A4 width. Wrapping degrades gracefully either way. */
     .dynamic-board .db-table th,
     .dynamic-board .db-table td {
       white-space: normal;
@@ -785,6 +784,7 @@ function printElement(block) {
     }
 
     .dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort .db-th-label::after {
+      content: none;
       display: none;
     }
 
@@ -846,9 +846,8 @@ function printElement(block) {
       position: static;
     }
 
-    /* Download icon + its leftover whitespace are already stripped in JS. */
     .dynamic-board .db-td-maturity {
-      white-space: nowrap;
+      white-space: normal;
       text-align: right;
       vertical-align: middle;
     }
