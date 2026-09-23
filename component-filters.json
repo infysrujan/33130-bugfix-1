@@ -680,6 +680,22 @@
     "components": []
   },
   {
+    "id": "cell-css-rte",
+    "components": [
+      "richtext"
+    ],
+    "rte": {
+      "toolbar": {
+        "blocks": [
+          "code_block"
+        ],
+        "sections": [
+          "blocks"
+        ]
+      }
+    }
+  },
+  {
     "id": "tab-section",
     "components": [
       "text",

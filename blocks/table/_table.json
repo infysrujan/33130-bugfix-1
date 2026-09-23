@@ -296,16 +296,7 @@
           "value": "",
           "required": false,
           "description": "Optional CSS to control alignment/background of specific cells. Wrap it in <style> tags and target this table using its Id field, e.g. <style>#my-table-id td:nth-child(2) { text-align: center; background: #eee; }</style>",
-          "rte": {
-            "toolbar": {
-              "blocks": [
-                "code_block"
-              ],
-              "sections": [
-                "blocks"
-              ]
-            }
-          }
+          "filter": "cell-css-rte"
         }
       ]
     }
@@ -378,6 +369,22 @@
         }
       },
       "components": []
+    },
+    {
+      "id": "cell-css-rte",
+      "components": [
+        "richtext"
+      ],
+      "rte": {
+        "toolbar": {
+          "blocks": [
+            "code_block"
+          ],
+          "sections": [
+            "blocks"
+          ]
+        }
+      }
     }
   ]
 }
