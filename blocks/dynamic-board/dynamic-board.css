@@ -1153,6 +1153,18 @@
     white-space: nowrap;
   }
 
+  /* Sort affordances are non-functional on paper — drop the arrow icons,
+     on every header, at every breakpoint. */
+  .dynamic-board .db-table thead th.db-th-sort {
+    background-image: none;
+    padding-right: 0.1875rem;
+    cursor: default;
+  }
+
+  .dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort .db-th-label::after {
+    display: none;
+  }
+
   .dynamic-board .db-mp-popup,
   .bbl-calendar-picker-popover {
     display: none;

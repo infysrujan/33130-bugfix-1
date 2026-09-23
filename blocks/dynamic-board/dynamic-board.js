@@ -761,20 +761,31 @@ function printElement(block) {
       color: var(--bbl-color-grey-90);
     }
 
+    /* Allowed to wrap rather than forced onto one line — a fixed rem font
+       sized for A4 reflow overflows and gets clipped when a mobile browser's
+       print pipeline renders the popup at its own (much narrower) viewport
+       instead of true A4 width. Wrapping degrades gracefully either way. */
     .dynamic-board .db-table th,
     .dynamic-board .db-table td {
-      white-space: nowrap;
-    }
-
-    .dynamic-board .db-table td.db-td-name {
       white-space: normal;
       overflow-wrap: break-word;
       word-break: break-word;
+    }
+
+    .dynamic-board .db-table td.db-td-name {
       min-width: 0;
     }
-    /* The Name header cell should also be allowed to wrap if needed. */
-    .dynamic-board .db-table thead th.db-th-name {
-      white-space: normal;
+
+    /* Sort affordances are non-functional on paper — drop the arrow icons.
+       Same-specificity re-declaration of the live .db-th-sort rule, placed
+       after its stylesheet link in <head>, so it reliably wins the cascade. */
+    .dynamic-board .db-table thead th.db-th-sort {
+      background-image: none;
+      padding-right: 0.3rem;
+    }
+
+    .dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort .db-th-label::after {
+      display: none;
     }
 
     .dynamic-board .db-table thead,
