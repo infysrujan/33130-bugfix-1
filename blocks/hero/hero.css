@@ -880,6 +880,11 @@
     height: calc(100vw * .35);
   }
 
+  .bangkok-bankm-card .hero-banner-default .hero-banner-item {
+    max-height: unset;
+    height: unset;
+  }
+
   .hero-banner-content-group .button-container a {
     margin-bottom: 0;
   }
