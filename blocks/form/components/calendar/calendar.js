@@ -1,5 +1,7 @@
 /* eslint-env browser */
 
+import { subscribe } from '../../rules/index.js';
+
 /* ── Locale data ─────────────────────────────────────────────────────────── */
 
 const BE_OFFSET = 543;
@@ -194,7 +196,7 @@ let instanceCount = 0;
 
 /* ── Main decorate ───────────────────────────────────────────────────────── */
 
-export default function decorate(block, fd = {}) {
+export default function decorate(block, _container, formId, fd = {}) {
   // Legacy document-authored fallback: only meaningful when the block still has
   // key/value <div> rows. In an AEM Forms render authored values arrive via `fd`.
   const config = parseBlockConfig(block);
@@ -233,6 +235,31 @@ export default function decorate(block, fd = {}) {
   const initialDate = parseConfigDate(
     toText(getFirstProp(fd, ['default', 'value']) ?? config.value),
   );
+
+  // Disable the AF model's native min/max validation. This component converts
+  // Buddhist-Era authored bounds to Gregorian and enforces the range by disabling
+  // out-of-range days in the grid, so the value can never be out of range. If the
+  // model's own minimum/maximum are left in place it compares our Gregorian
+  // submitted value against the (often BE) authored bound and wrongly reports
+  // "Value must be greater/less than …". Clear them on both the field definition
+  // (non-worker path / newly published) and the live model on register (worker).
+  const clearRangeConstraints = (obj) => {
+    if (!obj) return;
+    delete obj.minimum;
+    delete obj.maximum;
+    delete obj.exclusiveMinimum;
+    delete obj.exclusiveMaximum;
+  };
+  clearRangeConstraints(fd);
+  if (formId) {
+    subscribe(block, formId, (el, model, eventType) => {
+      if (eventType === 'register') {
+        clearRangeConstraints(model);
+        // eslint-disable-next-line no-underscore-dangle
+        clearRangeConstraints(model?._jsonModel);
+      }
+    });
+  }
 
   /* ── Build DOM ── */
   block.innerHTML = '';
