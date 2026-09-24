@@ -52,12 +52,16 @@ export async function loadMfSheetOrder() {
   }
 }
 
+// If the same fund name appears in more than one row (a stale duplicate left
+// behind after the row was dragged to a new position, for example), the row
+// currently authored LAST wins — that's the position an editor sees and
+// expects to take effect, not whichever copy happens to appear earliest.
 function buildSheetOrderMap(matrix) {
   const nameKey = fundNameKey();
   const orderMap = {};
   matrix.forEach((row, index) => {
     const name = norm(row[nameKey] || '');
-    if (name && !(name in orderMap)) orderMap[name] = index;
+    if (name) orderMap[name] = index;
   });
   return orderMap;
 }
