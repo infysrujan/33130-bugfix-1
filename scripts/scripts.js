@@ -415,10 +415,22 @@ function promoteFirstSectionImages(main) {
 }
 
 function isHeaderOverlapped(main) {
-  const first = main?.querySelector(':scope > .section');
+  if (document.body.classList.contains('bangkok-bankm-card')) return true;
+  const first = main?.querySelector(':scope > .section') || main?.firstElementChild;
   return !!(first?.classList.contains('hero-container')
     || first?.classList.contains('carousel-dotted-container')
-    || document.body.classList.contains('bangkok-bankm-card'));
+    || first?.querySelector('.hero, .carousel-dotted'));
+}
+
+function whenStylesReady() {
+  const link = [...document.head.querySelectorAll('link[rel="stylesheet"]')]
+    .find((el) => (el.getAttribute('href') || '').includes('/styles/styles.css'));
+  if (!link || (link.sheet && link.media === 'all')) return Promise.resolve();
+  return new Promise((resolve) => {
+    link.addEventListener('load', resolve, { once: true });
+    link.addEventListener('error', resolve, { once: true });
+    if (link.sheet && link.media === 'all') resolve();
+  });
 }
 
 function startHeader(doc) {
@@ -428,6 +440,9 @@ function startHeader(doc) {
   if (disabled.includes('header')) return Promise.resolve();
   const header = doc.querySelector('header');
   if (!header || header.querySelector('.header')) return Promise.resolve();
+  if (!isHeaderOverlapped(doc.querySelector('main'))) {
+    header.classList.add('is-not-overlapped');
+  }
   return loadHeader(header);
 }
 
@@ -448,6 +463,7 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   decorateOgTitle();
   decorateOgImage();
+  whenStylesReady().then(() => startHeader(doc));
   const main = doc.querySelector('main');
   if (mainHasTabs(main)) {
     ({ default: decorateTabs } = await import('../blocks/tabs/tabs-helper.js'));
@@ -460,7 +476,6 @@ async function loadEager(doc) {
     loadWelcomeBanner(doc);
     if (!isHeaderOverlapped(main)) {
       doc.querySelector('header')?.classList.add('is-not-overlapped');
-      await startHeader(doc);
     }
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
