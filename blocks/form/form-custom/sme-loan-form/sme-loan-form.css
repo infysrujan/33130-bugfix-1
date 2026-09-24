@@ -50,6 +50,10 @@
     }
   }
 
+  & .form form .date-wrapper.field-wrapper:not(.field-review-panel *)::after {
+    top: 0;
+  }
+
   & :is(.form-wrapper, .form.block) {
     padding: 0;
     border-radius: unset;
