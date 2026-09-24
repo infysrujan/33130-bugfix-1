@@ -380,7 +380,7 @@ function buildAccordionPrintDocument(block) {
     .accordion-header { display: none; }
     .accordion-heading { display: none; }
     .accordion-block-toolbar { display: none; }
-    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: center; margin: 1rem auto; font-size: 2.5rem; line-height: 1; }
+    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: center; margin: 1rem auto; font-size: 2.3rem; line-height: 1; }
     html[lang="en"] .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: left; margin: 1rem 0; }
     .accordion-block-container > .default-content-wrapper { margin-bottom: 1.875rem; }
     .download-section .default-content-wrapper { text-align:center;}
