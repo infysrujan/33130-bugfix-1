@@ -4,10 +4,6 @@
   display: block;
 }
 
-.menu-banner-container{
-  min-height: 32.375rem;
-}
-
 .menu-banner .wrapper {
   width: 100%;
   position: relative;
@@ -244,10 +240,6 @@
 
 /* Desktop: width > 1024px */
 @media (width > 64rem) {
-  .menu-banner-container{
-    min-height: unset;
-  }
-
   .menu-banner .desktop-tools {
     display: flow-root;
     padding-top: 1.25rem;
