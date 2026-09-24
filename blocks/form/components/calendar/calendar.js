@@ -326,8 +326,21 @@ export default function decorate(block, fd = {}) {
 
   /* ── State ── */
   let selected = initialDate ? startOfDay(initialDate) : null;
-  let viewYear = (selected || new Date()).getFullYear();
-  let viewMonth = (selected || new Date()).getMonth();
+
+  // Decide which month to open on. A selected value always wins. Otherwise start
+  // from today, but clamp it into the authored [min, max] window so the picker
+  // never opens on a month where every day is disabled — e.g. if the max date is
+  // in an earlier year, open on the max date's month/year instead of today's.
+  function initialViewDate() {
+    if (selected) return selected;
+    const today = startOfDay(new Date());
+    if (maxDate && today > maxDate) return maxDate;
+    if (minDate && today < minDate) return minDate;
+    return today;
+  }
+  const viewSeed = initialViewDate();
+  let viewYear = viewSeed.getFullYear();
+  let viewMonth = viewSeed.getMonth();
   let isOpen = false;
 
   /* ── Render calendar grid ── */
