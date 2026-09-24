@@ -105,9 +105,9 @@
 }
 
 body.credit-card-form .header-banner-slide-container{
-  min-height: 201px;
+  min-height: 12.563rem;
   
   @media (width > 64rem){
-    min-height: 401.5px;
+    min-height: 25.094rem;
   }
 }
