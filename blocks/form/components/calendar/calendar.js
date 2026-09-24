@@ -301,7 +301,7 @@ export default function decorate(block, fd = {}) {
   btnPrev.type = 'button';
   btnPrev.className = 'dpth-nav';
   btnPrev.setAttribute('aria-label', lang === 'th' ? 'เดือนก่อนหน้า' : 'Previous month');
-  btnPrev.innerHTML = '"true">&#8249;</span>';
+  btnPrev.innerHTML = '<span aria-hidden="true">&#8249;</span>';
 
   const monthTitle = document.createElement('h2');
   monthTitle.className = 'dpth-month-title';
@@ -310,7 +310,7 @@ export default function decorate(block, fd = {}) {
   btnNext.type = 'button';
   btnNext.className = 'dpth-nav';
   btnNext.setAttribute('aria-label', lang === 'th' ? 'เดือนถัดไป' : 'Next month');
-  btnNext.innerHTML = '"true">&#8250;</span>';
+  btnNext.innerHTML = '<span aria-hidden="true">&#8250;</span>';
 
   popHeader.append(btnPrev, monthTitle, btnNext);
 
