@@ -117,7 +117,11 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     box-sizing: border-box;
   }
 
-  & .date-wrapper.field-wrapper::after {
+  & .cc-panel-item-form-input.date-wrapper.field-wrapper::after {
+    top: 0;
+  }
+
+  & .cc-panel-item-form-input.date-wrapper.field-wrapper:has(label:not([data-visible="false"])):not(.field-review-panel *)::after {
     top: 1.625rem;
   }
 
@@ -359,32 +363,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     align-items: center;
     max-width: none;
   }
-
-  & .form :is(
-    .button.primary:not(:disabled),
-    .button.tertiary:not(:disabled),
-    .submit-wrapper .button:not(:disabled),
-    .cc-panel-item-panel-action-primary .button:not(:disabled)
-  ) {
-    border: 0.0625rem solid transparent;
-    background-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
-  }
-
-  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) .button:not(:disabled),
-  & .form .button.secondary {
-    border: 0.0625rem solid var(--bbl-color-active-blue);
-    background-color: var(--bbl-color-white);
-    color: var(--bbl-color-active-blue);
-  }
-
-  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) .button:not(:disabled):hover,
-  & .form .button.secondary:hover {
-    border-color: var(--bbl-color-active-blue);
-    background-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
-  }
-
+  
   & .form :is(
     .button.primary:disabled,
     .button.tertiary:disabled,
@@ -409,6 +388,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     font-weight: var(--form-label-font-weight);
     line-height: var(--bbl-text-default-line-height);
     color: var(--bbl-color-grey-90);
+    margin-bottom: 1.875rem;
 
      & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
     & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
