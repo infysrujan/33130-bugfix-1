@@ -794,6 +794,18 @@ function printElement(block) {
       border: 0.0625rem solid var(--bbl-color-grey-20);
     }
 
+    .dynamic-board .db-table thead th.db-th-sort,
+    .dynamic-board .db-table thead th.db-th-sort.db-th-sorted {
+      background-image: none;
+      padding-right: 0.3rem;
+    }
+
+    .dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort .db-th-label::after,
+    .dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort.db-th-sorted .db-th-label::after {
+      content: none;
+      display: none;
+    }
+
     .dynamic-board .db-table tbody td {
       color: var(--bbl-color-black);
       /* Compact rows: clears the live table's 4.6875rem min-height floor. */
@@ -880,6 +892,13 @@ function printElement(block) {
 
       .dynamic-board .db-table tbody tr {
         break-inside: avoid;
+      }
+    }
+
+    @media print and (width < 47.5rem) {
+      .dynamic-board .db-table thead th,
+      .dynamic-board .db-table tbody td {
+        font-size: 0.3125rem;
       }
     }
   `;
@@ -1249,4 +1268,10 @@ export default async function decorate(block) {
 
   // ── print ──
   printBtn.addEventListener('click', () => printElement(block));
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+      e.preventDefault();
+      printElement(block);
+    }
+  });
 }

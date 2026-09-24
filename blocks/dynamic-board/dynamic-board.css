@@ -1115,6 +1115,17 @@
     padding: 0.1875rem;
   }
 
+  .dynamic-board .db-table thead th.db-th-sort,
+  .dynamic-board .db-table thead th.db-th-sort.db-th-sorted {
+    background-image: none;
+  }
+
+  .dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort .db-th-label::after,
+  .dynamic-board .db-table thead th[data-sort="NAME_ENG"].db-th-sort.db-th-sorted .db-th-label::after {
+    content: none;
+    display: none;
+  }
+
   /* Resets the 12rem min-width floor so the colgroup's percentage width wins. */
   .dynamic-board .db-td-name {
     min-width: 0;
