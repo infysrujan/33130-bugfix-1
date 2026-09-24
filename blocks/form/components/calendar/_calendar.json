@@ -146,11 +146,18 @@
           "description": "Displayed when validation script fails."
         },
         {
+          "component": "text",
+          "name": "minBe",
+          "label": "Minimum date (BE)",
+          "valueType": "string",
+          "description": "Buddhist Era date as plain text, format YYYY-MM-DD (e.g. 2554-01-01 = 1 Jan 2011 CE). Year is BE. Use this for Thai forms."
+        },
+        {
           "component": "date-time",
-          "name": "minimumDate",
-          "label": "Minimum date",
+          "name": "minimumDateCe",
+          "label": "Minimum date (CE / Gregorian)",
           "valueType": "date",
-          "description": "Minimum date allowed in the field",
+          "description": "Gregorian minimum date. Use this for English forms. If both BE and CE are set, the one matching the page language wins.",
           "valueFormat": "YYYY-MM-DD[T]HH:mm:ss.000-00:00"
         },
         {
@@ -161,11 +168,18 @@
           "description": "Error message shown when the date entered is before the minimum date."
         },
         {
+          "component": "text",
+          "name": "maxBe",
+          "label": "Maximum date (BE)",
+          "valueType": "string",
+          "description": "Buddhist Era date as plain text, format YYYY-MM-DD (e.g. 2569-12-31 = 31 Dec 2026 CE). Year is BE. Use this for Thai forms."
+        },
+        {
           "component": "date-time",
-          "name": "maximumDate",
-          "label": "Maximum date",
+          "name": "maximumDateCe",
+          "label": "Maximum date (CE / Gregorian)",
           "valueType": "date",
-          "description": "Maximum date allowed in the field",
+          "description": "Gregorian maximum date. Use this for English forms. If both BE and CE are set, the one matching the page language wins.",
           "valueFormat": "YYYY-MM-DD[T]HH:mm:ss.000-00:00"
         },
         {
@@ -234,4 +248,3 @@
     }
   ]
 }
- 
