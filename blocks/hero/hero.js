@@ -1,6 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
-import { fetchConfigs } from '../../scripts/config.js';
 import { trackLinkClick } from '../../scripts/analytics.js';
 
 const MOBILE_MQ = `(width <= ${
@@ -469,7 +468,6 @@ export default function decorate(block) {
   const heroRows = [...block.children].slice(1, 8);
   const hasVideo = heroRows.some((row) => row.children[0]?.textContent?.trim() === 'bg-video');
   const iconsPromise = loadHeroIcons();
-  const configsPromise = fetchConfigs();
   const buildHero = (ytApiSrc = '') => {
   // Pre-pass: find which item has isDefault checked (stored as "true" at children[1])
     let defaultIndex = 0;
@@ -734,12 +732,14 @@ export default function decorate(block) {
   };
 
   if (hasVideo) {
-    Promise.all([configsPromise, iconsPromise])
+    Promise.all([
+      import('../../scripts/config.js').then((mod) => mod.fetchConfigs()),
+      iconsPromise,
+    ])
       .then(([configs]) => buildHero(configs?.heroIframeApi || ''))
       .catch(() => buildHero(''));
   } else {
     iconsPromise.catch(() => {});
-    configsPromise.catch(() => {});
     buildHero();
   }
 }

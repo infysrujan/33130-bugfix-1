@@ -23,7 +23,12 @@ import {
   buildCookieAlert,
 } from './bbl-decorators.js';
 
-import { getCookie } from './utils/cookies.js';
+function getCookie(name) {
+  if (!name) return '';
+  const encoded = encodeURIComponent(name);
+  const match = document.cookie.split('; ').find((row) => row.startsWith(`${encoded}=`));
+  return match ? decodeURIComponent(match.split('=')[1]) : '';
+}
 
 let decorateTabs;
 let initRteAnchors;
@@ -409,6 +414,23 @@ function promoteFirstSectionImages(main) {
   });
 }
 
+function isHeaderOverlapped(main) {
+  const first = main?.querySelector(':scope > .section');
+  return !!(first?.classList.contains('hero-container')
+    || first?.classList.contains('carousel-dotted-container')
+    || document.body.classList.contains('bangkok-bankm-card'));
+}
+
+function startHeader(doc) {
+  const disabled = getMetadata('disable-sections', doc)
+    .split(',')
+    .map((section) => section.trim().toLowerCase());
+  if (disabled.includes('header')) return Promise.resolve();
+  const header = doc.querySelector('header');
+  if (!header || header.querySelector('.header')) return Promise.resolve();
+  return loadHeader(header);
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -435,10 +457,12 @@ async function loadEager(doc) {
     promoteFirstSectionImages(main);
     promoteFirstImage(main);
     document.body.classList.add('appear');
-    await Promise.all([
-      loadSection(main.querySelector('.section'), waitForFirstImage),
-      loadWelcomeBanner(doc),
-    ]);
+    loadWelcomeBanner(doc);
+    if (!isHeaderOverlapped(main)) {
+      doc.querySelector('header')?.classList.add('is-not-overlapped');
+      await startHeader(doc);
+    }
+    await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
 
   try {
@@ -478,7 +502,7 @@ async function loadLazy(doc) {
       .filter(Boolean),
   );
 
-  if (!disabledSections.has('header')) {
+  if (!disabledSections.has('header') && !doc.querySelector('header .header')) {
     loadHeader(doc.querySelector('header'));
   }
   const main = doc.querySelector('main');
