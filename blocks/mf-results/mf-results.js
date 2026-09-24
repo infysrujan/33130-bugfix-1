@@ -143,9 +143,26 @@ function matchesTaxBenefit(row, taxBenefit) {
 }
 
 /**
- * AND-logic: matrix row must pass all three filters.
+ * A row with every filter column left blank was never categorized for the
+ * survey at all — it's not that it matches every combination, it's that no
+ * one has said which combinations it belongs to yet.
+ */
+function isRowCategorized(row) {
+  return Boolean(
+    norm(row['Fund Risk Level'] || '')
+      || norm(row['Fund Has Exchange Rate Risk'] || '')
+      || norm(row['Is an RMF/SSF/Thai ESG/Thai ESGX Fund'] || ''),
+  );
+}
+
+/**
+ * AND-logic: matrix row must pass all three filters. A fully-blank row
+ * (see isRowCategorized) never matches, since each individual filter
+ * treats a blank cell as an auto-pass and would otherwise let an
+ * uncategorized fund match every survey answer combination.
  */
 function matchesRow(row, { riskLevel, fxRisk, taxBenefit }) {
+  if (!isRowCategorized(row)) return false;
   return matchesRiskLevel(row, riskLevel)
     && matchesFxRisk(row, fxRisk)
     && matchesTaxBenefit(row, taxBenefit);
