@@ -281,8 +281,6 @@
 
   .card-comparator-results .ccr-apply-desktop {
     display: flex;
-    background: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
   }
 
   .card-comparator-results .ccr-apply-desktop:hover {
