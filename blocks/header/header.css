@@ -236,9 +236,13 @@ header.is-not-overlapped .mobile-top-bar {
   background-color: var(--bbl-color-truthful-blue);
 }
 
-header.is-not-overlapped  {
+header.is-not-overlapped:has(.is-header-loading){
+  min-height: var(--header-m-height, 4.95rem);;
+}
+
+header.is-not-overlapped ~ main {
   /* matches header height */
-  min-height: var(--header-m-height, 4.95rem);
+  padding-top: var(--header-m-height, 4.95rem);
 }
 
 @media (width > 47.5rem) {
@@ -261,6 +265,8 @@ header.is-not-overlapped  {
     z-index: 100;
     transform: translateY(0);
     transition: transform 0.3s ease, opacity 0.3s ease;
+    min-height: 2.563rem;
+    box-sizing: border-box;
   }
 
   .header-nav>.top-nav.is-hidden {
@@ -309,6 +315,7 @@ header.is-not-overlapped  {
 
   header.is-not-overlapped .main-nav-desktop {
     background-color: var(--bbl-color-truthful-blue);
+    min-height: 5.219rem;
   }
 
   .header .main-nav-right {
@@ -342,11 +349,15 @@ header.is-not-overlapped  {
     background-color: transparent;
   }
 
-  header.is-not-overlapped {
+  header.is-not-overlapped:has(.is-header-loading){
+    min-height: var(--header-d-height, 7.73rem);
+  }
+
+  header.is-not-overlapped ~ main {
     /* matches header height */
 
-    min-height: var(--header-d-height, 7.73rem);
-  } 
+    padding-top: var(--header-d-height, 7.73rem);
+  }
 
   .header .megamenu-panel .megamenu-inner .megamenu-column-links {
     display: block;

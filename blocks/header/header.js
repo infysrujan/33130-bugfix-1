@@ -702,6 +702,7 @@ function applyLayout(header, fragmentTemplate, desktop) {
  * @param {Element} block The header block element
  */
 export default function decorate(block) {
+  document.querySelector('header')?.classList.add('is-header-loading');
   async function init() {
     let navPath = '';
     if (document.querySelector('body.error-page')) {
@@ -712,7 +713,10 @@ export default function decorate(block) {
       navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
     }
     const fragment = await loadFragment(navPath);
-    if (!fragment) return;
+    if (!fragment) {
+      document.querySelector('header')?.classList.remove('is-header-loading');
+      return;
+    }
 
     // Keep a persistent template so we can re-build layout on resize/orientation change
     const fragmentTemplate = fragment.cloneNode(true);
@@ -737,6 +741,7 @@ export default function decorate(block) {
     ) {
       headerSection.classList.add('is-not-overlapped');
     }
+    headerSection.classList.remove('is-header-loading');
 
     isDesktop.addEventListener('change', () => {
       applyLayout(header, fragmentTemplate, isDesktop.matches);

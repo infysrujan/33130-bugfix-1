@@ -28,7 +28,12 @@ function readFromBlock(block) {
     return clone.innerHTML.trim();
   };
   const getText = (cell) => cell?.textContent?.trim() || '';
-  const getPicture = (cell) => cell?.querySelector('picture') || null;
+  const getPicture = (cell, alt = '') => {
+    const picture = cell?.querySelector('picture') || null;
+    const img = picture?.querySelector('img');
+    if (img && alt) img.alt = alt;
+    return picture;
+  };
 
   const firstRowCols = rows[0].children.length;
 
@@ -40,10 +45,11 @@ function readFromBlock(block) {
       const key = keyCell.textContent.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
       cellMap[key] = valCell;
     });
+    const alt = getText(cellMap.detailimagealt) || getText(cellMap.title);
     return {
       aboutUsId: getText(cellMap.aboutusid),
       title: getHtml(cellMap.title),
-      detailImage: getPicture(cellMap.detailimageurl),
+      detailImage: getPicture(cellMap.detailimageurl, alt),
       detailDescription: getHtml(cellMap.detaildescription),
       publishDate: getText(cellMap.publishdate),
     };
@@ -51,19 +57,21 @@ function readFromBlock(block) {
 
   if (firstRowCols > 2) {
     const cells = [...rows[0].children];
+    const alt = getText(cells[1]);
     return {
       aboutUsId: getText(cells[0]),
       title: getHtml(cells[1]),
-      detailImage: getPicture(cells[3]),
+      detailImage: getPicture(cells[3], alt),
       detailDescription: getHtml(cells[5]),
       publishDate: getText(cells[7]),
     };
   }
 
+  const alt = getText(rows[1]?.children[0]);
   return {
     aboutUsId: getText(rows[0]?.children[0]),
     title: getHtml(rows[1]?.children[0]),
-    detailImage: getPicture(rows[3]?.children[0]),
+    detailImage: getPicture(rows[3]?.children[0], alt),
     detailDescription: getHtml(rows[5]?.children[0]),
     publishDate: getText(rows[7]?.children[0]),
   };

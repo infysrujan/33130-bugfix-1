@@ -6,7 +6,7 @@ import {
   decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
-  waitForFirstImage,
+  waitForFirstImage as waitForAemFirstImage,
   loadSection,
   loadSections,
   loadCSS,
@@ -455,6 +455,22 @@ function whenStylesReady() {
   });
 }
 
+async function waitForFirstImage(section) {
+  const lcpCandidate = section.querySelector('img[fetchpriority="high"]');
+  if (!lcpCandidate) {
+    return waitForAemFirstImage(section);
+  }
+  return new Promise((resolve) => {
+    if (!lcpCandidate.complete && lcpCandidate.currentSrc) {
+      lcpCandidate.setAttribute('loading', 'eager');
+      lcpCandidate.addEventListener('load', resolve);
+      lcpCandidate.addEventListener('error', resolve);
+    } else {
+      resolve();
+    }
+  });
+}
+
 function startHeader(doc) {
   const disabled = getMetadata('disable-sections', doc)
     .split(',')
@@ -533,14 +549,6 @@ async function loadLazy(doc) {
     decorateEncodedNbsp,
   } = await import('./custom-rte.js'));
 
-  const themeStyles = `${window.hlx.codeBasePath}/styles`;
-  [
-    'theme-wealth.css',
-    'theme-private.css',
-    'theme-bbm.css',
-    'theme-global-section.css',
-  ].forEach((file) => loadCSS(`${themeStyles}/${file}`));
-
   const disabledSections = new Set(
     getMetadata('disable-sections', doc)
       .split(',')
@@ -614,7 +622,6 @@ async function loadLazy(doc) {
   }
 
   await loadBreadcrumb(doc);
-  loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
   // Add link click handler for URL validation

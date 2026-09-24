@@ -4,138 +4,130 @@
 
 @font-face {
   font-family: BangkokBank-Black;
-  src: url("../fonts/BBLSans-regular.woff2") format("woff2");
+  src: url("../fonts/BBLSans-regular.eot");
+  src: url("../fonts/BBLSans-regular.woff") format("woff"), url("../fonts/BBLSans-regular.woff2") format("woff2");
   font-style: normal;
-  font-weight: 900;
   font-display: swap;
 }
 
 @font-face {
   font-family: BangkokBank-Regular;
-  src: url("../fonts/BBLSans-regular.woff2") format("woff2");
+  src: url("../fonts/BBLSans-regular.eot");
+  src: url("../fonts/BBLSans-regular.woff") format("woff"), url("../fonts/BBLSans-regular.woff2") format("woff2");
   font-style: normal;
-  font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: BangkokBank-Medium;
-  src: url("../fonts/BBLSans-medium.woff2") format("woff2");
+  src: url("../fonts/BBLSans-medium.eot");
+  src: url("../fonts/BBLSans-medium.woff") format("woff"), url("../fonts/BBLSans-medium.woff2") format("woff2");
   font-style: normal;
-  font-weight: 500;
   font-display: swap;
 }
 
 @font-face {
   font-family: BangkokBank-Light;
-  src: url("../fonts/BBLSans-Light.woff2") format("woff2");
+  src: url("../fonts/BBLSans-Light.eot");
+  src: url("../fonts/BBLSans-Light.woff") format("woff"), url("../fonts/BBLSans-Light.woff2") format("woff2");
   font-style: normal;
-  font-weight: 300;
   font-display: swap;
 }
 
 @font-face {
   font-family: BangkokBank-Bold;
-  src: url("../fonts/BBLSans-bold.woff2") format("woff2");
+  src: url("../fonts/BBLSans-bold.eot");
+  src: url("../fonts/BBLSans-bold.woff") format("woff"), url("../fonts/BBLSans-bold.woff2") format("woff2");
   font-style: normal;
-  font-weight: 700;
   font-display: swap;
 }
 
 @font-face {
   font-family: "BangkokBank_Text-Regular";
-  src: url("../fonts/BBLSans_looped-Regular.woff2") format("woff2");
+  src: url("../fonts/BBLSans_looped-Regular.eot");
+  src: url("../fonts/BBLSans_looped-Regular.woff") format("woff"), url("../fonts/BBLSans_looped-Regular.woff2") format("woff2");
   font-style: normal;
-  font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: "BangkokBank_Text-Medium";
-  src: url("../fonts/BBLSans_looped-medium.woff2") format("woff2");
+  src: url("../fonts/BBLSans_looped-medium.eot");
+  src: url("../fonts/BBLSans_looped-medium.woff") format("woff"), url("../fonts/BBLSans_looped-medium.woff2") format("woff2");
   font-style: normal;
-  font-weight: 500;
   font-display: swap;
 }
 
 @font-face {
   font-family: "BangkokBank_Text-Bold";
-  src: url("../fonts/BBLSans_looped-Bold.woff2") format("woff2");
+  src: url("../fonts/BBLSans_looped-Bold.eot");
+  src: url("../fonts/BBLSans_looped-Bold.woff") format("woff"), url("../fonts/BBLSans_looped-Bold.woff2") format("woff2");
   font-style: normal;
-  font-weight: 700;
   font-display: swap;
 }
 
 @font-face {
   font-family: BangkokBank-Regular-Italic;
-  src: url("../fonts/BBLSans-RegularItalic.woff2") format("woff2");
+  src: url("../fonts/BBLSans-RegularItalic.eot");
+  src: url("../fonts/BBLSans-RegularItalic.woff") format("woff"), url("../fonts/BBLSans-RegularItalic.woff2") format("woff2");
   font-style: italic;
-  font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: BangkokBank-Bold-Italic;
-  src: url("../fonts/BBLSans-BoldItalic.woff2") format("woff2");
+  src: url("../fonts/BBLSans-BoldItalic.eot");
+  src: url("../fonts/BBLSans-BoldItalic.woff") format("woff"), url("../fonts/BBLSans-BoldItalic.woff2") format("woff2");
   font-style: italic;
-  font-weight: 700;
   font-display: swap;
 }
 
 /* Legacy Muli font aliases (mapped to BBL Sans) */
-
 @font-face {
   font-family: Muli-Regular;
-  src: url("../fonts/BBLSans-regular.woff2") format("woff2");
+  src: url("../fonts/BBLSans-regular.eot");
+  src: url("../fonts/BBLSans-regular.woff") format("woff"), url("../fonts/BBLSans-regular.woff2") format("woff2");
   font-style: normal;
-  font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: Muli-Light;
-  src: url("../fonts/BBLSans-regular.woff2") format("woff2");
+  src: url("../fonts/BBLSans-regular.eot");
+  src: url("../fonts/BBLSans-regular.woff") format("woff"), url("../fonts/BBLSans-regular.woff2") format("woff2");
   font-style: normal;
-  font-weight: 300;
   font-display: swap;
 }
 
 @font-face {
   font-family: Muli-Bold;
-  src: url("../fonts/BBLSans-bold.woff2") format("woff2");
+  src: url("../fonts/BBLSans-bold.eot");
+  src: url("../fonts/BBLSans-bold.woff") format("woff"), url("../fonts/BBLSans-bold.woff2") format("woff2");
   font-style: normal;
-  font-weight: 700;
   font-display: swap;
 }
 
 @font-face {
   font-family: "BBL Sans Looped";
-  src: url("../fonts/BBLSans_looped-medium.woff2") format("woff2");
+  src: url("../fonts/BBLSans_looped-medium.eot");
+  src: url("../fonts/BBLSans_looped-medium.woff") format("woff"), url("../fonts/BBLSans_looped-medium.woff2") format("woff2");
   font-style: normal;
-  font-weight: 500;
   font-display: swap;
 }
 
 /* Icon font */
-
 @font-face {
   font-family: icomoon;
-  src: url("../fonts/icomoon.woff2") format("woff2");
+  src: url("../fonts/icomoon.woff") format("woff");
   font-weight: 300;
   font-style: normal;
-  font-display: block;
+  font-display: swap;
 }
 
 @font-face {
   font-family: BBLSans-Medium-Numers;
-  src: url("../fonts/BBLSans-Md-numbers.woff2") format("woff2");
+  src: url('../fonts/BBLSans-Md-numbers.woff') format('woff'),
+       url('fonts/BBLSans-Md-Numers.ttf') format('truetype');
   font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-/* Font fallback */
-
-body {
-  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-weight: normal;
 }
