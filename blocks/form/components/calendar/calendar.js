@@ -50,10 +50,15 @@ function startOfDay(d) {
  * Formats a Date as a `yyyy-MM-dd` string using its LOCAL calendar parts.
  * Using toISOString() here would convert to UTC and can roll the date back a
  * day for users behind UTC (e.g. Bangkok, UTC+7), submitting the wrong date.
+ *
+ * `useBE` shifts the year to Buddhist Era (+543). The hidden input is what the
+ * rules engine validates min/max against, and authored min/max stay in BE for
+ * Thai forms (e.g. "2568-08-01") — submitting a Gregorian value here would
+ * compare a ~2025 year against a ~2568 constraint and always fail.
  */
-function toLocalISO(date) {
+function toLocalISO(date, useBE = false) {
   if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
-  const y = date.getFullYear();
+  const y = date.getFullYear() + (useBE ? BE_OFFSET : 0);
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
@@ -296,7 +301,7 @@ export default function decorate(block, fd = {}) {
   btnPrev.type = 'button';
   btnPrev.className = 'dpth-nav';
   btnPrev.setAttribute('aria-label', lang === 'th' ? 'เดือนก่อนหน้า' : 'Previous month');
-  btnPrev.innerHTML = '<span aria-hidden="true">&#8249;</span>';
+  btnPrev.innerHTML = '"true">&#8249;</span>';
 
   const monthTitle = document.createElement('h2');
   monthTitle.className = 'dpth-month-title';
@@ -305,7 +310,7 @@ export default function decorate(block, fd = {}) {
   btnNext.type = 'button';
   btnNext.className = 'dpth-nav';
   btnNext.setAttribute('aria-label', lang === 'th' ? 'เดือนถัดไป' : 'Next month');
-  btnNext.innerHTML = '<span aria-hidden="true">&#8250;</span>';
+  btnNext.innerHTML = '"true">&#8250;</span>';
 
   popHeader.append(btnPrev, monthTitle, btnNext);
 
@@ -388,7 +393,7 @@ export default function decorate(block, fd = {}) {
     // local parts. The visible input must NOT dispatch change — the form binds
     // by wrapper id, so its human-readable value would overwrite the model with
     // an unparseable string and the field would save nothing.
-    hiddenInput.value = toLocalISO(selected);
+    hiddenInput.value = toLocalISO(selected, lang === 'th');
     hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
     hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
     renderGrid();
@@ -505,7 +510,7 @@ export default function decorate(block, fd = {}) {
   /* ── Set initial display value ── */
   if (selected) {
     input.value = formatDisplayDate(selected, lang);
-    hiddenInput.value = toLocalISO(selected);
+    hiddenInput.value = toLocalISO(selected, lang === 'th');
     // Seed the form model with the default value so it submits without the user
     // re-picking it.
     hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
@@ -522,7 +527,7 @@ export default function decorate(block, fd = {}) {
         viewYear = selected.getFullYear();
         viewMonth = selected.getMonth();
         input.value = formatDisplayDate(selected, lang);
-        hiddenInput.value = toLocalISO(selected);
+        hiddenInput.value = toLocalISO(selected, lang === 'th');
       } else {
         input.value = '';
         hiddenInput.value = '';
