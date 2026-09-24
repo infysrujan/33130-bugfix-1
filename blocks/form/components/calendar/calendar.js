@@ -136,13 +136,16 @@ function toText(v) {
  */
 function parseConfigDate(str) {
   if (!str) return null;
-  const m = String(str).trim().match(/^(\d{3,4})-(\d{1,2})-(\d{1,2})/);
+  const s = String(str).trim();
+  if (!s) return null;
+
+  // Preferred: an ISO-like yyyy-mm-dd prefix (covers both "2554-01-01" and
+  // "2020-01-01T00:00:00.000-00:00"). A year >= 2400 is Buddhist Era.
+  const m = s.match(/^(\d{3,4})-(\d{1,2})-(\d{1,2})/);
   if (m) {
     let year = Number.parseInt(m[1], 10);
     const monthIndex = Number.parseInt(m[2], 10) - 1;
     const day = Number.parseInt(m[3], 10);
-    // BE years run ~543 ahead of Gregorian; nothing a form would legitimately
-    // author as a Gregorian year reaches 2400 AD, so this threshold is safe.
     if (year >= 2400) year -= BE_OFFSET;
     const d = new Date(year, monthIndex, day);
     const valid = d.getFullYear() === year
@@ -150,9 +153,19 @@ function parseConfigDate(str) {
       && d.getDate() === day;
     return valid ? startOfDay(d) : null;
   }
-  // Fallback for any non ISO-like value.
-  const d = new Date(str);
-  return Number.isNaN(d.getTime()) ? null : d;
+
+  // Fallback: any other parseable date string. This includes a JS Date
+  // toString() such as "Thu Sep 01 2568 00:00:00 GMT+0000" that AEM can emit
+  // for a date-typed authored value. Rebuild from the parsed calendar parts and
+  // treat a year >= 2400 as Buddhist Era, so the bound resolves to the correct
+  // Gregorian day regardless of the authored string's shape.
+  const parsed = new Date(s);
+  if (Number.isNaN(parsed.getTime())) return null;
+  let year = parsed.getFullYear();
+  const monthIndex = parsed.getMonth();
+  const day = parsed.getDate();
+  if (year >= 2400) year -= BE_OFFSET;
+  return startOfDay(new Date(year, monthIndex, day));
 }
 
 function getDisplayLang() {
@@ -198,6 +211,7 @@ let instanceCount = 0;
 
 export default function decorate(block, _container, formId, fd = {}) {
   // Legacy document-authored fallback: only meaningful when the block still has
+  // key/value <div> rows. In an AEM Forms render authored values arrive via `fd`.
   const config = parseBlockConfig(block);
   const lang = getDisplayLang();
 
