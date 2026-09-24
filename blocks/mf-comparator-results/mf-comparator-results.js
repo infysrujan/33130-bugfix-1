@@ -2,6 +2,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { loadMfSheetOrder, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
 
 const TABLET_MIN = getComputedStyle(document.documentElement)
   .getPropertyValue('--bbl-breakpoint-tablet-min')
@@ -57,60 +58,24 @@ async function loadAllCards() {
   }
 }
 
-function normalizeRow(row) {
-  const out = {};
-  Object.entries(row).forEach(([k, v]) => {
-    const key = k.replace(/\u200B/g, '').trim();
-    out[key] = typeof v === 'string' ? v.replace(/\u200B/g, '').trim() : v;
-  });
-  return out;
-}
-
-/** Build name→sourcing-priority map from the MF filtering matrix sheet */
-async function loadSourcingOrder() {
-  try {
-    const configs = await fetchConfigs();
-    const url = configs.mfFilteringMatrixUrl;
-    if (!url) return null;
-    const json = await fetchGet(url, { throwOnError: false });
-    if (!json) return null;
-    const lang = getLang();
-    const nameKey = lang === 'th' ? 'Fund Name (TH)' : 'Fund Name';
-    const map = {};
-    (json.data || []).map(normalizeRow).forEach((row, i) => {
-      const key = norm(row[nameKey] || row['Fund Name'] || '');
-      // Use the row index as sourcing order if no explicit sourcing column
-      if (key) map[key] = parseInt(row.Sourcing || row.Order || i, 10);
-    });
-    return map;
-  } catch {
-    return null;
-  }
-}
-
 function getCardName(card) {
   return card.name || card.title || card.FundName || card.fundName || '';
 }
 
-function filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap) {
+// Sort by the canonical mf-suggestor sheet order (the same source every
+// other mutual-fund block uses), falling back to selection order only if
+// the sheet itself is unavailable.
+function filterAndSortCards(allCards, selectedIDs, selectedNames, matrix) {
   const normalizedNames = selectedNames.map(norm);
   const matched = allCards.filter((card) => selectedIDs.includes(card.ProductID));
 
-  if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
+  if (!matrix || matrix.length === 0) {
     return normalizedNames
-      .map((n) => matched.find((c) => {
-        const cardName = norm(getCardName(c));
-        const found = cardName === n;
-        return found;
-      }))
+      .map((n) => matched.find((c) => norm(getCardName(c)) === n))
       .filter(Boolean);
   }
 
-  return matched.sort((a, b) => {
-    const sA = sourcingMap[norm(getCardName(a))] ?? 9999;
-    const sB = sourcingMap[norm(getCardName(b))] ?? 9999;
-    return sA - sB;
-  });
+  return sortFundsBySheetOrder(matched, matrix);
 }
 
 // ── DOM builders ───────────────────────────────────────────────────────────────
@@ -361,7 +326,7 @@ function getCardsFromStorage() {
 
 // ── Render ─────────────────────────────────────────────────────────────────────
 
-function renderComparison(container, cards, allCards, sourcingMap, labels, doc) {
+function renderComparison(container, cards, allCards, matrix, labels, doc) {
   container.innerHTML = '';
 
   if (!cards || cards.length === 0) {
@@ -375,7 +340,7 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
 
   const selectedNames = cards.map((c) => c.name);
   const selectedIDs = cards.map((c) => c.id);
-  const sorted = filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap);
+  const sorted = filterAndSortCards(allCards, selectedIDs, selectedNames, matrix);
 
   const displayCards = sorted.length > 0
     ? sorted
@@ -452,10 +417,10 @@ export default async function decorate(block) {
   };
 
   // ── Load data ──────────────────────────────────────────────────────────────
-  const [allCards, sourcingMap] = await Promise.all([loadAllCards(), loadSourcingOrder()]);
+  const [allCards, matrix] = await Promise.all([loadAllCards(), loadMfSheetOrder()]);
 
   function renderAndAlign(cards) {
-    renderComparison(container, cards, allCards, sourcingMap, labels, doc);
+    renderComparison(container, cards, allCards, matrix, labels, doc);
     buildDots();
     doAlign();
   }
