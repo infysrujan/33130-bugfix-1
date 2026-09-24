@@ -252,20 +252,72 @@ function initMobileCarousel(grid, doc) {
   dotsEl.className = 'mfcr-scroll-dots';
   grid.parentElement?.appendChild(dotsEl);
 
-  const getItems = () => [...grid.querySelectorAll('.mfcr-card')];
+  const getItems = () => [...grid.querySelectorAll('.mfcr-card:not(.mfcr-card-clone)')];
 
-  const scrollToItem = (item) => {
-    const offset = item.getBoundingClientRect().left
+  let realItems = [];
+
+  const scrollToItem = (item, instant = false) => {
+    const itemOffset = item.getBoundingClientRect().left
       - grid.getBoundingClientRect().left
       + grid.scrollLeft;
-    grid.scrollTo({ left: offset, behavior: 'smooth' });
+    const left = itemOffset - (grid.clientWidth - item.clientWidth) / 2;
+    if (instant) {
+      grid.scrollLeft = left;
+    } else {
+      grid.scrollTo({ left, behavior: 'smooth' });
+    }
+  };
+
+  const findNearest = () => {
+    const allItems = [...grid.querySelectorAll('.mfcr-card')];
+    const containerCenter = grid.getBoundingClientRect().left + grid.clientWidth / 2;
+    let nearest = null;
+    let minDistance = Infinity;
+    allItems.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      const dist = Math.abs((rect.left + rect.width / 2) - containerCenter);
+      if (dist < minDistance) { minDistance = dist; nearest = item; }
+    });
+    return nearest;
+  };
+
+  const cloneSet = (source) => source.map((item, i) => {
+    const clone = item.cloneNode(true);
+    clone.classList.add('mfcr-card-clone');
+    clone.setAttribute('aria-hidden', 'true');
+    clone.querySelectorAll('a, button').forEach((el) => { el.tabIndex = -1; });
+    clone.dataset.realIndex = i;
+    return clone;
+  });
+
+  const setupLoopClones = () => {
+    grid.querySelectorAll('.mfcr-card-clone').forEach((el) => el.remove());
+    realItems = getItems();
+    if (realItems.length < 2) return;
+
+    cloneSet(realItems).forEach((clone) => grid.insertBefore(clone, realItems[0]));
+    cloneSet(realItems).forEach((clone) => grid.appendChild(clone));
+  };
+
+  const centerWhenReady = (item) => {
+    const attempt = () => {
+      if (grid.clientWidth > 0) {
+        scrollToItem(item, true);
+      } else {
+        requestAnimationFrame(attempt);
+      }
+    };
+    requestAnimationFrame(attempt);
   };
 
   const buildDots = () => {
     dotsEl.innerHTML = '';
-    const items = getItems();
-    if (items.length <= 1) return;
-    items.forEach((item, i) => {
+    setupLoopClones();
+    if (realItems.length <= 1) return;
+
+    centerWhenReady(realItems[0]);
+
+    realItems.forEach((item, i) => {
       const dot = doc.createElement('button');
       dot.type = 'button';
       dot.className = `mfcr-scroll-dot${i === 0 ? ' is-active' : ''}`;
@@ -275,18 +327,25 @@ function initMobileCarousel(grid, doc) {
     });
   };
 
+  let scrollEndTimer;
   grid.addEventListener('scroll', () => {
     const dots = [...dotsEl.querySelectorAll('.mfcr-scroll-dot')];
-    const items = getItems();
-    if (!items.length || !dots.length) return;
-    const containerLeft = grid.getBoundingClientRect().left;
-    let activeIndex = 0;
-    let minDistance = Infinity;
-    items.forEach((item, i) => {
-      const dist = Math.abs(item.getBoundingClientRect().left - containerLeft);
-      if (dist < minDistance) { minDistance = dist; activeIndex = i; }
-    });
+    if (!realItems.length || !dots.length) return;
+
+    const nearest = findNearest();
+    const activeIndex = nearest?.dataset.realIndex !== undefined
+      ? Number(nearest.dataset.realIndex)
+      : realItems.indexOf(nearest);
     dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+
+    clearTimeout(scrollEndTimer);
+    scrollEndTimer = setTimeout(() => {
+      const settled = findNearest();
+      if (settled?.classList.contains('mfcr-card-clone') && settled.dataset.realIndex !== undefined) {
+        const target = realItems[Number(settled.dataset.realIndex)];
+        if (target) scrollToItem(target, true);
+      }
+    }, 120);
   }, { passive: true });
 
   return buildDots;
@@ -297,7 +356,7 @@ function initMobileCarousel(grid, doc) {
 function equalizeRowHeights(grid) {
   if (!window.matchMedia(`(width > ${TABLET_MIN})`).matches) return;
 
-  const cards = [...grid.querySelectorAll('.mfcr-card')];
+  const cards = [...grid.querySelectorAll('.mfcr-card:not(.mfcr-card-clone)')];
   if (cards.length < 2) return;
   if (grid.getBoundingClientRect().width === 0) return;
 
