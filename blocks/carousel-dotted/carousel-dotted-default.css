@@ -769,9 +769,9 @@ p.text-large.text-light {
   }
 
   .carousel-dotted.all-text-animation-variant .carousel-bg {
-    min-height: 350px;
+    min-height: 21.875rem;
     height: calc(100vw * .5);
-    max-height: 350px;
+    max-height: 21.875rem;
   }
 
   .carousel-dotted .carousel-bg::after {
@@ -1076,6 +1076,7 @@ p.text-large.text-light {
   }
 
   .carousel-dotted.all-text-animation-variant .carousel-bg {
-    min-height: 350px;
+    height: calc(100vw * .35);
+    max-height: 33.125rem;
   }
 }
