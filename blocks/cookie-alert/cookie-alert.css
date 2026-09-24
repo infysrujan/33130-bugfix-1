@@ -24,11 +24,6 @@
   font-size: var(--bbl-font-size-base);
   line-height: 1.4;
   text-align: left;
-  min-height: 7.313rem;
-
-  @media (width > 64rem){
-    min-height: 4.55rem;
-  }
 }
 
 .cookie-alert-text p {

@@ -498,6 +498,7 @@ async function loadEager(doc) {
   // if (doc.querySelector('.hero')) startHeroBlock();
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   hintLcpImage(getLcpImage(doc));
+  removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
   decorateOgTitle();
   decorateOgImage();

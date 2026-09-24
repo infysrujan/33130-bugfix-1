@@ -558,7 +558,7 @@ function setupPanel(
   return { resetPage };
 }
 
-export default async function decorate(block) {
+async function renderPromoCardListing(block) {
   const searchParams = new URLSearchParams(window.location.search);
   handleMobileAppView(searchParams);
 
@@ -750,4 +750,8 @@ export default async function decorate(block) {
   }
 
   block.hidden = true;
+}
+
+export default function decorate(block) {
+  renderPromoCardListing(block);
 }

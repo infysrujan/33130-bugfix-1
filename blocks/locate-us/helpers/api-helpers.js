@@ -145,7 +145,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
 
 let provincesCache = null;
 
-export async function fetchNearMe(lat, lng, code, configs) {
+export function fetchNearMe(lat, lng, code, configs) {
   const template = configs?.locateUsGetNearMe;
   if (!template) {
     // eslint-disable-next-line no-console
@@ -153,7 +153,7 @@ export async function fetchNearMe(lat, lng, code, configs) {
     return [];
   }
   const url = buildUrl(template, { LAT: lat, LONG: lng, CODE: code });
-  return (await fetchGet(url, { throwOnError: false })) ?? [];
+  return fetchGet(url, { throwOnError: false }).then((data) => data ?? []);
 }
 
 export async function fetchProvinces(configs) {
@@ -203,7 +203,7 @@ export async function fetchByProvince(province, district, lat, lng, code, config
   return Array.isArray(data) ? data : [data];
 }
 
-export async function fetchByKeyword(lat, lng, keyword, district, code, configs) {
+export function fetchByKeyword(lat, lng, keyword, district, code, configs) {
   const template = configs?.locateUsSearchKeywordWithLocation;
   if (!template) {
     // eslint-disable-next-line no-console
@@ -217,5 +217,5 @@ export async function fetchByKeyword(lat, lng, keyword, district, code, configs)
     DISTRICT: district || '0',
     CODE: code,
   });
-  return (await fetchGet(url, { throwOnError: false })) ?? [];
+  return fetchGet(url, { throwOnError: false }).then((data) => data ?? []);
 }

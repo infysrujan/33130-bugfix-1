@@ -7,12 +7,9 @@ import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
 
-async function fetchJson(url) {
-  try {
-    return await fetchGet(url, { headers: { Accept: 'application/json' }, throwOnError: false });
-  } catch {
-    return null;
-  }
+function fetchJson(url) {
+  return fetchGet(url, { headers: { Accept: 'application/json' }, throwOnError: false })
+    .catch(() => null);
 }
 
 function formatDate(dateStr, locale = 'en-US') {

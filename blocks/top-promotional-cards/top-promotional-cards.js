@@ -57,7 +57,7 @@ function setupPanel(panel, activeCards, placeholders) {
   panel.append(grid);
 }
 
-export default async function decorate(block) {
+async function renderTopPromotionalCards(block) {
   const lang = getLang();
   const configs = await fetchConfigs();
   const baseUrl = configs?.promotionalCardSelector || '';
@@ -116,4 +116,8 @@ export default async function decorate(block) {
       });
     });
   });
+}
+
+export default function decorate(block) {
+  renderTopPromotionalCards(block);
 }
