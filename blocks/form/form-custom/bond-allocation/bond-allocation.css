@@ -340,7 +340,7 @@
     }
     }
 
-  /* Stack buttons only on phones; tablets keep the side-by-side base layout */
+  /* Stack buttons only on phones; tablets/desktop keep the side-by-side base layout */
   @media (width < 47.5rem) {
     & .form form :is(.field-bond-allocation-review, .field-bond-allocation-notfound) fieldset.field-button-panel {
       flex-direction: column;

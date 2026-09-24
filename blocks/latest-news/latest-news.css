@@ -13,11 +13,6 @@
   margin: 0 auto;
 }
 
-.latest-news-container .button-container .button-m {
-  min-width: var(--bbl-btn-min-width-mobile);
-  box-sizing: border-box;
-}
-
 .latest-news-container
   .default-content-wrapper
   > :is(h1, h2, h3, h4, h5, h6):first-child {

@@ -289,9 +289,6 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   margin: 0;
   width: 100%;
   margin-bottom: var(--bbl-margin-block-10px);
-}
-
-main .section.wizard-forms .form form .field-prospectage {
   position: relative;
 }
 
@@ -317,9 +314,10 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   text-align: right;
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-wizard-line-height-base-mobile);
+  padding-left: var(--bbl-space-500);
 }
 
-main .section.wizard-forms .form form .field-prospectage > label.field-label::before {
+main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) > label.field-label::before {
   content: attr(title);
   position: absolute;
   left: var(--bbl-margin-block-14px);
@@ -332,11 +330,7 @@ main .section.wizard-forms .form form .field-prospectage > label.field-label::be
   font-size: var(--bbl-font-size-b1-mobile);
 }
 
-main .section.wizard-forms .form form .field-prospectage input {
-  padding-left: var(--bbl-space-500);
-}
-
-main .section.wizard-forms .form form .field-prospectage input::placeholder {
+main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) input::placeholder {
   color: transparent;
 }
 
@@ -391,6 +385,7 @@ main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.r
 }
 
 .bbl-wizard-step-title {
+  display: none;
   text-align: center;
   color: var(--bbl-color-grey-85);
   transition: color 0.25s ease, font-weight 0.25s ease;
@@ -578,6 +573,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   }
 
   .bbl-wizard-step-title {
+    display: block;
     width: auto;
     min-width: unset;
     white-space: nowrap;
@@ -603,7 +599,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
     scroll-margin-top: 9.5rem;
   }
 
-  main .section.wizard-forms .form form .field-prospectage > label.field-label::before {
+  main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) > label.field-label::before {
     height: 3.625rem;
     top: 1.8125rem;
     font-size: var(--bbl-font-size-b1-desktop);

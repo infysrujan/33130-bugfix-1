@@ -88,14 +88,13 @@
     right: 0;
     width: max-content;
     min-width: 100%;
-    max-width: 72vw;
 }
 
 .sub-nav .sub-nav-select .global-dropdown-panel li a {
     color: var(--bbl-color-black);
 
     /* Allow long option text to wrap instead of overflowing viewport */
-    max-width: 100%;
+    max-width: 72vw;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;

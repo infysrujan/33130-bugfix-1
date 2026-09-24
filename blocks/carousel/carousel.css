@@ -196,7 +196,7 @@
     line-clamp: 4;
 }
 
-.carousel-cta {
+.carousel-cta.button-m {
     display: none;
 }
 
@@ -405,11 +405,8 @@
         line-clamp: 7;
     }
 
-    .carousel-cta {
-        display: inline-block;
-        margin-top: auto;
-        flex-shrink: 0;
-        align-self: flex-start;
+    .carousel-cta.button-m {
+        display: inline-flex;
     }
 
     .carousel-track .carousel-item:not(.active) {
@@ -465,7 +462,7 @@
         margin-bottom: var(--bbl-space-100);
     }
 
-    .carousel-track .carousel-item:not(.active) .carousel-cta {
+    .carousel-track .carousel-item:not(.active) .carousel-cta.button-m {
         margin-bottom: var(--bbl-space-250);
     }
 }
