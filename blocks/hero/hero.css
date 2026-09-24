@@ -106,6 +106,12 @@
   padding-bottom: 1.875rem;
 }
 
+@media (width > 47.5rem) {
+    .bangkok-bankm-card .hero-banner-container {
+      padding-bottom: 0;
+    }
+}
+
 .bangkok-bankm-card .tabs-nav-wrapper .tabs-nav button:hover{
     color: var(--bbl-color-blue);
   }
@@ -356,10 +362,6 @@
 @media (width > 47.5rem) {
   .hero-banner-content.content {
     color: var(--bbl-color-white);
-  }
-
-  .bangkok-bankm-card .hero-banner-container{
-    padding-bottom: 0;
   }
 }
 
