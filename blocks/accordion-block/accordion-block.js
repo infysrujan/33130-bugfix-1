@@ -157,20 +157,17 @@ function extractTitleAndBody(section) {
 /**
  * Same-page anchor links inside accordion panels (e.g. the FAQ "View details
  * of supporting providers by country." link on crossborder-qrpayment-in-thai)
- * jump to targets elsewhere on the page via a plain native href="#id" click.
- * On desktop, reaching a target via an upward scroll re-reveals the top
- * utility nav row without the main nav's flush-to-top state (see header.js
- * isScrollingUp), so the header can be taller than the site's default
- * scroll-margin-top assumes. Tag each such target with a class carrying the
- * larger offset so the browser's own anchor-jump already clears the header.
+ * jump to targets elsewhere on the page. On desktop, reaching a target via an
+ * upward scroll re-reveals the top utility nav row without the main nav's
+ * flush-to-top state (see header.js isScrollingUp), so the header can be
+ * taller than the site's default scroll-margin-top assumes. Tag each such
+ * target with a class carrying the larger offset.
  *
- * The native click also leaves the hash in the URL, which would make any
- * later reload (or reopening that URL) re-trigger the browser's own
- * fragment-jump on load — independent of any JS, since that's how URL
- * fragments work. Right after the click, once the native scroll has already
- * happened, quietly clean the hash back out of the URL via replaceState so a
- * reload starts fresh. This generalizes to any such link automatically,
- * without hardcoding per-target ids anywhere.
+ * The click is handled here instead of natively so the scroll can be
+ * explicitly smooth (Element.scrollIntoView({behavior:'smooth'}), independent
+ * of any site-wide scroll-behavior CSS) and so the URL/hash is never touched
+ * at all — which also means a later reload never re-triggers the browser's
+ * native on-load fragment-jump, since there's no hash for it to react to.
  * @param {Element} block
  */
 function markAnchorScrollTargets(block) {
@@ -180,10 +177,9 @@ function markAnchorScrollTargets(block) {
     const target = document.getElementById(id);
     if (!target) return;
     target.classList.add('accordion-anchor-scroll-target');
-    link.addEventListener('click', () => {
-      requestAnimationFrame(() => {
-        window.history.replaceState(null, '', window.location.pathname + window.location.search);
-      });
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 }
