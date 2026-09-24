@@ -1115,6 +1115,10 @@
     word-break: keep-all;
   }
 
+  .dynamic-board .db-table tbody td {
+    font-size: 0.4rem;
+  }
+
   /* Resets the 12rem min-width floor so the colgroup's percentage width wins. */
   .dynamic-board .db-td-name {
     min-width: 0;

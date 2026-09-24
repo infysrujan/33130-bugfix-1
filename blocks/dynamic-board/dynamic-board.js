@@ -518,7 +518,7 @@ function printElement(block) {
   const calLabelCs = cs(liveCalLabel);
 
   const deviceWidth = window.innerWidth;
-  const printTableFontSize = deviceWidth < 760 ? '0.5rem' : deviceWidth < 1024 ? '0.5625rem' : '0.625rem';
+  const printTableFontSize = deviceWidth < 760 ? '0.4rem' : deviceWidth < 1024 ? '0.4rem' : '0.5rem';
 
   // Header text color/weight still come from live; black is a safe fallback.
   const headerColor = headerCs?.color || 'var(--bbl-color-black)';
