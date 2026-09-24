@@ -65,6 +65,35 @@ function parseBlockConfig(block) {
   return config;
 }
 
+/**
+ * Resolves an authored property from the form-definition object, checking the
+ * locations AEM Forms / Universal Editor may store it in (same fallback chain
+ * used by the other components in blocks/form/components):
+ *   1. fd.properties[key]              – nested (standard AEM Forms runtime)
+ *   2. fd.properties['properties.key'] – dot-notation preserved inside properties
+ *   3. fd['properties.key']            – flat dot-notation directly on fd
+ *   4. fd[key]                         – directly on fd (core constraints / doc-based)
+ */
+function getProp(fd, key) {
+  if (!fd) return undefined;
+  const nested = fd.properties?.[key];
+  if (nested !== undefined && nested !== null && nested !== '') return nested;
+  const nestedDot = fd.properties?.[`properties.${key}`];
+  if (nestedDot !== undefined && nestedDot !== null && nestedDot !== '') return nestedDot;
+  const flat = fd[`properties.${key}`];
+  if (flat !== undefined && flat !== null && flat !== '') return flat;
+  return fd[key];
+}
+
+/** First non-empty value among several candidate keys. */
+function getFirstProp(fd, keys) {
+  for (let i = 0; i < keys.length; i += 1) {
+    const v = getProp(fd, keys[i]);
+    if (v !== undefined && v !== null && v !== '') return v;
+  }
+  return undefined;
+}
+
 function parseConfigDate(str) {
   if (!str) return null;
   const d = new Date(str);
@@ -112,19 +141,36 @@ let instanceCount = 0;
 
 /* ── Main decorate ───────────────────────────────────────────────────────── */
 
-export default function decorate(block) {
+export default function decorate(block, fd = {}) {
+  // Legacy document-authored fallback: only meaningful when the block still has
+  // key/value <div> rows. In an AEM Forms render authored values arrive via `fd`.
   const config = parseBlockConfig(block);
   const lang = getDisplayLang();
 
   instanceCount += 1;
   const inputId = `dpth-input-${instanceCount}`;
 
-  const labelText = config.label || (lang === 'th' ? 'เลือกวันที่' : 'Select date');
-  const placeholder = config.placeholder || (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
-  const fieldName = config.name || 'date';
-  const minDate = parseConfigDate(config['min-date']);
-  const maxDate = parseConfigDate(config['max-date']) ?? startOfDay(new Date());
-  const initialDate = parseConfigDate(config.value);
+  const labelText = getFirstProp(fd, ['label', 'jcr:title'])
+    ?? fd.label?.value
+    ?? config.label
+    ?? (lang === 'th' ? 'เลือกวันที่' : 'Select date');
+  const placeholder = getProp(fd, 'placeholder')
+    ?? config.placeholder
+    ?? (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
+  const fieldName = getProp(fd, 'name') ?? config.name ?? 'date';
+
+  // Authored min/max. The model exposes custom "minimumDate"/"maximumDate";
+  // the core datepicker resourceType may instead surface "minimum"/"maximum".
+  const minDate = parseConfigDate(
+    getFirstProp(fd, ['minimumDate', 'minimum']) ?? config['min-date'],
+  );
+  const maxDate = parseConfigDate(
+    getFirstProp(fd, ['maximumDate', 'maximum']) ?? config['max-date'],
+  ) ?? startOfDay(new Date());
+
+  const initialDate = parseConfigDate(
+    getFirstProp(fd, ['default', 'value']) ?? config.value,
+  );
 
   /* ── Build DOM ── */
   block.innerHTML = '';
