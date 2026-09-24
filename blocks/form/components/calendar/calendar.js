@@ -46,6 +46,19 @@ function startOfDay(d) {
   return x;
 }
 
+/**
+ * Formats a Date as a `yyyy-MM-dd` string using its LOCAL calendar parts.
+ * Using toISOString() here would convert to UTC and can roll the date back a
+ * day for users behind UTC (e.g. Bangkok, UTC+7), submitting the wrong date.
+ */
+function toLocalISO(date) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 function sameDay(a, b) {
   return a.getFullYear() === b.getFullYear()
     && a.getMonth() === b.getMonth()
@@ -92,6 +105,22 @@ function getFirstProp(fd, keys) {
     if (v !== undefined && v !== null && v !== '') return v;
   }
   return undefined;
+}
+
+/**
+ * Coerces an authored value to a plain string. AEM Forms stores label/title and
+ * similar rich fields as objects like `{ value, richText, visible }`, so writing
+ * them straight into `textContent` yields "[object Object]". This unwraps `.value`
+ * (and strips tags) before falling back to String().
+ */
+function toText(v) {
+  if (v === undefined || v === null) return '';
+  if (typeof v === 'string') return v;
+  if (typeof v === 'object') {
+    if (typeof v.value === 'string') return v.value.replace(/<[^>]*>/g, '').trim();
+    return '';
+  }
+  return String(v);
 }
 
 /**
@@ -174,26 +203,35 @@ export default function decorate(block, fd = {}) {
   instanceCount += 1;
   const inputId = `dpth-input-${instanceCount}`;
 
-  const labelText = getFirstProp(fd, ['label', 'jcr:title'])
-    ?? fd.label?.value
-    ?? config.label
-    ?? (lang === 'th' ? 'เลือกวันที่' : 'Select date');
-  const placeholder = getProp(fd, 'placeholder')
-    ?? config.placeholder
-    ?? (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
-  const fieldName = getProp(fd, 'name') ?? config.name ?? 'date';
+  const labelText = toText(
+    fd.label?.value
+    ?? getFirstProp(fd, ['label', 'jcr:title'])
+    ?? config.label,
+  ) || (lang === 'th' ? 'เลือกวันที่' : 'Select date');
+  const placeholder = toText(
+    getProp(fd, 'placeholder') ?? config.placeholder,
+  ) || (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
+  const fieldName = toText(getProp(fd, 'name') ?? config.name) || 'date';
+
+  // "Hide title": AEM sets fd.label.visible = false when the author ticks it,
+  // and the model also exposes a boolean `hideTitle`. Either hides the label
+  // (kept visible in edit mode via the runtime's [data-visible="false"] rule).
+  const hideTitle = fd.label?.visible === false
+    || getProp(fd, 'hideTitle') === true
+    || getProp(fd, 'hideTitle') === 'true';
 
   // Authored min/max. The model exposes custom "minimumDate"/"maximumDate";
   // the core datepicker resourceType may instead surface "minimum"/"maximum".
+  // Values may arrive as strings or as { value } objects, so unwrap first.
   const minDate = parseConfigDate(
-    getFirstProp(fd, ['minimumDate', 'minimum']) ?? config['min-date'],
+    toText(getFirstProp(fd, ['minimumDate', 'minimum']) ?? config['min-date']),
   );
   const maxDate = parseConfigDate(
-    getFirstProp(fd, ['maximumDate', 'maximum']) ?? config['max-date'],
+    toText(getFirstProp(fd, ['maximumDate', 'maximum']) ?? config['max-date']),
   ) ?? startOfDay(new Date());
 
   const initialDate = parseConfigDate(
-    getFirstProp(fd, ['default', 'value']) ?? config.value,
+    toText(getFirstProp(fd, ['default', 'value']) ?? config.value),
   );
 
   /* ── Build DOM ── */
@@ -203,9 +241,14 @@ export default function decorate(block, fd = {}) {
   wrapper.className = 'dpth-wrapper';
 
   const labelEl = document.createElement('label');
-  labelEl.className = 'dpth-label';
+  labelEl.className = 'dpth-label field-label';
   labelEl.htmlFor = inputId;
   labelEl.textContent = labelText;
+  if (hideTitle) {
+    // Matches the runtime convention: hidden on the live form via
+    // `form:not(.edit-mode) [data-visible="false"]`, still shown in edit mode.
+    labelEl.dataset.visible = 'false';
+  }
 
   const fieldEl = document.createElement('div');
   fieldEl.className = 'dpth-field';
@@ -229,6 +272,10 @@ export default function decorate(block, fd = {}) {
   const hiddenInput = document.createElement('input');
   hiddenInput.type = 'hidden';
   hiddenInput.name = fieldName;
+  // The form model binds by field id (rules engine looks fields up via `#id` and
+  // the change delegation reads value from this element). Carry fd.id so both
+  // read (submit) and write (prefill / rules) round-trip correctly.
+  if (fd?.id) hiddenInput.id = fd.id;
 
   fieldEl.append(input, calIcon);
   wrapper.append(labelEl, fieldEl, hiddenInput);
@@ -323,10 +370,14 @@ export default function decorate(block, fd = {}) {
   function commitDay(day) {
     selected = startOfDay(new Date(viewYear, viewMonth, day));
     input.value = formatDisplayDate(selected, lang);
-    const [datePart] = selected.toISOString().split('T');
-    hiddenInput.value = datePart;
+    // The hidden input is the ONLY element the form model reads. It must hold a
+    // clean string in a format the date model accepts (yyyy-MM-dd), built from
+    // local parts. The visible input must NOT dispatch change — the form binds
+    // by wrapper id, so its human-readable value would overwrite the model with
+    // an unparseable string and the field would save nothing.
+    hiddenInput.value = toLocalISO(selected);
+    hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
     hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
     renderGrid();
   }
   /* ── Open / close ── */
@@ -441,8 +492,10 @@ export default function decorate(block, fd = {}) {
   /* ── Set initial display value ── */
   if (selected) {
     input.value = formatDisplayDate(selected, lang);
-    const [datePart] = selected.toISOString().split('T');
-    hiddenInput.value = datePart;
+    hiddenInput.value = toLocalISO(selected);
+    // Seed the form model with the default value so it submits without the user
+    // re-picking it.
+    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   /* ── Public API ── */
@@ -456,12 +509,13 @@ export default function decorate(block, fd = {}) {
         viewYear = selected.getFullYear();
         viewMonth = selected.getMonth();
         input.value = formatDisplayDate(selected, lang);
-        const [datePart] = selected.toISOString().split('T');
-        hiddenInput.value = datePart;
+        hiddenInput.value = toLocalISO(selected);
       } else {
         input.value = '';
         hiddenInput.value = '';
       }
+      hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+      hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
       if (isOpen) renderGrid();
     },
     destroy() {
