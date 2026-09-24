@@ -243,11 +243,11 @@ export default function decorate(block, _container, formId, fd = {}) {
   // in the "wrong" field still resolves correctly. Also falls back to the core
   // datepicker "minimum"/"maximum" and any legacy document-based config.
   const minKeys = lang === 'th'
-    ? ['minimumDate', 'minimumDateCe', 'minimum']
-    : ['minimumDateCe', 'minimumDate', 'minimum'];
+    ? ['minBe', 'minimumDate', 'minimumDateCe', 'minimum']
+    : ['minimumDateCe', 'minBe', 'minimumDate', 'minimum'];
   const maxKeys = lang === 'th'
-    ? ['maximumDate', 'maximumDateCe', 'maximum']
-    : ['maximumDateCe', 'maximumDate', 'maximum'];
+    ? ['maxBe', 'maximumDate', 'maximumDateCe', 'maximum']
+    : ['maximumDateCe', 'maxBe', 'maximumDate', 'maximum'];
   const minDate = parseConfigDate(
     toText(getFirstProp(fd, minKeys) ?? config['min-date']),
   );
@@ -290,6 +290,19 @@ export default function decorate(block, _container, formId, fd = {}) {
 
   /* ── Build DOM ── */
   block.innerHTML = '';
+
+  // Diagnostic: expose the resolved bounds on the field wrapper for DevTools.
+  //  - *-resolved  = internal Gregorian value (yyyy-MM-dd), what JS actually stores
+  //  - *-be        = the same day shown in Buddhist Era (year + 543), what users see
+  // 2025-09-20 (resolved) and 2568-09-20 (be) are the SAME day.
+  const toBeISO = (d) => (d
+    ? `${d.getFullYear() + BE_OFFSET}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    : '');
+  block.dataset.minResolved = minDate ? toLocalISO(minDate) : '';
+  block.dataset.maxResolved = maxDate ? toLocalISO(maxDate) : '';
+  block.dataset.minBe = toBeISO(minDate);
+  block.dataset.maxBe = toBeISO(maxDate);
+  block.dataset.defaultResolved = initialDate ? toLocalISO(initialDate) : '';
 
   const wrapper = document.createElement('div');
   wrapper.className = 'dpth-wrapper';

@@ -8446,10 +8446,10 @@
       },
       {
         "component": "text",
-        "name": "minimumDate",
+        "name": "minBe",
         "label": "Minimum date (BE)",
         "valueType": "string",
-        "description": "Buddhist Era date, format YYYY-MM-DD (e.g. 2554-01-01 = 1 Jan 2011 CE). Year is BE. Use this for Thai forms. If this field shows a long date like 'Thu Sep 01 2568 …', clear it and retype as 2568-09-01."
+        "description": "Buddhist Era date as plain text, format YYYY-MM-DD (e.g. 2554-01-01 = 1 Jan 2011 CE). Year is BE. Use this for Thai forms."
       },
       {
         "component": "date-time",
@@ -8468,10 +8468,10 @@
       },
       {
         "component": "text",
-        "name": "maximumDate",
+        "name": "maxBe",
         "label": "Maximum date (BE)",
         "valueType": "string",
-        "description": "Buddhist Era date, format YYYY-MM-DD (e.g. 2569-12-31 = 31 Dec 2026 CE). Year is BE. Use this for Thai forms. If this field shows a long date like 'Thu Sep 01 2568 …', clear it and retype as 2569-12-31."
+        "description": "Buddhist Era date as plain text, format YYYY-MM-DD (e.g. 2569-12-31 = 31 Dec 2026 CE). Year is BE. Use this for Thai forms."
       },
       {
         "component": "date-time",
