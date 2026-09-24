@@ -3,14 +3,21 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import {
-  plaintext, resolveApplyUrl, resolveCardPageUrl, resolveImageUrl,
+  plaintext,
+  resolveApplyUrl,
+  resolveCardPageUrl,
+  resolveImageUrl,
 } from '../../scripts/utils/card-compare-fields.js';
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
 
 // Normalize a string: strip zero-width spaces, collapse whitespace, lowercase
 function norm(str) {
-  return (str || '').toString().replace(/\u200B/g, '').replace(/\s+/g, ' ').toLowerCase()
+  return (str || '')
+    .toString()
+    .replace(/\u200B/g, '')
+    .replace(/\s+/g, ' ')
+    .toLowerCase()
     .trim();
 }
 
@@ -42,7 +49,12 @@ async function loadAllCards() {
     const cacheKey = `bbl-credit-cards-${lang}`;
     if (!window[cacheKey]) {
       window[cacheKey] = fetchGet(url, { throwOnError: false })
-        .then((json) => json?.data?.creditCardsList?.items || json?.data || json?.items || [])
+        .then(
+          (json) => json?.data?.creditCardsList?.items
+            || json?.data
+            || json?.items
+            || [],
+        )
         .catch(() => []);
     }
     return window[cacheKey];
@@ -82,22 +94,15 @@ async function loadSourcingOrder() {
   }
 }
 
-// Filter allCards to those matching selectedNames, sorted by sourcing priority (or selection order)
-function filterAndSortCards(allCards, selectedNames, sourcingMap) {
-  const normalizedNames = selectedNames.map(norm);
-
-  const matched = allCards.filter((card) => {
-    const cardName = norm(card.name || '');
-    return normalizedNames.some((n) => cardName === n);
-  });
+// Match by stable card id, not localized name, so the selection survives a TH/EN switch.
+function filterAndSortCards(allCards, selectedIDs, sourcingMap) {
+  const cardKey = (c) => c.cardId || c.id;
+  const matched = allCards.filter((card) => selectedIDs.includes(cardKey(card)));
 
   // No sourcing map available — preserve the user's selection order
   if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
-    return normalizedNames
-      .map((n) => matched.find((c) => {
-        const cardName = norm(c.name || '');
-        return cardName === n || cardName.includes(n);
-      }))
+    return selectedIDs
+      .map((id) => matched.find((c) => cardKey(c) === id))
       .filter(Boolean);
   }
 
@@ -158,11 +163,44 @@ function buildApplyArea(card, doc, labels, icons) {
   return area;
 }
 
+// The comparison field rows for one card, in display order (value is '' when empty).
+function getCardFields(card, labels) {
+  return [
+    { key: 'slogan', label: labels.slogan, value: plaintext(card.slogan) },
+    {
+      key: 'privileges',
+      label: labels.privileges,
+      value: plaintext(card.privileges),
+    },
+    {
+      key: 'qualification',
+      label: labels.qualification,
+      value: plaintext(card.qualification),
+    },
+    {
+      key: 'rewardPoints',
+      label: labels.rewardPoints,
+      value: plaintext(card.rewardPointsCashback),
+    },
+    {
+      key: 'mileage',
+      label: labels.mileage,
+      value: plaintext(card.mileageRedemption),
+    },
+    {
+      key: 'cardBenefits',
+      label: labels.cardBenefits,
+      value: plaintext(card.cardBenefits),
+    },
+    { key: 'fees', label: labels.fees, value: plaintext(card.fees) },
+  ];
+}
+
 // Build a full comparison card column matching the live site structure:
 //   .ccr-card > .ccr-inner > .ccr-thumb (bg-image)
 //              > .ccr-caption > h3 + .ccr-apply-area + .compare-info (dl/dt/dd)
 //              > .ccr-button-group > a.ccr-learn-more
-function buildCompareCard(card, doc, labels, icons) {
+function buildCompareCard(card, doc, labels, icons, activeKeys) {
   const name = card.name || '';
   const imgSrc = resolveImageUrl(card, 'image');
   let learnHref = resolveCardPageUrl(card);
@@ -208,18 +246,8 @@ function buildCompareCard(card, doc, labels, icons) {
   const compareInfo = doc.createElement('div');
   compareInfo.className = 'compare-info';
 
-  const fields = [
-    { key: 'slogan', label: labels.slogan, value: plaintext(card.slogan) },
-    { key: 'privileges', label: labels.privileges, value: plaintext(card.privileges) },
-    { key: 'qualification', label: labels.qualification, value: plaintext(card.qualification) },
-    { key: 'rewardPoints', label: labels.rewardPoints, value: plaintext(card.rewardPointsCashback) },
-    { key: 'mileage', label: labels.mileage, value: plaintext(card.mileageRedemption) },
-    { key: 'cardBenefits', label: labels.cardBenefits, value: plaintext(card.cardBenefits) },
-    { key: 'fees', label: labels.fees, value: plaintext(card.fees) },
-  ];
-
-  fields.forEach(({ key, label, value }) => {
-    if (!value) return;
+  getCardFields(card, labels).forEach(({ key, label, value }) => {
+    if (!activeKeys.has(key)) return;
     const dl = doc.createElement('dl');
     dl.dataset.field = key;
     const dt = doc.createElement('dt');
@@ -253,7 +281,9 @@ function initMobileCarousel(grid, doc) {
   grid.parentElement.appendChild(dotsEl);
 
   const isMobile = () => window.innerWidth < 760;
-  const getItems = () => [...grid.querySelectorAll('.ccr-card:not([data-ccr-clone])')];
+  const getItems = () => [
+    ...grid.querySelectorAll('.ccr-card:not([data-ccr-clone])'),
+  ];
 
   const centerLeft = (item) => item.getBoundingClientRect().left
     - grid.getBoundingClientRect().left
@@ -271,7 +301,10 @@ function initMobileCarousel(grid, doc) {
     cards.forEach((item) => {
       const r = item.getBoundingClientRect();
       const dist = Math.abs(r.left + r.width / 2 - center);
-      if (dist < min) { min = dist; best = item; }
+      if (dist < min) {
+        min = dist;
+        best = item;
+      }
     });
     return best;
   };
@@ -299,7 +332,9 @@ function initMobileCarousel(grid, doc) {
     if (items.length <= 1) return;
     const next = (currentIndex() + 1) % items.length;
     if (next === 0) {
-      const clones = [...grid.querySelectorAll('.ccr-card[data-ccr-clone-of="0"]')];
+      const clones = [
+        ...grid.querySelectorAll('.ccr-card[data-ccr-clone-of="0"]'),
+      ];
       scrollToItem(clones[clones.length - 1] || items[0]);
       return;
     }
@@ -366,25 +401,30 @@ function initMobileCarousel(grid, doc) {
     const real = items[Number(snapped.dataset.ccrCloneOf)];
     if (!real) return;
     grid.style.scrollSnapType = 'none';
-    grid.scrollLeft += real.getBoundingClientRect().left - snapped.getBoundingClientRect().left;
+    grid.scrollLeft
+      += real.getBoundingClientRect().left - snapped.getBoundingClientRect().left;
     requestAnimationFrame(() => grid.style.removeProperty('scroll-snap-type'));
   };
 
   let wrapTimer;
-  grid.addEventListener('scroll', () => {
-    const dots = [...dotsEl.querySelectorAll('.ccr-scroll-dot')];
-    const items = getItems();
-    if (items.length && dots.length) {
-      const snapped = closestCard([...grid.querySelectorAll('.ccr-card')]);
-      const activeIndex = snapped?.dataset.ccrCloneOf !== undefined
-        ? Number(snapped.dataset.ccrCloneOf)
-        : items.indexOf(snapped);
-      dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
-    }
-    if (!isMobile()) return;
-    clearTimeout(wrapTimer);
-    wrapTimer = setTimeout(wrapIfClone, 180);
-  }, { passive: true });
+  grid.addEventListener(
+    'scroll',
+    () => {
+      const dots = [...dotsEl.querySelectorAll('.ccr-scroll-dot')];
+      const items = getItems();
+      if (items.length && dots.length) {
+        const snapped = closestCard([...grid.querySelectorAll('.ccr-card')]);
+        const activeIndex = snapped?.dataset.ccrCloneOf !== undefined
+          ? Number(snapped.dataset.ccrCloneOf)
+          : items.indexOf(snapped);
+        dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+      }
+      if (!isMobile()) return;
+      clearTimeout(wrapTimer);
+      wrapTimer = setTimeout(wrapIfClone, 180);
+    },
+    { passive: true },
+  );
   grid.addEventListener('scrollend', wrapIfClone);
   grid.addEventListener('touchstart', stopAuto, { passive: true });
   grid.addEventListener('touchend', startAuto, { passive: true });
@@ -403,17 +443,27 @@ function getCardsFromStorage() {
       const cards = JSON.parse(stored);
       if (Array.isArray(cards) && cards.length) return cards;
     }
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 
   // Cookie fallback: read cookie name from URL param, parse stored JSON
-  const cookieName = new URLSearchParams(window.location.search).get('compare-product-btn');
+  const cookieName = new URLSearchParams(window.location.search).get(
+    'compare-product-btn',
+  );
   if (!cookieName) return null;
-  const match = document.cookie.split('; ').find((row) => row.startsWith(`${cookieName}=`));
+  const match = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith(`${cookieName}=`));
   if (!match) return null;
   try {
     const value = decodeURIComponent(match.split('=').slice(1).join('='));
     const items = JSON.parse(value);
-    return items.map(({ id, title, photo }) => ({ name: title || id, image: photo }));
+    return items.map(({ id, title, photo }) => ({
+      id,
+      name: title || id,
+      image: photo,
+    }));
   } catch {
     return null;
   }
@@ -422,7 +472,15 @@ function getCardsFromStorage() {
 // ── Render ─────────────────────────────────────────────────────────────────────
 
 // Populate the comparison grid with matched cards, falling back to raw cookie data if none found
-function renderComparison(container, cards, allCards, sourcingMap, labels, doc, icons) {
+function renderComparison(
+  container,
+  cards,
+  allCards,
+  sourcingMap,
+  labels,
+  doc,
+  icons,
+) {
   container.innerHTML = '';
 
   if (!cards || cards.length === 0) {
@@ -433,13 +491,23 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc, 
     return;
   }
 
-  const selectedNames = cards.map((c) => c.name);
-  const sorted = filterAndSortCards(allCards, selectedNames, sourcingMap);
+  const selectedIDs = cards.map((c) => c.id);
+  const sorted = filterAndSortCards(allCards, selectedIDs, sourcingMap);
 
   const displayCards = sorted.length > 0 ? sorted : cards;
 
+  // Fields any compared card has a value for, so every card renders the same aligned rows.
+  const activeKeys = new Set();
   displayCards.forEach((card) => {
-    container.appendChild(buildCompareCard(card, doc, labels, icons));
+    getCardFields(card, labels).forEach(({ key, value }) => {
+      if (value) activeKeys.add(key);
+    });
+  });
+
+  displayCards.forEach((card) => {
+    container.appendChild(
+      buildCompareCard(card, doc, labels, icons, activeKeys),
+    );
   });
 }
 
@@ -457,22 +525,30 @@ function equalizeRowHeights(grid) {
   cards.forEach((card) => {
     // eslint-disable-next-line no-param-reassign
     card.style.height = '';
-    card.querySelectorAll('.ccr-card-name, .ccr-apply-area, dl').forEach((el) => {
-      // eslint-disable-next-line no-param-reassign
-      el.style.height = '';
-      // eslint-disable-next-line no-param-reassign
-      el.style.minHeight = '';
-      el.classList.remove('ccr-apply-lined'); // eslint-disable-line no-param-reassign
-    });
+    card
+      .querySelectorAll('.ccr-card-name, .ccr-apply-area, dl')
+      .forEach((el) => {
+        // eslint-disable-next-line no-param-reassign
+        el.style.height = '';
+        // eslint-disable-next-line no-param-reassign
+        el.style.minHeight = '';
+        el.classList.remove('ccr-apply-lined'); // eslint-disable-line no-param-reassign
+      });
   });
 
   // Equalize card name height
-  const nameEls = cards.map((c) => c.querySelector('.ccr-card-name')).filter(Boolean);
+  const nameEls = cards
+    .map((c) => c.querySelector('.ccr-card-name'))
+    .filter(Boolean);
   const maxNameH = Math.max(...nameEls.map((el) => el.offsetHeight));
-  nameEls.forEach((el) => { el.style.minHeight = `${maxNameH}px`; }); // eslint-disable-line no-param-reassign
+  nameEls.forEach((el) => {
+    el.style.minHeight = `${maxNameH}px`;
+  }); // eslint-disable-line no-param-reassign
 
   // Equalize apply area height (so dl rows align even when some cards have no apply area)
-  const applyAreas = cards.map((c) => c.querySelector('.ccr-apply-area')).filter(Boolean);
+  const applyAreas = cards
+    .map((c) => c.querySelector('.ccr-apply-area'))
+    .filter(Boolean);
   if (applyAreas.length > 1) {
     const maxApplyH = Math.max(...applyAreas.map((el) => el.offsetHeight));
     applyAreas.forEach((el) => {
@@ -486,19 +562,33 @@ function equalizeRowHeights(grid) {
   // Cards may omit dls for empty field values, so index-based matching would
   // silently compare the wrong fields across cards (e.g. card 1's Mileage dl
   // at index 3 paired with card 2's Reward Points dl also at index 3).
-  const fieldKeys = ['slogan', 'privileges', 'qualification', 'rewardPoints', 'mileage', 'cardBenefits', 'fees'];
+  const fieldKeys = [
+    'slogan',
+    'privileges',
+    'qualification',
+    'rewardPoints',
+    'mileage',
+    'cardBenefits',
+    'fees',
+  ];
   fieldKeys.forEach((key) => {
-    const dls = cards.map((c) => c.querySelector(`dl[data-field="${key}"]`)).filter(Boolean);
+    const dls = cards
+      .map((c) => c.querySelector(`dl[data-field="${key}"]`))
+      .filter(Boolean);
     if (dls.length < 2) return;
     const maxH = Math.max(...dls.map((dl) => dl.offsetHeight));
-    dls.forEach((dl) => { dl.style.height = `${maxH}px`; }); // eslint-disable-line no-param-reassign
+    dls.forEach((dl) => {
+      dl.style.height = `${maxH}px`;
+    }); // eslint-disable-line no-param-reassign
   });
 
   // Equalize total card height so cards with fewer fields are not shorter.
   // The caption's flex-grow: 1 fills the extra space, keeping the learn-more
   // button pinned to the bottom of every card.
   const maxCardH = Math.max(...cards.map((c) => c.offsetHeight));
-  cards.forEach((c) => { c.style.height = `${maxCardH}px`; }); // eslint-disable-line no-param-reassign
+  cards.forEach((c) => {
+    c.style.height = `${maxCardH}px`;
+  }); // eslint-disable-line no-param-reassign
 }
 
 // ── Decorate ───────────────────────────────────────────────────────────────────
@@ -534,7 +624,10 @@ export default async function decorate(block) {
   container.className = 'ccr-grid';
   innerContainer.appendChild(container);
 
-  const { buildDots, syncLoop, centerFirst } = initMobileCarousel(container, doc);
+  const { buildDots, syncLoop, centerFirst } = initMobileCarousel(
+    container,
+    doc,
+  );
 
   const doAlign = () => {
     const measure = () => requestAnimationFrame(() => {
@@ -567,7 +660,12 @@ export default async function decorate(block) {
         runAlign();
       }
     });
-    if (section) mo.observe(section, { attributes: true, attributeFilter: ['style', 'class'] });
+    if (section) {
+      mo.observe(section, {
+        attributes: true,
+        attributeFilter: ['style', 'class'],
+      });
+    }
     mo.observe(doc.body, { attributes: true, attributeFilter: ['class'] });
   };
 
@@ -580,7 +678,15 @@ export default async function decorate(block) {
   const icons = { web: webIconSvg, mweb: mwebIconSvg };
 
   const renderAndAlign = (cards) => {
-    renderComparison(container, cards, allCards, sourcingMap, labels, doc, icons);
+    renderComparison(
+      container,
+      cards,
+      allCards,
+      sourcingMap,
+      labels,
+      doc,
+      icons,
+    );
     buildDots();
     doAlign();
   };
