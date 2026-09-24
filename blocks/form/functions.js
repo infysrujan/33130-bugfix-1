@@ -1391,6 +1391,104 @@ function preserveFieldUnitLabels() {
 preserveFieldUnitLabels();
 
 /**
+ * Restricts a numeric field's value to digits only, capped at either 12
+ * or 10 digits depending on the CSS class applied, and formats the value
+ * with thousand-separator commas once the field loses focus. Targets
+ * fields marked with the `number-max-12` or `number-max-10` CSS class on
+ *
+ * @name formatCommaInputs
+ * @returns {void}
+ */
+function formatCommaInputs() {
+  if (typeof document === 'undefined') return;
+
+  const CLASS_LIMITS = {
+    'number-max-12': 12,
+    'number-max-10': 10,
+  };
+
+  const getMaxDigits = (input) => {
+    let result = null;
+    Object.keys(CLASS_LIMITS).forEach((className) => {
+      if (result !== null) return;
+      if (input.classList.contains(className) || input.closest(`.${className}`) !== null) {
+        result = CLASS_LIMITS[className];
+      }
+    });
+    return result;
+  };
+
+  const stripCommas = (value) => value.replace(/,/g, '');
+
+  const stripNonDigits = (value) => value.replace(/\D/g, '');
+
+  const addCommas = (digits) => digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  const runSanitize = (input, maxDigits) => {
+    let digits = stripNonDigits(input.value);
+    if (digits.length > maxDigits) {
+      digits = digits.slice(0, maxDigits);
+    }
+    input.value = digits;
+  };
+
+  const runFormat = (input, maxDigits) => {
+    const digits = stripNonDigits(input.value).slice(0, maxDigits);
+    input.value = addCommas(digits);
+  };
+
+  const runUnformat = (input) => {
+    input.value = stripCommas(input.value);
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const maxDigits = getMaxDigits(input);
+    if (maxDigits === null) return;
+
+    switch (event.type) {
+      case 'focus':
+        runUnformat(input);
+        break;
+      case 'input':
+      case 'keyup':
+        runSanitize(input, maxDigits);
+        break;
+      case 'blur':
+        runFormat(input, maxDigits);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const keydownHandler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const maxDigits = getMaxDigits(input);
+    if (maxDigits === null) return;
+
+    const controlKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+    if (controlKeys.includes(event.key)) return;
+
+    const isDigit = /^\d$/.test(event.key);
+    const currentDigits = stripNonDigits(input.value).length;
+    if (!isDigit || currentDigits >= maxDigits) {
+      event.preventDefault();
+    }
+  };
+
+  ['focus', 'input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+  document.addEventListener('keydown', keydownHandler, true);
+}
+formatCommaInputs();
+
+/**
  * Restricts `gpa-only` inputs to digits and one decimal point, max 4 chars.
  * @name restrictGpaOnlyInputs
  * @returns {void}
