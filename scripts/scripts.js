@@ -396,10 +396,32 @@ export function removePictureOptimizationParams(root) {
   });
 }
 
+function sectionHasTabName(section) {
+  if (!section) return false;
+  return [...section.querySelectorAll('div.section-metadata > div > div:first-child')]
+    .some((cell) => toClassName(cell.textContent) === 'tab-name');
+}
+
 function mainHasTabs(main) {
   if (!main) return false;
-  return [...main.querySelectorAll('div.section-metadata > div > div:first-child')]
-    .some((cell) => toClassName(cell.textContent) === 'tab-name');
+  return [...main.querySelectorAll(':scope > div')].some(sectionHasTabName);
+}
+
+function detachLaterSections(main) {
+  return [...main.querySelectorAll(':scope > div')].slice(1).map((section) => {
+    section.remove();
+    return section;
+  });
+}
+
+function decorateLaterSections(main) {
+  decorateButtons(main);
+  decorateIcons(main);
+  decorateSections(main);
+  decorateSectionIds(main);
+  decorateBlocks(main);
+  decorateTertiaryButtons(main);
+  decorateSvgWithAltText(main);
 }
 
 function promoteFirstSectionImages(main) {
@@ -465,7 +487,10 @@ async function loadEager(doc) {
   decorateOgImage();
   whenStylesReady().then(() => startHeader(doc));
   const main = doc.querySelector('main');
-  if (mainHasTabs(main)) {
+  const hasTabs = mainHasTabs(main);
+  const firstIsTab = hasTabs && sectionHasTabName(main?.querySelector(':scope > div'));
+  const laterSections = (hasTabs && !firstIsTab) ? detachLaterSections(main) : [];
+  if (firstIsTab) {
     ({ default: decorateTabs } = await import('../blocks/tabs/tabs-helper.js'));
   }
   if (main) {
@@ -478,6 +503,12 @@ async function loadEager(doc) {
       doc.querySelector('header')?.classList.add('is-not-overlapped');
     }
     await loadSection(main.querySelector('.section'), waitForFirstImage);
+    if (laterSections.length) {
+      laterSections.forEach((section) => main.append(section));
+      ({ default: decorateTabs } = await import('../blocks/tabs/tabs-helper.js'));
+      decorateTabs(main);
+      decorateLaterSections(main);
+    }
   }
 
   try {
