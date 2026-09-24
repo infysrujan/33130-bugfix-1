@@ -84,7 +84,9 @@ function getLabels(form) {
     referenceNo: isThai
       ? 'เลขที่อ้างอิง (Ref No.)'
       : getInputValue(form, LABEL_FIELDS.referenceNo, 'Ref No.'),
-    reserve: getInputValue(form, LABEL_FIELDS.reserve, 'Reserve Amount'),
+    reserve: isThai
+      ? getInputValue(form, LABEL_FIELDS.reserve, 'Reserve Amount')
+      : 'Total\u00a0Purchase',
     allocate: getInputValue(form, LABEL_FIELDS.allocate, 'Allocated Amount'),
     channel: isThai
       ? 'ช่องทาง'
@@ -190,7 +192,7 @@ function createTableHtml(result, form) {
       <tr class="bond-connect-heading-row">
         <th>${escapeHtml(labels.symbol)}</th>
         <th>${escapeHtml(labels.referenceNo)}</th>
-        <th class="is-numeric">${escapeHtml(labels.reserve)}</th>
+        <th class="is-numeric">${escapeHtml(labels.reserve)}${getLocale() === 'en' ? '<br>(baht)' : ''}</th>
         <th class="is-numeric">${escapeHtml(labels.allocate)}</th>
         <th>${escapeHtml(labels.channel)}</th>
       </tr>
@@ -243,12 +245,32 @@ function createTableHtml(result, form) {
   return html;
 }
 
+function holdsAnInput(element) {
+  return (
+    element.matches('input, textarea, select')
+    || element.querySelector('input, textarea, select') !== null
+  );
+}
+
 function findTableTarget(form) {
-  const target = form.querySelector(TABLE_TARGET_SELECTOR);
+  // The authored form carries the bond-connect-table name twice in the same panel: a
+  // plain-text component and a leftover text input. Only the plain-text one can hold a
+  // table, and querySelector() would just take whichever comes first, so pick the usable
+  // host explicitly and hide the rest instead of leaving an empty labelled box on the page.
+  const hosts = [...form.querySelectorAll(TABLE_TARGET_SELECTOR)]
+    .map((element) => (element.matches('input, textarea')
+      ? element.closest('.field-wrapper')
+      : element))
+    .filter((element, index, all) => element && all.indexOf(element) === index);
+
+  const target = hosts.find((element) => !holdsAnInput(element)) || hosts[0];
   if (target) {
-    return target.matches('input, textarea')
-      ? target.closest('.field-wrapper')
-      : target;
+    hosts
+      .filter((element) => element !== target)
+      .forEach((element) => {
+        element.dataset.visible = 'false';
+      });
+    return target;
   }
 
   // Nothing authored to hold the table. Create the slot instead of giving up: the leftover
@@ -270,6 +292,7 @@ function renderBondConnectTable(form, result) {
   const target = findTableTarget(form);
   if (!target) return false;
 
+  target.classList.add('bond-connect-table');
   const hasData = Array.isArray(result?.Allocations) && result.Allocations.length > 0;
   target.innerHTML = hasData ? createTableHtml(result, form) : '';
   target.hidden = !hasData;
@@ -348,7 +371,9 @@ function bindFetchResponseCapture() {
   const fetchWithBondConnectCapture = async (...args) => {
     const response = await originalFetch(...args);
     if (isBondConnectServiceRequest(args[0])) {
-      response.clone().json()
+      response
+        .clone()
+        .json()
         .then((result) => notifyServiceResponseRenderers(result))
         .catch(() => {});
     }
@@ -407,8 +432,8 @@ function setLoading(form, visible) {
 
 async function fetchBondConnectDetail(form) {
   const bondHolderNumber = getFieldValue(form, [
-    '[name="Bond Holder Number"]',
-    '.field-bond-holder-number input',
+    '[name="BondHolderNumber"]',
+    '.field-bondholdernumber input',
   ]);
   const bondCitizenId = getFieldValue(form, [
     '[name="citizenID"]',
@@ -430,10 +455,10 @@ async function fetchBondConnectDetail(form) {
     headers['Ocp-Apim-Subscription-Key'] = subscriptionKey;
   }
 
-  const options = { method: 'GET', headers };
-  if (requestUrl.origin !== window.location.origin) {
-    options.credentials = 'include';
-  }
+  // No credentials: the gateway answers preflight with `Access-Control-Allow-Origin: *`
+  // and no `Access-Control-Allow-Credentials`, so a credentialed cross-origin request is
+  // rejected by the browser before it is sent. The subscription key header is the auth.
+  const options = { method: 'GET', headers, credentials: 'omit' };
 
   const response = await fetch(requestUrl.toString(), options);
   if (!response.ok) {
@@ -544,9 +569,7 @@ export default function decorateBondConnectForm(form) {
   bindLocalApiSubmit(form);
 
   window.BondConnectAem = window.BondConnectAem || {};
-  window.BondConnectAem.render = (result, targetForm = form) => (
-    showResult(targetForm, result)
-  );
+  window.BondConnectAem.render = (result, targetForm = form) => showResult(targetForm, result);
   window.BondConnectAem.setApiKey = (key) => {
     sessionStorage.setItem('bondConnectApiKey', key);
   };
