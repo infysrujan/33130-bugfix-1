@@ -198,7 +198,6 @@ let instanceCount = 0;
 
 export default function decorate(block, _container, formId, fd = {}) {
   // Legacy document-authored fallback: only meaningful when the block still has
-  // key/value <div> rows. In an AEM Forms render authored values arrive via `fd`.
   const config = parseBlockConfig(block);
   const lang = getDisplayLang();
 
