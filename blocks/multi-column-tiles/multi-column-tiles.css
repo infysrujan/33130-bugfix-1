@@ -161,12 +161,8 @@
 
   /* 4 tiles: horizontal scroll, ~3 tiles visible at a time */
   .multi-column-tiles .tiles-count-4 > * {
-    flex: 0 0 32%;
+    min-width:16rem;
     scroll-snap-align: start;
-  }
-
-  .multi-column-tiles-image {
-    height: 22.25rem;
   }
 
   .multi-column-tiles-tile:hover .multi-column-tiles-title,
@@ -193,10 +189,6 @@
   .multi-column-tiles .tiles-count-4 > * {
     flex: 1;
     scroll-snap-align: unset;
-  }
-
-  .multi-column-tiles-image {
-    height: 37.5rem;
   }
 
   .multi-column-tiles-tile:hover .multi-column-tiles-title,
