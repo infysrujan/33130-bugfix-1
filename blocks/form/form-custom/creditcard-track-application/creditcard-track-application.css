@@ -140,6 +140,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     line-height: var(--bbl-line-height-b1-desktop);
     cursor: pointer;
     appearance: none;
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
