@@ -6,6 +6,8 @@ const MOBILE_MQ = `(width <= ${
   getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-mobile-max').trim()
 })`;
 
+const DESKTOP_MIN_WIDTH = '1025px';
+
 const windowLoaded = document.readyState === 'complete'
   ? Promise.resolve()
   : new Promise((resolve) => { window.addEventListener('load', resolve, { once: true }); });
@@ -71,6 +73,14 @@ function playBannerVideo(item) {
   }
 }
 
+function syncHeaderOverlap(activeItem) {
+  const header = document.querySelector('header');
+  if (!header) return;
+  const hasVideo = !!activeItem?.querySelector('.hero-banner-video-wrapper');
+  const isDesktopViewport = window.matchMedia(`(min-width: ${DESKTOP_MIN_WIDTH})`).matches;
+  header.classList.toggle('is-not-overlapped', hasVideo && !isDesktopViewport);
+}
+
 function changeBanner(block) {
   function activateThumbnail(thumbnail) {
     const { index } = thumbnail.dataset;
@@ -81,6 +91,7 @@ function changeBanner(block) {
       el.classList.toggle('hero-banner-item-active', el.classList.contains('hero-banner-item') && el.dataset.index === index);
       el.classList.toggle('hero-banner-thumbnail-item-active', el.classList.contains('hero-banner-thumbnail-item') && el.dataset.index === index);
     });
+    syncHeaderOverlap(block.querySelector('.hero-banner-item.hero-banner-item-active'));
   }
 
   block.addEventListener('mouseenter', (e) => {
@@ -718,6 +729,7 @@ export default function decorate(block) {
     block.replaceChildren(wrapper);
     changeBanner(block);
     lazyLoadThumbnails(block);
+    syncHeaderOverlap(block.querySelector('.hero-banner-item.hero-banner-item-active'));
 
     block.addEventListener('click', (event) => {
       const button = event.target.closest('.button-m.primary');

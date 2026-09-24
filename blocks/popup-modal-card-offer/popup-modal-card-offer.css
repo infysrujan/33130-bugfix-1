@@ -112,8 +112,6 @@
 
 .floating-popup-inner a {
   margin: 1.875rem 0 0;
-  min-width: 8.625rem;
-  box-sizing: border-box;
 }
 
 .floating-popup-inner .button-container {

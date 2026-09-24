@@ -224,6 +224,13 @@
   margin-bottom: 1.875rem;
 }
 
+.carousel-dotted.all-with-image .carousel-dotted-description {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
 .carousel-dotted .carousel-dotted-header {
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-medium);
@@ -239,11 +246,6 @@
 
 .carousel-dotted .carousel-default-text p {
   margin: var(--bbl-space-000);
-}
-
-.carousel-dotted a.button.primary {
-  border-radius: var(--bbl-rounded-100);
-  height: 2.75rem;
 }
 
 .carousel-dotted .slick-dots {

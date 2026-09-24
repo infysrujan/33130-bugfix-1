@@ -767,7 +767,7 @@ function renderJourney3(block, data, state, onBack) {
     const altCard = savingMonth2 >= 0 ? `
         <div class="rc-savings-card-col">
           <div class="rc-savings-card-alt">
-            <p class="rc-savings-card-title rc-savings-card-title-alt">${getString(labels, 'stepsStep3OrSaveJustLabel', 'Or\nsave just')}</p>
+            <p class="rc-savings-card-title rc-savings-card-title-alt">${getString(labels, 'stepsResultsAlternativeMonthlySavingLabel', 'Or\nsave just')}</p>
             <p class="rc-savings-card-amount rc-savings-card-amount-alt">
               ${formatNumber(savingMonth2)} <span class="rc-savings-card-unit rc-savings-card-unit-alt">${baht}</span>
             </p>
@@ -781,7 +781,7 @@ function renderJourney3(block, data, state, onBack) {
       <div class="rc-savings-cards">
         <div class="rc-savings-card-col">
           <div class="rc-savings-card-recommended">
-            <p class="rc-savings-card-title">${getString(labels, 'stepsStep3RecommendedMonthlySavingsLabel', 'Recommended\nmonthly savings')}</p>
+            <p class="rc-savings-card-title">${getString(labels, 'stepsResultsRecommendedMonthlySavingLabel', 'Recommended\nmonthly savings')}</p>
             <p class="rc-savings-card-amount">
               ${formatNumber(savingMonth1)} <span class="rc-savings-card-unit">${baht}</span>
             </p>

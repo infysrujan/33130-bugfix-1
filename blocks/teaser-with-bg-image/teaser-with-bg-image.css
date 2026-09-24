@@ -120,7 +120,6 @@
 
 .teaser-bg-image-cta .button-container a {
   min-width: 100%;
-  box-sizing: border-box;
  
 }
 
@@ -192,8 +191,8 @@
     width: 100%;
   }
 
-  .teaser-bg-image-cta .button-container a{
-     min-width: 8.75rem;
+  .teaser-bg-image-cta .button-container a {
+    min-width: 7.5rem;
   }
 }
 

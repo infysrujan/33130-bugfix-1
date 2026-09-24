@@ -75,7 +75,6 @@
 }
 
 .cookie-alert-btn.button-m:is(.secondary, .primary) {
-  min-width: 9.375rem;
   width: unset;
 }
 

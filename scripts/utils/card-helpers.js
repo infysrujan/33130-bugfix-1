@@ -181,9 +181,9 @@ export function getPromotionDataUrl(baseUrl, lang) {
 }
 
 export function handleMobileAppView(searchParams) {
-  const hasCardRef = searchParams.has('card_ref');
+  const { isBbmPath } = getPromotionPathFlags(window.location.pathname);
   const hasSclang = searchParams.has('sc_lang');
-  const isMobileView = hasCardRef || hasSclang;
+  const isMobileView = isBbmPath || hasSclang;
 
   ['header', 'footer'].forEach((selector) => {
     const el = document.querySelector(selector);
