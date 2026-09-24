@@ -723,7 +723,6 @@
 
 .dynamic-board .db-table thead th[rowspan='2'] {
   height: 6.25rem;
-  border-bottom: 0.0625rem solid var(--bbl-color-grey-152);
 }
 
 .dynamic-board .db-table thead tr {
@@ -735,7 +734,7 @@
 }
 
 .dynamic-board .db-table thead tr:last-child th {
-  border-bottom: 0.0625rem solid var(--bbl-color-grey-152);
+  border-top: 0.0625rem solid var(--bbl-color-grey-152);
 }
 
 .dynamic-board .db-table thead tr:first-child th:nth-child(2) {
@@ -830,11 +829,11 @@
 /* ── Cell types ────────────────────────────────────────────── */
 
 .dynamic-board .db-td-check {
-  width: 3%;
+  width: 2%;
 }
 
 .dynamic-board .db-td-symbol {
-  width: 7%;
+  width: 8%;
   white-space: nowrap;
   color: var(--bbl-color-active-blue);
 }
@@ -893,8 +892,12 @@
 
 .dynamic-board .db-no-results {
   padding: var(--bbl-space-400) var(--bbl-space-200);
-  text-align: center;
+  text-align: left;
   color: var(--bbl-color-grey-40);
+}
+
+.dynamic-board .db-table tbody tr:last-child td.db-no-results {
+  border: 0.0625rem solid var(--bbl-color-grey-20);
 }
 
 .dynamic-board .db-td-dl:hover {
@@ -996,6 +999,10 @@
   .dynamic-board .db-filter-reset {
     flex: 0 0 11.5625rem;
     width: 11.5625rem;
+  }
+
+  .dynamic-board .db-no-results {
+    text-align: center;
   }
 
 }
