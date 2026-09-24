@@ -263,8 +263,8 @@
 
   .mf-comparator-results .mfcr-card {
     flex: 0 0 calc((100% - 2.5rem) / 3);
+    width: unset;
     scroll-snap-align: none;
-    min-width: unset;
   }
 
   .mf-comparator-results .mfcr-card-clone {
@@ -283,7 +283,6 @@
 
   .mf-comparator-results .mfcr-grid.two-cards {
     justify-content: center;
-    margin-inline: 7.125rem;
   }
 
   .mf-comparator-results .mfcr-scroll-dots {
@@ -302,17 +301,10 @@
 
   .mf-comparator-results .mfcr-grid.two-cards {
     justify-content: center;
-    margin-inline: 5.5rem;
   }
 
   .mf-comparator-results .mfcr-card {
     flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
-  }
-
-  .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
-    flex: 1 1 0;
-    min-width: 14.75rem;
-    max-width: 17.25rem;
   }
 
   .mf-comparator-results .mfcr-inner {
