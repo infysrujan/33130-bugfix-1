@@ -521,10 +521,6 @@
   margin-bottom: var(--bbl-space-250);
 }
 
-.carousel-dotted-container .all-text-animation-variant .slick-dots {
-  bottom: var(--bbl-space-250);
-}
-
 .carousel-dotted.dots-center-inside-container.all-without-image .slick-dots {
   transform: unset;
   left: 1.5rem;
