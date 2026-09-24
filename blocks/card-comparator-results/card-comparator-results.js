@@ -518,7 +518,7 @@ export default async function decorate(block) {
   const doc = block.ownerDocument;
   const ph = await fetchPlaceholders();
   const labels = {
-    learnMore: 'Read more',
+    learnMore: ph.cardComparatorResultsButtonText || 'Read more',
     applyNow: ph.cardApplyNow || 'Apply',
     applyViaWebsite: ph.cardApplyViaWebsite || 'Apply via Website',
     applyViaMobile: ph.cardApplyViaMobileBanking || 'Apply via Mobile Banking',
