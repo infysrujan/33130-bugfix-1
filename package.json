@@ -5,7 +5,7 @@
   "description": "Starter project for Adobe Helix",
   "scripts": {
     "lint:js": "eslint . --ext .json,.js,.mjs",
-    "lint:css": "stylelint \"blocks/**/*.css\" \"styles/*.css\"",
+    "lint:css": "stylelint \"blocks/**/*.css\" \"styles/*.css\" --ignore-pattern \"styles/styles.css\"",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix",
     "build:json": "npm-run-all -p build:json:models build:json:definitions build:json:filters",
@@ -13,7 +13,8 @@
     "build:json:definitions": "merge-json-cli -i \"models/_component-definition.json\" -o \"component-definition.json\"",
     "build:json:filters": "merge-json-cli -i \"models/_component-filters.json\" -o \"component-filters.json\"",
     "prepare": "husky",
-    "start": "aem up --print-index"
+    "start": "aem up --print-index",
+    "minify:css": "node scripts/minify-css.cjs --minify"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
     "eslint-plugin-json": "3.1.0",
     "eslint-plugin-xwalk": "github:adobe-rnd/eslint-plugin-xwalk",
     "husky": "9.1.1",
+    "lightningcss-cli": "^1.30.2",
     "merge-json-cli": "1.0.4",
     "npm-run-all": "4.1.5",
     "stylelint": "16.26.1",

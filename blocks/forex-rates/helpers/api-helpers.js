@@ -82,18 +82,14 @@ export async function getEnabledDays(endpoints, year, month) {
     .map((day) => day.padStart(2, '0'));
 }
 
-export async function getUpdatesInDay(endpoints, day, month, year) {
+export function getUpdatesInDay(endpoints, day, month, year) {
   return fetchGet(endpoints.updateInDay(day, month, year));
 }
 
-export async function getRates(endpoints, day, month, year, update, language) {
+export function getRates(endpoints, day, month, year, update, language) {
   const num = String(update || '').trim();
   const url = endpoints.fxRates(day, month, year, num, language);
   if (!url) return [];
 
-  try {
-    return await fetchGet(url);
-  } catch (e) {
-    return [];
-  }
+  return fetchGet(url).catch(() => []);
 }
