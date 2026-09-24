@@ -202,7 +202,7 @@ async function loadHeroIcons() {
   const svgs = await Promise.all(
     names.map((name) => fetch(`${base}/icons/hero-${name}.svg`).then((r) => (r.ok ? r.text() : '')).catch(() => '')),
   );
-  names.forEach((name, i) => { VI[name] = svgs[i]; });
+  names.forEach((name, i) => { VI[name] = svgs[i].replace(/\s(?:style|width|height)="[^"]*"/g, ''); });
 }
 
 function fmtTime(sec) {
@@ -334,8 +334,6 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem, shareUrl) {
     updateSeekFill(seekBar);
   });
 
-  wireShare(bar.querySelector('.hero-ctrl-share'));
-  wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), videoWrapper);
   wireShare(bar.querySelector('.hero-ctrl-share'), shareUrl);
   wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
 }
