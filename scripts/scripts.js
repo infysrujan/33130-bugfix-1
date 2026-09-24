@@ -6,7 +6,6 @@ import {
   decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
-  waitForFirstImage as waitForAemFirstImage,
   loadSection,
   loadSections,
   loadCSS,
@@ -361,7 +360,7 @@ function getLcpImage(root) {
     const img = picture?.querySelector('img');
     if (img) return img;
   }
-  return main.querySelector?.('img') || null;
+  return null;
 }
 
 function hintLcpImage(img) {
@@ -374,7 +373,7 @@ function hintLcpImage(img) {
 
 function promoteFirstImage(section) {
   const image = section?.querySelector('img[fetchpriority="high"]')
-    || section?.querySelector('img');
+    || section?.querySelector('.hero img');
   hintLcpImage(image);
 }
 
@@ -456,9 +455,10 @@ function whenStylesReady() {
 }
 
 async function waitForFirstImage(section) {
-  const lcpCandidate = section.querySelector('img[fetchpriority="high"]');
-  if (!lcpCandidate) {
-    return waitForAemFirstImage(section);
+  const lcpCandidate = section.querySelector('.hero img[fetchpriority="high"]')
+    || section.querySelector('img[fetchpriority="high"]');
+  if (!lcpCandidate || lcpCandidate.closest('.menu-banner')) {
+    return undefined;
   }
   return new Promise((resolve) => {
     if (!lcpCandidate.complete && lcpCandidate.currentSrc) {
