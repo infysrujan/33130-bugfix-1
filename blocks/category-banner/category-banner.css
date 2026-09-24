@@ -35,13 +35,13 @@
   gap: 0.5rem;
 }
 
-
+.category-banner-btn {
+  background: var(--bbl-color-white);
+}
 
 .category-banner-btn:hover,
 .category-banner-btn:focus {
   background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  outline: none;
 }
 
 
