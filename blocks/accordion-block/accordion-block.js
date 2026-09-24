@@ -154,6 +154,40 @@ function extractTitleAndBody(section) {
   return { titleText, contentFrag };
 }
 
+/**
+ * Same-page anchor links inside accordion panels (e.g. the FAQ "View details
+ * of supporting providers by country." link on crossborder-qrpayment-in-thai)
+ * jump to targets elsewhere on the page via a plain native href="#id" click.
+ * On desktop, reaching a target via an upward scroll re-reveals the top
+ * utility nav row without the main nav's flush-to-top state (see header.js
+ * isScrollingUp), so the header can be taller than the site's default
+ * scroll-margin-top assumes. Tag each such target with a class carrying the
+ * larger offset so the browser's own anchor-jump already clears the header.
+ *
+ * The native click also leaves the hash in the URL, which would make any
+ * later reload (or reopening that URL) re-trigger the browser's own
+ * fragment-jump on load — independent of any JS, since that's how URL
+ * fragments work. Right after the click, once the native scroll has already
+ * happened, quietly clean the hash back out of the URL via replaceState so a
+ * reload starts fresh. This generalizes to any such link automatically,
+ * without hardcoding per-target ids anywhere.
+ * @param {Element} block
+ */
+function markAnchorScrollTargets(block) {
+  block.querySelectorAll('a[href^="#"]').forEach((link) => {
+    const id = link.getAttribute('href').slice(1);
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (!target) return;
+    target.classList.add('accordion-anchor-scroll-target');
+    link.addEventListener('click', () => {
+      requestAnimationFrame(() => {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      });
+    });
+  });
+}
+
 function wireAccordionHeader(header, panel) {
   panel.querySelectorAll('img').forEach((img) => {
     img.removeAttribute('loading');
@@ -811,6 +845,7 @@ export default async function decorate(block) {
     });
     block.classList.add('accordion-panel-loaded');
     wireAccordionToolbarAndNavigation(block, toolbarButtons);
+    markAnchorScrollTargets(block);
     return;
   }
 
@@ -846,4 +881,5 @@ export default async function decorate(block) {
   wireAccordionHeader(header, panel);
   block.classList.add('accordion-panel-loaded');
   wireAccordionToolbarAndNavigation(block, toolbarButtons);
+  markAnchorScrollTargets(block);
 }

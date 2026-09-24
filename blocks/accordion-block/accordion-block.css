@@ -1,3 +1,14 @@
+/* Anchor targets tagged by markAnchorScrollTargets() in accordion-block.js.
+   Reached via an upward scroll on desktop, which re-reveals the top utility
+   nav row without the main nav's flush-to-top state (see header.js
+   isScrollingUp), so the header can be taller than the site's default
+   scroll-margin-top assumes. */
+@media (width > 64rem) {
+  .accordion-anchor-scroll-target {
+    scroll-margin-top: var(--header-d-height, 7.73rem);
+  }
+}
+
 .accordion-block-intro {
   padding: 0 1.25rem 1rem;
 }
