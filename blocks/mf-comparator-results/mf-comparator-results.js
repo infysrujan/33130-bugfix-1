@@ -93,16 +93,11 @@ function getCardName(card) {
 }
 
 function filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap) {
-  const normalizedNames = selectedNames.map(norm);
   const matched = allCards.filter((card) => selectedIDs.includes(card.ProductID));
 
   if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
-    return normalizedNames
-      .map((n) => matched.find((c) => {
-        const cardName = norm(getCardName(c));
-        const found = cardName === n;
-        return found;
-      }))
+    return selectedIDs
+      .map((id) => matched.find((c) => c.ProductID === id))
       .filter(Boolean);
   }
 
