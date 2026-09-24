@@ -21,6 +21,16 @@ function buildPopupElement(config, doc) {
   );
 
   if (config.image) {
+    const setIntrinsicSize = () => {
+      const w = config.image.naturalWidth || config.image.width;
+      const h = config.image.naturalHeight || config.image.height;
+      if (w && h) config.image.style.aspectRatio = `${w} / ${h}`;
+    };
+    if (config.image.complete) {
+      setIntrinsicSize();
+    } else {
+      config.image.addEventListener('load', setIntrinsicSize, { once: true });
+    }
     cardBody.appendChild(config.image);
   }
 
