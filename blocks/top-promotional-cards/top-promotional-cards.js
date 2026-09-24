@@ -47,13 +47,17 @@ function setupPanel(panel, activeCards, placeholders) {
   const grid = document.createElement('div');
   grid.className = 'promo-selector-grid top-promo-grid listing-card-grid';
   grid.innerHTML = cards.length
-    ? cards.map((card) => buildCardHtml(card, tabText, placeholders, buildCardOptions(card))).join('')
+    ? cards.map((card, i) => {
+      const cardOptions = buildCardOptions(card);
+      cardOptions.eager = i < 4;
+      return buildCardHtml(card, tabText, placeholders, cardOptions);
+    }).join('')
     : `<p class="top-promo-empty">${noResultsText}</p>`;
 
   panel.append(grid);
 }
 
-export default async function decorate(block) {
+async function renderTopPromotionalCards(block) {
   const lang = getLang();
   const configs = await fetchConfigs();
   const baseUrl = configs?.promotionalCardSelector || '';
@@ -112,4 +116,8 @@ export default async function decorate(block) {
       });
     });
   });
+}
+
+export default function decorate(block) {
+  renderTopPromotionalCards(block);
 }

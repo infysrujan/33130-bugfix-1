@@ -365,7 +365,7 @@ function setupPanel(
     }, state.page, pageSize, isHighlightsPanel);
 
     gridEl.innerHTML = cards.length
-      ? cards.map((c) => {
+      ? cards.map((c, i) => {
         let cardData = c;
         if (isBbmPanel && queryLang && c.ctaLink) {
           try {
@@ -380,6 +380,7 @@ function setupPanel(
         }
         const cardOptions = buildCardOptions(cardData);
         cardOptions.baseUrl = options.baseUrl;
+        cardOptions.eager = i < 4;
         if (isBbmPanel) cardOptions.logoHtml = '';
         return buildCardHtml(cardData, displayTabText, placeholders, cardOptions);
       }).join('')
@@ -557,7 +558,7 @@ function setupPanel(
   return { resetPage };
 }
 
-export default async function decorate(block) {
+async function renderPromoCardListing(block) {
   const searchParams = new URLSearchParams(window.location.search);
   handleMobileAppView(searchParams);
 
@@ -749,4 +750,8 @@ export default async function decorate(block) {
   }
 
   block.hidden = true;
+}
+
+export default function decorate(block) {
+  renderPromoCardListing(block);
 }

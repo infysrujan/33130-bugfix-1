@@ -28,12 +28,11 @@ function readFromBlock(block) {
     return clone.innerHTML.trim();
   };
   const getText = (cell) => cell?.textContent?.trim() || '';
-  const getRef = (cell) => {
-    if (!cell) return { src: '', alt: '' };
-    const img = cell.querySelector('img');
-    if (img) return { src: img.getAttribute('src') || '', alt: img.alt || '' };
-    const a = cell.querySelector('a');
-    return { src: a?.getAttribute('href') || cell.textContent.trim(), alt: '' };
+  const getPicture = (cell, alt = '') => {
+    const picture = cell?.querySelector('picture') || null;
+    const img = picture?.querySelector('img');
+    if (img && alt) img.alt = alt;
+    return picture;
   };
 
   const firstRowCols = rows[0].children.length;
@@ -46,12 +45,11 @@ function readFromBlock(block) {
       const key = keyCell.textContent.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
       cellMap[key] = valCell;
     });
-    const imgRef = getRef(cellMap.detailimageurl);
+    const alt = getText(cellMap.detailimagealt) || getText(cellMap.title);
     return {
       aboutUsId: getText(cellMap.aboutusid),
       title: getHtml(cellMap.title),
-      detailImageUrl: imgRef.src,
-      detailImgAlt: imgRef.alt,
+      detailImage: getPicture(cellMap.detailimageurl, alt),
       detailDescription: getHtml(cellMap.detaildescription),
       publishDate: getText(cellMap.publishdate),
     };
@@ -59,38 +57,39 @@ function readFromBlock(block) {
 
   if (firstRowCols > 2) {
     const cells = [...rows[0].children];
-    const imgRef = getRef(cells[3]);
+    const alt = getText(cells[1]);
     return {
       aboutUsId: getText(cells[0]),
       title: getHtml(cells[1]),
-      detailImageUrl: imgRef.src,
-      detailImgAlt: imgRef.alt,
+      detailImage: getPicture(cells[3], alt),
       detailDescription: getHtml(cells[5]),
       publishDate: getText(cells[7]),
     };
   }
 
-  const imgRef = getRef(rows[3]?.children[0]);
+  const alt = getText(rows[1]?.children[0]);
   return {
     aboutUsId: getText(rows[0]?.children[0]),
     title: getHtml(rows[1]?.children[0]),
-    detailImageUrl: imgRef.src,
-    detailImgAlt: imgRef.alt,
+    detailImage: getPicture(rows[3]?.children[0], alt),
     detailDescription: getHtml(rows[5]?.children[0]),
     publishDate: getText(rows[7]?.children[0]),
   };
 }
 
-function buildDetailHtml(card, locale) {
-  return `
+function renderDetail(container, card, locale) {
+  container.innerHTML = `
     <div class="news-media-detail-inner">
       <div class="news-media-detail-content">
         ${card.title ? `<div class="news-media-detail-title pad-bot-30">${card.title}</div>` : ''}
         ${card.publishDate ? `<p class="news-media-detail-date pad-bot-30">${formatDate(card.publishDate, locale)}</p>` : ''}
-        ${card.detailImageUrl ? `<div class="news-media-detail-image"><img src="${card.detailImageUrl}" alt="${card.detailImgAlt || ''}" loading="lazy"></div>` : ''}
+        ${card.detailImage ? '<div class="news-media-detail-image"></div>' : ''}
         ${card.detailDescription ? `<div class="news-media-detail-description">${card.detailDescription}</div>` : ''}
       </div>
     </div>`;
+  if (card.detailImage) {
+    container.querySelector('.news-media-detail-image')?.append(card.detailImage);
+  }
 }
 
 async function renderNewsDetail(block) {
@@ -102,7 +101,7 @@ async function renderNewsDetail(block) {
 
   if (isAuthoring) {
     const authoringData = await fetchBlockAuthoringData('news_media_details');
-    const previewData = authoringData || card;
+    const previewData = { ...card, ...authoringData, detailImage: card?.detailImage || '' };
 
     const originalChildren = [...block.children];
 
@@ -115,7 +114,7 @@ async function renderNewsDetail(block) {
     }
 
     if (previewData && (previewData.title || previewData.detailDescription)) {
-      previewContainer.innerHTML = buildDetailHtml(previewData, locale);
+      renderDetail(previewContainer, previewData, locale);
     }
 
     const hidden = block.ownerDocument.createElement('div');
@@ -130,7 +129,7 @@ async function renderNewsDetail(block) {
     return;
   }
 
-  block.innerHTML = buildDetailHtml(card, locale);
+  renderDetail(block, card, locale);
 }
 
 export default function decorate(block) {

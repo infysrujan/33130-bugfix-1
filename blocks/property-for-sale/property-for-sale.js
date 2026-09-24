@@ -124,7 +124,7 @@ function buildFilterHtml(p, propertyTypes, priceRanges) {
     </div>`;
 }
 
-function buildPropCardHtml(item, detailPath, p, category, pfsData) {
+function buildPropCardHtml(item, detailPath, p, category, pfsData, eager = false) {
   const photo = item.PHOTO_FILE_1;
   const currency = p.propertyForSaleCurrency || 'บาท';
   const price = Number(item.PR_PRICE) > 0
@@ -159,7 +159,7 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData) {
     ? `<a href="${mapUrl}" class="listing-card-cta button-m secondary pfs-map-btn">${p.propertyForSaleMapLocation || 'ตำแหน่งที่ตั้ง'}</a>`
     : '';
 
-  return buildCardHtml(card, tag, p, { footerExtra });
+  return buildCardHtml(card, tag, p, { footerExtra, eager });
 }
 
 const FETCH_TIMEOUT_MS = 10000;
@@ -290,7 +290,14 @@ function setupPanel(panel, state, config) {
     const pageItems = allItems.slice(start, start + pageSize);
 
     gridEl.innerHTML = pageItems.length
-      ? pageItems.map((item) => buildPropCardHtml(item, detailPath, placeholders, category, pfsData)).join('')
+      ? pageItems.map((item, i) => buildPropCardHtml(
+        item,
+        detailPath,
+        placeholders,
+        category,
+        pfsData,
+        i < 4,
+      )).join('')
       : `<p class="listing-card-empty">${placeholders.propertyForSaleNotFound || 'ขออภัย ไม่พบข้อมูลตามที่ท่านระบุ'}</p>`;
 
     const newTab = (placeholders.propertyForSaleDetailsNewTab || 'true') === 'true';

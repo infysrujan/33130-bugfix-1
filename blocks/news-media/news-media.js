@@ -78,11 +78,11 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders, i
     const { cards } = filterAndPage(allCards, category, state.page, pageSize);
 
     gridEl.innerHTML = cards.length
-      ? cards.map((c) => {
+      ? cards.map((c, i) => {
         const ctaLink = c.ctaLink || '';
         const normalized = { ...c, ctaLink };
         const dateLine = formatDate(c.publishDate, locale);
-        return buildCardHtml(normalized, '', {}, { dateLine });
+        return buildCardHtml(normalized, '', {}, { dateLine, eager: i < 4 });
       }).join('')
       : `<p class="listing-card-empty">${placeholders.newsMediaNoResults || 'No results found.'}</p>`;
 
