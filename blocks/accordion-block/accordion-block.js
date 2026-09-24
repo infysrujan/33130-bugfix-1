@@ -154,6 +154,36 @@ function extractTitleAndBody(section) {
   return { titleText, contentFrag };
 }
 
+/**
+ * Same-page anchor links inside accordion panels (e.g. the FAQ "View details
+ * of supporting providers by country." link on crossborder-qrpayment-in-thai)
+ * jump to targets elsewhere on the page. On desktop, reaching a target via an
+ * upward scroll re-reveals the top utility nav row without the main nav's
+ * flush-to-top state (see header.js isScrollingUp), so the header can be
+ * taller than the site's default scroll-margin-top assumes. Tag each such
+ * target with a class carrying the larger offset.
+ *
+ * The click is handled here instead of natively so the scroll can be
+ * explicitly smooth (Element.scrollIntoView({behavior:'smooth'}), independent
+ * of any site-wide scroll-behavior CSS) and so the URL/hash is never touched
+ * at all — which also means a later reload never re-triggers the browser's
+ * native on-load fragment-jump, since there's no hash for it to react to.
+ * @param {Element} block
+ */
+function markAnchorScrollTargets(block) {
+  block.querySelectorAll('a[href^="#"]').forEach((link) => {
+    const id = link.getAttribute('href').slice(1);
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (!target) return;
+    target.classList.add('accordion-anchor-scroll-target');
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
 function wireAccordionHeader(header, panel) {
   panel.querySelectorAll('img').forEach((img) => {
     img.removeAttribute('loading');
@@ -812,6 +842,7 @@ export default function decorate(block) {
       });
       block.classList.add('accordion-panel-loaded');
       wireAccordionToolbarAndNavigation(block, toolbarButtons);
+      markAnchorScrollTargets(block);
       return;
     }
 
@@ -847,6 +878,7 @@ export default function decorate(block) {
     wireAccordionHeader(header, panel);
     block.classList.add('accordion-panel-loaded');
     wireAccordionToolbarAndNavigation(block, toolbarButtons);
+    markAnchorScrollTargets(block);
   }
   init();
 }

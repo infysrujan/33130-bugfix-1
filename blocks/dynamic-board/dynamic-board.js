@@ -467,8 +467,14 @@ function wireFilterEvents(
     wrapper.hidden = true;
     updateFilterBtn(filterBtn, state);
     try {
+      const selectedRates = state.selectedIds
+        .map((id) => state.rates.find((r) => String(r.AutoID) === id))
+        .filter(Boolean);
       await loadFilteredRates(state);
-      state.selectedIds = [];
+      const filteredIds = new Set(state.rates.map((r) => String(r.AutoID)));
+      selectedRates.forEach((r) => {
+        if (!filteredIds.has(String(r.AutoID))) state.rates.push(r);
+      });
       renderThead(thead, state);
       renderTable(tbodySel, tbodyAll, state);
     } catch (err) {

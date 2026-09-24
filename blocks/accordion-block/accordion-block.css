@@ -1,3 +1,9 @@
+@media (width > 64rem) {
+  .accordion-anchor-scroll-target {
+    scroll-margin-top: var(--header-d-height, 7.73rem);
+  }
+}
+
 .accordion-block-intro {
   padding: 0 1.25rem 1rem;
 }
