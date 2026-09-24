@@ -50,10 +50,6 @@
   border: 0.0625rem solid var(--bbl-color-black);
 }
 
-.table table td a {
-  color: inherit;
-}
-
 .table table td a.button-m {
   display: inline-flex;
 }
