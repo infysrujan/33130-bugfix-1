@@ -241,24 +241,28 @@ export default function decorate(block, _container, formId, fd = {}) {
   // out-of-range days in the grid, so the value can never be out of range. If the
   // model's own minimum/maximum are left in place it compares our Gregorian
   // submitted value against the (often BE) authored bound and wrongly reports
-  // "Value must be greater/less than …". Clear them on both the field definition
-  // (non-worker path / newly published) and the live model on register (worker).
+  // "Value must be greater/less than …".
+  // IMPORTANT: only mutate plain objects (fd and model._jsonModel). The live
+  // model's properties are getters — delete/assign throws in strict mode and
+  // would abort rendering, so everything here is wrapped defensively.
+  const RANGE_KEYS = ['minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum'];
   const clearRangeConstraints = (obj) => {
     if (!obj) return;
-    delete obj.minimum;
-    delete obj.maximum;
-    delete obj.exclusiveMinimum;
-    delete obj.exclusiveMaximum;
+    RANGE_KEYS.forEach((k) => {
+      try { delete obj[k]; } catch (_) { /* non-configurable – ignore */ }
+      try { if (obj[k] != null) obj[k] = undefined; } catch (_) { /* getter-only – ignore */ }
+    });
   };
   clearRangeConstraints(fd);
   if (formId) {
-    subscribe(block, formId, (el, model, eventType) => {
-      if (eventType === 'register') {
-        clearRangeConstraints(model);
+    try {
+      subscribe(block, formId, (el, model, eventType) => {
+        if (eventType !== 'register') return;
+        // Only the raw JSON model is safely mutable; never touch the live model.
         // eslint-disable-next-line no-underscore-dangle
         clearRangeConstraints(model?._jsonModel);
-      }
-    });
+      });
+    } catch (_) { /* rules engine unavailable (e.g. authoring) – ignore */ }
   }
 
   /* ── Build DOM ── */
