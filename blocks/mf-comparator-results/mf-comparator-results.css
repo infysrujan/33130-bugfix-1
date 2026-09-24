@@ -33,16 +33,15 @@
   line-height: 1.63;
 }
 
-/* ── Comparison grid — scrollable on mobile ───────────────────────────────── */
-
 .mf-comparator-results .mfcr-grid {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: stretch;
   gap: var(--bbl-space-250);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1.5rem;
   scrollbar-width: none;
   padding: var(--bbl-space-100) 0;
 }
@@ -51,8 +50,6 @@
   display: none;
 }
 
-/* ── Card column ──────────────────────────────────────────────────────────── */
-
 .mf-comparator-results .mfcr-card {
   display: flex;
   flex-direction: column;
@@ -60,9 +57,9 @@
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-radius: 0.4375rem;
   overflow: hidden;
-  flex: 1 1 0;
-  min-width: 17.50rem;
-  scroll-snap-align: start;
+  flex: 0 0 17.5rem;
+  width: 17.50rem;
+  scroll-snap-align: center;
   box-sizing: border-box;
 }
 
@@ -83,7 +80,9 @@
   box-shadow: 0.1732rem 0.1732rem 0 var(--bbl-color-black-alpha-17);
 }
 
-/* ── Image area ───────────────────────────────────────────────────────────── */
+.mf-comparator-results .mfcr-card-clone {
+  display: flex;
+}
 
 .mf-comparator-results .mfcr-inner {
   overflow: hidden;
@@ -92,9 +91,9 @@
   background-color: var(--bbl-color-grey-10);
   border-top-left-radius: 0.4375rem;
   border-top-right-radius: 0.4375rem;
-  height: calc(5.625rem + 75 * ((100vw - 20rem) / 1600));
-  max-height: calc(7.5rem + 60 * ((100vw - 20rem) / 1600));
-  min-height: calc(6.25rem + 50 * ((100vw - 20rem) / 1600));
+  height: calc(100vw * .5);
+  max-height: 10.3125rem;
+  min-height: 9.375rem;
   flex-shrink: 0;
 }
 
@@ -103,6 +102,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  min-height: 8.4375rem;
 }
 
 .mf-comparator-results .mfcr-img-print {
@@ -116,8 +116,6 @@
   }
 }
 
-/* ── Caption ──────────────────────────────────────────────────────────────── */
-
 .mf-comparator-results .mfcr-caption {
   padding: 1.25rem;
   flex-grow: 1;
@@ -128,7 +126,6 @@
   color: var(--bbl-color-grey-90);
 }
 
-/* Card name */
 .mf-comparator-results .mfcr-card-name {
   font-family: var(--bbl-font-family-medium);
   font-size: 1.5rem;
@@ -137,8 +134,6 @@
   margin: 0 0 0.9375rem;
   box-sizing: border-box;
 }
-
-/* ── Compare info rows ────────────────────────────────────────────────────── */
 
 .mf-comparator-results .compare-info dl {
   border-top: 0.0625rem solid var(--bbl-color-grey-150);
@@ -177,8 +172,6 @@
   margin-bottom: 0.25rem;
 }
 
-/* ── Fund company logo ────────────────────────────────────────────────────── */
-
 .mf-comparator-results .mfcr-logo {
   margin-top: auto;
   padding-top: var(--bbl-space-200);
@@ -190,8 +183,6 @@
   object-fit: contain;
   display: block;
 }
-
-/* ── Read more link ───────────────────────────────────────────────────────── */
 
 .mf-comparator-results .mfcr-read-more {
   display: flex;
@@ -219,15 +210,11 @@
   border-color: var(--bbl-color-active-blue);
 }
 
-/* ── No results ───────────────────────────────────────────────────────────── */
-
 .mf-comparator-results .mfcr-no-results {
   padding: var(--bbl-space-layout-md) var(--bbl-space-container-xs);
   text-align: center;
   color: var(--bbl-color-grey-90);
 }
-
-/* ── Scroll dots — mobile only ────────────────────────────────────────────── */
 
 .mf-comparator-results .mfcr-scroll-dots {
   display: flex;
@@ -251,28 +238,16 @@
   font-size: 0;
   line-height: 0;
   transition: all 180ms ease;
+  min-width: 0.5rem;
+  min-height: 0.5rem;
 }
 
 .mf-comparator-results .mfcr-scroll-dot.is-active {
-  width: 0.625rem;
-  height: 0.625rem;
+  width: 0.75rem;
+  height: 0.75rem;
   background: var(--bbl-color-active-blue);
   border-color: var(--bbl-color-active-blue);
 }
-
-@media (width < 47.5rem) {
-  .mf-comparator-results .mfcr-card {
-    min-width: 17.50rem;
-  }
-
-  .mf-comparator-results .mfcr-inner {
-    max-height: 10.3125rem;
-    height: calc(100vw * .5);
-    min-height: 9.375rem;
-  }
-}
-
-/* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
 
 @media (width > 47.5rem) {
   .mf-comparator-results .mfcr-notes {
@@ -283,30 +258,37 @@
     overflow-x: visible;
     scroll-snap-type: none;
     justify-content: center;
-    gap: 0 var(--bbl-space-250);
+    gap: var(--bbl-space-250);
   }
 
   .mf-comparator-results .mfcr-card {
-    flex: 1 1 0;
-    min-width: 13.32rem;
-    max-width: 17.25rem;
+    flex: 0 0 calc((100% - 2.5rem) / 3);
+    width: unset;
     scroll-snap-align: none;
-    flex-shrink: 0;
-    flex-grow: 1;
   }
 
-  /* Two cards alignment / sizing overrides */
+  .mf-comparator-results .mfcr-card-clone {
+    display: none;
+  }
+
+  .mf-comparator-results .mfcr-inner {
+    height: calc(100vw / 5);
+    min-height: 6.875rem;
+    max-height: calc(100vw * .17);
+  }
+
+  .mf-comparator-results .mfcr-thumb{
+    min-height: unset;
+  }
+
   .mf-comparator-results .mfcr-grid.two-cards {
     justify-content: center;
-    margin-inline: 7.125rem;
   }
 
   .mf-comparator-results .mfcr-scroll-dots {
     display: none;
   }
 }
-
-/* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
 
 @media (width > 64rem) {
   .mf-comparator-results .mfcr-notes {
@@ -315,31 +297,19 @@
 
   .mf-comparator-results .mfcr-grid {
     gap: 0 var(--bbl-space-500);
-    padding: 0 var(--bbl-space-container-xl);
   }
 
   .mf-comparator-results .mfcr-grid.two-cards {
     justify-content: center;
-    margin-inline: 5.5rem;
   }
-
 
   .mf-comparator-results .mfcr-card {
-    flex: 1 1 0;
-    min-width: 18.875rem;
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
   }
 
-  .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
-    flex: 1 1 0;
-    min-width: 14.75rem;
-    max-width: 17.25rem;
+  .mf-comparator-results .mfcr-inner {
+    height: calc(5.625rem + 75 * ((100vw - 20rem) / 1600));
+    max-height: calc(7.5rem + 60 * ((100vw - 20rem) / 1600));
+    min-height: calc(6.25rem + 50 * ((100vw - 20rem) / 1600));
   }
-}
-
-@media only screen and (width >= 48rem) and (width <= 61.9375rem) {
-    .mf-comparator-results .mfcr-inner {
-      height: calc(100vw / 5);
-      min-height: 6.875rem;
-      max-height: calc(100vw * .17);
-    }
 }

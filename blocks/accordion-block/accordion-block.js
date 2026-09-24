@@ -154,6 +154,36 @@ function extractTitleAndBody(section) {
   return { titleText, contentFrag };
 }
 
+/**
+ * Same-page anchor links inside accordion panels (e.g. the FAQ "View details
+ * of supporting providers by country." link on crossborder-qrpayment-in-thai)
+ * jump to targets elsewhere on the page. On desktop, reaching a target via an
+ * upward scroll re-reveals the top utility nav row without the main nav's
+ * flush-to-top state (see header.js isScrollingUp), so the header can be
+ * taller than the site's default scroll-margin-top assumes. Tag each such
+ * target with a class carrying the larger offset.
+ *
+ * The click is handled here instead of natively so the scroll can be
+ * explicitly smooth (Element.scrollIntoView({behavior:'smooth'}), independent
+ * of any site-wide scroll-behavior CSS) and so the URL/hash is never touched
+ * at all — which also means a later reload never re-triggers the browser's
+ * native on-load fragment-jump, since there's no hash for it to react to.
+ * @param {Element} block
+ */
+function markAnchorScrollTargets(block) {
+  block.querySelectorAll('a[href^="#"]').forEach((link) => {
+    const id = link.getAttribute('href').slice(1);
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (!target) return;
+    target.classList.add('accordion-anchor-scroll-target');
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
 function wireAccordionHeader(header, panel) {
   panel.querySelectorAll('img').forEach((img) => {
     img.removeAttribute('loading');
@@ -350,7 +380,7 @@ function buildAccordionPrintDocument(block) {
     .accordion-header { display: none; }
     .accordion-heading { display: none; }
     .accordion-block-toolbar { display: none; }
-    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: center; margin: 1rem auto; font-size: 2.5rem; line-height: 1; }
+    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: center; margin: 1rem auto; font-size: 2.3rem; line-height: 1; }
     html[lang="en"] .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: left; margin: 1rem 0; }
     .accordion-block-container > .default-content-wrapper { margin-bottom: 1.875rem; }
     .download-section .default-content-wrapper { text-align:center;}
@@ -811,6 +841,7 @@ export default async function decorate(block) {
     });
     block.classList.add('accordion-panel-loaded');
     wireAccordionToolbarAndNavigation(block, toolbarButtons);
+    markAnchorScrollTargets(block);
     return;
   }
 
@@ -846,4 +877,5 @@ export default async function decorate(block) {
   wireAccordionHeader(header, panel);
   block.classList.add('accordion-panel-loaded');
   wireAccordionToolbarAndNavigation(block, toolbarButtons);
+  markAnchorScrollTargets(block);
 }

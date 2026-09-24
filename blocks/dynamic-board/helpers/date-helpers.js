@@ -12,9 +12,10 @@ export function formatDisplayDate(date, monthLabels) {
   return `${pad2(date.getDate())} ${monthShort} ${date.getFullYear()}`;
 }
 
-export function formatMaturityDate(isoStr, monthLabels, yearOffset = 0) {
+export function formatMaturityDate(isoStr, monthLabels, yearOffset = 0, isThai = false) {
   const d = new Date(isoStr);
-  const monthShort = monthLabels[d.getMonth()]?.slice(0, 3);
+  const label = monthLabels[d.getMonth()];
+  const monthShort = isThai ? label : label?.slice(0, 3);
   return `${pad2(d.getDate())} ${monthShort} ${String(d.getFullYear() + yearOffset).slice(-2)}`;
 }
 
