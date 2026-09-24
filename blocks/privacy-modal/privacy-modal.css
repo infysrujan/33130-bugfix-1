@@ -262,6 +262,7 @@
 
 .privacy-modal-cta {
   align-self: center;
+  width: unset;
 }
 
 .privacy-modal-body::-webkit-scrollbar {
