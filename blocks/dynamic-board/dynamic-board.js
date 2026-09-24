@@ -180,7 +180,7 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00', state.isThai))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
       <td class="db-td-num db-td-maturity">
-        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels, state.buddhistYearOffset))}
+        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels, state.buddhistYearOffset, state.isThai))}
         <a class="db-td-dl" href="${buildDownloadHref(state.downloadUrl, sym)}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
