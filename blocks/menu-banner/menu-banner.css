@@ -2,6 +2,9 @@
 .menu-banner {
   width: 100%;
   display: block;
+}
+
+.menu-banner-container{
   min-height: 32.375rem;
 }
 
@@ -241,7 +244,7 @@
 
 /* Desktop: width > 1024px */
 @media (width > 64rem) {
-  .menu-banner{
+  .menu-banner-container{
     min-height: unset;
   }
 
