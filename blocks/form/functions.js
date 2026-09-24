@@ -1395,10 +1395,6 @@ preserveFieldUnitLabels();
  * or 10 digits depending on the CSS class applied, and formats the value
  * with thousand-separator commas once the field loses focus. Targets
  * fields marked with the `number-max-12` or `number-max-10` CSS class on
- * the input or its ancestors. Listening on multiple events guards
- * against edge cases where a single event type doesn't fire reliably
- * (e.g. paste, fast typing, or first interaction right after the field
- * is dynamically inserted into the DOM).
  *
  * @name formatCommaInputs
  * @returns {void}
