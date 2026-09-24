@@ -94,8 +94,32 @@ function getFirstProp(fd, keys) {
   return undefined;
 }
 
+/**
+ * Parses an authored config date. Accepts values in either calendar:
+ *   - Gregorian (e.g. 2026-09-10 / 2026-09-10T00:00:00.000-00:00)
+ *   - Thai Buddhist Era (e.g. 2569-09-10) — years >= 2400 are treated as BE
+ *     and converted to Gregorian by subtracting 543.
+ * The Y-M-D is read directly and rebuilt as a LOCAL calendar day, so the time
+ * and UTC offset in the authored string can't shift the min/max boundary by a
+ * day (the previous `new Date(str)` treated the value as UTC midnight).
+ */
 function parseConfigDate(str) {
   if (!str) return null;
+  const m = String(str).trim().match(/^(\d{3,4})-(\d{1,2})-(\d{1,2})/);
+  if (m) {
+    let year = Number.parseInt(m[1], 10);
+    const monthIndex = Number.parseInt(m[2], 10) - 1;
+    const day = Number.parseInt(m[3], 10);
+    // BE years run ~543 ahead of Gregorian; nothing a form would legitimately
+    // author as a Gregorian year reaches 2400 AD, so this threshold is safe.
+    if (year >= 2400) year -= BE_OFFSET;
+    const d = new Date(year, monthIndex, day);
+    const valid = d.getFullYear() === year
+      && d.getMonth() === monthIndex
+      && d.getDate() === day;
+    return valid ? startOfDay(d) : null;
+  }
+  // Fallback for any non ISO-like value.
   const d = new Date(str);
   return Number.isNaN(d.getTime()) ? null : d;
 }
