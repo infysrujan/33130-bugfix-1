@@ -829,11 +829,11 @@
 /* ── Cell types ────────────────────────────────────────────── */
 
 .dynamic-board .db-td-check {
-  width: 3%;
+  width: 2%;
 }
 
 .dynamic-board .db-td-symbol {
-  width: 7%;
+  width: 8%;
   white-space: nowrap;
   color: var(--bbl-color-active-blue);
 }
@@ -842,7 +842,6 @@
   width: 20%;
   position: relative;
   min-width: 12rem;
-  line-height: var(--bbl-body-b1-line-height);
 }
 
 .dynamic-board .db-td-name[data-title]::after {
