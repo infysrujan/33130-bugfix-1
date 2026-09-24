@@ -222,14 +222,24 @@ export default function decorate(block, _container, formId, fd = {}) {
     || getProp(fd, 'hideTitle') === true
     || getProp(fd, 'hideTitle') === 'true';
 
-  // Authored min/max. The model exposes custom "minimumDate"/"maximumDate";
-  // the core datepicker resourceType may instead surface "minimum"/"maximum".
-  // Values may arrive as strings or as { value } objects, so unwrap first.
+  // Authored min/max. Two authoring fields exist per bound:
+  //   • BE  (text, "minimumDate"/"maximumDate")   — for Thai forms
+  //   • CE  (date-time, "minimumDateCe"/"maximumDateCe") — for English/Gregorian forms
+  // Prefer the one matching the page language; the other is the fallback. Either
+  // way parseConfigDate auto-detects BE (year >= 2400) vs Gregorian, so a value
+  // in the "wrong" field still resolves correctly. Also falls back to the core
+  // datepicker "minimum"/"maximum" and any legacy document-based config.
+  const minKeys = lang === 'th'
+    ? ['minimumDate', 'minimumDateCe', 'minimum']
+    : ['minimumDateCe', 'minimumDate', 'minimum'];
+  const maxKeys = lang === 'th'
+    ? ['maximumDate', 'maximumDateCe', 'maximum']
+    : ['maximumDateCe', 'maximumDate', 'maximum'];
   const minDate = parseConfigDate(
-    toText(getFirstProp(fd, ['minimumDate', 'minimum']) ?? config['min-date']),
+    toText(getFirstProp(fd, minKeys) ?? config['min-date']),
   );
   const maxDate = parseConfigDate(
-    toText(getFirstProp(fd, ['maximumDate', 'maximum']) ?? config['max-date']),
+    toText(getFirstProp(fd, maxKeys) ?? config['max-date']),
   ) ?? startOfDay(new Date());
 
   const initialDate = parseConfigDate(
