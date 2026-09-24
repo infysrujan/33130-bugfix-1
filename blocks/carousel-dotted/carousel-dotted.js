@@ -6,6 +6,7 @@ import {
 import buildCardListFragmentSlides, {
   updateFragmentTrack,
   setCardListTrackPosition,
+  getCardListCarouselOffset,
   isFragmentNoScroll,
   tabletMin,
 } from './card-list-carousel.js';
@@ -848,15 +849,19 @@ export default async function decorate(block) {
     || (isMfCardListCarousel && slideEls.length > 1)
     || (isMfFundCardsCarousel && slideEls.length > 1);
 
-  // simple-carousel: make dragging visually follow the pointer (partial reveal)
+  // Track-wrapper variants (fragment card-list, mf-fund-cards, circular/default-image,
+  // simple-carousel): make dragging visually follow the pointer (partial reveal)
   // instead of only snapping to the next/previous slide on release.
-  let simpleCarouselDragTrack = null;
-  if (isSimpleCarousel) {
+  let trackDragTrack = null;
+  if (arrowTrackVariant) {
     const trackWrapperEl = block.querySelector('.carousel-track-wrapper');
     if (trackWrapperEl) {
-      simpleCarouselDragTrack = {
+      trackDragTrack = {
         trackWrapper: trackWrapperEl,
         getOffset(index) {
+          if (allFragmentTrack || isMfFundCardsCarousel) {
+            return getCardListCarouselOffset(block, trackWrapperEl, slideEls, index);
+          }
           const trackViewport = block.querySelector('.carousel-track-viewport');
           const slideWidthPx = slideEls[0]
             ? slideEls[0].getBoundingClientRect().width
@@ -867,7 +872,7 @@ export default async function decorate(block) {
       };
     }
   }
-  initializeDragSwipe(block, slideEls, setActive, 50, enableLooping, simpleCarouselDragTrack);
+  initializeDragSwipe(block, slideEls, setActive, 50, enableLooping, trackDragTrack);
 
   if (allFragmentTrack) {
     const breakpoint = window.matchMedia(`(max-width: ${tabletMin})`);
