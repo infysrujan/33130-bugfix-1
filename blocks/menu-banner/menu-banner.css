@@ -2,6 +2,7 @@
 .menu-banner {
   width: 100%;
   display: block;
+  min-height: 32.375rem;
 }
 
 .menu-banner .wrapper {
@@ -240,6 +241,10 @@
 
 /* Desktop: width > 1024px */
 @media (width > 64rem) {
+  .menu-banner{
+    min-height: unset;
+  }
+
   .menu-banner .desktop-tools {
     display: flow-root;
     padding-top: 1.25rem;
