@@ -127,7 +127,7 @@ function filterByPromotionType(cards, promotionType) {
 
 function getTabsContainer(block) {
   const section = block.closest('.section');
-  return section?.querySelector('.tabs') || block.closest('.tabs') || null;
+  return section?.querySelector('.tabs') || block.closest('.tabs') || document.querySelector('.tabs') || null;
 }
 
 function applyCategoryTabs(tabsContainer, categories) {
