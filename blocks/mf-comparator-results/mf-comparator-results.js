@@ -259,6 +259,8 @@ function initMobileCarousel(grid, doc) {
 
   const getItems = () => [...grid.querySelectorAll('.mfcr-card:not(.mfcr-card-clone)')];
 
+  let realItems = [];
+
   const scrollToItem = (item, instant = false) => {
     const itemOffset = item.getBoundingClientRect().left
       - grid.getBoundingClientRect().left
@@ -284,21 +286,22 @@ function initMobileCarousel(grid, doc) {
     return nearest;
   };
 
-  const setupLoopClones = (items) => {
+  const cloneSet = (source) => source.map((item, i) => {
+    const clone = item.cloneNode(true);
+    clone.classList.add('mfcr-card-clone');
+    clone.setAttribute('aria-hidden', 'true');
+    clone.querySelectorAll('a, button').forEach((el) => { el.tabIndex = -1; });
+    clone.dataset.realIndex = i;
+    return clone;
+  });
+
+  const setupLoopClones = () => {
     grid.querySelectorAll('.mfcr-card-clone').forEach((el) => el.remove());
-    if (items.length < 2) return;
+    realItems = getItems();
+    if (realItems.length < 2) return;
 
-    const makeClone = (item, realIndex) => {
-      const clone = item.cloneNode(true);
-      clone.classList.add('mfcr-card-clone');
-      clone.setAttribute('aria-hidden', 'true');
-      clone.querySelectorAll('a, button').forEach((el) => { el.tabIndex = -1; });
-      clone.dataset.cloneIndex = realIndex;
-      return clone;
-    };
-
-    grid.insertBefore(makeClone(items[items.length - 1], items.length - 1), items[0]);
-    grid.appendChild(makeClone(items[0], 0));
+    cloneSet(realItems).forEach((clone) => grid.insertBefore(clone, realItems[0]));
+    cloneSet(realItems).forEach((clone) => grid.appendChild(clone));
   };
 
   const centerWhenReady = (item) => {
@@ -314,13 +317,12 @@ function initMobileCarousel(grid, doc) {
 
   const buildDots = () => {
     dotsEl.innerHTML = '';
-    const items = getItems();
-    setupLoopClones(items);
-    if (items.length <= 1) return;
+    setupLoopClones();
+    if (realItems.length <= 1) return;
 
-    centerWhenReady(items[0]);
+    centerWhenReady(realItems[0]);
 
-    items.forEach((item, i) => {
+    realItems.forEach((item, i) => {
       const dot = doc.createElement('button');
       dot.type = 'button';
       dot.className = `mfcr-scroll-dot${i === 0 ? ' is-active' : ''}`;
@@ -333,20 +335,19 @@ function initMobileCarousel(grid, doc) {
   let scrollEndTimer;
   grid.addEventListener('scroll', () => {
     const dots = [...dotsEl.querySelectorAll('.mfcr-scroll-dot')];
-    const items = getItems();
-    if (!items.length || !dots.length) return;
+    if (!realItems.length || !dots.length) return;
 
     const nearest = findNearest();
-    const activeIndex = nearest?.dataset.cloneIndex !== undefined
-      ? Number(nearest.dataset.cloneIndex)
-      : items.indexOf(nearest);
+    const activeIndex = nearest?.dataset.realIndex !== undefined
+      ? Number(nearest.dataset.realIndex)
+      : realItems.indexOf(nearest);
     dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
 
     clearTimeout(scrollEndTimer);
     scrollEndTimer = setTimeout(() => {
       const settled = findNearest();
-      if (settled?.dataset.cloneIndex !== undefined) {
-        const target = items[Number(settled.dataset.cloneIndex)];
+      if (settled?.classList.contains('mfcr-card-clone') && settled.dataset.realIndex !== undefined) {
+        const target = realItems[Number(settled.dataset.realIndex)];
         if (target) scrollToItem(target, true);
       }
     }, 120);
