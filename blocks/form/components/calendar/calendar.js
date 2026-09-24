@@ -1,7 +1,5 @@
 /* eslint-env browser */
 
-import { subscribe } from '../../rules/index.js';
-
 /* ── Locale data ─────────────────────────────────────────────────────────── */
 
 const BE_OFFSET = 543;
@@ -136,16 +134,13 @@ function toText(v) {
  */
 function parseConfigDate(str) {
   if (!str) return null;
-  const s = String(str).trim();
-  if (!s) return null;
-
-  // Preferred: an ISO-like yyyy-mm-dd prefix (covers both "2554-01-01" and
-  // "2020-01-01T00:00:00.000-00:00"). A year >= 2400 is Buddhist Era.
-  const m = s.match(/^(\d{3,4})-(\d{1,2})-(\d{1,2})/);
+  const m = String(str).trim().match(/^(\d{3,4})-(\d{1,2})-(\d{1,2})/);
   if (m) {
     let year = Number.parseInt(m[1], 10);
     const monthIndex = Number.parseInt(m[2], 10) - 1;
     const day = Number.parseInt(m[3], 10);
+    // BE years run ~543 ahead of Gregorian; nothing a form would legitimately
+    // author as a Gregorian year reaches 2400 AD, so this threshold is safe.
     if (year >= 2400) year -= BE_OFFSET;
     const d = new Date(year, monthIndex, day);
     const valid = d.getFullYear() === year
@@ -153,19 +148,9 @@ function parseConfigDate(str) {
       && d.getDate() === day;
     return valid ? startOfDay(d) : null;
   }
-
-  // Fallback: any other parseable date string. This includes a JS Date
-  // toString() such as "Thu Sep 01 2568 00:00:00 GMT+0000" that AEM can emit
-  // for a date-typed authored value. Rebuild from the parsed calendar parts and
-  // treat a year >= 2400 as Buddhist Era, so the bound resolves to the correct
-  // Gregorian day regardless of the authored string's shape.
-  const parsed = new Date(s);
-  if (Number.isNaN(parsed.getTime())) return null;
-  let year = parsed.getFullYear();
-  const monthIndex = parsed.getMonth();
-  const day = parsed.getDate();
-  if (year >= 2400) year -= BE_OFFSET;
-  return startOfDay(new Date(year, monthIndex, day));
+  // Fallback for any non ISO-like value.
+  const d = new Date(str);
+  return Number.isNaN(d.getTime()) ? null : d;
 }
 
 function getDisplayLang() {
@@ -209,7 +194,7 @@ let instanceCount = 0;
 
 /* ── Main decorate ───────────────────────────────────────────────────────── */
 
-export default function decorate(block, _container, formId, fd = {}) {
+export default function decorate(block, fd = {}) {
   // Legacy document-authored fallback: only meaningful when the block still has
   // key/value <div> rows. In an AEM Forms render authored values arrive via `fd`.
   const config = parseBlockConfig(block);
@@ -235,74 +220,22 @@ export default function decorate(block, _container, formId, fd = {}) {
     || getProp(fd, 'hideTitle') === true
     || getProp(fd, 'hideTitle') === 'true';
 
-  // Authored min/max. Two authoring fields exist per bound:
-  //   • BE  (text, "minimumDate"/"maximumDate")   — for Thai forms
-  //   • CE  (date-time, "minimumDateCe"/"maximumDateCe") — for English/Gregorian forms
-  // Prefer the one matching the page language; the other is the fallback. Either
-  // way parseConfigDate auto-detects BE (year >= 2400) vs Gregorian, so a value
-  // in the "wrong" field still resolves correctly. Also falls back to the core
-  // datepicker "minimum"/"maximum" and any legacy document-based config.
-  const minKeys = lang === 'th'
-    ? ['minBe', 'minimumDate', 'minimumDateCe', 'minimum']
-    : ['minimumDateCe', 'minBe', 'minimumDate', 'minimum'];
-  const maxKeys = lang === 'th'
-    ? ['maxBe', 'maximumDate', 'maximumDateCe', 'maximum']
-    : ['maximumDateCe', 'maxBe', 'maximumDate', 'maximum'];
+  // Authored min/max. The model exposes custom "minimumDate"/"maximumDate";
+  // the core datepicker resourceType may instead surface "minimum"/"maximum".
+  // Values may arrive as strings or as { value } objects, so unwrap first.
   const minDate = parseConfigDate(
-    toText(getFirstProp(fd, minKeys) ?? config['min-date']),
+    toText(getFirstProp(fd, ['minimumDate', 'minimum']) ?? config['min-date']),
   );
   const maxDate = parseConfigDate(
-    toText(getFirstProp(fd, maxKeys) ?? config['max-date']),
+    toText(getFirstProp(fd, ['maximumDate', 'maximum']) ?? config['max-date']),
   ) ?? startOfDay(new Date());
 
   const initialDate = parseConfigDate(
     toText(getFirstProp(fd, ['default', 'value']) ?? config.value),
   );
 
-  // Disable the AF model's native min/max validation. This component converts
-  // Buddhist-Era authored bounds to Gregorian and enforces the range by disabling
-  // out-of-range days in the grid, so the value can never be out of range. If the
-  // model's own minimum/maximum are left in place it compares our Gregorian
-  // submitted value against the (often BE) authored bound and wrongly reports
-  // "Value must be greater/less than …".
-  // IMPORTANT: only mutate plain objects (fd and model._jsonModel). The live
-  // model's properties are getters — delete/assign throws in strict mode and
-  // would abort rendering, so everything here is wrapped defensively.
-  const RANGE_KEYS = ['minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum'];
-  const clearRangeConstraints = (obj) => {
-    if (!obj) return;
-    RANGE_KEYS.forEach((k) => {
-      try { delete obj[k]; } catch (_) { /* non-configurable – ignore */ }
-      try { if (obj[k] != null) obj[k] = undefined; } catch (_) { /* getter-only – ignore */ }
-    });
-  };
-  clearRangeConstraints(fd);
-  if (formId) {
-    try {
-      subscribe(block, formId, (el, model, eventType) => {
-        if (eventType !== 'register') return;
-        // Only the raw JSON model is safely mutable; never touch the live model.
-        // eslint-disable-next-line no-underscore-dangle
-        clearRangeConstraints(model?._jsonModel);
-      });
-    } catch (_) { /* rules engine unavailable (e.g. authoring) – ignore */ }
-  }
-
   /* ── Build DOM ── */
   block.innerHTML = '';
-
-  // Diagnostic: expose the resolved bounds on the field wrapper for DevTools.
-  //  - *-resolved  = internal Gregorian value (yyyy-MM-dd), what JS actually stores
-  //  - *-be        = the same day shown in Buddhist Era (year + 543), what users see
-  // 2025-09-20 (resolved) and 2568-09-20 (be) are the SAME day.
-  const toBeISO = (d) => (d
-    ? `${d.getFullYear() + BE_OFFSET}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-    : '');
-  block.dataset.minResolved = minDate ? toLocalISO(minDate) : '';
-  block.dataset.maxResolved = maxDate ? toLocalISO(maxDate) : '';
-  block.dataset.minBe = toBeISO(minDate);
-  block.dataset.maxBe = toBeISO(maxDate);
-  block.dataset.defaultResolved = initialDate ? toLocalISO(initialDate) : '';
 
   const wrapper = document.createElement('div');
   wrapper.className = 'dpth-wrapper';
