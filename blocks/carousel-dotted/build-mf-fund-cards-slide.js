@@ -3,7 +3,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
-import { loadMfSheetOrder, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
+import { loadMfSheetOrder, filterFundsInSheet, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -221,7 +221,10 @@ export default async function buildMfFundCardsSlide(row, index) {
   const noResultsLabel = ph.mfNoResultsText || 'No results found';
 
   const filteredFunds = sortFundsBySheetOrder(
-    allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory)),
+    filterFundsInSheet(
+      allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory)),
+      matrix,
+    ),
     matrix,
   );
 

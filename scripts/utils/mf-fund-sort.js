@@ -52,18 +52,34 @@ export async function loadMfSheetOrder() {
   }
 }
 
-/**
- * Sort funds to match the row order they're authored in the mf-suggestor
- * filtering-matrix sheet. Shared by every block that renders mutual fund
- * cards so ordering stays consistent across all mutual-fund pages.
- */
-export function sortFundsBySheetOrder(funds, matrix) {
+function buildSheetOrderMap(matrix) {
   const nameKey = fundNameKey();
   const orderMap = {};
   matrix.forEach((row, index) => {
     const name = norm(row[nameKey] || '');
     if (name && !(name in orderMap)) orderMap[name] = index;
   });
+  return orderMap;
+}
+
+/**
+ * Keep only funds that have a row in the mf-suggestor sheet. The sheet is
+ * the canonical list of funds allowed to appear anywhere on the site — a
+ * fund can carry a matching category/risk tag in the funds API and still
+ * not be authored into the sheet yet, and it must not show up until it is.
+ */
+export function filterFundsInSheet(funds, matrix) {
+  const orderMap = buildSheetOrderMap(matrix);
+  return funds.filter((fund) => norm(fund.FundName || '') in orderMap);
+}
+
+/**
+ * Sort funds to match the row order they're authored in the mf-suggestor
+ * filtering-matrix sheet. Shared by every block that renders mutual fund
+ * cards so ordering stays consistent across all mutual-fund pages.
+ */
+export function sortFundsBySheetOrder(funds, matrix) {
+  const orderMap = buildSheetOrderMap(matrix);
 
   return [...funds].sort((a, b) => {
     const orderA = orderMap[norm(a.FundName || '')] ?? Number.MAX_SAFE_INTEGER;
