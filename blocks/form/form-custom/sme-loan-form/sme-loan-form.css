@@ -1,6 +1,5 @@
 .sme-loan-form main .section.form-container.custom-forms {
   padding-inline: 0.9375rem;
-  min-height: 223.375rem;
 
   &.central-aligned > .default-content-wrapper {
     & h2 {
@@ -416,7 +415,6 @@
 
   @media (width > 47.5rem) {
     padding-inline: 0;
-    min-height: unset;
     
     &.central-aligned > .default-content-wrapper {
       & h2 {

@@ -381,16 +381,8 @@
     }
 }
 
-.contact-us main .section.form-container.custom-forms .form{
-    min-height: 69.063rem;
- }
-
 /* Tablet & Desktop */
 @media (width > 47.5rem) {    
-    .contact-us main .section.form-container.custom-forms .form{
-        min-height: unset;
-    }
-
     .contact-us main .section.form-container.custom-forms .form form {
         /* Date/Time: Date (span 6), Hours (span 3), Minutes (span 3) */
         & fieldset.panel-wrapper:has(.date-wrapper) > :is(.date-wrapper, [class*='-date-']) {

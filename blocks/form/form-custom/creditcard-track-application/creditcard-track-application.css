@@ -44,19 +44,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
   box-shadow: none;
 }
 
-body.credit-card-form .section.custom-forms {
-  min-height: 991px;
-
-  @media (width > 64rem) {
-    min-height: 677.38px;
-  }
-}
-
-body.credit-card-form .section.custom-forms form,
-.field-creditcardapplication {
-  min-height: 613.38px;
-}
-
 .credit-card-form main .section.form-container.custom-forms:has(.cc-app-main-form) {
   --cc-form-max-width: 55.625rem;
   --cc-form-gutter: 0.9375rem;
