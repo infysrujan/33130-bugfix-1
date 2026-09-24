@@ -92,18 +92,41 @@ function getCardName(card) {
   return card.name || card.title || card.FundName || card.fundName || '';
 }
 
-function filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap) {
-  const normalizedNames = selectedNames.map(norm);
-  const matched = allCards.filter((card) => selectedIDs.includes(card.ProductID));
+function extractFundCode(str) {
+  const match = (str || '').match(/\(([^)]+)\)/);
+  return match ? match[1].replace(/[^a-zA-Z0-9]/g, '').toLowerCase() : '';
+}
+
+function findMatchingCard(allCards, card) {
+  if (!card || !allCards.length) return null;
+  const targetId = card.id;
+  if (targetId) {
+    const byId = allCards.find((c) => c.ProductID && c.ProductID === targetId);
+    if (byId) return byId;
+  }
+  const targetCode = extractFundCode(card.name);
+  if (targetCode) {
+    const byCode = allCards.find((c) => extractFundCode(getCardName(c)) === targetCode);
+    if (byCode) return byCode;
+  }
+  const targetName = norm(card.name);
+  if (targetName) {
+    const byName = allCards.find((c) => {
+      const cName = norm(getCardName(c));
+      return cName === targetName || cName.includes(targetName) || targetName.includes(cName);
+    });
+    if (byName) return byName;
+  }
+  return null;
+}
+
+function filterAndSortCards(allCards, selectedCards, sourcingMap) {
+  const matched = (selectedCards || [])
+    .map((card) => findMatchingCard(allCards, card))
+    .filter(Boolean);
 
   if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
-    return normalizedNames
-      .map((n) => matched.find((c) => {
-        const cardName = norm(getCardName(c));
-        const found = cardName === n;
-        return found;
-      }))
-      .filter(Boolean);
+    return matched;
   }
 
   return matched.sort((a, b) => {
@@ -353,7 +376,7 @@ function getCardsFromStorage() {
   try {
     const value = decodeURIComponent(match.split('=').slice(1).join('='));
     const items = JSON.parse(value);
-    return items.map(({ id, title, photo }) => ({ name: title || id, image: photo }));
+    return items.map(({ id, title, photo }) => ({ id, name: title || id, image: photo }));
   } catch {
     return null;
   }
@@ -373,13 +396,24 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
     return;
   }
 
-  const selectedNames = cards.map((c) => c.name);
-  const selectedIDs = cards.map((c) => c.id);
-  const sorted = filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap);
+  const sorted = filterAndSortCards(allCards, cards, sourcingMap);
 
   const displayCards = sorted.length > 0
     ? sorted
     : cards.map(({ name, image }) => ({ name, image }));
+
+  if (sorted.length > 0) {
+    try {
+      const updated = sorted.map((c) => ({
+        id: c.ProductID || '',
+        name: getCardName(c),
+        image: resolveImageUrl(c),
+      }));
+      sessionStorage.setItem('mfs-compare-cards', JSON.stringify(updated));
+      window.mfsSelectedCards = updated;
+      doc.dispatchEvent(new CustomEvent('mf-compare-updated', { detail: { cards: updated } }));
+    } catch { /* ignore */ }
+  }
 
   container.classList.toggle('single-card', displayCards.length === 1);
   container.classList.toggle('two-cards', displayCards.length === 2);
