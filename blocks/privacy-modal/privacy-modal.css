@@ -408,6 +408,10 @@
     padding: 0 5% 0 4.5%;
   }
 
+  .download-file-modal .privacy-modal-checkbox-row {
+    justify-content: center;
+  }
+
   .privacy-modal-checkbox-row input[type='checkbox'] {
     width: var(--bbl-space-200);
     height: var(--bbl-space-200);
