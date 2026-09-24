@@ -28,10 +28,16 @@ function extractCategoryFromTag(tagValue) {
   return norm(parts[parts.length - 1] || '');
 }
 
-// FundCategory is an array of full AEM tag paths; reduce each one to its slug.
+// FundCategory is normally an array of full AEM tag paths, but a multi-value
+// tag field can also come back as a single delimited string (comma/semicolon/
+// pipe/newline-separated) — split those too so each individual tag gets its
+// own slug instead of one slug being extracted from the whole joined string.
 function fundCategorySlugs(fundCategory) {
   const tags = Array.isArray(fundCategory) ? fundCategory : [fundCategory];
-  return tags.map((tag) => extractCategoryFromTag(tag)).filter(Boolean);
+  return tags
+    .flatMap((tag) => (typeof tag === 'string' ? tag.split(/[,;|\n]+/) : [tag]))
+    .map((tag) => extractCategoryFromTag(tag))
+    .filter(Boolean);
 }
 
 // Exact slug match only (plural/singular tolerant) — no substring matching, no blank matches.
@@ -41,20 +47,6 @@ function matchesCategory(fundCategory, pageCategory) {
   return fundCategorySlugs(fundCategory)
     .some((fc) => fc === pc || fc.replace(/s$/, '') === pc.replace(/s$/, ''));
 }
-
-// Drops repeat funds (same ProductID/FundName tagged twice upstream) so no card duplicates.
-// Commented out for testing so authored/data duplicates stay visible on screen.
-// Uncomment this function and its call in filteredFunds below to restore duplicate-hiding.
-// function dedupeFunds(funds) {
-//   const seen = new Set();
-//   return funds.filter((fund) => {
-//     const key = fund.ProductID || fund.FundName || '';
-//     if (!key) return true;
-//     if (seen.has(key)) return false;
-//     seen.add(key);
-//     return true;
-//   });
-// }
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
 
@@ -228,10 +220,7 @@ export default async function buildMfFundCardsSlide(row, index) {
   const compareLabel = ph.mfCompareText || 'Compare';
   const noResultsLabel = ph.mfNoResultsText || 'No results found';
 
-  // Dedup disabled for testing so authored/data duplicates stay visible on screen.
-  // Uncomment the dedupeFunds(...) wrap below to restore duplicate-hiding behavior.
   const filteredFunds = sortFundsBySheetOrder(
-    // dedupeFunds(allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory))),
     allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory)),
     matrix,
   );

@@ -2,16 +2,25 @@ import { fetchConfigs } from '../config.js';
 import { fetchGet } from './fetchApi.js';
 import { getLang } from '../scripts.js';
 
+// Strips zero-width/invisible characters and collapses all whitespace
+// (regular, non-breaking, tabs/newlines) to a single space before comparing,
+// so authored sheet names and API fund names match even when one side has
+// extra/odd whitespace that the other doesn't.
 function norm(str) {
-  return (str || '').toString().replace(/​/g, '').toLowerCase().trim();
+  return (str || '')
+    .toString()
+    .replace(/[​-‍﻿]/g, '')
+    .replace(/\s+/g, ' ')
+    .toLowerCase()
+    .trim();
 }
 
 function normalizeRow(row) {
   const out = {};
   Object.entries(row).forEach(([k, v]) => {
-    const key = k.replace(/​/g, '').trim();
+    const key = k.replace(/[​-‍﻿]/g, '').replace(/\s+/g, ' ').trim();
     out[key] = typeof v === 'string'
-      ? v.replace(/​/g, '').replace(/\s+/g, ' ').trim()
+      ? v.replace(/[​-‍﻿]/g, '').replace(/\s+/g, ' ').trim()
       : v;
   });
   return out;
