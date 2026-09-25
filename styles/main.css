@@ -820,6 +820,12 @@ main img {
     display: none;
 }
 
+/* Raw cellCss authoring row (blocks/table) stays in the DOM in the UE canvas
+   so it remains editable, but shouldn't render visually. */
+.cell-css-row {
+    display: none;
+}
+
 .rte-anchor {
     display: block;
     height: 0;

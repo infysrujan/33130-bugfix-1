@@ -14,6 +14,17 @@ function norm(str) {
     .trim();
 }
 
+// Escape HTML special chars, then turn newlines into <br> so multi-line
+// plaintext (e.g. fee breakdowns) renders as separate lines instead of
+// being collapsed into one line by the browser
+function nl2br(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\r?\n/g, '<br>');
+}
+
 // ── Icon loading ───────────────────────────────────────────────────────────────
 
 // Fetch an SVG from the icons folder and return its markup string for inline use
@@ -223,7 +234,7 @@ function buildCompareCard(card, doc, labels, icons, activeKeys) {
     dt.textContent = label;
     const dd = doc.createElement('dd');
     dd.className = 'ccr-value';
-    dd.textContent = value;
+    dd.innerHTML = nl2br(value);
     dl.appendChild(dt);
     dl.appendChild(dd);
     compareInfo.appendChild(dl);
@@ -508,8 +519,19 @@ function equalizeRowHeights(grid) {
 export default async function decorate(block) {
   const doc = block.ownerDocument;
   const ph = await fetchPlaceholders();
+
+  const descriptionRow = block.children[0];
+  if (descriptionRow) {
+    descriptionRow.classList.add('ccr-description');
+  }
+
+  // Authored "Learn More Button Text" field — overrides the placeholder default
+  const learnMoreTextRow = block.children[1];
+  const learnMoreText = learnMoreTextRow?.textContent?.trim();
+  learnMoreTextRow?.remove();
+
   const labels = {
-    learnMore: ph.cardLearnMore || 'Learn more',
+    learnMore: learnMoreText || ph.cardLearnMore || 'Learn more',
     applyNow: ph.cardApplyNow || 'Apply',
     applyViaWebsite: ph.cardApplyViaWebsite || 'Apply via Website',
     applyViaMobile: ph.cardApplyViaMobileBanking || 'Apply via Mobile Banking',
@@ -522,11 +544,6 @@ export default async function decorate(block) {
     fees: ph.cardFees || 'Fees',
     noResults: ph.cardNoResultsFound || 'No results found',
   };
-
-  const descriptionRow = block.children[0];
-  if (descriptionRow) {
-    descriptionRow.classList.add('ccr-description');
-  }
 
   const innerContainer = doc.createElement('div');
   innerContainer.className = 'inner-container';
