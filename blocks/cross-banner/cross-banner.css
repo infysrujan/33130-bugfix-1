@@ -31,7 +31,7 @@
 }
 
 .cross-banner-badge {
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
   color: var(--bbl-color-white);
   line-height: var(--bbl-text-label-tag-line-height);
   font-size: var(--bbl-text-label-tag-size);
@@ -151,6 +151,7 @@ body.private
 
   .cross-banner-badge {
     margin: 0;
+    font-family: var(--bbl-font-family-medium);
     text-align: center;
     height: 1.875rem;
     padding: var(--bbl-space-050) var(--bbl-space-100);

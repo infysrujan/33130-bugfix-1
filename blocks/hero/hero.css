@@ -97,11 +97,6 @@
   height: calc((100vw - 2.5rem) / 1.3);
 }
 
-.bangkok-bankm-card .hero-banner-default .hero-banner-item {
-    max-height: unset;
-    height: unset;
-}
-
 .bangkok-bankm-card .hero-banner-container{
   padding-bottom: 1.875rem;
 }
@@ -138,6 +133,11 @@
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe),
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video){
   height: auto;
+}
+
+.bangkok-bankm-card .hero-banner-default .hero-banner-item {
+  max-height: unset;
+  height: unset;
 }
 
 /* ── YouTube iframe click-to-play overlay  ─────────────── */
