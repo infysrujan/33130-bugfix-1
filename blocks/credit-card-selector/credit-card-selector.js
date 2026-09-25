@@ -408,6 +408,7 @@ export default function decorate(block) {
   // startOverButton.className = 'selector-button selector-button-secondary';
   startOverButton.classList.add('button-m');
   startOverButton.classList.add('secondary');
+  startOverButton.classList.add('ccs-start-over-btn');
   startOverButton.textContent = startOverButtonConfig.label;
   if (startOverButtonConfig.titleAttr) startOverButton.title = startOverButtonConfig.titleAttr;
   startOverButton.style.display = 'none';

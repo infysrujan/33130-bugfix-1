@@ -275,6 +275,14 @@
   width: unset;
 }
 
+.credit-card-selector .selector-actions .ccs-start-over-btn {
+  background: var(--bbl-color-white);
+}
+
+.credit-card-selector .selector-actions .ccs-start-over-btn:hover {
+  background: var(--bbl-color-active-blue);
+}
+
 .credit-card-selector .card-selector-collapsible {
   overflow: visible;
   position: relative;
