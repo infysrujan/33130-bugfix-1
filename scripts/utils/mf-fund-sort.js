@@ -50,7 +50,7 @@ export function loadMfSheetOrder() {
 
 // Order/allow-list for carousel listing pages and the fund comparator.
 export function loadCarouselListingOrder() {
-  return loadSheetOrder('carouselListingSort');
+  return loadSheetOrder('mfCardListingSort');
 }
 
 function buildSheetOrderMap(matrix) {
