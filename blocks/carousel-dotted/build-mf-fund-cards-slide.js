@@ -3,7 +3,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
-import { loadMfSheetOrder, filterFundsInSheet, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
+import { loadCarouselListingOrder, filterFundsInSheet, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -210,9 +210,9 @@ export default async function buildMfFundCardsSlide(row, index) {
     loadCSS(`${window.hlx.codeBasePath}/blocks/carousel-dotted/mf-fund-cards-slide.css`),
   ]);
 
-  const [allFunds, matrix, ph] = await Promise.all([
+  const [allFunds, listingOrder, ph] = await Promise.all([
     loadFundsData(),
-    loadMfSheetOrder(),
+    loadCarouselListingOrder(),
     fetchPlaceholders(),
   ]);
 
@@ -223,9 +223,9 @@ export default async function buildMfFundCardsSlide(row, index) {
   const filteredFunds = sortFundsBySheetOrder(
     filterFundsInSheet(
       allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory)),
-      matrix,
+      listingOrder,
     ),
-    matrix,
+    listingOrder,
   );
 
   // eslint-disable-next-line no-console
