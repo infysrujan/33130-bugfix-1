@@ -768,6 +768,10 @@ p.text-large.text-light {
     max-height: none;
   }
 
+  .carousel-dotted.all-with-image .carousel-bg {
+    border-radius: var(--bbl-rounded-100);
+  }
+  
   .carousel-dotted.all-text-animation-variant .carousel-bg {
     max-height: 33.125rem;
     height: calc(100vw * 0.35);
@@ -947,10 +951,6 @@ p.text-large.text-light {
   .carousel-dotted .carousel-dotted-item.with-default-image
   .caption.editor .title-3 ~ .text-default p.text-large.text-light {
     padding-top: 1.875rem;
-  }
-
-  .carousel-dotted.all-with-image .carousel-bg {
-    border-radius: var(--bbl-rounded-100);
   }
 }
 
