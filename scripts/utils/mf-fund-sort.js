@@ -6,7 +6,7 @@ import { getLang } from '../scripts.js';
 function norm(str) {
   return (str || '')
     .toString()
-    .replace(/[​-‍﻿]/g, '')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
     .replace(/\s+/g, ' ')
     .toLowerCase()
     .trim();
@@ -15,9 +15,9 @@ function norm(str) {
 function normalizeRow(row) {
   const out = {};
   Object.entries(row).forEach(([k, v]) => {
-    const key = k.replace(/[​-‍﻿]/g, '').replace(/\s+/g, ' ').trim();
+    const key = k.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim();
     out[key] = typeof v === 'string'
-      ? v.replace(/[​-‍﻿]/g, '').replace(/\s+/g, ' ').trim()
+      ? v.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim()
       : v;
   });
   return out;

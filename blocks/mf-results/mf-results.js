@@ -168,15 +168,15 @@ function matchesRow(row, { riskLevel, fxRisk, taxBenefit }) {
     && matchesTaxBenefit(row, taxBenefit);
 }
 
-/**
- * Extract the fund names from matrix rows matched by the filters.
- */
-function getMatchedFundNames(matrix, answers) {
+// Matrix rows passing all 3 filters; kept as rows so results sort by the matched level.
+function getMatchedRows(matrix, answers) {
+  return matrix.filter((row) => matchesRow(row, answers));
+}
+
+// Fund names from the given matrix rows.
+function rowFundNames(rows) {
   const nameKey = fundNameKey();
-  return matrix
-    .filter((row) => matchesRow(row, answers))
-    .map((row) => norm(row[nameKey] || ''))
-    .filter(Boolean);
+  return rows.map((row) => norm(row[nameKey] || '')).filter(Boolean);
 }
 
 /**
@@ -465,8 +465,13 @@ export default async function decorate(block) {
   if (!hasAnswers) {
     renderCards([]);
   } else {
-    const matchedNames = getMatchedFundNames(matrix, answers);
-    const filteredFunds = sortFundsBySheetOrder(filterFundsByMatrix(allFunds, matchedNames), matrix);
+    // Use matched rows only for names and order, so a fund sorts by its matched level.
+    const matchedRows = getMatchedRows(matrix, answers);
+    const matchedNames = rowFundNames(matchedRows);
+    const filteredFunds = sortFundsBySheetOrder(
+      filterFundsByMatrix(allFunds, matchedNames),
+      matchedRows,
+    );
     renderCards(filteredFunds);
   }
 
