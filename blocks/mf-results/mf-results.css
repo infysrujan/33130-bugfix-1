@@ -227,9 +227,6 @@
 
 .mfr-footer .mfr-cta {
   display: inline-flex;
-  box-sizing: border-box;
-  min-width: 9.6875rem;
-  letter-spacing: 0.05rem;
 }
 
 .mfr-cta + .mfr-cta {

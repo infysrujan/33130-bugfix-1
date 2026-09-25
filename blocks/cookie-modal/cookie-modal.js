@@ -334,7 +334,7 @@ export default function decorate(block) {
 
   const footer = el('div', { className: 'cookie-modal-footer' });
   const saveBtn = el('button', {
-    className: 'cookie-modal-save-btn',
+    className: 'cookie-modal-save-btn button-m primary',
     text: saveLabel,
     attrs: { type: 'button' },
   });

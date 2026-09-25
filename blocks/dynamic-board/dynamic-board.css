@@ -596,7 +596,7 @@
 .dynamic-board .db-filter-reset {
   width: 100%;
   max-width: unset;
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   border-radius: var(--bbl-space-075);
   cursor: pointer;
   box-sizing: border-box;

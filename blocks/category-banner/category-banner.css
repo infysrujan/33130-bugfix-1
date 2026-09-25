@@ -35,12 +35,12 @@
   gap: 0.5rem;
 }
 
-.category-banner-btn {
+.category-banner .category-banner-buttons .category-banner-btn {
   background: var(--bbl-color-white);
 }
 
-.category-banner-btn:hover,
-.category-banner-btn:focus {
+.category-banner .category-banner-buttons .category-banner-btn:hover,
+.category-banner .category-banner-buttons .category-banner-btn:focus {
   background: var(--bbl-color-active-blue);
 }
 

@@ -124,6 +124,12 @@
   padding-top: 0.625rem;
 }
 
+/* Prepaid cards have no apply button, so nothing draws the line above SLOGAN — add it only when the apply-area is empty/unlined so credit cards (which already have that border) don't double up. */
+.card-comparator-results .ccr-caption:has(> .ccr-apply-area:empty:not(.ccr-apply-lined)) .compare-info dl:first-child {
+  border-top: 0.0625rem solid var(--bbl-color-grey-150);
+  padding-top: var(--bbl-space-300);
+}
+
 .card-comparator-results .ccr-label {
   font-size: var(--bbl-font-size-b1);
   font-family: var(--bbl-font-family-medium);
@@ -139,28 +145,8 @@
 }
 
 .card-comparator-results .ccr-learn-more {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  max-width: none;
   margin: 0 var(--bbl-space-250) var(--bbl-space-250);
-  min-height: 2.75rem;
-  padding: 0.3125rem 0;
-  box-sizing: border-box;
-  border-radius: 0.4375rem;
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-regular);
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-}
-
-.card-comparator-results .ccr-learn-more:hover {
-  color: var(--bbl-color-white);
-  border-color: var(--bbl-color-active-blue);
-  background: var(--bbl-color-active-blue);
 }
 
 /* ── Apply area ───────────────────────────────────────────────────────────── */

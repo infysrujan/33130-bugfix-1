@@ -138,7 +138,7 @@ function buildModal({
 
   /* CTA */
   const ctaBtn = createElement('button', {
-    className: 'privacy-modal-cta',
+    className: 'privacy-modal-cta button-m primary',
     textContent: ctaLabel,
     attrs: { type: 'button', disabled: 'true' },
   });

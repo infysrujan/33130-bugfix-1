@@ -1,6 +1,62 @@
 import { getLang, isAuthoringInstance, fetchBlockAuthoringData } from '../../scripts/bbl-decorators.js';
+import { fetchConfigs } from '../../scripts/config.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
+const BE_CE_OFFSET = 543;
+
+/**
+ * Converts the year path segment (e.g. .../news-and-media/2026/...) so a top-nav
+ * language switch keeps pointing at the equivalent year in the target calendar.
+ * The base path to match (everything before the year segment) comes from the
+ * "news-and-media-year-change" config entry.
+ * @param {string} pathname - Anchor pathname (includes the lang segment)
+ * @param {string} targetLang - Lang segment the link is switching to (e.g. "th", "en")
+ * @param {string} basePath - Configured base path (e.g. "/about-us/news-and-media/")
+ * @returns {string} pathname with the year segment converted, or unchanged if it doesn't match
+ */
+function adjustYearForLangLink(pathname, targetLang, basePath) {
+  if (!basePath) return pathname;
+  const segments = pathname.split('/').filter(Boolean);
+  const baseSegments = basePath.split('/').filter(Boolean);
+  if (!baseSegments.length || segments.length < baseSegments.length + 2) return pathname;
+
+  const matchesBase = baseSegments.every(
+    (seg, i) => segments[i + 1]?.toLowerCase() === seg.toLowerCase(),
+  );
+  if (!matchesBase) return pathname;
+
+  const yearIndex = baseSegments.length + 1;
+  const yearSegment = segments[yearIndex];
+  if (!/^\d{4}$/.test(yearSegment)) return pathname;
+
+  const normalizedLang = (targetLang || '').toLowerCase().split('-')[0];
+  const year = parseInt(yearSegment, 10);
+  segments[yearIndex] = String(normalizedLang === 'th' ? year + BE_CE_OFFSET : year - BE_CE_OFFSET);
+
+  return `/${segments.join('/')}${pathname.endsWith('/') ? '/' : ''}`;
+}
+
+/**
+ * Fixes the top-nav language-switch links' year path segment for the news-and-media
+ * detail page. Re-run on "header-decorated" since the header rebuilds its links from
+ * a pristine (uncorrected) template on every layout change.
+ * @param {string} yearChangeBasePath - Configured base path to match against
+ */
+function fixLangLinkYears(yearChangeBasePath) {
+  if (!yearChangeBasePath) return;
+  document.querySelectorAll('.top-nav li.top-nav-item.link-icon > a[href]').forEach((a) => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    try {
+      const url = new URL(href, window.location.origin);
+      const targetLang = url.pathname.split('/').filter(Boolean)[0];
+      url.pathname = adjustYearForLangLink(url.pathname, targetLang, yearChangeBasePath);
+      a.setAttribute('href', `${url.pathname}${url.search}${url.hash}`);
+    } catch {
+      // ignore malformed hrefs
+    }
+  });
+}
 
 function formatDate(dateStr, locale = 'en-US') {
   if (!dateStr) return '';
@@ -96,6 +152,11 @@ async function renderNewsDetail(block) {
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-US';
   const isAuthoring = isAuthoringInstance(block);
+
+  const configs = await fetchConfigs();
+  const yearChangeBasePath = configs?.newsAndMediaYearChange || '';
+  fixLangLinkYears(yearChangeBasePath);
+  document.addEventListener('header-decorated', () => fixLangLinkYears(yearChangeBasePath));
 
   const card = readFromBlock(block);
 

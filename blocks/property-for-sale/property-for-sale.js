@@ -61,11 +61,6 @@ function closeFiltersOnOutsideClick(container) {
   });
 }
 
-function resolveGps(item) {
-  const [lat, lng] = (item.GPS_DATA || '').split(',').map((s) => s.trim());
-  return lat && lng ? { lat, lng } : null;
-}
-
 function buildOptions(items) {
   return items
     .map((item) => `<li class="pfs-option" data-value="${item.value}" role="option">${item.label}</li>`)
@@ -141,9 +136,8 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData, eager = false
     specialPrice ? `<p class="pfs-card-price pfs-card-special-price">${specialPrice}</p>` : '',
   ].filter(Boolean).join('');
 
-  const gps = resolveGps(item);
-  const mapUrl = gps && pfsData.mapBaseUrl
-    ? `${pfsData.mapBaseUrl}N ${gps.lat} E ${gps.lng}`
+  const mapUrl = item.GPS_DATA && pfsData.mapBaseUrl
+    ? `${pfsData.mapBaseUrl}${item.GPS_DATA}`
     : '';
 
   const card = {
@@ -162,8 +156,7 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData, eager = false
   return buildCardHtml(card, tag, p, { footerExtra, eager });
 }
 
-const FETCH_TIMEOUT_MS = 10000;
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes time
 const apiCache = new Map();
 
 function enforceHttps(url) {
@@ -200,14 +193,10 @@ async function fetchJson(rawUrl, { useCache = true } = {}) {
     if (cached) return cached;
   }
   try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
     const data = await fetchGet(url, {
       headers: { Accept: 'application/json' },
-      signal: ctrl.signal,
       throwOnError: false,
     });
-    clearTimeout(timer);
     if (useCache && data) setCache(url, data);
     return data;
   } catch {
