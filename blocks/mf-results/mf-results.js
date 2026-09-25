@@ -4,6 +4,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { openModal } from '../../scripts/modal.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { getLang } from '../../scripts/scripts.js';
+import { fundNameKey, loadMfSheetOrder, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -29,17 +30,6 @@ function norm(str) {
   return (str || '').toString().replace(/\u200B/g, '').toLowerCase().trim();
 }
 
-function normalizeRow(row) {
-  const out = {};
-  Object.entries(row).forEach(([k, v]) => {
-    const key = k.replace(/\u200B/g, '').trim();
-    out[key] = typeof v === 'string'
-      ? v.replace(/\u200B/g, '').replace(/\s+/g, ' ').trim()
-      : v;
-  });
-  return out;
-}
-
 // ── Row-reading helpers ────────────────────────────────────────────────────────
 
 function readText(row) {
@@ -62,34 +52,6 @@ function readUrl(row) {
 }
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
-
-/**
- * The single combined filtering-matrix sheet now carries both languages in one
- * file (columns "Fund Name (EN)" / "Fund Name (TH)"), so the fund-name column is
- * picked by the current locale instead of fetching separate en/th sheets.
- */
-function fundNameKey() {
-  return getLang() === 'th' ? 'Fund Name (TH)' : 'Fund Name (EN)';
-}
-
-/**
- * Fetch the MF filtering matrix sheet.
- * Config key: mf-suggestor (→ mfSuggestor after toCamelCase) — one combined
- * sheet for both languages.
- * Expected columns: Fund Name (EN) | Fund Name (TH) | Fund Risk Level
- *   | Fund Has Exchange Rate Risk | Is an RMF/SSF/Thai ESG/Thai ESGX Fund
- */
-async function loadMatrix() {
-  try {
-    const configs = await fetchConfigs();
-    const url = configs.mfSuggestor;
-    if (!url) return [];
-    const json = await fetchGet(url, { throwOnError: false });
-    return (json?.data || []).map(normalizeRow);
-  } catch {
-    return [];
-  }
-}
 
 /**
  * Fetch the MF fund card data from the GraphQL persisted query.
@@ -181,9 +143,26 @@ function matchesTaxBenefit(row, taxBenefit) {
 }
 
 /**
- * AND-logic: matrix row must pass all three filters.
+ * A row with every filter column left blank was never categorized for the
+ * survey at all — it's not that it matches every combination, it's that no
+ * one has said which combinations it belongs to yet.
+ */
+function isRowCategorized(row) {
+  return Boolean(
+    norm(row['Fund Risk Level'] || '')
+      || norm(row['Fund Has Exchange Rate Risk'] || '')
+      || norm(row['Is an RMF/SSF/Thai ESG/Thai ESGX Fund'] || ''),
+  );
+}
+
+/**
+ * AND-logic: matrix row must pass all three filters. A fully-blank row
+ * (see isRowCategorized) never matches, since each individual filter
+ * treats a blank cell as an auto-pass and would otherwise let an
+ * uncategorized fund match every survey answer combination.
  */
 function matchesRow(row, { riskLevel, fxRisk, taxBenefit }) {
+  if (!isRowCategorized(row)) return false;
   return matchesRiskLevel(row, riskLevel)
     && matchesFxRisk(row, fxRisk)
     && matchesTaxBenefit(row, taxBenefit);
@@ -209,27 +188,6 @@ function filterFundsByMatrix(funds, matchedNames) {
   return funds.filter((fund) => {
     const name = norm(fund.FundName || '');
     return matchedNames.some((n) => name === n);
-  });
-}
-
-/**
- * Sort funds to match the row order they're authored in the mf-suggestor
- * filtering-matrix sheet (top-to-bottom, drag-reorderable there) — mirrors
- * sortBySheetOrder in credit-card-results.js, keyed on Fund Name instead of
- * Product Name.
- */
-function sortBySheetOrder(funds, matrix) {
-  const nameKey = fundNameKey();
-  const orderMap = {};
-  matrix.forEach((row, index) => {
-    const name = norm(row[nameKey] || '');
-    if (name && !(name in orderMap)) orderMap[name] = index;
-  });
-
-  return [...funds].sort((a, b) => {
-    const orderA = orderMap[norm(a.FundName || '')] ?? Number.MAX_SAFE_INTEGER;
-    const orderB = orderMap[norm(b.FundName || '')] ?? Number.MAX_SAFE_INTEGER;
-    return orderA - orderB;
   });
 }
 
@@ -474,7 +432,7 @@ export default async function decorate(block) {
   };
 
   // ── Fetch matrix + fund data in parallel ──────────────────────────────────
-  const [matrix, allFunds] = await Promise.all([loadMatrix(), loadFundsData()]);
+  const [matrix, allFunds] = await Promise.all([loadMfSheetOrder(), loadFundsData()]);
 
   // ── Compare state helpers ──────────────────────────────────────────────────
   function restoreCompareState() {
@@ -508,7 +466,7 @@ export default async function decorate(block) {
     renderCards([]);
   } else {
     const matchedNames = getMatchedFundNames(matrix, answers);
-    const filteredFunds = sortBySheetOrder(filterFundsByMatrix(allFunds, matchedNames), matrix);
+    const filteredFunds = sortFundsBySheetOrder(filterFundsByMatrix(allFunds, matchedNames), matrix);
     renderCards(filteredFunds);
   }
 
