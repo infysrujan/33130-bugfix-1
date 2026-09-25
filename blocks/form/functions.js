@@ -1030,23 +1030,41 @@ function getidAndDob(id, dob) {
   return `${id}${ddmmyyyy}`;
 }
 
-/**
- * Converts a Thai Buddhist Era date string to a native JavaScript Date.
- * Expects format "YYYY-MM-DD" or "YYYY/MM/DD" (Thai year).
- * @param {string} thaiDateString - e.g. "2569-09-25"
- * @returns {Date} Equivalent Gregorian (English) date
- */
 function convertThaiToEnglishDate(thaiDateString) {
-  const parts = thaiDateString.split(/[-/]/);
+  if (!thaiDateString) return null;
+  const s = String(thaiDateString).trim();
+  if (!s) return null;
 
-  const thaiYear = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10) - 1; // JS months are 0-11
-  const day = parseInt(parts[2], 10);
+  let year;
+  let month;// 0-11 for JS Date
+  let day;
 
-  // Subtract 543 to convert Thai Buddhist Era year to Gregorian year
-  const englishYear = thaiYear - 543;
+  // Accepts "YYYY-MM-DD" or "YYYY/MM/DD" (also tolerates an ISO time suffix)
+  const m = s.match(/^(\d{3,4})[-/](\d{1,2})[-/](\d{1,2})/);
+  if (m) {
+    year = parseInt(m[1], 10);
+    month = parseInt(m[2], 10) - 1;
+    day = parseInt(m[3], 10);
+  } else {
+    // Also handles a JS Date string like "Tue Sep 20 2568 00:00:00 GMT+0000"
+    const parsed = new Date(s);
+    if (Number.isNaN(parsed.getTime())) return null;
+    year = parsed.getFullYear();
+    month = parsed.getMonth();
+    day = parsed.getDate();
+  }
 
-  return new Date(englishYear, month, day);
+  // Subtract 543 to get the Gregorian year (only when the year is clearly BE)
+  if (year >= 2400) year -= 543;
+
+  const englishDate = new Date(year, month, day);
+
+  // Reject impossible dates (e.g. 2568-02-31)
+  const valid = englishDate.getFullYear() === year
+    && englishDate.getMonth() === month
+    && englishDate.getDate() === day;
+
+  return valid ? englishDate.toDateString() : null;
 }
 
 // Example usage:
