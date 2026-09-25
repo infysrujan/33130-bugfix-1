@@ -215,6 +215,10 @@
   background: none;
 }
 
+.search-reports-overlay .button-m {
+  width: auto;
+}
+
 @media (width > 47.5rem) {
   .search-reports-overlay .sr-body {
     max-width: 71.11rem;
