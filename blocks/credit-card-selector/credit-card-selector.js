@@ -1,4 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
 const LIFESTYLE_KEYWORDS = ['lifestyle', 'ไลฟ์สไตล์'];
 
@@ -63,8 +64,9 @@ function buildFilterOptionCard(sourceItem, inputType, groupName, index, stackedL
  *
  * @param {object} group - Group configuration
  * @param {number} groupIndex - Used to generate unique input group names
+ * @param {string} dropdownDefaultLabel - Placeholder text for the mobile <select>'s default option
  */
-function buildFilterGroup(group, groupIndex) {
+function buildFilterGroup(group, groupIndex, dropdownDefaultLabel) {
   const section = document.createElement('div');
   section.className = 'filter-group';
 
@@ -124,7 +126,7 @@ function buildFilterGroup(group, groupIndex) {
 
     const placeholder = document.createElement('option');
     placeholder.value = '';
-    placeholder.textContent = '-- Select --';
+    placeholder.textContent = `-- ${dropdownDefaultLabel} --`;
     placeholder.disabled = true;
     placeholder.selected = true;
     select.appendChild(placeholder);
@@ -232,7 +234,12 @@ function syncActionButtonState(block, filterGroups, startOverButton, applyButton
  *   Sections whose title contains "lifestyle" → right column (checkbox, max 3 selections)
  *   All other sections                        → left column  (radio, single-select)
  */
-export default function decorate(block) {
+export default async function decorate(block) {
+  const ph = await fetchPlaceholders();
+  const dropdownDefaultLabel = ph.creditCardSelectorDropdownDefault;
+  // eslint-disable-next-line no-console
+  console.log('[credit-card-selector] creditCardSelectorDropdownDefault =', dropdownDefaultLabel);
+
   // UE inserts a fresh block element when a newly-added block is edited for the first time.
   // The original decorated block stays in the DOM alongside the new one, causing duplication.
   // Only remove the stale block if it shares the same data-aue-resource (same AEM content path).
@@ -330,7 +337,7 @@ export default function decorate(block) {
   lifestyleFilterColumn.className = 'filter-column filter-column-lifestyle';
 
   filterGroups.forEach((group, index) => {
-    const groupElement = buildFilterGroup(group, index);
+    const groupElement = buildFilterGroup(group, index, dropdownDefaultLabel);
     const groupTitleEl = groupElement.querySelector('.filter-group-title');
     const optionsAreaEl = groupElement.querySelector('.filter-options-desktop, .filter-options-always');
 
