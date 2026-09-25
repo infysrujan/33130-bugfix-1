@@ -272,7 +272,7 @@
 }
 
 .credit-card-selector .selector-actions .button-m {
-  min-width: 8.4375rem;
+  width: unset;
 }
 
 .credit-card-selector .card-selector-collapsible {
@@ -462,10 +462,6 @@
 
   .credit-card-selector-wrapper .collapse-toggle-button {
     right: 5rem;
-  }
-
-  .credit-card-selector .selector-actions .button-m {
-    min-width: 9.6875rem;
   }
 
   .credit-card-selector .card-selector-content {

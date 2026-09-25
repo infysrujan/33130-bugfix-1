@@ -167,6 +167,7 @@
 @media (width > 47.5rem) {
   .mf-comparator .inner-container button {
     min-width: 7.5rem;
+    width: unset;
   }
 }
 
