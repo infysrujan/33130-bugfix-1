@@ -35,6 +35,14 @@ const checkModifiedJsonFiles = async () => {
   }
 };
 
+const minifyCss = async () => {
+  console.log('\n🎨 Minifying styles.css...');
+  const output = await run('npm run minify:css --silent');
+  if (output) console.log(output);
+  await run('git add styles/styles.css');
+  console.log('✔ CSS minify completed and styles.css staged.');
+};
+
 // Run the linter to check for code style issues and ensure code quality
 const runLint = async () => {
   console.log('\n🧹 Running linter...');
@@ -56,6 +64,7 @@ const main = async () => {
     console.log('Starting pre-commit checks...\n');
     await checkModifiedJsonFiles();
     await runLint();
+    await minifyCss();
 
     console.log('\n\n🎉 All pre-commit checks passed successfully!\n\n');
   } catch (error) {

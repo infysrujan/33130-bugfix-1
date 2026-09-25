@@ -40,6 +40,10 @@ export default function decorate(block) {
     if (clonedImg) {
       clonedImg.alt = altText;
       clonedImg.className = 'brand-logo-image';
+      clonedImg.loading = 'eager';
+      clonedImg.fetchPriority = 'high';
+      clonedImg.setAttribute('loading', 'eager');
+      clonedImg.setAttribute('fetchpriority', 'high');
     }
 
     link.appendChild(clonedPicture);
@@ -51,6 +55,10 @@ export default function decorate(block) {
     if (clonedImg) {
       clonedImg.alt = altText;
       clonedImg.className = 'brand-logo-image';
+      clonedImg.loading = 'eager';
+      clonedImg.fetchPriority = 'high';
+      clonedImg.setAttribute('loading', 'eager');
+      clonedImg.setAttribute('fetchpriority', 'high');
     }
     logoContainer.appendChild(clonedPicture);
   }
