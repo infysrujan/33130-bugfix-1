@@ -107,7 +107,7 @@
 }
 
 .carousel-dotted.all-with-image .carousel-bg {
-  border-radius: var(--bbl-rounded-100);
+   border-radius: var(--bbl-rounded-100) var(--bbl-rounded-100) 0 0;
 }
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
@@ -768,6 +768,10 @@ p.text-large.text-light {
     max-height: none;
   }
 
+  .carousel-dotted.all-with-image .carousel-bg {
+    border-radius: var(--bbl-rounded-100);
+  }
+  
   .carousel-dotted.all-text-animation-variant .carousel-bg {
     max-height: 33.125rem;
     height: calc(100vw * 0.35);
