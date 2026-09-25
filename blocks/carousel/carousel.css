@@ -396,6 +396,11 @@
         display: none;
     }
 
+    .carousel-description p {
+        -webkit-line-clamp: 7;
+         line-clamp: 7;
+    }
+
     .carousel-track .carousel-item.active .carousel-description {
         margin-bottom: var(--bbl-space-300);
         overflow: hidden;
@@ -459,7 +464,7 @@
         flex-shrink: 1;
         -webkit-line-clamp: 3;
         line-clamp: 3;
-        margin-bottom: var(--bbl-space-100);
+        margin-bottom: var(--bbl-space-300);
     }
 
     .carousel-track .carousel-item:not(.active) .carousel-cta.button-m {
