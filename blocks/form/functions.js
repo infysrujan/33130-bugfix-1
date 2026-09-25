@@ -1030,6 +1030,31 @@ function getidAndDob(id, dob) {
   return `${id}${ddmmyyyy}`;
 }
 
+/**
+ * Converts a Thai Buddhist Era date string to a native JavaScript Date.
+ * Expects format "YYYY-MM-DD" or "YYYY/MM/DD" (Thai year).
+ * @param {string} thaiDateString - e.g. "2569-09-25"
+ * @returns {Date} Equivalent Gregorian (English) date
+ */
+function convertThaiToEnglishDate(thaiDateString) {
+  const parts = thaiDateString.split(/[-/]/);
+
+  const thaiYear = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // JS months are 0-11
+  const day = parseInt(parts[2], 10);
+
+  // Subtract 543 to convert Thai Buddhist Era year to Gregorian year
+  const englishYear = thaiYear - 543;
+
+  return new Date(englishYear, month, day);
+}
+
+// Example usage:
+const thaiDate = '2569-09-25'; // Equivalent to Sept 25, 2026
+const englishDate = convertThaiToEnglishDate(thaiDate);
+// eslint-disable-next-line no-console
+console.log(englishDate.toDateString()); // Output: Thu Sep 25 2026
+
 function replaceOtherAndJoin(selectedValues, otherText) {
   if (!selectedValues) {
     return '';
@@ -1546,6 +1571,7 @@ export {
   getBranchEnum,
   getBranchEnumNames,
   getidAndDob,
+  convertThaiToEnglishDate,
   replaceOtherAndJoin,
   getSelectedLabelFromDropdown,
   CcApplicationStatus,
