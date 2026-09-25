@@ -61,11 +61,6 @@ function closeFiltersOnOutsideClick(container) {
   });
 }
 
-function resolveGps(item) {
-  const [lat, lng] = (item.GPS_DATA || '').split(',').map((s) => s.trim());
-  return lat && lng ? { lat, lng } : null;
-}
-
 function buildOptions(items) {
   return items
     .map((item) => `<li class="pfs-option" data-value="${item.value}" role="option">${item.label}</li>`)
@@ -141,9 +136,8 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData, eager = false
     specialPrice ? `<p class="pfs-card-price pfs-card-special-price">${specialPrice}</p>` : '',
   ].filter(Boolean).join('');
 
-  const gps = resolveGps(item);
-  const mapUrl = gps && pfsData.mapBaseUrl
-    ? `${pfsData.mapBaseUrl}N ${gps.lat} E ${gps.lng}`
+  const mapUrl = item.GPS_DATA && pfsData.mapBaseUrl
+    ? `${pfsData.mapBaseUrl}${item.GPS_DATA}`
     : '';
 
   const card = {
