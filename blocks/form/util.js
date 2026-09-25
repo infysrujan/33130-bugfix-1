@@ -385,7 +385,9 @@ export function createDropdownUsingEnum(fd, wrapper) {
   if (fd.placeholder) {
     ph = document.createElement('option');
     ph.textContent = fd.placeholder;
-    ph.setAttribute('disabled', '');
+    if (fd.required) {
+      ph.setAttribute('disabled', '');
+    }
     ph.setAttribute('value', '');
     wrapper.append(ph);
   }
