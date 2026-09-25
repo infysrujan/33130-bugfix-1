@@ -185,6 +185,9 @@
 }
 
 .mf-comparator-results .mfcr-read-more {
+  width: auto;
+  max-width: none;
+  box-sizing: border-box;
   margin: 0 1.25rem 1.25rem;
 }
 
