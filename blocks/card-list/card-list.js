@@ -165,9 +165,15 @@ function createCardListItem(cardElement, doc) {
   }
 
   if (actionTypeText === 'select-dropdown') {
-    // dropdown fields: label = cells.length-4, links = cells.length-3 (2 date fields trail them)
-    const label = cells[cells.length - 4]?.textContent?.trim() || 'Select';
-    const linksHTML = cells[cells.length - 3]?.innerHTML || '';
+    const dropdownFields = cells.slice(9);
+    const dropdownCell = dropdownFields.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length > 1);
+    const dropdownCellIdx = dropdownFields.indexOf(dropdownCell);
+    const labelSearch = dropdownCellIdx > 0 ? dropdownFields.slice(0, dropdownCellIdx) : [];
+    const labelCell = [...labelSearch].reverse().find(
+      (c) => !c.querySelector('a') && !isBooleanLikeValue(c.textContent?.trim()) && c.textContent?.trim(),
+    );
+    const label = labelCell?.textContent?.trim() || 'Select';
+    const linksHTML = dropdownCell?.innerHTML || '';
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
     buttonWrapper.appendChild(createGlobalDropdown(label, linksHTML, doc));
     inner.appendChild(buttonWrapper);
