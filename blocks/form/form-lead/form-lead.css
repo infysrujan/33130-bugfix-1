@@ -1056,10 +1056,10 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   }
  
   main .section.form-container.lead-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *):has(label[data-visible="false"])::after {
-    top: 10px;
+    top: 0.625rem;
   }
 
   main .section.form-container.lead-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *):has(label[data-visible="true"])::after {
-    top: 28px;
+    top: 1.75rem;
   }
 }
