@@ -396,11 +396,13 @@
         display: none;
     }
 
-    .carousel-track .carousel-item.active .carousel-description {
-        margin-bottom: var(--bbl-space-300);
+    .carousel-description p {
+        -webkit-line-clamp: 7;
+         line-clamp: 7;
     }
 
-    .carousel-track .carousel-item.active .carousel-description p {
+    .carousel-track .carousel-item.active .carousel-description {
+        margin-bottom: var(--bbl-space-300);
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
@@ -463,19 +465,6 @@
         -webkit-line-clamp: 3;
         line-clamp: 3;
         margin-bottom: var(--bbl-space-100);
-    }
-
-    .carousel-track .carousel-item:not(.active) .carousel-description {
-        display: block;
-        margin-bottom: var(--bbl-space-100);
-    }
-
-    .carousel-track .carousel-item:not(.active) .carousel-description p {
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
     }
 
     .carousel-track .carousel-item:not(.active) .carousel-cta.button-m {
