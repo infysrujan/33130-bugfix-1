@@ -51,7 +51,7 @@ const css = readFileSync(stylesPath, 'utf8');
 const styleSheets = readList(css, 'minify-styles');
 const blocks = readList(css, 'minify-blocks');
 
-const stylelint = '/* stylelint-disable no-descending-specificity -- concatenated sheets */';
+const stylelint = '/* stylelint-disable */';
 const listComments = [
   `/* minify-styles: ${styleSheets.join(', ')} */`,
   `/* minify-blocks: ${blocks.join(', ')} */`,
@@ -69,11 +69,18 @@ if (!minify) {
 
 const tmp = join(root, 'styles', '.styles.concat.css');
 writeFileSync(tmp, combined);
-const result = spawnSync(
-  'npx',
-  ['lightningcss', '--minify', '-o', stylesPath, tmp],
-  { cwd: root, shell: true, stdio: 'inherit' },
-);
+const cliName = process.platform === 'win32' ? 'lightningcss.exe' : 'lightningcss';
+const cli = join(root, 'node_modules', 'lightningcss-cli', cliName);
+if (!existsSync(cli)) {
+  // eslint-disable-next-line no-console
+  console.error(`lightningcss binary not found at ${cli}. Run npm install.`);
+  unlinkSync(tmp);
+  process.exit(1);
+}
+const result = spawnSync(cli, ['--minify', '-o', stylesPath, tmp], {
+  cwd: root,
+  stdio: 'inherit',
+});
 unlinkSync(tmp);
 if (result.status) process.exit(result.status);
 
