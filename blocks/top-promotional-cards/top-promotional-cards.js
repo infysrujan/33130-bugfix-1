@@ -7,6 +7,10 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
+function tagLeaf(value) {
+  return (value || '').split('/').pop().trim().toLowerCase();
+}
+
 function filterCards(activeCards, categoryValue, isTopPromo) {
   if (isTopPromo) {
     return activeCards.filter((card) => card.topPromotion === true);
@@ -16,7 +20,7 @@ function filterCards(activeCards, categoryValue, isTopPromo) {
   );
 }
 
-function setupPanel(panel, activeCards, placeholders) {
+function setupPanel(panel, activeCards, placeholders, categoryTagToLabel) {
   const noResultsText = placeholders.promoNoResults || 'No results found.';
   const btnId = panel.getAttribute('aria-labelledby');
   const btn = btnId ? document.getElementById(btnId) : null;
@@ -50,7 +54,10 @@ function setupPanel(panel, activeCards, placeholders) {
     ? cards.map((card, i) => {
       const cardOptions = buildCardOptions(card);
       cardOptions.eager = i < 4;
-      return buildCardHtml(card, tabText, placeholders, cardOptions);
+      const cardTag = isTopPromo
+        ? (categoryTagToLabel.get(tagLeaf(card.category)) || tabText)
+        : tabText;
+      return buildCardHtml(card, cardTag, placeholders, cardOptions);
     }).join('')
     : `<p class="top-promo-empty">${noResultsText}</p>`;
 
@@ -75,8 +82,13 @@ async function renderTopPromotionalCards(block) {
     (card) => !card.promotionEndDate || new Date(card.promotionEndDate) >= today,
   );
 
+  const categoryTagToLabel = new Map();
+  document.querySelectorAll('button[role="tab"][data-tab-category-tag]').forEach((tabBtn) => {
+    categoryTagToLabel.set(tagLeaf(tabBtn.dataset.tabCategoryTag), tabBtn.textContent.trim());
+  });
+
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
-  tabPanels.forEach((panel) => setupPanel(panel, activeCards, placeholders));
+  tabPanels.forEach((panel) => setupPanel(panel, activeCards, placeholders, categoryTagToLabel));
 
   const btnContainer = block.closest('.section')?.querySelector('.button-container');
   const tabsContent = document.querySelector('.tabs-content');
