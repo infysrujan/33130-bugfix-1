@@ -398,6 +398,9 @@
 
     .carousel-track .carousel-item.active .carousel-description {
         margin-bottom: var(--bbl-space-300);
+    }
+
+    .carousel-track .carousel-item.active .carousel-description p {
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
