@@ -569,7 +569,15 @@ function formatMarketReportDate(mktdate) {
   const [day, month, year] = parts;
   const monthIndex = parseInt(month, 10) - 1;
   if (monthIndex < 0 || monthIndex > 11) return mktdate;
-  return `${parseInt(day, 10)} ${MONTH_NAMES[monthIndex]} ${year}`;
+  const dayNum = parseInt(day, 10);
+
+  if (getPageLang() === 'th') {
+    const date = new Date(Number(year), monthIndex, dayNum);
+    const thaiMonth = date.toLocaleString('th-TH', { month: 'long' });
+    return `${dayNum} ${thaiMonth} ${Number(year) + 543}`;
+  }
+
+  return `${dayNum} ${MONTH_NAMES[monthIndex]} ${year}`;
 }
 
 /**
