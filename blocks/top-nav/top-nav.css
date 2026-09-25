@@ -3,6 +3,8 @@
 	background: var(--bbl-bg-primary);
 }
 
+/* top-nav ul */
+
 .top-nav ul {
 	display: flex;
 	list-style: none;
