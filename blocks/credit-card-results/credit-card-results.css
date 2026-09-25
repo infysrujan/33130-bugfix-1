@@ -62,10 +62,6 @@
 /* ── Card title h3 ───────────────────────────────────────────────────────── */
 
 .card-list.credit-card .cards-list-title h3 {
-  font-family: var(--bbl-font-family-medium);
-  font-size: 1.5rem;
-  font-weight: var(--bbl-font-weight-medium);
-  color: var(--bbl-color-black);
   overflow-wrap: anywhere;
 }
 
