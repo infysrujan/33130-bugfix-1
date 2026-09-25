@@ -329,7 +329,7 @@ export default async function decorate(block) {
       label: resolveTypeLabel(placeholders, t),
     }));
     populateTypes(apiTypes?.length ? apiTypes : typeOptions);
-    populateYears((data.years || []).map((y) => ({ label: y, value: y })));
+    populateYears(data.years?.length ? data.years : yearOptions);
   }).catch(() => {
     populateTypes(typeOptions);
     populateYears(yearOptions);
