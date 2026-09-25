@@ -93,12 +93,12 @@
   -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-family: var(--bbl-font-family-looped);
-  line-height: 1.375;
+  line-height: 0.963rem;
   margin: 0;
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 /* ── Thumb ───────────────────────────────────────────────────────────────── */
@@ -214,6 +214,11 @@
 
   .credit-card-comparator .product-comparing {
     width: auto;
+  }
+  
+  .credit-card-comparator .product-comparing .text-small {
+    font-size: 0.8rem;
+    line-height: 1.1rem;
   }
   
   .credit-card-comparator .btn-primary {
