@@ -415,7 +415,7 @@
 
   @media (width > 47.5rem) {
     padding-inline: 0;
-
+    
     &.central-aligned > .default-content-wrapper {
       & h2 {
         margin: var(--bbl-space-500) 0 var(--bbl-space-300);

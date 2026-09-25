@@ -1,4 +1,9 @@
-import { getCookie } from './utils/cookies.js';
+function getCookie(name) {
+  if (!name) return '';
+  const encoded = encodeURIComponent(name);
+  const match = document.cookie.split('; ').find((row) => row.startsWith(`${encoded}=`));
+  return match ? decodeURIComponent(match.split('=')[1]) : '';
+}
 
 /**
  * Resolves Google Consent Mode state from site cookies (no external CMP).

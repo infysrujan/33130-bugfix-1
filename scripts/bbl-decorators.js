@@ -1,12 +1,23 @@
-import { fetchConfigs } from './config.js';
-import { isAutoBlockingAttrSkipped } from './utils/dom.js';
-
 import {
   getMetadata,
   buildBlock,
   decorateBlock,
   loadBlock,
 } from './aem.js';
+
+function isAutoBlockingAttrSkipped(el, attr) {
+  const skipList = el.getAttribute('data-skip-attr-auto-blocking');
+  if (!skipList) return false;
+  return skipList.split(',').map((a) => a.trim()).includes(attr);
+}
+
+let configsPromise;
+function getConfigs() {
+  if (!configsPromise) {
+    configsPromise = import('./config.js').then((mod) => mod.fetchConfigs());
+  }
+  return configsPromise;
+}
 
 /**
  * Helper function to parse comma-separated URL strings from config
@@ -195,7 +206,7 @@ function handleGlobalLinkClicks() {
       }
 
       // Fetch config data
-      const configData = await fetchConfigs();
+      const configData = await getConfigs();
 
       // Parse config arrays
       const hostnameUrlArray = parseUrlString(configData.bblDecoratorsHostnameUrl || '');
@@ -272,40 +283,35 @@ async function waitForImageLoad(img) {
 
 let welcomeBannerLoadPromise;
 
-async function loadWelcomeBanner(doc) {
-  if (!isHomepage()) {
-    return undefined;
-  }
-  if (welcomeBannerLoadPromise) {
-    await welcomeBannerLoadPromise;
-    return undefined;
-  }
+function loadWelcomeBanner(doc) {
+  if (!isHomepage()) return undefined;
+  if (welcomeBannerLoadPromise) return welcomeBannerLoadPromise;
 
-  const configData = await fetchConfigs();
-  const path = configData?.welcomeBannerFragmentPath;
-  if (!path) return undefined;
+  welcomeBannerLoadPromise = getConfigs().then((configData) => {
+    const path = configData?.welcomeBannerFragmentPath;
+    if (!path) return undefined;
 
-  welcomeBannerLoadPromise = new Promise((resolve) => {
-    document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
-      detail: {
-        path,
-        onHtmlParsed: preloadWelcomeBannerImage,
-        callback: async (fragment) => {
-          if (!fragment) {
-            // eslint-disable-next-line no-console
-            console.error('[Welcome Banner] Fragment not found at', path);
+    return new Promise((resolve) => {
+      document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
+        detail: {
+          path,
+          onHtmlParsed: preloadWelcomeBannerImage,
+          callback: async (fragment) => {
+            if (!fragment) {
+              // eslint-disable-next-line no-console
+              console.error('[Welcome Banner] Fragment not found at', path);
+              resolve();
+              return;
+            }
+            await waitForImageLoad(doc.querySelector('.welcome-banner-media img'));
             resolve();
-            return;
-          }
-          await waitForImageLoad(doc.querySelector('.welcome-banner-media img'));
-          resolve();
+          },
         },
-      },
-    }));
+      }));
+    });
   });
 
-  await welcomeBannerLoadPromise;
-  return undefined;
+  return welcomeBannerLoadPromise;
 }
 
 async function loadBreadcrumb(doc) {
