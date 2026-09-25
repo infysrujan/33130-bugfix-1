@@ -508,8 +508,19 @@ function equalizeRowHeights(grid) {
 export default async function decorate(block) {
   const doc = block.ownerDocument;
   const ph = await fetchPlaceholders();
+
+  const descriptionRow = block.children[0];
+  if (descriptionRow) {
+    descriptionRow.classList.add('ccr-description');
+  }
+
+  // Authored "Learn More Button Text" field — overrides the placeholder default
+  const learnMoreTextRow = block.children[1];
+  const learnMoreText = learnMoreTextRow?.textContent?.trim();
+  learnMoreTextRow?.remove();
+
   const labels = {
-    learnMore: ph.cardLearnMore || 'Learn more',
+    learnMore: learnMoreText || ph.cardLearnMore || 'Learn more',
     applyNow: ph.cardApplyNow || 'Apply',
     applyViaWebsite: ph.cardApplyViaWebsite || 'Apply via Website',
     applyViaMobile: ph.cardApplyViaMobileBanking || 'Apply via Mobile Banking',
@@ -522,11 +533,6 @@ export default async function decorate(block) {
     fees: ph.cardFees || 'Fees',
     noResults: ph.cardNoResultsFound || 'No results found',
   };
-
-  const descriptionRow = block.children[0];
-  if (descriptionRow) {
-    descriptionRow.classList.add('ccr-description');
-  }
 
   const innerContainer = doc.createElement('div');
   innerContainer.className = 'inner-container';
