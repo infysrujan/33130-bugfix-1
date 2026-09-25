@@ -465,6 +465,19 @@
         margin-bottom: var(--bbl-space-100);
     }
 
+    .carousel-track .carousel-item:not(.active) .carousel-description {
+        display: block;
+        margin-bottom: var(--bbl-space-100);
+    }
+
+    .carousel-track .carousel-item:not(.active) .carousel-description p {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+
     .carousel-track .carousel-item:not(.active) .carousel-cta.button-m {
         margin-bottom: var(--bbl-space-250);
     }
