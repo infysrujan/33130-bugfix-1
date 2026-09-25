@@ -710,11 +710,10 @@ main img {
         flex: 67;
     }
 
-    /* Make the first column an exact third so the Grow Club card matches the
-       width of the Rates and Bank News card (a columns-3 third). */
+    /* Grow Club: keep the carousel wide enough (menu cards stay 2-up) until
+       1100px; above that the > 68.75rem rule narrows it so a third card fits. */
     .section.columns-2-33.menu-cards-container > .carousel-dotted-wrapper:first-child {
         flex: 44;
-        max-width: 33.3333%;
     }
 
     /* .section.columns-2-65 > *,
@@ -754,11 +753,11 @@ main img {
     } */
 }
 
-  @media (width > 68.75rem) {
-        .section.columns-2-33.menu-cards-container > .carousel-dotted-wrapper:first-child {
-            flex: 32.5;
-        }
+@media (width > 68.75rem) {
+    .section.columns-2-33.menu-cards-container > .carousel-dotted-wrapper:first-child {
+        flex: 32.5;
     }
+}
 
 /* =========================================================================
    SPACING UTILITIES
