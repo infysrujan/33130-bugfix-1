@@ -126,7 +126,7 @@ function buildFilterGroup(group, groupIndex, dropdownDefaultLabel) {
 
     const placeholder = document.createElement('option');
     placeholder.value = '';
-    placeholder.textContent = `-- ${dropdownDefaultLabel} --`;
+    placeholder.textContent = `-- ${dropdownDefaultLabel || 'Select'} --`;
     placeholder.disabled = true;
     placeholder.selected = true;
     select.appendChild(placeholder);
