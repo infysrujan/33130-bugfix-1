@@ -1359,19 +1359,61 @@ validateAgeRangeInputs();
 function formatNumberWithCommas(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
-
 /**
- * Formats a number with comma separators, capping the actual digit count
- * would count the added commas and wrongly flag the value as too long).
- * @name formatCappedNumberWithCommas
- * @param {string} value - The numeric value to format
- * @param {number} [maxDigits=12] - Maximum allowed actual digits
- * @return {string}
+ * Validates that a numeric-range field's value stays within 1–75
+ *
+ * @name validateAgeInputRange
+ * @returns {void}
  */
-function formatCappedNumberWithCommas(value, maxDigits = 12) {
-  const digitsOnly = value.toString().replace(/\D/g, '').slice(0, Number(maxDigits));
-  return digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+function validateAgeRange() {
+  if (typeof document === 'undefined') return;
+
+  const MIN = 1;
+  const MAX = 75;
+  const MESSAGE = 'อายุต้องอยู่ระหว่าง 1-75 ปี';
+
+  const runCheck = (input) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+
+    const num = Number(input.value);
+    const isInvalid = input.value !== '' && (Number.isNaN(num) || num < MIN || num > MAX);
+
+    if (isInvalid) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = MESSAGE;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    const isAgeLimit = input.classList.contains('age-limit')
+      || input.closest('.age-limit') !== null;
+    if (!isAgeLimit) return;
+    runCheck(input);
+  };
+
+  ['input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
 }
+validateAgeRange();
 
 /**
  * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
@@ -1608,5 +1650,4 @@ export {
   validateMaxCheckbox,
   replaceother,
   formatNumberWithCommas,
-  formatCappedNumberWithCommas,
 };
