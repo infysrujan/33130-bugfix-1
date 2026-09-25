@@ -238,8 +238,6 @@ export default async function decorate(block) {
   const ph = await fetchPlaceholders();
   const dropdownDefaultLabel = ph.creditCardSelectorDropdownDefault;
   // eslint-disable-next-line no-console
-  console.log('[credit-card-selector] creditCardSelectorDropdownDefault =', dropdownDefaultLabel);
-
   // UE inserts a fresh block element when a newly-added block is edited for the first time.
   // The original decorated block stays in the DOM alongside the new one, causing duplication.
   // Only remove the stale block if it shares the same data-aue-resource (same AEM content path).
