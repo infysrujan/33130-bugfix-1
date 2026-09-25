@@ -372,7 +372,7 @@
 /* ── Month-year picker input ───────────────────────────────── */
 
 .dynamic-board .db-mp-input {
-  width: 8.5313rem;
+  width: 100%;
   height: 2.75rem;
   padding: 0 var(--bbl-space-500) 0 var(--bbl-space-200);
   font-size: var(--bbl-font-size-b2);
