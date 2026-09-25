@@ -164,6 +164,10 @@
     scroll-snap-align: start;
   }
 
+  .multi-column-tiles-image{
+    min-height: 22.25rem;
+    height: calc((100vw / 4) * 1.58);
+  }
 }
 
 /* === Desktop and above (> 64rem) === */
