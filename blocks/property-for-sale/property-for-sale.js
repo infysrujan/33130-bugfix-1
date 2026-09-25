@@ -156,7 +156,7 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData, eager = false
   return buildCardHtml(card, tag, p, { footerExtra, eager });
 }
 
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL_MS = 5 * 60 * 1000;
 const apiCache = new Map();
 
 function enforceHttps(url) {
