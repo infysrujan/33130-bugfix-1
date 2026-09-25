@@ -4,6 +4,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { loadCarouselListingOrder, filterFundsInSheet, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
+import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -196,6 +197,15 @@ function buildFundCardsBlock(funds, doc, readMoreLabel, cardsPerSlide = 3) {
  */
 export default async function buildMfFundCardsSlide(row, index) {
   const doc = row.ownerDocument;
+  const carouselBlock = row.parentElement;
+
+  // The fund data fetch below can take a moment, and carousel-dotted.js only swaps the
+  // raw authored rows for the built slides once every slide promise resolves — until
+  // then those rows (config fields, slide type, etc.) would otherwise flash on screen.
+  if (carouselBlock && !isAuthoringInstance(carouselBlock) && !carouselBlock.dataset.mfFundCardsRowsHidden) {
+    carouselBlock.dataset.mfFundCardsRowsHidden = 'true';
+    [...carouselBlock.children].forEach((child) => { child.style.visibility = 'hidden'; });
+  }
 
   const cells = [...row.children];
   // cells[17] = mfCardListDescription (richtext), cells[18] = cardTypes (aem-tag)
