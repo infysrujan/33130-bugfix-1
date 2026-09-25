@@ -13591,6 +13591,16 @@
             }
           }
         }
+      },
+      {
+        "component": "richtext",
+        "name": "cellCss",
+        "label": "Cell CSS",
+        "valueType": "string",
+        "value": "",
+        "required": false,
+        "description": "Optional CSS to control alignment/background of specific cells, targeting this table using its Id field, e.g. #my-table-id td:nth-child(2) { text-align: center; background: #eee; } Wrapping the rules in <style> tags is optional.",
+        "filter": "cell-css-rte"
       }
     ]
   },

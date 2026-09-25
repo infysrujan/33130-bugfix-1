@@ -6,6 +6,7 @@ import {
 } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { decorateIconInContainer, decorateNewTabLinks } from '../../scripts/custom-rte.js';
+import { decodeHtmlEntities, extractStyles, sanitizeCss } from '../../scripts/custom-css.js';
 
 function getCellText(cell) {
   if (!cell) return '';
@@ -243,6 +244,34 @@ function alignHeaderLastLine(table) {
   });
 }
 
+// Authors write their own CSS targeting the table via the Id field
+// (e.g. #my-table-id td:nth-child(2) { ... }). This gives full control over
+// per-cell alignment/background without new variant classes. The rules can
+// either be wrapped in <style> tags, or written as plain CSS across the
+// field's paragraphs/code block (each line authored as its own <p>).
+function applyCustomCellCss(block, row) {
+  if (!row) return;
+
+  // Stays in the DOM in authoring only (to remain editable); tagged so it
+  // can be hidden from the authoring canvas via CSS if desired.
+  row.classList.add('cell-css-row');
+
+  const codeBlock = row.querySelector('pre, code');
+  const encoded = codeBlock
+    ? codeBlock.textContent
+    : [...row.querySelectorAll('p')].map((p) => p.textContent).join('\n');
+  if (!encoded.trim()) return;
+
+  const decoded = decodeHtmlEntities(encoded);
+  const { css } = extractStyles(decoded);
+  const sanitized = sanitizeCss(css || decoded);
+  if (!sanitized) return;
+
+  const styleEl = document.createElement('style');
+  styleEl.textContent = sanitized;
+  block.append(styleEl);
+}
+
 function isAuthoringInstance(block) {
   const section = block.closest('.section');
   const hasAueAttrs = [block, section]
@@ -436,13 +465,15 @@ export default async function decorate(block) {
   const columnWidthRow = tableRowIndex > 3 ? rows[tableRowIndex - 2] : null;
   const columnWidth = columnWidthRow?.children[0]?.textContent.trim() || null;
 
+  const isAuthoring = block.hasAttribute('data-aue-resource');
+  const cssRow = rows[tableRowIndex + 1] || null;
+
   applyVariationClasses(parentTable, parentStyles, firstRowText);
   if (nestedTableId) parentTable.dataset.nestedId = nestedTableId;
   applyColumnWidths(parentTable, columnWidth);
 
   // Non-hierarchical nested table: render normally and schedule section-level resolution
   if (parentStyles.includes('nested-table')) {
-    const isAuthoring = block.hasAttribute('data-aue-resource');
     markHeaderRows(parentTable);
     applyMixedBlueHeader(parentTable);
     highlightDashCells(parentTable);
@@ -452,6 +483,7 @@ export default async function decorate(block) {
     block.append(parentTable);
     decorateNewTabLinks(parentTable);
     decorateIconInContainer(parentTable);
+    applyCustomCellCss(block, cssRow);
     decorateTableButtons(parentTable);
     if (isAuthoring) {
       rows.slice(tableRowIndex + 1).forEach((row) => block.append(row));
@@ -473,6 +505,10 @@ export default async function decorate(block) {
   block.append(parentTable);
   decorateNewTabLinks(parentTable);
   decorateIconInContainer(parentTable);
+  applyCustomCellCss(block, cssRow);
+  if (isAuthoring) {
+    rows.slice(tableRowIndex + 1).forEach((row) => block.append(row));
+  }
   decorateTableButtons(parentTable);
 
   scheduleMergeTables(block, parentTable);
