@@ -14,6 +14,17 @@ function norm(str) {
     .trim();
 }
 
+// Escape HTML special chars, then turn newlines into <br> so multi-line
+// plaintext (e.g. fee breakdowns) renders as separate lines instead of
+// being collapsed into one line by the browser
+function nl2br(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\r?\n/g, '<br>');
+}
+
 // ── Icon loading ───────────────────────────────────────────────────────────────
 
 // Fetch an SVG from the icons folder and return its markup string for inline use
@@ -223,7 +234,7 @@ function buildCompareCard(card, doc, labels, icons, activeKeys) {
     dt.textContent = label;
     const dd = doc.createElement('dd');
     dd.className = 'ccr-value';
-    dd.textContent = value;
+    dd.innerHTML = nl2br(value);
     dl.appendChild(dt);
     dl.appendChild(dd);
     compareInfo.appendChild(dl);
