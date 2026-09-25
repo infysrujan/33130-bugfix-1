@@ -162,7 +162,6 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData, eager = false
   return buildCardHtml(card, tag, p, { footerExtra, eager });
 }
 
-const FETCH_TIMEOUT_MS = 10000;
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 const apiCache = new Map();
 
@@ -200,14 +199,10 @@ async function fetchJson(rawUrl, { useCache = true } = {}) {
     if (cached) return cached;
   }
   try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
     const data = await fetchGet(url, {
       headers: { Accept: 'application/json' },
-      signal: ctrl.signal,
       throwOnError: false,
     });
-    clearTimeout(timer);
     if (useCache && data) setCache(url, data);
     return data;
   } catch {
