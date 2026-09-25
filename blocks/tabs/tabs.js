@@ -44,12 +44,9 @@ function applyPanelClasses(block) {
   delete block.dataset.panelClasses;
 }
 
-export default function decorate(block) {
-  async function init() {
-    const variant = detectVariant(block);
-    const { default: decorateVariation } = await import(`./variations/${variant}.js`);
-    await decorateVariation(block);
-    applyPanelClasses(block);
-  }
-  init();
+export default async function decorate(block) {
+  const variant = detectVariant(block);
+  const { default: decorateVariation } = await import(`./variations/${variant}.js`);
+  await decorateVariation(block);
+  applyPanelClasses(block);
 }
