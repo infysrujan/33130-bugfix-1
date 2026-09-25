@@ -262,42 +262,7 @@
 
 .privacy-modal-cta {
   align-self: center;
-  height: 2.75rem;
-  min-width: 9.688rem;
-  padding: 0 var(--bbl-space-300);
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 2.75rem;
-  text-align: center;
-  white-space: nowrap;
-  border: none;
-  border-radius: 0.4375rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease, opacity 0.2s ease;
-}
-
-.privacy-modal-cta:disabled {
-  background-color: var(--bbl-color-grey-30);
-  color: var(--bbl-color-grey-70);
-  cursor: not-allowed;
-}
-
-.privacy-modal-cta:not(:disabled) {
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-}
-
-.privacy-modal-cta:not(:disabled):hover {
-  background-color: var(--bbl-color-blue-90);
-}
-
-.privacy-modal-cta:not(:disabled):active {
-  opacity: 0.9;
-}
-
-.privacy-modal-cta:not(:disabled):focus-visible {
-  outline: 0.125rem solid var(--bbl-color-active-blue);
-  outline-offset: 0.125rem;
+  width: unset;
 }
 
 .privacy-modal-body::-webkit-scrollbar {

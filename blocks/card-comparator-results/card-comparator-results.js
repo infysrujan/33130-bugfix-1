@@ -246,7 +246,7 @@ function buildCompareCard(card, doc, labels, icons, activeKeys) {
   // ── Learn more link ──
   const learnLink = doc.createElement('a');
   learnLink.href = learnHref;
-  learnLink.className = 'ccr-learn-more';
+  learnLink.className = 'ccr-learn-more button-m secondary';
   learnLink.textContent = labels.learnMore;
   col.appendChild(learnLink);
   return col;

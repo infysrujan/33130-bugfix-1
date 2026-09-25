@@ -208,7 +208,7 @@ function buildCompareCard(card, doc, labels) {
   // Read more link
   const readMoreLink = doc.createElement('a');
   readMoreLink.href = readMoreHref || '#';
-  readMoreLink.className = 'mfcr-read-more';
+  readMoreLink.className = 'mfcr-read-more button-m secondary';
   readMoreLink.textContent = labels.readMore;
   col.appendChild(readMoreLink);
 

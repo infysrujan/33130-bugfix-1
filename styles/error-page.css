@@ -114,12 +114,7 @@ body.error-page .header .mobile-top-bar {
 
 .error-page main .default-content-wrapper .button-m.primary,
 .error-page main .default-content-wrapper .button-m.secondary {
-    display: inline-flex;
-    padding: 0 1.25rem;
-    width: auto;
     align-content: center;
-    min-width: 8.3313rem;
-    margin: 0;
 }
 
 @media (width > 47.5rem) {

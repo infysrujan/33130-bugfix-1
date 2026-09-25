@@ -216,11 +216,7 @@
 }
 
 .search-reports-overlay .button-m {
-  min-width: 8.4375rem;
-}
-
-.search-reports-overlay .button-m.primary:disabled {
-  min-width: 8.4375rem;
+  width: auto;
 }
 
 @media (width > 47.5rem) {
@@ -253,14 +249,6 @@
   .search-reports-overlay .sr-header {
     padding-block: 1.56rem;
     padding-inline: var(--bbl-space-section-xl);
-  }
-
-  .search-reports-overlay .button-m {
-    min-width: 9.6875rem;
-  }
-
-  .search-reports-overlay .button-m.primary:disabled {
-    min-width: 9.6875rem;
   }
 }
 
