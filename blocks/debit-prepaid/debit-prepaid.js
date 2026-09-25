@@ -482,7 +482,7 @@ export default async function decorate(block) {
 
   const isTH = lang === 'th';
   const labels = {
-    learnMore: ph.cardComparatorResultsButtonText || (isTH ? 'อ่านเพิ่มเติม' : 'Read more'),
+    learnMore: ph.cardLearnMore || (isTH ? 'เรียนรู้เพิ่มเติม' : 'Learn more'),
     compare: ph.cardCompare || (isTH ? 'เปรียบเทียบ' : 'Compare'),
     noResultsFound: ph.cardNoResultsFound || (isTH ? 'ไม่พบผลลัพธ์' : 'No Results Found'),
     prevCard: ph.cardPrevious || (isTH ? 'การ์ดก่อนหน้า' : 'Previous card'),
