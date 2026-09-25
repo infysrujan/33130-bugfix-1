@@ -26,6 +26,13 @@
           "label": "Description",
           "description": "Introductory text displayed above the comparison results table",
           "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "learnMoreText",
+          "label": "Learn More Button Text",
+          "description": "Learn More Button label text",
+          "required": true
         }
       ]
     }

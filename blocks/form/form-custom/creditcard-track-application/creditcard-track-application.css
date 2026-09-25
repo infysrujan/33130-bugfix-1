@@ -140,6 +140,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     line-height: var(--bbl-line-height-b1-desktop);
     cursor: pointer;
     appearance: none;
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
@@ -742,7 +743,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         }
 
         & > .cc-panel-item-timeline-date {
-          top: calc(var(--timeline-height) * 0.78);
+          top: calc(var(--timeline-height) * 0.77);
           width: min(12.5rem, 50%);
           max-width: none;
         }
@@ -752,6 +753,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           font-weight: var(--bbl-body-b2-weight);
           line-height: var(--bbl-body-b2-line-height);
           color: var(--bbl-color-grey-28);
+          text-align: right;
 
           @media (width > 47.5rem) {
             font-size: var(--bbl-body-b1-medium-size);
