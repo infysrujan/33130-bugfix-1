@@ -87,6 +87,7 @@
 /* ── Mobile: hide scrollbar on credit card carousel — replaced by dots ───────── */
 
 .ccs-card-list-container .cards-list.scrollable {
+  justify-content: center;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
 }
