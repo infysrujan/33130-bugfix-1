@@ -8,6 +8,7 @@ import {
   decorateTemplateAndTheme,
   loadSection,
   loadSections,
+  loadBlock,
   loadCSS,
   getMetadata,
   toClassName,
@@ -360,7 +361,9 @@ function getLcpImage(root) {
     const img = picture?.querySelector('img');
     if (img) return img;
   }
-  return null;
+  const first = main.querySelector?.('img');
+  if (first?.closest('.menu-banner, header, footer, .welcome-banner')) return null;
+  return first || null;
 }
 
 function hintLcpImage(img) {
@@ -399,13 +402,39 @@ export function removePictureOptimizationParams(root) {
 
 function sectionHasTabName(section) {
   if (!section) return false;
-  return [...section.querySelectorAll('div.section-metadata > div > div:first-child')]
-    .some((cell) => toClassName(cell.textContent) === 'tab-name');
+  const metadataTab = [...section.querySelectorAll('div.section-metadata > div > div:first-child')]
+    .some((cell) => {
+      const key = toClassName(cell.textContent);
+      return key === 'tab-name' || key === 'tab-variant';
+    });
+  if (metadataTab) return true;
+  // Authored tabs block, including one nested in a table or used as tiled tabs.
+  return !!section.querySelector('.tabs, .tiled-tab');
 }
 
 function mainHasTabs(main) {
   if (!main) return false;
   return [...main.querySelectorAll(':scope > div')].some(sectionHasTabName);
+}
+
+const TAB_PANEL_BLOCKS = '.market-report, .news-media, .promo-card-listing, .top-promotional-cards';
+
+function holdTabPanelBlocks(root) {
+  return [...root.querySelectorAll(TAB_PANEL_BLOCKS)].map((block) => {
+    const placeholder = document.createComment('tab-panel-block');
+    block.replaceWith(placeholder);
+    return { block, placeholder };
+  });
+}
+
+async function releaseTabPanelBlocks(held) {
+  await Promise.all(held.map(async ({ block, placeholder }) => {
+    if (placeholder.isConnected) placeholder.replaceWith(block);
+    else document.querySelector('main')?.append(block);
+    if (block.dataset.blockStatus !== 'loaded' && block.dataset.blockStatus !== 'loading') {
+      await loadBlock(block);
+    }
+  }));
 }
 
 function detachLaterSections(main) {
@@ -509,8 +538,11 @@ async function loadEager(doc) {
   const hasTabs = mainHasTabs(main);
   const firstIsTab = hasTabs && sectionHasTabName(main?.querySelector(':scope > div'));
   const laterSections = (hasTabs && !firstIsTab) ? detachLaterSections(main) : [];
+  const tabsHelperPromise = hasTabs
+    ? import('../blocks/tabs/tabs-helper.js')
+    : null;
   if (firstIsTab) {
-    ({ default: decorateTabs } = await import('../blocks/tabs/tabs-helper.js'));
+    ({ default: decorateTabs } = await tabsHelperPromise);
   }
   if (main) {
     decorateMain(main);
@@ -521,12 +553,16 @@ async function loadEager(doc) {
     if (!isHeaderOverlapped(main)) {
       doc.querySelector('header')?.classList.add('is-not-overlapped');
     }
+    const heldTabBlocks = laterSections.length ? holdTabPanelBlocks(main) : [];
     await loadSection(main.querySelector('.section'), waitForFirstImage);
     if (laterSections.length) {
+      ({ default: decorateTabs } = await tabsHelperPromise);
       laterSections.forEach((section) => main.append(section));
-      ({ default: decorateTabs } = await import('../blocks/tabs/tabs-helper.js'));
       decorateTabs(main);
       decorateLaterSections(main);
+      const tabsBlock = main.querySelector('.tabs.block');
+      if (tabsBlock) await loadBlock(tabsBlock);
+      await releaseTabPanelBlocks(heldTabBlocks);
     }
   }
 
