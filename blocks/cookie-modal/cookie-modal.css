@@ -299,7 +299,9 @@ body.cookie-modal-open .header {
   flex-shrink: 0;
 }
 
-
+.cookie-modal-save-btn {
+  width: unset;
+}
 
 @media (width > 47.5rem) {
   .cookie-modal-overlay {
