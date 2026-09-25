@@ -372,8 +372,10 @@ function hintLcpImage(img) {
 }
 
 function promoteFirstImage(section) {
+  if (section?.querySelector('.menu-banner')) return;
   const image = section?.querySelector('img[fetchpriority="high"]')
-    || section?.querySelector('.hero img');
+    || section?.querySelector('.hero img')
+    || section?.querySelector('img');
   hintLcpImage(image);
 }
 
@@ -455,14 +457,14 @@ function whenStylesReady() {
 }
 
 async function waitForFirstImage(section) {
-  const lcpCandidate = section.querySelector('.hero img[fetchpriority="high"]')
-    || section.querySelector('img[fetchpriority="high"]');
-  if (!lcpCandidate || lcpCandidate.closest('.menu-banner')) {
-    return undefined;
-  }
+  if (!section || section.querySelector('.menu-banner')) return undefined;
+  const lcpCandidate = section.querySelector('.hero img')
+    || section.querySelector('img[fetchpriority="high"]')
+    || section.querySelector('img');
+  if (!lcpCandidate) return undefined;
+  hintLcpImage(lcpCandidate);
   return new Promise((resolve) => {
     if (!lcpCandidate.complete && lcpCandidate.currentSrc) {
-      lcpCandidate.setAttribute('loading', 'eager');
       lcpCandidate.addEventListener('load', resolve);
       lcpCandidate.addEventListener('error', resolve);
     } else {
