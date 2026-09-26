@@ -618,7 +618,7 @@ main img {
     .section.columns-3  > *,
     .accordion-panel.columns-3  > *,
     .tab-panel.columns-3  > * {
-        width: 33.33%;
+        width: calc(33.33% - 1rem);
         flex: 33.33;
     }
 
