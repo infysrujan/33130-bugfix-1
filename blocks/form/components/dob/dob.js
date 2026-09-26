@@ -216,9 +216,15 @@ export default function decorate(block, fd = {}) {
     commit();
   }
 
-  daySelect.addEventListener('change', commit);
-  monthSelect.addEventListener('change', onMonthOrYearChange);
-  yearSelect.addEventListener('change', onMonthOrYearChange);
+  // Stop these native `change` events from bubbling to the form: the rule
+  // engine's global change listener (rules/index.js applyRuleEngine) resolves
+  // the bound field purely from `e.target.closest('.field-wrapper').dataset.id`,
+  // and day/month/year share the same field-wrapper as the hidden input. Left
+  // unguarded, e.g. picking a year would push the raw year alone ("2003") into
+  // the model as this field's value, ahead of the composed ISO string below.
+  daySelect.addEventListener('change', (e) => { e.stopPropagation(); commit(); });
+  monthSelect.addEventListener('change', (e) => { e.stopPropagation(); onMonthOrYearChange(); });
+  yearSelect.addEventListener('change', (e) => { e.stopPropagation(); onMonthOrYearChange(); });
 
   /* ── Seed from a prefilled/default value (yyyy-MM-dd) ── */
   const initial = toText(getProp(fd, 'default') ?? fd.value);
