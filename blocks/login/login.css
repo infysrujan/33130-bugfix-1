@@ -20,7 +20,7 @@
   display: block;
 }
 
-button.login-button {
+.login-button .button-s {
   background-color: transparent;
 }
 
