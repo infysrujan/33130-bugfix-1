@@ -6,7 +6,7 @@ import { getLang } from '../scripts.js';
 function norm(str) {
   return (str || '')
     .toString()
-    .replace(/[​-‍﻿]/g, '')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
     .replace(/\s+/g, ' ')
     .toLowerCase()
     .trim();
@@ -15,9 +15,9 @@ function norm(str) {
 function normalizeRow(row) {
   const out = {};
   Object.entries(row).forEach(([k, v]) => {
-    const key = k.replace(/[​-‍﻿]/g, '').replace(/\s+/g, ' ').trim();
+    const key = k.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim();
     out[key] = typeof v === 'string'
-      ? v.replace(/[​-‍﻿]/g, '').replace(/\s+/g, ' ').trim()
+      ? v.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim()
       : v;
   });
   return out;
@@ -53,13 +53,28 @@ export function loadCarouselListingOrder() {
   return loadSheetOrder('mfCardListingSort');
 }
 
-function buildSheetOrderMap(matrix) {
+// A fund name can appear on more than one row when it's featured again under a
+// different Fund Type (e.g. an RMF fund re-listed under "Cio Top Picks").
+function buildSheetOrderMap(matrix, category) {
   const nameKey = fundNameKey();
+  const catSlug = category ? norm(category).replace(/\s+/g, '-') : '';
+  const catBase = catSlug.replace(/-\d+$/, '');
   const orderMap = {};
+
+  if (catSlug) {
+    matrix.forEach((row, index) => {
+      const rowType = norm(row['Fund Type'] || '').replace(/\s+/g, '-');
+      if (rowType !== catSlug && rowType !== catBase) return;
+      const name = norm(row[nameKey] || '');
+      if (name && !(name in orderMap)) orderMap[name] = index;
+    });
+  }
+
   matrix.forEach((row, index) => {
     const name = norm(row[nameKey] || '');
     if (name && !(name in orderMap)) orderMap[name] = index;
   });
+
   return orderMap;
 }
 
@@ -69,9 +84,9 @@ export function filterFundsInSheet(funds, matrix) {
   return funds.filter((fund) => norm(fund.FundName || '') in orderMap);
 }
 
-// Sort funds to match the given sheet's authored row order.
-export function sortFundsBySheetOrder(funds, matrix) {
-  const orderMap = buildSheetOrderMap(matrix);
+// Sort funds to match the given sheet's authored row order for the given category.
+export function sortFundsBySheetOrder(funds, matrix, category) {
+  const orderMap = buildSheetOrderMap(matrix, category);
 
   return [...funds].sort((a, b) => {
     const orderA = orderMap[norm(a.FundName || '')] ?? Number.MAX_SAFE_INTEGER;

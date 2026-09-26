@@ -15,4 +15,10 @@ function isBondAllocationForm(form) {
 export default function decorateBondAllocationForm(form) {
   if (!isBondAllocationForm(form)) return;
   document.body.classList.add('bond-allocation-form');
+
+  form.querySelectorAll('.bond-allocation-panel input[type="text"]').forEach((input) => {
+    input.addEventListener('input', () => {
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  });
 }

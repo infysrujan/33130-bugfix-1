@@ -174,7 +174,7 @@ function markAnchorScrollTargets(block) {
   block.querySelectorAll('a[href^="#"]').forEach((link) => {
     const id = link.getAttribute('href').slice(1);
     if (!id) return;
-    const target = document.getElementById(id);
+    const target = document.getElementById(decodeURIComponent(id));
     if (!target) return;
     target.classList.add('accordion-anchor-scroll-target');
     link.addEventListener('click', (e) => {
