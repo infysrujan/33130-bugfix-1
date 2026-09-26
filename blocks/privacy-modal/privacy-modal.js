@@ -208,6 +208,8 @@ function buildModal({
  * @param {boolean} [options.resetState=false] If true, resets checkbox and CTA button state.
  */
 function openModal(overlay, { resetState = false } = {}) {
+  if (!overlay.isConnected) document.body.appendChild(overlay);
+
   if (resetState) {
     const checkbox = overlay.querySelector('#privacy-modal-checkbox');
     const ctaBtn = overlay.querySelector('.privacy-modal-cta');
@@ -215,6 +217,8 @@ function openModal(overlay, { resetState = false } = {}) {
 
     if (checkbox) {
       checkbox.checked = false;
+      if (scrollBody) scrollBody.scrollTop = 0;
+
       if (scrollBody && isScrolledToBottom(scrollBody)) {
         checkbox.removeAttribute('disabled');
       } else {
@@ -332,7 +336,7 @@ export default function decorate(block) {
   window.showPrivacyModal = (pendingUrl, {
     bypassCookie = false,
     className = '',
-    resetState = false,
+    resetState = true,
     target = modalAuthoredTarget,
   } = {}) => {
     isBypassCookie = bypassCookie;
