@@ -44,13 +44,36 @@ function days(endDate, startDate) {
   return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 }
 
+function isEmptyFieldValue(value) {
+  return value === null || value === undefined || (typeof value === 'string' && value.trim() === '');
+}
+
 /**
- * Removes top-level fields whose key contains "_exclude" from a payload object.
+ * Replaces empty/unfilled field values in a payload object with a default placeholder,
+ * so every field that is part of the outbound payload always carries a value.
  * @param {object} obj - The payload object
- * @returns {object} - A new object without the excluded fields
+ * @param {string} [defaultValue] - Placeholder used for empty fields
+ * @returns {object} - A new object with empty values replaced
+ */
+function applyDefaultValues(obj, defaultValue = '-') {
+  return Object.fromEntries(
+    Object.entries(obj).map(
+      ([key, value]) => [key, isEmptyFieldValue(value) ? defaultValue : value],
+    ),
+  );
+}
+
+/**
+ * Removes top-level fields whose key contains "_exclude" from a payload object, then fills
+ * any remaining empty/unfilled field with a default placeholder value.
+ * @param {object} obj - The payload object
+ * @returns {object} - A new object without the excluded fields, with empty fields defaulted
  */
 function filterExcludeFields(obj) {
-  return Object.fromEntries(Object.entries(obj).filter(([key]) => !key.includes('_exclude')));
+  const withoutExcluded = Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !key.includes('_exclude')),
+  );
+  return applyDefaultValues(withoutExcluded);
 }
 
 /**
@@ -442,8 +465,19 @@ function getProvinceEnumNamesTh() {
  *   }
  * }
  */
+// Caches branch results per province+lang so repeated lookups for the same
+// selection (e.g. the rule engine's own change handler and the district
+// grouping watcher below both resolving the same province) reuse the
+// response instead of firing another blocking XHR.
+const branchesByProvinceCache = new Map();
+
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
+  const cacheKey = `${lang}::${province}`;
+  if (branchesByProvinceCache.has(cacheKey)) {
+    return branchesByProvinceCache.get(cacheKey);
+  }
+
   const branchesByProvinceUrl = getBaseUrl('branches-by-province');
   const provinceBaseUrl = branchesByProvinceUrl.endsWith('/') ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
   const encoded = encodeURIComponent(province);
@@ -462,7 +496,9 @@ function fetchBranchesByProvince(province, lang = 'th') {
   }
 
   const data = JSON.parse(xhr.responseText);
-  return Array.isArray(data) ? data : [];
+  const result = Array.isArray(data) ? data : [];
+  branchesByProvinceCache.set(cacheKey, result);
+  return result;
 }
 
 /**
@@ -497,10 +533,15 @@ function getBranchEnumNames(province, lang = 'th') {
 
 // Wraps a select's <option> elements into <optgroup> by district, with
 // districts sorted A-Z and branches within each district sorted A-Z.
+// Works for both EN selects (value = BranchName) and TH selects (value = BranchNo).
 function applyBranchDistrictGroupingToSelect(selectEl, data) {
+  // Build lookups by both BranchName and BranchNo so we handle EN and TH selects.
   const districtByBranchName = {};
+  const districtByBranchNo = {};
   data.forEach((item) => {
-    districtByBranchName[item.BranchName] = item.Address3 ? String(item.Address3).trim() : '';
+    const district = item.Address3 ? String(item.Address3).trim() : '';
+    if (item.BranchName) districtByBranchName[item.BranchName] = district;
+    if (item.BranchNo) districtByBranchNo[String(item.BranchNo)] = district;
   });
 
   // Collator gives correct A-Z ordering for both Thai and English labels.
@@ -510,7 +551,7 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   const entries = Array.from(selectEl.querySelectorAll('option'))
     .map((opt) => ({
       opt,
-      district: districtByBranchName[opt.value] || '',
+      district: districtByBranchName[opt.value] || districtByBranchNo[opt.value] || '',
     }))
     .filter((entry) => entry.district !== '');
 
@@ -535,36 +576,62 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   });
 }
 
-// Polls briefly for a <select> whose options match this branch dataset,
-// then groups it.
-function scheduleApplyBranchDistrictGroupingAuto(data) {
+// Tracks selects that have already been grouped so we don't process them twice.
+// Uses a live DOM check: if the select already has <optgroup> children, it is
+// considered grouped. When the form rule engine resets options (stripping
+// optgroups), the check fails and the select is re-grouped automatically.
+
+// Applies branch sorting/grouping to every matching unprocessed <select> in the DOM.
+function applyBranchGroupingToAllMatching(data) {
   if (!data.length) return;
   const branchNames = new Set(data.map((item) => String(item.BranchName)));
-
-  let attempts = 0;
-  const tryApply = () => {
-    attempts += 1;
-    const target = Array.from(document.querySelectorAll('select')).find((sel) => {
-      const optVals = Array.from(sel.options).map((o) => o.value).filter((v) => v !== '');
-      return optVals.length > 0 && optVals.every((v) => branchNames.has(v));
-    });
-
-    if (target) {
-      applyBranchDistrictGroupingToSelect(target, data);
-    } else if (attempts < 20) {
-      setTimeout(tryApply, 100);
+  const branchNos = new Set(data.map((item) => String(item.BranchNo)));
+  Array.from(document.querySelectorAll('select')).forEach((sel) => {
+    // Already grouped — optgroups still in place, nothing to do.
+    if (sel.querySelector('optgroup')) return;
+    const optVals = Array.from(sel.options).map((o) => o.value).filter((v) => v !== '');
+    const isMatch = optVals.length > 0
+      && (optVals.every((v) => branchNames.has(v)) || optVals.every((v) => branchNos.has(v)));
+    if (isMatch) {
+      applyBranchDistrictGroupingToSelect(sel, data);
     }
-  };
-  setTimeout(tryApply, 0);
+  });
+}
+
+// Polls briefly on load, then installs a MutationObserver so any branch
+// <select> that appears later (e.g. conditionally shown by a radio button)
+// is also sorted and grouped.
+function scheduleApplyBranchDistrictGroupingAuto(data) {
+  if (!data.length) return;
+
+  // Initial pass — run shortly after data is available.
+  setTimeout(() => applyBranchGroupingToAllMatching(data), 0);
+
+  // Watch for new/modified selects added to the DOM later.
+  if (typeof MutationObserver !== 'undefined') {
+    const observer = new MutationObserver((mutations) => {
+      const hasNewNodes = mutations.some((m) => m.addedNodes.length > 0 || m.type === 'attributes');
+      if (hasNewNodes) applyBranchGroupingToAllMatching(data);
+    });
+    observer.observe(document.body, {
+      childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'style', 'class'],
+    });
+  }
 }
 
 // The Rule Engine worker can't touch the DOM, and this form's custom
 // dropdown widget may not dispatch real 'change' events — so instead of
 // listening for events, poll each <select>'s value directly for changes.
+// Only the page's own language is fetched here: the rule engine's change
+// handler already fetches that language to populate enum/enumNames, and
+// unconditionally also fetching the other language previously fired on
+// every province change (e.g. an English province name against the
+// Thai-language endpoint), which reliably returns an empty result.
 if (typeof document !== 'undefined') {
   const lastValues = new Map();
 
   setInterval(() => {
+    const lang = (document.documentElement.lang || 'en').toLowerCase().startsWith('th') ? 'th' : 'en';
     document.querySelectorAll('select').forEach((sel) => {
       const key = sel.name || sel.id;
       const prev = lastValues.get(key);
@@ -572,10 +639,10 @@ if (typeof document !== 'undefined') {
 
       if (current && current !== prev) {
         lastValues.set(key, current);
-        ['en', 'th'].forEach((lang) => {
-          const data = fetchBranchesByProvince(current, lang);
-          if (data.length) scheduleApplyBranchDistrictGroupingAuto(data);
-        });
+        const data = fetchBranchesByProvince(current, lang);
+        if (data.length) {
+          scheduleApplyBranchDistrictGroupingAuto(data);
+        }
       }
     });
   }, 300);
@@ -963,6 +1030,122 @@ function getidAndDob(id, dob) {
   return `${id}${ddmmyyyy}`;
 }
 
+function convertThaiToEnglishDate(thaiDateString) {
+  if (!thaiDateString) return null;
+
+  const s = String(thaiDateString).trim();
+  if (!s) return null;
+
+  let year;
+  let month; // 0-11 for JS Date
+  let day;
+
+  const m = s.match(/^(\d{3,4})[-/](\d{1,2})[-/](\d{1,2})/);
+  if (m) {
+    year = parseInt(m[1], 10);
+    month = parseInt(m[2], 10) - 1;
+    day = parseInt(m[3], 10);
+  } else {
+    const parsed = new Date(s);
+    if (Number.isNaN(parsed.getTime())) return null;
+    year = parsed.getFullYear();
+    month = parsed.getMonth();
+    day = parsed.getDate();
+  }
+
+  if (year >= 2400) year -= 543;
+
+  const d = new Date(year, month, day);
+  const valid = d.getFullYear() === year && d.getMonth() === month && d.getDate() === day;
+  if (!valid) return null;
+
+  // Format as yyyy-mm-dd from LOCAL parts (not toISOString — that shifts to UTC)
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+/**
+ * Formats sum-insured field with commas live as the user types,
+ * caps at 7 digits, validates 300,000–9,999,999 range.
+ *
+ * @name formatAndValidateSumInsured
+ * @returns {void}
+ */
+function formatAndValidateSumInsured() {
+  if (typeof document === 'undefined') return;
+  if (window.sumInsuredListenerAttached) return;
+  window.sumInsuredListenerAttached = true;
+  const CLASS_NAME = 'sum-insured';
+  const MAX_DIGITS = 7;
+  const MIN = 300000;
+  const MAX = 9999999;
+  const MESSAGE = 'ทุนประกันภัยต้องอยู่ระหว่าง 300,000 ถึง 9,999,999 บาท';
+
+  const isTarget = (el) => el.classList?.contains(CLASS_NAME) || el.closest(`.${CLASS_NAME}`);
+  const digitsOnly = (v) => v.replace(/\D/g, '');
+  const withCommas = (d) => d.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // the native setter, grabbed from the prototype — this bypasses
+  // any framework's own overridden 'value' setter/tracker
+  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype,
+    'value',
+  ).set;
+
+  const setReactCompatibleValue = (input, value) => {
+    nativeInputValueSetter.call(input, value);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+
+  const validate = (input, digits) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let desc = wrapper.querySelector('.field-description');
+    if (!desc) {
+      desc = document.createElement('div');
+      desc.className = 'field-description';
+      desc.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(desc);
+    }
+
+    const num = Number(digits);
+    const isInvalid = digits !== '' && (num < MIN || num > MAX);
+    wrapper.classList.toggle('field-invalid', isInvalid);
+    desc.textContent = isInvalid ? MESSAGE : (wrapper.dataset.description || '');
+  };
+
+  const applyFormat = (input) => {
+    if (input.type !== 'text') {
+      input.type = 'text';
+      input.setAttribute('inputmode', 'numeric');
+    }
+
+    const digits = digitsOnly(input.value).slice(0, MAX_DIGITS);
+    const formatted = withCommas(digits);
+
+    if (input.value !== formatted) {
+      setReactCompatibleValue(input, formatted);
+      input.setSelectionRange(formatted.length, formatted.length);
+    }
+
+    validate(input, digits);
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !isTarget(input)) return;
+    applyFormat(input);
+  };
+
+  ['input', 'keyup', 'blur', 'change'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+}
+formatAndValidateSumInsured();
+
 function replaceOtherAndJoin(selectedValues, otherText) {
   if (!selectedValues) {
     return '';
@@ -996,7 +1179,6 @@ function getSelectedLabelFromDropdown(dropdown) {
  * @example
  * formatDateTime("2024-01-05", "14", "30") // returns "5 January 2024 14:30:00"
  * formatDateTime("05/01/2024", "14", "30") // returns "5 January 2024 14:30:00"
- * formatDateTime("invalid", "14", "30") // returns ""
  * formatDateTime("2024-01-05", "", "30") // returns ""
  */
 function formatDateTime(date, hour, minute) {
@@ -1180,6 +1362,67 @@ function restrictNumberOnlyInputs() {
 restrictNumberOnlyInputs();
 
 /**
+ * Validates that a numeric-range field's value stays within 11–75, live,
+ * on typing (input/keyup) and on blur, targeting fields marked with the
+ * `age-range` CSS class on the input or its ancestors. Listening on
+ * multiple events guards against edge cases where a single event type
+ * doesn't fire reliably (e.g. paste, fast typing, or first interaction
+ * right after the field is dynamically inserted into the DOM).
+ *
+ * @name validateAgeRangeInputs
+ * @returns {void}
+ */
+function validateAgeRangeInputs() {
+  if (typeof document === 'undefined') return;
+
+  const MIN = 11;
+  const MAX = 75;
+  const MESSAGE = 'อายุต้องอยู่ระหว่าง 11-75 ปี';
+
+  const runCheck = (input) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+
+    const num = Number(input.value);
+    const isInvalid = input.value !== '' && (Number.isNaN(num) || num < MIN || num > MAX);
+
+    if (isInvalid) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = MESSAGE;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    const isAgeRange = input.classList.contains('age-range')
+      || input.closest('.age-range') !== null;
+    if (!isAgeRange) return;
+    runCheck(input);
+  };
+
+  ['input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+}
+validateAgeRangeInputs();
+
+/**
  * Formats a number with comma separators
  * @name formatNumberWithCommas
  * @param {string} value - The numeric value to format
@@ -1188,6 +1431,255 @@ restrictNumberOnlyInputs();
 function formatNumberWithCommas(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
+/**
+ * Validates that a numeric-range field's value stays within 1–75
+ *
+ * @name validateAgeInputRange
+ * @returns {void}
+ */
+function validateAge() {
+  if (typeof document === 'undefined') return;
+
+  const MIN = 1;
+  const MAX = 75;
+  const MESSAGE = 'อายุต้องอยู่ระหว่าง 1-75 ปี';
+
+  const runCheck = (input) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+
+    const num = Number(input.value);
+    const isInvalid = input.value !== '' && (Number.isNaN(num) || num < MIN || num > MAX);
+
+    if (isInvalid) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = MESSAGE;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    const isAgeLimit = input.classList.contains('age-limit')
+      || input.closest('.age-limit') !== null;
+    if (!isAgeLimit) return;
+    runCheck(input);
+  };
+
+  ['input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+}
+validateAge();
+
+/**
+ * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
+ * so they remain visible even when the AEM Forms Rule Engine overwrites the
+ * Only applies to fields marked with the `preserve-unit-label` CSS class.
+ *
+ * @name preserveFieldUnitLabels
+ * @returns {void}
+ */
+function preserveFieldUnitLabels() {
+  if (typeof document === 'undefined') return;
+
+  const initWrapper = (wrapper) => {
+    if (wrapper.dataset.unitLabelInit === 'true') return;
+
+    const rawDescription = wrapper.getAttribute('data-description');
+    if (!rawDescription) return;
+
+    const temp = document.createElement('div');
+    temp.innerHTML = rawDescription;
+    const unitText = temp.textContent.trim();
+    if (!unitText) return;
+
+    const computedPosition = window.getComputedStyle(wrapper).position;
+    if (computedPosition === 'static') {
+      wrapper.style.position = 'relative';
+    }
+
+    const unitLabel = document.createElement('span');
+    unitLabel.className = 'field-unit-label';
+    unitLabel.textContent = unitText;
+    unitLabel.style.position = 'absolute';
+    unitLabel.style.right = '0';
+    unitLabel.style.top = '3.2rem';
+    unitLabel.style.color = 'var(--bbl-color-gray-800)';
+    unitLabel.style.fontSize = '0.875rem';
+    unitLabel.style.pointerEvents = 'none';
+    unitLabel.style.background = 'transparent';
+
+    wrapper.appendChild(unitLabel);
+
+    // Hide the original description text ONLY while it still shows the
+    // original unit text (e.g. "Baht/Month"), so it never overlaps our
+    // cloned label. Once the Rule Engine overwrites it with a validation
+    // error, its text no longer matches, so it becomes visible again.
+    const originalDescription = wrapper.querySelector('.field-description');
+    if (originalDescription && originalDescription.textContent.trim() === unitText) {
+      originalDescription.style.display = 'none';
+    }
+
+    wrapper.dataset.unitLabelInit = 'true';
+  };
+
+  const scan = () => {
+    document.querySelectorAll('.field-wrapper.preserve-unit-label[data-description]').forEach((wrapper) => {
+      initWrapper(wrapper);
+
+      // Re-check on every scan: toggle the original description's
+      // visibility based on whether it currently holds the original
+      // unit text or a validation error message.
+      const originalDescription = wrapper.querySelector('.field-description');
+      const unitLabel = wrapper.querySelector('.field-unit-label');
+      if (originalDescription && unitLabel) {
+        const isOriginalText = originalDescription.textContent.trim()
+          === unitLabel.textContent.trim();
+        originalDescription.style.display = isOriginalText ? 'none' : '';
+      }
+    });
+  };
+
+  scan();
+
+  const observer = new MutationObserver(() => scan());
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+preserveFieldUnitLabels();
+
+/**
+ * Restricts a numeric field's value to digits only, capped at either 12
+ * or 10 digits depending on the CSS class applied, and formats the value
+ * with thousand-separator commas once the field loses focus. Targets
+ * fields marked with the `number-max-12` or `number-max-10` CSS class on
+ *
+ * @name formatCommaInputs
+ * @returns {void}
+ */
+function formatCommaInputs() {
+  if (typeof document === 'undefined') return;
+
+  const CLASS_LIMITS = {
+    'number-max-12': 12,
+    'number-max-10': 10,
+  };
+
+  const getMaxDigits = (input) => {
+    let result = null;
+    Object.keys(CLASS_LIMITS).forEach((className) => {
+      if (result !== null) return;
+      if (input.classList.contains(className) || input.closest(`.${className}`) !== null) {
+        result = CLASS_LIMITS[className];
+      }
+    });
+    return result;
+  };
+
+  const stripCommas = (value) => value.replace(/,/g, '');
+
+  const stripNonDigits = (value) => value.replace(/\D/g, '');
+
+  const addCommas = (digits) => digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  const runSanitize = (input, maxDigits) => {
+    let digits = stripNonDigits(input.value);
+    if (digits.length > maxDigits) {
+      digits = digits.slice(0, maxDigits);
+    }
+    input.value = digits;
+  };
+
+  const runFormat = (input, maxDigits) => {
+    const digits = stripNonDigits(input.value).slice(0, maxDigits);
+    input.value = addCommas(digits);
+  };
+
+  const runUnformat = (input) => {
+    input.value = stripCommas(input.value);
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const maxDigits = getMaxDigits(input);
+    if (maxDigits === null) return;
+
+    switch (event.type) {
+      case 'focus':
+        runUnformat(input);
+        break;
+      case 'input':
+      case 'keyup':
+        runSanitize(input, maxDigits);
+        break;
+      case 'blur':
+        runFormat(input, maxDigits);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const keydownHandler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const maxDigits = getMaxDigits(input);
+    if (maxDigits === null) return;
+
+    const controlKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+    if (controlKeys.includes(event.key)) return;
+
+    const isDigit = /^\d$/.test(event.key);
+    const currentDigits = stripNonDigits(input.value).length;
+    if (!isDigit || currentDigits >= maxDigits) {
+      event.preventDefault();
+    }
+  };
+
+  ['focus', 'input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+  document.addEventListener('keydown', keydownHandler, true);
+}
+formatCommaInputs();
+
+/**
+ * Restricts `gpa-only` inputs to digits and one decimal point, max 4 chars.
+ * @name restrictGpaOnlyInputs
+ * @returns {void}
+ */
+function restrictGpaOnlyInputs() {
+  if (typeof document === 'undefined') return;
+  document.addEventListener('keydown', (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !input.closest('.gpa-only')) return;
+    if (event.ctrlKey || event.metaKey || event.key.length !== 1) return;
+    const value = input.value.slice(0, input.selectionStart)
+    + event.key + input.value.slice(input.selectionEnd);
+    if (!/^[0-9.]{0,4}$/.test(value) || (value.match(/\./g) || []).length > 1) {
+      event.preventDefault();
+    }
+  }, true);
+}
+restrictGpaOnlyInputs();
 
 // eslint-disable-next-line import/prefer-default-export
 export {
@@ -1204,11 +1696,13 @@ export {
   addCsrfToken,
   addCustomHeader,
   filterExcludeFields,
+  applyDefaultValues,
   generatePayloadHash,
   fetchBranchesByProvince,
   getBranchEnum,
   getBranchEnumNames,
   getidAndDob,
+  convertThaiToEnglishDate,
   replaceOtherAndJoin,
   getSelectedLabelFromDropdown,
   CcApplicationStatus,

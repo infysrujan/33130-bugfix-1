@@ -12,6 +12,14 @@
   grid-column: span 12;
 }
 
+.relief-measures-form main .section.form-container.custom-forms .form .form-message.success-message {
+  text-align: left;
+  max-width: 740px;
+  margin: 0 auto;
+  margin-top: 135px;
+  padding: 0;
+}
+
 .relief-measures-form main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) .form form .radio-group-wrapper.radio-tabs > legend.field-label {
   width: 100%;
   padding-inline: 0.625rem 0;

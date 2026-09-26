@@ -196,7 +196,7 @@
     line-clamp: 4;
 }
 
-.carousel-cta {
+.carousel-cta.button-m {
     display: none;
 }
 
@@ -371,7 +371,7 @@
     }
 
     .carousel-track .carousel-item.active .carousel-content {
-        padding: var(--bbl-space-400);
+        padding: var(--bbl-space-400) var(--bbl-space-300);
         max-height: 26.875rem;
         max-width: 100%;
         min-height: 0;
@@ -396,6 +396,11 @@
         display: none;
     }
 
+    .carousel-description p {
+        -webkit-line-clamp: 7;
+         line-clamp: 7;
+    }
+
     .carousel-track .carousel-item.active .carousel-description {
         margin-bottom: var(--bbl-space-300);
         overflow: hidden;
@@ -405,11 +410,8 @@
         line-clamp: 7;
     }
 
-    .carousel-cta {
-        display: inline-block;
-        margin-top: auto;
-        flex-shrink: 0;
-        align-self: flex-start;
+    .carousel-cta.button-m {
+        display: inline-flex;
     }
 
     .carousel-track .carousel-item:not(.active) {
@@ -434,7 +436,7 @@
         height: 100%;
         min-height: 0;
         max-height: none;
-        padding: var(--bbl-space-200) var(--bbl-space-300);
+        padding: var(--bbl-space-400) var(--bbl-space-300);
         color: var(--bbl-color-white);
         max-width: none;
         display: inline;
@@ -462,10 +464,10 @@
         flex-shrink: 1;
         -webkit-line-clamp: 3;
         line-clamp: 3;
-        margin-bottom: var(--bbl-space-100);
+        margin-bottom: var(--bbl-space-300);
     }
 
-    .carousel-track .carousel-item:not(.active) .carousel-cta {
+    .carousel-track .carousel-item:not(.active) .carousel-cta.button-m {
         margin-bottom: var(--bbl-space-250);
     }
 }

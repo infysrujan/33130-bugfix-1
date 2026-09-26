@@ -81,6 +81,7 @@ button,
   line-height: var(--bbl-body-b1-line-height);
   border-radius: var(--bbl-rounded-100);
   text-decoration: none;
+  box-sizing: border-box;
 }
 
 /* --- Large (Hero Banner) - 52px height --- */
@@ -203,13 +204,15 @@ button.secondary,
 }
 
 /* Hover */
-.button-secondary:hover,
-button.secondary:hover,
-.button-m.secondary:hover {
-  background: var(--bbl-color-active-blue);
-  border-color: var(--bbl-color-blue-70);
-  color: var(--bbl-color-white);
-  text-decoration: none;
+@media (hover: hover) and (pointer: fine) {
+  .button-secondary:hover,
+  button.secondary:hover,
+  .button-m.secondary:hover {
+    background: var(--bbl-color-active-blue);
+    border-color: var(--bbl-color-blue-70);
+    color: var(--bbl-color-white);
+    text-decoration: none;
+  }
 }
 
 /* Active/Pressed */

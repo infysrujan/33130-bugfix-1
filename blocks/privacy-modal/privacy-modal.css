@@ -140,10 +140,6 @@
   scrollbar-gutter: stable;
 }
 
-.privacy-modal-overlay.download-file-modal .privacy-modal-body {
-  max-height: unset;
-}
-
 .privacy-modal-body::-webkit-scrollbar-button {
   display: none;
 }
@@ -169,12 +165,6 @@
 
 .privacy-modal-body li {
   margin-bottom: 0.4em;
-}
-
-.privacy-modal-body strong,
-.privacy-modal-body b {
-  font-weight: 700;
-  font-family: var(--bbl-font-family-medium);
 }
 
 .privacy-modal-body a {
@@ -272,42 +262,7 @@
 
 .privacy-modal-cta {
   align-self: center;
-  height: 2.75rem;
-  min-width: 9.688rem;
-  padding: 0 var(--bbl-space-300);
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 2.75rem;
-  text-align: center;
-  white-space: nowrap;
-  border: none;
-  border-radius: 0.4375rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease, opacity 0.2s ease;
-}
-
-.privacy-modal-cta:disabled {
-  background-color: var(--bbl-color-grey-30);
-  color: var(--bbl-color-grey-70);
-  cursor: not-allowed;
-}
-
-.privacy-modal-cta:not(:disabled) {
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-}
-
-.privacy-modal-cta:not(:disabled):hover {
-  background-color: var(--bbl-color-blue-90);
-}
-
-.privacy-modal-cta:not(:disabled):active {
-  opacity: 0.9;
-}
-
-.privacy-modal-cta:not(:disabled):focus-visible {
-  outline: 0.125rem solid var(--bbl-color-active-blue);
-  outline-offset: 0.125rem;
+  width: unset;
 }
 
 .privacy-modal-body::-webkit-scrollbar {
@@ -360,6 +315,7 @@
   ol ol>li::marker {
     content: counters(item, ".");
     counter-increment: item;
+    font-weight: normal;
   }
 
   /* Level 3: "(1)" instead of continuing the dotted pattern */
@@ -381,6 +337,10 @@
     width: 50rem;
     max-width: 50rem;
     border-radius: var(--bbl-rounded-050);
+  }
+
+  .download-file-modal .privacy-modal-dialog {
+    width: 46.25rem;
   }
 
   .privacy-modal-overlay {
@@ -411,6 +371,10 @@
     text-align: left;
     gap: 0.625rem;
     padding: 0 5% 0 4.5%;
+  }
+
+  .download-file-modal .privacy-modal-checkbox-row {
+    justify-content: center;
   }
 
   .privacy-modal-checkbox-row input[type='checkbox'] {

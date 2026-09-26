@@ -1,0 +1,6 @@
+#!/bin/sh
+npm run minify:css
+git diff --quiet -- styles/styles.css || {
+  echo "styles.css was rebuilt. Commit it and push again."
+  exit 1
+}

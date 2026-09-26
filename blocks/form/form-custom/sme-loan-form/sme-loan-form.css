@@ -30,6 +30,7 @@
   & .form form,
   & .form form > fieldset.panel-wrapper.field-wrapper {
     max-width: none;
+    margin-inline: auto;
   }
 
   & .form form fieldset.panel-wrapper.field-title-panel {
@@ -314,7 +315,7 @@
     min-width: 0;
     box-sizing: border-box;
 
-    & .field-description {
+    & .checkbox-wrapper ~.field-description {
       bottom: -6.25rem;
     }
 
@@ -414,7 +415,7 @@
 
   @media (width > 47.5rem) {
     padding-inline: 0;
-
+    
     &.central-aligned > .default-content-wrapper {
       & h2 {
         margin: var(--bbl-space-500) 0 var(--bbl-space-300);
@@ -434,7 +435,7 @@
       left: 1.25rem
     }
 
-    & .form form fieldset.field-salutation-panel .text-wrapper .field-description {
+    & .form form fieldset:is(.field-salutation-panel, .field-contact-panel) .text-wrapper .field-description {
       left: -14.125rem;
     }
 

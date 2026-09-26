@@ -354,7 +354,8 @@
       "forms-card-list",
       "forms-card-list-item",
       "bbl-wizard",
-      "calendar"
+      "calendar",
+      "dob"
     ]
   },
   {
@@ -678,6 +679,22 @@
       }
     },
     "components": []
+  },
+  {
+    "id": "cell-css-rte",
+    "components": [
+      "richtext"
+    ],
+    "rte": {
+      "toolbar": {
+        "blocks": [
+          "code_block"
+        ],
+        "sections": [
+          "blocks"
+        ]
+      }
+    }
   },
   {
     "id": "tab-section",

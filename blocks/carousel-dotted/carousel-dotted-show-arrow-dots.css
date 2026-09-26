@@ -33,6 +33,11 @@
   background: transparent;
 }
 
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) {
+  touch-action: pan-y;
+  overscroll-behavior-x: contain;
+}
+
 .carousel-dotted.show-arrows-dots .carousel-dotted-item {
   position: relative;
   inset: unset;
@@ -107,6 +112,25 @@
   object-fit: cover;
 }
 
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item {
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-viewport {
   overflow: hidden;
   width: 100%;
@@ -140,25 +164,6 @@
   transition: none;
 }
 
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active {
-  width: 100%;
-  overflow: hidden;
-  aspect-ratio: 16 / 9;
-}
-
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active picture {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
 .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow {
   box-shadow: none;
 }
@@ -180,6 +185,15 @@
   background-color: var(--bbl-color-gray-300);
 }
 
+.carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow:hover {
+  border-color: var(--bbl-color-grey-150);
+  background-color: unset;
+}
+
+.carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow:active {
+  background-color: var(--bbl-color-gray-300);
+}
+
 /* Dots */
 .carousel-dotted.show-arrows-dots .slick-dots {
   grid-column: 1 / 4;
@@ -192,8 +206,12 @@
   justify-content: center;
   gap: 0.5rem;
   width: auto;
-  min-height:0.625rem;
+  min-height:0.75rem;
   overflow: visible;
+}
+
+.carousel-dotted.show-arrows-dots:has(.with-default-image) .slick-dots {
+  margin-top: 1.875rem;
 }
 
 .carousel-dotted.show-arrows-dots .carousel-track-viewport:has(.with-default-image.carousel-dotted-item.is-active),
@@ -204,9 +222,12 @@
   border-radius: var(--bbl-rounded-100);
 }
 
-.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper .carousel-dotted-item.with-default-image {
-  flex-basis: calc(100% + 1px);
-  width: calc(100% + 1px);
+.carousel-dotted.show-arrows-dots.mixed-image-slides:has(.simple-carousel):not(:has(.with-default-image, .with-circular-image)) .carousel-track-wrapper .carousel-dotted-item.simple-carousel {
+  margin-bottom: 0;
+}
+
+.carousel-dotted.show-arrows-dots.mixed-image-slides:has(.simple-carousel):not(:has(.with-default-image, .with-circular-image)) .carousel-track-viewport {
+  margin-bottom: 2.125rem;
 }
 
 @media (width > 47.5rem) {
@@ -245,16 +266,20 @@
     position: relative;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active {
-    display: block;
-    flex-direction: unset;
-  }
-
   .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .all-mf-fund-cards, .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
+  }
+
+  /* all-mf-fund-cards only: nudge arrows toward the slide on hover */
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-prev:hover {
+    transform: translateY(-50%) translateX(-0.3125rem);
+  }
+
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-next:hover {
+    transform: translateY(-50%) translateX(0.3125rem);
   }
 
   .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {

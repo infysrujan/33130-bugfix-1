@@ -10,6 +10,8 @@
 
   /* font size */
   --bbl-form-font-size-6: 0.375rem;                /* 6px */
+  --bbl-form-font-size-11: 0.6875rem;              /* 11px */
+  --bbl-form-font-size-14: 0.875rem;               /* 14px */
   --bbl-form-font-size-21: 1.3125rem;              /* 21px */
 
   /* font weight */
@@ -51,7 +53,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     var(--cc-timeline-panel-width),
     calc(min(100vw, var(--cc-form-max-width)) - 2 * var(--cc-form-gutter))
   );
-  
+
   
 
   & :is(.form-wrapper, .form.block, .form) {
@@ -103,14 +105,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     line-height: 2.75rem;
   }
 
-  @media (width >= 47.5rem) {
-    & .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
-      height: 3.4375rem;
-      padding-left: 1.5625rem;
-      padding-right: var(--bbl-space-250);
-    }
-  }
-
   & .date-wrapper.field-wrapper {
     min-width: 0;
     
@@ -123,7 +117,11 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     box-sizing: border-box;
   }
 
-  & .date-wrapper.field-wrapper::after {
+  & .cc-panel-item-form-input.date-wrapper.field-wrapper::after {
+    top: 0;
+  }
+
+  & .cc-panel-item-form-input.date-wrapper.field-wrapper:has(label:not([data-visible="false"])):not(.field-review-panel *)::after {
     top: 1.625rem;
   }
 
@@ -142,11 +140,21 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     line-height: var(--bbl-line-height-b1-desktop);
     cursor: pointer;
     appearance: none;
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  @media (width >= 47.5rem) {
+  @media (width > 47.5rem) {
+    padding-left: 12%;
+    padding-right: 12%;
+
+    & .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
+      height: 3.4375rem;
+      padding-left: 1.5625rem;
+      padding-right: var(--bbl-space-250);
+    }
+
     & :is(.form select, .drop-down-wrapper.field-wrapper select) {
       height: 3.4375rem;
     }
@@ -356,32 +364,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     align-items: center;
     max-width: none;
   }
-
-  & .form :is(
-    .button.primary:not(:disabled),
-    .button.tertiary:not(:disabled),
-    .submit-wrapper .button:not(:disabled),
-    .cc-panel-item-panel-action-primary .button:not(:disabled)
-  ) {
-    border: 0.0625rem solid transparent;
-    background-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
-  }
-
-  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) .button:not(:disabled),
-  & .form .button.secondary {
-    border: 0.0625rem solid var(--bbl-color-active-blue);
-    background-color: var(--bbl-color-white);
-    color: var(--bbl-color-active-blue);
-  }
-
-  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) .button:not(:disabled):hover,
-  & .form .button.secondary:hover {
-    border-color: var(--bbl-color-active-blue);
-    background-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
-  }
-
+  
   & .form :is(
     .button.primary:disabled,
     .button.tertiary:disabled,
@@ -406,6 +389,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     font-weight: var(--form-label-font-weight);
     line-height: var(--bbl-text-default-line-height);
     color: var(--bbl-color-grey-90);
+    margin-bottom: 1.875rem;
 
      & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
     & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
@@ -446,6 +430,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       aspect-ratio: 440 / 275;
       object-fit: cover;
       vertical-align: middle;
+      border-radius: 0.25rem;
     }
 
     & .cc-panel-item-timeline-bg .image-wrapper img {
@@ -671,11 +656,15 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         }
 
         & > .cc-panel-item-timeline-caption p {
-          font-size: var(--bbl-text-small-size);
+          font-size: var(--bbl-form-font-size-11);
           line-height: var(--bbl-text-small-line-height);
           color: var(--bbl-color-grey-28);
           font-weight: var(--bbl-text-small-weight);
-          padding-right:0.75rem;
+          padding-left: 0.375rem;
+
+          @media (width > 47.5rem) {
+            font-size: var(--bbl-font-size-b1-mobile);
+          }
         }
 
         & > .cc-panel-item-timeline-muted p {
@@ -693,7 +682,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           color: var(--bbl-color-grey-85);
           font-weight: var(--bbl-text-default-weight);
           font-size: 1rem;
-          line-height: 1.1375rem;
+          line-height: 0.9625rem;
         }
 
         & > .cc-panel-item:not(
@@ -708,7 +697,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           z-index: 1;
           margin: 0;
           width: auto;
-          max-width: 85%;
+          max-width: 80%;
 
           & :where(p) {
             margin: 0;
@@ -754,8 +743,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         }
 
         & > .cc-panel-item-timeline-date {
-          top: calc(var(--timeline-height) * 0.78);
-          left: 48%;
+          top: calc(var(--timeline-height) * 0.77);
           width: min(12.5rem, 50%);
           max-width: none;
         }
@@ -765,12 +753,18 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           font-weight: var(--bbl-body-b2-weight);
           line-height: var(--bbl-body-b2-line-height);
           color: var(--bbl-color-grey-28);
+          text-align: right;
+
+          @media (width > 47.5rem) {
+            font-size: var(--bbl-body-b1-medium-size);
+          }
         }
 
         & > .cc-panel-item-timeline-date .field-label {
           display: block;
           margin: 0 0 var(--bbl-space-050);
           padding: 0;
+          text-align: right;
         }
 
         & > .cc-panel-item-timeline-date input {
@@ -784,8 +778,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         }
 
         & > .cc-panel-item-timeline-caption {
-          top: calc(var(--timeline-height) * 0.87);
-          left: 48%;
+          top: calc(var(--timeline-height) * 0.89);
+          left: 42%;
           width: min(12.5rem, 50%);
           max-width: none;
         }
@@ -801,7 +795,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & > .cc-panel-item-timeline-status {
           top: calc(var(--timeline-height) * 0.23);
-          left: 16%;
+          left: 14%;
         }
 
         & > .cc-panel-item-timeline-message {
@@ -811,8 +805,9 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         }
 
         & > .cc-panel-item-timeline-caption {
-          top: calc(var(--timeline-height) * 0.63);
-          left: 44%;
+          top: calc(var(--timeline-height) * 0.65);
+          left: auto;
+          right: 2.0625rem;
           width: min(13.75rem, 58%);
           max-width: none;
         }
@@ -855,7 +850,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & > .cc-panel-item-timeline-status {
           top: calc(var(--timeline-height) * 0.07);
-          left: 8%;
+          left: 7%;
         }
 
         & > .cc-panel-item-timeline-message {
@@ -866,7 +861,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & > .cc-panel-item-timeline-caption {
           top: calc(var(--timeline-height) * 0.79);
-          left: 38%;
+          left: auto;
+          right: 2.0625rem;
           width: min(13.75rem, 58%);
           max-width: none;
         }
@@ -895,7 +891,30 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     line-height: var(--bbl-text-default-line-height);
   }
 
-  @media (width >= 62rem) {
+  & .form form fieldset.panel-wrapper.field-wrapper:is(
+    .cc-app-approved,
+    .cc-app-denied,
+    .cc-app-cancel,
+    .cc-app-pending,
+    .cc-app-incomplete,
+    .cc-app-callback,
+    .cc-app-notfound
+  )
+  :is(
+    .field-approvaldate.cc-panel-item-timeline-date.cc-panel-item,
+    .field-commonstatustext.cc-panel-item.cc-panel-item-timeline-caption
+  ) {
+    width: 100%;
+    max-width: 100%;
+    right: 8%;
+    left: unset;
+
+    & p {
+        text-align: right;
+    }
+    }
+
+  @media (width > 64rem) {
     & :is(
       h3,
       .form form .field-title h2,
@@ -906,6 +925,13 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     ) {
       font-size: 1.5rem;
       line-height: 1.625rem;
+    }
+
+    & :is(
+      .form form .field-title h2,
+      .form form .field-title .page-header
+    ) {
+      margin-bottom: 2.1875rem;
     }
 
     & .form :is(
@@ -930,7 +956,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       }
 
       & > .cc-panel-item-timeline-message.cc-panel-item-timeline-message p {
-        font-size: 1.25rem;
+        font-size: 1.1875rem;
         line-height: 1.5rem;
       }
     }
@@ -976,13 +1002,17 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .plain-text-wrapper p {
         font-size: var(--bbl-font-size-h4-mobile);
     }
+
+    & .form form fieldset.panel-wrapper.field-wrapper.cc-app-notfound > .cc-panel-item-timeline-caption p {
+      padding-left: 1.1875rem;
+    }
   }
 
   & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
     margin: 0;
   }
 
-  @media (width >= 64rem) {
+  @media (width > 64rem) {
     padding-inline: 0;
 
     --cc-timeline-form-width: min(var(--cc-timeline-panel-width), min(100vw, var(--cc-form-max-width)));
@@ -1038,16 +1068,25 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           left: 44%;
           width: 12.5rem;
         }
+
+        & > .cc-panel-item-timeline-caption p {
+          padding-left: 0.375rem;
+        }
       }
 
       &:is(.cc-app-denied, .cc-app-cancel, .cc-app-pending, .cc-app-incomplete, .cc-app-callback) {
+        & > .cc-panel-item-timeline-status {
+          left: 16%;
+        }
+
         & > .cc-panel-item-timeline-message {
           left: 16.2%;
           width: 75%;
         }
 
         & > .cc-panel-item-timeline-caption {
-          left: 44%;
+          left: auto;
+          right: 2.0625rem;
           width: 13.75rem;
         }
 
@@ -1057,14 +1096,23 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       }
 
       &.cc-app-notfound {
+        & > .cc-panel-item-timeline-status {
+          left: 8%;
+        }
+
         & > .cc-panel-item-timeline-message {
           left: 8%;
           width: 82%;
         }
 
         & > .cc-panel-item-timeline-caption {
-          left: 46%;
+          left: auto;
+          right: 2.0625rem;
           width: 13.75rem;
+        }
+
+        & > .cc-panel-item-timeline-caption p {
+          padding-left: 0;
         }
       }
     }
@@ -1136,7 +1184,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & .radio-wrapper {
           width: auto;
-          flex: 0 1 auto;
+          flex: 0 1 calc(33% - 1.25rem);
         }
       }
     }
@@ -1147,7 +1195,7 @@ main .section.header-banner-slide-container + .section.form-container.custom-for
   padding-block-start: 3rem;
 }
 
-@media (width >= 64rem) {
+@media (width > 64rem) {
   main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
     padding-block-start: 2.5rem;
   }

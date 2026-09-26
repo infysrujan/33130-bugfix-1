@@ -55,8 +55,9 @@ export default function createSmartImage(
 
     const img = createElement('img');
     img.setAttribute('loading', eager ? 'eager' : 'lazy');
-    if (eager) img.setAttribute('fetchpriority', 'high');
-
+    if (eager) {
+      img.setAttribute('fetchpriority', 'high');
+    }
     img.setAttribute('alt', altText || img.alt || '');
     img.setAttribute('src', mobileSrc);
 

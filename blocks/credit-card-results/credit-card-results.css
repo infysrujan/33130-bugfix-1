@@ -62,10 +62,6 @@
 /* ── Card title h3 ───────────────────────────────────────────────────────── */
 
 .card-list.credit-card .cards-list-title h3 {
-  font-family: var(--bbl-font-family-medium);
-  font-size: 1.5rem;
-  font-weight: var(--bbl-font-weight-medium);
-  color: var(--bbl-color-black);
   overflow-wrap: anywhere;
 }
 
@@ -87,6 +83,7 @@
 /* ── Mobile: hide scrollbar on credit card carousel — replaced by dots ───────── */
 
 .ccs-card-list-container .cards-list.scrollable {
+  justify-content: center;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
 }
@@ -242,7 +239,7 @@
 
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     display: flex;
-    justify-content: stretch;
+    justify-content: center;
     overflow: visible;
     scroll-snap-type: none;
     padding-bottom: var(--bbl-space-250);

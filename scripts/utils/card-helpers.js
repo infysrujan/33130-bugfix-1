@@ -17,6 +17,48 @@ const CARD_TYPE_ICONS = {
   unionpay: '/icons/upi-new.svg',
 };
 
+export function resolvePhotoSrc(photo) {
+  if (!photo) return '';
+  if (photo.startsWith('data:')) return photo;
+  return `data:image/jpeg;base64,${photo}`;
+}
+
+export function formatPrice(price) {
+  if (!price) return '';
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(price);
+}
+
+function parseDmy(value) {
+  const parts = String(value).split('/');
+  if (parts.length !== 3) return null;
+  const [day, month, year] = parts.map((n) => parseInt(n, 10));
+  if (!day || !month || !year) return null;
+  return new Date(year, month - 1, day);
+}
+
+// Mirrors the legacy getOverDatePromotion(): a promotion is excluded when its
+// dates are missing, today is outside the start/end range (date-only), or the
+// special price is absent.
+export function isPromotionOverDate(item) {
+  if (!item.START_SPECAIL_PRICE_DATE || !item.END_SPECAIL_PRICE_DATE) return true;
+
+  const start = parseDmy(item.START_SPECAIL_PRICE_DATE);
+  const end = parseDmy(item.END_SPECAIL_PRICE_DATE);
+  if (!start || !end) return true;
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  if (today > end) return true;
+  if (start > today) return true;
+  if (item.SPECIAL_PRICE == null || Number(item.SPECIAL_PRICE) === 0) return true;
+
+  return false;
+}
+
 export function normalizeQueryLang(value) {
   const raw = (value || '').toLowerCase();
   if (raw.startsWith('th')) return 'th';
@@ -139,9 +181,9 @@ export function getPromotionDataUrl(baseUrl, lang) {
 }
 
 export function handleMobileAppView(searchParams) {
-  const hasCardRef = searchParams.has('card_ref');
+  const { isBbmPath } = getPromotionPathFlags(window.location.pathname);
   const hasSclang = searchParams.has('sc_lang');
-  const isMobileView = hasCardRef || hasSclang;
+  const isMobileView = isBbmPath || hasSclang;
 
   ['header', 'footer'].forEach((selector) => {
     const el = document.querySelector(selector);
@@ -217,19 +259,26 @@ export async function fetchJson(url) {
 }
 
 export function buildCardHtml(card, tag = {}, placeholders = {}, options = {}) {
-  const { dateLine = '', logoHtml = '', footerExtra = '' } = options;
+  const {
+    dateLine = '',
+    logoHtml = '',
+    footerExtra = '',
+    eager = false,
+  } = options;
   const target = card.targetLink === 'true' ? '_blank' : '_self';
 
   const cleanAltText = card.title
     ? card.title.replace(/<[^>]*>/g, '').trim()
     : '';
+  const loading = eager ? 'eager' : 'lazy';
+  const priority = eager ? ' fetchpriority="high"' : '';
 
   return `<div class="listing-card-container">
   <div class="listing-card">
     <div class="listing-card-img-wrap">
       <span class="listing-card-tag">${tag}</span>
       <img src="${card.cardImageUrl}" alt="${cleanAltText}"
-        class="listing-card-img" loading="lazy">
+        class="listing-card-img" loading="${loading}"${priority}>
     </div>
     <div class="listing-card-body">
       <div class="listing-card-desc">${card.cardShortDescription || ''}</div>

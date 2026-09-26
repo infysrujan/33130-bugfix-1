@@ -67,7 +67,7 @@ export function createLabel(fd, tagName = 'label') {
     const label = document.createElement(tagName);
     label.setAttribute('for', fd.id);
     label.className = 'field-label';
-    if (fd.label.richText === true) {
+    if (fd.label.richText === true || fd.label.value.includes('<br>')) {
       label.innerHTML = stripTags(fd.label.value);
     } else {
       label.textContent = fd.label.value;
@@ -385,7 +385,9 @@ export function createDropdownUsingEnum(fd, wrapper) {
   if (fd.placeholder) {
     ph = document.createElement('option');
     ph.textContent = fd.placeholder;
-    ph.setAttribute('disabled', '');
+    if (fd.required) {
+      ph.setAttribute('disabled', '');
+    }
     ph.setAttribute('value', '');
     wrapper.append(ph);
   }

@@ -16,6 +16,7 @@ import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
 import decorateReliefMeasures from './form-custom/relief-measures/relief-measures.js';
 import decorateCreditCardForm from './form-custom/credit-card-form/credit-card-form.js';
 import decorateContactUsForm from './form-custom/contact-us/contact-us.js';
+import decorateProtectionBtBelovedPlus from './form-custom/protection-bt-beloved-plus/protection-bt-beloved-plus.js';
 import {
   checkValidation,
   createButton,
@@ -389,6 +390,7 @@ async function createFormForAuthoring(formDef) {
   decorateReliefMeasures(form);
   decorateCreditCardForm(form);
   decorateContactUsForm(form);
+  decorateProtectionBtBelovedPlus(form);
   return form;
 }
 
@@ -452,6 +454,7 @@ export async function createForm(formDef, data, source = 'aem') {
   decorateReliefMeasures(form);
   decorateCreditCardForm(form);
   decorateContactUsForm(form);
+  decorateProtectionBtBelovedPlus(form);
   return {
     form,
     captcha,
@@ -547,6 +550,7 @@ function addRequestContextToForm(formDef) {
         formDef.properties.queryParams[key?.toLowerCase()] = value;
       });
     } catch (e) {
+      // eslint-disable-next-line
       console.warn('Error reading URL parameters:', e);
     }
 
@@ -561,6 +565,7 @@ function addRequestContextToForm(formDef) {
         }
       });
     } catch (e) {
+      // eslint-disable-next-line
       console.warn('Error reading cookies:', e);
     }
   }
@@ -574,68 +579,72 @@ function loadFormCustomStyles(formDef) {
       const stylePath = style.startsWith('/') ? style : `/${style}`;
       loadCSS(`${base}${stylePath}`);
     } catch (error) {
+      // eslint-disable-next-line
       console.error('Failed to load form CSS:', error);
     }
   }
 }
 
-export default async function decorate(block) {
-  let container = block.querySelector('a[href]');
-  let formDef;
-  let pathname;
-  if (container) {
-    ({ pathname } = new URL(container.href));
-    formDef = await fetchForm(container.href);
-  } else {
-    ({ container, formDef } = extractFormDefinition(block));
-  }
-  let source = 'aem';
-  let rules = true;
-  let form;
-  if (formDef) {
-    const submitProps = formDef?.properties?.['fd:submit'];
-    const actionType = submitProps?.actionName || formDef?.properties?.actionType;
-    const spreadsheetUrl = submitProps?.spreadsheet?.spreadsheetUrl
-      || formDef?.properties?.spreadsheetUrl;
+export default function decorate(block) {
+  async function init() {
+    let container = block.querySelector('a[href]');
+    let formDef;
+    let pathname;
+    if (container) {
+      ({ pathname } = new URL(container.href));
+      formDef = await fetchForm(container.href);
+    } else {
+      ({ container, formDef } = extractFormDefinition(block));
+    }
+    let source = 'aem';
+    let rules = true;
+    let form;
+    if (formDef) {
+      const submitProps = formDef?.properties?.['fd:submit'];
+      const actionType = submitProps?.actionName || formDef?.properties?.actionType;
+      const spreadsheetUrl = submitProps?.spreadsheet?.spreadsheetUrl
+        || formDef?.properties?.spreadsheetUrl;
 
-    if (actionType === 'spreadsheet' && spreadsheetUrl) {
-      // Check if we're in an iframe and use parent window path if available
-      const iframePath = window.frameElement ? window.parent.location.pathname
-        : window.location.pathname;
-      formDef.action = SUBMISSION_SERVICE + btoa(pathname || iframePath);
-    } else {
-      formDef.action = getSubmitBaseUrl() + (formDef.action || '');
-    }
-    if (isDocumentBasedForm(formDef)) {
-      const transform = new DocBasedFormToAF();
-      formDef = transform.transform(formDef, { block });
-      source = 'sheet';
-      loadFormCustomStyles(formDef);
-      const response = await createForm(formDef, null, source);
-      form = response?.form;
-      const docRuleEngine = await import('./rules-doc/index.js');
-      docRuleEngine.default(formDef, form);
-      rules = false;
-    } else {
-      loadFormCustomStyles(formDef);
-      afModule = await import('./rules/index.js');
-      addRequestContextToForm(formDef);
-      if (afModule && afModule.initAdaptiveForm && !block.classList.contains('edit-mode')) {
-        form = await afModule.initAdaptiveForm(formDef, createForm);
+      if (actionType === 'spreadsheet' && spreadsheetUrl) {
+        // Check if we're in an iframe and use parent window path if available
+        const iframePath = window.frameElement ? window.parent.location.pathname
+          : window.location.pathname;
+        formDef.action = SUBMISSION_SERVICE + btoa(pathname || iframePath);
       } else {
-        form = await createFormForAuthoring(formDef);
+        formDef.action = getSubmitBaseUrl() + (formDef.action || '');
       }
+      if (isDocumentBasedForm(formDef)) {
+        const transform = new DocBasedFormToAF();
+        formDef = transform.transform(formDef, { block });
+        source = 'sheet';
+        loadFormCustomStyles(formDef);
+        const response = await createForm(formDef, null, source);
+        form = response?.form;
+        const docRuleEngine = await import('./rules-doc/index.js');
+        docRuleEngine.default(formDef, form);
+        rules = false;
+      } else {
+        loadFormCustomStyles(formDef);
+        afModule = await import('./rules/index.js');
+        addRequestContextToForm(formDef);
+        if (afModule && afModule.initAdaptiveForm && !block.classList.contains('edit-mode')) {
+          form = await afModule.initAdaptiveForm(formDef, createForm);
+        } else {
+          form = await createFormForAuthoring(formDef);
+        }
+      }
+      form.dataset.redirectUrl = formDef.redirectUrl || formDef.properties?.redirectUrl || '';
+      form.dataset.thankYouMsg = formDef.thankYouMessage || formDef.thankYouMsg
+        || formDef.properties?.thankYouMessage || formDef.properties?.thankYouMsg || '';
+      form.dataset.action = formDef.action || pathname?.split('.json')[0];
+      form.dataset.source = source;
+      form.dataset.rules = rules;
+      form.dataset.id = formDef.id;
+      if (source === 'aem' && formDef.properties && formDef.properties['fd:path']) {
+        form.dataset.formpath = formDef.properties['fd:path'];
+      }
+      container.replaceWith(form);
     }
-    form.dataset.redirectUrl = formDef.redirectUrl || formDef.properties?.redirectUrl || '';
-    form.dataset.thankYouMsg = formDef.thankYouMessage || formDef.thankYouMsg
-      || formDef.properties?.thankYouMessage || formDef.properties?.thankYouMsg || '';
-    form.dataset.action = formDef.action || pathname?.split('.json')[0];
-    form.dataset.source = source;
-    form.dataset.rules = rules;
-    form.dataset.id = formDef.id;
-    if (source === 'aem' && formDef.properties && formDef.properties['fd:path']) {
-      form.dataset.formpath = formDef.properties['fd:path'];
-    }
-    container.replaceWith(form);
   }
+  init();
 }
