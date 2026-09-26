@@ -539,6 +539,10 @@ td .icon {
     width: 100%;
   }
   
+  .accordion-item .table table.download-1-mcol-2-dcol {
+    min-width: unset; 
+  }
+
   .table table.download-1-mcol-2-dcol colgroup {
     display: none;
   }
