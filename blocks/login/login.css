@@ -20,6 +20,10 @@
   display: block;
 }
 
+button.login-button {
+  background-color: transparent;
+}
+
 .login .icon-login::before {
   font-size: 1.25rem;
   font-weight: 700;
