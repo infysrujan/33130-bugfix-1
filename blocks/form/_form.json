@@ -47,6 +47,9 @@
     },
     {
       "...": "./components/calendar/_calendar.json#/definitions"
+    },
+    {
+      "...": "./components/dob/_dob.json#/definitions"
     }
   ],
   "models": [
@@ -129,7 +132,8 @@
         "forms-card-list",
         "forms-card-list-item",
         "bbl-wizard",
-        "calendar"
+        "calendar",
+        "dob"
       ]
     },
     {
