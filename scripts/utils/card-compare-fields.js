@@ -41,6 +41,43 @@ function getCardsFromResponse(json) {
   return json?.data?.cardsList?.items || json?.data || json?.items || [];
 }
 
+// Pick the first present, non-empty field among a set of possible source-sheet key names.
+export function getCardField(card, ...keys) {
+  const key = keys.find((k) => card[k] !== null && card[k] !== undefined && card[k] !== '');
+  return key !== undefined ? card[key] : '';
+}
+
+function getCardPageHref(card) {
+  const href = resolveCardPageUrl(card);
+  return href.startsWith('/content/bangkokbank')
+    ? href.replace(/^\/content\/bangkokbank/, '')
+    : href;
+}
+
+export function getCardViewData(card, lang) {
+  const nameEN = getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName');
+  const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
+  const isTH = lang === 'th';
+
+  return {
+    primaryName: isTH && nameTH ? nameTH : nameEN,
+    secondaryName: isTH && nameTH ? nameEN : nameTH,
+    description: getCardField(card, 'cardDescription', 'description'),
+    imageUrl: resolveImageUrl(card, 'imageUrl', 'image'),
+    cardId: card.cardId || card.id || '',
+    learnMoreHref: getCardPageHref(card),
+    slogan: plaintext(getCardField(card, 'slogan', 'Slogan', 'cardSlogan')),
+    cardBenefits: plaintext(
+      getCardField(card, 'cardBenefits', 'Card Benefits', 'benefits', 'cardBenefit'),
+    ),
+    fees: plaintext(getCardField(card, 'fees', 'Fees', 'feeDetails', 'feesDescription')),
+    webApplyEnabled: card.webApplyEnabled === true || card.webApplyEnabled === 'true',
+    mobileApplyEnabled: card.mobileApplyEnabled === true || card.mobileApplyEnabled === 'true',
+    webApplyUrl: resolveApplyUrl(card.webApplyUrl),
+    mobileApplyUrl: resolveApplyUrl(card.mobileApplyUrl),
+  };
+}
+
 export async function loadCardData(cardCategory, cardType) {
   try {
     const configs = await fetchConfigs();
