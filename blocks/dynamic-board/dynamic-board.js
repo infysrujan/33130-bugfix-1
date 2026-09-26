@@ -939,15 +939,9 @@ function printElement(block) {
       return;
     }
     frameWindow.addEventListener('afterprint', () => printFrame.remove(), { once: true });
-    const fontsReady = frameWindow.document.fonts?.ready ?? Promise.resolve();
-    Promise.race([
-      fontsReady,
-      new Promise((resolve) => { setTimeout(resolve, 3000); }),
-    ]).then(() => {
-      frameWindow.focus();
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => frameWindow.print());
-      });
+    frameWindow.focus();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => frameWindow.print());
     });
   }, { once: true });
 
