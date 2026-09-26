@@ -138,10 +138,6 @@
     margin: var(--bbl-space-250) 0;
   }
 
-  & .form form fieldset.panel-wrapper.field-review-panel > .plain-text-wrapper:has(+ fieldset) {
-    margin-bottom: 0;
-  }
-
   & .form form :is(.field-infotext p, .plain-text-wrapper p) {
     color: var(--bbl-color-grey-90);
     font-size: var(--form-font-size-xs);
