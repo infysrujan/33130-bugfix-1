@@ -1,0 +1,107 @@
+/* Date of Birth (Thai) — three-select day/month/year widget */
+
+.field-dob-th {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.dobth-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.dobth-label {
+  font-family: var(--bbl-font-family-primary, inherit);
+  font-size: var(--bbl-body-b1-size, 1rem);
+  line-height: var(--bbl-body-b1-line-height, 1.5);
+  font-weight: 600;
+  color: var(--bbl-color-grey-100, #333);
+}
+
+.dobth-label[data-visible="false"] {
+  display: none;
+}
+
+/* ── Day / Month / Year row ─────────────────────────────────────────────── */
+
+.dobth-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.dobth-select {
+  appearance: none;
+  width: 100%;
+  height: 3rem;
+  padding: 0 2.5rem 0 0.875rem;
+  border: 0.0625rem solid var(--bbl-color-grey-30, #ccc);
+  border-radius: 0.5rem;
+  background-color: var(--bbl-color-white, #fff);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23333' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  background-size: 12px 8px;
+  font-family: var(--bbl-font-family-primary, inherit);
+  font-size: var(--bbl-body-b1-size, 1rem);
+  line-height: var(--bbl-body-b1-line-height, 1.5);
+  color: var(--bbl-color-grey-100, #333);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dobth-select option[value=""] {
+  color: var(--bbl-color-grey-45, #999);
+}
+
+.dobth-select:hover:not(:disabled) {
+  border-color: var(--bbl-color-grey-50, #aaa);
+}
+
+.dobth-select:focus-visible {
+  outline: 0.125rem solid var(--bbl-color-active-blue, #0070d2);
+  outline-offset: 0.125rem;
+  border-color: var(--bbl-color-active-blue, #0070d2);
+}
+
+.dobth-select:disabled,
+.field-dob-th.field-disabled .dobth-select {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background-color: var(--bbl-color-grey-10, #f0f0f0);
+  border-color: var(--bbl-color-grey-30, #ddd);
+}
+
+/* ── Validation – invalid state (triggered by AEM Forms rule engine) ───────── */
+
+.field-dob-th.field-invalid .dobth-select {
+  border-color: var(--bbl-color-error, #d93025);
+  box-shadow: 0 0 0 0.1875rem rgb(217 48 37 / 15%);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (width <= 480px) {
+  .dobth-row {
+    gap: 0.5rem;
+  }
+
+  .dobth-select {
+    padding-inline: 0.625rem 2rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* ── High-contrast / forced-colours support (accessibility) ─────────────────── */
+
+@media (forced-colors: active) {
+  .dobth-select {
+    forced-color-adjust: auto;
+    border: 1px solid ButtonText;
+  }
+}
