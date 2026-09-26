@@ -431,7 +431,7 @@ main img {
     }
 }
 
-@media (width > 120rem) {
+@media (width >= 120rem) {
     .section.full-bleed-bg .content,
     .section.full-bleed-bg .default-content-wrapper,
     .tab-panel.full-bleed-bg .content,
@@ -468,7 +468,7 @@ main img {
     }
 }
 
-@media (width > 120rem) {
+@media (width >= 120rem) {
     .section.full-bleed-special,
     .tab-panel.full-bleed-special {
         max-width: var(--bbl-layout-content-max-width-1920);
