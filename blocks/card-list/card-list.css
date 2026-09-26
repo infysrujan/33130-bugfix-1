@@ -180,10 +180,6 @@
   .cards-list:is(.scrollable, .carousel).center .cards-list-item {
     scroll-snap-align: center;
   }
-
-  .cards-list-image.cards-list-image-card {
-    min-height: 13.25rem;
-  }
 }
 
 .cards-list:is(.carousel) .cards-list-item {
@@ -283,7 +279,7 @@
 }
 
 .cards-list-image.cards-list-image-card {
-  max-height: 10.3125rem;
+  max-height: 13.25rem;
 }
 
 .cards-list-image.cards-list-image-full {
