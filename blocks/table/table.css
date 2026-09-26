@@ -484,6 +484,10 @@ td .icon {
   .accordion-item .table {
     overflow: auto hidden;
   }
+  
+  .accordion-item .table table.download-1-mcol-2-dcol {
+    min-width: unset; 
+  }
 }
 
 /* ==========================================================================
@@ -528,12 +532,14 @@ td .icon {
   }
 }
 
-/* One-off for the e-Donation accordion download grid; do not replicate as a general table variant. */
 @media (width <= 47.5rem) {
   .table table.download-1-mcol-2-dcol {
     display: block;
     width: 100%;
-    min-width: 0;
+  }
+  
+  .accordion-item .table table.download-1-mcol-2-dcol {
+    min-width: unset; 
   }
 
   .table table.download-1-mcol-2-dcol colgroup {
@@ -546,5 +552,13 @@ td .icon {
     display: block;
     width: 100%;
     box-sizing: border-box;
+  }
+}
+
+/* One-off for the e-Donation accordion download grid; do not replicate as a general table variant. */
+
+@media(width > 47.5rem) {
+  .accordion-item .table table.download-1-mcol-2-dcol {
+    min-width: unset; 
   }
 }
