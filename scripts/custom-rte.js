@@ -204,17 +204,23 @@ function stripMarker(node, trimEnd) {
   return true;
 }
 
+function precedesAnotherAnchor(node) {
+  return node?.nodeType === Node.TEXT_NODE && node.nextSibling?.nodeName === 'A';
+}
+
 export function decorateNewTabLinks(container) {
   container.querySelectorAll('a').forEach((a) => {
     const href = a.getAttribute('href') || '';
     const inHref = NEWTAB_RE.test(href);
     const parent = a.parentElement;
     const isWrapped = parent && parent !== container && INLINE_WRAPPERS.has(parent.tagName);
+    const nextSib = a.nextSibling;
+    const parentNextSib = isWrapped && parent.nextSibling;
     const found = [
       stripMarker(a.previousSibling, true),
-      stripMarker(a.nextSibling, false),
+      stripMarker(precedesAnotherAnchor(nextSib) ? null : nextSib, false),
       isWrapped && stripMarker(parent.previousSibling, true),
-      isWrapped && stripMarker(parent.nextSibling, false),
+      isWrapped && stripMarker(precedesAnotherAnchor(parentNextSib) ? null : parentNextSib, false),
     ].some(Boolean);
     if (!inHref && !found) return;
     if (inHref) a.setAttribute('href', href.replace(NEWTAB_RE, ''));

@@ -14,8 +14,8 @@ const MONTHS_EN = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
-// Calendar header always renders in Thai
 const WEEKDAYS_TH = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+const WEEKDAYS_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 /* ── Formatting ──────────────────────────────────────────────────────────── */
 
@@ -33,9 +33,12 @@ function formatDisplayDate(date, lang) {
   return `${MONTHS_EN[date.getMonth()]} ${d}, ${date.getFullYear()}`;
 }
 
-/** Returns "มกราคม 2569" style header — always Thai/BE regardless of page language. */
-function formatMonthHeader(year, monthIndex) {
-  return `${MONTHS_TH[monthIndex]} ${year + BE_OFFSET}`;
+/** Returns the popover month/year header: "มกราคม 2569" (TH/BE) or "January 2026" (EN). */
+function formatMonthHeader(year, monthIndex, lang) {
+  if (lang === 'th') {
+    return `${MONTHS_TH[monthIndex]} ${year + BE_OFFSET}`;
+  }
+  return `${MONTHS_EN[monthIndex]} ${year}`;
 }
 
 /* ── Date helpers ────────────────────────────────────────────────────────── */
@@ -316,7 +319,7 @@ export default function decorate(block, fd = {}) {
 
   const weekRow = document.createElement('div');
   weekRow.className = 'dpth-weekdays';
-  WEEKDAYS_TH.forEach((day) => {
+  (lang === 'th' ? WEEKDAYS_TH : WEEKDAYS_EN).forEach((day) => {
     const span = document.createElement('span');
     span.textContent = day;
     weekRow.append(span);
@@ -351,7 +354,7 @@ export default function decorate(block, fd = {}) {
   /* ── Render calendar grid ── */
   function renderGrid() {
     grid.replaceChildren();
-    monthTitle.textContent = formatMonthHeader(viewYear, viewMonth);
+    monthTitle.textContent = formatMonthHeader(viewYear, viewMonth, lang);
 
     const firstDayOfWeek = new Date(viewYear, viewMonth, 1).getDay();
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();

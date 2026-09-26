@@ -273,6 +273,10 @@
     background: var(--bbl-color-blue-90);
     border-color: var(--bbl-color-blue-90);
   }
+
+  .card-comparator-results .ccr-inner {
+    height: calc(100vw * 0.16);
+  }
 }
 
 @media (width > 64rem) {
@@ -282,5 +286,9 @@
 
   .card-comparator-results .ccr-card {
     flex: 0 0 calc((100% - 1.8 * var(--bbl-space-500)) / 3);
+  }
+
+  .card-comparator-results .ccr-inner {
+    height: calc(100vw * 0.12);
   }
 }

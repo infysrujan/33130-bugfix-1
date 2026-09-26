@@ -7,10 +7,10 @@ import createTaggedElement from '../../scripts/utils/dom.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 
 function getDownloadLabel(mimeType, placeholders = {}) {
-  if (mimeType === 'application/pdf') return placeholders.reportsDownloadPdf || 'Download PDF';
-  if (mimeType.includes('spreadsheetml') || mimeType.includes('excel')) return placeholders.reportsDownloadExcel || 'Download Excel';
-  if (mimeType.includes('wordprocessingml') || mimeType.includes('msword')) return placeholders.reportsDownloadWord || 'Download Word';
-  return placeholders.reportsDownloadFile || 'Download File';
+  if (mimeType === 'application/pdf') return placeholders.reportsDownloadPdf;
+  if (mimeType.includes('spreadsheetml') || mimeType.includes('excel')) return placeholders.reportsDownloadExcel;
+  if (mimeType.includes('wordprocessingml') || mimeType.includes('msword')) return placeholders.reportsDownloadWord;
+  return placeholders.reportsDownloadFile;
 }
 
 function getPreviousPagePath() {
@@ -36,6 +36,11 @@ function getFileNameFromPath(path) {
   const base = name.slice(0, dotIndex).replace(/-/g, '_').toUpperCase();
   const ext = name.slice(dotIndex + 1).toLowerCase();
   return `${base}.${ext}`;
+}
+
+function buildReportsApiUrl(apiBase, lang, type, year) {
+  const suffix = lang === 'en' ? '' : `.${lang}`;
+  return `${apiBase}/en.reports.${type}.${year}${suffix}.json`;
 }
 
 function sortAssets(assets, type) {
@@ -71,7 +76,15 @@ function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
       attrs: { type: 'button', 'aria-label': `Preview ${fileName}` },
     });
     previewBtn.append(createTaggedElement('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
-    previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfViewer({ path: fetchPath, name: fileName, googleViewerUrl }); });
+    previewBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openPdfViewer({
+        path: fetchPath,
+        name: fileName,
+        googleViewerUrl,
+        downloadLabel: placeholders.reportsDownloadButton,
+      });
+    });
     iconGroup.append(previewBtn);
   }
 
@@ -123,9 +136,9 @@ async function fetchAndRender(block, type, year) {
     if (isLocal) {
       data = await fetchGet('/blocks/search-reports-results/results.mock.json');
     } else {
-      data = await fetchGet(`${apiBase}/${lang}.reports.${type}.${year}.json`, { throwOnError: false });
+      data = await fetchGet(buildReportsApiUrl(apiBase, lang, type, year), { throwOnError: false });
       if (!data && lang !== 'en') {
-        data = await fetchGet(`${apiBase}/en.reports.${type}.${year}.json`, { throwOnError: false });
+        data = await fetchGet(buildReportsApiUrl(apiBase, 'en', type, year), { throwOnError: false });
       }
     }
     if (!data) throw new Error('no content');
