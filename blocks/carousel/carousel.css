@@ -93,10 +93,6 @@
     text-decoration: none;
 }
 
-.carousel-item.active .carousel-item-link  {
-    max-width: 50%;
-}
-
 .carousel-item-link .carousel-image-container,
 .carousel-track .carousel-item .carousel-image-container {
     display: block;
@@ -330,7 +326,8 @@
         min-width: calc(66.66vw - 8.25rem);
     }
 
-    .carousel-track .carousel-item.active > div {
+    .carousel-track .carousel-item.active > div,
+    .carousel-track .carousel-item.active .carousel-item-link {
         max-width: calc(50% - 0.75rem);
         height: 100%;
     }
@@ -416,7 +413,7 @@
 
     .carousel-track .carousel-item:not(.active) {
         position: relative;
-        width: calc(33.34vw - 4.875rem);
+        width: calc(33.33vw - 4.875rem);
         height: 30.625rem;
     }
 
