@@ -181,7 +181,7 @@
     scroll-snap-align: center;
   }
 
-  :lang(th) .cards-list-image.cards-list-image-card {
+  .cards-list-image.cards-list-image-card {
     min-height: 13.25rem;
   }
 }
