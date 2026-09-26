@@ -193,7 +193,16 @@ export default function decorate(block, fd = {}) {
     const d = daySelect.value;
     const m = monthSelect.value;
     const y = yearSelect.value;
-    hiddenInput.value = (d && m && y) ? `${y}-${m}-${String(d).padStart(2, '0')}` : '';
+    if (!(d && m && y)) {
+      // Incomplete selection: don't push a value to the rule engine yet.
+      // The runtime's date-format validator only skips validation for a
+      // `null` value — an empty string still fails the format regex, which
+      // would surface a false "invalid date" error after picking just one
+      // of the three dropdowns.
+      hiddenInput.value = '';
+      return;
+    }
+    hiddenInput.value = `${y}-${m}-${String(d).padStart(2, '0')}`;
     hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
     hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
   }
