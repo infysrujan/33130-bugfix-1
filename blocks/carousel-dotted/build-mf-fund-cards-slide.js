@@ -202,7 +202,11 @@ export default async function buildMfFundCardsSlide(row, index) {
   // The fund data fetch below can take a moment, and carousel-dotted.js only swaps the
   // raw authored rows for the built slides once every slide promise resolves — until
   // then those rows (config fields, slide type, etc.) would otherwise flash on screen.
-  if (carouselBlock && !isAuthoringInstance(carouselBlock) && !carouselBlock.dataset.mfFundCardsRowsHidden) {
+  if (
+    carouselBlock
+    && !isAuthoringInstance(carouselBlock)
+    && !carouselBlock.dataset.mfFundCardsRowsHidden
+  ) {
     carouselBlock.dataset.mfFundCardsRowsHidden = 'true';
     [...carouselBlock.children].forEach((child) => { child.style.visibility = 'hidden'; });
   }
@@ -236,6 +240,7 @@ export default async function buildMfFundCardsSlide(row, index) {
       listingOrder,
     ),
     listingOrder,
+    pageCategory,
   );
 
   // eslint-disable-next-line no-console
@@ -257,7 +262,6 @@ export default async function buildMfFundCardsSlide(row, index) {
     msg.textContent = noResultsLabel;
     slide.appendChild(msg);
     if (descriptionHTML) {
-      const carouselBlock = row.parentElement;
       if (carouselBlock && !carouselBlock.nextElementSibling?.classList.contains('mf-fund-cards-description')) {
         const descEl = doc.createElement('div');
         descEl.className = 'mf-fund-cards-description';
@@ -348,7 +352,6 @@ export default async function buildMfFundCardsSlide(row, index) {
 
   // ── Description below carousel (rendered once, from first page) ───────────────
   if (descriptionHTML) {
-    const carouselBlock = row.parentElement;
     if (carouselBlock && !carouselBlock.nextElementSibling?.classList.contains('mf-fund-cards-description')) {
       const descEl = doc.createElement('div');
       descEl.className = 'mf-fund-cards-description';
