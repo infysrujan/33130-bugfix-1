@@ -472,6 +472,7 @@ export default async function decorate(block) {
     period1y: txt('fundPricesDropdownPeriod1y'),
     period3y: txt('fundPricesDropdownPeriod3y'),
     periodDr: txt('fundPricesDropdownPeriodDr'),
+    openEndFund: txt('fundPricesDropdownOpenEndFund'),
   };
   const PERIOD_OPTIONS = [
     { code: '1W', label: labels.period1w },
@@ -633,7 +634,7 @@ export default async function decorate(block) {
   }
 
   function buildSubtitle(fromDate, toDate) {
-    return `"${currentFund?.name}" Open-end Fund : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
+    return `"${currentFund?.name}" ${labels.openEndFund} : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
   }
 
   async function renderDetail(fromDate, toDate) {
