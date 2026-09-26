@@ -386,10 +386,6 @@
               {
                 "name": "Right Content",
                 "value": "right-content"
-              },
-              {
-                "name": "Left Content",
-                "value": "left-content"
               }
             ]
           },
