@@ -53,13 +53,28 @@ export function loadCarouselListingOrder() {
   return loadSheetOrder('mfCardListingSort');
 }
 
-function buildSheetOrderMap(matrix) {
+// A fund name can appear on more than one row when it's featured again under a
+// different Fund Type (e.g. an RMF fund re-listed under "Cio Top Picks").
+function buildSheetOrderMap(matrix, category) {
   const nameKey = fundNameKey();
+  const catSlug = category ? norm(category).replace(/\s+/g, '-') : '';
+  const catBase = catSlug.replace(/-\d+$/, '');
   const orderMap = {};
+
+  if (catSlug) {
+    matrix.forEach((row, index) => {
+      const rowType = norm(row['Fund Type'] || '').replace(/\s+/g, '-');
+      if (rowType !== catSlug && rowType !== catBase) return;
+      const name = norm(row[nameKey] || '');
+      if (name && !(name in orderMap)) orderMap[name] = index;
+    });
+  }
+
   matrix.forEach((row, index) => {
     const name = norm(row[nameKey] || '');
     if (name && !(name in orderMap)) orderMap[name] = index;
   });
+
   return orderMap;
 }
 
@@ -69,9 +84,9 @@ export function filterFundsInSheet(funds, matrix) {
   return funds.filter((fund) => norm(fund.FundName || '') in orderMap);
 }
 
-// Sort funds to match the given sheet's authored row order.
-export function sortFundsBySheetOrder(funds, matrix) {
-  const orderMap = buildSheetOrderMap(matrix);
+// Sort funds to match the given sheet's authored row order for the given category.
+export function sortFundsBySheetOrder(funds, matrix, category) {
+  const orderMap = buildSheetOrderMap(matrix, category);
 
   return [...funds].sort((a, b) => {
     const orderA = orderMap[norm(a.FundName || '')] ?? Number.MAX_SAFE_INTEGER;

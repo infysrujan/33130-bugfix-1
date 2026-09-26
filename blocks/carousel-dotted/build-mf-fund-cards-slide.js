@@ -240,6 +240,7 @@ export default async function buildMfFundCardsSlide(row, index) {
       listingOrder,
     ),
     listingOrder,
+    pageCategory,
   );
 
   // eslint-disable-next-line no-console
