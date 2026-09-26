@@ -602,8 +602,6 @@ function printElement(block) {
     ?.textContent?.trim() || document.querySelector('h1')?.textContent?.trim() || 'Print';
   const printTimestamp = formatPrintTimestamp();
 
-  const printWindow = window.open('', '', 'height=500,width=800');
-
   const printCss = `
     @page {
       size: A4 portrait;
@@ -852,28 +850,30 @@ function printElement(block) {
       font-weight: 900;
     }
 
+    .dynamic-board .db-table-wrap {
+      width: 100%;
+      margin: 0;
+      overflow: visible;
+    }
+
+    .dynamic-board .db-table thead {
+      display: table-header-group;
+    }
+
+    .dynamic-board .db-table-wrap #db-tbody-sel,
+    .dynamic-board .db-table-wrap #db-tbody-all {
+      display: table-row-group;
+      max-height: none;
+      overflow: visible;
+    }
+
+    .dynamic-board .db-table-wrap #db-tbody-sel tr,
+    .dynamic-board .db-table-wrap #db-tbody-all tr {
+      display: table-row;
+      width: auto;
+    }
+
     @media print {
-      .dynamic-board .db-table thead {
-        display: table-header-group;
-      }
-
-      .dynamic-board .db-table tbody {
-        display: table-row-group;
-      }
-
-      .dynamic-board .db-table-wrap #db-tbody-sel,
-      .dynamic-board .db-table-wrap #db-tbody-all {
-        display: table-row-group;
-        max-height: none;
-        overflow-y: visible;
-      }
-
-      .dynamic-board .db-table-wrap #db-tbody-sel tr,
-      .dynamic-board .db-table-wrap #db-tbody-all tr {
-        display: table-row;
-        width: auto;
-      }
-
       .dynamic-board .db-table {
         break-inside: auto;
       }
@@ -924,54 +924,34 @@ function printElement(block) {
     </body>
   </html>
   `;
-  printWindow.document.write(printHtml);
-  printWindow.document.close();
+  document.querySelector('.dynamic-board-print-frame')?.remove();
 
-  // Replace the about:blank popup location with the real (same-origin) URL,
-  // since that's what Chrome's print header/footer would otherwise show.
-  try {
-    printWindow.history.replaceState(null, '', window.location.href);
-  } catch {
-    // ignore — footer just falls back to about:blank
-  }
+  const printFrame = document.createElement('iframe');
+  printFrame.className = 'dynamic-board-print-frame';
+  printFrame.setAttribute('aria-hidden', 'true');
+  printFrame.style.cssText = 'position:fixed;width:0;height:0;border:0;';
+  printFrame.srcdoc = printHtml;
 
-  // Wait for the popup's stylesheets/fonts before printing, capped by a
-  // generous timeout so a stuck resource can't hang the print forever.
-  const waitForStylesheets = () => Promise.all(
-    [...printWindow.document.querySelectorAll('link[rel="stylesheet"]')].map((link) => new Promise((resolve) => {
-      if (link.sheet) { resolve(); return; }
-      link.addEventListener('load', resolve, { once: true });
-      link.addEventListener('error', () => {
-        // eslint-disable-next-line no-console
-        console.warn('dynamic-board print: stylesheet failed to load:', link.href);
-        resolve();
-      }, { once: true });
-    })),
-  );
-  const waitForFonts = () => printWindow.document.fonts?.ready ?? Promise.resolve();
-  const waitForImages = () => Promise.all(
-    [...printWindow.document.images].map((image) => new Promise((resolve) => {
-      if (image.complete) { resolve(); return; }
-      image.addEventListener('load', resolve, { once: true });
-      image.addEventListener('error', resolve, { once: true });
-    })),
-  );
-  const timeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
-
-  Promise.race([
-    Promise.all([waitForStylesheets(), waitForFonts(), waitForImages()]),
-    timeout(8000),
-  ]).then(() => {
-    printWindow.focus();
-    // Double rAF: gives the browser a frame to apply the just-resolved
-    // styles/fonts before the layout-dependent print pass runs.
-    requestAnimationFrame(() => {
+  printFrame.addEventListener('load', () => {
+    const frameWindow = printFrame.contentWindow;
+    if (!frameWindow) {
+      printFrame.remove();
+      return;
+    }
+    frameWindow.addEventListener('afterprint', () => printFrame.remove(), { once: true });
+    const fontsReady = frameWindow.document.fonts?.ready ?? Promise.resolve();
+    Promise.race([
+      fontsReady,
+      new Promise((resolve) => { setTimeout(resolve, 3000); }),
+    ]).then(() => {
+      frameWindow.focus();
       requestAnimationFrame(() => {
-        printWindow.print();
-        printWindow.close();
+        requestAnimationFrame(() => frameWindow.print());
       });
     });
-  });
+  }, { once: true });
+
+  document.body.append(printFrame);
 }
 
 // ─── main decorate ────────────────────────────────────────────────────────────
