@@ -4,6 +4,7 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import {
   plaintext, resolveApplyUrl, resolveCardPageUrl, resolveImageUrl, loadCardData, getCardViewData,
+  CREDIT_COMPARE_STORAGE_KEY, DEBIT_COMPARE_STORAGE_KEY,
 } from '../../scripts/utils/card-compare-fields.js';
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
@@ -432,10 +433,20 @@ function initMobileCarousel(grid, doc) {
 
 // ── Cookie reader ──────────────────────────────────────────────────────────────
 
+// The results page URL tells us which flow this is — reliable everywhere, unlike sniffing
+// the page's DOM (e.g. .debit-prepaid.block) or sessionStorage contents, neither of which
+// exist on this (separate) results page.
+function isDebitPrepaidResultPage() {
+  return window.location.pathname.includes('debit-card-compare-result');
+}
+
 // Read sessionStorage first; fall back to the cookie keyed by the ?compare-product-btn param
 function getCardsFromStorage() {
+  const storageKey = isDebitPrepaidResultPage()
+    ? DEBIT_COMPARE_STORAGE_KEY
+    : CREDIT_COMPARE_STORAGE_KEY;
   try {
-    const stored = sessionStorage.getItem('ccs-compare-cards');
+    const stored = sessionStorage.getItem(storageKey);
     if (stored) {
       const cards = JSON.parse(stored);
       if (Array.isArray(cards) && cards.length) return cards;
@@ -623,13 +634,14 @@ export default async function decorate(block) {
 
   // On page load, restore selection from sessionStorage or cookie (survives page refresh)
   const storedCards = getCardsFromStorage();
+  const isDebitPrepaidComparison = isDebitPrepaidResultPage();
 
   const [creditCards, sourcingMap, webIconSvg, mwebIconSvg, debitPrepaidCards] = await Promise.all([
-    loadAllCards(),
-    loadSourcingOrder(),
+    isDebitPrepaidComparison ? [] : loadAllCards(),
+    isDebitPrepaidComparison ? null : loadSourcingOrder(),
     loadIconSvg('web'),
     loadIconSvg('mweb'),
-    loadDebitPrepaidCards(storedCards, lang),
+    isDebitPrepaidComparison ? loadDebitPrepaidCards(storedCards, lang) : [],
   ]);
   const icons = { web: webIconSvg, mweb: mwebIconSvg };
   // Combine both sources into one pool so matching stays a single, synchronous lookup.

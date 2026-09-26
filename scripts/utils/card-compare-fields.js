@@ -5,6 +5,18 @@ import { fetchGet } from './fetchApi.js';
 const CARDS_API_CONFIG_KEY = 'debitPrepaidCardSelectorSuggesterData';
 const DEFAULT_CARDS_API_URL = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-cards-by-language-category-and-type;language=en;';
 
+// Two independent sessionStorage keys keep a credit-card comparison and a debit/prepaid
+export const CREDIT_COMPARE_STORAGE_KEY = 'ccs-compare-cards';
+export const DEBIT_COMPARE_STORAGE_KEY = 'debit-prepaid-compare-cards';
+
+export function getCompareMode(doc) {
+  return doc.querySelector('.debit-prepaid.block') ? 'debit' : 'credit';
+}
+
+export function getCompareStorageKey(mode) {
+  return mode === 'debit' ? DEBIT_COMPARE_STORAGE_KEY : CREDIT_COMPARE_STORAGE_KEY;
+}
+
 export function plaintext(field) {
   if (!field) return '';
   if (typeof field === 'string') return field;
