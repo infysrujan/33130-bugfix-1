@@ -493,8 +493,8 @@ function wireFilterEvents(
 }
 
 // ─── print ────────────────────────────────────────────────────────────────────
-// Prints an isolated document (like blocks/bcap/bcap.js), since the live
-// page's fixed header/nav and max-width layout would shrink the table.
+// Prints in place via an @media print rule that hides the live page and shows a
+// cloned print root — iOS Safari can't print an isolated iframe/popup document.
 function printElement(block) {
   // Captures real computed styles from the LIVE elements before cloning, so
   // printCss matches the live board instead of guessing rem values.
@@ -608,33 +608,23 @@ function printElement(block) {
       margin: 8mm;
     }
 
-    /* Forces background-color/-image to print even with Chrome's
-       "Background graphics" toggle off (e.g. the underline below). */
-    html, body, * {
+    #dynamic-board-print-root {
+      display: none;
+    }
+
+    @media print {
+    body > *:not(#dynamic-board-print-root) {
+      display: none;
+    }
+
+    #dynamic-board-print-root {
+      display: block;
+    }
+
+    #dynamic-board-print-root,
+    #dynamic-board-print-root * {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
-    }
-
-    .header,
-    .header-wrapper,
-    .main-nav-desktop,
-    .brand-logo,
-    .brand-logo-container {
-      display: block;
-      visibility: visible;
-      position: static;
-    }
-
-    .brand-logo.block {
-      background-color: transparent;
-    }
-
-    .header-wrapper,
-    .header,
-    .header-content,
-    .main-nav-desktop {
-      background: transparent;
-      min-height: 0;
     }
 
     .brand-logo-container {
@@ -655,8 +645,6 @@ function printElement(block) {
       filter: brightness(0);
     }
 
-    /* Rendered in-document since the isolated print window reports itself
-       as about:blank, so Chrome's native print header can't be used. */
     .dynamic-board-print-masthead {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -747,6 +735,7 @@ function printElement(block) {
       font-size: 0.625rem;
       line-height: 1.2;
       color: var(--bbl-color-grey-90);
+      break-inside: auto;
     }
 
     /* Every cell stays on one line; Name (below) is the sole exception. */
@@ -873,79 +862,56 @@ function printElement(block) {
       width: auto;
     }
 
-    @media print {
-      .dynamic-board .db-table {
-        break-inside: auto;
-      }
-
-      .dynamic-board .db-table tbody tr {
-        break-inside: avoid;
-      }
+    .dynamic-board .db-table tbody tr {
+      break-inside: avoid;
+    }
     }
   `;
 
-  const printHtml = `
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="utf-8"/>
-      <title>${escapeHtml(pageTitle)}</title>
-      <link rel="stylesheet" href="/styles/styles.css">
-      <link rel="stylesheet" href="/styles/fonts.css">
-      <link rel="stylesheet" href="/blocks/header/header.css">
-      <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
-      <link rel="stylesheet" href="/blocks/dynamic-board/dynamic-board.css">
-      <style>${printCss}</style>
-    </head>
-    <body class="appear">
-      <div class="dynamic-board-print-masthead">
-        <div>${escapeHtml(printTimestamp)}</div>
-        <div class="dynamic-board-print-masthead__title">${escapeHtml(pageTitle)}</div>
-        <div></div>
-      </div>
-      <header class="header-wrapper">
-        <div class="header block" data-block-status="loaded">
-          <div class="header-content">
-            <div class="main-nav-desktop">
-              <div class="brand-logo block" data-block-status="loaded">
-                <div class="brand-logo-container${fallbackLogoClass}">
-                  ${brandLogo}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-      <main>
-        <div class="${[...sectionClasses].join(' ')}">
-          ${content.innerHTML.trim()}
-        </div>
-      </main>
-    </body>
-  </html>
+  document.getElementById('dynamic-board-print-root')?.remove();
+  document.getElementById('dynamic-board-print-style')?.remove();
+
+  const printStyle = document.createElement('style');
+  printStyle.id = 'dynamic-board-print-style';
+  printStyle.textContent = printCss;
+
+  const printRoot = document.createElement('div');
+  printRoot.id = 'dynamic-board-print-root';
+  printRoot.innerHTML = `
+    <div class="dynamic-board-print-masthead">
+      <div>${escapeHtml(printTimestamp)}</div>
+      <div class="dynamic-board-print-masthead__title">${escapeHtml(pageTitle)}</div>
+      <div></div>
+    </div>
+    <div class="brand-logo-container${fallbackLogoClass}">${brandLogo}</div>
+    <div class="${[...sectionClasses].join(' ')}">
+      ${content.innerHTML.trim()}
+    </div>
   `;
-  document.querySelector('.dynamic-board-print-frame')?.remove();
 
-  const printFrame = document.createElement('iframe');
-  printFrame.className = 'dynamic-board-print-frame';
-  printFrame.setAttribute('aria-hidden', 'true');
-  printFrame.style.cssText = 'position:fixed;width:0;height:0;border:0;';
-  printFrame.srcdoc = printHtml;
+  document.head.append(printStyle);
+  document.body.append(printRoot);
 
-  printFrame.addEventListener('load', () => {
-    const frameWindow = printFrame.contentWindow;
-    if (!frameWindow) {
-      printFrame.remove();
-      return;
-    }
-    frameWindow.addEventListener('afterprint', () => printFrame.remove(), { once: true });
-    frameWindow.focus();
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => frameWindow.print());
+  const cleanup = () => {
+    printRoot.remove();
+    printStyle.remove();
+  };
+
+  const logoImg = printRoot.querySelector('.brand-logo-container img');
+  const logoReady = (!logoImg || logoImg.complete)
+    ? Promise.resolve()
+    : new Promise((resolve) => {
+      logoImg.addEventListener('load', resolve, { once: true });
+      logoImg.addEventListener('error', resolve, { once: true });
     });
-  }, { once: true });
 
-  document.body.append(printFrame);
+  Promise.race([
+    logoReady,
+    new Promise((resolve) => { setTimeout(resolve, 1500); }),
+  ]).then(() => {
+    window.addEventListener('afterprint', cleanup, { once: true });
+    window.print();
+  });
 }
 
 // ─── main decorate ────────────────────────────────────────────────────────────
