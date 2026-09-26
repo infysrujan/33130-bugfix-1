@@ -905,10 +905,7 @@ function printElement(block) {
       logoImg.addEventListener('error', resolve, { once: true });
     });
 
-  Promise.race([
-    logoReady,
-    new Promise((resolve) => { setTimeout(resolve, 1500); }),
-  ]).then(() => {
+  logoReady.then(() => {
     window.addEventListener('afterprint', cleanup, { once: true });
     window.print();
   });
