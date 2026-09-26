@@ -327,7 +327,6 @@
     .carousel-track .carousel-item.active {
         display: flex;
         width: calc((100vw - 10.5rem) * 0.66);
-        /* min-width: calc(66.66vw - 8.25rem); */
     }
 
     .carousel-track .carousel-item.active > div {
@@ -416,7 +415,7 @@
 
     .carousel-track .carousel-item:not(.active) {
         position: relative;
-        width: calc((100vw-168px) * 0.321);
+        width: calc((100vw-10.5rem) * 0.321);
         height: 30.625rem;
     }
 
