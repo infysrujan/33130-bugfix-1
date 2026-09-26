@@ -199,6 +199,10 @@
   aspect-ratio: 4 / 3.23;
 }
 
+.pfs-grid .listing-card-tag:empty {
+  display: none;
+}
+
 .pfs-grid .listing-card-body {
   padding: var(--bbl-space-300) var(--bbl-space-300) 0;
   margin-bottom: var(--bbl-space-300);
