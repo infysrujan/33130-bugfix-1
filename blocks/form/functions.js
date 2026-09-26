@@ -1280,38 +1280,47 @@ function formatNumberWithCommas(value) {
 function convertThaiToEnglishDate(thaiDateString) {
   if (!thaiDateString) return null;
   const s = String(thaiDateString).trim();
-  if (!s) return null;
 
+  if (!s) return null;
   let year;
   let month;// 0-11 for JS Date
   let day;
-
-  // Accepts "YYYY-MM-DD" or "YYYY/MM/DD" (also tolerates an ISO time suffix)
   const m = s.match(/^(\d{3,4})[-/](\d{1,2})[-/](\d{1,2})/);
+
   if (m) {
     year = parseInt(m[1], 10);
+
     month = parseInt(m[2], 10) - 1;
+
     day = parseInt(m[3], 10);
   } else {
-    // Also handles a JS Date string like "Tue Sep 20 2568 00:00:00 GMT+0000"
     const parsed = new Date(s);
+
     if (Number.isNaN(parsed.getTime())) return null;
+
     year = parsed.getFullYear();
+
     month = parsed.getMonth();
+
     day = parsed.getDate();
   }
-
-  // Subtract 543 to get the Gregorian year (only when the year is clearly BE)
   if (year >= 2400) year -= 543;
+  const d = new Date(year, month, day);
 
-  const englishDate = new Date(year, month, day);
+  const valid = d.getFullYear() === year
+&& d.getMonth() === month
+&& d.getDate() === day;
 
-  // Reject impossible dates (e.g. 2568-02-31)
-  const valid = englishDate.getFullYear() === year
-    && englishDate.getMonth() === month
-    && englishDate.getDate() === day;
+  if (!valid) return null;
+  // Format as yyyy-mm-dd from LOCAL parts (not toISOString — that shifts to UTC)
 
-  return valid ? englishDate.toDateString() : null;
+  const yyyy = d.getFullYear();
+
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+
+  const dd = String(d.getDate()).padStart(2, '0');
+
+  return `${yyyy}-${mm}-${dd}`;
 }
 
 /**
