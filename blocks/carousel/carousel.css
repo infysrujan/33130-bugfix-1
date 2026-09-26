@@ -93,6 +93,10 @@
     text-decoration: none;
 }
 
+.carousel-item.active .carousel-item-link  {
+    max-width: 50%;
+}
+
 .carousel-item-link .carousel-image-container,
 .carousel-track .carousel-item .carousel-image-container {
     display: block;
@@ -326,8 +330,7 @@
         min-width: calc(66.66vw - 8.25rem);
     }
 
-    .carousel-track .carousel-item.active > div,
-    .carousel-track .carousel-item.active .carousel-item-link {
+    .carousel-track .carousel-item.active > div {
         max-width: calc(50% - 0.75rem);
         height: 100%;
     }
@@ -413,7 +416,7 @@
 
     .carousel-track .carousel-item:not(.active) {
         position: relative;
-        width: calc(33.33vw - 4.875rem);
+        width: calc(33.34vw - 4.875rem);
         height: 30.625rem;
     }
 
@@ -467,6 +470,31 @@
     .carousel-track .carousel-item:not(.active) .carousel-cta.button-m {
         margin-bottom: var(--bbl-space-250);
     }
+
+    .carousel-track:not(:has(.carousel-title, .carousel-eyebrow, .carousel-description)) {
+        .carousel-item,
+        .carousel-item.active {
+            display: block;
+            position: relative;
+            width: calc((100% - (3 * var(--bbl-space-300))) / 4);
+            min-width: calc((100% - (3 * var(--bbl-space-300))) / 4);
+            height: auto;
+            aspect-ratio: 1 / 1;
+        }
+
+        .carousel-item.active > div {
+            max-width: 100%;
+            height: 100%;
+        }
+
+        .carousel-item .carousel-item-link {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            max-width: 100%;
+            max-height: none;
+        }
+    }
 }
 
 @media (width > 120rem) {
@@ -492,6 +520,14 @@
         width: 35.125rem;
     }
 
+    .carousel-track:not(:has(.carousel-title, .carousel-eyebrow, .carousel-description)) {
+        .carousel-item,
+        .carousel-item.active {
+            width: calc((100% - (3 * var(--bbl-space-300))) / 4);
+            min-width: calc((100% - (3 * var(--bbl-space-300))) / 4);
+        }
+    }
+
     .carousel-prev {
         left: calc(var(--carousel-grid-offset) + 2.8125rem);
     }
@@ -499,5 +535,4 @@
     .carousel-next {
         right: calc(var(--carousel-grid-offset) + 2.8125rem);
     }
-}
- 
+} 
