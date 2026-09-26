@@ -170,4 +170,12 @@ a.login-link:hover {
   .login-link-list-mobile {
     display: none;
   }
+
+  button.login-button.button-s {
+    background-color: var(--bbl-color-active-blue);
+  }
+
+  button.login-button.button-s:hover {
+    background-color: var(--bbl-color-blue-90);
+  }
 }
