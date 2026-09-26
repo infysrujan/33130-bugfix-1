@@ -167,7 +167,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     color: var(--bbl-color-grey-90);
     position: absolute;
     right: var(--bbl-space-150);
-    bottom: 0;
+    top: var(--bbl-space-025);
     display: flex;
     align-items: center;
     height: var(--bbl-form-height-50);
