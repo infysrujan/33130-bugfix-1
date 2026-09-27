@@ -1,3 +1,15 @@
 .section.bbm-glow-card-container .content {
     padding-inline: 0;
 }
+
+@media (width > 47.5rem) {
+    .section.bbm-glow-card-container .content {
+        line-height: 1.9906rem;
+    }
+}
+
+@media (width > 64rem) {
+    .section.bbm-glow-card-container .content {
+        line-height: 1.3rem;
+    }
+}
