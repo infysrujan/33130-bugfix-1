@@ -62,6 +62,7 @@
   --bbl-form-top-45: 2.8125rem;                      /* 45px */
   --bbl-form-top-46: 2.875rem;                       /* 46px */
   --bbl-form-top-50: 3.125rem;                       /* 50px */
+  --bbl-form-top-54: 3.375rem;                       /* 54px */
   --bbl-form-top-82: 5.1rem;                         /* ~82px */
   --bbl-form-top-86: 5.375rem;                       /* 86px */
 
@@ -526,11 +527,11 @@ main .lead-forms .form form .field-initialfielditemname.field-wrapper[class*='ic
 }
 
 main .lead-forms .form form .drop-down-wrapper[class*='icon-']:has(> label:not([data-visible='false']))::before {
-  top: var(--bbl-form-top-86);
+  top: var(--bbl-form-top-54);
 }
 
 main .lead-forms .form form .drop-down-wrapper[class*='icon-'].field-invalid:has(> label:not([data-visible='false']))::before {
-  top: var(--bbl-form-top-86);
+  top: var(--bbl-form-top-54);
 }
 
 main .lead-forms .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
