@@ -207,7 +207,7 @@ function createCombobox({
       item.setAttribute('role', 'option');
       item.setAttribute('tabindex', '-1');
       item.setAttribute('aria-selected', String(opt.value === value));
-      if (opt.value === value) item.classList.add('dobth-option--selected');
+      if (opt.value === value) item.classList.add('dobth-option-selected');
       item.textContent = opt.label;
       item.dataset.value = opt.value;
       listbox.append(item);
@@ -232,7 +232,7 @@ function createCombobox({
     listbox.hidden = false;
     closeOpenCombobox = close;
     positionListbox(trigger, listbox);
-    const selected = listbox.querySelector('.dobth-option--selected') || listbox.querySelector('.dobth-option');
+    const selected = listbox.querySelector('.dobth-option-selected') || listbox.querySelector('.dobth-option');
     selected?.focus();
   }
 

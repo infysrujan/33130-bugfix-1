@@ -94,13 +94,13 @@
   transform: rotate(180deg);
 }
 
-.dobth-combo-trigger:hover:not([aria-disabled="true"]) {
-  border-color: var(--bbl-color-active-blue, #0048b7);
-}
-
 .dobth-combo-trigger:focus-visible,
 .dobth-combo-trigger[aria-expanded="true"] {
   outline: none;
+  border-color: var(--bbl-color-active-blue, #0048b7);
+}
+
+.dobth-combo-trigger:hover:not([aria-disabled="true"]) {
   border-color: var(--bbl-color-active-blue, #0048b7);
 }
 
@@ -120,6 +120,7 @@
 }
 
 /* ── Listbox panel ───────────────────────────────────────────────────────── */
+
 /* Appended to <body> and positioned via JS (position: fixed) so it always
    renders as a small, capped-height panel anchored to its trigger — never
    the browser's native, viewport-filling <select> popup. */
@@ -180,19 +181,19 @@
   outline-offset: -0.0625rem;
 }
 
-.dobth-option--selected {
+.dobth-option-selected {
   color: var(--bbl-color-active-blue, #0048b7);
 }
 
-.dobth-option--selected:hover,
-.dobth-option--selected:focus-visible {
+.dobth-option-selected:hover,
+.dobth-option-selected:focus-visible {
   background: transparent;
 }
 
 /* While hovering a different option in the same panel, de-emphasize the
    previously-selected option back to plain text — the persistent blue/bold
    should only read as "current value" when nothing else is being browsed. */
-.dobth-listbox:has(.dobth-option:hover) .dobth-option--selected:not(:hover) {
+.dobth-listbox:has(.dobth-option:hover) .dobth-option-selected:not(:hover) {
   color: var(--bbl-color-grey-100, #333);
   font-weight: 400;
 }
