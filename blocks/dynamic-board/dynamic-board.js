@@ -609,7 +609,9 @@ function printElement(block) {
     }
 
     #dynamic-board-print-root {
-      display: none;
+      position: absolute;
+      top: 0;
+      left: -1000rem;
     }
 
     @media print {
@@ -618,7 +620,8 @@ function printElement(block) {
     }
 
     #dynamic-board-print-root {
-      display: block;
+      position: static;
+      left: auto;
     }
 
     #dynamic-board-print-root,
@@ -906,8 +909,12 @@ function printElement(block) {
     });
 
   logoReady.then(() => {
-    window.addEventListener('afterprint', cleanup, { once: true });
-    window.print();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.addEventListener('afterprint', cleanup, { once: true });
+        window.print();
+      });
+    });
   });
 }
 
