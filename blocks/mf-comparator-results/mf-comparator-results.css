@@ -1,5 +1,4 @@
 .mf-comparator-results .mfcr-notes {
-  padding: var(--bbl-space-layout-sm) var(--bbl-space-container-xs);
   font-family: var(--bbl-font-family-primary);
   font-size: 0.8125rem;
   color: var(--bbl-color-grey-150);
@@ -44,6 +43,7 @@
   scroll-padding-inline: 1.5rem;
   scrollbar-width: none;
   padding: var(--bbl-space-100) 0;
+  padding-bottom: 2.5rem;
 }
 
 .mf-comparator-results .mfcr-grid::-webkit-scrollbar {
@@ -201,6 +201,7 @@
   align-items: center;
   gap: var(--bbl-space-100);
   margin-top: var(--bbl-space-200);
+  margin-bottom: 5rem;
   padding: 0 var(--bbl-space-container-xs);
 }
 
@@ -229,15 +230,12 @@
 }
 
 @media (width > 47.5rem) {
-  .mf-comparator-results .mfcr-notes {
-    padding: var(--bbl-space-layout-sm) var(--bbl-space-container-md);
-  }
-
   .mf-comparator-results .mfcr-grid {
     overflow-x: visible;
     scroll-snap-type: none;
     justify-content: center;
     gap: var(--bbl-space-250);
+    margin-bottom: 5rem;
   }
 
   .mf-comparator-results .mfcr-card {
@@ -270,10 +268,6 @@
 }
 
 @media (width > 64rem) {
-  .mf-comparator-results .mfcr-notes {
-    padding: var(--bbl-space-layout-sm) var(--bbl-space-container-xl);
-  }
-
   .mf-comparator-results .mfcr-grid {
     gap: 0 var(--bbl-space-500);
   }
