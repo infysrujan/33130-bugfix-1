@@ -35,6 +35,43 @@ let initRteAnchors;
 let decorateIconInContainer;
 let decorateNewTabLinks;
 let decorateEncodedNbsp;
+let decorateRteAnchors;
+
+const RTE_MARKER_RE = /#icon|#inlineimage|#imagelink|#newtab|\[#|&(?:amp;)?nbsp;/i;
+
+function hasRteMarkers(root) {
+  return !!root && RTE_MARKER_RE.test(root.innerHTML);
+}
+
+let rteModulePromise;
+
+function loadCustomRte() {
+  if (!rteModulePromise) {
+    rteModulePromise = import('./custom-rte.js').then((mod) => {
+      initRteAnchors = mod.default;
+      decorateIconInContainer = mod.decorateIconInContainer;
+      decorateNewTabLinks = mod.decorateNewTabLinks;
+      decorateEncodedNbsp = mod.decorateEncodedNbsp;
+      decorateRteAnchors = mod.decorateRteAnchors;
+      return mod;
+    });
+  }
+  return rteModulePromise;
+}
+
+/**
+ * Resolves #icon / #newtab / anchor markers before the caller shows the root.
+ * The module download is shared and is not started for pages with no markers.
+ * @param {Element} root
+ */
+export async function decorateLoadedRte(root) {
+  if (!hasRteMarkers(root)) return;
+  await loadCustomRte();
+  decorateNewTabLinks(root);
+  decorateEncodedNbsp(root);
+  decorateIconInContainer(root);
+  decorateRteAnchors(root);
+}
 
 let martech;
 let gtmMartech;
@@ -227,6 +264,7 @@ document.addEventListener('bbl:load-fragment', async (e) => {
       if (typeof onHtmlParsed === 'function') onHtmlParsed(fragment, cleanPath);
       decorateMain(fragment);
       await loadSections(fragment);
+      await decorateLoadedRte(fragment);
     }
     if (typeof callback === 'function') await callback(fragment);
   } catch (err) {
@@ -554,7 +592,13 @@ async function loadEager(doc) {
       doc.querySelector('header')?.classList.add('is-not-overlapped');
     }
     const heldTabBlocks = laterSections.length ? holdTabPanelBlocks(main) : [];
-    await loadSection(main.querySelector('.section'), waitForFirstImage);
+    await loadSection(main.querySelector('.section'), async (section) => {
+      // Overlap icon decoration with the LCP image. Sections without markers
+      // do not download custom-rte.js.
+      const rteDecoration = hasRteMarkers(section) ? decorateLoadedRte(section) : null;
+      await waitForFirstImage(section);
+      if (rteDecoration) await rteDecoration;
+    });
     if (laterSections.length) {
       ({ default: decorateTabs } = await tabsHelperPromise);
       laterSections.forEach((section) => main.append(section));
@@ -576,17 +620,24 @@ async function loadEager(doc) {
   }
 }
 
+async function loadPageSections(element) {
+  const sections = [...element.querySelectorAll('div.section')];
+  for (let i = 0; i < sections.length; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    await loadSection(sections[i], decorateLoadedRte);
+  }
+}
+
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
-  ({
-    default: initRteAnchors,
-    decorateIconInContainer,
-    decorateNewTabLinks,
-    decorateEncodedNbsp,
-  } = await import('./custom-rte.js'));
+  const main = doc.querySelector('main');
+  // Start the download now so it overlaps section loading, but do not wait
+  // for it before those sections. Icon markers are applied per section,
+  // before that section is shown, instead of after marketing scripts.
+  if (hasRteMarkers(main)) loadCustomRte();
 
   const disabledSections = new Set(
     getMetadata('disable-sections', doc)
@@ -598,10 +649,11 @@ async function loadLazy(doc) {
   if (!disabledSections.has('header') && !doc.querySelector('header .header')) {
     loadHeader(doc.querySelector('header'));
   }
-  const main = doc.querySelector('main');
-  decorateNewTabLinks(main);
-  decorateEncodedNbsp(main);
-  await loadSections(main);
+  await loadPageSections(main);
+  if (rteModulePromise) {
+    await loadCustomRte();
+    initRteAnchors(main, doc);
+  }
 
   if (!isEnabled) {
     await buildCookieAlert(main);
@@ -645,12 +697,9 @@ async function loadLazy(doc) {
   decorateButtonsV1(main);
   decorateSvgWithAltText(main);
 
-  initRteAnchors(main, doc);
-  decorateIconInContainer(main);
   const firstBlock = main?.querySelector('div.block');
   if (firstBlock) promoteFirstImage(firstBlock);
   promoteFirstImage(main);
-  decorateNewTabLinks(main);
 
   if (!disabledSections.has('footer')) {
     loadFooter(doc.querySelector('footer'));
