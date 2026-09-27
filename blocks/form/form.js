@@ -320,7 +320,7 @@ export async function generateFormRendition(
   const items = getItems(panel) || [];
   const isReviewContext = insideReviewPanel || !!container?.classList?.contains('form-review-2col');
   const promises = items.map(async (field) => {
-    field.value = field.value ?? '';
+    field.value = field.value ?? field. Default ?? '';
     const { fieldType } = field;
     if (fieldType === 'captcha') {
       captchaField = field;
