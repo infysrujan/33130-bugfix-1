@@ -20,12 +20,8 @@
   display: block;
 }
 
-.login-button {
-  max-height: 2rem;
-  font-size: .9rem;
-  line-height: 1.125rem;
-  padding: 0.375rem 0.625rem;
-  border-radius: 0.4375rem;
+button.login-button.button-s {
+  background-color: transparent;
 }
 
 .login .icon-login::before {
@@ -41,10 +37,6 @@
 
 .login-button-text {
   display: none;
-}
-
-button.login-button.primary {
-  background-color: transparent;
 }
 
 /* Hide panel by default - slide from right on all devices */
@@ -148,18 +140,6 @@ a.login-link:hover {
     display: none;
   }
 
-  .login-button {
-    min-width: 7.5rem;
-  }
-
-  button.login-button.primary {
-    background-color: var(--bbl-color-active-blue);
-  }
-
-  button.login-button.primary:hover {
-    background: var(--bbl-color-blue-90);
-  }
-
   .login .icon-login::before,
   .login .icon-dropdown,
   .login .icon-dropdown::before {
@@ -189,5 +169,13 @@ a.login-link:hover {
 
   .login-link-list-mobile {
     display: none;
+  }
+
+  button.login-button.button-s {
+    background-color: var(--bbl-color-active-blue);
+  }
+
+  button.login-button.button-s:hover {
+    background-color: var(--bbl-color-blue-90);
   }
 }
