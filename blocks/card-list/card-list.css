@@ -269,7 +269,7 @@
 }
 
 .cards-list-image.cards-list-image-card {
-  min-height: 13.25rem;
+  min-height: 8.4375rem;
 }
 
 .cards-list-image.cards-list-image-full {
@@ -569,8 +569,9 @@
   }
 
   .cards-list-image.cards-list-image-card {
-    height: calc(100vw / 5);
-    min-height: 8.4375rem;
+    min-height: 9.375rem;
+    max-height: calc(20vw);
+    height: calc(20vw);
   }
 
   .cards-list:not(.scrollable, .carousel) .cards-list-inner {
@@ -744,9 +745,9 @@
   }
 
   .cards-list-image.cards-list-image-card {
-    min-height: calc(3.125rem + 30 * ((100vw - 20rem) / 1600));
-    max-height: calc(8.75rem + 25 * ((100vw - 20rem) / 1600));
-    height: calc(15.625rem + 60 * ((100vw - 20rem) / 1600));
+    height: calc(4.6875rem + 4.6875vw);
+    max-height: calc(6.75rem + 3.75vw);
+    min-height: calc(5.625rem + 3.125vw);
   }
 
   .cards-list-image.cards-list-image-full {
