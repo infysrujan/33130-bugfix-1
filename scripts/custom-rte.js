@@ -261,6 +261,13 @@ function scrollToHash(id, doc) {
   target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+/** Replaces [#x.x] markers. Safe to call again after fragments load. */
+export function decorateRteAnchors(root) {
+  if (root) addHintPageAnchors(root);
+}
+
+let rteHashBound = false;
+
 /**
  * Initialises RTE anchor support for the page:
  *  1. Replaces [#x.x] markers with named anchor spans.
@@ -269,7 +276,9 @@ function scrollToHash(id, doc) {
  * @param {Document} doc
  */
 export default function initRteAnchors(main, doc) {
-  addHintPageAnchors(main);
+  decorateRteAnchors(main);
+  if (rteHashBound) return;
+  rteHashBound = true;
 
   const { hash } = window.location;
   if (hash) scrollToHash(hash.substring(1), doc);
