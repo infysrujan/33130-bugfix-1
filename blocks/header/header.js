@@ -557,6 +557,8 @@ function setupMobileMenuBehavior(headerNav, hamburger, mobileNavMenu, blocks) {
     hamburger.setAttribute('aria-label', 'Open navigation');
     hamburger.classList.remove('is-hidden');
     mobileNavMenu.setAttribute('aria-hidden', 'true');
+    mobileNavMenu.setAttribute('inert', 'true');
+    mobileNavMenu.hidden = true;
     mobileNavMenu.classList.remove('is-open');
     releaseHeaderNavBackdrop(headerNav, NAV_BACKDROP_MOBILE);
   };
@@ -567,6 +569,8 @@ function setupMobileMenuBehavior(headerNav, hamburger, mobileNavMenu, blocks) {
     hamburger.setAttribute('aria-label', 'Close navigation');
     hamburger.classList.add('is-hidden');
     mobileNavMenu.setAttribute('aria-hidden', 'false');
+    mobileNavMenu.removeAttribute('inert');
+    mobileNavMenu.hidden = false;
     mobileNavMenu.classList.add('is-open');
     acquireHeaderNavBackdrop(headerNav, NAV_BACKDROP_MOBILE);
   };
