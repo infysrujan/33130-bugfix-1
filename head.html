@@ -10,9 +10,18 @@
     const globalStyles = document.createElement('link');
     globalStyles.rel = 'stylesheet';
     globalStyles.href = '/styles/styles.css';
-    globalStyles.onload = () => {
+    const applyStyles = () => {
       globalStyles.media = 'all';
     };
+    // The editor canvas does not fire load for media=print stylesheets.
+    const authoring = window.location.pathname.startsWith('/content/')
+      || window.location.hostname.includes('adobeaemcloud.com');
+    if (authoring) {
+      applyStyles();
+    } else {
+      globalStyles.media = 'print';
+      globalStyles.onload = applyStyles;
+    }
     document.head.append(globalStyles);
 
     let heroAssetsStarted = false;
