@@ -138,7 +138,8 @@ function renderBar(compareGroup, selectedCards) {
 // ── Main export ────────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
-  const storageKey = getCompareStorageKey(getCompareMode(document));
+  const mode = getCompareMode(document);
+  const storageKey = getCompareStorageKey(mode);
 
   // Remove any other already-decorated credit-card-comparator instances (UE duplication fix).
   // Only remove if it shares the same data-aue-resource (same AEM content path), so a
@@ -187,9 +188,10 @@ export default async function decorate(block) {
       errorDiv.classList.remove('is-visible');
     }
     saveComparatorCookie(selectedCards);
-    // Persist to sessionStorage so the bar survives a same-tab page refresh
+    // Persist selection and current mode so the results page reads the right storage key
     try {
       sessionStorage.setItem(storageKey, JSON.stringify(selectedCards));
+      sessionStorage.setItem('bbl-compare-mode', mode);
     } catch { /* ignore */ }
     renderBar(compareGroup, selectedCards);
   }
