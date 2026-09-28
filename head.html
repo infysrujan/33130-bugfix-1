@@ -10,10 +10,6 @@
     const globalStyles = document.createElement('link');
     globalStyles.rel = 'stylesheet';
     globalStyles.href = '/styles/styles.css';
-    globalStyles.media = 'print';
-    globalStyles.onload = () => {
-      globalStyles.media = 'all';
-    };
     document.head.append(globalStyles);
 
     let heroAssetsStarted = false;
