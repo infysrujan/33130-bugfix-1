@@ -157,6 +157,11 @@
         margin-bottom: 0;
     }
 
+    & select {
+      background-image: url('/icons/icon_chevron_down.svg');
+      background-size: 0.5894rem 0.375rem;
+    }
+
     & :is(.field-wrapper, .radio-group-wrapper).col-4,
     & :is(.field-wrapper, .radio-group-wrapper).col-5,
     & :is(.field-wrapper, .radio-group-wrapper).col-6,
