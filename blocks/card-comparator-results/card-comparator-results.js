@@ -434,16 +434,16 @@ function initMobileCarousel(grid, doc) {
 // ── Cookie reader ──────────────────────────────────────────────────────────────
 
 // Determine which card flow this results page belongs to.
-// Priority: URL slug (most reliable) → sessionStorage content (fallback for
-// any URL naming the team may choose in the future).
+// Priority: URL slug (most reliable) → explicit mode marker written by the comparator bar.
 function getResultPageMode() {
   const path = window.location.pathname;
   if (path.includes('debit-card-compare-result')) return 'debit';
   if (path.includes('prepaid-card-compare-result')) return 'prepaid';
-  // Fallback: whichever storage key holds data wins; debit/prepaid take priority over credit
+  // Fallback: read the mode the comparator bar stamped when the user selected cards.
+  // This is set by credit-card-comparator.js and is always accurate for the current flow.
   try {
-    if (sessionStorage.getItem(PREPAID_COMPARE_STORAGE_KEY)) return 'prepaid';
-    if (sessionStorage.getItem(DEBIT_COMPARE_STORAGE_KEY)) return 'debit';
+    const storedMode = sessionStorage.getItem('bbl-compare-mode');
+    if (storedMode === 'prepaid' || storedMode === 'debit') return storedMode;
   } catch { /* ignore */ }
   return 'credit';
 }
