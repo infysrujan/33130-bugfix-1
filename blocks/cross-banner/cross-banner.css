@@ -1,7 +1,3 @@
-.section.full-bleed-special.cross-banner-container {
-  padding-inline: 0;
-}
-
 .section.full-bleed-bg.cross-banner-container .content {
   padding-inline: 0;
 }
@@ -118,11 +114,16 @@ body.private
   }
 }
 
-@media (width > 47.5rem) {
-  .section:is(.full-bleed-bg, .full-bleed-special).cross-banner-container .content {
-    padding-inline: var(--bbl-space-600);
+/* Exceptional Case DO NOT USE this media query for any other purpose, this is a special case
+as it need to ignore the default full-bleed-special only on mobile
+*/
+@media (width <= 47.5rem) {
+  .section.full-bleed-special.cross-banner-container {
+    padding-inline: 0;
   }
+}
 
+@media (width > 47.5rem) {
   .cross-banner-image {
     height: 28.375rem;
   }
@@ -134,10 +135,6 @@ body.private
 }
 
 @media (width > 64rem) {
-  .section:is(.full-bleed-bg, .full-bleed-special).cross-banner-container .content {
-    padding-inline: var(--bbl-space-1050);
-  }
-
   .cross-banner-image {
     height: 36.5rem;
   }
