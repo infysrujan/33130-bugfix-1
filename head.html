@@ -8,11 +8,11 @@
 <link rel="stylesheet" href="/styles/styles.css"/>
 <script nonce="aem">
   (() => {
-    const authoring =
+    const isAuthoring =
       window.location.pathname.startsWith('/content/')
-      || window.location.hostname.includes('adobeaemcloud.com');
+      || window.location.hostname.includes('adobeaemcloud.com')|| document.body.hasAttribute('data-aue-resource');
 
-    if (authoring) return;
+    if (isAuthoring) return;
 
     const link = document.querySelector('link[href="/styles/styles.css"]');
 
