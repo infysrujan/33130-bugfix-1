@@ -32,7 +32,7 @@
 .fund-prices-disclaimer-text p,
 .fund-prices-disclaimer-text li {
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-color-grey-60);
   line-height: 1.6;
   margin-top: 0;
@@ -73,7 +73,7 @@
 
 .fund-prices .fund-prices-table table tr.header-row td {
   font-family: var(--bbl-font-family-medium);
-  font-size: 1rem;
+  font-size: var(--bbl-font-size-b1-desktop);
   color: var(--bbl-color-black);
   height: 2.875rem;
   vertical-align: middle;
@@ -141,7 +141,7 @@
   width: 11rem;
   box-sizing: border-box;
   cursor: pointer;
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-text-default-size);
 }
 
 .fund-prices .calendar-input::before {
@@ -166,10 +166,6 @@
   padding-bottom: 1.25rem;
 }
 
-.bbl-calendar-picker-weekdays span {
-  font-size: 0.875rem;
-}
-
 .fund-prices .fund-prices-print-label {
   display: flex;
   align-items: center;
@@ -184,7 +180,7 @@
 }
 
 .fund-prices .fund-prices-print-label p {
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-text-default-size);
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
@@ -213,7 +209,7 @@
   flex-shrink: 0;
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-label-size);
+  font-size: var(--bbl-text-default-size);
   font-weight: var(--bbl-font-weight-medium);
   line-height: 2.9375rem;
   white-space: nowrap;
@@ -240,7 +236,7 @@
   background: transparent;
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-body-small-size);
+  font-size: var(--bbl-text-default-size);
   cursor: pointer;
   text-align: left;
   white-space: nowrap;
@@ -312,7 +308,7 @@
   border: none;
   border-radius: var(--bbl-space-100);
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-text-default-size);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -397,10 +393,6 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
 
   .fund-prices .calendar-input input {
     width: 10rem;
-  }
-
-  .bbl-calendar-picker-weekdays span {
-    font-size: 1rem;
   }
 
   .fund-prices-search-bar {
