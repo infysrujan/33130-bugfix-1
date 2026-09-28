@@ -239,7 +239,7 @@
     display: none;
   }
 
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item.is-active {
+  .carousel-dotted.show-arrows-dots:not(.all-carousel-fragment) .carousel-dotted-item.is-active {
     display: flex;
     flex-direction: row;
   }
