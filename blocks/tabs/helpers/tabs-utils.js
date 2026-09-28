@@ -119,7 +119,8 @@ export function createCarouselArrows(tabsNav, tabsNavWrapper) {
   const updateArrows = () => {
     const { scrollLeft, scrollWidth, clientWidth } = tabsNav;
     prevBtn.classList.toggle('hidden', scrollLeft <= 0);
-    nextBtn.classList.toggle('hidden', scrollLeft + clientWidth >= scrollWidth - 1);
+    const hasOverflow = scrollWidth > clientWidth + 1;
+    nextBtn.classList.toggle('hidden', hasOverflow && scrollLeft + clientWidth >= scrollWidth - 1);
   };
 
   prevBtn.addEventListener('click', () => {
