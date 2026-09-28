@@ -433,6 +433,8 @@ export default async function decorate(block) {
   rows.forEach((row) => { row.classList.add('dp-source-row'); });
 
   block.classList.add('debit-prepaid-results');
+  // Stamp the resolved category so getCompareMode() can tell debit from prepaid
+  block.dataset.cardCategory = cardCategory;
 
   const doc = block.ownerDocument;
   const lang = getLang();

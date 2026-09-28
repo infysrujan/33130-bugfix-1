@@ -235,6 +235,11 @@
     padding-top: 0;
   }
 
+  .card-list.debit-prepaid-cards .dp-track-viewport {
+    max-width: calc(3 * 17rem + 2 * 2.5rem);
+    overflow: hidden;
+  }
+
   .card-list.debit-prepaid-cards .cards-list-inner {
     min-height: 28rem;
   }
