@@ -463,7 +463,7 @@ export default async function decorate(block) {
   function restoreCompareState() {
     const selected = window.ccsSelectedCards || [];
     container.querySelectorAll('.dp-compare-btn').forEach((btn) => {
-      const isSelected = selected.some((c) => c.name === btn.dataset.cardName);
+      const isSelected = selected.some((c) => c.id === btn.dataset.cardId);
       btn.classList.toggle('is-comparing', isSelected);
       btn.classList.toggle('disabled', isSelected);
     });
