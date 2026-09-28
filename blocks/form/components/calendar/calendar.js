@@ -1,4 +1,5 @@
 /* eslint-env browser */
+import { subscribe } from '../../rules/index.js';
 
 /* ── Locale data ─────────────────────────────────────────────────────────── */
 
@@ -8,34 +9,111 @@ const MONTHS_TH = [
   'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
   'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม',
 ];
-
 const MONTHS_EN = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
+const WEEKDAYS_SHORT_TH = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+const WEEKDAYS_FULL_TH = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
+const WEEKDAYS_FULL_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-// Calendar header always renders in Thai
-const WEEKDAYS_TH = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+/* ── Pattern-based format/parse ─────────────────────────────────────────────
+   Handles the fixed set of pattern strings offered in _calendar.json's
+   displayFormat/valueFormat select options: EEEE, MMMM, MM, M, dd, d, yyyy, y,
+   plus a literal " (BE)" suffix meaning "render the year as Buddhist Era and
+   use Thai month/weekday names". ── */
 
-/* ── Formatting ──────────────────────────────────────────────────────────── */
-
-/**
- * Returns the display string for the selected date in the input field.
- * TH: "1 มกราคม 2569"   (day + full Thai month + Buddhist Era year)
- * EN: "January 1, 2026" (full English month + day + comma + AD year)
- */
-function formatDisplayDate(date, lang) {
-  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
-  const d = date.getDate();
-  if (lang === 'th') {
-    return `${d} ${MONTHS_TH[date.getMonth()]} ${date.getFullYear() + BE_OFFSET}`;
-  }
-  return `${MONTHS_EN[date.getMonth()]} ${d}, ${date.getFullYear()}`;
+function stripBeSuffix(pattern) {
+  const isBE = /\(BE\)\s*$/.test(pattern);
+  return { isBE, basePattern: pattern.replace(/\s*\(BE\)\s*$/, '').trim() };
 }
 
-/** Returns "มกราคม 2569" style header — always Thai/BE regardless of page language. */
-function formatMonthHeader(year, monthIndex) {
-  return `${MONTHS_TH[monthIndex]} ${year + BE_OFFSET}`;
+function formatByPattern(date, pattern, lang) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
+  if (!pattern) return date.toISOString().split('T')[0];
+
+  const { isBE, basePattern } = stripBeSuffix(pattern);
+  const useThai = isBE || lang === 'th';
+  const monthNames = useThai ? MONTHS_TH : MONTHS_EN;
+  const weekdayNames = useThai ? WEEKDAYS_FULL_TH : WEEKDAYS_FULL_EN;
+  const year = date.getFullYear() + (isBE ? BE_OFFSET : 0);
+  const day = date.getDate();
+  const month = date.getMonth();
+
+  // Longer tokens first so e.g. "MMMM" isn't partially eaten by "M".
+  return basePattern
+    .replace(/EEEE/g, weekdayNames[date.getDay()])
+    .replace(/MMMM/g, monthNames[month])
+    .replace(/MM/g, String(month + 1).padStart(2, '0'))
+    .replace(/M/g, String(month + 1))
+    .replace(/dd/g, String(day).padStart(2, '0'))
+    .replace(/d/g, String(day))
+    .replace(/yyyy/g, String(year))
+    .replace(/y/g, String(year));
+}
+
+function escapeRegExp(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function buildPatternRegex(basePattern) {
+  const tokenRe = /(EEEE|MMMM|yyyy|MM|dd|M|d|y)/g;
+  const groupOrder = [];
+  let regexStr = '';
+  let lastIndex = 0;
+  let match = tokenRe.exec(basePattern);
+  while (match) {
+    regexStr += escapeRegExp(basePattern.slice(lastIndex, match.index));
+    const token = match[0];
+    if (token === 'EEEE') {
+      regexStr += '\\S+';
+    } else if (token === 'MMMM') {
+      regexStr += '(.+?)';
+      groupOrder.push('MMMM');
+    } else if (token === 'yyyy' || token === 'y') {
+      regexStr += '(\\d{1,4})';
+      groupOrder.push('year');
+    } else if (token === 'MM' || token === 'M') {
+      regexStr += '(\\d{1,2})';
+      groupOrder.push('month');
+    } else {
+      regexStr += '(\\d{1,2})'; // dd or d
+      groupOrder.push('day');
+    }
+    lastIndex = match.index + token.length;
+    match = tokenRe.exec(basePattern);
+  }
+  regexStr += escapeRegExp(basePattern.slice(lastIndex));
+  return { regex: new RegExp(`^${regexStr}$`), groupOrder };
+}
+
+function parseByPattern(str, pattern, lang) {
+  if (!str || !pattern) return null;
+  const { isBE, basePattern } = stripBeSuffix(pattern);
+  const { regex, groupOrder } = buildPatternRegex(basePattern);
+  const m = str.trim().match(regex);
+  if (!m) return null;
+
+  const useThai = isBE || lang === 'th';
+  const monthNames = useThai ? MONTHS_TH : MONTHS_EN;
+  let day = 1;
+  let month = 0;
+  let year = null;
+
+  groupOrder.forEach((key, i) => {
+    const val = m[i + 1];
+    if (key === 'day') day = parseInt(val, 10);
+    else if (key === 'month') month = parseInt(val, 10) - 1;
+    else if (key === 'year') year = parseInt(val, 10);
+    else if (key === 'MMMM') {
+      const idx = monthNames.findIndex((n) => n === val.trim());
+      month = idx >= 0 ? idx : 0;
+    }
+  });
+
+  if (year === null) return null;
+  if (isBE) year -= BE_OFFSET;
+  return startOfDay(new Date(year, month, day));
 }
 
 /* ── Date helpers ────────────────────────────────────────────────────────── */
@@ -52,25 +130,6 @@ function sameDay(a, b) {
     && a.getDate() === b.getDate();
 }
 
-/* ── Block config ────────────────────────────────────────────────────────── */
-
-function parseBlockConfig(block) {
-  const config = {};
-  block.querySelectorAll(':scope > div').forEach((row) => {
-    const cells = [...row.querySelectorAll(':scope > div')];
-    if (cells.length < 2) return;
-    const key = cells[0].textContent.trim().toLowerCase().replace(/\s+/g, '-');
-    config[key] = cells[1].textContent.trim();
-  });
-  return config;
-}
-
-function parseConfigDate(str) {
-  if (!str) return null;
-  const d = new Date(str);
-  return Number.isNaN(d.getTime()) ? null : d;
-}
-
 function getDisplayLang() {
   const raw = (document.documentElement.lang || 'en').toLowerCase().trim();
   return (raw === 'th' || raw.startsWith('th-')) ? 'th' : 'en';
@@ -82,7 +141,6 @@ function positionPopover(trigger, popover) {
   const rect = trigger.getBoundingClientRect();
   const margin = 8;
   let top = rect.bottom + margin;
-  // eslint-disable-next-line prefer-destructuring
   let left = rect.left;
 
   popover.style.visibility = 'hidden';
@@ -106,36 +164,37 @@ function positionPopover(trigger, popover) {
   });
 }
 
-/* ── Counter for unique IDs ──────────────────────────────────────────────── */
-
 let instanceCount = 0;
 
-/* ── Main decorate ───────────────────────────────────────────────────────── */
-
-export default function decorate(block) {
-  const config = parseBlockConfig(block);
+/**
+ * decorate(element, fieldJson, container, formId)
+ * fieldJson.properties holds authorable props: displayFormat, valueFormat.
+ * fieldJson.minimumDate / fieldJson.maximumDate come from the standard
+ * date-input validation fields (ISO-parseable strings).
+ */
+export default function decorate(element, fieldJson, container, formId) {
   const lang = getDisplayLang();
-
   instanceCount += 1;
   const inputId = `dpth-input-${instanceCount}`;
 
-  const labelText = config.label || (lang === 'th' ? 'เลือกวันที่' : 'Select date');
-  const placeholder = config.placeholder || (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
-  const fieldName = config.name || 'date';
-  const minDate = parseConfigDate(config['min-date']);
-  const maxDate = parseConfigDate(config['max-date']) ?? startOfDay(new Date());
-  const initialDate = parseConfigDate(config.value);
+  const nativeInput = element.querySelector('input[type="date"], input');
+  if (!nativeInput) return element;
 
-  /* ── Build DOM ── */
-  block.innerHTML = '';
+  nativeInput.style.display = 'none';
+  nativeInput.setAttribute('aria-hidden', 'true');
+  nativeInput.setAttribute('tabindex', '-1');
 
-  const wrapper = document.createElement('div');
-  wrapper.className = 'dpth-wrapper';
+  const props = fieldJson?.properties || {};
+  const displayFormat = props.displayFormat || 'd MMMM y (BE)';
+  const valueFormat = props.valueFormat || 'd MMMM y (BE)';
 
-  const labelEl = document.createElement('label');
-  labelEl.className = 'dpth-label';
-  labelEl.htmlFor = inputId;
-  labelEl.textContent = labelText;
+  const minDate = fieldJson?.minimumDate ? startOfDay(new Date(fieldJson.minimumDate)) : null;
+  const maxDate = fieldJson?.maximumDate ? startOfDay(new Date(fieldJson.maximumDate)) : null;
+  const placeholder = fieldJson?.placeholder
+    || (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
+
+  element.classList.add('dpth-wrapper');
+  if (props.customClassName) element.classList.add(...props.customClassName.split(/\s+/).filter(Boolean));
 
   const fieldEl = document.createElement('div');
   fieldEl.className = 'dpth-field';
@@ -146,25 +205,20 @@ export default function decorate(block) {
   input.className = 'dpth-input';
   input.placeholder = placeholder;
   input.readOnly = true;
-  input.setAttribute('aria-label', labelText);
   input.setAttribute('aria-haspopup', 'dialog');
   input.setAttribute('aria-expanded', 'false');
   input.setAttribute('autocomplete', 'off');
   input.setAttribute('tabindex', '0');
+  if (fieldJson?.label?.value) input.setAttribute('aria-label', fieldJson.label.value);
 
   const calIcon = document.createElement('span');
   calIcon.className = 'dpth-icon icon-calendar';
   calIcon.setAttribute('aria-hidden', 'true');
 
-  const hiddenInput = document.createElement('input');
-  hiddenInput.type = 'hidden';
-  hiddenInput.name = fieldName;
-
   fieldEl.append(input, calIcon);
-  wrapper.append(labelEl, fieldEl, hiddenInput);
-  block.append(wrapper);
+  nativeInput.insertAdjacentElement('afterend', fieldEl);
 
-  /* ── Build popover ── */
+  /* ── Popover ── */
   const popover = document.createElement('div');
   popover.className = 'dpth-popover';
   popover.setAttribute('role', 'dialog');
@@ -175,26 +229,35 @@ export default function decorate(block) {
   const popHeader = document.createElement('div');
   popHeader.className = 'dpth-header';
 
-  const btnPrev = document.createElement('button');
-  btnPrev.type = 'button';
-  btnPrev.className = 'dpth-nav';
-  btnPrev.setAttribute('aria-label', lang === 'th' ? 'เดือนก่อนหน้า' : 'Previous month');
-  btnPrev.innerHTML = '<span aria-hidden="true">&#8249;</span>';
+  const monthSelect = document.createElement('select');
+  monthSelect.className = 'dpth-month-select';
+  monthSelect.setAttribute('aria-label', lang === 'th' ? 'เลือกเดือน' : 'Select month');
+  MONTHS_TH.forEach((name, idx) => {
+    const opt = document.createElement('option');
+    opt.value = String(idx);
+    opt.textContent = name;
+    monthSelect.append(opt);
+  });
 
-  const monthTitle = document.createElement('h2');
-  monthTitle.className = 'dpth-month-title';
+  const today = new Date();
+  const yearRangeStart = minDate ? minDate.getFullYear() : today.getFullYear() - 100;
+  const yearRangeEnd = maxDate ? maxDate.getFullYear() : today.getFullYear() + 10;
 
-  const btnNext = document.createElement('button');
-  btnNext.type = 'button';
-  btnNext.className = 'dpth-nav';
-  btnNext.setAttribute('aria-label', lang === 'th' ? 'เดือนถัดไป' : 'Next month');
-  btnNext.innerHTML = '<span aria-hidden="true">&#8250;</span>';
+  const yearSelect = document.createElement('select');
+  yearSelect.className = 'dpth-year-select';
+  yearSelect.setAttribute('aria-label', lang === 'th' ? 'เลือกปี' : 'Select year');
+  for (let y = yearRangeEnd; y >= yearRangeStart; y -= 1) {
+    const opt = document.createElement('option');
+    opt.value = String(y);
+    opt.textContent = String(y + BE_OFFSET);
+    yearSelect.append(opt);
+  }
 
-  popHeader.append(btnPrev, monthTitle, btnNext);
+  popHeader.append(monthSelect, yearSelect);
 
   const weekRow = document.createElement('div');
   weekRow.className = 'dpth-weekdays';
-  WEEKDAYS_TH.forEach((day) => {
+  WEEKDAYS_SHORT_TH.forEach((day) => {
     const span = document.createElement('span');
     span.textContent = day;
     weekRow.append(span);
@@ -208,15 +271,21 @@ export default function decorate(block) {
   document.body.append(popover);
 
   /* ── State ── */
-  let selected = initialDate ? startOfDay(initialDate) : null;
+  const initialRaw = fieldJson?.value ?? fieldJson?.default ?? null;
+  let selected = initialRaw ? parseByPattern(String(initialRaw), valueFormat, lang) : null;
   let viewYear = (selected || new Date()).getFullYear();
   let viewMonth = (selected || new Date()).getMonth();
   let isOpen = false;
 
-  /* ── Render calendar grid ── */
+  function syncHeaderControls() {
+    monthSelect.value = String(viewMonth);
+    const clampedYear = Math.min(Math.max(viewYear, yearRangeStart), yearRangeEnd);
+    yearSelect.value = String(clampedYear);
+  }
+
   function renderGrid() {
     grid.replaceChildren();
-    monthTitle.textContent = formatMonthHeader(viewYear, viewMonth);
+    syncHeaderControls();
 
     const firstDayOfWeek = new Date(viewYear, viewMonth, 1).getDay();
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
@@ -249,17 +318,6 @@ export default function decorate(block) {
     }
   }
 
-  /* ── Commit a chosen day ── */
-  function commitDay(day) {
-    selected = startOfDay(new Date(viewYear, viewMonth, day));
-    input.value = formatDisplayDate(selected, lang);
-    const [datePart] = selected.toISOString().split('T');
-    hiddenInput.value = datePart;
-    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-    renderGrid();
-  }
-  /* ── Open / close ── */
   function openPopover() {
     isOpen = true;
     if (selected) {
@@ -279,55 +337,73 @@ export default function decorate(block) {
     popover.hidden = true;
   }
 
-  /* ── Shift month ── */
-  function shiftMonth(delta) {
-    const d = new Date(viewYear, viewMonth + delta, 1);
-    viewYear = d.getFullYear();
-    viewMonth = d.getMonth();
-    renderGrid();
-  }
+  subscribe(element, formId, (fieldDiv, fieldModel) => {
+    function commitDay(day) {
+      selected = startOfDay(new Date(viewYear, viewMonth, day));
+      input.value = formatByPattern(selected, displayFormat, lang);
+      fieldModel.value = formatByPattern(selected, valueFormat, lang);
+      renderGrid();
+    }
 
-  /* ── Event wiring ── */
-  grid.addEventListener('click', (e) => {
-    const btn = e.target.closest('button.dpth-day');
-    if (!btn || btn.disabled) return;
-    commitDay(Number.parseInt(btn.dataset.day, 10));
-    closePopover();
-    input.focus();
-  });
-
-  // Keyboard: Enter/Space selects the focused day button inside the grid
-  grid.addEventListener('keydown', (e) => {
-    const btn = document.activeElement;
-    if (!btn || !btn.classList.contains('dpth-day') || btn.disabled) return;
-
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
+    grid.addEventListener('click', (e) => {
+      const btn = e.target.closest('button.dpth-day');
+      if (!btn || btn.disabled) return;
       commitDay(Number.parseInt(btn.dataset.day, 10));
       closePopover();
       input.focus();
-      return;
-    }
+    });
 
-    // Arrow key navigation within the grid
-    const days = [...grid.querySelectorAll('button.dpth-day:not([disabled])')]
-      .filter((b) => !b.classList.contains('dpth-day--empty'));
-    const idx = days.indexOf(btn);
-    let next = -1;
-    if (e.key === 'ArrowRight') next = idx + 1;
-    else if (e.key === 'ArrowLeft') next = idx - 1;
-    else if (e.key === 'ArrowDown') next = idx + 7;
-    else if (e.key === 'ArrowUp') next = idx - 7;
-    if (next >= 0 && next < days.length) {
-      e.preventDefault();
-      days[next].focus();
-    }
+    grid.addEventListener('keydown', (e) => {
+      const btn = document.activeElement;
+      if (!btn || !btn.classList.contains('dpth-day') || btn.disabled) return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        commitDay(Number.parseInt(btn.dataset.day, 10));
+        closePopover();
+        input.focus();
+        return;
+      }
+      const days = [...grid.querySelectorAll('button.dpth-day:not([disabled])')]
+        .filter((b) => !b.classList.contains('dpth-day--empty'));
+      const idx = days.indexOf(btn);
+      let next = -1;
+      if (e.key === 'ArrowRight') next = idx + 1;
+      else if (e.key === 'ArrowLeft') next = idx - 1;
+      else if (e.key === 'ArrowDown') next = idx + 7;
+      else if (e.key === 'ArrowUp') next = idx - 7;
+      if (next >= 0 && next < days.length) {
+        e.preventDefault();
+        days[next].focus();
+      }
+    });
+
+    fieldModel.subscribe((e) => {
+      const { payload } = e;
+      payload?.changes?.forEach((change) => {
+        if (change?.propertyName === 'value') {
+          selected = change.currentValue ? parseByPattern(String(change.currentValue), valueFormat, lang) : null;
+          input.value = selected ? formatByPattern(selected, displayFormat, lang) : '';
+          if (isOpen) renderGrid();
+        }
+      });
+    });
   });
 
-  btnPrev.addEventListener('click', (e) => { e.stopPropagation(); shiftMonth(-1); });
-  btnNext.addEventListener('click', (e) => { e.stopPropagation(); shiftMonth(+1); });
+  monthSelect.addEventListener('change', (e) => {
+    e.stopPropagation();
+    viewMonth = Number.parseInt(monthSelect.value, 10);
+    renderGrid();
+  });
 
-  // Keyboard: Enter/Space on the trigger opens/closes the popover
+  yearSelect.addEventListener('change', (e) => {
+    e.stopPropagation();
+    viewYear = Number.parseInt(yearSelect.value, 10);
+    renderGrid();
+  });
+
+  monthSelect.addEventListener('click', (e) => e.stopPropagation());
+  yearSelect.addEventListener('click', (e) => e.stopPropagation());
+
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -345,11 +421,10 @@ export default function decorate(block) {
     if (!popover.contains(e.target) && !fieldEl.contains(e.target)) closePopover();
   });
 
-  // Focus trap inside the dialog — Tab/Shift+Tab wraps within popover focusable elements
   popover.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') { e.stopPropagation(); closePopover(); input.focus(); return; }
     if (e.key !== 'Tab') return;
-    const focusable = [...popover.querySelectorAll('button:not([disabled])')];
+    const focusable = [...popover.querySelectorAll('select, button:not([disabled])')];
     if (!focusable.length) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
@@ -368,36 +443,9 @@ export default function decorate(block) {
   window.addEventListener('resize', onReposition);
   window.addEventListener('scroll', onReposition, true);
 
-  /* ── Set initial display value ── */
   if (selected) {
-    input.value = formatDisplayDate(selected, lang);
-    const [datePart] = selected.toISOString().split('T');
-    hiddenInput.value = datePart;
+    input.value = formatByPattern(selected, displayFormat, lang);
   }
 
-  /* ── Public API ── */
-  return {
-    open: openPopover,
-    close: closePopover,
-    getValue: () => (selected ? new Date(selected.getTime()) : null),
-    setValue(d) {
-      selected = d ? startOfDay(d) : null;
-      if (selected) {
-        viewYear = selected.getFullYear();
-        viewMonth = selected.getMonth();
-        input.value = formatDisplayDate(selected, lang);
-        const [datePart] = selected.toISOString().split('T');
-        hiddenInput.value = datePart;
-      } else {
-        input.value = '';
-        hiddenInput.value = '';
-      }
-      if (isOpen) renderGrid();
-    },
-    destroy() {
-      window.removeEventListener('resize', onReposition);
-      window.removeEventListener('scroll', onReposition, true);
-      popover.remove();
-    },
-  };
+  return element;
 }

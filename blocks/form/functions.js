@@ -1408,6 +1408,325 @@ function restrictGpaOnlyInputs() {
 }
 restrictGpaOnlyInputs();
 
+/* ==================================================================
+ * PASTE THIS BLOCK INTO functions.js — it REPLACES the earlier char-limit
+ * block (delete that one first, or you'll get duplicate const errors).
+ * Location: right after the existing `restrictNumberOnlyInputs();` call.
+ * No export changes needed.
+ *
+ * Author usage — CSS classes on the field (text input or multiline):
+ *   max-chars-900        -> cannot type/paste beyond 900 characters
+ *   enable-submit-at-4   -> Submit disabled until the field has >= 4 characters
+ *   allow-digits         -> only characters matching a listed preset can be typed/pasted
+ *   allow-digits allow-thai   (several allowed presets = union)
+ *   match-thai-id        -> Submit disabled until the WHOLE value matches the preset
+ *   valid-thai-id | valid-credit-card | valid-passport
+ *                        -> Submit disabled until the value passes that validator FUNCTION
+ *                           (checksum / custom logic, not just a regex)
+ * All optional and independent.
+ *
+ * Add your own presets in the two registries below.
+ * Optional custom regex without a preset (set by your own code, not the editor):
+ *   data-allowed-regex="[0-9-]"    (tested against each single character)
+ *   data-match-regex="^[0-9]{13}$" (tested against the whole value; add your own anchors)
+ * ================================================================== */
+
+const MAX_CHARS_PREFIX = 'max-chars-';
+const SUBMIT_AT_PREFIX = 'enable-submit-at-';
+const ALLOW_PREFIX = 'allow-';
+const MATCH_PREFIX = 'match-';
+
+// Per-character filters (class `allow-<name>`): a char is kept if it matches ANY chosen name.
+const ALLOWED_CHAR_PRESETS = {
+  digits: /[0-9]/,
+  english: /[A-Za-z]/,
+  thai: /[\u0E00-\u0E7F]/,
+  space: / /,
+  newline: /\n/,
+  punctuation: /[.,\-_'@]/,
+};
+
+// Whole-value patterns (class `match-<name>`): Submit is enabled only when the value matches.
+const FULL_MATCH_PRESETS = {
+  digits: /^[0-9]+$/,
+  'thai-id': /^[0-9]{13}$/,
+  'phone-th': /^0[0-9]{8,9}$/,
+  email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+};
+
+const VALID_PREFIX = 'valid-';
+
+/**
+ * Validates a passport number: 6-9 letters/digits with at least one digit.
+ * (ICAO 9303 allows up to 9 characters; the number itself has no universal checksum,
+ * so adjust this to your own business rule if you need something stricter.)
+ * Export this in the export list at the bottom of functions.js to use it in rules too.
+ * @name validatePassport
+ * @param {string} value
+ * @return {boolean}
+ */
+function validatePassport(value) {
+  const v = String(value ?? '').trim().toUpperCase();
+  return /^[A-Z0-9]{6,9}$/.test(v) && /[0-9]/.test(v);
+}
+
+// Validators with real logic (class `valid-<name>`): Submit is enabled only when fn(value) is true.
+// They reuse the same functions you use in the rule editor's Validate expression.
+// Spaces and dashes are stripped first so "1-2345-67890-12-3" and "4111 1111 ..." work.
+const VALIDATOR_PRESETS = {
+  'thai-id': (v) => validateThaiCitizenID(v.replace(/[\s-]/g, '')),
+  'credit-card': (v) => validateCreditCardNumber(v.replace(/[\s-]/g, '')),
+  passport: (v) => validatePassport(v),
+};
+
+const TEXT_INPUT_TYPES = ['text', 'tel', 'search', 'url', 'email', 'password'];
+
+const hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+
+/**
+ * @private
+ * @param {*} el
+ * @returns {boolean} true for textareas and text-like inputs
+ */
+function isTextControl(el) {
+  return el instanceof HTMLTextAreaElement
+    || (el instanceof HTMLInputElement && TEXT_INPUT_TYPES.includes(el.type));
+}
+
+/**
+ * Collects the suffixes of classes starting with `prefix`, from the element or the
+ * nearest ancestor that has at least one accepted match.
+ * @private
+ * @param {HTMLElement} el
+ * @param {string} prefix
+ * @param {function(string): boolean} [isKnown]
+ * @returns {string[]}
+ */
+function getClassSuffixes(el, prefix, isKnown = () => true) {
+  let node = el;
+  while (node && node !== document.body) {
+    const found = Array.from(node.classList || [])
+      .filter((c) => c.startsWith(prefix))
+      .map((c) => c.slice(prefix.length))
+      .filter(isKnown);
+    if (found.length) return found;
+    node = node.parentElement;
+  }
+  return [];
+}
+
+/**
+ * @private
+ * @param {HTMLElement} el
+ * @param {string} prefix
+ * @returns {number|null}
+ */
+function getNumberFromClass(el, prefix) {
+  const [value] = getClassSuffixes(el, prefix, (s) => /^[0-9]+$/.test(s));
+  return value === undefined ? null : parseInt(value, 10);
+}
+
+/**
+ * Max characters: `max-chars-N` class first, native maxlength second.
+ * @private
+ * @param {HTMLInputElement|HTMLTextAreaElement} el
+ * @returns {number|null}
+ */
+function getMaxChars(el) {
+  const fromClass = getNumberFromClass(el, MAX_CHARS_PREFIX);
+  if (fromClass !== null) return fromClass;
+  return el.maxLength > 0 ? el.maxLength : null;
+}
+
+/**
+ * @private
+ * @param {HTMLElement} el
+ * @returns {RegExp[]|null} per-character tests, or null when no allow rule applies
+ */
+function getAllowedTests(el) {
+  const tests = getClassSuffixes(el, ALLOW_PREFIX, (n) => hasOwn(ALLOWED_CHAR_PRESETS, n))
+    .map((n) => ALLOWED_CHAR_PRESETS[n]);
+  if (el.dataset.allowedRegex) {
+    try {
+      tests.push(new RegExp(el.dataset.allowedRegex));
+    } catch { /* invalid regex — ignore */ }
+  }
+  return tests.length ? tests : null;
+}
+
+/**
+ * @private
+ * @param {HTMLElement} el
+ * @returns {RegExp|null} whole-value pattern, or null when no match rule applies
+ */
+function getFullMatchRegex(el) {
+  if (el.dataset.matchRegex) {
+    try {
+      return new RegExp(el.dataset.matchRegex);
+    } catch { /* invalid regex — fall through to class preset */ }
+  }
+  const [name] = getClassSuffixes(el, MATCH_PREFIX, (n) => hasOwn(FULL_MATCH_PRESETS, n));
+  return name ? FULL_MATCH_PRESETS[name] : null;
+}
+
+/**
+ * @private
+ * @param {HTMLElement} el
+ * @returns {function(string): boolean|null} validator function, or null when no valid- rule applies
+ */
+function getValidator(el) {
+  const [name] = getClassSuffixes(el, VALID_PREFIX, (n) => hasOwn(VALIDATOR_PRESETS, n));
+  return name ? VALIDATOR_PRESETS[name] : null;
+}
+
+/**
+ * @private
+ * @param {string} text
+ * @param {RegExp[]} tests
+ * @returns {string} text with every character that matches no test removed
+ */
+function filterAllowed(text, tests) {
+  return Array.from(text).filter((ch) => tests.some((re) => re.test(ch))).join('');
+}
+
+/**
+ * Cuts text to `room` characters without leaving half of an emoji surrogate pair.
+ * @private
+ * @param {string} text
+ * @param {number} room
+ * @returns {string}
+ */
+function trimToMax(text, room) {
+  if (room <= 0) return '';
+  let out = text.slice(0, room);
+  const last = out.charCodeAt(out.length - 1);
+  if (last >= 0xD800 && last <= 0xDBFF) out = out.slice(0, -1);
+  return out;
+}
+
+/**
+ * Enables the form's submit button only when every field carrying an
+ * `enable-submit-at-N` and/or `match-<name>` rule satisfies all of its rules.
+ * Note: an empty field does not match a `match-` pattern, so Submit stays disabled.
+ * @private
+ * @param {HTMLFormElement} form
+ */
+function syncSubmitGate(form) {
+  // Don't fight handleSubmit while a submission is in flight
+  if (form.getAttribute('data-submitting') === 'true') return;
+
+  const gated = Array.from(form.querySelectorAll('textarea, input'))
+    .filter(isTextControl)
+    .map((el) => ({
+      el,
+      min: getNumberFromClass(el, SUBMIT_AT_PREFIX),
+      re: getFullMatchRegex(el),
+      fn: getValidator(el),
+    }))
+    .filter(({ min, re, fn }) => min !== null || re !== null || fn !== null);
+  if (gated.length === 0) return;
+
+  const passes = (fn, value) => {
+    try {
+      return Boolean(fn(value));
+    } catch {
+      return false; // a throwing validator counts as invalid
+    }
+  };
+
+  const ready = gated.every(({
+    el, min, re, fn,
+  }) => (
+    (min === null || el.value.length >= min)
+    && (re === null || re.test(el.value))
+    && (fn === null || passes(fn, el.value))
+  ));
+  form.querySelectorAll('button[type="submit"]').forEach((btn) => {
+    btn.disabled = !ready;
+  });
+}
+
+/**
+ * Installs realtime character limit, allowed-character filtering and the submit gate.
+ * @private
+ */
+function setupInputRules() {
+  if (typeof document === 'undefined') return; // Rule Engine worker has no DOM
+  if (window.aemInputRulesInstalled) return;
+  window.aemInputRulesInstalled = true;
+
+  // 1. Block/trim what is typed or pasted (paste is filtered and cut to fit)
+  document.addEventListener('beforeinput', (event) => {
+    const el = event.target;
+    if (!isTextControl(el) || el.selectionStart == null) return;
+    // Deletions always allowed; never interrupt IME composition
+    if (!event.inputType.startsWith('insert')) return;
+    if (event.isComposing || event.inputType === 'insertCompositionText') return;
+
+    const max = getMaxChars(el);
+    const allowed = getAllowedTests(el);
+    if (max === null && !allowed) return;
+
+    let incoming = event.data;
+    if (incoming == null) {
+      if (event.inputType === 'insertLineBreak' || event.inputType === 'insertParagraph') {
+        incoming = '\n';
+      } else {
+        incoming = event.dataTransfer?.getData('text/plain') ?? '';
+      }
+    }
+    if (!incoming) return;
+
+    let accepted = allowed ? filterAllowed(incoming, allowed) : incoming;
+    if (max !== null) {
+      const selected = el.selectionEnd - el.selectionStart;
+      const room = max - (el.value.length - selected);
+      if (accepted.length > room) accepted = trimToMax(accepted, room);
+    }
+    if (accepted === incoming) return;
+
+    event.preventDefault();
+    if (accepted) {
+      el.setRangeText(accepted, el.selectionStart, el.selectionEnd, 'end');
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  });
+
+  // 2. Backstop (autofill, drag-drop, etc.) + keep the submit gate in sync while typing
+  document.addEventListener('input', (event) => {
+    const el = event.target;
+    if (!isTextControl(el)) return;
+    if (!event.isComposing) {
+      let fixed = el.value;
+      const allowed = getAllowedTests(el);
+      if (allowed) fixed = filterAllowed(fixed, allowed);
+      const max = getMaxChars(el);
+      if (max !== null && fixed.length > max) fixed = trimToMax(fixed, max);
+      if (fixed !== el.value) {
+        el.value = fixed;
+        // Re-dispatch so the form runtime sees the corrected value; also re-syncs the gate
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        return;
+      }
+    }
+    if (el.form) syncSubmitGate(el.form);
+  });
+
+  // 3. Apply the initial disabled state, and again whenever the form renders/changes
+  const syncAll = () => document.querySelectorAll('form').forEach(syncSubmitGate);
+  let scheduled = false;
+  new MutationObserver(() => {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      syncAll();
+    });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+  syncAll();
+}
+setupInputRules();
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
