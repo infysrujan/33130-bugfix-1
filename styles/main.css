@@ -170,6 +170,7 @@ a:any-link {
     color: var(--bbl-color-active-blue);
     text-decoration: none;
     overflow-wrap: break-word;
+    text-decoration: underline;
 }
 
 a:hover {
