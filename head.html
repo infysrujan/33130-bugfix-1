@@ -20,43 +20,6 @@
 
 <style>body{display:none;margin:0}body.appear{display:block}</style>
 <link rel="preconnect" href="https://edge.bangkokbank.com"/>
-
-<script nonce="aem">
-  (() => {
-    if (new URLSearchParams(window.location.search).has('martech')) {
-      return;
-    }
-    const loadMartech = () => {
-      const preloadIndex = document.createElement('link');
-      preloadIndex.rel = 'preload';
-      preloadIndex.as = 'script';
-      preloadIndex.crossOrigin = 'anonymous';
-      preloadIndex.href = '/plugins/martech/src/index.js';
-
-      const preloadAlloy = document.createElement('link');
-      preloadAlloy.rel = 'preload';
-      preloadAlloy.as = 'script';
-      preloadAlloy.crossOrigin = 'anonymous';
-      preloadAlloy.href = '/plugins/martech/src/alloy.min.js';
-
-      document.head.appendChild(preloadIndex);
-      document.head.appendChild(preloadAlloy);
-
-      const script = document.createElement('script');
-      script.type = 'module';
-      script.src = '/scripts/gtm-martech.js';
-      script.nonce = 'aem';
-
-      document.head.appendChild(script);
-    };
-
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(loadMartech, { timeout: 2000 });
-    } else {
-      setTimeout(loadMartech, 1000);
-    }
-  })();
-</script>
 <!-- <link rel="preload" as="script" crossorigin="anonymous" nonce="aem" href="/plugins/martech/src/index.js"/>
 <link rel="preload" as="script" crossorigin="anonymous" nonce="aem" href="/plugins/martech/src/alloy.min.js"/>
 <link rel="preload" as="script" crossorigin="anonymous" nonce="aem" href="/plugins/gtm-martech/src/index.js"/> -->
