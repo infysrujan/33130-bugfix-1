@@ -3,14 +3,13 @@
   content="script-src 'nonce-aem' 'strict-dynamic' 'unsafe-inline' http: https:; base-uri 'self'; object-src 'none';"
   move-to-http-header="true"
 >
-<meta name="viewport" content="width=device-width, initial-scale=1,  minimal-ui, user-scalable=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui"/>
 <link rel="preload" href="/fonts/icomoon.woff" as="font" type="font/woff" crossorigin>
 <script nonce="aem">
   (() => {
     const globalStyles = document.createElement('link');
     globalStyles.rel = 'stylesheet';
     globalStyles.href = '/styles/styles.css';
-    globalStyles.media = 'print';
     globalStyles.onload = () => {
       globalStyles.media = 'all';
     };
