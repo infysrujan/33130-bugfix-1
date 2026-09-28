@@ -27,3 +27,18 @@ export function formatLongDate(date, lang) {
   const y = date.getFullYear();
   return `${d} ${m} ${y}`;
 }
+
+/**
+ * @param {Date | string | number} dateInput
+ * @returns {string} e.g. `1 กรกฎาคม 2569`
+ */
+export function convertToThaiDate(dateInput) {
+  const date = new Date(dateInput);
+
+  return new Intl.DateTimeFormat('th-TH', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    calendar: 'buddhist',
+  }).format(date);
+}

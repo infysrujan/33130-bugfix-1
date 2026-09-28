@@ -7,6 +7,7 @@
 // eslint-disable-next-line import/no-cycle
 import {
   decorateMain,
+  decorateLoadedRte,
   removePictureOptimizationParams,
 } from '../../scripts/scripts.js';
 
@@ -41,6 +42,7 @@ export async function loadFragment(path) {
 
       decorateMain(main);
       await loadSections(main);
+      await decorateLoadedRte(main);
       return main;
     }
   }

@@ -1490,7 +1490,6 @@ validateAge();
 /**
  * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
  * so they remain visible even when the AEM Forms Rule Engine overwrites the
- * field's description container with a validation error message.
  * Only applies to fields marked with the `preserve-unit-label` CSS class.
  *
  * @name preserveFieldUnitLabels

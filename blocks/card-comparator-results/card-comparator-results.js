@@ -3,7 +3,8 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import {
-  plaintext, resolveApplyUrl, resolveCardPageUrl, resolveImageUrl,
+  plaintext, resolveApplyUrl, resolveCardPageUrl, resolveImageUrl, loadCardData, getCardViewData,
+  CREDIT_COMPARE_STORAGE_KEY, DEBIT_COMPARE_STORAGE_KEY,
 } from '../../scripts/utils/card-compare-fields.js';
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
@@ -110,6 +111,36 @@ function filterAndSortCards(allCards, selectedIDs, sourcingMap) {
     const sB = sourcingMap[norm(b.name || '')] ?? 9999;
     return sA - sB;
   });
+}
+
+// Normalizes a raw debit/prepaid card (loadCardData) into the same shape as a credit card.
+function toCompareCardShape(raw, lang) {
+  const v = getCardViewData(raw, lang);
+  return {
+    id: v.cardId,
+    cardId: v.cardId,
+    name: v.primaryName,
+    image: v.imageUrl,
+    slogan: v.slogan,
+    cardBenefits: v.cardBenefits,
+    fees: v.fees,
+    cardPageUrl: v.learnMoreHref ? { _publishUrl: v.learnMoreHref } : undefined,
+    webApplyEnabled: v.webApplyEnabled,
+    mobileApplyEnabled: v.mobileApplyEnabled,
+    webApplyUrl: v.webApplyUrl,
+    mobileApplyUrl: v.mobileApplyUrl,
+  };
+}
+
+// Fetches localized debit/prepaid cards for the stored selection (credit cards use loadAllCards).
+async function loadDebitPrepaidCards(storedCards, lang) {
+  const debitCards = (storedCards || []).filter((c) => c.cardCategory);
+  if (debitCards.length === 0) return [];
+  const pairs = new Map(debitCards.map((c) => [`${c.cardCategory}|${c.cardType || ''}`, c]));
+  const results = await Promise.all(
+    [...pairs.values()].map((c) => loadCardData(c.cardCategory, c.cardType || '')),
+  );
+  return results.flat().map((raw) => toCompareCardShape(raw, lang));
 }
 
 // ── DOM builders ───────────────────────────────────────────────────────────────
@@ -402,10 +433,20 @@ function initMobileCarousel(grid, doc) {
 
 // ── Cookie reader ──────────────────────────────────────────────────────────────
 
+// The results page URL tells us which flow this is — reliable everywhere, unlike sniffing
+// the page's DOM (e.g. .debit-prepaid.block) or sessionStorage contents, neither of which
+// exist on this (separate) results page.
+function isDebitPrepaidResultPage() {
+  return window.location.pathname.includes('debit-card-compare-result');
+}
+
 // Read sessionStorage first; fall back to the cookie keyed by the ?compare-product-btn param
 function getCardsFromStorage() {
+  const storageKey = isDebitPrepaidResultPage()
+    ? DEBIT_COMPARE_STORAGE_KEY
+    : CREDIT_COMPARE_STORAGE_KEY;
   try {
-    const stored = sessionStorage.getItem('ccs-compare-cards');
+    const stored = sessionStorage.getItem(storageKey);
     if (stored) {
       const cards = JSON.parse(stored);
       if (Array.isArray(cards) && cards.length) return cards;
@@ -518,6 +559,7 @@ function equalizeRowHeights(grid) {
 
 export default async function decorate(block) {
   const doc = block.ownerDocument;
+  const lang = getLang();
   const ph = await fetchPlaceholders();
 
   const descriptionRow = block.children[0];
@@ -590,13 +632,20 @@ export default async function decorate(block) {
     mo.observe(doc.body, { attributes: true, attributeFilter: ['class'] });
   };
 
-  const [allCards, sourcingMap, webIconSvg, mwebIconSvg] = await Promise.all([
-    loadAllCards(),
-    loadSourcingOrder(),
+  // On page load, restore selection from sessionStorage or cookie (survives page refresh)
+  const storedCards = getCardsFromStorage();
+  const isDebitPrepaidComparison = isDebitPrepaidResultPage();
+
+  const [creditCards, sourcingMap, webIconSvg, mwebIconSvg, debitPrepaidCards] = await Promise.all([
+    isDebitPrepaidComparison ? [] : loadAllCards(),
+    isDebitPrepaidComparison ? null : loadSourcingOrder(),
     loadIconSvg('web'),
     loadIconSvg('mweb'),
+    isDebitPrepaidComparison ? loadDebitPrepaidCards(storedCards, lang) : [],
   ]);
   const icons = { web: webIconSvg, mweb: mwebIconSvg };
+  // Combine both sources into one pool so matching stays a single, synchronous lookup.
+  const allCards = [...creditCards, ...debitPrepaidCards];
 
   const renderAndAlign = (cards) => {
     renderComparison(container, cards, allCards, sourcingMap, labels, doc, icons);
@@ -604,8 +653,6 @@ export default async function decorate(block) {
     doAlign();
   };
 
-  // On page load, restore selection from sessionStorage or cookie (survives page refresh)
-  const storedCards = getCardsFromStorage();
   if (storedCards) renderAndAlign(storedCards);
 
   // Inline mode: render when the comparator bar fires the compare event
