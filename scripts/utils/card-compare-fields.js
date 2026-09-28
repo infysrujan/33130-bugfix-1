@@ -5,27 +5,16 @@ import { fetchGet } from './fetchApi.js';
 const CARDS_API_CONFIG_KEY = 'debitPrepaidCardSelectorSuggesterData';
 const DEFAULT_CARDS_API_URL = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-cards-by-language-category-and-type;language=en;';
 
-// Three independent sessionStorage keys — one per card flow
+// Two independent sessionStorage keys keep a credit-card comparison and a debit/prepaid
 export const CREDIT_COMPARE_STORAGE_KEY = 'ccs-compare-cards';
-export const DEBIT_COMPARE_STORAGE_KEY = 'debit-compare-cards';
-export const PREPAID_COMPARE_STORAGE_KEY = 'prepaid-compare-cards';
+export const DEBIT_COMPARE_STORAGE_KEY = 'debit-prepaid-compare-cards';
 
-/**
- * Returns 'prepaid' | 'debit' | 'credit' based on the debit-prepaid block's
- * data-card-category attribute (set by the block itself during decoration).
- */
 export function getCompareMode(doc) {
-  const block = doc.querySelector('.debit-prepaid.block');
-  if (!block) return 'credit';
-  const category = block.dataset.cardCategory || '';
-  if (category === 'prepaid-cards') return 'prepaid';
-  return 'debit';
+  return doc.querySelector('.debit-prepaid.block') ? 'debit' : 'credit';
 }
 
 export function getCompareStorageKey(mode) {
-  if (mode === 'prepaid') return PREPAID_COMPARE_STORAGE_KEY;
-  if (mode === 'debit') return DEBIT_COMPARE_STORAGE_KEY;
-  return CREDIT_COMPARE_STORAGE_KEY;
+  return mode === 'debit' ? DEBIT_COMPARE_STORAGE_KEY : CREDIT_COMPARE_STORAGE_KEY;
 }
 
 export function plaintext(field) {

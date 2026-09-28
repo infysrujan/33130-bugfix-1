@@ -4,7 +4,7 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import {
   plaintext, resolveApplyUrl, resolveCardPageUrl, resolveImageUrl, loadCardData, getCardViewData,
-  CREDIT_COMPARE_STORAGE_KEY, DEBIT_COMPARE_STORAGE_KEY, PREPAID_COMPARE_STORAGE_KEY,
+  CREDIT_COMPARE_STORAGE_KEY, DEBIT_COMPARE_STORAGE_KEY,
 } from '../../scripts/utils/card-compare-fields.js';
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
@@ -433,32 +433,18 @@ function initMobileCarousel(grid, doc) {
 
 // ── Cookie reader ──────────────────────────────────────────────────────────────
 
-// Determine which card flow this results page belongs to.
-// Priority: URL slug (most reliable) → sessionStorage content (fallback for
-// any URL naming the team may choose in the future).
-function getResultPageMode() {
-  const path = window.location.pathname;
-  if (path.includes('debit-card-compare-result')) return 'debit';
-  if (path.includes('prepaid-card-compare-result')) return 'prepaid';
-  // Fallback: whichever storage key holds data wins; debit/prepaid take priority over credit
-  try {
-    if (sessionStorage.getItem(PREPAID_COMPARE_STORAGE_KEY)) return 'prepaid';
-    if (sessionStorage.getItem(DEBIT_COMPARE_STORAGE_KEY)) return 'debit';
-  } catch { /* ignore */ }
-  return 'credit';
+// The results page URL tells us which flow this is — reliable everywhere, unlike sniffing
+// the page's DOM (e.g. .debit-prepaid.block) or sessionStorage contents, neither of which
+// exist on this (separate) results page.
+function isDebitPrepaidResultPage() {
+  return window.location.pathname.includes('debit-card-compare-result');
 }
 
-// Map mode → sessionStorage key
-function getStorageKeyForMode(mode) {
-  if (mode === 'prepaid') return PREPAID_COMPARE_STORAGE_KEY;
-  if (mode === 'debit') return DEBIT_COMPARE_STORAGE_KEY;
-  return CREDIT_COMPARE_STORAGE_KEY;
-}
-
-// Read sessionStorage using the correct key for this page's card flow
+// Read sessionStorage first; fall back to the cookie keyed by the ?compare-product-btn param
 function getCardsFromStorage() {
-  const mode = getResultPageMode();
-  const storageKey = getStorageKeyForMode(mode);
+  const storageKey = isDebitPrepaidResultPage()
+    ? DEBIT_COMPARE_STORAGE_KEY
+    : CREDIT_COMPARE_STORAGE_KEY;
   try {
     const stored = sessionStorage.getItem(storageKey);
     if (stored) {
@@ -648,15 +634,14 @@ export default async function decorate(block) {
 
   // On page load, restore selection from sessionStorage or cookie (survives page refresh)
   const storedCards = getCardsFromStorage();
-  const mode = getResultPageMode();
-  const isDebitOrPrepaid = mode === 'debit' || mode === 'prepaid';
+  const isDebitPrepaidComparison = isDebitPrepaidResultPage();
 
   const [creditCards, sourcingMap, webIconSvg, mwebIconSvg, debitPrepaidCards] = await Promise.all([
-    isDebitOrPrepaid ? [] : loadAllCards(),
-    isDebitOrPrepaid ? null : loadSourcingOrder(),
+    isDebitPrepaidComparison ? [] : loadAllCards(),
+    isDebitPrepaidComparison ? null : loadSourcingOrder(),
     loadIconSvg('web'),
     loadIconSvg('mweb'),
-    isDebitOrPrepaid ? loadDebitPrepaidCards(storedCards, lang) : [],
+    isDebitPrepaidComparison ? loadDebitPrepaidCards(storedCards, lang) : [],
   ]);
   const icons = { web: webIconSvg, mweb: mwebIconSvg };
   // Combine both sources into one pool so matching stays a single, synchronous lookup.
