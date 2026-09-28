@@ -227,7 +227,6 @@
 
 .fund-prices-dropdown .stat-table {
   width: 100%;
-  table-layout: fixed;
   border-collapse: collapse;
   border: 0.0625rem solid var(--bbl-color-grey-18);
   font-family: var(--bbl-font-family-primary);
@@ -271,9 +270,6 @@
 .fund-prices-dropdown .stat-table td.stat-nav-val {
   width: 23%;
   text-align: right;
-}
-
-.fund-prices-dropdown .stat-table td.stat-nav-val {
   white-space: nowrap;
 }
 
@@ -557,14 +553,6 @@
     gap: var(--bbl-space-500);
   }
 
-  .fund-prices-dropdown .stat-table {
-    table-layout: auto;
-  }
-
-  .fund-prices-dropdown .stat-table th.stat-th-nav {
-    white-space: nowrap;
-  }
-
   .fund-prices-dropdown .fdd-header,
   .fund-prices-dropdown .fdd-period-bar,
   .fund-prices-dropdown .stat-tables-row .stat-table-card:first-child {
@@ -651,25 +639,13 @@
     gap: var(--bbl-space-100);
   }
 
-  .fund-prices-dropdown .stat-table {
-    table-layout: fixed;
-  }
-
   .fund-prices-dropdown .stat-table th,
   .fund-prices-dropdown .stat-table td {
     padding: 0 var(--bbl-space-250);
   }
 
-  .fund-prices-dropdown .stat-table th.stat-th-nav {
-    white-space: normal;
-  }
-
   .fund-prices-dropdown .stat-table td {
     font-size: var(--bbl-body-b1-size);
-  }
-
-  .fund-prices-dropdown .stat-table td:not(.stat-nav-val) {
-    white-space: nowrap;
   }
 
   .fund-prices-dropdown .fdd-fund-label {
