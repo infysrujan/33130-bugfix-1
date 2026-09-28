@@ -5,25 +5,26 @@
 >
 <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui"/>
 <link rel="preload" href="/fonts/icomoon.woff" as="font" type="font/woff" crossorigin>
-<!-- <link rel="stylesheet" href="/styles/styles.css"/> -->
 <script nonce="aem">
   (() => {
-    const globalStyles = document.createElement('link');
-    globalStyles.rel = 'stylesheet';
-    globalStyles.href = '/styles/styles.css';
-    const applyStyles = () => {
-      globalStyles.media = 'all';
-    };
-    // The editor canvas does not fire load for media=print stylesheets.
     const authoring = window.location.pathname.startsWith('/content/')
       || window.location.hostname.includes('adobeaemcloud.com');
     if (authoring) {
-      applyStyles();
+      const ref = new URLSearchParams(window.location.search).get('ref');
+      const href = ref
+        ? `/styles/styles.css?ref=${encodeURIComponent(ref)}`
+        : '/styles/styles.css';
+      document.write(`<link rel="stylesheet" href="${href}"/>`);
     } else {
+      const globalStyles = document.createElement('link');
+      globalStyles.rel = 'stylesheet';
+      globalStyles.href = '/styles/styles.css';
       globalStyles.media = 'print';
-      globalStyles.onload = applyStyles;
+      globalStyles.onload = () => {
+        globalStyles.media = 'all';
+      };
+      document.head.append(globalStyles);
     }
-    document.head.append(globalStyles);
 
     let heroAssetsStarted = false;
     const preloadBlockAssets = (name) => {
