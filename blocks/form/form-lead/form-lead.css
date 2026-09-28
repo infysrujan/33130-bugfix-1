@@ -156,7 +156,7 @@ main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
 }
 
 main .lead-forms#form-title-width > .default-content-wrapper h2 {
-  max-width: 740px;
+  max-width: 46.25rem;
   margin-inline: auto;
 }
 
