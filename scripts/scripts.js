@@ -354,11 +354,14 @@ function decorateOgImage() {
 
 /**
  * Strip AEM image optimization query params from a URL.
+ * Dynamic Media delivery URLs (/adobe/dynamicmedia/deliver/) require their
+ * query params (quality, width, preferwebp) — do not strip those.
  * @param {string|null|undefined} url
  * @returns {string|null|undefined}
  */
 function stripImageOptimizationParams(url) {
   if (typeof url !== 'string') return url;
+  if (url.includes('/adobe/dynamicmedia/deliver/')) return url;
   const q = url.indexOf('?');
   return q === -1 ? url : url.slice(0, q);
 }
