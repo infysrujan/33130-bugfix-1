@@ -478,10 +478,10 @@ body.fund-prices-search-in-header .fund-prices-container > .default-content-wrap
   display: none;
 }
 
-body:has(.fund-prices-dropdown:not(.hidden)) .default-content-wrapper,
+/* body:has(.fund-prices-dropdown:not(.hidden)) .default-content-wrapper,
 body:has(.fund-prices-dropdown:not(.hidden)) .fund-prices-page-title {
   display: none;
-}
+} */
 
 body.fund-prices-search-in-header .default-content-wrapper h2 {
   margin: 1.875rem 0;
@@ -531,9 +531,9 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
     padding: var(--bbl-space-150) 3.125rem;
   }
 
-  body.fund-prices-search-in-header .default-content-wrapper {
+  /* body.fund-prices-search-in-header .default-content-wrapper {
     display: block;
-  }
+  } */
 
   .fund-prices-search-bar.is-in-header .fund-select-wrapper {
     flex: 1 1 0;
