@@ -546,6 +546,10 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   padding: 0;
 }
 
+main .wizard-forms .form .field-health-bt-saverform .field-description {
+  text-align: left;
+}
+
 @media (width > 47.5rem) {
   main .form-container.wizard-forms {
     padding-inline: var(--bbl-space-600);
