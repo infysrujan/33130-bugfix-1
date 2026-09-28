@@ -38,7 +38,7 @@ function buildTile(row, doc) {
   imageWrapper.className = 'multi-column-tiles-image';
   imageWrapper.innerHTML = pictureHTML;
 
-  const titleEl = doc.createElement('h5');
+  const titleEl = doc.createElement('p');
   titleEl.className = 'multi-column-tiles-title';
   titleEl.textContent = title;
 

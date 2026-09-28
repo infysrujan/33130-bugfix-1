@@ -25,6 +25,8 @@ export function activateTab(tabsContainer, targetIndex) {
 
   const dropdown = tabsContainer.querySelector('.tabs-dropdown select');
   if (dropdown) dropdown.selectedIndex = targetIndex;
+
+  tabsContainer.dispatchEvent(new CustomEvent('tab-activated', { detail: { index: targetIndex } }));
 }
 
 export function enableMouseDragScroll(scroller) {
@@ -207,6 +209,7 @@ export function createContentPanels(block, contentRows) {
     return contentPanel;
   });
 
+  block.append(tabsContent);
   return { tabsContent, panels };
 }
 
@@ -234,7 +237,10 @@ export async function loadNestedBlocks(panels) {
     });
   });
 
-  await Promise.all(blocksToLoad.map((nestedBlock) => loadBlock(nestedBlock)));
+  const tableBlocks = blocksToLoad.filter((nestedBlock) => nestedBlock.classList.contains('table'));
+  const otherBlocks = blocksToLoad.filter((nestedBlock) => !nestedBlock.classList.contains('table'));
+  await Promise.all(tableBlocks.map((nestedBlock) => loadBlock(nestedBlock)));
+  await Promise.all(otherBlocks.map((nestedBlock) => loadBlock(nestedBlock)));
 }
 
 export function addKeyboardNavigation(tabsNav, tabButtons, block) {

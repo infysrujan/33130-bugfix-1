@@ -1,15 +1,5 @@
 
 
-:lang(th) {
-  .cards-list-title :is(h1) {
-    line-height: 1.875rem;
-  }
-
-  .cards-list-title :is(h2) {
-    line-height: 1.5rem;
-  }
-}
-
 .cards-list-remark p,
 .cards-list-subtitle p,
 .cards-list-description p {
@@ -71,14 +61,14 @@
   font-size: inherit;
 }
 
-.cards-list-description ul{
+.cards-list-description :is(ul, ol) {
   margin: 0;
   padding: 0.625rem 0 0;
   line-height: 1.4613rem;
   color: var(--bbl-color-grey-85);
 }
 
-.cards-list-description ul li {
+.cards-list-description :is(ul, ol) li {
   padding: 0.2rem;
   margin: 0 0 0.625rem 0.875rem;
 }
@@ -279,7 +269,7 @@
 }
 
 .cards-list-image.cards-list-image-card {
-  max-height: 10.3125rem;
+  min-height: 8.4375rem;
 }
 
 .cards-list-image.cards-list-image-full {
@@ -426,7 +416,6 @@
 
 .cards-list-button .button-m{
   min-width: 100%;
-  box-sizing: border-box;
 }
 
 .cards-list.scrollable::-webkit-scrollbar {
@@ -580,8 +569,9 @@
   }
 
   .cards-list-image.cards-list-image-card {
-    height: calc(100vw / 5);
-    min-height: 8.4375rem;
+    min-height: 9.375rem;
+    max-height: calc(20vw);
+    height: calc(20vw);
   }
 
   .cards-list:not(.scrollable, .carousel) .cards-list-inner {
@@ -597,24 +587,6 @@
   .cards-list-image.cards-list-image-default {
     max-height: calc(100vw * 0.4);
     height: 100vw;
-  }
-
-  :lang(th) {
-    .cards-list-title :is(h1) {
-      line-height: 3.75rem;
-    }
-
-    .cards-list-title :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .cards-list-title :is(h3) {
-      line-height: 2rem;
-    }
-
-    .cards-list-title :is(h4) {
-      line-height: 1.375rem;
-    }
   }
 
   .card-list-modal-title+.card-list-modal-text {
@@ -650,24 +622,6 @@
 }
 
 @media (width > 64rem) {
-  :lang(th) {
-    .cards-list-title :is(h1) {
-      line-height: 3.75rem;
-    }
-
-    .cards-list-title :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .cards-list-title :is(h3) {
-      line-height: 2rem;
-    }
-
-    .cards-list-title :is(h4) {
-      line-height: 1.375rem;
-    }
-  }
-
   .cards-list-date p,
   .cards-list-subtitle p{
     line-height: 1.375rem;
@@ -687,7 +641,7 @@
     font-size: 0.8rem;
   }
 
-  .cards-list-description ul{
+  .cards-list-description :is(ul, ol) {
     line-height: 1.67rem;
   }
 
@@ -791,9 +745,9 @@
   }
 
   .cards-list-image.cards-list-image-card {
-    min-height: calc(3.125rem + 30 * ((100vw - 20rem) / 1600));
-    max-height: calc(8.75rem + 25 * ((100vw - 20rem) / 1600));
-    height: calc(15.625rem + 60 * ((100vw - 20rem) / 1600));
+    height: calc(4.6875rem + 4.6875vw);
+    max-height: calc(6.75rem + 3.75vw);
+    min-height: calc(5.625rem + 3.125vw);
   }
 
   .cards-list-image.cards-list-image-full {

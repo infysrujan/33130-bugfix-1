@@ -1,7 +1,17 @@
+.sme-loan-form main .section.form-container.custom-forms {
+  & .form form :is(.field-infotext, .plain-text-wrapper) {
+    margin: 0;
+  }
+
+  & .form form fieldset.panel-wrapper.field-thankyou-visible-panel .field-registration-text {
+    margin: var(--bbl-space-250) 0;
+  }
+}
+
 main .section.form-container.custom-forms .form form .form-review-2col.field-wrapper fieldset.panel-wrapper.field-button-panel .field-submitcta .button {
   margin: 0;
 }
 
-main .section.form-container.custom-forms .form form fieldset.field-button-panel:not(.field-privacyconsent, .field-privacynotice) :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
+main .section.form-container.custom-forms .form form .form-review-2col.field-wrapper fieldset.field-button-panel:not(.field-privacyconsent, .field-privacynotice) :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
   margin:20px auto 0;
 }

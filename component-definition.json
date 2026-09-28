@@ -1324,6 +1324,22 @@
           }
         },
         {
+          "title": "Date of Birth (Thai)",
+          "id": "dob",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/fd/components/form/datepicker/v1/datepicker",
+                "template": {
+                  "jcr:title": "Date of Birth (Thai)",
+                  "fieldType": "date-input",
+                  "fd:viewType": "dob"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Forward Points SME",
           "id": "forward-points-sme",
           "plugins": {

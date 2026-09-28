@@ -154,6 +154,36 @@ function extractTitleAndBody(section) {
   return { titleText, contentFrag };
 }
 
+/**
+ * Same-page anchor links inside accordion panels (e.g. the FAQ "View details
+ * of supporting providers by country." link on crossborder-qrpayment-in-thai)
+ * jump to targets elsewhere on the page. On desktop, reaching a target via an
+ * upward scroll re-reveals the top utility nav row without the main nav's
+ * flush-to-top state (see header.js isScrollingUp), so the header can be
+ * taller than the site's default scroll-margin-top assumes. Tag each such
+ * target with a class carrying the larger offset.
+ *
+ * The click is handled here instead of natively so the scroll can be
+ * explicitly smooth (Element.scrollIntoView({behavior:'smooth'}), independent
+ * of any site-wide scroll-behavior CSS) and so the URL/hash is never touched
+ * at all — which also means a later reload never re-triggers the browser's
+ * native on-load fragment-jump, since there's no hash for it to react to.
+ * @param {Element} block
+ */
+function markAnchorScrollTargets(block) {
+  block.querySelectorAll('a[href^="#"]').forEach((link) => {
+    const id = link.getAttribute('href').slice(1);
+    if (!id) return;
+    const target = document.getElementById(decodeURIComponent(id));
+    if (!target) return;
+    target.classList.add('accordion-anchor-scroll-target');
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
 function wireAccordionHeader(header, panel) {
   panel.querySelectorAll('img').forEach((img) => {
     img.removeAttribute('loading');
@@ -350,7 +380,7 @@ function buildAccordionPrintDocument(block) {
     .accordion-header { display: none; }
     .accordion-heading { display: none; }
     .accordion-block-toolbar { display: none; }
-    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: center; margin: 1rem auto; font-size: 2.5rem; line-height: 1; }
+    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: center; margin: 1rem auto; font-size: 2.3rem; line-height: 1; }
     html[lang="en"] .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: left; margin: 1rem 0; }
     .accordion-block-container > .default-content-wrapper { margin-bottom: 1.875rem; }
     .download-section .default-content-wrapper { text-align:center;}
@@ -734,116 +764,121 @@ function wireAccordionToolbarAndNavigation(block, toolbarButtons) {
  * each become one item.
  * @param {Element} block
  */
-export default async function decorate(block) {
+export default function decorate(block) {
   const config = getAccordionBlockConfig(block);
   const { fragmentPath, showExpandAll, showPrint } = config;
 
-  const placeholder = await fetchPlaceholders();
-  if (!placeholder || Object.keys(placeholder).length === 0) return;
+  async function init() {
+    const placeholder = await fetchPlaceholders();
+    if (!placeholder || Object.keys(placeholder).length === 0) return;
 
-  // Populate module-level placeholders with fallbacks
-  placeholders = {
-    collapseAllLabel: placeholder.accordionCollapseAll,
-    expandAllLabel: placeholder.accordionExpandAll,
-    printLabel: placeholder.accordionPrint,
-    ariaLabelExpandAll: placeholder.accordionAriaLabelExpandAll,
-    ariaLabelCollapseAll: placeholder.accordionAriaLabelCollapseAll,
-    ariaLabelToolbar: placeholder.accordionAriaLabelToolbar,
-    ariaLabelPrint: placeholder.accordionAriaLabelPrint,
-    fragmentErrorText: placeholder.accordionFragmentErrorText,
-    accordionPlaceholder: placeholder.accordionPlaceholder,
-  };
+    // Populate module-level placeholders with fallbacks
+    placeholders = {
+      collapseAllLabel: placeholder.accordionCollapseAll,
+      expandAllLabel: placeholder.accordionExpandAll,
+      printLabel: placeholder.accordionPrint,
+      ariaLabelExpandAll: placeholder.accordionAriaLabelExpandAll,
+      ariaLabelCollapseAll: placeholder.accordionAriaLabelCollapseAll,
+      ariaLabelToolbar: placeholder.accordionAriaLabelToolbar,
+      ariaLabelPrint: placeholder.accordionAriaLabelPrint,
+      fragmentErrorText: placeholder.accordionFragmentErrorText,
+      accordionPlaceholder: placeholder.accordionPlaceholder,
+    };
 
-  block.textContent = '';
-  block.classList.add('accordion');
+    block.textContent = '';
+    block.classList.add('accordion');
 
-  const content = document.createElement('div');
-  content.className = 'content';
-  block.appendChild(content);
+    const content = document.createElement('div');
+    content.className = 'content';
+    block.appendChild(content);
 
-  const baseId = block.id || `accordion-${crypto.randomUUID().slice(0, 8)}`;
+    const baseId = block.id || `accordion-${crypto.randomUUID().slice(0, 8)}`;
 
-  const toolbarButtons = renderAccordionToolbar(content, baseId, {
-    showExpandAll,
-    showPrint,
-  });
+    const toolbarButtons = renderAccordionToolbar(content, baseId, {
+      showExpandAll,
+      showPrint,
+    });
 
-  if (!fragmentPath) {
-    const { item, header, panel } = createAccordionItemElements(
+    if (!fragmentPath) {
+      const { item, header, panel } = createAccordionItemElements(
+        baseId,
+        0,
+        placeholders.accordionPlaceholder,
+        placeholders.accordionPlaceholder,
+      );
+      content.appendChild(item);
+      wireAccordionHeader(header, panel);
+      wireAccordionToolbarAndNavigation(block, toolbarButtons);
+      return;
+    }
+
+    block.setAttribute('aria-busy', 'true');
+    block.classList.add('accordion-panel-loading');
+    let fragment;
+    try {
+      fragment = await loadFragment(fragmentPath);
+    } finally {
+      block.removeAttribute('aria-busy');
+      block.classList.remove('accordion-panel-loading');
+    }
+
+    if (!fragment) {
+      content.querySelector('.accordion-block-toolbar')?.remove();
+      const status = document.createElement('p');
+      status.className = 'accordion-load-error';
+      status.setAttribute('role', 'status');
+      status.textContent = placeholders.fragmentErrorText;
+      content.appendChild(status);
+      return;
+    }
+
+    const sections = [...fragment.querySelectorAll(':scope > .section')];
+
+    if (sections.length > 0) {
+      sections.forEach((section, index) => {
+        const sectionClasses = [...section.classList].filter((c) => c !== 'section');
+        const { titleText, contentFrag } = extractTitleAndBody(section);
+        appendAccordionItem(content, baseId, titleText, contentFrag, index, sectionClasses);
+      });
+      block.classList.add('accordion-panel-loaded');
+      wireAccordionToolbarAndNavigation(block, toolbarButtons);
+      markAnchorScrollTargets(block);
+      return;
+    }
+
+    const {
+      item,
+      header,
+      panel,
+      label,
+    } = createAccordionItemElements(
       baseId,
       0,
       placeholders.accordionPlaceholder,
       placeholders.accordionPlaceholder,
     );
     content.appendChild(item);
+
+    const fragmentSection = fragment.querySelector(':scope .section');
+    if (fragmentSection) {
+      // Carry the section's own style classes onto the panel.
+      const sectionClasses = [...fragmentSection.classList].filter((c) => c !== 'section');
+      if (sectionClasses.length) panel.classList.add(...sectionClasses);
+      const contentFrag = document.createDocumentFragment();
+      contentFrag.append(...fragmentSection.childNodes);
+      groupDownloadSections(contentFrag);
+      panel.appendChild(contentFrag);
+    } else {
+      const { titleText, contentFrag } = extractTitleAndBody(fragment);
+      if (titleText) {
+        label.textContent = titleText;
+      }
+      panel.appendChild(contentFrag);
+    }
     wireAccordionHeader(header, panel);
-    wireAccordionToolbarAndNavigation(block, toolbarButtons);
-    return;
-  }
-
-  block.setAttribute('aria-busy', 'true');
-  block.classList.add('accordion-panel-loading');
-  let fragment;
-  try {
-    fragment = await loadFragment(fragmentPath);
-  } finally {
-    block.removeAttribute('aria-busy');
-    block.classList.remove('accordion-panel-loading');
-  }
-
-  if (!fragment) {
-    content.querySelector('.accordion-block-toolbar')?.remove();
-    const status = document.createElement('p');
-    status.className = 'accordion-load-error';
-    status.setAttribute('role', 'status');
-    status.textContent = placeholders.fragmentErrorText;
-    content.appendChild(status);
-    return;
-  }
-
-  const sections = [...fragment.querySelectorAll(':scope > .section')];
-
-  if (sections.length > 0) {
-    sections.forEach((section, index) => {
-      const sectionClasses = [...section.classList].filter((c) => c !== 'section');
-      const { titleText, contentFrag } = extractTitleAndBody(section);
-      appendAccordionItem(content, baseId, titleText, contentFrag, index, sectionClasses);
-    });
     block.classList.add('accordion-panel-loaded');
     wireAccordionToolbarAndNavigation(block, toolbarButtons);
-    return;
+    markAnchorScrollTargets(block);
   }
-
-  const {
-    item,
-    header,
-    panel,
-    label,
-  } = createAccordionItemElements(
-    baseId,
-    0,
-    placeholders.accordionPlaceholder,
-    placeholders.accordionPlaceholder,
-  );
-  content.appendChild(item);
-
-  const fragmentSection = fragment.querySelector(':scope .section');
-  if (fragmentSection) {
-    // Carry the section's own style classes onto the panel.
-    const sectionClasses = [...fragmentSection.classList].filter((c) => c !== 'section');
-    if (sectionClasses.length) panel.classList.add(...sectionClasses);
-    const contentFrag = document.createDocumentFragment();
-    contentFrag.append(...fragmentSection.childNodes);
-    groupDownloadSections(contentFrag);
-    panel.appendChild(contentFrag);
-  } else {
-    const { titleText, contentFrag } = extractTitleAndBody(fragment);
-    if (titleText) {
-      label.textContent = titleText;
-    }
-    panel.appendChild(contentFrag);
-  }
-  wireAccordionHeader(header, panel);
-  block.classList.add('accordion-panel-loaded');
-  wireAccordionToolbarAndNavigation(block, toolbarButtons);
+  init();
 }

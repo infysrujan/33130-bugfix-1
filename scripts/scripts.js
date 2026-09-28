@@ -6,9 +6,9 @@ import {
   decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
-  waitForFirstImage,
   loadSection,
   loadSections,
+  loadBlock,
   loadCSS,
   getMetadata,
   toClassName,
@@ -23,33 +23,77 @@ import {
   buildCookieAlert,
 } from './bbl-decorators.js';
 
-import decorateTabs from '../blocks/tabs/tabs-helper.js';
-import initRteAnchors, { decorateIconInContainer, decorateNewTabLinks, decorateEncodedNbsp } from './custom-rte.js';
+function getCookie(name) {
+  if (!name) return '';
+  const encoded = encodeURIComponent(name);
+  const match = document.cookie.split('; ').find((row) => row.startsWith(`${encoded}=`));
+  return match ? decodeURIComponent(match.split('=')[1]) : '';
+}
 
-import env from './utils/env.js';
-import { getCookie } from './utils/cookies.js';
+let decorateTabs;
+let initRteAnchors;
+let decorateIconInContainer;
+let decorateNewTabLinks;
+let decorateEncodedNbsp;
+let decorateRteAnchors;
+
+const RTE_MARKER_RE = /#icon|#inlineimage|#imagelink|#newtab|\[#|&(?:amp;)?nbsp;/i;
+
+function hasRteMarkers(root) {
+  return !!root && RTE_MARKER_RE.test(root.innerHTML);
+}
+
+let rteModulePromise;
+
+function loadCustomRte() {
+  if (!rteModulePromise) {
+    rteModulePromise = import('./custom-rte.js').then((mod) => {
+      initRteAnchors = mod.default;
+      decorateIconInContainer = mod.decorateIconInContainer;
+      decorateNewTabLinks = mod.decorateNewTabLinks;
+      decorateEncodedNbsp = mod.decorateEncodedNbsp;
+      decorateRteAnchors = mod.decorateRteAnchors;
+      return mod;
+    });
+  }
+  return rteModulePromise;
+}
+
 /**
- * Import the martech plugin.
- * See: https://github.com/adobe-rnd/aem-martech#launch-container-configuration for more information.
+ * Resolves #icon / #newtab / anchor markers before the caller shows the root.
+ * The module download is shared and is not started for pages with no markers.
+ * @param {Element} root
  */
-/* eslint-disable import/no-relative-packages -- martech lives under plugins/, not node_modules */
-import {
-  initMartech,
-  martechEager,
-  martechLazy,
-  martechDelayed,
-} from '../plugins/martech/src/index.js';
-/* eslint-enable import/no-relative-packages */
+export async function decorateLoadedRte(root) {
+  if (!hasRteMarkers(root)) return;
+  await loadCustomRte();
+  decorateNewTabLinks(root);
+  decorateEncodedNbsp(root);
+  decorateIconInContainer(root);
+  decorateRteAnchors(root);
+}
 
-/**
- * Import the gtm-martech plugin.
- * See: https://github.com/adobe-rnd/aem-gtm-martech#launch-container-configuration for more information.
- */
-import gtmMartech from './gtm-martech.js';
-import { initCdpEvents } from './analytics.js';
-import { initMarketingConsentListener } from './consent.js';
+let martech;
+let gtmMartech;
+let initCdpEvents;
+let env;
 
-initMarketingConsentListener();
+async function loadMarketingModules() {
+  const [martechModule, gtmModule, analyticsModule, consentModule, envModule] = await Promise.all([
+    // eslint-disable-next-line import/no-relative-packages
+    import('../plugins/martech/src/index.js'),
+    import('./gtm-martech.js'),
+    import('./analytics.js'),
+    import('./consent.js'),
+    import('./utils/env.js'),
+  ]);
+
+  martech = martechModule;
+  gtmMartech = gtmModule.default;
+  ({ initCdpEvents } = analyticsModule);
+  env = envModule.default;
+  consentModule.initMarketingConsentListener();
+}
 
 // Consent when AnalysisCookie is 'Analysis' (cookie-modal / cookie-alert).
 // Load martech unless the URL query includes martech=off (DA preview).
@@ -135,7 +179,6 @@ export function createElementFromHTML(html, doc) {
   template.innerHTML = html.trim();
   return template.content.firstElementChild;
 }
-
 /**
  * load fonts.css and set a session storage flag
  */
@@ -156,17 +199,13 @@ async function loadFonts() {
  */
 function buildAutoBlocks(main) {
   try {
-    decorateTabs(main);
+    decorateTabs?.(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
   }
 }
 
-/**
- * Decorates the main element.
- * @param {Element} main The main element
- */
 function decorateSectionIds(main) {
   main.querySelectorAll('.section[data-id]').forEach((section) => {
     section.id = toClassName(section.dataset.id);
@@ -174,9 +213,12 @@ function decorateSectionIds(main) {
   });
 }
 
+/**
+ * Decorates the main element.
+ * @param {Element} main The container element
+ */
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
-  // hopefully forward compatible button decoration
   decorateButtons(main);
   decorateIcons(main);
   buildAutoBlocks(main);
@@ -185,8 +227,8 @@ export function decorateMain(main) {
   decorateBlocks(main);
   decorateTertiaryButtons(main);
   decorateSvgWithAltText(main);
-  decorateNewTabLinks(main);
-  decorateEncodedNbsp(main);
+  decorateNewTabLinks?.(main);
+  decorateEncodedNbsp?.(main);
 
   const pageVariant = getMetadata('pagevariant');
   if (pageVariant) {
@@ -222,6 +264,7 @@ document.addEventListener('bbl:load-fragment', async (e) => {
       if (typeof onHtmlParsed === 'function') onHtmlParsed(fragment, cleanPath);
       decorateMain(fragment);
       await loadSections(fragment);
+      await decorateLoadedRte(fragment);
     }
     if (typeof callback === 'function') await callback(fragment);
   } catch (err) {
@@ -338,11 +381,54 @@ function stripSrcsetOptimizationParams(srcset) {
 }
 
 /**
+ * Viewport LCP image (hero mobile/desktop of the default slide).
+ * @param {Document|Element} root
+ * @returns {HTMLImageElement|null}
+ */
+function getLcpImage(root) {
+  const main = root.querySelector?.('main')
+    || (root.matches?.('main') ? root : null)
+    || root;
+  const isMobile = window.matchMedia('(width <= 47.5rem)').matches;
+  const hero = main.querySelector?.('.hero');
+  if (hero) {
+    const rows = [...hero.children].slice(1, 8);
+    const defaultRow = rows.find((row) => row.children[1]?.textContent?.trim() === 'true') || rows[0];
+    const pictures = defaultRow?.querySelectorAll('picture') || [];
+    const picture = (isMobile ? pictures[1] : pictures[0]) || pictures[0] || pictures[1];
+    const img = picture?.querySelector('img');
+    if (img) return img;
+  }
+  const first = main.querySelector?.('img');
+  if (first?.closest('.menu-banner, header, footer, .welcome-banner')) return null;
+  return first || null;
+}
+
+function hintLcpImage(img) {
+  if (!img) return;
+  img.fetchPriority = 'high';
+  img.setAttribute('fetchpriority', 'high');
+  img.setAttribute('loading', 'eager');
+  img.loading = 'eager';
+}
+
+function promoteFirstImage(section) {
+  if (section?.querySelector('.menu-banner')) return;
+  const image = section?.querySelector('img[fetchpriority="high"]')
+    || section?.querySelector('.hero img')
+    || section?.querySelector('img');
+  hintLcpImage(image);
+}
+
+/**
  * Remove optimization params from all picture source/img URLs in the document.
  * @param {Document|Element} root
  */
 export function removePictureOptimizationParams(root) {
+  const lcpImg = getLcpImage(root);
   root.querySelectorAll('picture').forEach((picture) => {
+    if (picture.closest('.hero')) return;
+    if (lcpImg && picture.contains(lcpImg)) return;
     picture.querySelectorAll('source[srcset]').forEach((source) => {
       source.setAttribute('srcset', stripSrcsetOptimizationParams(source.getAttribute('srcset')));
     });
@@ -352,54 +438,176 @@ export function removePictureOptimizationParams(root) {
   });
 }
 
+function sectionHasTabName(section) {
+  if (!section) return false;
+  const metadataTab = [...section.querySelectorAll('div.section-metadata > div > div:first-child')]
+    .some((cell) => {
+      const key = toClassName(cell.textContent);
+      return key === 'tab-name' || key === 'tab-variant';
+    });
+  if (metadataTab) return true;
+  // Authored tabs block, including one nested in a table or used as tiled tabs.
+  return !!section.querySelector('.tabs, .tiled-tab');
+}
+
+function mainHasTabs(main) {
+  if (!main) return false;
+  return [...main.querySelectorAll(':scope > div')].some(sectionHasTabName);
+}
+
+const TAB_PANEL_BLOCKS = '.market-report, .news-media, .promo-card-listing, .top-promotional-cards';
+
+function holdTabPanelBlocks(root) {
+  return [...root.querySelectorAll(TAB_PANEL_BLOCKS)].map((block) => {
+    const placeholder = document.createComment('tab-panel-block');
+    block.replaceWith(placeholder);
+    return { block, placeholder };
+  });
+}
+
+async function releaseTabPanelBlocks(held) {
+  await Promise.all(held.map(async ({ block, placeholder }) => {
+    if (placeholder.isConnected) placeholder.replaceWith(block);
+    else document.querySelector('main')?.append(block);
+    if (block.dataset.blockStatus !== 'loaded' && block.dataset.blockStatus !== 'loading') {
+      await loadBlock(block);
+    }
+  }));
+}
+
+function detachLaterSections(main) {
+  return [...main.querySelectorAll(':scope > div')].slice(1).map((section) => {
+    section.remove();
+    return section;
+  });
+}
+
+function decorateLaterSections(main) {
+  decorateButtons(main);
+  decorateIcons(main);
+  decorateSections(main);
+  decorateSectionIds(main);
+  decorateBlocks(main);
+  decorateTertiaryButtons(main);
+  decorateSvgWithAltText(main);
+}
+
+function promoteFirstSectionImages(main) {
+  const wrapper = [...(main?.querySelectorAll(':scope > .section > .default-content-wrapper') || [])][0];
+  if (!wrapper) return;
+
+  wrapper.querySelectorAll('img').forEach((img) => {
+    img.loading = 'eager';
+    img.setAttribute('loading', 'eager');
+    img.fetchPriority = 'high';
+    img.setAttribute('fetchpriority', 'high');
+  });
+}
+
+function isHeaderOverlapped(main) {
+  if (document.body.classList.contains('bangkok-bankm-card')) return true;
+  const first = main?.querySelector(':scope > .section') || main?.firstElementChild;
+  return !!(first?.classList.contains('hero-container')
+    || first?.classList.contains('carousel-dotted-container')
+    || first?.querySelector('.hero, .carousel-dotted'));
+}
+
+function whenStylesReady() {
+  const link = [...document.head.querySelectorAll('link[rel="stylesheet"]')]
+    .find((el) => (el.getAttribute('href') || '').includes('/styles/styles.css'));
+  if (!link || (link.sheet && link.media === 'all')) return Promise.resolve();
+  return new Promise((resolve) => {
+    link.addEventListener('load', resolve, { once: true });
+    link.addEventListener('error', resolve, { once: true });
+    if (link.sheet && link.media === 'all') resolve();
+  });
+}
+
+async function waitForFirstImage(section) {
+  if (!section || section.querySelector('.menu-banner')) return undefined;
+  const lcpCandidate = section.querySelector('.hero img')
+    || section.querySelector('img[fetchpriority="high"]')
+    || section.querySelector('img');
+  if (!lcpCandidate) return undefined;
+  hintLcpImage(lcpCandidate);
+  return new Promise((resolve) => {
+    if (!lcpCandidate.complete && lcpCandidate.currentSrc) {
+      lcpCandidate.addEventListener('load', resolve);
+      lcpCandidate.addEventListener('error', resolve);
+    } else {
+      resolve();
+    }
+  });
+}
+
+function startHeader(doc) {
+  const disabled = getMetadata('disable-sections', doc)
+    .split(',')
+    .map((section) => section.trim().toLowerCase());
+  if (disabled.includes('header')) return Promise.resolve();
+  const header = doc.querySelector('header');
+  if (!header || header.querySelector('.header')) return Promise.resolve();
+  if (!isHeaderOverlapped(doc.querySelector('main'))) {
+    header.classList.add('is-not-overlapped');
+  }
+  return loadHeader(header);
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
-async function loadEager(doc) {
-  const martechLoadedPromise = initMartech(
-    // WebSDK Configuration
-    // TODO: Remove the below comment once the WebSDK Configuration is updated.
-    // Docs: https://experienceleague.adobe.com/en/docs/experience-platform/web-sdk/commands/configure/overview#configure-js
-    {
-      datastreamId: dataStreamConfig[env],
-      orgId,
-      edgeDomain: 'edge.bangkokbank.com',
-      onBeforeEventSend: (payload) => {
-        if (payload.xdm.eventType === 'pageLoaded') {
-          // eslint-disable-next-line no-console
-          console.debug('Prevented custom `pageLoaded` event trigger', payload);
-          return false;
-        }
-        return true;
-      },
-    },
-    // 2. Library Configuration
-    {
-      analytics: isEnabled,
-      personalization: !!getMetadata('target') && isEnabled,
-      launchUrls: launchConfig[env],
-      trackPageView: false, // disables the first collect call
-    },
-  );
+// function startHeroBlock() {
+//   const base = window.hlx?.codeBasePath || '';
+//   loadCSS(`${base}/blocks/hero/hero.css`);
+//   import(`${base}/blocks/hero/hero.js`).catch(() => {});
+// }
 
+async function loadEager(doc) {
+  // if (doc.querySelector('.hero')) startHeroBlock();
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
+  hintLcpImage(getLcpImage(doc));
   removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
   decorateOgTitle();
   decorateOgImage();
+  whenStylesReady().then(() => startHeader(doc));
   const main = doc.querySelector('main');
+  const hasTabs = mainHasTabs(main);
+  const firstIsTab = hasTabs && sectionHasTabName(main?.querySelector(':scope > div'));
+  const laterSections = (hasTabs && !firstIsTab) ? detachLaterSections(main) : [];
+  const tabsHelperPromise = hasTabs
+    ? import('../blocks/tabs/tabs-helper.js')
+    : null;
+  if (firstIsTab) {
+    ({ default: decorateTabs } = await tabsHelperPromise);
+  }
   if (main) {
     decorateMain(main);
+    promoteFirstSectionImages(main);
+    promoteFirstImage(main);
     document.body.classList.add('appear');
-    await Promise.all([
-      // Load the martech library in the eager phase.
-      martechLoadedPromise.then(martechEager),
-      // Load the gtm-martech library in the eager phase.
-      gtmMartech.eager(),
-      loadSection(main.querySelector('.section'), waitForFirstImage),
-      loadWelcomeBanner(doc),
-    ]);
+    loadWelcomeBanner(doc);
+    if (!isHeaderOverlapped(main)) {
+      doc.querySelector('header')?.classList.add('is-not-overlapped');
+    }
+    const heldTabBlocks = laterSections.length ? holdTabPanelBlocks(main) : [];
+    await loadSection(main.querySelector('.section'), async (section) => {
+      // Overlap icon decoration with the LCP image. Sections without markers
+      // do not download custom-rte.js.
+      const rteDecoration = hasRteMarkers(section) ? decorateLoadedRte(section) : null;
+      await waitForFirstImage(section);
+      if (rteDecoration) await rteDecoration;
+    });
+    if (laterSections.length) {
+      ({ default: decorateTabs } = await tabsHelperPromise);
+      laterSections.forEach((section) => main.append(section));
+      decorateTabs(main);
+      decorateLaterSections(main);
+      const tabsBlock = main.querySelector('.tabs.block');
+      if (tabsBlock) await loadBlock(tabsBlock);
+      await releaseTabPanelBlocks(heldTabBlocks);
+    }
   }
 
   try {
@@ -412,11 +620,25 @@ async function loadEager(doc) {
   }
 }
 
+async function loadPageSections(element) {
+  const sections = [...element.querySelectorAll('div.section')];
+  for (let i = 0; i < sections.length; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    await loadSection(sections[i], decorateLoadedRte);
+  }
+}
+
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  const main = doc.querySelector('main');
+  // Start the download now so it overlaps section loading, but do not wait
+  // for it before those sections. Icon markers are applied per section,
+  // before that section is shown, instead of after marketing scripts.
+  if (hasRteMarkers(main)) loadCustomRte();
+
   const disabledSections = new Set(
     getMetadata('disable-sections', doc)
       .split(',')
@@ -424,33 +646,70 @@ async function loadLazy(doc) {
       .filter(Boolean),
   );
 
-  if (!disabledSections.has('header')) {
+  if (!disabledSections.has('header') && !doc.querySelector('header .header')) {
     loadHeader(doc.querySelector('header'));
   }
-  const main = doc.querySelector('main');
-  await loadSections(main);
+  await loadPageSections(main);
+  if (rteModulePromise) {
+    await loadCustomRte();
+    initRteAnchors(main, doc);
+  }
 
-  // Load the gtm-martech library in the lazy phase.
-  await gtmMartech.lazy();
-  await buildCookieAlert(main);
+  if (!isEnabled) {
+    await buildCookieAlert(main);
+    // Keep the page rendering flow intact, but skip martech/third-party loading.
+    // Remaining non-marketing work continues below.
+  } else {
+    await loadMarketingModules();
+    const martechLoadedPromise = martech.initMartech(
+      {
+        datastreamId: dataStreamConfig[env],
+        orgId,
+        edgeDomain: 'edge.bangkokbank.com',
+        onBeforeEventSend: (payload) => {
+          if (payload.xdm.eventType === 'pageLoaded') {
+            // eslint-disable-next-line no-console
+            console.debug('Prevented custom `pageLoaded` event trigger', payload);
+            return false;
+          }
+          return true;
+        },
+      },
+      {
+        analytics: isEnabled,
+        personalization: !!getMetadata('target') && isEnabled,
+        launchUrls: launchConfig[env],
+        trackPageView: false,
+      },
+    );
+
+    await Promise.all([
+      martechLoadedPromise.then(martech.martechEager),
+      gtmMartech.eager(),
+    ]);
+
+    // Load the gtm-martech library in the lazy phase.
+    await gtmMartech.lazy();
+    await buildCookieAlert(main);
+  }
 
   // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
   decorateButtonsV1(main);
   decorateSvgWithAltText(main);
 
-  initRteAnchors(main, doc);
-  decorateIconInContainer(main);
-  decorateNewTabLinks(main);
+  const firstBlock = main?.querySelector('div.block');
+  if (firstBlock) promoteFirstImage(firstBlock);
+  promoteFirstImage(main);
 
   if (!disabledSections.has('footer')) {
     loadFooter(doc.querySelector('footer'));
   }
-
-  // Load the martech library in the lazy phase.
-  await martechLazy();
+  if (isEnabled) {
+    // Load the martech library in the lazy phase.
+    await martech.martechLazy();
+  }
 
   await loadBreadcrumb(doc);
-  loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
   // Add link click handler for URL validation
@@ -474,13 +733,14 @@ async function bblMartechDelayed() {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  if (!isEnabled) return;
   // load the gtm-martech library in the delayed phase
-  window.setTimeout(() => gtmMartech.delayed(), 1000);
+  window.setTimeout(() => gtmMartech?.delayed(), 1000);
 
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => {
     // Load the martech library in the delayed phase.
-    martechDelayed();
+    martech?.martechDelayed();
     // trigger the martech delayed phase
     bblMartechDelayed();
 

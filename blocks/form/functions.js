@@ -44,13 +44,36 @@ function days(endDate, startDate) {
   return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 }
 
+function isEmptyFieldValue(value) {
+  return value === null || value === undefined || (typeof value === 'string' && value.trim() === '');
+}
+
 /**
- * Removes top-level fields whose key contains "_exclude" from a payload object.
+ * Replaces empty/unfilled field values in a payload object with a default placeholder,
+ * so every field that is part of the outbound payload always carries a value.
  * @param {object} obj - The payload object
- * @returns {object} - A new object without the excluded fields
+ * @param {string} [defaultValue] - Placeholder used for empty fields
+ * @returns {object} - A new object with empty values replaced
+ */
+function applyDefaultValues(obj, defaultValue = '-') {
+  return Object.fromEntries(
+    Object.entries(obj).map(
+      ([key, value]) => [key, isEmptyFieldValue(value) ? defaultValue : value],
+    ),
+  );
+}
+
+/**
+ * Removes top-level fields whose key contains "_exclude" from a payload object, then fills
+ * any remaining empty/unfilled field with a default placeholder value.
+ * @param {object} obj - The payload object
+ * @returns {object} - A new object without the excluded fields, with empty fields defaulted
  */
 function filterExcludeFields(obj) {
-  return Object.fromEntries(Object.entries(obj).filter(([key]) => !key.includes('_exclude')));
+  const withoutExcluded = Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !key.includes('_exclude')),
+  );
+  return applyDefaultValues(withoutExcluded);
 }
 
 /**
@@ -442,8 +465,19 @@ function getProvinceEnumNamesTh() {
  *   }
  * }
  */
+// Caches branch results per province+lang so repeated lookups for the same
+// selection (e.g. the rule engine's own change handler and the district
+// grouping watcher below both resolving the same province) reuse the
+// response instead of firing another blocking XHR.
+const branchesByProvinceCache = new Map();
+
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
+  const cacheKey = `${lang}::${province}`;
+  if (branchesByProvinceCache.has(cacheKey)) {
+    return branchesByProvinceCache.get(cacheKey);
+  }
+
   const branchesByProvinceUrl = getBaseUrl('branches-by-province');
   const provinceBaseUrl = branchesByProvinceUrl.endsWith('/') ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
   const encoded = encodeURIComponent(province);
@@ -462,7 +496,9 @@ function fetchBranchesByProvince(province, lang = 'th') {
   }
 
   const data = JSON.parse(xhr.responseText);
-  return Array.isArray(data) ? data : [];
+  const result = Array.isArray(data) ? data : [];
+  branchesByProvinceCache.set(cacheKey, result);
+  return result;
 }
 
 /**
@@ -586,10 +622,16 @@ function scheduleApplyBranchDistrictGroupingAuto(data) {
 // The Rule Engine worker can't touch the DOM, and this form's custom
 // dropdown widget may not dispatch real 'change' events — so instead of
 // listening for events, poll each <select>'s value directly for changes.
+// Only the page's own language is fetched here: the rule engine's change
+// handler already fetches that language to populate enum/enumNames, and
+// unconditionally also fetching the other language previously fired on
+// every province change (e.g. an English province name against the
+// Thai-language endpoint), which reliably returns an empty result.
 if (typeof document !== 'undefined') {
   const lastValues = new Map();
 
   setInterval(() => {
+    const lang = (document.documentElement.lang || 'en').toLowerCase().startsWith('th') ? 'th' : 'en';
     document.querySelectorAll('select').forEach((sel) => {
       const key = sel.name || sel.id;
       const prev = lastValues.get(key);
@@ -597,12 +639,10 @@ if (typeof document !== 'undefined') {
 
       if (current && current !== prev) {
         lastValues.set(key, current);
-        ['en', 'th'].forEach((lang) => {
-          const data = fetchBranchesByProvince(current, lang);
-          if (data.length) {
-            scheduleApplyBranchDistrictGroupingAuto(data);
-          }
-        });
+        const data = fetchBranchesByProvince(current, lang);
+        if (data.length) {
+          scheduleApplyBranchDistrictGroupingAuto(data);
+        }
       }
     });
   }, 300);
@@ -990,6 +1030,122 @@ function getidAndDob(id, dob) {
   return `${id}${ddmmyyyy}`;
 }
 
+function convertThaiToEnglishDate(thaiDateString) {
+  if (!thaiDateString) return null;
+
+  const s = String(thaiDateString).trim();
+  if (!s) return null;
+
+  let year;
+  let month; // 0-11 for JS Date
+  let day;
+
+  const m = s.match(/^(\d{3,4})[-/](\d{1,2})[-/](\d{1,2})/);
+  if (m) {
+    year = parseInt(m[1], 10);
+    month = parseInt(m[2], 10) - 1;
+    day = parseInt(m[3], 10);
+  } else {
+    const parsed = new Date(s);
+    if (Number.isNaN(parsed.getTime())) return null;
+    year = parsed.getFullYear();
+    month = parsed.getMonth();
+    day = parsed.getDate();
+  }
+
+  if (year >= 2400) year -= 543;
+
+  const d = new Date(year, month, day);
+  const valid = d.getFullYear() === year && d.getMonth() === month && d.getDate() === day;
+  if (!valid) return null;
+
+  // Format as yyyy-mm-dd from LOCAL parts (not toISOString — that shifts to UTC)
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+/**
+ * Formats sum-insured field with commas live as the user types,
+ * caps at 7 digits, validates 300,000–9,999,999 range.
+ *
+ * @name formatAndValidateSumInsured
+ * @returns {void}
+ */
+function formatAndValidateSumInsured() {
+  if (typeof document === 'undefined') return;
+  if (window.sumInsuredListenerAttached) return;
+  window.sumInsuredListenerAttached = true;
+  const CLASS_NAME = 'sum-insured';
+  const MAX_DIGITS = 7;
+  const MIN = 300000;
+  const MAX = 9999999;
+  const MESSAGE = 'ทุนประกันภัยต้องอยู่ระหว่าง 300,000 ถึง 9,999,999 บาท';
+
+  const isTarget = (el) => el.classList?.contains(CLASS_NAME) || el.closest(`.${CLASS_NAME}`);
+  const digitsOnly = (v) => v.replace(/\D/g, '');
+  const withCommas = (d) => d.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // the native setter, grabbed from the prototype — this bypasses
+  // any framework's own overridden 'value' setter/tracker
+  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype,
+    'value',
+  ).set;
+
+  const setReactCompatibleValue = (input, value) => {
+    nativeInputValueSetter.call(input, value);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+
+  const validate = (input, digits) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let desc = wrapper.querySelector('.field-description');
+    if (!desc) {
+      desc = document.createElement('div');
+      desc.className = 'field-description';
+      desc.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(desc);
+    }
+
+    const num = Number(digits);
+    const isInvalid = digits !== '' && (num < MIN || num > MAX);
+    wrapper.classList.toggle('field-invalid', isInvalid);
+    desc.textContent = isInvalid ? MESSAGE : (wrapper.dataset.description || '');
+  };
+
+  const applyFormat = (input) => {
+    if (input.type !== 'text') {
+      input.type = 'text';
+      input.setAttribute('inputmode', 'numeric');
+    }
+
+    const digits = digitsOnly(input.value).slice(0, MAX_DIGITS);
+    const formatted = withCommas(digits);
+
+    if (input.value !== formatted) {
+      setReactCompatibleValue(input, formatted);
+      input.setSelectionRange(formatted.length, formatted.length);
+    }
+
+    validate(input, digits);
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !isTarget(input)) return;
+    applyFormat(input);
+  };
+
+  ['input', 'keyup', 'blur', 'change'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+}
+formatAndValidateSumInsured();
+
 function replaceOtherAndJoin(selectedValues, otherText) {
   if (!selectedValues) {
     return '';
@@ -1023,7 +1179,6 @@ function getSelectedLabelFromDropdown(dropdown) {
  * @example
  * formatDateTime("2024-01-05", "14", "30") // returns "5 January 2024 14:30:00"
  * formatDateTime("05/01/2024", "14", "30") // returns "5 January 2024 14:30:00"
- * formatDateTime("invalid", "14", "30") // returns ""
  * formatDateTime("2024-01-05", "", "30") // returns ""
  */
 function formatDateTime(date, hour, minute) {
@@ -1276,61 +1431,65 @@ validateAgeRangeInputs();
 function formatNumberWithCommas(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
-
-function convertThaiToEnglishDate(thaiDateString) {
-  if (!thaiDateString) return null;
-  const s = String(thaiDateString).trim();
-  if (!s) return null;
-
-  let year;
-  let month;// 0-11 for JS Date
-  let day;
-
-  // Accepts "YYYY-MM-DD" or "YYYY/MM/DD" (also tolerates an ISO time suffix)
-  const m = s.match(/^(\d{3,4})[-/](\d{1,2})[-/](\d{1,2})/);
-  if (m) {
-    year = parseInt(m[1], 10);
-    month = parseInt(m[2], 10) - 1;
-    day = parseInt(m[3], 10);
-  } else {
-    // Also handles a JS Date string like "Tue Sep 20 2568 00:00:00 GMT+0000"
-    const parsed = new Date(s);
-    if (Number.isNaN(parsed.getTime())) return null;
-    year = parsed.getFullYear();
-    month = parsed.getMonth();
-    day = parsed.getDate();
-  }
-
-  // Subtract 543 to get the Gregorian year (only when the year is clearly BE)
-  if (year >= 2400) year -= 543;
-
-  const englishDate = new Date(year, month, day);
-
-  // Reject impossible dates (e.g. 2568-02-31)
-  const valid = englishDate.getFullYear() === year
-    && englishDate.getMonth() === month
-    && englishDate.getDate() === day;
-
-  return valid ? englishDate.toDateString() : null;
-}
-
 /**
- * Formats a number with comma separators, capping the actual digit count
- * would count the added commas and wrongly flag the value as too long).
- * @name formatCappedNumberWithCommas
- * @param {string} value - The numeric value to format
- * @param {number} [maxDigits=12] - Maximum allowed actual digits
- * @return {string}
+ * Validates that a numeric-range field's value stays within 1–75
+ *
+ * @name validateAgeInputRange
+ * @returns {void}
  */
-function formatCappedNumberWithCommas(value, maxDigits = 12) {
-  const digitsOnly = value.toString().replace(/\D/g, '').slice(0, Number(maxDigits));
-  return digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+function validateAge() {
+  if (typeof document === 'undefined') return;
+
+  const MIN = 1;
+  const MAX = 75;
+  const MESSAGE = 'อายุต้องอยู่ระหว่าง 1-75 ปี';
+
+  const runCheck = (input) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+
+    const num = Number(input.value);
+    const isInvalid = input.value !== '' && (Number.isNaN(num) || num < MIN || num > MAX);
+
+    if (isInvalid) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = MESSAGE;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    const isAgeLimit = input.classList.contains('age-limit')
+      || input.closest('.age-limit') !== null;
+    if (!isAgeLimit) return;
+    runCheck(input);
+  };
+
+  ['input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
 }
+validateAge();
 
 /**
  * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
  * so they remain visible even when the AEM Forms Rule Engine overwrites the
- * field's description container with a validation error message.
  * Only applies to fields marked with the `preserve-unit-label` CSS class.
  *
  * @name preserveFieldUnitLabels
@@ -1405,6 +1564,104 @@ function preserveFieldUnitLabels() {
 preserveFieldUnitLabels();
 
 /**
+ * Restricts a numeric field's value to digits only, capped at either 12
+ * or 10 digits depending on the CSS class applied, and formats the value
+ * with thousand-separator commas once the field loses focus. Targets
+ * fields marked with the `number-max-12` or `number-max-10` CSS class on
+ *
+ * @name formatCommaInputs
+ * @returns {void}
+ */
+function formatCommaInputs() {
+  if (typeof document === 'undefined') return;
+
+  const CLASS_LIMITS = {
+    'number-max-12': 12,
+    'number-max-10': 10,
+  };
+
+  const getMaxDigits = (input) => {
+    let result = null;
+    Object.keys(CLASS_LIMITS).forEach((className) => {
+      if (result !== null) return;
+      if (input.classList.contains(className) || input.closest(`.${className}`) !== null) {
+        result = CLASS_LIMITS[className];
+      }
+    });
+    return result;
+  };
+
+  const stripCommas = (value) => value.replace(/,/g, '');
+
+  const stripNonDigits = (value) => value.replace(/\D/g, '');
+
+  const addCommas = (digits) => digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  const runSanitize = (input, maxDigits) => {
+    let digits = stripNonDigits(input.value);
+    if (digits.length > maxDigits) {
+      digits = digits.slice(0, maxDigits);
+    }
+    input.value = digits;
+  };
+
+  const runFormat = (input, maxDigits) => {
+    const digits = stripNonDigits(input.value).slice(0, maxDigits);
+    input.value = addCommas(digits);
+  };
+
+  const runUnformat = (input) => {
+    input.value = stripCommas(input.value);
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const maxDigits = getMaxDigits(input);
+    if (maxDigits === null) return;
+
+    switch (event.type) {
+      case 'focus':
+        runUnformat(input);
+        break;
+      case 'input':
+      case 'keyup':
+        runSanitize(input, maxDigits);
+        break;
+      case 'blur':
+        runFormat(input, maxDigits);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const keydownHandler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const maxDigits = getMaxDigits(input);
+    if (maxDigits === null) return;
+
+    const controlKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+    if (controlKeys.includes(event.key)) return;
+
+    const isDigit = /^\d$/.test(event.key);
+    const currentDigits = stripNonDigits(input.value).length;
+    if (!isDigit || currentDigits >= maxDigits) {
+      event.preventDefault();
+    }
+  };
+
+  ['focus', 'input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+  document.addEventListener('keydown', keydownHandler, true);
+}
+formatCommaInputs();
+
+/**
  * Restricts `gpa-only` inputs to digits and one decimal point, max 4 chars.
  * @name restrictGpaOnlyInputs
  * @returns {void}
@@ -1439,11 +1696,13 @@ export {
   addCsrfToken,
   addCustomHeader,
   filterExcludeFields,
+  applyDefaultValues,
   generatePayloadHash,
   fetchBranchesByProvince,
   getBranchEnum,
   getBranchEnumNames,
   getidAndDob,
+  convertThaiToEnglishDate,
   replaceOtherAndJoin,
   getSelectedLabelFromDropdown,
   CcApplicationStatus,
@@ -1462,6 +1721,4 @@ export {
   validateMaxCheckbox,
   replaceother,
   formatNumberWithCommas,
-  formatCappedNumberWithCommas,
-  convertThaiToEnglishDate,
 };

@@ -77,14 +77,10 @@ export async function getEnabledDays(endpoints, year, month) {
     .map((day) => day.padStart(2, '0'));
 }
 
-export async function getChartRates(endpoints, sDay, sMon, sYear, eDay, eMon, eYear, family, lang) {
+export function getChartRates(endpoints, sDay, sMon, sYear, eDay, eMon, eYear, family, lang) {
   const url = endpoints.chartRates(sDay, sMon, sYear, eDay, eMon, eYear, family, lang);
   if (!url) return [];
-  try {
-    return await fetchGet(url);
-  } catch (e) {
-    return [];
-  }
+  return fetchGet(url).catch(() => []);
 }
 
 export function getDownloadUrl(endpoints, sDay, sMon, sYear, eDay, eMon, eYear, family, lang) {

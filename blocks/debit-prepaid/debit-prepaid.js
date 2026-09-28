@@ -2,7 +2,7 @@ import { loadCSS } from '../../scripts/aem.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import {
-  loadCardData, plaintext, resolveApplyUrl, resolveCardPageUrl, resolveImageUrl,
+  loadCardData, getCardViewData,
 } from '../../scripts/utils/card-compare-fields.js';
 
 const MAX_COMPARE = 3;
@@ -12,42 +12,6 @@ function norm(str) {
   return (str || '').toString().split(ZERO_WIDTH_SPACE).join('')
     .toLowerCase()
     .trim();
-}
-
-function getCardField(card, ...keys) {
-  const key = keys.find((k) => card[k] !== null && card[k] !== undefined && card[k] !== '');
-  return key !== undefined ? card[key] : '';
-}
-
-function getCardPageHref(card) {
-  const href = resolveCardPageUrl(card);
-  return href.startsWith('/content/bangkokbank')
-    ? href.replace(/^\/content\/bangkokbank/, '')
-    : href;
-}
-
-function getCardViewData(card, lang) {
-  const nameEN = getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName');
-  const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
-  const isTH = lang === 'th';
-
-  return {
-    primaryName: isTH && nameTH ? nameTH : nameEN,
-    secondaryName: isTH && nameTH ? nameEN : nameTH,
-    description: getCardField(card, 'cardDescription', 'description'),
-    imageUrl: resolveImageUrl(card, 'imageUrl', 'image'),
-    cardId: card.cardId || card.id || '',
-    learnMoreHref: getCardPageHref(card),
-    slogan: plaintext(getCardField(card, 'slogan', 'Slogan', 'cardSlogan')),
-    cardBenefits: plaintext(
-      getCardField(card, 'cardBenefits', 'Card Benefits', 'benefits', 'cardBenefit'),
-    ),
-    fees: plaintext(getCardField(card, 'fees', 'Fees', 'feeDetails', 'feesDescription')),
-    webApplyEnabled: card.webApplyEnabled === true || card.webApplyEnabled === 'true',
-    mobileApplyEnabled: card.mobileApplyEnabled === true || card.mobileApplyEnabled === 'true',
-    webApplyUrl: resolveApplyUrl(card.webApplyUrl),
-    mobileApplyUrl: resolveApplyUrl(card.mobileApplyUrl),
-  };
 }
 
 /**
@@ -482,7 +446,7 @@ export default async function decorate(block) {
 
   const isTH = lang === 'th';
   const labels = {
-    learnMore: ph.cardLearnMore || (isTH ? 'เรียนรู้เพิ่มเติม' : 'Learn more'),
+    learnMore: ph.debitCardButtonText || (isTH ? 'อ่านเพิ่มเติม' : 'Read more'),
     compare: ph.cardCompare || (isTH ? 'เปรียบเทียบ' : 'Compare'),
     noResultsFound: ph.cardNoResultsFound || (isTH ? 'ไม่พบผลลัพธ์' : 'No Results Found'),
     prevCard: ph.cardPrevious || (isTH ? 'การ์ดก่อนหน้า' : 'Previous card'),
@@ -560,6 +524,8 @@ export default async function decorate(block) {
       mobileApplyEnabled: mobileApplyEnabled === 'true',
       webApplyUrl,
       mobileApplyUrl,
+      cardCategory,
+      cardType,
     });
 
     restoreCompareState();

@@ -127,7 +127,7 @@ function filterByPromotionType(cards, promotionType) {
 
 function getTabsContainer(block) {
   const section = block.closest('.section');
-  return section?.querySelector('.tabs') || block.closest('.tabs') || null;
+  return section?.querySelector('.tabs') || block.closest('.tabs') || document.querySelector('.tabs') || null;
 }
 
 function applyCategoryTabs(tabsContainer, categories) {
@@ -365,7 +365,7 @@ function setupPanel(
     }, state.page, pageSize, isHighlightsPanel);
 
     gridEl.innerHTML = cards.length
-      ? cards.map((c) => {
+      ? cards.map((c, i) => {
         let cardData = c;
         if (isBbmPanel && queryLang && c.ctaLink) {
           try {
@@ -380,6 +380,7 @@ function setupPanel(
         }
         const cardOptions = buildCardOptions(cardData);
         cardOptions.baseUrl = options.baseUrl;
+        cardOptions.eager = i < 4;
         if (isBbmPanel) cardOptions.logoHtml = '';
         return buildCardHtml(cardData, displayTabText, placeholders, cardOptions);
       }).join('')
@@ -403,7 +404,13 @@ function setupPanel(
     observer.observe(panel);
   }
 
-  if (disableFilters) return;
+  function resetPage() {
+    if (state.page === 1) return;
+    state.page = 1;
+    if (hasRenderedOnce) render();
+  }
+
+  if (disableFilters) return { resetPage };
 
   const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
   // After an option is chosen the dropdown closes; a double-click's 2nd click can
@@ -547,9 +554,11 @@ function setupPanel(
 
   const scrollTarget = panel.closest('.tabs') || gridEl;
   bindPaginationClick(paginationEl, state, render, scrollTarget);
+
+  return { resetPage };
 }
 
-export default async function decorate(block) {
+async function renderPromoCardListing(block) {
   const searchParams = new URLSearchParams(window.location.search);
   handleMobileAppView(searchParams);
 
@@ -670,6 +679,7 @@ export default async function decorate(block) {
     : [...document.querySelectorAll('[role="tabpanel"]')];
 
   const filterSync = createFilterSync();
+  const panelHandles = new Map();
 
   tabPanels.forEach((panel, index) => {
     const tabBtnId = panel.getAttribute('aria-labelledby');
@@ -690,7 +700,7 @@ export default async function decorate(block) {
     if (!category) category = isHighlightsPanel ? tabText : forcedCardType && NO_MATCH_VALUE;
     const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
-    setupPanel(
+    const panelHandle = setupPanel(
       panel,
       isHighlightsPanel ? topPromoCards : activeCards,
       category,
@@ -714,6 +724,11 @@ export default async function decorate(block) {
         panelId: index,
       },
     );
+    panelHandles.set(index, panelHandle);
+  });
+
+  tabsContainer?.addEventListener('tab-activated', (e) => {
+    panelHandles.get(e.detail.index)?.resetPage();
   });
 
   document.addEventListener('click', () => {
@@ -735,4 +750,8 @@ export default async function decorate(block) {
   }
 
   block.hidden = true;
+}
+
+export default function decorate(block) {
+  renderPromoCardListing(block);
 }

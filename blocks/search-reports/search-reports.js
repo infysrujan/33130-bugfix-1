@@ -163,8 +163,9 @@ function parseAuthoredOptions(rows) {
 }
 
 function parseAuthoredMeta(rows, placeholders) {
-  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel || 'Search for Reports';
-  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
+  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel;
+  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim()
+    || placeholders.reportsModalTitle;
   const modalDescRow = rows[2];
   const modalDesc = modalDescRow?.firstElementChild?.textContent?.trim() || '';
   const resultsPageUrl = rows[3]?.querySelector('a')?.href || window.location.pathname;
@@ -200,7 +201,7 @@ function discardGenericModalWrapper(placeholder) {
 }
 
 function buildModalDom({
-  lang, ctaLabel, modalTitle, modalDesc,
+  lang, ctaLabel, modalTitle, modalDesc, typePlaceholder, yearPlaceholder,
 }) {
   const overlay = createTaggedElement('div', {
     className: 'search-reports-overlay',
@@ -242,8 +243,12 @@ function buildModalDom({
     searchBtn.disabled = !(getType() && getYear());
   }
 
-  const { wrapper: typeDropdown, getValue: getTypeVal, populateOptions: populateTypes } = buildDropdown('Type of report', updateSearchBtn);
-  const { wrapper: yearDropdown, getValue: getYearVal, populateOptions: populateYears } = buildDropdown('Year', updateSearchBtn);
+  const {
+    wrapper: typeDropdown, getValue: getTypeVal, populateOptions: populateTypes,
+  } = buildDropdown(typePlaceholder, updateSearchBtn);
+  const {
+    wrapper: yearDropdown, getValue: getYearVal, populateOptions: populateYears,
+  } = buildDropdown(yearPlaceholder, updateSearchBtn);
   getType = getTypeVal;
   getYear = getYearVal;
 
@@ -305,7 +310,12 @@ export default async function decorate(block) {
   const {
     overlay, dialog, closeBtn, searchBtn, getType, getYear, populateTypes, populateYears,
   } = buildModalDom({
-    lang, ctaLabel, modalTitle, modalDesc,
+    lang,
+    ctaLabel,
+    modalTitle,
+    modalDesc,
+    typePlaceholder: placeholders.reportsTypePlaceholder,
+    yearPlaceholder: placeholders.reportsYearPlaceholder,
   });
 
   wireModalEvents({
@@ -319,7 +329,7 @@ export default async function decorate(block) {
       label: resolveTypeLabel(placeholders, t),
     }));
     populateTypes(apiTypes?.length ? apiTypes : typeOptions);
-    populateYears((data.years || []).map((y) => ({ label: y, value: y })));
+    populateYears(data.years?.length ? data.years : yearOptions);
   }).catch(() => {
     populateTypes(typeOptions);
     populateYears(yearOptions);
