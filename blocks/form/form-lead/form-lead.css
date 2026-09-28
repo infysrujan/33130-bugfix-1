@@ -155,6 +155,11 @@ main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
   font-weight: var(--bbl-font-weight-regular);
 }
 
+main .lead-forms#form-title-width > .default-content-wrapper h2 {
+  max-width: 740px;
+  margin-inline: auto;
+}
+
 main .lead-forms.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
   margin: var(--bbl-space-500) 0 var(--bbl-form-margin-30);
   padding-bottom: var(--bbl-form-padding-35);
@@ -231,6 +236,10 @@ main .lead-forms .form form .plain-text-wrapper p:last-child {
 
 main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textt, .field-or, .field-textw, .field-text1) p {
   text-align: left;
+}
+
+main .lead-forms .form form .plain-text-wrapper.field-wrapper.field-textt p {
+  text-align: center;
 }
 
 /* Privacy consent text — b1 body tokens (regular) + 20.8px line-height, all breakpoints */
