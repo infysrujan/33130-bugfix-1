@@ -476,7 +476,7 @@
 
 body.fund-prices-detail-active .default-content-wrapper,
 body.fund-prices-detail-active .fund-prices-page-title,
-body.fund-prices-search-in-header .default-content-wrapper {
+body.fund-prices-search-in-header .fund-prices-container .default-content-wrapper {
   display: none;
 }
 
@@ -543,6 +543,12 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
 
   .fund-prices-search-bar.is-in-header .fund-select-btn {
     width: 100%;
+  }
+
+  body.fund-prices-detail-active .default-content-wrapper,
+  body.fund-prices-detail-active .fund-prices-page-title,
+  body.fund-prices-search-in-header .fund-prices-container .default-content-wrapper {
+    display: block;
   }
 }
 
