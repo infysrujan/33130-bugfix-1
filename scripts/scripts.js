@@ -567,6 +567,7 @@ async function loadEager(doc) {
   // if (doc.querySelector('.hero')) startHeroBlock();
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   hintLcpImage(getLcpImage(doc));
+  if (hasRteMarkers(doc.querySelector('main'))) loadCustomRte();
   removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
   decorateOgTitle();
@@ -592,7 +593,13 @@ async function loadEager(doc) {
       doc.querySelector('header')?.classList.add('is-not-overlapped');
     }
     const heldTabBlocks = laterSections.length ? holdTabPanelBlocks(main) : [];
-    await loadSection(main.querySelector('.section'), async (section) => {
+    const firstSection = main.querySelector('.section');
+    if (hasRteMarkers(firstSection)) {
+      await loadCustomRte();
+      decorateNewTabLinks(firstSection);
+      decorateEncodedNbsp(firstSection);
+    }
+    await loadSection(firstSection, async (section) => {
       // Overlap icon decoration with the LCP image. Sections without markers
       // do not download custom-rte.js.
       const rteDecoration = hasRteMarkers(section) ? decorateLoadedRte(section) : null;
@@ -634,10 +641,13 @@ async function loadPageSections(element) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
-  // Start the download now so it overlaps section loading, but do not wait
-  // for it before those sections. Icon markers are applied per section,
-  // before that section is shown, instead of after marketing scripts.
-  if (hasRteMarkers(main)) loadCustomRte();
+  // Same order as before the performance split: markers on the raw HTML first,
+  // then each block. The download was started during eager load, beside the LCP image.
+  if (hasRteMarkers(main)) {
+    await loadCustomRte();
+    decorateNewTabLinks(main);
+    decorateEncodedNbsp(main);
+  }
 
   const disabledSections = new Set(
     getMetadata('disable-sections', doc)
@@ -696,6 +706,11 @@ async function loadLazy(doc) {
   // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
   decorateButtonsV1(main);
   decorateSvgWithAltText(main);
+  if (rteModulePromise) {
+    await loadCustomRte();
+    decorateIconInContainer(main);
+    decorateNewTabLinks(main);
+  }
 
   const firstBlock = main?.querySelector('div.block');
   if (firstBlock) promoteFirstImage(firstBlock);

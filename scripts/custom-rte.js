@@ -192,7 +192,15 @@ export function decorateEncodedNbsp(root, selector = 'p, li, td') {
 
 export function decorateIconInContainer(container) {
   decorateEncodedNbsp(container);
-  runRteMarkers([...container.querySelectorAll('p')]);
+  const hasDirectMarker = (el) => [...el.childNodes].some(
+    (node) => node.nodeType === Node.TEXT_NODE && /#(?:icon|inlineimage|imagelink)/i.test(node.nodeValue),
+  );
+  const paragraphs = [...container.querySelectorAll('p')];
+  if (hasDirectMarker(container)) paragraphs.push(container);
+  container.querySelectorAll('li, div, td, th').forEach((el) => {
+    if (hasDirectMarker(el) && !paragraphs.includes(el)) paragraphs.push(el);
+  });
+  runRteMarkers(paragraphs);
 }
 
 const INLINE_WRAPPERS = new Set(['STRONG', 'EM', 'U', 'SPAN', 'B', 'I']);
