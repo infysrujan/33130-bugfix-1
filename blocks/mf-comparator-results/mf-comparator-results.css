@@ -3,6 +3,7 @@
   font-size: 0.8125rem;
   color: var(--bbl-color-grey-150);
   line-height: var(--bbl-line-height-body, 1.6);
+  margin-top: 4rem;
 }
 
 .mf-comparator-results .mfcr-notes p,
@@ -43,7 +44,6 @@
   scroll-padding-inline: 1.5rem;
   scrollbar-width: none;
   padding: var(--bbl-space-100) 0;
-  padding-bottom: 2.5rem;
 }
 
 .mf-comparator-results .mfcr-grid::-webkit-scrollbar {
@@ -201,7 +201,6 @@
   align-items: center;
   gap: var(--bbl-space-100);
   margin-top: var(--bbl-space-200);
-  margin-bottom: 5rem;
   padding: 0 var(--bbl-space-container-xs);
 }
 
@@ -235,7 +234,6 @@
     scroll-snap-type: none;
     justify-content: center;
     gap: var(--bbl-space-250);
-    margin-bottom: 5rem;
   }
 
   .mf-comparator-results .mfcr-card {
