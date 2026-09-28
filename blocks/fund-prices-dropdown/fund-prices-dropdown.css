@@ -591,10 +591,6 @@ body.fund-prices-search-in-header .fund-prices-dropdown-container .default-conte
     display: block;
     white-space: nowrap;
   }
-
-  body.fund-prices-search-in-header .fund-prices-dropdown-container .default-content-wrapper {
-    display: block;
-  }
 }
 
 @media (width > 47.5rem) {
@@ -722,6 +718,10 @@ body.fund-prices-search-in-header .fund-prices-dropdown-container .default-conte
     box-shadow: none;
     background: none;
     z-index: auto;
+  }
+
+  body.fund-prices-search-in-header .fund-prices-dropdown-container .default-content-wrapper {
+    display: block;
   }
 }
 
