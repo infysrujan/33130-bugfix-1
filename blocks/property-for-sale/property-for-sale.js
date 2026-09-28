@@ -119,15 +119,35 @@ function buildFilterHtml(p, propertyTypes, priceRanges) {
     </div>`;
 }
 
+function isFlagYes(value) {
+  return String(value ?? '').trim().toUpperCase() === 'Y';
+}
+
+// All Properties only. Promotion outranks the other flags. An expired promotion
+// shows no tag, even when highlight, new, or invest is also set.
+function resolveAllPropertiesTag(item, categoryLabel) {
+  if (isFlagYes(item.PROMOTION)) {
+    return isPromotionOverDate(item) ? '' : (categoryLabel.promotion || '');
+  }
+  if (isFlagYes(item.FLAG_HIGHLIGHT)) return categoryLabel.highlight || '';
+  if (isFlagYes(item.FLAG_NEW)) return categoryLabel.new || '';
+  if (isFlagYes(item.FLAG_INVEST)) return categoryLabel.investment || '';
+  return '';
+}
+
 function buildPropCardHtml(item, detailPath, p, category, pfsData, eager = false) {
   const photo = item.PHOTO_FILE_1;
   const currency = p.propertyForSaleCurrency || 'บาท';
   const price = Number(item.PR_PRICE) > 0
     ? `${formatPrice(item.PR_PRICE)} ${currency}`
     : (p.propertyForSaleContactStaff || 'ติดต่อเจ้าหน้าที่');
-  const specialPrice = !isPromotionOverDate(item) ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}` : '';
+  const promotionActive = isFlagYes(item.PROMOTION) && !isPromotionOverDate(item);
+  const showSpecialPrice = category === 'all' ? promotionActive : !isPromotionOverDate(item);
+  const specialPrice = showSpecialPrice ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}` : '';
   const location = [item.LOCATION_AMPHUR, item.LOCATION_PROVINCE].filter(Boolean).join(', ');
-  const tag = pfsData.categoryLabel[category] || item.MAIN_ASSET || '';
+  const tag = category === 'all'
+    ? resolveAllPropertiesTag(item, pfsData.categoryLabel)
+    : (pfsData.categoryLabel[category] || item.MAIN_ASSET || '');
 
   const descParts = [
     item.MAIN_ASSET ? `<p class="pfs-card-id">${item.MAIN_ASSET}</p>` : '',

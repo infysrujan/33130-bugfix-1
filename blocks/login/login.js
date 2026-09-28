@@ -52,7 +52,7 @@ function parseBlockContent(block) {
 function createLoginButton(buttonText, buttonTitle) {
   const loginButton = document.createElement('button');
 
-  loginButton.className = 'login-button primary icon-login';
+  loginButton.className = 'login-button button-s primary icon-login';
   loginButton.setAttribute('aria-expanded', 'false');
   loginButton.setAttribute('aria-haspopup', 'true');
   loginButton.setAttribute('title', buttonTitle);

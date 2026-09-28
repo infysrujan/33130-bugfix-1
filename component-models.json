@@ -8578,6 +8578,196 @@
     ]
   },
   {
+    "id": "dob",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Basic",
+        "name": "basic"
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Field name",
+        "valueType": "string",
+        "value": "dob",
+        "required": true,
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^[^$].*",
+          "customErrorMsg": "Name cannot start with $"
+        },
+        "description": "Name used for this field's value when the form is submitted."
+      },
+      {
+        "component": "text",
+        "name": "jcr:title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "hideTitle",
+        "label": "Hide title",
+        "valueType": "boolean"
+      },
+      {
+        "component": "text",
+        "name": "label",
+        "label": "Label",
+        "valueType": "string",
+        "description": "Label shown above the day/month/year dropdowns (e.g. \"ระบุวันเดือนปีเกิด (ค.ศ.)\")."
+      },
+      {
+        "component": "boolean",
+        "name": "visible",
+        "label": "Show Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "boolean",
+        "name": "enabled",
+        "label": "Enable Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "boolean",
+        "name": "readOnly",
+        "label": "Read-only",
+        "valueType": "boolean"
+      },
+      {
+        "component": "select",
+        "name": "colspan",
+        "label": "Column Span",
+        "valueType": "string",
+        "value": "12",
+        "options": [
+          {
+            "name": "1 column",
+            "value": "1"
+          },
+          {
+            "name": "2 column",
+            "value": "2"
+          },
+          {
+            "name": "3 column",
+            "value": "3"
+          },
+          {
+            "name": "4 column",
+            "value": "4"
+          },
+          {
+            "name": "5 column",
+            "value": "5"
+          },
+          {
+            "name": "6 column",
+            "value": "6"
+          },
+          {
+            "name": "7 column",
+            "value": "7"
+          },
+          {
+            "name": "8 column",
+            "value": "8"
+          },
+          {
+            "name": "9 column",
+            "value": "9"
+          },
+          {
+            "name": "10 column",
+            "value": "10"
+          },
+          {
+            "name": "11 column",
+            "value": "11"
+          },
+          {
+            "name": "12 column",
+            "value": "12"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "default",
+        "label": "Default value",
+        "valueType": "string",
+        "description": "Optional prefill date in yyyy-MM-dd format (e.g. 1998-04-01)."
+      },
+      {
+        "component": "tab",
+        "label": "Year Range",
+        "name": "yearRange"
+      },
+      {
+        "component": "number",
+        "name": "properties.minAge",
+        "label": "Minimum age",
+        "valueType": "number",
+        "value": 15,
+        "description": "Youngest selectable age. Sets the newest year shown as (current year - minimum age)."
+      },
+      {
+        "component": "number",
+        "name": "properties.maxAge",
+        "label": "Maximum age",
+        "valueType": "number",
+        "value": 100,
+        "description": "Oldest selectable age. Controls how many years back the Year dropdown lists."
+      },
+      {
+        "component": "tab",
+        "label": "Validation",
+        "name": "validation"
+      },
+      {
+        "component": "boolean",
+        "name": "required",
+        "label": "Required",
+        "valueType": "boolean"
+      },
+      {
+        "component": "text",
+        "name": "mandatoryMessage",
+        "label": "Required error message",
+        "valueType": "string",
+        "description": "Error message shown when required field is left empty."
+      },
+      {
+        "component": "text",
+        "name": "validateExpMessage",
+        "label": "Script validation message",
+        "valueType": "string",
+        "description": "Displayed when validation script fails."
+      },
+      {
+        "component": "tab",
+        "label": "Help Content",
+        "name": "help"
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Help text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "tooltip",
+        "label": "Short description",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "double-key-dropdown",
     "fields": [
       {
@@ -13520,6 +13710,10 @@
               {
                 "name": "Scroll",
                 "value": "scroll"
+              },
+              {
+                "name": "Download 1 col mob 2 col desk",
+                "value": "download-1-mcol-2-dcol"
               }
             ]
           }

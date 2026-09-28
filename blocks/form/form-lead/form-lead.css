@@ -62,6 +62,7 @@
   --bbl-form-top-45: 2.8125rem;                      /* 45px */
   --bbl-form-top-46: 2.875rem;                       /* 46px */
   --bbl-form-top-50: 3.125rem;                       /* 50px */
+  --bbl-form-top-54: 3.375rem;                       /* 54px */
   --bbl-form-top-82: 5.1rem;                         /* ~82px */
   --bbl-form-top-86: 5.375rem;                       /* 86px */
 
@@ -526,11 +527,11 @@ main .lead-forms .form form .field-initialfielditemname.field-wrapper[class*='ic
 }
 
 main .lead-forms .form form .drop-down-wrapper[class*='icon-']:has(> label:not([data-visible='false']))::before {
-  top: var(--bbl-form-top-86);
+  top: var(--bbl-form-top-54);
 }
 
 main .lead-forms .form form .drop-down-wrapper[class*='icon-'].field-invalid:has(> label:not([data-visible='false']))::before {
-  top: var(--bbl-form-top-86);
+  top: var(--bbl-form-top-54);
 }
 
 main .lead-forms .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
@@ -1016,5 +1017,50 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     font-size: var(--bbl-font-size-b1-desktop);
     line-height: var(--bbl-form-line-height-1);
     padding: 0 var(--bbl-form-padding-10);
+  }
+}
+
+@media (any-pointer: coarse) {
+  main .section.form-container.lead-forms .form form input[type="date"] {
+    appearance: none;
+    position: relative;
+    padding-right: var(--bbl-space-500);
+  }
+ 
+  main .section.form-container.lead-forms .form form input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: var(--bbl-space-500);
+    height: auto;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+ 
+  main .section.form-container.lead-forms .form form input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+  }
+ 
+  main .section.form-container.lead-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *)::after {
+    content: "\e912";
+    font-family: icomoon, sans-serif;
+    font-size: var(--bbl-font-size-h3-mobile);
+    color: var(--bbl-color-grey-90);
+    position: absolute;
+    top: 8px;
+    right: var(--bbl-space-300);
+    height: var(--bbl-form-date-icon-height, 2.75rem);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+  }
+ 
+  main .section.form-container.lead-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *):has(label[data-visible="false"])::after {
+    top: 0.625rem;
+  }
+
+  main .section.form-container.lead-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *):has(label[data-visible="true"])::after {
+    top: 1.75rem;
   }
 }
