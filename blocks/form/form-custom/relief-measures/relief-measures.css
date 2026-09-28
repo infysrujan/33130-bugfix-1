@@ -12,6 +12,14 @@
   grid-column: span 12;
 }
 
+.relief-measures-form main .section.form-container.custom-forms .form .form-message.success-message {
+  text-align: left;
+  max-width: 740px;
+  margin: 0 auto;
+  margin-top: 135px;
+  padding: 0;
+}
+
 .relief-measures-form main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) .form form .radio-group-wrapper.radio-tabs > legend.field-label {
   width: 100%;
   padding-inline: 0.625rem 0;
@@ -22,4 +30,34 @@
   min-width: 0;
   width: auto;
   margin: 0;
+}
+
+.relief-measures-form main .section.form-container.custom-forms .form form .field-thankyou-visible-panel.field-wrapper {
+  max-width: 46.25rem;
+  margin: 0 auto;
+  margin-top: 3.75rem;
+  padding-inline: 1rem;
+}
+ 
+.relief-measures-form main .section.form-container.custom-forms .form form .field-thankyou-visible-panel  .plain-text-wrapper.field-success-title p {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+ 
+.relief-measures-form main .section.form-container.custom-forms .form form .field-thankyou-visible-panel .plain-text-wrapper.field-success-msg p {
+  text-align: left;
+  width: 100%;
+}
+
+@media (width > 47.5rem) {
+  .relief-measures-form main .section.form-container.custom-forms .form form .field-thankyou-visible-panel.field-wrapper {
+    margin-top: 5rem;
+    padding-inline: 3rem;
+  }
+}
+
+@media (width > 64rem) {
+  .relief-measures-form main .section.form-container.custom-forms .form form .field-thankyou-visible-panel.field-wrapper {
+    margin-top: 8.4375rem;
+  }
 }

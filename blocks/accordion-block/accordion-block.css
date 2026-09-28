@@ -1,3 +1,9 @@
+@media (width > 64rem) {
+  .accordion-anchor-scroll-target {
+    scroll-margin-top: var(--header-d-height, 7.73rem);
+  }
+}
+
 .accordion-block-intro {
   padding: 0 1.25rem 1rem;
 }
@@ -62,6 +68,10 @@
 .accordion-toolbar-icon.icon-close {
   width: 1.125rem;
   height: 0.75rem;
+}
+
+.accordion-toolbar-icon.icon-print {
+  color: var(--bbl-color-grey-70);
 }
 
 .accordion-toolbar-label {
@@ -169,6 +179,14 @@
 
 .accordion-panel .default-content-wrapper ul {
   margin-top:0
+}
+
+.accordion-panel .default-content-wrapper ul ul {
+  list-style-type: circle;
+}
+
+.accordion-panel .default-content-wrapper ul ul ul {
+  list-style-type: square;
 }
 
 .accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper):has(> p) {

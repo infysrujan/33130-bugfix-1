@@ -1,4 +1,4 @@
-export async function fetchApi(url, {
+export function fetchApi(url, {
   method = 'GET',
   headers = {},
   body,
@@ -13,20 +13,18 @@ export async function fetchApi(url, {
   if (cache) options.cache = cache;
   if (signal) options.signal = signal;
 
-  const response = await fetch(url, options);
-
-  if (!response.ok) {
-    if (throwOnError) throw new Error(`HTTP ${response.status}: ${url}`);
-    return null;
-  }
-
-  if (response.status === 204) return null;
-
-  const contentType = response.headers.get('content-type') || '';
-  return contentType.includes('application/json') ? response.json() : response.text();
+  return fetch(url, options).then((response) => {
+    if (!response.ok) {
+      if (throwOnError) throw new Error(`HTTP ${response.status}: ${url}`);
+      return null;
+    }
+    if (response.status === 204) return null;
+    const contentType = response.headers.get('content-type') || '';
+    return contentType.includes('application/json') ? response.json() : response.text();
+  });
 }
 
-export async function fetchGet(url, {
+export function fetchGet(url, {
   headers, cache, signal, throwOnError,
 } = {}) {
   return fetchApi(url, {
@@ -34,7 +32,7 @@ export async function fetchGet(url, {
   });
 }
 
-export async function fetchPost(url, payload, { headers = {}, throwOnError = true } = {}) {
+export function fetchPost(url, payload, { headers = {}, throwOnError = true } = {}) {
   return fetchApi(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...headers },

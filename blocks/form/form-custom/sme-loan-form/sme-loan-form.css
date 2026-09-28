@@ -27,10 +27,59 @@
     padding: 0;
   }
 
+  & .form form .radio-group-wrapper:not(.radio-tabs, .cards) .radio-wrapper label.field-label {
+    text-align: left;
+  }
+
+  /* & .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea) {
+    margin-bottom: 14px;
+  } */
+
+  & .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea):not(.drop-down-wrapper *) {
+    margin-bottom: 0.875rem;
+  }
+
+  & .form form fieldset:is(.field-salutation-panel, .field-contact-panel) :is(input:not([type='radio'], [type='checkbox']), select, textarea) {
+    margin-bottom: 0.625rem;
+  }
+
   & .form form,
   & .form form > fieldset.panel-wrapper.field-wrapper {
     max-width: none;
     margin-inline: auto;
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper > legend:not([data-visible='false']) {
+    width: 100%;
+    margin: 1.25rem 0 0.625rem;
+    padding: 0.1875rem 0 0.1875rem 1.25rem;
+    text-align: left;
+    font-size: 1rem;
+    line-height: var(--bbl-space-250);
+    color: var(--bbl-color-grey-156);
+    background-color: var(--bbl-color-gray-299);
+    border-bottom: 0.0625rem solid var(--bbl-color-white);
+    border-right: 0.0625rem solid var(--bbl-color-white);
+    font-weight: 600;
+    font-family: var(--bbl-font-family-primary);
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper:has(> .checkbox-group-wrapper) {
+    border: 0.0625rem solid var(--bbl-color-grey-150);
+    border-radius: 0.4375rem;
+    padding: var(--bbl-space-250);
+    margin-bottom: 0.625rem;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
+    gap: 0;
+    padding: 0 0 0 2.1875rem;
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper:has(> legend:not([data-visible='false'])) {
+    margin-top: 0.625rem;
   }
 
   & .form form fieldset.panel-wrapper.field-title-panel {
@@ -72,21 +121,6 @@
     margin: 0;
   }
 
-  & .form form fieldset.panel-wrapper.field-wrapper > legend:not([data-visible='false']) {
-    width: 100%;
-    margin: 1.25rem 0 0.625rem;
-    padding: var(--bbl-space-075);
-    text-align: left;
-    font-size: 1rem;
-    line-height: var(--bbl-space-250);
-    color: var(--bbl-color-grey-156);
-    background-color: var(--bbl-color-gray-299);
-    border-bottom: 0.0625rem solid var(--bbl-color-white);
-    border-right: 0.0625rem solid var(--bbl-color-white);
-    font-weight: 600;
-    font-family: var(--bbl-font-family-primary);
-  }
-
   & .form form input:disabled {
     background-color: var(--bbl-color-gray-151);
   }
@@ -111,6 +145,8 @@
     font-family: var(--bbl-font-family-medium);
     font-size: 0.95rem;
     font-weight: 400;
+    background-image: url('/icons/icon_chevron_down.svg');
+    background-size: 0.5894rem 0.375rem;
   }
 
   & .form form .field-description p {
@@ -202,7 +238,6 @@
       flex-wrap: nowrap;
       width: auto;
       max-width: 100%;
-      min-width: 18rem;
       margin: 0;
       justify-content: flex-start;
 
@@ -251,15 +286,6 @@
     text-align: center;
     font-family: var(--bbl-font-family-primary);
     font-weight: var(--bbl-font-weight-regular);
-  }
-
-  & .form form fieldset.panel-wrapper.field-wrapper:has(> .checkbox-group-wrapper) {
-    border: 0.0625rem solid var(--bbl-color-grey-150);
-    border-radius: 0.4375rem;
-    padding: var(--bbl-space-250);
-    margin-bottom: 0.625rem;
-    min-width: 0;
-    overflow: hidden;
   }
 
   & .form form .field-wrapper:has(> .checkbox-group-wrapper) {
@@ -329,6 +355,7 @@
   & .form form fieldset.panel-wrapper.field-wrapper:has(> .checkbox-group-wrapper) :is(.field-please-specify-type-of-loan, .field-please-specify-other-product) {
     width: 100%;
     max-width: 100%;
+    padding-left: 20px;
   }
 
   & .form form :is(.field-wrapper, .radio-group-wrapper).col-4,
@@ -363,11 +390,6 @@
       box-sizing: border-box;
       line-height: 2.75rem;
     }
-  }
-
-  & .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
-    gap: 0;
-    padding: 0 0 0 2.1875rem;
   }
 
   & .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
@@ -413,9 +435,39 @@
     flex: none;
   }
 
+  & .form form .field-wrapper.col-4 {
+    grid-column: span 4;
+    width: auto;
+  }
+
+  & .form form .field-wrapper.col-5 {
+    grid-column: span 5;
+    width: auto;
+  }
+
+  & .form form .field-wrapper.col-6 {
+    grid-column: span 6;
+    width: auto;
+  }
+
+  & .form form .field-wrapper.col-7 {
+    grid-column: span 7;
+    width: auto;
+  }
+
+  & .form form .field-wrapper.col-8 {
+    grid-column: span 8;
+    width: auto;
+  }
+
+  & .form form fieldset.panel-wrapper.field-wrapper > .checkbox-group-wrapper.col-6 {
+    grid-column: span 12;
+    width: 100%;
+  }
+
   @media (width > 47.5rem) {
     padding-inline: 0;
-
+    
     &.central-aligned > .default-content-wrapper {
       & h2 {
         margin: var(--bbl-space-500) 0 var(--bbl-space-300);
@@ -430,6 +482,10 @@
       }
     }
 
+    & .form form .radio-group-wrapper.field-convenienttime:not(.radio-tabs, .cards) .radio-wrapper  {
+      min-width: 18rem;
+    }
+
     & .form form .field-wrapper:has(>.field-description) .field-description {
       right: 0;
       left: 1.25rem
@@ -437,36 +493,6 @@
 
     & .form form fieldset:is(.field-salutation-panel, .field-contact-panel) .text-wrapper .field-description {
       left: -14.125rem;
-    }
-
-    & .form form .field-wrapper.col-4 {
-      grid-column: span 4;
-      width: auto;
-    }
-
-    & .form form .field-wrapper.col-5 {
-      grid-column: span 5;
-      width: auto;
-    }
-
-    & .form form .field-wrapper.col-6 {
-      grid-column: span 6;
-      width: auto;
-    }
-
-    & .form form .field-wrapper.col-7 {
-      grid-column: span 7;
-      width: auto;
-    }
-
-    & .form form .field-wrapper.col-8 {
-      grid-column: span 8;
-      width: auto;
-    }
-
-    & .form form fieldset.panel-wrapper.field-wrapper > .checkbox-group-wrapper.col-6 {
-      grid-column: span 12;
-      width: 100%;
     }
 
     & .form form .field-wrapper:has(> .checkbox-group-wrapper) {

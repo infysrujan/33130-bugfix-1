@@ -14,8 +14,8 @@ const MONTHS_EN = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
-// Calendar header always renders in Thai
 const WEEKDAYS_TH = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+const WEEKDAYS_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 /* ── Formatting ──────────────────────────────────────────────────────────── */
 
@@ -33,9 +33,12 @@ function formatDisplayDate(date, lang) {
   return `${MONTHS_EN[date.getMonth()]} ${d}, ${date.getFullYear()}`;
 }
 
-/** Returns "มกราคม 2569" style header — always Thai/BE regardless of page language. */
-function formatMonthHeader(year, monthIndex) {
-  return `${MONTHS_TH[monthIndex]} ${year + BE_OFFSET}`;
+/** Returns the popover month/year header: "มกราคม 2569" (TH/BE) or "January 2026" (EN). */
+function formatMonthHeader(year, monthIndex, lang) {
+  if (lang === 'th') {
+    return `${MONTHS_TH[monthIndex]} ${year + BE_OFFSET}`;
+  }
+  return `${MONTHS_EN[monthIndex]} ${year}`;
 }
 
 /* ── Date helpers ────────────────────────────────────────────────────────── */
@@ -44,6 +47,24 @@ function startOfDay(d) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
   return x;
+}
+
+/**
+ * Formats a Date as a `yyyy-MM-dd` string using its LOCAL calendar parts.
+ * Using toISOString() here would convert to UTC and can roll the date back a
+ * day for users behind UTC (e.g. Bangkok, UTC+7), submitting the wrong date.
+ *
+ * `useBE` shifts the year to Buddhist Era (+543). The hidden input is what the
+ * rules engine validates min/max against, and authored min/max stay in BE for
+ * Thai forms (e.g. "2568-08-01") — submitting a Gregorian value here would
+ * compare a ~2025 year against a ~2568 constraint and always fail.
+ */
+function toLocalISO(date, useBE = false) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
+  const y = date.getFullYear() + (useBE ? BE_OFFSET : 0);
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
 }
 
 function sameDay(a, b) {
@@ -65,8 +86,77 @@ function parseBlockConfig(block) {
   return config;
 }
 
+/**
+ * Resolves an authored property from the form-definition object, checking the
+ * locations AEM Forms / Universal Editor may store it in (same fallback chain
+ * used by the other components in blocks/form/components):
+ *   1. fd.properties[key]              – nested (standard AEM Forms runtime)
+ *   2. fd.properties['properties.key'] – dot-notation preserved inside properties
+ *   3. fd['properties.key']            – flat dot-notation directly on fd
+ *   4. fd[key]                         – directly on fd (core constraints / doc-based)
+ */
+function getProp(fd, key) {
+  if (!fd) return undefined;
+  const nested = fd.properties?.[key];
+  if (nested !== undefined && nested !== null && nested !== '') return nested;
+  const nestedDot = fd.properties?.[`properties.${key}`];
+  if (nestedDot !== undefined && nestedDot !== null && nestedDot !== '') return nestedDot;
+  const flat = fd[`properties.${key}`];
+  if (flat !== undefined && flat !== null && flat !== '') return flat;
+  return fd[key];
+}
+
+/** First non-empty value among several candidate keys. */
+function getFirstProp(fd, keys) {
+  for (let i = 0; i < keys.length; i += 1) {
+    const v = getProp(fd, keys[i]);
+    if (v !== undefined && v !== null && v !== '') return v;
+  }
+  return undefined;
+}
+
+/**
+ * Coerces an authored value to a plain string. AEM Forms stores label/title and
+ * similar rich fields as objects like `{ value, richText, visible }`, so writing
+ * them straight into `textContent` yields "[object Object]". This unwraps `.value`
+ * (and strips tags) before falling back to String().
+ */
+function toText(v) {
+  if (v === undefined || v === null) return '';
+  if (typeof v === 'string') return v;
+  if (typeof v === 'object') {
+    if (typeof v.value === 'string') return v.value.replace(/<[^>]*>/g, '').trim();
+    return '';
+  }
+  return String(v);
+}
+
+/**
+ * Parses an authored config date. Accepts values in either calendar:
+ *   - Gregorian (e.g. 2026-09-10 / 2026-09-10T00:00:00.000-00:00)
+ *   - Thai Buddhist Era (e.g. 2569-09-10) — years >= 2400 are treated as BE
+ *     and converted to Gregorian by subtracting 543.
+ * The Y-M-D is read directly and rebuilt as a LOCAL calendar day, so the time
+ * and UTC offset in the authored string can't shift the min/max boundary by a
+ * day (the previous `new Date(str)` treated the value as UTC midnight).
+ */
 function parseConfigDate(str) {
   if (!str) return null;
+  const m = String(str).trim().match(/^(\d{3,4})-(\d{1,2})-(\d{1,2})/);
+  if (m) {
+    let year = Number.parseInt(m[1], 10);
+    const monthIndex = Number.parseInt(m[2], 10) - 1;
+    const day = Number.parseInt(m[3], 10);
+    // BE years run ~543 ahead of Gregorian; nothing a form would legitimately
+    // author as a Gregorian year reaches 2400 AD, so this threshold is safe.
+    if (year >= 2400) year -= BE_OFFSET;
+    const d = new Date(year, monthIndex, day);
+    const valid = d.getFullYear() === year
+      && d.getMonth() === monthIndex
+      && d.getDate() === day;
+    return valid ? startOfDay(d) : null;
+  }
+  // Fallback for any non ISO-like value.
   const d = new Date(str);
   return Number.isNaN(d.getTime()) ? null : d;
 }
@@ -112,19 +202,45 @@ let instanceCount = 0;
 
 /* ── Main decorate ───────────────────────────────────────────────────────── */
 
-export default function decorate(block) {
+export default function decorate(block, fd = {}) {
+  // Legacy document-authored fallback: only meaningful when the block still has
+  // key/value <div> rows. In an AEM Forms render authored values arrive via `fd`.
   const config = parseBlockConfig(block);
   const lang = getDisplayLang();
 
   instanceCount += 1;
   const inputId = `dpth-input-${instanceCount}`;
 
-  const labelText = config.label || (lang === 'th' ? 'เลือกวันที่' : 'Select date');
-  const placeholder = config.placeholder || (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
-  const fieldName = config.name || 'date';
-  const minDate = parseConfigDate(config['min-date']);
-  const maxDate = parseConfigDate(config['max-date']) ?? startOfDay(new Date());
-  const initialDate = parseConfigDate(config.value);
+  const labelText = toText(
+    fd.label?.value
+    ?? getFirstProp(fd, ['label', 'jcr:title'])
+    ?? config.label,
+  ) || (lang === 'th' ? 'เลือกวันที่' : 'Select date');
+  const placeholder = toText(
+    getProp(fd, 'placeholder') ?? config.placeholder,
+  ) || (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
+  const fieldName = toText(getProp(fd, 'name') ?? config.name) || 'date';
+
+  // "Hide title": AEM sets fd.label.visible = false when the author ticks it,
+  // and the model also exposes a boolean `hideTitle`. Either hides the label
+  // (kept visible in edit mode via the runtime's [data-visible="false"] rule).
+  const hideTitle = fd.label?.visible === false
+    || getProp(fd, 'hideTitle') === true
+    || getProp(fd, 'hideTitle') === 'true';
+
+  // Authored min/max. The model exposes custom "minimumDate"/"maximumDate";
+  // the core datepicker resourceType may instead surface "minimum"/"maximum".
+  // Values may arrive as strings or as { value } objects, so unwrap first.
+  const minDate = parseConfigDate(
+    toText(getFirstProp(fd, ['minimumDate', 'minimum']) ?? config['min-date']),
+  );
+  const maxDate = parseConfigDate(
+    toText(getFirstProp(fd, ['maximumDate', 'maximum']) ?? config['max-date']),
+  ) ?? startOfDay(new Date());
+
+  const initialDate = parseConfigDate(
+    toText(getFirstProp(fd, ['default', 'value']) ?? config.value),
+  );
 
   /* ── Build DOM ── */
   block.innerHTML = '';
@@ -133,9 +249,14 @@ export default function decorate(block) {
   wrapper.className = 'dpth-wrapper';
 
   const labelEl = document.createElement('label');
-  labelEl.className = 'dpth-label';
+  labelEl.className = 'dpth-label field-label';
   labelEl.htmlFor = inputId;
   labelEl.textContent = labelText;
+  if (hideTitle) {
+    // Matches the runtime convention: hidden on the live form via
+    // `form:not(.edit-mode) [data-visible="false"]`, still shown in edit mode.
+    labelEl.dataset.visible = 'false';
+  }
 
   const fieldEl = document.createElement('div');
   fieldEl.className = 'dpth-field';
@@ -159,6 +280,10 @@ export default function decorate(block) {
   const hiddenInput = document.createElement('input');
   hiddenInput.type = 'hidden';
   hiddenInput.name = fieldName;
+  // The form model binds by field id (rules engine looks fields up via `#id` and
+  // the change delegation reads value from this element). Carry fd.id so both
+  // read (submit) and write (prefill / rules) round-trip correctly.
+  if (fd?.id) hiddenInput.id = fd.id;
 
   fieldEl.append(input, calIcon);
   wrapper.append(labelEl, fieldEl, hiddenInput);
@@ -194,7 +319,7 @@ export default function decorate(block) {
 
   const weekRow = document.createElement('div');
   weekRow.className = 'dpth-weekdays';
-  WEEKDAYS_TH.forEach((day) => {
+  (lang === 'th' ? WEEKDAYS_TH : WEEKDAYS_EN).forEach((day) => {
     const span = document.createElement('span');
     span.textContent = day;
     weekRow.append(span);
@@ -209,14 +334,27 @@ export default function decorate(block) {
 
   /* ── State ── */
   let selected = initialDate ? startOfDay(initialDate) : null;
-  let viewYear = (selected || new Date()).getFullYear();
-  let viewMonth = (selected || new Date()).getMonth();
+
+  // Decide which month to open on. A selected value always wins. Otherwise start
+  // from today, but clamp it into the authored [min, max] window so the picker
+  // never opens on a month where every day is disabled — e.g. if the max date is
+  // in an earlier year, open on the max date's month/year instead of today's.
+  function initialViewDate() {
+    if (selected) return selected;
+    const today = startOfDay(new Date());
+    if (maxDate && today > maxDate) return maxDate;
+    if (minDate && today < minDate) return minDate;
+    return today;
+  }
+  const viewSeed = initialViewDate();
+  let viewYear = viewSeed.getFullYear();
+  let viewMonth = viewSeed.getMonth();
   let isOpen = false;
 
   /* ── Render calendar grid ── */
   function renderGrid() {
     grid.replaceChildren();
-    monthTitle.textContent = formatMonthHeader(viewYear, viewMonth);
+    monthTitle.textContent = formatMonthHeader(viewYear, viewMonth, lang);
 
     const firstDayOfWeek = new Date(viewYear, viewMonth, 1).getDay();
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
@@ -253,10 +391,14 @@ export default function decorate(block) {
   function commitDay(day) {
     selected = startOfDay(new Date(viewYear, viewMonth, day));
     input.value = formatDisplayDate(selected, lang);
-    const [datePart] = selected.toISOString().split('T');
-    hiddenInput.value = datePart;
+    // The hidden input is the ONLY element the form model reads. It must hold a
+    // clean string in a format the date model accepts (yyyy-MM-dd), built from
+    // local parts. The visible input must NOT dispatch change — the form binds
+    // by wrapper id, so its human-readable value would overwrite the model with
+    // an unparseable string and the field would save nothing.
+    hiddenInput.value = toLocalISO(selected, lang === 'th');
+    hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
     hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
     renderGrid();
   }
   /* ── Open / close ── */
@@ -371,8 +513,10 @@ export default function decorate(block) {
   /* ── Set initial display value ── */
   if (selected) {
     input.value = formatDisplayDate(selected, lang);
-    const [datePart] = selected.toISOString().split('T');
-    hiddenInput.value = datePart;
+    hiddenInput.value = toLocalISO(selected, lang === 'th');
+    // Seed the form model with the default value so it submits without the user
+    // re-picking it.
+    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   /* ── Public API ── */
@@ -386,12 +530,13 @@ export default function decorate(block) {
         viewYear = selected.getFullYear();
         viewMonth = selected.getMonth();
         input.value = formatDisplayDate(selected, lang);
-        const [datePart] = selected.toISOString().split('T');
-        hiddenInput.value = datePart;
+        hiddenInput.value = toLocalISO(selected, lang === 'th');
       } else {
         input.value = '';
         hiddenInput.value = '';
       }
+      hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+      hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
       if (isOpen) renderGrid();
     },
     destroy() {

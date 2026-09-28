@@ -166,7 +166,8 @@
 
 @media (width > 47.5rem) {
   .mf-comparator .inner-container button {
-    min-width: 8.4375rem;
+    min-width: 7.5rem;
+    width: unset;
   }
 }
 
@@ -187,9 +188,5 @@
 
   .mf-comparator .product-comparing {
     flex-shrink: 1;
-  }
-
-  .mf-comparator .inner-container button {
-    min-width: 9.6875rem;
   }
 }

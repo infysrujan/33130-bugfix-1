@@ -372,7 +372,7 @@
 /* ── Month-year picker input ───────────────────────────────── */
 
 .dynamic-board .db-mp-input {
-  width: 8.5313rem;
+  width: 100%;
   height: 2.75rem;
   padding: 0 var(--bbl-space-500) 0 var(--bbl-space-200);
   font-size: var(--bbl-font-size-b2);
@@ -596,7 +596,7 @@
 .dynamic-board .db-filter-reset {
   width: 100%;
   max-width: unset;
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   border-radius: var(--bbl-space-075);
   cursor: pointer;
   box-sizing: border-box;
@@ -723,7 +723,6 @@
 
 .dynamic-board .db-table thead th[rowspan='2'] {
   height: 6.25rem;
-  border-bottom: 0.0625rem solid var(--bbl-color-grey-152);
 }
 
 .dynamic-board .db-table thead tr {
@@ -735,7 +734,7 @@
 }
 
 .dynamic-board .db-table thead tr:last-child th {
-  border-bottom: 0.0625rem solid var(--bbl-color-grey-152);
+  border-top: 0.0625rem solid var(--bbl-color-grey-152);
 }
 
 .dynamic-board .db-table thead tr:first-child th:nth-child(2) {
@@ -830,11 +829,11 @@
 /* ── Cell types ────────────────────────────────────────────── */
 
 .dynamic-board .db-td-check {
-  width: 3%;
+  width: 2%;
 }
 
 .dynamic-board .db-td-symbol {
-  width: 7%;
+  width: 8%;
   white-space: nowrap;
   color: var(--bbl-color-active-blue);
 }
@@ -893,8 +892,12 @@
 
 .dynamic-board .db-no-results {
   padding: var(--bbl-space-400) var(--bbl-space-200);
-  text-align: center;
+  text-align: left;
   color: var(--bbl-color-grey-40);
+}
+
+.dynamic-board .db-table tbody tr:last-child td.db-no-results {
+  border: 0.0625rem solid var(--bbl-color-grey-20);
 }
 
 .dynamic-board .db-td-dl:hover {
@@ -998,6 +1001,24 @@
     width: 11.5625rem;
   }
 
+  .dynamic-board .db-no-results {
+    text-align: center;
+  }
+
+  .dynamic-board .db-filter-date-wrap {
+    flex-direction: row;
+    gap: var(--bbl-space-200);
+  }
+
+  .dynamic-board .db-filter-date-wrap .db-filter-row {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .dynamic-board .db-mp-input {
+    width: 8.5313rem;
+  }
+
 }
 
 /* ── Desktop: 64rem+ (1024px) ──────────────────────────────── */
@@ -1016,16 +1037,6 @@
   .dynamic-board .db-print-btn {
     width: 100%;
     justify-content: flex-end;
-  }
-
-  .dynamic-board .db-filter-date-wrap {
-    flex-direction: row;
-    gap: var(--bbl-space-200);
-  }
-
-  .dynamic-board .db-filter-date-wrap .db-filter-row {
-    flex: 1;
-    min-width: 0;
   }
 
   .dynamic-board .db-filter-title {

@@ -867,8 +867,12 @@ function buildShellMarkup(data) {
 function buildFundCard(fund, labels) {
   const detailRows = fund.details.map((detail) => `
     <div class="bwealth-series-fund-detail">
-      <span class="bwealth-series-fund-detail-label" title="${escapeHtml(detail.label)}">${escapeHtml(detail.label)}</span>
-      <span class="bwealth-series-fund-detail-value" title="${escapeHtml(detail.value)}">${escapeHtml(detail.value)}</span>
+      <span class="bwealth-series-fund-detail-label" data-clamp="${escapeHtml(detail.label)}">
+        <span class="bwealth-series-fund-detail-text">${escapeHtml(detail.label)}</span>
+      </span>
+      <span class="bwealth-series-fund-detail-value" data-clamp="${escapeHtml(detail.value)}">
+        <span class="bwealth-series-fund-detail-text">${escapeHtml(detail.value)}</span>
+      </span>
     </div>`).join('');
 
   const factSheetHref = fund.factSheetUrl || fund.deepLink || '';
@@ -1483,6 +1487,106 @@ function isOtherGoal(value) {
 const FUNDS_DESKTOP_MIN_WIDTH = 1025;
 const FUNDS_SINGLE_CARD_MAX_WIDTH = 430;
 
+/* -------------------------------------------------- clamped text + tooltip */
+
+/* จำนวนบรรทัดของ .bwealth-series-fund-detail-text ใน CSS (desktop / tablet-mobile) */
+const FUND_DETAIL_MAX_LINES = { desktop: 2, tabletMobile: 3 };
+
+/*
+ * วัดว่าข้อความยาวเกินจำนวนบรรทัดที่ clamp ไว้หรือยัง — port จาก getOverflowState
+ * ของ ClampedTextWithTooltip ใน SavingTools.tsx
+ *
+ * scrollHeight ของกล่องที่ -webkit-line-clamp อยู่แล้วเชื่อถือไม่ได้ (เบราว์เซอร์
+ * คืนความสูงเท่าที่ clamp ไว้) จึงต้อง clone ข้อความไปวัดใน span ลับนอกจอที่กว้าง
+ * เท่ากันและ metrics ฟอนต์ชุดเดียวกัน แล้วเทียบกับ lineHeight * จำนวนบรรทัด
+ */
+function isClampedTextOverflowing(textEl, text, maxLines) {
+  const { width } = textEl.getBoundingClientRect();
+  if (width <= 0) return false;
+
+  const cs = window.getComputedStyle(textEl);
+  const lines = window.innerWidth < FUNDS_DESKTOP_MIN_WIDTH
+    ? maxLines.tabletMobile
+    : maxLines.desktop;
+  const fontSize = parseFloat(cs.fontSize) || 16;
+  const lineHeight = cs.lineHeight === 'normal'
+    ? fontSize * 1.35
+    : parseFloat(cs.lineHeight) || fontSize * 1.35;
+
+  const measurer = document.createElement('span');
+  measurer.textContent = text;
+  Object.assign(measurer.style, {
+    position: 'fixed',
+    left: '-9999px',
+    top: '0',
+    visibility: 'hidden',
+    pointerEvents: 'none',
+    display: 'block',
+    width: `${width}px`,
+    whiteSpace: 'normal',
+    overflow: 'visible',
+    fontFamily: cs.fontFamily,
+    fontSize: cs.fontSize,
+    fontWeight: cs.fontWeight,
+    fontStyle: cs.fontStyle,
+    lineHeight: cs.lineHeight,
+    letterSpacing: cs.letterSpacing,
+    wordBreak: cs.wordBreak,
+    overflowWrap: cs.overflowWrap,
+  });
+
+  document.body.appendChild(measurer);
+  const fullHeight = measurer.scrollHeight;
+  measurer.remove();
+
+  return fullHeight > lineHeight * lines + 1;
+}
+
+/*
+ * ช่อง label/value ของการ์ดกองทุนถูก clamp ไว้ ข้อความยาวจะโดนตัดด้วย …
+ * hover แล้วต้องเห็นข้อความเต็มใน tooltip เฉพาะช่องที่ล้นจริงเท่านั้น
+ * ผูกแบบ delegate ที่ block เพราะ renderFunds เขียนทับการ์ดใหม่ทุกครั้งที่คำนวณ
+ */
+function attachFundDetailTooltips(state) {
+  const { root } = state;
+  let active = null;
+
+  const hide = () => {
+    if (!active) return;
+    const tip = active.querySelector('.bwealth-series-fund-detail-tooltip');
+    if (tip) tip.remove();
+    active = null;
+  };
+
+  root.addEventListener('mouseover', (e) => {
+    const wrap = e.target.closest ? e.target.closest('[data-clamp]') : null;
+    if (wrap === active) return;
+    hide();
+    if (!wrap) return;
+
+    const textEl = wrap.querySelector('.bwealth-series-fund-detail-text');
+    const text = wrap.dataset.clamp;
+    if (!textEl || !text) return;
+    if (!isClampedTextOverflowing(textEl, text, FUND_DETAIL_MAX_LINES)) return;
+
+    const tip = document.createElement('span');
+    tip.className = 'bwealth-series-fund-detail-tooltip';
+    tip.textContent = text;
+    wrap.append(tip);
+    active = wrap;
+  });
+
+  root.addEventListener('mouseout', (e) => {
+    // ย้ายเมาส์ไปยัง <span> ลูกข้างในถือว่ายังอยู่ที่เดิม
+    if (active && active.contains(e.relatedTarget)) return;
+    hide();
+  });
+
+  // เลื่อนคารูเซลทั้งที่ tooltip เปิดอยู่ ตัว tooltip จะลอยตามการ์ดไปค้างอยู่
+  const track = root.querySelector('.bwealth-series-funds-track');
+  if (track) track.addEventListener('scroll', hide, { passive: true });
+}
+
 /*
  * คารูเซลกองทุนแนะนำ — port จาก getRecommendedFundScrollPositions
  * และ handleRecommendedFunds* ใน SavingTools.tsx
@@ -1744,6 +1848,7 @@ function attachHandlers(state) {
   });
 
   attachFundsCarousel(state);
+  attachFundDetailTooltips(state);
   attachModal(state);
   refresh();
 }

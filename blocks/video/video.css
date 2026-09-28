@@ -63,6 +63,10 @@
   touch-action: manipulation;
 }
 
+.video .video-embed video:fullscreen {
+  object-fit: contain;
+}
+
 /* Image CTA */
 .video .video-image {
   width: 100%;

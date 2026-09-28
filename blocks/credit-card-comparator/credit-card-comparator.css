@@ -62,6 +62,11 @@
   white-space: nowrap;
 }
 
+.credit-card-comparator .inner-container .button-m {
+  width: auto;
+  min-width: 100%;
+}
+
 /* ── Each product card — inline-table so thumb and info sit side by side ─── */
 
 .credit-card-comparator .product-comparing {
@@ -89,12 +94,12 @@
   -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-family: var(--bbl-font-family-looped);
-  line-height: 1.375;
+  line-height: 0.963rem;
   margin: 0;
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 /* ── Thumb ───────────────────────────────────────────────────────────────── */
@@ -185,6 +190,11 @@
     white-space: normal;
   }
 
+  .credit-card-comparator .inner-container .button-m {
+    width: auto;
+    min-width: 7.5rem;
+  }
+
   .credit-card-comparator .product-comparing {
     width: calc(30% - 0.5rem);
   }
@@ -210,6 +220,11 @@
 
   .credit-card-comparator .product-comparing {
     width: auto;
+  }
+  
+  .credit-card-comparator .product-comparing .text-small {
+    font-size: 0.8rem;
+    line-height: 1.1rem;
   }
   
   .credit-card-comparator .btn-primary {

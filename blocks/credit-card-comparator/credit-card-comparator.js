@@ -1,5 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { getCompareMode, getCompareStorageKey } from '../../scripts/utils/card-compare-fields.js';
 
 const MIN_COMPARE = 2;
 const MAX_COMPARE = 3;
@@ -137,6 +138,8 @@ function renderBar(compareGroup, selectedCards) {
 // ── Main export ────────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
+  const storageKey = getCompareStorageKey(getCompareMode(document));
+
   // Remove any other already-decorated credit-card-comparator instances (UE duplication fix).
   // Only remove if it shares the same data-aue-resource (same AEM content path), so a
   // legitimately different comparator instance on the same page is not affected.
@@ -185,7 +188,9 @@ export default async function decorate(block) {
     }
     saveComparatorCookie(selectedCards);
     // Persist to sessionStorage so the bar survives a same-tab page refresh
-    try { sessionStorage.setItem('ccs-compare-cards', JSON.stringify(selectedCards)); } catch { /* ignore */ }
+    try {
+      sessionStorage.setItem(storageKey, JSON.stringify(selectedCards));
+    } catch { /* ignore */ }
     renderBar(compareGroup, selectedCards);
   }
 
@@ -207,7 +212,7 @@ export default async function decorate(block) {
   // On page load, restore selection from sessionStorage so the bar and card buttons
   // re-appear after a refresh
   try {
-    const stored = sessionStorage.getItem('ccs-compare-cards');
+    const stored = sessionStorage.getItem(storageKey);
     if (stored) {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed) && parsed.length) {

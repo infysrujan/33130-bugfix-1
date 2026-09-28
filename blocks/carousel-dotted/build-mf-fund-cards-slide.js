@@ -3,6 +3,8 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { loadCarouselListingOrder, filterFundsInSheet, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
+import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -14,34 +16,37 @@ function norm(str) {
   return (str || '').toString().toLowerCase().trim().replace(/\s+/g, '-');
 }
 
-/**
- * Extract the last URL path segment and normalise it as a category slug.
- * e.g. /en/mutual-funds/fixed-income-funds  →  "fixed-income-funds"
- */
+// Extract & normalize the last URL path segment as a category slug.
 function extractCategoryFromPath(pathname) {
   const segments = pathname.split('/').filter(Boolean);
   return norm(segments[segments.length - 1] || '');
 }
 
-/**
- * Extract the category slug from an AEM tag value.
- * AEM tags arrive as e.g. "bangkokbank:mutual-funds/fixed-income-funds"
- * We take the last segment after splitting on "/" or ":".
- */
+// Extract the category slug from an AEM tag value (last segment after "/" or ":").
 function extractCategoryFromTag(tagValue) {
   if (!tagValue) return '';
   const parts = tagValue.split(/[/:]/);
   return norm(parts[parts.length - 1] || '');
 }
 
-/**
- * Loose category match that handles plural/singular differences.
- * e.g. page slug "fixed-income-funds" matches FundCategory "fixed-income-fund"
- */
+// FundCategory is normally an array of full AEM tag paths, but a multi-value
+// tag field can also come back as a single delimited string (comma/semicolon/
+// pipe/newline-separated) — split those too so each individual tag gets its
+// own slug instead of one slug being extracted from the whole joined string.
+function fundCategorySlugs(fundCategory) {
+  const tags = Array.isArray(fundCategory) ? fundCategory : [fundCategory];
+  return tags
+    .flatMap((tag) => (typeof tag === 'string' ? tag.split(/[,;|\n]+/) : [tag]))
+    .map((tag) => extractCategoryFromTag(tag))
+    .filter(Boolean);
+}
+
+// Exact slug match only (plural/singular tolerant) — no substring matching, no blank matches.
 function matchesCategory(fundCategory, pageCategory) {
-  const fc = norm(fundCategory);
   const pc = norm(pageCategory);
-  return fc === pc || pc.includes(fc) || fc.includes(pc);
+  if (!pc) return false;
+  return fundCategorySlugs(fundCategory)
+    .some((fc) => fc === pc || fc.replace(/s$/, '') === pc.replace(/s$/, ''));
 }
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
@@ -76,10 +81,7 @@ async function loadFundsData() {
 
 // ── Card block builder ─────────────────────────────────────────────────────────
 
-/**
- * Build the fund card list HTML directly, producing the same class structure
- * as card-list.js so that card-list.css applies without running card-list.js.
- */
+// Builds fund cards with card-list.js's class structure so card-list.css applies.
 function buildFundCardsBlock(funds, doc, readMoreLabel, cardsPerSlide = 3) {
   const block = doc.createElement('div');
   block.className = 'card-list mf-card-list block';
@@ -195,6 +197,19 @@ function buildFundCardsBlock(funds, doc, readMoreLabel, cardsPerSlide = 3) {
  */
 export default async function buildMfFundCardsSlide(row, index) {
   const doc = row.ownerDocument;
+  const carouselBlock = row.parentElement;
+
+  // The fund data fetch below can take a moment, and carousel-dotted.js only swaps the
+  // raw authored rows for the built slides once every slide promise resolves — until
+  // then those rows (config fields, slide type, etc.) would otherwise flash on screen.
+  if (
+    carouselBlock
+    && !isAuthoringInstance(carouselBlock)
+    && !carouselBlock.dataset.mfFundCardsRowsHidden
+  ) {
+    carouselBlock.dataset.mfFundCardsRowsHidden = 'true';
+    [...carouselBlock.children].forEach((child) => { child.style.visibility = 'hidden'; });
+  }
 
   const cells = [...row.children];
   // cells[17] = mfCardListDescription (richtext), cells[18] = cardTypes (aem-tag)
@@ -209,14 +224,23 @@ export default async function buildMfFundCardsSlide(row, index) {
     loadCSS(`${window.hlx.codeBasePath}/blocks/carousel-dotted/mf-fund-cards-slide.css`),
   ]);
 
-  const [allFunds, ph] = await Promise.all([loadFundsData(), fetchPlaceholders()]);
+  const [allFunds, listingOrder, ph] = await Promise.all([
+    loadFundsData(),
+    loadCarouselListingOrder(),
+    fetchPlaceholders(),
+  ]);
 
   const readMoreLabel = ph.mfReadMoreText || 'Read more';
   const compareLabel = ph.mfCompareText || 'Compare';
   const noResultsLabel = ph.mfNoResultsText || 'No results found';
 
-  const filteredFunds = allFunds.filter(
-    (fund) => matchesCategory(fund.FundCategory || '', pageCategory),
+  const filteredFunds = sortFundsBySheetOrder(
+    filterFundsInSheet(
+      allFunds.filter((fund) => matchesCategory(fund.FundCategory || '', pageCategory)),
+      listingOrder,
+    ),
+    listingOrder,
+    pageCategory,
   );
 
   // eslint-disable-next-line no-console
@@ -238,7 +262,6 @@ export default async function buildMfFundCardsSlide(row, index) {
     msg.textContent = noResultsLabel;
     slide.appendChild(msg);
     if (descriptionHTML) {
-      const carouselBlock = row.parentElement;
       if (carouselBlock && !carouselBlock.nextElementSibling?.classList.contains('mf-fund-cards-description')) {
         const descEl = doc.createElement('div');
         descEl.className = 'mf-fund-cards-description';
@@ -329,7 +352,6 @@ export default async function buildMfFundCardsSlide(row, index) {
 
   // ── Description below carousel (rendered once, from first page) ───────────────
   if (descriptionHTML) {
-    const carouselBlock = row.parentElement;
     if (carouselBlock && !carouselBlock.nextElementSibling?.classList.contains('mf-fund-cards-description')) {
       const descEl = doc.createElement('div');
       descEl.className = 'mf-fund-cards-description';

@@ -591,7 +591,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
   async function fetchByKeywordOverseas(keyword) {
     if (!API_SEARCH_KW) return [];
     const url = buildUrl(API_SEARCH_KW, { KEYWORD: keyword });
-    return (await fetchGet(url, { throwOnError: false })) ?? [];
+    return fetchGet(url, { throwOnError: false }).then((data) => data ?? []);
   }
 
   const enterKeywordText = placeholders?.enterKeywordText || 'Enter Keyword';

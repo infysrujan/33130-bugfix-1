@@ -320,7 +320,7 @@ export async function generateFormRendition(
   const items = getItems(panel) || [];
   const isReviewContext = insideReviewPanel || !!container?.classList?.contains('form-review-2col');
   const promises = items.map(async (field) => {
-    field.value = field.value ?? '';
+    field.value = field.value ?? field.default ?? '';
     const { fieldType } = field;
     if (fieldType === 'captcha') {
       captchaField = field;
@@ -373,38 +373,6 @@ function isDocumentBasedForm(formDef) {
   return formDef?.[':type'] === 'sheet' && formDef?.data;
 }
 
-function decorateDateFormatChange(form) {
-  form.querySelectorAll('.date-wrapper.Date-Format-Change').forEach((wrapper) => {
-    const input = wrapper.querySelector('input[edit-value]');
-    const descEl = wrapper.querySelector('.field-description');
-    if (!input || !descEl) return;
-    const temp = document.createElement('div');
-    temp.innerHTML = descEl.innerHTML;
-    const descText = temp.textContent.trim();
-    if (!descText) return;
-    input.setAttribute('placeholder', descText);
-    input.setAttribute('tabindex', '-1');
-    const fieldEl = document.createElement('div');
-    fieldEl.className = 'date-format-change-field';
-    input.insertAdjacentElement('beforebegin', fieldEl);
-    fieldEl.append(input);
-    const calBtn = document.createElement('button');
-    calBtn.type = 'button';
-    calBtn.className = 'date-format-change-icon';
-    calBtn.setAttribute('aria-label', input.getAttribute('aria-label') || 'Select date');
-    calBtn.setAttribute('aria-controls', input.id);
-    calBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-      <line x1="16" y1="2" x2="16" y2="6"></line>
-      <line x1="8" y1="2" x2="8" y2="6"></line>
-      <line x1="3" y1="10" x2="21" y2="10"></line>
-    </svg>`;
-    calBtn.addEventListener('click', () => input.focus());
-    fieldEl.append(calBtn);
-    wrapper.classList.add('date-format-change-active');
-  });
-}
-
 async function createFormForAuthoring(formDef) {
   const form = document.createElement('form');
   await generateFormRendition(formDef, form, formDef.id, (container) => {
@@ -423,7 +391,6 @@ async function createFormForAuthoring(formDef) {
   decorateCreditCardForm(form);
   decorateContactUsForm(form);
   decorateProtectionBtBelovedPlus(form);
-  decorateDateFormatChange(form);
   return form;
 }
 
@@ -488,7 +455,6 @@ export async function createForm(formDef, data, source = 'aem') {
   decorateCreditCardForm(form);
   decorateContactUsForm(form);
   decorateProtectionBtBelovedPlus(form);
-  decorateDateFormatChange(form);
   return {
     form,
     captcha,
@@ -619,63 +585,66 @@ function loadFormCustomStyles(formDef) {
   }
 }
 
-export default async function decorate(block) {
-  let container = block.querySelector('a[href]');
-  let formDef;
-  let pathname;
-  if (container) {
-    ({ pathname } = new URL(container.href));
-    formDef = await fetchForm(container.href);
-  } else {
-    ({ container, formDef } = extractFormDefinition(block));
-  }
-  let source = 'aem';
-  let rules = true;
-  let form;
-  if (formDef) {
-    const submitProps = formDef?.properties?.['fd:submit'];
-    const actionType = submitProps?.actionName || formDef?.properties?.actionType;
-    const spreadsheetUrl = submitProps?.spreadsheet?.spreadsheetUrl
-      || formDef?.properties?.spreadsheetUrl;
+export default function decorate(block) {
+  async function init() {
+    let container = block.querySelector('a[href]');
+    let formDef;
+    let pathname;
+    if (container) {
+      ({ pathname } = new URL(container.href));
+      formDef = await fetchForm(container.href);
+    } else {
+      ({ container, formDef } = extractFormDefinition(block));
+    }
+    let source = 'aem';
+    let rules = true;
+    let form;
+    if (formDef) {
+      const submitProps = formDef?.properties?.['fd:submit'];
+      const actionType = submitProps?.actionName || formDef?.properties?.actionType;
+      const spreadsheetUrl = submitProps?.spreadsheet?.spreadsheetUrl
+        || formDef?.properties?.spreadsheetUrl;
 
-    if (actionType === 'spreadsheet' && spreadsheetUrl) {
-      // Check if we're in an iframe and use parent window path if available
-      const iframePath = window.frameElement ? window.parent.location.pathname
-        : window.location.pathname;
-      formDef.action = SUBMISSION_SERVICE + btoa(pathname || iframePath);
-    } else {
-      formDef.action = getSubmitBaseUrl() + (formDef.action || '');
-    }
-    if (isDocumentBasedForm(formDef)) {
-      const transform = new DocBasedFormToAF();
-      formDef = transform.transform(formDef, { block });
-      source = 'sheet';
-      loadFormCustomStyles(formDef);
-      const response = await createForm(formDef, null, source);
-      form = response?.form;
-      const docRuleEngine = await import('./rules-doc/index.js');
-      docRuleEngine.default(formDef, form);
-      rules = false;
-    } else {
-      loadFormCustomStyles(formDef);
-      afModule = await import('./rules/index.js');
-      addRequestContextToForm(formDef);
-      if (afModule && afModule.initAdaptiveForm && !block.classList.contains('edit-mode')) {
-        form = await afModule.initAdaptiveForm(formDef, createForm);
+      if (actionType === 'spreadsheet' && spreadsheetUrl) {
+        // Check if we're in an iframe and use parent window path if available
+        const iframePath = window.frameElement ? window.parent.location.pathname
+          : window.location.pathname;
+        formDef.action = SUBMISSION_SERVICE + btoa(pathname || iframePath);
       } else {
-        form = await createFormForAuthoring(formDef);
+        formDef.action = getSubmitBaseUrl() + (formDef.action || '');
       }
+      if (isDocumentBasedForm(formDef)) {
+        const transform = new DocBasedFormToAF();
+        formDef = transform.transform(formDef, { block });
+        source = 'sheet';
+        loadFormCustomStyles(formDef);
+        const response = await createForm(formDef, null, source);
+        form = response?.form;
+        const docRuleEngine = await import('./rules-doc/index.js');
+        docRuleEngine.default(formDef, form);
+        rules = false;
+      } else {
+        loadFormCustomStyles(formDef);
+        afModule = await import('./rules/index.js');
+        addRequestContextToForm(formDef);
+        if (afModule && afModule.initAdaptiveForm && !block.classList.contains('edit-mode')) {
+          form = await afModule.initAdaptiveForm(formDef, createForm);
+        } else {
+          form = await createFormForAuthoring(formDef);
+        }
+      }
+      form.dataset.redirectUrl = formDef.redirectUrl || formDef.properties?.redirectUrl || '';
+      form.dataset.thankYouMsg = formDef.thankYouMessage || formDef.thankYouMsg
+        || formDef.properties?.thankYouMessage || formDef.properties?.thankYouMsg || '';
+      form.dataset.action = formDef.action || pathname?.split('.json')[0];
+      form.dataset.source = source;
+      form.dataset.rules = rules;
+      form.dataset.id = formDef.id;
+      if (source === 'aem' && formDef.properties && formDef.properties['fd:path']) {
+        form.dataset.formpath = formDef.properties['fd:path'];
+      }
+      container.replaceWith(form);
     }
-    form.dataset.redirectUrl = formDef.redirectUrl || formDef.properties?.redirectUrl || '';
-    form.dataset.thankYouMsg = formDef.thankYouMessage || formDef.thankYouMsg
-      || formDef.properties?.thankYouMessage || formDef.properties?.thankYouMsg || '';
-    form.dataset.action = formDef.action || pathname?.split('.json')[0];
-    form.dataset.source = source;
-    form.dataset.rules = rules;
-    form.dataset.id = formDef.id;
-    if (source === 'aem' && formDef.properties && formDef.properties['fd:path']) {
-      form.dataset.formpath = formDef.properties['fd:path'];
-    }
-    container.replaceWith(form);
   }
+  init();
 }

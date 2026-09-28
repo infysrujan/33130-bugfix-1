@@ -1,6 +1,7 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { getLang } from '../../scripts/scripts.js';
+import { convertToThaiDate } from '../../scripts/utils/datelang.js';
 
 function getPageLang() {
   const first = window.location.pathname.split('/').filter(Boolean)[0];
@@ -558,17 +559,21 @@ const MONTH_NAMES = [
 ];
 
 /**
- * Convert API date `DD/MM/YYYY` to display form `D Month YYYY`.
+ * Convert API date `DD/MM/YYYY` to display form `D Month YYYY` (or Thai equivalent).
  * @param {string | null | undefined} mktdate
+ * @param {string} lang
  * @returns {string}
  */
-function formatMarketReportDate(mktdate) {
+function formatMarketReportDate(mktdate, lang) {
   if (!mktdate) return '';
   const parts = mktdate.split('/');
   if (parts.length !== 3) return mktdate;
   const [day, month, year] = parts;
   const monthIndex = parseInt(month, 10) - 1;
   if (monthIndex < 0 || monthIndex > 11) return mktdate;
+  if (lang === 'th') {
+    return convertToThaiDate(new Date(Number(year), monthIndex, Number(day)));
+  }
   return `${parseInt(day, 10)} ${MONTH_NAMES[monthIndex]} ${year}`;
 }
 
@@ -997,7 +1002,7 @@ export default async function decorate(block) {
   showMarketReportLoader(panel);
   try {
     const { model, loanRows, depositRows } = await fetchMarketReportData();
-    const formattedDate = formatMarketReportDate(model.mktdate);
+    const formattedDate = formatMarketReportDate(model.mktdate, getPageLang());
 
     populatePanelTables(panel, model, loanRows, depositRows);
 

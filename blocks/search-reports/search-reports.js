@@ -122,6 +122,14 @@ async function fetchSearchParams(searchParamsUrl) {
   return Array.isArray(parsed) ? parsed[0] : parsed;
 }
 
+function resolveSearchParamsUrl(rawUrl, lang) {
+  if (!rawUrl) return '';
+  if (rawUrl.includes('{{lang}}')) {
+    return rawUrl.replace(/\{\{lang\}\}/g, lang);
+  }
+  return rawUrl.replace(/\.searchparams(?:\.[a-z]{2})?\.json/, `.searchparams.${lang}.json`);
+}
+
 // Rows 0-3 are ctaLabel/modalTitle/modalDescription/resultsPageUrl (read in parseAuthoredMeta);
 // row 4 is a structural row with no corresponding model field — skip to option rows.
 const OPTION_ROWS_START = 5;
@@ -155,8 +163,9 @@ function parseAuthoredOptions(rows) {
 }
 
 function parseAuthoredMeta(rows, placeholders) {
-  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel || 'Search for Reports';
-  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
+  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel;
+  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim()
+    || placeholders.reportsModalTitle;
   const modalDescRow = rows[2];
   const modalDesc = modalDescRow?.firstElementChild?.textContent?.trim() || '';
   const resultsPageUrl = rows[3]?.querySelector('a')?.href || window.location.pathname;
@@ -192,7 +201,7 @@ function discardGenericModalWrapper(placeholder) {
 }
 
 function buildModalDom({
-  lang, ctaLabel, modalTitle, modalDesc,
+  lang, ctaLabel, modalTitle, modalDesc, typePlaceholder, yearPlaceholder,
 }) {
   const overlay = createTaggedElement('div', {
     className: 'search-reports-overlay',
@@ -234,8 +243,12 @@ function buildModalDom({
     searchBtn.disabled = !(getType() && getYear());
   }
 
-  const { wrapper: typeDropdown, getValue: getTypeVal, populateOptions: populateTypes } = buildDropdown('Type of report', updateSearchBtn);
-  const { wrapper: yearDropdown, getValue: getYearVal, populateOptions: populateYears } = buildDropdown('Year', updateSearchBtn);
+  const {
+    wrapper: typeDropdown, getValue: getTypeVal, populateOptions: populateTypes,
+  } = buildDropdown(typePlaceholder, updateSearchBtn);
+  const {
+    wrapper: yearDropdown, getValue: getYearVal, populateOptions: populateYears,
+  } = buildDropdown(yearPlaceholder, updateSearchBtn);
   getType = getTypeVal;
   getYear = getYearVal;
 
@@ -280,7 +293,7 @@ export default async function decorate(block) {
   const lang = getLang();
 
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
-  const searchParamsUrl = configs.reportsSearchParamsUrl || '';
+  const searchParamsUrl = resolveSearchParamsUrl(configs.reportsSearchParamsUrl, lang);
 
   const {
     ctaLabel, modalTitle, modalDesc, resultsPageUrl,
@@ -297,7 +310,12 @@ export default async function decorate(block) {
   const {
     overlay, dialog, closeBtn, searchBtn, getType, getYear, populateTypes, populateYears,
   } = buildModalDom({
-    lang, ctaLabel, modalTitle, modalDesc,
+    lang,
+    ctaLabel,
+    modalTitle,
+    modalDesc,
+    typePlaceholder: placeholders.reportsTypePlaceholder,
+    yearPlaceholder: placeholders.reportsYearPlaceholder,
   });
 
   wireModalEvents({
@@ -311,7 +329,7 @@ export default async function decorate(block) {
       label: resolveTypeLabel(placeholders, t),
     }));
     populateTypes(apiTypes?.length ? apiTypes : typeOptions);
-    populateYears((data.years || []).map((y) => ({ label: y, value: y })));
+    populateYears(data.years?.length ? data.years : yearOptions);
   }).catch(() => {
     populateTypes(typeOptions);
     populateYears(yearOptions);

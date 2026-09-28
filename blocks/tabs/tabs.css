@@ -511,7 +511,7 @@
   .tabs.media-tab .tabs-nav button {
     padding: 0;
     text-align: left;
-    margin: 0 1.1rem;
+    margin: 0 var(--bbl-space-100);
     min-height: var(--bbl-space-200);
     height: unset;
     max-height: max-content;
@@ -586,6 +586,11 @@
 
   .tabs-nav-wrapper .tabs-nav li {
     padding: 0 0.9375rem;
+  }
+
+  .tabs.simple-tab .tabs-nav button,
+  .tabs.media-tab .tabs-nav button {
+    margin: 0 0.9375rem;
   }
 
   .tabs.tiled-tab .tabs-nav li {
