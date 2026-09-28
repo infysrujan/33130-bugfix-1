@@ -95,17 +95,11 @@
   box-sizing: border-box;
 }
 
-/* Mirrors the print stylesheet's tr.header-row td:first-child/:nth-child(2)
-   override (see @media print below): every column defaults to right-align
-   (matches the numeric columns), only Fund Type/Open-End Fund go back to
-   left. Print already gets this treatment; screen never had it. */
 .fund-prices .fund-prices-table table tr.header-row td:first-child,
 .fund-prices .fund-prices-table table tr.header-row td:nth-child(2) {
   text-align: left;
 }
 
-/* Mirrors the print stylesheet's .merged-fund-type/.col-openendfund
-   override (see @media print below). */
 .fund-prices .fund-prices-table table tr:not(.header-row) td.merged-fund-type,
 .fund-prices .fund-prices-table table tr:not(.header-row) td.col-openendfund {
   text-align: left;
@@ -210,9 +204,6 @@
   gap: 0.9375rem;
   box-sizing: border-box;
   width: 100%;
-
-  /* Override the generic `main > div { margin: 40px 16px }` default so this
-     sits flush under the header instead of leaving a gap/inset. */
   margin: 0;
   padding: var(--bbl-space-150) var(--bbl-space-200);
   background: var(--bbl-color-truthful-blue);
@@ -335,8 +326,8 @@
   color: var(--bbl-color-black);
 }
 
-body.fund-prices-search-in-header .default-content-wrapper,
-body:has(.fund-prices-dropdown:not(.hidden)) .default-content-wrapper {
+body.fund-prices-search-in-header main .default-content-wrapper,
+body:has(.fund-prices-dropdown:not(.hidden)) main .default-content-wrapper {
   display: none;
 }
 
@@ -383,7 +374,7 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
     padding: var(--bbl-space-150) 3.125rem;
   }
 
-  body.fund-prices-search-in-header .default-content-wrapper {
+  body.fund-prices-search-in-header main .default-content-wrapper {
     display: block;
   }
 }
@@ -486,8 +477,6 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
     font-weight: 700;
   }
 
-  /* Full-bleed brand bar: colour is pulled from the same token the live
-     site header uses (header.css .main-nav-desktop.is-scrolled / is-not-overlapped). */
   #fund-prices-print-root .fund-prices-print-brandbar {
     margin: 0 -9mm 0.75rem;
     padding: 0.5625rem 9mm;

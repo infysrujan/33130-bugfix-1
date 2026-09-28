@@ -37,13 +37,7 @@
 
 .fund-prices-dropdown .fdd-header-top {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: var(--bbl-space-100);
-}
-
-.fund-prices-dropdown .fdd-back-btn {
-  display: none;
 }
 
 .fund-prices-dropdown .fdd-title {

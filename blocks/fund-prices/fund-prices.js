@@ -254,7 +254,6 @@ function placeSearchBarAtTopOfMain(el, doc) {
   doc.querySelectorAll('.fund-prices-search-bar').forEach((stale) => {
     if (stale !== el) stale.remove();
   });
-  el.classList.add('is-in-header');
   doc.body.classList.add('fund-prices-search-in-header');
   main.insertBefore(el, main.firstChild);
   const pageTitleEl = doc.querySelector('main .default-content-wrapper h1, main .default-content-wrapper h2');
@@ -502,7 +501,6 @@ function buildFundSelectorBar(doc, funds, searchLabel, allFundsLabel, goLabel) {
     el: bar,
     getSelected: () => selectedFund,
     goBtn,
-    resetToAll: () => selectItem(allOption),
   };
 }
 
@@ -691,7 +689,6 @@ export default async function decorate(block) {
     mainView.classList.remove('hidden');
     if (tableBlock) tableBlock.classList.remove('hidden');
     fundSelector.el.classList.remove('hidden');
-    doc.body.classList.remove('fund-prices-detail-active');
     fddBlock?.dispatchEvent(new CustomEvent('fund-prices-dropdown:hide'));
   }
 
@@ -699,7 +696,6 @@ export default async function decorate(block) {
     mainView.classList.add('hidden');
     if (tableBlock) tableBlock.classList.add('hidden');
     fundSelector.el.classList.remove('hidden');
-    doc.body.classList.add('fund-prices-detail-active');
     fddBlock?.dispatchEvent(new CustomEvent('fund-prices-dropdown:show', {
       detail: { fund, mdate: latestMdate },
     }));
@@ -714,12 +710,5 @@ export default async function decorate(block) {
       showMainView();
       if (tableBlock) refreshTableFromPrices(tableBlock, cachedFunds, currentDate, latestMdate);
     }
-  });
-
-  /* ── Back button from dropdown ── */
-  fddBlock?.addEventListener('fund-prices-dropdown:back', () => {
-    showMainView();
-    fundSelector.resetToAll();
-    if (tableBlock) refreshTableFromPrices(tableBlock, cachedFunds, currentDate, latestMdate);
   });
 }
