@@ -13,7 +13,6 @@
  * fill most of the viewport when there are many options and little room
  * below the field — nothing an author can control via CSS. Building our own
  * panel keeps it small, height-capped, and anchored under the field in
- * every browser.
  *
  * Authoring data (stored in fd.properties):
  *   - minAge : number – youngest selectable age. Drives the newest year
