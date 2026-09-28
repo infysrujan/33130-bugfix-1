@@ -643,6 +643,8 @@ function buildMobileLayout(header, blocks) {
   const mobileNavMenu = document.createElement('div');
   mobileNavMenu.className = 'mobile-nav-menu';
   mobileNavMenu.setAttribute('aria-hidden', 'true');
+  mobileNavMenu.setAttribute('inert', 'true');
+  mobileNavMenu.hidden = true;
 
   const mobileNavContent = document.createElement('div');
   mobileNavContent.className = 'mobile-nav-content';
