@@ -343,7 +343,7 @@ function printContent(containerEl, pageTitle, searchLabelText) {
     if (table && headerRow && fifRow) {
       const continuationTable = table.cloneNode(false);
       const continuationColumns = doc.createElement('colgroup');
-      [15, 39, 10, 10, 10, 16].forEach((width) => {
+      [15, 38, 11, 10, 10, 16].forEach((width) => {
         const column = doc.createElement('col');
         column.style.width = `${width}%`;
         continuationColumns.appendChild(column);

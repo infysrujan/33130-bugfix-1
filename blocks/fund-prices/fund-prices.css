@@ -568,15 +568,16 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
   #fund-prices-print-root .fund-prices-table table tr.header-row td {
     background: var(--bbl-color-white);
     color: var(--bbl-color-black);
+    border-inline: none;
+    border-top: 0.0625rem solid var(--bbl-color-black);
     border-bottom: 0.0625rem solid var(--bbl-color-black);
-    border-top: none;
-    padding: 0.4375rem 0.5rem 0.375rem;
+    padding: 0.125rem 0.3125rem 0.0625rem;
     font-family: var(--bbl-font-family-primary);
     font-weight: 700;
-    font-size: 0.5625rem;
-    line-height: 1.05;
+    font-size: 0.625rem;
+    line-height: 1.2;
     white-space: normal;
-    vertical-align: bottom;
+    vertical-align: middle;
     text-align: right;
   }
 
@@ -584,7 +585,7 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
     background: var(--bbl-color-white);
     color: var(--bbl-color-black);
     border-bottom: 0.0625rem solid #d5d5d5;
-    padding: 0.4375rem 0.5rem 0.375rem;
+    padding: 0.4375rem 0.3125rem 0.375rem;
     font-family: var(--bbl-font-family-primary);
     font-size: 0.5625rem;
     line-height: 1.18;
@@ -594,7 +595,7 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
 
   #fund-prices-print-root .fund-prices-table table tr.fund-prices-print-continuation-meta td {
     height: 1.5rem;
-    padding: 0 0.5rem 0.375rem;
+    padding: 0 0.3125rem 0.375rem;
     border: none;
     border-bottom: 0.0625rem solid var(--bbl-color-black);
     background: var(--bbl-color-white);
@@ -641,10 +642,13 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
 
   #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(2) {
     text-align: left;
-    width: 39%;
+    width: 38%;
   }
 
-  #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(3),
+  #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(3) {
+    width: 11%;
+  }
+
   #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(4),
   #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(5) {
     width: 10%;
