@@ -49,12 +49,13 @@ function parseBlockContent(block) {
  * @param {string} buttonText
  * @returns {HTMLButtonElement}
  */
-function createLoginButton(buttonText) {
+function createLoginButton(buttonText, buttonTitle) {
   const loginButton = document.createElement('button');
 
   loginButton.className = 'login-button primary icon-login';
   loginButton.setAttribute('aria-expanded', 'false');
   loginButton.setAttribute('aria-haspopup', 'true');
+  loginButton.setAttribute('title', buttonTitle);
   loginButton.setAttribute('type', 'button');
 
   const buttonTextSpan = document.createElement('span');
@@ -281,7 +282,7 @@ function applyLayout(block) {
   const loginWrapper = document.createElement('div');
   loginWrapper.className = 'login-wrapper';
 
-  const loginButton = createLoginButton(loginContent.buttonText);
+  const loginButton = createLoginButton(loginContent.buttonText, loginContent.loginPanelTitle);
   const loginPanel = createLoginPanel(loginContent.loginPanelTitle, loginContent.sections);
   loginWrapper.appendChild(loginButton);
   loginWrapper.appendChild(loginPanel);
