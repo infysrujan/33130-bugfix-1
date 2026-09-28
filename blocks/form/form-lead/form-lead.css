@@ -229,7 +229,7 @@ main .lead-forms .form form .plain-text-wrapper p:last-child {
   margin-bottom: 0;
 }
 
-main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textt, .field-or, .field-textw, .field-text1) p {
+main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-or, .field-textw, .field-text1) p {
   text-align: left;
 }
 
