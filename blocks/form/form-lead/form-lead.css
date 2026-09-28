@@ -966,6 +966,10 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   width: 100%;
 }
 
+main .lead-forms.section.form-container .form form .radio-group-wrapper.radio-tabs {
+  margin: 0 0 0.9375rem;
+}
+
 @media (width > 47.5rem) {
   main .form-container.lead-forms {
     padding-inline: var(--bbl-space-250);
