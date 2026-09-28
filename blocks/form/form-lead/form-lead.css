@@ -238,10 +238,6 @@ main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext
   text-align: left;
 }
 
-main .lead-forms .form form .plain-text-wrapper.field-wrapper.field-textt p {
-  text-align: center;
-}
-
 /* Privacy consent text — b1 body tokens (regular) + 20.8px line-height, all breakpoints */
 main .lead-forms .form form .plain-text-wrapper.field-wrapper.tnc-text-decoration p {
   font-size: var(--bbl-body-b1-size);
