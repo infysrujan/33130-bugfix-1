@@ -49,13 +49,15 @@ function parseBlockContent(block) {
  * @param {string} buttonText
  * @returns {HTMLButtonElement}
  */
-function createLoginButton(buttonText) {
+function createLoginButton(buttonText, panelId) {
   const loginButton = document.createElement('button');
 
   loginButton.className = 'login-button button-s primary icon-login';
   loginButton.setAttribute('aria-expanded', 'false');
   loginButton.setAttribute('aria-haspopup', 'true');
   loginButton.setAttribute('type', 'button');
+  loginButton.setAttribute('aria-label', buttonText);
+  loginButton.setAttribute('aria-controls', panelId);
 
   const buttonTextSpan = document.createElement('span');
   buttonTextSpan.className = 'login-button-text';
@@ -203,9 +205,10 @@ function buildLinkListFromCell(cell, listClassName = '', options = {}) {
  * mobileLinksCell: Element }>} sections
  * @returns {HTMLDivElement}
  */
-function createLoginPanel(loginPanelTitle, sections) {
+function createLoginPanel(loginPanelTitle, sections, panelId) {
   const loginPanel = document.createElement('div');
   loginPanel.className = 'login-panel';
+  loginPanel.id = panelId;
   loginPanel.setAttribute('aria-hidden', 'true');
 
   const panelInner = document.createElement('div');
@@ -281,8 +284,9 @@ function applyLayout(block) {
   const loginWrapper = document.createElement('div');
   loginWrapper.className = 'login-wrapper';
 
-  const loginButton = createLoginButton(loginContent.buttonText);
-  const loginPanel = createLoginPanel(loginContent.loginPanelTitle, loginContent.sections);
+  const panelId = `login-panel-${Math.random().toString(36).slice(2, 9)}`;
+  const loginButton = createLoginButton(loginContent.buttonText, panelId);
+  const loginPanel = createLoginPanel(loginContent.loginPanelTitle, loginContent.sections, panelId);
   loginWrapper.appendChild(loginButton);
   loginWrapper.appendChild(loginPanel);
 

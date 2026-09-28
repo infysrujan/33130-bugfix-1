@@ -5,6 +5,25 @@ import { getLang } from '../../scripts/scripts.js';
 // Breakpoint matching design system tokens (760px tablet, 1024px desktop)
 const DESKTOP_BREAKPOINT = 1024;
 
+function toAccessibleLinkLabel(href) {
+  const slug = href
+    .split('/')
+    .filter(Boolean)
+    .pop()
+    ?.replace(/[-_]+/g, ' ')
+    .replace(/\.[a-z]+$/i, '')
+    .trim();
+
+  if (!slug) return 'Link';
+
+  return slug
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
 /**
  * Builds the footer structure from EDS content
  * Creates both mobile (accordion) and desktop (multi-column) layouts
@@ -70,6 +89,11 @@ function buildFooterStructure(block) {
     const links = Array.from(sectionList.querySelectorAll('li'));
     links.forEach((link) => {
       const newLi = link.cloneNode(true);
+      const anchor = newLi.querySelector('a');
+      if (anchor && !anchor.textContent.trim() && !anchor.getAttribute('aria-label')) {
+        const href = anchor.getAttribute('href') || '';
+        anchor.setAttribute('aria-label', toAccessibleLinkLabel(href));
+      }
       linksList.appendChild(newLi);
     });
     linksContainer.appendChild(linksList);

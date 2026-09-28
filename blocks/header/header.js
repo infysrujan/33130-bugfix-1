@@ -557,6 +557,7 @@ function setupMobileMenuBehavior(headerNav, hamburger, mobileNavMenu, blocks) {
     hamburger.setAttribute('aria-label', 'Open navigation');
     hamburger.classList.remove('is-hidden');
     mobileNavMenu.setAttribute('aria-hidden', 'true');
+    mobileNavMenu.setAttribute('inert', '');
     mobileNavMenu.classList.remove('is-open');
     releaseHeaderNavBackdrop(headerNav, NAV_BACKDROP_MOBILE);
   };
@@ -567,15 +568,18 @@ function setupMobileMenuBehavior(headerNav, hamburger, mobileNavMenu, blocks) {
     hamburger.setAttribute('aria-label', 'Close navigation');
     hamburger.classList.add('is-hidden');
     mobileNavMenu.setAttribute('aria-hidden', 'false');
+    mobileNavMenu.removeAttribute('inert');
     mobileNavMenu.classList.add('is-open');
     acquireHeaderNavBackdrop(headerNav, NAV_BACKDROP_MOBILE);
   };
 
   hamburger.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (!mobileNavMenu.classList.contains('is-open')) {
-      openMobileMenu();
+    if (mobileNavMenu.classList.contains('is-open')) {
+      closeMobileMenu();
+      return;
     }
+    openMobileMenu();
   });
 
   ensureHeaderNavBackdrop(headerNav).addEventListener('click', () => {
@@ -615,10 +619,12 @@ function buildMobileLayout(header, blocks) {
   const mobileTopBar = document.createElement('div');
   mobileTopBar.className = 'mobile-top-bar';
 
-  const hamburger = document.createElement('div');
+  const hamburger = document.createElement('button');
+  hamburger.type = 'button';
   hamburger.className = 'hamburger-icon';
   hamburger.setAttribute('aria-label', 'Open navigation');
   hamburger.setAttribute('aria-expanded', 'false');
+  hamburger.setAttribute('aria-controls', 'mobile-nav-menu');
   hamburger.innerHTML = `
     <span></span>
     <span></span>
@@ -637,8 +643,10 @@ function buildMobileLayout(header, blocks) {
   }
 
   const mobileNavMenu = document.createElement('div');
+  mobileNavMenu.id = 'mobile-nav-menu';
   mobileNavMenu.className = 'mobile-nav-menu';
   mobileNavMenu.setAttribute('aria-hidden', 'true');
+  mobileNavMenu.setAttribute('inert', '');
 
   const mobileNavContent = document.createElement('div');
   mobileNavContent.className = 'mobile-nav-content';
