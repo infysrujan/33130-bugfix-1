@@ -1166,19 +1166,21 @@ function getSelectedLabelFromDropdown(dropdown) {
 }
 
 /**
- * Formats date and time inputs into a single datetime string.
+ * Formats date, hour, and minute inputs into a single datetime string.
  * Accepts date in "yyyy-mm-dd" or "dd/mm/yyyy" format, and hour/minute as separate inputs.
- * Returns formatted string like "5 January 2024 14:30:00".
+ * Transforms the date portion to YYYY-MM-DD format.
+ * Returns formatted string like "2024-01-05 14:30:00".
  *
  * @name formatDateTime
  * @param {string} date - Date string in "yyyy-mm-dd" or "dd/mm/yyyy" format
  * @param {string|number} hour - Hour component (0-23)
  * @param {string|number} minute - Minute component (0-59)
- * @returns {string} Formatted datetime string or empty string if inputs are invalid
+ * @returns {string} Formatted datetime string (YYYY-MM-DD HH:mm:ss) or empty string if inputs are invalid
  *
  * @example
- * formatDateTime("2024-01-05", "14", "30") // returns "5 January 2024 14:30:00"
- * formatDateTime("05/01/2024", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("2024-01-05", "14", "30") // returns "2024-01-05 14:30:00"
+ * formatDateTime("05/01/2024", "14", "30") // returns "2024-01-05 14:30:00"
+ * formatDateTime("invalid", "14", "30") // returns ""
  * formatDateTime("2024-01-05", "", "30") // returns ""
  */
 function formatDateTime(date, hour, minute) {
@@ -1192,12 +1194,10 @@ function formatDateTime(date, hour, minute) {
   } else {
     [day, month, year] = String(date).split('/');
   }
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
-  ];
 
-  return `${Number(day)} ${months[Number(month) - 1]} ${year} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
+  const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+  return `${formattedDate} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
 }
 
 /**
