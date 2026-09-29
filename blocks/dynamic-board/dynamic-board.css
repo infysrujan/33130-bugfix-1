@@ -1188,4 +1188,90 @@
   .bbl-calendar-picker-popover {
     display: none;
   }
+
+  /* Live-page print only (main); the Print button's clone lives outside main and is styled by printCss. */
+  main .dynamic-board .db-cal-icon {
+    display: none;
+  }
+
+  main .dynamic-board .db-controls,
+  main .dynamic-board .db-controls-left {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  main .dynamic-board .db-controls {
+    margin-bottom: 0.75rem;
+  }
+
+  main .dynamic-board .db-controls-left {
+    flex: 0 0 auto;
+  }
+
+  main .dynamic-board .db-cal-label {
+    width: auto;
+    margin: 0;
+    font-size: 0.625rem;
+  }
+
+  main .dynamic-board .db-date-wrap {
+    flex: 0 0 7rem;
+    width: 7rem;
+  }
+
+  main .dynamic-board .db-time-wrap {
+    flex: 0 0 5rem;
+    width: 5rem;
+  }
+
+  main .dynamic-board .db-date-display,
+  main .dynamic-board .db-time-trigger {
+    height: 1.5rem;
+    padding: 0 0.375rem;
+    font-size: 0.625rem;
+  }
+
+  /* Auto layout: no colgroup here, and fixed layout would split the colspan=2 symbol header evenly. */
+  main .dynamic-board .db-table {
+    width: 100%;
+    table-layout: auto;
+    border-collapse: collapse;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  main .dynamic-board .db-table thead th {
+    height: auto;
+    padding: 0.1875rem;
+    background-color: var(--bbl-color-white);
+    background-image: none;
+    font-size: 0.5625rem;
+    line-height: 1.15;
+    text-align: center;
+    border: 0.0625rem solid var(--bbl-color-grey-20);
+  }
+
+  main .dynamic-board .db-table tbody td {
+    height: auto;
+    padding: 0.15rem 0.1875rem;
+    font-size: 0.5625rem;
+    line-height: 1.2;
+    color: var(--bbl-color-black);
+    border-block-end: 0.0625rem solid var(--bbl-color-grey-20);
+  }
+
+  main .dynamic-board .db-table tbody td.db-td-check {
+    width: 0;
+    padding: 0;
+  }
+
+  main .dynamic-board .db-td-symbol,
+  main .dynamic-board .db-td-num {
+    white-space: nowrap;
+  }
+
+  main .dynamic-board .db-remarks-content {
+    font-size: 0.625rem;
+    line-height: 1.4;
+  }
 }
