@@ -356,6 +356,12 @@ export default function decorate(block, fd = {}) {
     grid.replaceChildren();
     monthTitle.textContent = formatMonthHeader(viewYear, viewMonth, lang);
 
+    // Disable month navigation that would land entirely outside [minDate, maxDate].
+    const nextMonthStart = startOfDay(new Date(viewYear, viewMonth + 1, 1));
+    const prevMonthEnd = startOfDay(new Date(viewYear, viewMonth, 0));
+    btnNext.disabled = !!(maxDate && nextMonthStart > maxDate);
+    btnPrev.disabled = !!(minDate && prevMonthEnd < minDate);
+
     const firstDayOfWeek = new Date(viewYear, viewMonth, 1).getDay();
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
 
@@ -377,6 +383,11 @@ export default function decorate(block, fd = {}) {
 
       const disabled = (minDate && cellDate < minDate) || (maxDate && cellDate > maxDate);
       btn.disabled = disabled;
+
+      if (sameDay(cellDate, startOfDay(new Date()))) {
+        btn.classList.add('dpth-day--today');
+        btn.setAttribute('aria-current', 'date');
+      }
 
       if (selected && sameDay(cellDate, selected)) {
         btn.classList.add('dpth-day--selected');
@@ -423,10 +434,17 @@ export default function decorate(block, fd = {}) {
 
   /* ── Shift month ── */
   function shiftMonth(delta) {
-    const d = new Date(viewYear, viewMonth + delta, 1);
-    viewYear = d.getFullYear();
-    viewMonth = d.getMonth();
+    const target = new Date(viewYear, viewMonth + delta, 1);
+    const targetEnd = startOfDay(new Date(target.getFullYear(), target.getMonth() + 1, 0));
+    if (maxDate && target > maxDate) return;
+    if (minDate && targetEnd < minDate) return;
+    viewYear = target.getFullYear();
+    viewMonth = target.getMonth();
     renderGrid();
+
+    // A button that becomes disabled drops keyboard focus; hand it to the other arrow.
+    if (btnNext.disabled && delta > 0 && !btnPrev.disabled) btnPrev.focus();
+    if (btnPrev.disabled && delta < 0 && !btnNext.disabled) btnNext.focus();
   }
 
   /* ── Event wiring ── */

@@ -833,7 +833,7 @@ main img {
     scroll-margin-top: var(--header-scroll-offset);
 }
 
-.loading {
+.loading:not(form) {
     display: none;
     position: absolute;
     z-index: 1000;
