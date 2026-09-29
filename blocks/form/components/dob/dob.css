@@ -11,6 +11,7 @@
   flex-direction: column;
   gap: 0.5rem;
   width: 100%;
+  margin-bottom: 0.875rem;
 }
 
 .dobth-label {
@@ -48,7 +49,7 @@
   height: 44px;
   line-height: 44px;
   padding: 0 0.875rem;
-  border: 0.0625rem solid var(--bbl-color-grey-30, #ccc);
+  border: 0.0625rem solid var(--form-input-border-color, #818a91);
   border-radius: 0.5rem;
   background-color: var(--bbl-color-white, #fff);
   font-family: var(--bbl-font-family-primary, inherit);
@@ -116,7 +117,6 @@
 
 .field-dob-th.field-invalid .dobth-combo-trigger {
   border-color: var(--bbl-color-error, #d93025);
-  box-shadow: 0 0 0 0.1875rem rgb(217 48 37 / 15%);
 }
 
 /* ── Listbox panel ───────────────────────────────────────────────────────── */

@@ -51,7 +51,6 @@
 
 .dpth-input:focus-visible,
 .dpth-input[aria-expanded="true"] {
-  outline: 0.125rem solid var(--bbl-color-active-blue, #0070d2);
   outline-offset: 0.125rem;
   border-color: var(--bbl-color-active-blue, #0070d2);
 }
@@ -75,7 +74,7 @@
 
 .dpth-popover {
   position: fixed;
-  z-index: 9999;
+  z-index: 99;
   min-width: 17.5rem;
   padding: 1rem;
   background: var(--bbl-color-white, #fff);
