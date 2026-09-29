@@ -327,6 +327,11 @@ body:has(.fund-prices-dropdown:not(.hidden)) main:has(.fund-prices) .default-con
   display: none;
 }
 
+/* body:has(.fund-prices-dropdown:not(.hidden)) .default-content-wrapper,
+body:has(.fund-prices-dropdown:not(.hidden)) .fund-prices-page-title {
+  display: none;
+} */
+
 body.fund-prices-search-in-header .default-content-wrapper h2 {
   margin: 1.875rem 0;
   padding-bottom: 1.875rem;

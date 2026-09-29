@@ -463,6 +463,10 @@
   display: none;
 }
 
+body.fund-prices-search-in-header .fund-prices-dropdown .fdd-title {
+  display: none;
+}
+
 @media (width < 47.5rem) {
   .fund-prices-dropdown .fdd-title,
   .fund-prices-dropdown .fdd-title-rule {
