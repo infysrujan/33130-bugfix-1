@@ -155,6 +155,11 @@ main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
   font-weight: var(--bbl-font-weight-regular);
 }
 
+main .lead-forms#form-title-width > .default-content-wrapper h2 {
+  max-width: 46.25rem;
+  margin-inline: auto;
+}
+
 main .lead-forms.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
   margin: var(--bbl-space-500) 0 var(--bbl-form-margin-30);
   padding-bottom: var(--bbl-form-padding-35);
@@ -229,7 +234,7 @@ main .lead-forms .form form .plain-text-wrapper p:last-child {
   margin-bottom: 0;
 }
 
-main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textt, .field-or, .field-textw, .field-text1) p {
+main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-or, .field-textw, .field-text1) p {
   text-align: left;
 }
 

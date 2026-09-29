@@ -168,8 +168,8 @@ button {
 /* links */
 a:any-link {
     color: var(--bbl-color-active-blue);
+    text-decoration: none;
     overflow-wrap: break-word;
-    text-decoration: underline;
 }
 
 a:hover {
@@ -833,7 +833,7 @@ main img {
     scroll-margin-top: var(--header-scroll-offset);
 }
 
-.loading {
+.loading:not(form) {
     display: none;
     position: absolute;
     z-index: 1000;
