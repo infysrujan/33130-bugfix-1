@@ -917,7 +917,11 @@ function printElement(block) {
   logoReady.then(() => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        window.addEventListener('afterprint', cleanup, { once: true });
+        // Android Chrome fires afterprint before the preview renders; clean up on return.
+        window.addEventListener('afterprint', () => {
+          document.addEventListener('pointerdown', cleanup, { once: true });
+          document.addEventListener('keydown', cleanup, { once: true });
+        }, { once: true });
         window.print();
       });
     });

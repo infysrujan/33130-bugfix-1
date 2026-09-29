@@ -1083,7 +1083,11 @@
 
 @media print {
   .dynamic-board .db-controls-right,
-  .dynamic-board .db-filter-wrapper {
+  .dynamic-board .db-filter-wrapper,
+  .dynamic-board .db-go-btn,
+  .dynamic-board .db-row-cb,
+  .dynamic-board .db-td-dl,
+  .dynamic-board .db-time-chevron {
     display: none;
   }
 
