@@ -1,11 +1,18 @@
 /**
  * Date of Birth (Thai) Component
  *
- * Renders three native <select> dropdowns — day / month (Thai or English
+ * Renders three custom combobox dropdowns — day / month (Thai or English
  * names) / year (Christian Era) — matching the legacy "วัน / เดือน / ปี"
  * birth-date widget, and combines the selections into a single ISO
  * (yyyy-MM-dd) value written to a hidden input bound to the field model
  * (fieldType: "date-input", fd:viewType: "dob").
+ *
+ * Each dropdown is a button + self-positioned listbox panel (same pattern as
+ * calendar.js's popover) rather than a native <select>: native <select>
+ * option lists are sized and positioned by the OS/browser, and can grow to
+ * fill most of the viewport when there are many options and little room
+ * below the field — nothing an author can control via CSS. Building our own
+ * panel keeps it small, height-capped, and anchored under the field in
  *
  * Authoring data (stored in fd.properties):
  *   - minAge : number – youngest selectable age. Drives the newest year
@@ -72,6 +79,242 @@ function daysInMonth(year, monthIndex) {
   return new Date(year, monthIndex + 1, 0).getDate();
 }
 
+// Tracks whichever combobox (day/month/year) is currently open, across all
+// instances on the page, so opening one always closes another. Each
+// trigger's click handler calls e.stopPropagation() (see createCombobox),
+// which stops that click from ever reaching another instance's own
+// document-level "click outside" listener — so that listener alone can't be
+// relied on to close a sibling combobox.
+let closeOpenCombobox = null;
+
+/**
+ * Positions a listbox panel directly under its trigger button (fixed
+ * positioning, so it escapes any clipping/overflow ancestors), flipping
+ * above the trigger when there isn't room below. Mirrors calendar.js's
+ * positionPopover().
+ */
+function positionListbox(trigger, listbox) {
+  const rect = trigger.getBoundingClientRect();
+  const margin = 5;
+  let top = rect.bottom + margin;
+  const { left } = rect;
+
+  listbox.style.visibility = 'hidden';
+  listbox.style.minWidth = `${rect.width}px`;
+  listbox.style.left = `${left}px`;
+  listbox.style.top = `${top}px`;
+
+  requestAnimationFrame(() => {
+    const lh = listbox.offsetHeight;
+    const vh = window.innerHeight;
+    if (top + lh > vh - margin && rect.top - margin - lh > margin) {
+      top = rect.top - margin - lh;
+    }
+    listbox.style.top = `${top}px`;
+    listbox.style.visibility = '';
+  });
+}
+
+/**
+ * Builds a single custom combobox: a button trigger showing the selected
+ * label (or placeholder) plus a chevron, and a listbox panel of option
+ * buttons appended to <body> and positioned under the trigger when open.
+ *
+ * @param {Object} config
+ * @param {string} config.id - Element id for the trigger button
+ * @param {string} config.ariaLabel - Accessible name (e.g. "Day")
+ * @param {string} config.placeholder - Text shown while nothing is selected
+ * @param {boolean} config.disabled
+ * @param {(value: string) => void} config.onChange - Called after a user pick
+ * @returns {{wrapper: HTMLElement, getValue: () => string,
+ *   setValue: (v: string) => void,
+ *   setOptions: (opts: {value:string,label:string}[], o?: {preserveValue?: boolean}) => void}}
+ */
+function createCombobox({
+  id, ariaLabel, placeholder, disabled, onChange,
+}) {
+  let options = [];
+  let value = '';
+  let isOpen = false;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'dobth-combo';
+
+  // A plain <div role="button"> rather than a real <button>: this form's
+  // global button styles (main .form button[type='button']:hover in
+  // form-button.css) match on the button element itself, so a real <button>
+  // here would get repainted solid blue on hover regardless of our own
+  // classes. A div sidesteps that selector entirely.
+  const trigger = document.createElement('div');
+  trigger.id = id;
+  trigger.className = 'dobth-combo-trigger';
+  trigger.setAttribute('role', 'button');
+  trigger.setAttribute('tabindex', disabled ? '-1' : '0');
+  trigger.setAttribute('aria-haspopup', 'listbox');
+  trigger.setAttribute('aria-expanded', 'false');
+  trigger.setAttribute('aria-label', ariaLabel);
+  if (disabled) trigger.setAttribute('aria-disabled', 'true');
+
+  const textEl = document.createElement('span');
+  textEl.className = 'dobth-combo-text';
+  textEl.dataset.placeholder = 'true';
+  textEl.textContent = placeholder;
+
+  const chevron = document.createElement('span');
+  chevron.className = 'dobth-combo-chevron';
+  chevron.setAttribute('aria-hidden', 'true');
+
+  trigger.append(textEl, chevron);
+  wrapper.append(trigger);
+
+  const listbox = document.createElement('div');
+  listbox.className = 'dobth-listbox';
+  listbox.id = `${id}-listbox`;
+  listbox.setAttribute('role', 'listbox');
+  listbox.setAttribute('aria-label', ariaLabel);
+  listbox.hidden = true;
+  trigger.setAttribute('aria-controls', listbox.id);
+  document.body.append(listbox);
+
+  function renderText() {
+    const found = options.find((o) => o.value === value);
+    if (found) {
+      textEl.textContent = found.label;
+      delete textEl.dataset.placeholder;
+    } else {
+      textEl.textContent = placeholder;
+      textEl.dataset.placeholder = 'true';
+    }
+  }
+
+  function renderOptions() {
+    listbox.innerHTML = '';
+    // Non-selectable placeholder row at the top of the panel (e.g. "Day"),
+    // matching the legacy widget's greyed-out first row. Deliberately not a
+    // `.dobth-option` so it's excluded from arrow-key navigation / selection.
+    const placeholderRow = document.createElement('div');
+    placeholderRow.className = 'dobth-listbox-placeholder';
+    placeholderRow.setAttribute('role', 'presentation');
+    placeholderRow.textContent = placeholder;
+    listbox.append(placeholderRow);
+
+    options.forEach((opt) => {
+      // Same reasoning as the trigger: a div avoids the form's global
+      // `button` element selectors entirely.
+      const item = document.createElement('div');
+      item.className = 'dobth-option';
+      item.setAttribute('role', 'option');
+      item.setAttribute('tabindex', '-1');
+      item.setAttribute('aria-selected', String(opt.value === value));
+      if (opt.value === value) item.classList.add('dobth-option-selected');
+      item.textContent = opt.label;
+      item.dataset.value = opt.value;
+      listbox.append(item);
+    });
+  }
+
+  function close({ refocusTrigger = false } = {}) {
+    if (!isOpen) return;
+    isOpen = false;
+    trigger.setAttribute('aria-expanded', 'false');
+    listbox.hidden = true;
+    if (closeOpenCombobox === close) closeOpenCombobox = null;
+    if (refocusTrigger) trigger.focus();
+  }
+
+  function open() {
+    if (disabled || !options.length) return;
+    // Only one of day/month/year should ever be open at a time.
+    if (closeOpenCombobox && closeOpenCombobox !== close) closeOpenCombobox();
+    isOpen = true;
+    trigger.setAttribute('aria-expanded', 'true');
+    listbox.hidden = false;
+    closeOpenCombobox = close;
+    positionListbox(trigger, listbox);
+    const selected = listbox.querySelector('.dobth-option-selected') || listbox.querySelector('.dobth-option');
+    selected?.focus();
+  }
+
+  function selectValue(newValue, { silent = false } = {}) {
+    value = newValue;
+    renderText();
+    renderOptions();
+    if (!silent) onChange(value);
+  }
+
+  function setOptions(newOptions, { preserveValue = true } = {}) {
+    options = newOptions;
+    if (preserveValue && value && !options.some((o) => o.value === value)) {
+      value = '';
+    }
+    renderText();
+    renderOptions();
+  }
+
+  trigger.addEventListener('click', (e) => {
+    if (disabled) return;
+    e.stopPropagation();
+    if (isOpen) close(); else open();
+  });
+
+  trigger.addEventListener('keydown', (e) => {
+    if (disabled) return;
+    if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
+      e.preventDefault();
+      open();
+    }
+  });
+
+  listbox.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const btn = e.target.closest('.dobth-option');
+    if (!btn) return;
+    selectValue(btn.dataset.value);
+    close({ refocusTrigger: true });
+  });
+
+  listbox.addEventListener('keydown', (e) => {
+    const opts = [...listbox.querySelectorAll('.dobth-option')];
+    const idx = opts.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      opts[Math.min(idx + 1, opts.length - 1)]?.focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      opts[Math.max(idx - 1, 0)]?.focus();
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      // Options are <div role="option">, not real buttons, so they don't
+      // auto-fire a click on keyboard activation — select the focused one.
+      e.preventDefault();
+      if (idx >= 0) {
+        selectValue(opts[idx].dataset.value);
+        close({ refocusTrigger: true });
+      }
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      close({ refocusTrigger: true });
+    } else if (e.key === 'Tab') {
+      close();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!isOpen) return;
+    if (!listbox.contains(e.target) && !trigger.contains(e.target)) close();
+  });
+
+  const onReposition = () => { if (isOpen) positionListbox(trigger, listbox); };
+  window.addEventListener('resize', onReposition);
+  window.addEventListener('scroll', onReposition, true);
+
+  return {
+    wrapper,
+    getValue: () => value,
+    setValue: (v) => selectValue(v, { silent: true }),
+    setOptions,
+  };
+}
+
 let instanceCount = 0;
 
 /**
@@ -122,62 +365,6 @@ export default function decorate(block, fd = {}) {
   const row = document.createElement('div');
   row.className = 'dobth-row';
 
-  function setPlaceholder(select, text) {
-    select.innerHTML = '';
-    const opt = document.createElement('option');
-    opt.value = '';
-    opt.textContent = text;
-    opt.disabled = true;
-    opt.selected = true;
-    select.appendChild(opt);
-  }
-
-  function buildSelect(idSuffix, className, ariaLabel) {
-    const sel = document.createElement('select');
-    sel.id = `${baseId}-${idSuffix}`;
-    sel.className = `dobth-select ${className}`;
-    sel.setAttribute('aria-label', ariaLabel);
-    sel.disabled = isDisabled;
-    return sel;
-  }
-
-  const daySelect = buildSelect('day', 'dobth-day', dayLabel);
-  const monthSelect = buildSelect('month', 'dobth-month', monthLabel);
-  const yearSelect = buildSelect('year', 'dobth-year', yearLabel);
-
-  /** Rebuilds the day options for `count` days, preserving the current selection if valid. */
-  function populateDays(count) {
-    const currentValue = daySelect.value;
-    setPlaceholder(daySelect, dayLabel);
-    for (let d = 1; d <= count; d += 1) {
-      const opt = document.createElement('option');
-      opt.value = String(d);
-      opt.textContent = String(d);
-      daySelect.appendChild(opt);
-    }
-    if (currentValue && Number(currentValue) <= count) daySelect.value = currentValue;
-  }
-
-  setPlaceholder(monthSelect, monthLabel);
-  (lang === 'th' ? MONTHS_TH : MONTHS_EN).forEach((name, idx) => {
-    const opt = document.createElement('option');
-    opt.value = String(idx + 1).padStart(2, '0');
-    opt.textContent = name;
-    monthSelect.appendChild(opt);
-  });
-
-  setPlaceholder(yearSelect, yearLabel);
-  for (let i = 0; i < yearCount; i += 1) {
-    const year = startYear - i;
-    const opt = document.createElement('option');
-    opt.value = String(year);
-    opt.textContent = String(year);
-    yearSelect.appendChild(opt);
-  }
-
-  populateDays(31);
-  row.append(daySelect, monthSelect, yearSelect);
-
   const hiddenInput = document.createElement('input');
   hiddenInput.type = 'hidden';
   hiddenInput.name = fieldName;
@@ -185,14 +372,19 @@ export default function decorate(block, fd = {}) {
   // carry fd.id here so both read (submit) and write (prefill / rules) round-trip.
   if (fd?.id) hiddenInput.id = fd.id;
 
-  wrapper.append(labelEl, row, hiddenInput);
-  block.append(wrapper);
+  // Forward-declared so `commit()` and `onMonthOrYearChange()` below can
+  // reference them before the createCombobox(...) calls that assign them —
+  // avoids eslint(no-use-before-define) while keeping the exact same
+  // build/call order as before.
+  let dayCombo;
+  let monthCombo;
+  let yearCombo;
 
-  /* ── Sync hidden value from the three selects ── */
+  /* ── Sync hidden value from the three combos ── */
   function commit() {
-    const d = daySelect.value;
-    const m = monthSelect.value;
-    const y = yearSelect.value;
+    const d = dayCombo.getValue();
+    const m = monthCombo.getValue();
+    const y = yearCombo.getValue();
     if (!(d && m && y)) {
       // Incomplete selection: don't push a value to the rule engine yet.
       // The runtime's date-format validator only skips validation for a
@@ -207,34 +399,60 @@ export default function decorate(block, fd = {}) {
     hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
+  /** Rebuilds the day options for `count` days, preserving the current selection if valid. */
+  function populateDayOptions(count, preserveValue = true) {
+    const opts = [];
+    for (let d = 1; d <= count; d += 1) opts.push({ value: String(d), label: String(d) });
+    dayCombo.setOptions(opts, { preserveValue });
+  }
+
+  dayCombo = createCombobox({
+    id: `${baseId}-day`, ariaLabel: dayLabel, placeholder: dayLabel, disabled: isDisabled, onChange: commit,
+  });
+
   // Regenerate the day count when month/year narrow it (e.g. Feb 30 -> Feb 28/29),
   // clamping down without losing a still-valid selected day.
   function onMonthOrYearChange() {
-    const m = monthSelect.value;
-    const y = yearSelect.value;
-    populateDays((m && y) ? daysInMonth(Number(y), Number(m) - 1) : 31);
+    const m = monthCombo.getValue();
+    const y = yearCombo.getValue();
+    populateDayOptions((m && y) ? daysInMonth(Number(y), Number(m) - 1) : 31);
     commit();
   }
 
-  // Stop these native `change` events from bubbling to the form: the rule
-  // engine's global change listener (rules/index.js applyRuleEngine) resolves
-  // the bound field purely from `e.target.closest('.field-wrapper').dataset.id`,
-  // and day/month/year share the same field-wrapper as the hidden input. Left
-  // unguarded, e.g. picking a year would push the raw year alone ("2003") into
-  // the model as this field's value, ahead of the composed ISO string below.
-  daySelect.addEventListener('change', (e) => { e.stopPropagation(); commit(); });
-  monthSelect.addEventListener('change', (e) => { e.stopPropagation(); onMonthOrYearChange(); });
-  yearSelect.addEventListener('change', (e) => { e.stopPropagation(); onMonthOrYearChange(); });
+  monthCombo = createCombobox({
+    id: `${baseId}-month`, ariaLabel: monthLabel, placeholder: monthLabel, disabled: isDisabled, onChange: onMonthOrYearChange,
+  });
+  yearCombo = createCombobox({
+    id: `${baseId}-year`, ariaLabel: yearLabel, placeholder: yearLabel, disabled: isDisabled, onChange: onMonthOrYearChange,
+  });
+
+  monthCombo.setOptions((lang === 'th' ? MONTHS_TH : MONTHS_EN).map((name, idx) => ({
+    value: String(idx + 1).padStart(2, '0'),
+    label: name,
+  })), { preserveValue: false });
+
+  const yearOpts = [];
+  for (let i = 0; i < yearCount; i += 1) {
+    const year = startYear - i;
+    yearOpts.push({ value: String(year), label: String(year) });
+  }
+  yearCombo.setOptions(yearOpts, { preserveValue: false });
+
+  populateDayOptions(31, false);
+
+  row.append(dayCombo.wrapper, monthCombo.wrapper, yearCombo.wrapper);
+  wrapper.append(labelEl, row, hiddenInput);
+  block.append(wrapper);
 
   /* ── Seed from a prefilled/default value (yyyy-MM-dd) ── */
   const initial = toText(getProp(fd, 'default') ?? fd.value);
   const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(initial);
   if (match) {
     const [, y, m, d] = match;
-    yearSelect.value = y;
-    monthSelect.value = m;
-    populateDays(daysInMonth(Number(y), Number(m) - 1));
-    daySelect.value = String(Number(d));
+    yearCombo.setValue(y);
+    monthCombo.setValue(m);
+    populateDayOptions(daysInMonth(Number(y), Number(m) - 1));
+    dayCombo.setValue(String(Number(d)));
     commit();
   }
 

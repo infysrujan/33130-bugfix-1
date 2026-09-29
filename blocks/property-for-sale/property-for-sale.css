@@ -189,6 +189,10 @@
   padding-bottom: var(--bbl-space-250);
 }
 
+.pfs-tabs-wrapper .tab-panel.full-bleed-special {
+  padding-inline: 0;
+}
+
 .pfs-grid .listing-card-container {
   margin-left: 0;
   margin-right: 0;
