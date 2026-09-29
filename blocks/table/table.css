@@ -555,3 +555,25 @@ td .icon {
     box-sizing: border-box;
   }
 }
+
+@media (width <= 64rem) {
+  .table table.download-1-mcol-2-dcol tr td {
+    padding-block: 0;
+  }
+}
+
+@media (width > 64rem) {
+  .table table.download-1-mcol-2-dcol tr:not(.header-row) td, .table table.download-1-mcol-2-dcol tr.header-row td {
+    padding-block: 0;
+    padding-inline: 0;
+  }
+
+  .table table.download-1-mcol-2-dcol tr td:nth-child(odd) {
+    padding-right: 20px;
+  }
+
+  .table table.download-1-mcol-2-dcol tr td:nth-child(even) {
+    padding-left: 20px;
+  }
+}
+
