@@ -13041,6 +13041,40 @@
         }
       },
       {
+        "component": "select",
+        "name": "table2Type",
+        "label": "Table 2 Type",
+        "description": "Select the table type to get relative api data",
+        "valueType": "string",
+        "value": "rateCardGetFxBanner",
+        "options": [
+          {
+            "name": "No Table Data",
+            "value": ""
+          },
+          {
+            "name": "Exchange Currency",
+            "value": "rateCardGetFxBanner"
+          },
+          {
+            "name": "Rate Deposit",
+            "value": "rateCardGetDepositRate"
+          },
+          {
+            "name": "Rate Loan",
+            "value": "rateCardGetLoanRate"
+          },
+          {
+            "name": "Nav bbl fund",
+            "value": "rateCardGetFundPriceService"
+          },
+          {
+            "name": "Nav bcap fund",
+            "value": "rateCardGetFundBanner"
+          }
+        ]
+      },
+      {
         "component": "aem-content",
         "name": "table2Link",
         "label": "Table 2 Link",
@@ -13135,6 +13169,40 @@
             "2"
           ]
         }
+      },
+      {
+        "component": "select",
+        "name": "table2Type",
+        "label": "Table 2 Type",
+        "description": "Select the table type to get relative api data",
+        "valueType": "string",
+        "value": "rateCardGetFxBanner",
+        "options": [
+          {
+            "name": "No Table Data",
+            "value": ""
+          },
+          {
+            "name": "Exchange Currency",
+            "value": "rateCardGetFxBanner"
+          },
+          {
+            "name": "Rate Deposit",
+            "value": "rateCardGetDepositRate"
+          },
+          {
+            "name": "Rate Loan",
+            "value": "rateCardGetLoanRate"
+          },
+          {
+            "name": "Nav bbl fund",
+            "value": "rateCardGetFundPriceService"
+          },
+          {
+            "name": "Nav bcap fund",
+            "value": "rateCardGetFundBanner"
+          }
+        ]
       }
     ]
   },
