@@ -22,6 +22,8 @@ main .section.form-container .form form .field-wrapper.field-invalid :is(input:n
 
 main .section.form-container .form form .field-invalid :is(.field-validation-error, .field-description) {
   color: var(--bbl-color-system-red);
+  font-size: var(--bbl-body-b3-size);
+  line-height: var(--bbl-body-b3-line-height);
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-looped);
 }
