@@ -88,6 +88,14 @@
   scroll-snap-type: x mandatory;
 }
 
+.ccs-card-list-container .cards-list.scrollable.center {
+  justify-content: flex-start;
+}
+
+.ccs-card-list-container .cards-list.scrollable.center:has(> .cards-list-item:only-child) {
+  justify-content: center;
+}
+
 .ccs-card-list-container .cards-list.scrollable::-webkit-scrollbar {
   display: none;
 }
@@ -216,20 +224,11 @@
 .ccs-results-disclaimer {
   margin-top: 1.875rem;
   margin-inline: 0;
+  padding-inline: 0.625rem;
   padding-top: 1.875rem;
   font-size: var(--bbl-font-size-b1);
   line-height: 1.6;
   text-align: left;
-}
-
-@media (width < 47.5rem) {
-  .credit-card-results-container {
-    padding-inline: 0.375rem;
-  }
-
-  .ccs-results-disclaimer {
-    padding-inline: 0.625rem;
-  }
 }
 
 @media (width > 47.5rem) {
@@ -255,6 +254,7 @@
   }
 
   .ccs-results-disclaimer {
+    padding-left: 0;
     padding-right: var(--bbl-space-250);
     margin-top: 0;
   }
