@@ -170,8 +170,8 @@ function getDisplayLang() {
 
 function positionPopover(trigger, popover) {
   const rect = trigger.getBoundingClientRect();
-  const margin = 8;
-  let top = rect.bottom + margin;
+  const edge = 8;
+  let top = rect.bottom;
   // eslint-disable-next-line prefer-destructuring
   let left = rect.left;
 
@@ -185,9 +185,9 @@ function positionPopover(trigger, popover) {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    if (left + pw > vw - margin) left = Math.max(margin, vw - margin - pw);
-    if (top + ph > vh - margin && rect.top - margin - ph > margin) {
-      top = rect.top - margin - ph;
+    if (left + pw > vw - edge) left = Math.max(edge, vw - edge - pw);
+    if (top + ph > vh - edge && rect.top - ph > edge) {
+      top = rect.top - ph;
     }
 
     popover.style.top = `${top}px`;
@@ -273,10 +273,6 @@ export default function decorate(block, fd = {}) {
   input.setAttribute('autocomplete', 'off');
   input.setAttribute('tabindex', '0');
 
-  const calIcon = document.createElement('span');
-  calIcon.className = 'dpth-icon icon-calendar';
-  calIcon.setAttribute('aria-hidden', 'true');
-
   const hiddenInput = document.createElement('input');
   hiddenInput.type = 'hidden';
   hiddenInput.name = fieldName;
@@ -285,7 +281,7 @@ export default function decorate(block, fd = {}) {
   // read (submit) and write (prefill / rules) round-trip correctly.
   if (fd?.id) hiddenInput.id = fd.id;
 
-  fieldEl.append(input, calIcon);
+  fieldEl.append(input);
   wrapper.append(labelEl, fieldEl, hiddenInput);
   block.append(wrapper);
 
@@ -422,7 +418,7 @@ export default function decorate(block, fd = {}) {
     input.setAttribute('aria-expanded', 'true');
     popover.hidden = false;
     renderGrid();
-    positionPopover(fieldEl, popover);
+    positionPopover(input, popover);
   }
 
   function closePopover() {
@@ -524,7 +520,7 @@ export default function decorate(block, fd = {}) {
     if (e.key === 'Escape' && isOpen) { e.stopPropagation(); closePopover(); input.focus(); }
   });
 
-  const onReposition = () => { if (isOpen) positionPopover(fieldEl, popover); };
+  const onReposition = () => { if (isOpen) positionPopover(input, popover); };
   window.addEventListener('resize', onReposition);
   window.addEventListener('scroll', onReposition, true);
 

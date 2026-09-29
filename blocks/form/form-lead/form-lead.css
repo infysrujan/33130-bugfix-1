@@ -1047,20 +1047,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     text-align: left;
   }
  
-  main .section.form-container.lead-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *)::after {
-    content: "\e912";
-    font-family: icomoon, sans-serif;
-    font-size: var(--bbl-font-size-h3-mobile);
-    color: var(--bbl-color-grey-90);
-    position: absolute;
-    top: 8px;
-    right: var(--bbl-space-300);
-    height: var(--bbl-form-date-icon-height, 2.75rem);
-    display: flex;
-    align-items: center;
-    pointer-events: none;
-  }
- 
+
   main .section.form-container.lead-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *):has(label[data-visible="false"])::after {
     top: 0.625rem;
   }
