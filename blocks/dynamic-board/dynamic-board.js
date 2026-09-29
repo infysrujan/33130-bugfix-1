@@ -570,8 +570,8 @@ function buildPrintRoot(block) {
   const printTable = content.querySelector('.db-table');
   if (printTable) {
     const colgroup = document.createElement('colgroup');
-    // Proportions taken from the legacy bangkokbank.com print output.
-    [11, 24, 9, 9, 11, 8, 10, 8, 10].forEach((width) => {
+    // Sized so the widest price (e.g. 1,016.27252) fits at 194mm without spilling.
+    [9, 27, 11, 8, 11, 8, 9, 8, 9].forEach((width) => {
       const col = document.createElement('col');
       col.style.width = `${width}%`;
       colgroup.append(col);
@@ -628,12 +628,21 @@ function buildPrintRoot(block) {
     #dynamic-board-print-root {
       position: static;
       left: auto;
+      /* A4 width minus @page margins, so phones lay out like desktop and shrink to fit. */
+      width: 194mm;
+      box-sizing: border-box;
     }
 
     #dynamic-board-print-root,
     #dynamic-board-print-root * {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
+    }
+
+    /* Stops mobile browsers enlarging text, which squeezes the columns. */
+    #dynamic-board-print-root {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     .brand-logo-container {
@@ -784,11 +793,18 @@ function buildPrintRoot(block) {
       height: auto;
       /* Headers may wrap onto 2 lines; tight line-height keeps the row compact. */
       white-space: normal;
+      /* The CSS print fallback's overflow-wrap: break-word splits words like "Indicativ-e". */
+      overflow-wrap: normal;
+      word-break: normal;
       line-height: 1.15;
       padding: 0.2rem 0.3rem;
       text-align: center;
       vertical-align: middle;
       border: 0.0625rem solid var(--bbl-color-grey-20);
+    }
+
+    #dynamic-board-print-root .dynamic-board .db-table thead th[data-sort]:not([data-sort="BOND_SYMBOL"], [data-sort="NAME_ENG"]) {
+      text-align: right;
     }
 
     #dynamic-board-print-root .dynamic-board .db-table thead .db-th-label::after {
