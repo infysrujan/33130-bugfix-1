@@ -127,7 +127,7 @@
 
 .dobth-listbox {
   position: fixed;
-  z-index: 9999;
+  z-index: 99;
   max-height: 220px;
   padding-bottom: 1px;
   overflow: hidden auto;
