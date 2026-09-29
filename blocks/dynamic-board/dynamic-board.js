@@ -495,7 +495,12 @@ function wireFilterEvents(
 // ─── print ────────────────────────────────────────────────────────────────────
 // Prints in place via an @media print rule that hides the live page and shows a
 // cloned print root — iOS Safari can't print an isolated iframe/popup document.
-function printElement(block) {
+
+// Set by the Print button so its own beforeprint doesn't rebuild the root it just made.
+let printRootFromButton = false;
+let beforePrintBlock = null;
+
+function buildPrintRoot(block) {
   // Captures real computed styles from the LIVE elements before cloning, so
   // printCss matches the live board instead of guessing rem values.
   const liveDateInput = block.querySelector('.db-date-display');
@@ -906,6 +911,19 @@ function printElement(block) {
     printStyle.remove();
   };
 
+  // Android Chrome fires afterprint before the preview renders; clean up on return.
+  window.addEventListener('afterprint', () => {
+    document.addEventListener('pointerdown', cleanup, { once: true });
+    document.addEventListener('keydown', cleanup, { once: true });
+  }, { once: true });
+
+  return printRoot;
+}
+
+function printElement(block) {
+  printRootFromButton = true;
+  const printRoot = buildPrintRoot(block);
+
   const logoImg = printRoot.querySelector('.brand-logo-container img');
   const logoReady = (!logoImg || logoImg.complete)
     ? Promise.resolve()
@@ -917,15 +935,19 @@ function printElement(block) {
   logoReady.then(() => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        // Android Chrome fires afterprint before the preview renders; clean up on return.
-        window.addEventListener('afterprint', () => {
-          document.addEventListener('pointerdown', cleanup, { once: true });
-          document.addEventListener('keydown', cleanup, { once: true });
-        }, { once: true });
         window.print();
       });
     });
   });
+}
+
+// Ctrl+P, browser menu and mobile Share → Print get the same layout as the Print button.
+function onBeforePrint() {
+  if (printRootFromButton) {
+    printRootFromButton = false;
+    return;
+  }
+  if (beforePrintBlock?.isConnected) buildPrintRoot(beforePrintBlock);
 }
 
 // ─── main decorate ────────────────────────────────────────────────────────────
@@ -1203,4 +1225,10 @@ export default async function decorate(block) {
 
   // ── print ──
   printBtn.addEventListener('click', () => printElement(block));
+
+  // Only the first board on the page is printed by the browser's own print.
+  if (!beforePrintBlock) {
+    beforePrintBlock = block;
+    window.addEventListener('beforeprint', onBeforePrint);
+  }
 }
