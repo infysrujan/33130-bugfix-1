@@ -533,6 +533,22 @@ td .icon {
 }
 
 /* One-off for the e-Donation accordion download grid; do not replicate as a general table variant. */
+/* stylelint-disable no-descending-specificity */
+.table table.download-1-mcol-2-dcol tr td {
+  padding: 0;
+}
+
+@media (width > 47.5rem) {
+  .table table.download-1-mcol-2-dcol tr td:nth-child(odd) {
+    padding-right: 1.25rem;
+  }
+
+  .table table.download-1-mcol-2-dcol tr td:nth-child(even) {
+    padding-left: 1.25rem;
+  }
+}
+/* stylelint-enable no-descending-specificity */
+
 @media (width <= 47.5rem) {
   .table table.download-1-mcol-2-dcol {
     display: block;
