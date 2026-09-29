@@ -94,7 +94,8 @@
       "mf-questionnaire",
       "cc-campaign",
       "header-banner-slide",
-      "custom-button"
+      "custom-button",
+      "debit-prepaid"
     ]
   },
   {
@@ -353,7 +354,9 @@
       "forms-menu-card",
       "forms-card-list",
       "forms-card-list-item",
-      "bbl-wizard"
+      "bbl-wizard",
+      "calendar",
+      "dob"
     ]
   },
   {
@@ -677,6 +680,22 @@
       }
     },
     "components": []
+  },
+  {
+    "id": "cell-css-rte",
+    "components": [
+      "richtext"
+    ],
+    "rte": {
+      "toolbar": {
+        "blocks": [
+          "code_block"
+        ],
+        "sections": [
+          "blocks"
+        ]
+      }
+    }
   },
   {
     "id": "tab-section",

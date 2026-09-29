@@ -19,7 +19,7 @@ function formatMenuCardDate(dateStr, monthYearOnly = false) {
     return monthYearOnly ? `${month} ${year}` : `${date.getDate()} ${month} ${year}`;
   }
   const options = { month: 'long', year: 'numeric', ...(monthYearOnly ? {} : { day: 'numeric' }) };
-  return date.toLocaleDateString('en-GB', options);
+  return date.toLocaleDateString('en-US', options);
 }
 
 function parseBooleanFlag(value, defaultValue = false) {
@@ -165,9 +165,9 @@ function createCardListItem(cardElement, doc) {
   }
 
   if (actionTypeText === 'select-dropdown') {
-    // dropdown fields: cells.length-3 = label, cells.length-2 = links (before financialDate)
-    const label = cells[cells.length - 3]?.textContent?.trim() || 'Select';
-    const linksHTML = cells[cells.length - 2]?.innerHTML || '';
+    // dropdown fields: label = cells.length-4, links = cells.length-3 (2 date fields trail them)
+    const label = cells[cells.length - 4]?.textContent?.trim() || 'Select';
+    const linksHTML = cells[cells.length - 3]?.innerHTML || '';
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
     buttonWrapper.appendChild(createGlobalDropdown(label, linksHTML, doc));
     inner.appendChild(buttonWrapper);

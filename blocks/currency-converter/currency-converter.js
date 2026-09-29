@@ -278,117 +278,117 @@ async function convertCurrency(amount, fromCurrency, toCurrency, apiBaseUrl) {
  * Decorate the currency converter block
  * @param {Element} block - The currency converter block element
  */
-export default async function decorate(block) {
+export default function decorate(block) {
   // Fetch placeholder and config values
-  const placeholders = await fetchPlaceholders();
-  const configs = await fetchConfigs();
+  Promise.all([fetchPlaceholders(), fetchConfigs()])
+    .then(([placeholders, configs]) => {
+      const searchPlaceholder = placeholders?.searchInputPlaceholder || 'Type to Search...';
+      const apiBaseUrl = configs?.currencyConverterExchangeRateService || '';
 
-  const searchPlaceholder = placeholders?.searchInputPlaceholder || 'Type to Search...';
-  const apiBaseUrl = configs?.currencyConverterExchangeRateService || '';
-
-  if (!apiBaseUrl) {
-    // eslint-disable-next-line no-console
-    console.error('Exchange rate service URL not configured in config.json');
-  }
-
-  const rows = Array.from(block.children);
-
-  // Parse block content
-  const fromLabel = rows[0]?.textContent.trim() || placeholders?.fromLabel || 'From';
-  const toLabel = rows[1]?.textContent.trim() || placeholders?.toLabel || 'To';
-  const converterIconDiv = rows[2]?.querySelector('picture') || rows[2]?.querySelector('img');
-  const currencyListDiv = rows[3]?.querySelector('ul');
-
-  // Parse currencies
-  const currencies = parseCurrencyList(currencyListDiv);
-
-  // Clear block
-  block.innerHTML = '';
-
-  // Create converter container
-  const converter = document.createElement('div');
-  converter.className = 'converter';
-
-  // Create From group (first currency - index 0)
-  const fromGroup = createConvertGroup(fromLabel, currencies, 'from', searchPlaceholder, 0);
-
-  // Create Convert button with icon
-  const convertBtn = document.createElement('button');
-  convertBtn.type = 'button';
-  convertBtn.className = 'btn-convert';
-  convertBtn.id = 'convert-btn';
-  convertBtn.title = 'Convert';
-
-  if (converterIconDiv) {
-    const iconClone = converterIconDiv.cloneNode(true);
-    convertBtn.appendChild(iconClone);
-  }
-
-  const btnText = document.createElement('span');
-  btnText.textContent = 'Convert';
-  convertBtn.appendChild(btnText);
-
-  // Create To group (second currency - index 1)
-  const toGroup = createConvertGroup(toLabel, currencies, 'to', searchPlaceholder, 1);
-
-  // Add convert functionality
-  convertBtn.addEventListener('click', async () => {
-    const fromInput = fromGroup.querySelector('.amount-input');
-    const toInput = toGroup.querySelector('.amount-input');
-    const fromCode = fromGroup.querySelector('.code').textContent;
-    const toCode = toGroup.querySelector('.code').textContent;
-
-    const amount = fromInput.value.replace(/,/g, '');
-
-    if (!amount || parseFloat(amount) <= 0) {
-      toInput.value = '';
-      return;
-    }
-
-    convertBtn.disabled = true;
-    convertBtn.classList.add('loading');
-
-    try {
-      const result = await convertCurrency(amount, fromCode, toCode, apiBaseUrl);
-
-      if (result !== null && result !== undefined) {
-        toInput.value = formatNumberWithCommas(result);
-      } else {
-        // API returned an error or invalid response
-        toInput.value = '';
+      if (!apiBaseUrl) {
         // eslint-disable-next-line no-console
-        console.error('Currency conversion failed: Invalid response from API');
+        console.error('Exchange rate service URL not configured in config.json');
       }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Currency conversion failed:', error);
-      toInput.value = '';
-    } finally {
-      convertBtn.disabled = false;
-      convertBtn.classList.remove('loading');
-    }
-  });
 
-  // Also convert on Enter key in From input
-  fromGroup.querySelector('.amount-input').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      convertBtn.click();
-    }
-  });
+      const rows = Array.from(block.children);
 
-  // Assemble converter
-  converter.appendChild(fromGroup);
-  converter.appendChild(convertBtn);
-  converter.appendChild(toGroup);
+      // Parse block content
+      const fromLabel = rows[0]?.textContent.trim() || placeholders?.fromLabel || 'From';
+      const toLabel = rows[1]?.textContent.trim() || placeholders?.toLabel || 'To';
+      const converterIconDiv = rows[2]?.querySelector('picture') || rows[2]?.querySelector('img');
+      const currencyListDiv = rows[3]?.querySelector('ul');
 
-  block.appendChild(converter);
+      // Parse currencies
+      const currencies = parseCurrencyList(currencyListDiv);
 
-  // Close dropdowns when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.convert-group')) {
-      document.querySelectorAll('.currency-dropdown').forEach((dropdown) => {
-        dropdown.classList.remove('active');
+      // Clear block
+      block.innerHTML = '';
+
+      // Create converter container
+      const converter = document.createElement('div');
+      converter.className = 'converter';
+
+      // Create From group (first currency - index 0)
+      const fromGroup = createConvertGroup(fromLabel, currencies, 'from', searchPlaceholder, 0);
+
+      // Create Convert button with icon
+      const convertBtn = document.createElement('button');
+      convertBtn.type = 'button';
+      convertBtn.className = 'btn-convert';
+      convertBtn.id = 'convert-btn';
+      convertBtn.title = 'Convert';
+
+      if (converterIconDiv) {
+        const iconClone = converterIconDiv.cloneNode(true);
+        convertBtn.appendChild(iconClone);
+      }
+
+      const btnText = document.createElement('span');
+      btnText.textContent = 'Convert';
+      convertBtn.appendChild(btnText);
+
+      // Create To group (second currency - index 1)
+      const toGroup = createConvertGroup(toLabel, currencies, 'to', searchPlaceholder, 1);
+
+      // Add convert functionality
+      convertBtn.addEventListener('click', () => {
+        const fromInput = fromGroup.querySelector('.amount-input');
+        const toInput = toGroup.querySelector('.amount-input');
+        const fromCode = fromGroup.querySelector('.code').textContent;
+        const toCode = toGroup.querySelector('.code').textContent;
+
+        const amount = fromInput.value.replace(/,/g, '');
+
+        if (!amount || parseFloat(amount) <= 0) {
+          toInput.value = '';
+          return;
+        }
+
+        convertBtn.disabled = true;
+        convertBtn.classList.add('loading');
+
+        convertCurrency(amount, fromCode, toCode, apiBaseUrl)
+          .then((result) => {
+            if (result !== null && result !== undefined) {
+              toInput.value = formatNumberWithCommas(result);
+            } else {
+              toInput.value = '';
+              // eslint-disable-next-line no-console
+              console.error('Currency conversion failed: Invalid response from API');
+            }
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error('Currency conversion failed:', error);
+            toInput.value = '';
+          })
+          .finally(() => {
+            convertBtn.disabled = false;
+            convertBtn.classList.remove('loading');
+          });
       });
-    }
-  });
+
+      // Also convert on Enter key in From input
+      fromGroup.querySelector('.amount-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          convertBtn.click();
+        }
+      });
+
+      // Assemble converter
+      converter.appendChild(fromGroup);
+      converter.appendChild(convertBtn);
+      converter.appendChild(toGroup);
+
+      block.appendChild(converter);
+
+      // Close dropdowns when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.convert-group')) {
+          document.querySelectorAll('.currency-dropdown').forEach((dropdown) => {
+            dropdown.classList.remove('active');
+          });
+        }
+      });
+    });
 }

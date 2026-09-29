@@ -48,6 +48,9 @@ function printForwardPointsSme(block) {
     input.parentNode.replaceChild(span, input);
   });
 
+  // pending when window.print() fires, leaving it blank. Force eager loading here.
+  content.querySelectorAll('.fpsme-currency-cell img').forEach((img) => { img.loading = 'eager'; });
+
   // Logo — clone directly from the live page (images already loaded, no fetch needed)
   const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
     || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
@@ -76,12 +79,23 @@ function printForwardPointsSme(block) {
   document.head.appendChild(printStyle);
   document.body.appendChild(printRoot);
 
-  window.print();
+  const flagImages = [...printRoot.querySelectorAll('.fpsme-currency-cell img')];
+  const flagsReady = Promise.all(flagImages.map((img) => (img.complete
+    ? Promise.resolve()
+    : new Promise((resolve) => {
+      img.addEventListener('load', resolve, { once: true });
+      img.addEventListener('error', resolve, { once: true });
+    }))));
+  const timeout = new Promise((resolve) => { setTimeout(resolve, 1000); });
 
-  window.addEventListener('afterprint', () => {
-    printRoot.remove();
-    printStyle.remove();
-  }, { once: true });
+  Promise.race([flagsReady, timeout]).then(() => {
+    window.print();
+
+    window.addEventListener('afterprint', () => {
+      printRoot.remove();
+      printStyle.remove();
+    }, { once: true });
+  });
 }
 
 function escapeHtml(value) {

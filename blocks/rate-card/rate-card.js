@@ -15,35 +15,45 @@ function getPageLang() {
  * Format date string from API format to display format
  * @param {string} dateString - Date string in format DD/MM/YYYY or YYYY-MM-DD
  * @param {string} timeString - Optional time string in format HH:MM
+ * @param {string} lang - Current page language ('en' or 'th')
  * @returns {string} - Formatted date string
  */
-function formatDate(dateString, timeString = '') {
+function formatDate(dateString, timeString = '', lang = 'en') {
   if (!dateString) return '';
 
   try {
-    let formattedDate = '';
+    let date;
 
     // Handle DD/MM/YYYY format
     if (dateString.includes('/')) {
       const [day, month, year] = dateString.split('/');
-      const date = new Date(year, month - 1, day);
-      formattedDate = `as of ${day} ${date.toLocaleString('en-US', { month: 'long' })} ${year}`;
+      date = new Date(year, month - 1, day);
     } else if (dateString.includes('-')) {
       // Handle YYYY-MM-DD format
-      const date = new Date(dateString);
-      formattedDate = `as of ${date.getDate()} ${date.toLocaleString('en-US', { month: 'long' })} ${date.getFullYear()}`;
+      date = new Date(dateString);
     } else {
-      formattedDate = `as of ${dateString}`;
+      return dateString;
     }
 
-    // Add time if provided
-    if (timeString && timeString.trim()) {
-      formattedDate += ` at ${timeString.trim()}`;
+    let formattedDate;
+    if (lang === 'th') {
+      // Thai locale: Thai month name and Buddhist Era year (CE + 543)
+      const month = date.toLocaleString('th-TH', { month: 'long' });
+      formattedDate = `${date.getDate()} ${month} ${date.getFullYear() + 543}`;
+      if (timeString && timeString.trim()) {
+        formattedDate += ` เวลา ${timeString.trim()} น.`;
+      }
+    } else {
+      const month = date.toLocaleString('en-US', { month: 'long' });
+      formattedDate = `as of ${date.getDate()} ${month} ${date.getFullYear()}`;
+      if (timeString && timeString.trim()) {
+        formattedDate += ` at ${timeString.trim()}`;
+      }
     }
 
     return formattedDate;
   } catch (error) {
-    return dateString ? `as of ${dateString}` : '';
+    return dateString || '';
   }
 }
 
@@ -212,8 +222,9 @@ function parseColumnNames(rteElement) {
  * @param {string} dateString - Date string
  * @param {string} timeString - Time string
  * @param {Object} buttonData - Button data
+ * @param {string} lang - Current page language ('en' or 'th')
  */
-function appendTableMeta(container, dateString, timeString, buttonData) {
+function appendTableMeta(container, dateString, timeString, buttonData, lang) {
   const buttonElement = createButtonElement(buttonData);
 
   if (!dateString && !buttonElement) {
@@ -229,7 +240,7 @@ function appendTableMeta(container, dateString, timeString, buttonData) {
 
     const dateUpdate = document.createElement('span');
     dateUpdate.className = 'date-update';
-    dateUpdate.textContent = formatDate(dateString, timeString);
+    dateUpdate.textContent = formatDate(dateString, timeString, lang);
     dateWrap.appendChild(dateUpdate);
     wrapper.appendChild(dateWrap);
   }
@@ -268,12 +279,12 @@ function createTabContent(tabData, apiData, lang) {
 
   const cardNameLower = cardName.toLowerCase();
 
-  if (cardNameLower.includes('exchange')) {
+  if (cardNameLower.includes('exchange') || cardNameLower.includes('แลกเปลี่ยน')) {
     dataType1 = 'exchange';
     apiData1 = apiData.exchange || [];
     dateString1 = apiData.exchangeDate || '';
     timeString1 = apiData.exchangeTime || '';
-  } else if (cardNameLower.includes('rate')) {
+  } else if (cardNameLower.includes('rate') || cardNameLower.includes('ดอกเบี้ย')) {
     // Rates tab has both deposit and loan
     dataType1 = 'deposit';
     dataType2 = 'loan';
@@ -307,7 +318,7 @@ function createTabContent(tabData, apiData, lang) {
       const list = document.createElement('div');
       list.className = 'currency-list';
       list.appendChild(tableElement);
-      appendTableMeta(list, dateString1, timeString1, table1Data.button);
+      appendTableMeta(list, dateString1, timeString1, table1Data.button, lang);
       content.appendChild(list);
     }
   }
@@ -325,7 +336,7 @@ function createTabContent(tabData, apiData, lang) {
       const list = document.createElement('div');
       list.className = 'currency-list full';
       list.appendChild(tableElement);
-      appendTableMeta(list, dateString2, timeString2, table2Data.button);
+      appendTableMeta(list, dateString2, timeString2, table2Data.button, lang);
       content.appendChild(list);
     }
   }
@@ -364,200 +375,206 @@ function activateTab(block, index) {
  * Decorate the rate card block
  * @param {Element} block - The rate card block element
  */
-export default async function decorate(block) {
+export default function decorate(block) {
   decorateButtonsV1(block);
 
   const lang = getPageLang();
+  const items = [...block.children];
+  const staging = document.createElement('div');
+  staging.hidden = true;
+  items.forEach((item) => staging.append(item));
+  block.replaceChildren();
 
-  // Fetch configs for API URLs
-  const configs = await fetchConfigs();
+  fetchConfigs().catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error('Error fetching API data:', error);
+    return {};
+  }).then((configs) => {
+    const exchangeRateAPI = configs?.rateCardGetFxBanner || '';
+    const depositRateAPI = configs?.rateCardGetDepositRate || '';
+    const loanRateAPI = configs?.rateCardGetLoanRate || '';
+    const bblFundAPI = configs?.rateCardGetFundPriceService || '';
+    const bcapFundAPI = configs?.rateCardGetFundBanner || '';
 
-  const exchangeRateAPI = configs?.rateCardGetFxBanner || '';
-  const depositRateAPI = configs?.rateCardGetDepositRate || '';
-  const loanRateAPI = configs?.rateCardGetLoanRate || '';
-  const bblFundAPI = configs?.rateCardGetFundPriceService || '';
-  const bcapFundAPI = configs?.rateCardGetFundBanner || '';
+    // Parse block content
+    const tabsData = [];
 
-  // Parse block content
-  const items = Array.from(block.children);
-  const tabsData = [];
+    items.forEach((item) => {
+      const divs = Array.from(item.children);
 
-  items.forEach((item) => {
-    const divs = Array.from(item.children);
+      const cardName = divs[0]?.textContent.trim() || '';
+      const tableCount = divs[1]?.textContent.trim() || '1';
 
-    const cardName = divs[0]?.textContent.trim() || '';
-    const tableCount = divs[1]?.textContent.trim() || '1';
+      // Table 1 data
+      const table1ColumnNamesDiv = divs[2];
+      const table1ButtonDiv = divs[3];
+      const table1ColumnNames = parseColumnNames(table1ColumnNamesDiv);
 
-    // Table 1 data
-    const table1ColumnNamesDiv = divs[2];
-    const table1ButtonDiv = divs[3];
-    const table1ColumnNames = parseColumnNames(table1ColumnNamesDiv);
+      const table1Button = { sourceElement: table1ButtonDiv };
 
-    const table1Button = { sourceElement: table1ButtonDiv };
+      const tabData = {
+        cardName,
+        sourceElement: item,
+        titleSourceElement: divs[0],
+        tableCount,
+        table1Data: {
+          columnNames: table1ColumnNames,
+          sourceElement: table1ColumnNamesDiv,
+          button: table1Button,
+        },
+      };
 
-    const tabData = {
-      cardName,
-      sourceElement: item,
-      titleSourceElement: divs[0],
-      tableCount,
-      table1Data: {
-        columnNames: table1ColumnNames,
-        sourceElement: table1ColumnNamesDiv,
-        button: table1Button,
-      },
+      // Table 2 data (if tableCount is 2)
+      if (tableCount === '2' && divs.length > 5) {
+        const table2ColumnNamesDiv = divs[5];
+        const table2ButtonDiv = divs[6];
+        const table2ColumnNames = parseColumnNames(table2ColumnNamesDiv);
+
+        const table2Button = { sourceElement: table2ButtonDiv };
+
+        tabData.table2Data = {
+          columnNames: table2ColumnNames,
+          sourceElement: table2ColumnNamesDiv,
+          button: table2Button,
+        };
+      }
+
+      tabsData.push(tabData);
+    });
+
+    // Fetch all API data
+    const apiData = {
+      exchange: [],
+      exchangeDate: '',
+      exchangeTime: '',
+      deposit: [],
+      depositDate: '',
+      loan: [],
+      loanDate: '',
+      bblFund: [],
+      bblFundDate: '',
+      bcapFund: [],
+      bcapFundDate: '',
     };
 
-    // Table 2 data (if tableCount is 2)
-    if (tableCount === '2' && divs.length > 5) {
-      const table2ColumnNamesDiv = divs[5];
-      const table2ButtonDiv = divs[6];
-      const table2ColumnNames = parseColumnNames(table2ColumnNamesDiv);
-
-      const table2Button = { sourceElement: table2ButtonDiv };
-
-      tabData.table2Data = {
-        columnNames: table2ColumnNames,
-        sourceElement: table2ColumnNamesDiv,
-        button: table2Button,
-      };
-    }
-
-    tabsData.push(tabData);
-  });
-
-  // Fetch all API data
-  const apiData = {
-    exchange: [],
-    exchangeDate: '',
-    exchangeTime: '',
-    deposit: [],
-    depositDate: '',
-    loan: [],
-    loanDate: '',
-    bblFund: [],
-    bblFundDate: '',
-    bcapFund: [],
-    bcapFundDate: '',
-  };
-
-  try {
-    const [exchangeData, depositData, loanData, bblFundData, bcapFundData] = await Promise.all([
+    return Promise.all([
       fetchAPIData(exchangeRateAPI),
       fetchAPIData(depositRateAPI),
       fetchAPIData(loanRateAPI),
       fetchAPIData(bblFundAPI),
       fetchAPIData(bcapFundAPI),
-    ]);
-
-    if (exchangeData && Array.isArray(exchangeData) && exchangeData.length > 0) {
-      apiData.exchange = exchangeData.slice(0, 5); // Limit to 5 items
-      apiData.exchangeDate = exchangeData[0]?.Ddate || '';
-      apiData.exchangeTime = exchangeData[0]?.DTime || '';
-    }
-
-    if (depositData && Array.isArray(depositData) && depositData.length > 0) {
-      apiData.deposit = depositData;
-      apiData.depositDate = depositData[0]?.EffectiveDate || '';
-    }
-
-    if (loanData && Array.isArray(loanData) && loanData.length > 0) {
-      apiData.loan = loanData;
-      apiData.loanDate = loanData[0]?.EffectiveDate || '';
-    }
-
-    if (bblFundData && Array.isArray(bblFundData) && bblFundData.length > 0) {
-      apiData.bblFund = bblFundData;
-      apiData.bblFundDate = bblFundData[0]?.mfr_dDataDate || '';
-    }
-
-    if (bcapFundData && Array.isArray(bcapFundData) && bcapFundData.length > 0) {
-      apiData.bcapFund = bcapFundData;
-      apiData.bcapFundDate = bcapFundData[0]?.mfr_dDataDate || '';
-    }
-  } catch (error) {
+    ]).catch((error) => {
     // eslint-disable-next-line no-console
-    console.error('Error fetching API data:', error);
-  }
+      console.error('Error fetching API data:', error);
+      return [];
+    }).then(([exchangeData, depositData, loanData, bblFundData, bcapFundData]) => {
+      if (exchangeData && Array.isArray(exchangeData) && exchangeData.length > 0) {
+        apiData.exchange = exchangeData.slice(0, 5); // Limit to 5 items
+        apiData.exchangeDate = exchangeData[0]?.Ddate || '';
+        apiData.exchangeTime = exchangeData[0]?.DTime || '';
+      }
 
-  const article = document.createElement('article');
-  article.className = 'currency-info';
-  article.setAttribute('data-tab', '');
+      if (depositData && Array.isArray(depositData) && depositData.length > 0) {
+        apiData.deposit = depositData;
+        apiData.depositDate = depositData[0]?.EffectiveDate || '';
+      }
 
-  const tabHeader = document.createElement('ul');
-  tabHeader.className = 'tab-header';
-  tabHeader.setAttribute('data-tab-header', '');
+      if (loanData && Array.isArray(loanData) && loanData.length > 0) {
+        apiData.loan = loanData;
+        apiData.loanDate = loanData[0]?.EffectiveDate || '';
+      }
 
-  const tabContent = document.createElement('section');
-  tabContent.setAttribute('data-tab-content', '');
+      if (bblFundData && Array.isArray(bblFundData) && bblFundData.length > 0) {
+        apiData.bblFund = bblFundData;
+        apiData.bblFundDate = bblFundData[0]?.mfr_dDataDate || '';
+      }
 
-  const tabLinks = tabsData.map((tab, index) => {
-    const tabId = createTabId(tab.cardName);
-    const listItem = document.createElement('li');
-    const link = document.createElement('a');
+      if (bcapFundData && Array.isArray(bcapFundData) && bcapFundData.length > 0) {
+        apiData.bcapFund = bcapFundData;
+        apiData.bcapFundDate = bcapFundData[0]?.mfr_dDataDate || '';
+      }
 
-    link.href = `#${tabId}`;
-    link.title = tab.cardName;
-    link.textContent = tab.cardName;
+      const article = document.createElement('article');
+      article.className = 'currency-info';
+      article.setAttribute('data-tab', '');
 
-    if (index === 0) {
-      link.classList.add('active');
-    }
+      const tabHeader = document.createElement('ul');
+      tabHeader.className = 'tab-header';
+      tabHeader.setAttribute('data-tab-header', '');
 
-    if (tab.titleSourceElement) {
-      moveInstrumentation(tab.titleSourceElement, link);
-    }
+      const tabContent = document.createElement('section');
+      tabContent.setAttribute('data-tab-content', '');
 
-    listItem.appendChild(link);
-    tabHeader.appendChild(listItem);
+      const tabLinks = tabsData.map((tab, index) => {
+        const tabId = createTabId(tab.cardName);
+        const listItem = document.createElement('li');
+        const link = document.createElement('a');
 
-    const tabInner = createTabContent(tab, apiData, lang);
-    const hasContent = tabInner.querySelector('.currency-list');
+        link.href = `#${tabId}`;
+        link.title = tab.cardName;
+        link.textContent = tab.cardName;
 
-    if (!hasContent) {
-      listItem.hidden = true;
-    }
+        if (index === 0) {
+          link.classList.add('active');
+        }
 
-    const panel = document.createElement('div');
-    panel.id = tabId;
-    panel.className = `inner${index === 0 ? ' active' : ''}`;
-    moveInstrumentation(tab.sourceElement, panel);
-    panel.appendChild(tabInner);
-    tabContent.appendChild(panel);
+        if (tab.titleSourceElement) {
+          moveInstrumentation(tab.titleSourceElement, link);
+        }
 
-    return link;
-  });
+        listItem.appendChild(link);
+        tabHeader.appendChild(listItem);
 
-  article.append(tabHeader, tabContent);
-  block.replaceChildren(article);
+        const tabInner = createTabContent(tab, apiData, lang);
+        const hasContent = tabInner.querySelector('.currency-list');
 
-  tabLinks.forEach((link, index) => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      activateTab(block, index);
-    });
-  });
+        if (!hasContent) {
+          listItem.hidden = true;
+        }
 
-  // Resolve which tab should be active based on the current URL hash,
-  // falling back to the first tab.
-  const resolveActiveIndex = () => {
-    const { hash } = window.location;
-    if (hash) {
-      const tabIndex = tabsData.findIndex(
-        (tab) => `#${createTabId(tab.cardName)}` === hash,
-      );
-      if (tabIndex >= 0) return tabIndex;
-    }
-    return 0;
-  };
+        const panel = document.createElement('div');
+        panel.id = tabId;
+        panel.className = `inner${index === 0 ? ' active' : ''}`;
+        moveInstrumentation(tab.sourceElement, panel);
+        panel.appendChild(tabInner);
+        tabContent.appendChild(panel);
 
-  // Handle hash navigation
-  activateTab(block, resolveActiveIndex());
+        return link;
+      });
 
-  // Reset tab selection when the page is restored from the bfcache
-  // (back/forward navigation), where stale DOM state can persist.
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted) {
+      article.append(tabHeader, tabContent);
+      block.replaceChildren(article);
+
+      tabLinks.forEach((link, index) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          activateTab(block, index);
+        });
+      });
+
+      // Resolve which tab should be active based on the current URL hash,
+      // falling back to the first tab.
+      const resolveActiveIndex = () => {
+        const { hash } = window.location;
+        if (hash) {
+          const tabIndex = tabsData.findIndex(
+            (tab) => `#${createTabId(tab.cardName)}` === hash,
+          );
+          if (tabIndex >= 0) return tabIndex;
+        }
+        return 0;
+      };
+
+      // Handle hash navigation
       activateTab(block, resolveActiveIndex());
-    }
+
+      // Reset tab selection when the page is restored from the bfcache
+      // (back/forward navigation), where stale DOM state can persist.
+      window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+          activateTab(block, resolveActiveIndex());
+        }
+      });
+    });
   });
 }

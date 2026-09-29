@@ -13,7 +13,23 @@ const DESKTOP_BREAKPOINT = `(width > ${TABLET_MIN})`;
 const MAX_FILTERED = 5;
 const MAX_COMPARE = 3;
 const MOBILE_BREAKPOINT = `(width < ${TABLET_MIN})`;
-const BENEFIT_ALIASES = { rewards: 'point' };
+// Map UI benefit/lifestyle labels (EN and TH, as authored in the credit-card-selector
+// block) to the filtering-matrix sheet's canonical English values. The sheet only has
+// one (English) Benefit/Lifestyles column per row, so non-English UI copy must be
+// aliased here or it will never match — see credit-card-selector.js buildFilterState.
+const BENEFIT_ALIASES = {
+  rewards: 'point',
+  เครดิตเงินคืน: 'cash back',
+  คะแนนสะสม: 'point',
+};
+const LIFESTYLE_ALIASES = {
+  ใช้จ่ายทั่วไป: 'everyday',
+  รักสุขภาพ: 'healthcare',
+  ชอบเที่ยว: 'travel',
+  ทำบุญ: 'donation',
+  รถยนต์: 'automotive',
+  ช้อปปิ้ง: 'shopping',
+};
 
 // ── String / data utilities ────────────────────────────────────────────────────
 
@@ -59,11 +75,35 @@ function normalizeBenefit(str) {
   return BENEFIT_ALIASES[n] || n;
 }
 
-function sortBySourcing(cards) {
-  return [...cards].sort((a, b) => {
-    const an = parseInt(getCardField(a, 'Sourcing', 'sourcingNumber', 'Sourcing Number', 'order') || 9999, 10);
-    const bn = parseInt(getCardField(b, 'Sourcing', 'sourcingNumber', 'Sourcing Number', 'order') || 9999, 10);
-    return an - bn;
+function normalizeLifestyle(str) {
+  const n = norm(str);
+  return LIFESTYLE_ALIASES[n] || n;
+}
+
+/**
+ * Sort the initial (unfiltered) card list to match the row order the cards are authored
+ * in the filtering-matrix sheet (top-to-bottom, drag-reorderable there) — not the
+ * Sourcing/Initial Ordering column values, since those can change independently of the
+ * author's intended display order.
+ */
+function sortBySheetOrder(rawCards, sheetCards, lang) {
+  const productNameKey = lang === 'th' ? 'Product Name (TH)' : 'Product Name (EN)';
+  const cardNameKeys = lang === 'th'
+    ? ['nameTH', 'Product Name (TH)', 'cardNameTH', 'name']
+    : ['nameEN', 'Product Name (EN)', 'name', 'cardName'];
+
+  const orderMap = {};
+  sheetCards.forEach((row, index) => {
+    const name = norm(row[productNameKey] || '');
+    if (name && !(name in orderMap)) orderMap[name] = index;
+  });
+
+  return [...rawCards].sort((a, b) => {
+    const nameA = norm(getCardField(a, ...cardNameKeys));
+    const nameB = norm(getCardField(b, ...cardNameKeys));
+    const orderA = orderMap[nameA] ?? Number.MAX_SAFE_INTEGER;
+    const orderB = orderMap[nameB] ?? Number.MAX_SAFE_INTEGER;
+    return orderA - orderB;
   });
 }
 
@@ -129,7 +169,7 @@ function filterSheetCards(sheetCards, { income, benefit, lifestyles } = {}) {
   const criteria = {
     userIncome: parseIncomeValue(income),
     userBenefit: normalizeBenefit(benefit),
-    userLifestyles: (lifestyles || []).map(norm).filter(Boolean),
+    userLifestyles: (lifestyles || []).map(normalizeLifestyle).filter(Boolean),
   };
   return sheetCards.filter((row) => matchesFilter(row, criteria));
 }
@@ -139,29 +179,45 @@ function filterSheetCards(sheetCards, { income, benefit, lifestyles } = {}) {
  * → sort by Sourcing → cap at MAX_FILTERED.
  */
 async function resolveFilteredCards(sheetCards, filterState) {
+  const lang = getLang();
+  const productNameKey = lang === 'th' ? 'Product Name (TH)' : 'Product Name (EN)';
+  const cardNameKeys = lang === 'th'
+    ? ['nameTH', 'Product Name (TH)', 'cardNameTH', 'name']
+    : ['nameEN', 'Product Name (EN)', 'name', 'cardName'];
+
   const matchingRows = filterSheetCards(sheetCards, filterState);
-  const matchingNames = matchingRows.map((row) => norm(row['Product Name (EN)'] || ''));
-
-  if (!matchingNames.length) return [];
-
+  const matchingNames = new Set();
   const sourcingMap = {};
+
   matchingRows.forEach((row) => {
-    const name = norm(row['Product Name (EN)'] || '');
-    if (name) sourcingMap[name] = parseInt(row.Sourcing || 9999, 10);
+    const name = norm(row[productNameKey] || '');
+    if (name) {
+      matchingNames.add(name);
+      sourcingMap[name] = parseInt(row.Sourcing || 9999, 10);
+    }
   });
 
-  // Second fetch — request only the matched cards by name
+  if (!matchingNames.size) return [];
+
   const rawCards = await loadCardData();
+
+  const getCardNames = (card) => cardNameKeys
+    .map((key) => norm(getCardField(card, key)))
+    .filter(Boolean);
 
   const filtered = rawCards
     .filter((card) => {
-      const name = norm(getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
-      return matchingNames.includes(name);
+      const cardNames = getCardNames(card);
+      return cardNames.some((name) => matchingNames.has(name));
     })
     .sort((a, b) => {
-      const nameA = norm(getCardField(a, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
-      const nameB = norm(getCardField(b, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
-      return (sourcingMap[nameA] ?? 9999) - (sourcingMap[nameB] ?? 9999);
+      const namesA = getCardNames(a);
+      const namesB = getCardNames(b);
+
+      const sourceA = Math.min(...namesA.map((name) => sourcingMap[name] ?? 9999), 9999);
+      const sourceB = Math.min(...namesB.map((name) => sourcingMap[name] ?? 9999), 9999);
+
+      return sourceA - sourceB;
     })
     .slice(0, MAX_FILTERED);
 
@@ -324,85 +380,110 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels) 
   const getRealItems = () => [
     ...blockEl.querySelectorAll('.cards-list-item:not(.ccs-hidden):not([data-ccs-clone])'),
   ];
+  const realItems = getRealItems();
+  let dots = [];
 
-  const scrollToItem = (item) => {
-    const offset = item.getBoundingClientRect().left
+  const centerLeft = (item) => item.getBoundingClientRect().left
       - cardsList.getBoundingClientRect().left
       + cardsList.scrollLeft;
+
+  const scrollToItem = (item) => {
+    const offset = centerLeft(item) - (cardsList.clientWidth - item.offsetWidth) / 2;
     cardsList.scrollTo({ left: offset, behavior: 'smooth' });
   };
 
+  const closestItem = (items, centered) => {
+    const listRect = cardsList.getBoundingClientRect();
+    const target = centered ? listRect.left + cardsList.clientWidth / 2 : listRect.left;
+    return items.reduce((closest, item) => {
+      const rect = item.getBoundingClientRect();
+      const position = centered ? rect.left + rect.width / 2 : rect.left;
+      const distance = Math.abs(position - target);
+      return !closest || distance < closest.distance ? { item, distance } : closest;
+    }, null)?.item;
+  };
+
   const buildDots = () => {
-    dotsEl.innerHTML = '';
     const items = getRealItems();
-    if (items.length <= 1) return; // no dots needed for a single card
-    items.forEach((item, i) => {
+    dots = items.length > 1 ? items.map((item, i) => {
       const dot = doc.createElement('button');
       dot.type = 'button';
       dot.className = 'ccs-scroll-dot';
-      if (i === 0) dot.classList.add('is-active');
+      dot.classList.toggle('is-active', i === 0);
       dot.setAttribute('aria-label', `${labels.goToCard} ${i + 1}`);
       dot.addEventListener('click', () => scrollToItem(item));
-      dotsEl.appendChild(dot);
-    });
+      return dot;
+    }) : [];
+    dotsEl.replaceChildren(...dots);
   };
 
   buildDots();
 
-  // Sync active dot with scroll position
-  cardsList.addEventListener('scroll', () => {
-    const dots = [...dotsEl.querySelectorAll('.ccs-scroll-dot')];
-    const realItems = getRealItems();
-    if (!realItems.length || !dots.length) return;
-    const containerLeft = cardsList.getBoundingClientRect().left;
-    let activeIndex = 0;
-    let minDistance = Infinity;
-    realItems.forEach((item, i) => {
-      const dist = Math.abs(item.getBoundingClientRect().left - containerLeft);
-      if (dist < minDistance) { minDistance = dist; activeIndex = i; }
-    });
-    dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
-  }, { passive: true });
-
   // Seamless loop — clones only on mobile so they don't pollute the desktop grid
-  const realItems = getRealItems();
-  if (realItems.length > 1 && window.matchMedia(MOBILE_BREAKPOINT).matches) {
-    const firstClone = realItems[0].cloneNode(true);
-    const lastClone = realItems[realItems.length - 1].cloneNode(true);
-    [firstClone, lastClone].forEach((c) => {
-      c.dataset.ccsClone = 'true';
-      c.setAttribute('aria-hidden', 'true');
-    });
-    cardsList.appendChild(firstClone); // clone of first → at end
-    cardsList.insertBefore(lastClone, realItems[0]); // clone of last  → at start
+  const shouldLoop = realItems.length > 1 && window.matchMedia(MOBILE_BREAKPOINT).matches;
+  let wrapTimer = null;
+  let wrapIfClone = () => {};
+  let loopItems = [];
 
-    // Skip the prepended last-clone on load (instant, no animation)
-    requestAnimationFrame(() => {
-      cardsList.scrollLeft = realItems[0].offsetLeft;
-    });
+  if (shouldLoop) {
+    const makeClone = (index) => {
+      const clone = realItems[index].cloneNode(true);
+      clone.dataset.ccsClone = 'true';
+      clone.dataset.ccsCloneOf = String(index);
+      clone.setAttribute('aria-hidden', 'true');
+      return clone;
+    };
 
-    // After scroll snaps to a clone, instantly reposition to its real counterpart
-    let wrapTimer = null;
-    cardsList.addEventListener('scroll', () => {
-      clearTimeout(wrapTimer);
-      wrapTimer = setTimeout(() => {
-        const allItems = [...cardsList.querySelectorAll('.cards-list-item')];
-        const containerLeft = cardsList.getBoundingClientRect().left;
-        let snapIdx = 0;
-        let minDist = Infinity;
-        allItems.forEach((item, i) => {
-          const dist = Math.abs(item.getBoundingClientRect().left - containerLeft);
-          if (dist < minDist) { minDist = dist; snapIdx = i; }
-        });
-        const snapped = allItems[snapIdx];
-        if (!snapped || !snapped.dataset.ccsClone) return;
-        const real = snapped === lastClone ? realItems[realItems.length - 1] : realItems[0];
-        // Instant reposition — no animation so the user doesn't see the jump
-        cardsList.scrollLeft += real.getBoundingClientRect().left
-          - snapped.getBoundingClientRect().left;
-      }, 100);
-    }, { passive: true });
+    // Extra runway keeps centered snapping reachable at both scroll boundaries.
+    if (realItems.length > 2) cardsList.prepend(makeClone(realItems.length - 2));
+    cardsList.prepend(makeClone(realItems.length - 1));
+    cardsList.append(makeClone(0));
+    if (realItems.length > 2) cardsList.append(makeClone(1));
+
+    const centerFirst = () => {
+      if (!cardsList.clientWidth) return false;
+      const first = realItems[0];
+      cardsList.style.scrollSnapType = 'none';
+      cardsList.scrollLeft = centerLeft(first) - (cardsList.clientWidth - first.offsetWidth) / 2;
+      requestAnimationFrame(() => cardsList.style.removeProperty('scroll-snap-type'));
+      return true;
+    };
+
+    // The block can be decorated while its section is hidden, so wait for a measurable track.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (centerFirst()) return;
+      const resizeObserver = new ResizeObserver(() => centerFirst() && resizeObserver.disconnect());
+      resizeObserver.observe(cardsList);
+    }));
+
+    loopItems = [...cardsList.querySelectorAll('.cards-list-item:not(.ccs-hidden)')];
+
+    // Recenter on the real card after a scroll settles on either boundary clone.
+    wrapIfClone = () => {
+      const snapped = closestItem(loopItems, true);
+      const real = snapped?.dataset.ccsClone && realItems[Number(snapped.dataset.ccsCloneOf)];
+      if (!real) return;
+      cardsList.style.scrollSnapType = 'none';
+      cardsList.scrollLeft += real.getBoundingClientRect().left
+        - snapped.getBoundingClientRect().left;
+      requestAnimationFrame(() => cardsList.style.removeProperty('scroll-snap-type'));
+    };
+
+    cardsList.addEventListener('scrollend', wrapIfClone);
   }
+
+  cardsList.addEventListener('scroll', () => {
+    if (!dots.length) return;
+    const items = shouldLoop ? loopItems : getRealItems();
+    const snapped = closestItem(items, shouldLoop);
+    const activeIndex = Number(
+      snapped?.dataset.ccsCloneOf ?? (shouldLoop ? realItems : items).indexOf(snapped),
+    );
+    dots.forEach((dot, index) => dot.classList.toggle('is-active', index === activeIndex));
+    if (!shouldLoop) return;
+    clearTimeout(wrapTimer);
+    wrapTimer = setTimeout(wrapIfClone, 180);
+  }, { passive: true });
 
   return buildDots;
 }
@@ -487,7 +568,8 @@ export default async function decorate(block) {
 
   // Fetch both data sources in parallel for initial render
   const [sheetCards, rawCards] = await Promise.all([loadSheetData(), loadCardData()]);
-  const allCards = sortBySourcing(rawCards); // used for initial (unfiltered) display
+  // used for initial (unfiltered) display
+  const allCards = sortBySheetOrder(rawCards, sheetCards, lang);
 
   const {
     cardListContainer, toggleWrap, toggleBtn,

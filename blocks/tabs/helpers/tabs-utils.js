@@ -25,6 +25,8 @@ export function activateTab(tabsContainer, targetIndex) {
 
   const dropdown = tabsContainer.querySelector('.tabs-dropdown select');
   if (dropdown) dropdown.selectedIndex = targetIndex;
+
+  tabsContainer.dispatchEvent(new CustomEvent('tab-activated', { detail: { index: targetIndex } }));
 }
 
 export function enableMouseDragScroll(scroller) {
@@ -117,7 +119,8 @@ export function createCarouselArrows(tabsNav, tabsNavWrapper) {
   const updateArrows = () => {
     const { scrollLeft, scrollWidth, clientWidth } = tabsNav;
     prevBtn.classList.toggle('hidden', scrollLeft <= 0);
-    nextBtn.classList.toggle('hidden', scrollLeft + clientWidth >= scrollWidth - 1);
+    const hasOverflow = scrollWidth > clientWidth + 1;
+    nextBtn.classList.toggle('hidden', hasOverflow && scrollLeft + clientWidth >= scrollWidth - 1);
   };
 
   prevBtn.addEventListener('click', () => {
@@ -207,6 +210,7 @@ export function createContentPanels(block, contentRows) {
     return contentPanel;
   });
 
+  block.append(tabsContent);
   return { tabsContent, panels };
 }
 
@@ -234,7 +238,10 @@ export async function loadNestedBlocks(panels) {
     });
   });
 
-  await Promise.all(blocksToLoad.map((nestedBlock) => loadBlock(nestedBlock)));
+  const tableBlocks = blocksToLoad.filter((nestedBlock) => nestedBlock.classList.contains('table'));
+  const otherBlocks = blocksToLoad.filter((nestedBlock) => !nestedBlock.classList.contains('table'));
+  await Promise.all(tableBlocks.map((nestedBlock) => loadBlock(nestedBlock)));
+  await Promise.all(otherBlocks.map((nestedBlock) => loadBlock(nestedBlock)));
 }
 
 export function addKeyboardNavigation(tabsNav, tabButtons, block) {

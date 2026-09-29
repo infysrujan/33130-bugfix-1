@@ -1,4 +1,7 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
+
+const LIFESTYLE_KEYWORDS = ['lifestyle', 'ไลฟ์สไตล์'];
 
 /**
  * Build a single filter option card: li > label > [input] [option-icon?] [option-text]
@@ -61,8 +64,9 @@ function buildFilterOptionCard(sourceItem, inputType, groupName, index, stackedL
  *
  * @param {object} group - Group configuration
  * @param {number} groupIndex - Used to generate unique input group names
+ * @param {string} dropdownDefaultLabel - Placeholder text for the mobile <select>'s default option
  */
-function buildFilterGroup(group, groupIndex) {
+function buildFilterGroup(group, groupIndex, dropdownDefaultLabel) {
   const section = document.createElement('div');
   section.className = 'filter-group';
 
@@ -122,7 +126,7 @@ function buildFilterGroup(group, groupIndex) {
 
     const placeholder = document.createElement('option');
     placeholder.value = '';
-    placeholder.textContent = '-- Select --';
+    placeholder.textContent = `-- ${dropdownDefaultLabel || 'Select'} --`;
     placeholder.disabled = true;
     placeholder.selected = true;
     select.appendChild(placeholder);
@@ -183,7 +187,7 @@ function buildFilterState(block, filterGroups) {
         ?.textContent
         ?.trim() ?? '';
       const titleLower = group.displayTitle.toLowerCase();
-      if (titleLower.includes('income')) {
+      if (titleLower.includes('income') || titleLower.includes('รายได้ต่อเดือน')) {
         state.income = value;
       } else {
         state.benefit = value;
@@ -230,7 +234,9 @@ function syncActionButtonState(block, filterGroups, startOverButton, applyButton
  *   Sections whose title contains "lifestyle" → right column (checkbox, max 3 selections)
  *   All other sections                        → left column  (radio, single-select)
  */
-export default function decorate(block) {
+export default async function decorate(block) {
+  const ph = await fetchPlaceholders();
+  const dropdownDefaultLabel = ph.creditCardSelectorDropdownDefault;
   // UE inserts a fresh block element when a newly-added block is edited for the first time.
   // The original decorated block stays in the DOM alongside the new one, causing duplication.
   // Only remove the stale block if it shares the same data-aue-resource (same AEM content path).
@@ -298,7 +304,8 @@ export default function decorate(block) {
     const sectionHint = parenMatch?.[0]?.trim() ?? '';
 
     const listItems = [...(cells[1]?.querySelectorAll('li') ?? [])];
-    const isLifestyle = rawTitle.toLowerCase().includes('lifestyle');
+    const isLifestyle = LIFESTYLE_KEYWORDS
+      .some((keyword) => rawTitle.toLowerCase().includes(keyword));
     if (listItems.length > 0) {
       filterGroups.push({
         displayTitle,
@@ -327,7 +334,7 @@ export default function decorate(block) {
   lifestyleFilterColumn.className = 'filter-column filter-column-lifestyle';
 
   filterGroups.forEach((group, index) => {
-    const groupElement = buildFilterGroup(group, index);
+    const groupElement = buildFilterGroup(group, index, dropdownDefaultLabel);
     const groupTitleEl = groupElement.querySelector('.filter-group-title');
     const optionsAreaEl = groupElement.querySelector('.filter-options-desktop, .filter-options-always');
 
@@ -405,6 +412,7 @@ export default function decorate(block) {
   // startOverButton.className = 'selector-button selector-button-secondary';
   startOverButton.classList.add('button-m');
   startOverButton.classList.add('secondary');
+  startOverButton.classList.add('ccs-start-over-btn');
   startOverButton.textContent = startOverButtonConfig.label;
   if (startOverButtonConfig.titleAttr) startOverButton.title = startOverButtonConfig.titleAttr;
   startOverButton.style.display = 'none';

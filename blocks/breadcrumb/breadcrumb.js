@@ -13,6 +13,22 @@ function isBreadcrumbAuthoringInstance() {
   return hasAdobeEdit || hasAueAttrs;
 }
 
+function isEnabled(value) {
+  return value === true || value === 'true';
+}
+
+function isCurrentPageBreadcrumbHidden(page) {
+  return isEnabled(page?.hideCurrentPageBreadcrumb)
+    || getMetadata('hidecurrentpagebreadcrumb') === 'true'
+    || getMetadata('hideCurrentPageBreadcrumb') === 'true';
+}
+
+function isHiddenFromChildTrails(page) {
+  // Authored page metadata uses `breadcrumb`; the page-info API returns
+  // the equivalent property as `hidebreadcrumb`.
+  return isEnabled(page?.breadcrumb) || isEnabled(page?.hidebreadcrumb);
+}
+
 /**
  * Converts an AEM content page path to a site URL path.
  * e.g. /content/text/en/personal/my-family-and-me -> /en/personal/my-family-and-me
@@ -26,35 +42,61 @@ export function pagePathToUrl(pagePath) {
 }
 
 /**
+ * Checks whether a page object indicates it should be hidden
+ * from the breadcrumb trail in child pages.
+ * @param {Object} page Page object from API
+ * @param {boolean} isCurrentPage Whether this is the current page
+ * @returns {boolean}
+ */
+function isPageHiddenFromBreadcrumb(page, isCurrentPage = false) {
+  if (!page) return false;
+
+  // hideCurrentPageBreadcrumb only controls the current page.
+  if (isCurrentPage && isCurrentPageBreadcrumbHidden(page)) {
+    return true;
+  }
+
+  // breadcrumb only controls this page's entry in descendant trails.
+  if (!isCurrentPage && isHiddenFromChildTrails(page)) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Collects breadcrumb pages from the API response and returns them
- * ordered root-to-leaf (ascending pageDepth).
+ * ordered root-to-leaf (ascending pageDepth), filtering out pages marked as hidden.
  * @param {Object} data API response from pageinfo.parent endpoint
  * @returns {Array<Object>} Ordered breadcrumb page objects
  */
 function buildBreadcrumbTrail(data) {
+  if (!data) return [];
   const pages = [];
   const seen = new Set();
 
-  const addPage = (page) => {
+  const addPage = (page, isCurrent = false) => {
     if (!page) return;
     const id = page.jcrUuid || page.pagePath;
     if (id && seen.has(id)) return;
     if (id) seen.add(id);
-    pages.push(page);
+    if (!isPageHiddenFromBreadcrumb(page, isCurrent)) {
+      pages.push(page);
+    }
   };
 
   if (data.currentPage) {
-    addPage(data.currentPage);
+    addPage(data.currentPage, true);
   }
 
   let parent = data.parent || data.currentPage?.parent;
   while (parent) {
-    addPage(parent);
+    addPage(parent, false);
     parent = parent.parent;
   }
 
   return pages
-    .filter((page) => page.pageDepth > 3 && !page.hidebreadcrumb)
+    .filter((page) => page.pageDepth > 3)
     .sort((a, b) => a.pageDepth - b.pageDepth);
 }
 
@@ -115,13 +157,33 @@ export async function fetchBreadcrumbData() {
 export async function getParentPageUrl() {
   const { breadcrumbPages, currentPageData } = await fetchBreadcrumbData();
 
-  if (breadcrumbPages.length >= 2) {
-    return pagePathToUrl(breadcrumbPages[breadcrumbPages.length - 2].pagePath);
+  const isCurrentPageItem = (page) => {
+    if (!currentPageData) return false;
+    if (page.jcrUuid && currentPageData.jcrUuid && page.jcrUuid === currentPageData.jcrUuid) {
+      return true;
+    }
+    if (page.pagePath && currentPageData.pagePath && page.pagePath === currentPageData.pagePath) {
+      return true;
+    }
+    const currentUrl = pagePathToUrl(currentPageData.pagePath || window.location.pathname);
+    const pageUrl = pagePathToUrl(page.pagePath);
+    return Boolean(pageUrl && currentUrl && pageUrl === currentUrl);
+  };
+
+  if (breadcrumbPages.length >= 1) {
+    const lastPage = breadcrumbPages[breadcrumbPages.length - 1];
+    if (isCurrentPageItem(lastPage)) {
+      if (breadcrumbPages.length >= 2) {
+        return pagePathToUrl(breadcrumbPages[breadcrumbPages.length - 2].pagePath);
+      }
+    } else {
+      return pagePathToUrl(lastPage.pagePath);
+    }
   }
 
   let parent = currentPageData?.parent;
   while (parent) {
-    if (parent.pagePath) {
+    if (parent.pagePath && !isPageHiddenFromBreadcrumb(parent)) {
       return pagePathToUrl(parent.pagePath);
     }
     parent = parent.parent;
@@ -180,10 +242,10 @@ function getParentPageLabel(page) {
  * @param {Element} block The breadcrumb block element
  */
 export default async function decorate(block) {
-  const breadcrumb = getMetadata('breadcrumb');
+  const hideCurrentPageBreadcrumb = isCurrentPageBreadcrumbHidden();
 
-  // Hide breadcrumb block if metadata value is 'false'
-  if (breadcrumb === 'false') {
+  // Hide breadcrumb block if current page has breadcrumb hidden
+  if (hideCurrentPageBreadcrumb) {
     block.style.display = 'none';
 
     // Also hide social-icons block if it exists
@@ -195,6 +257,17 @@ export default async function decorate(block) {
   }
 
   const { breadcrumbPages, currentPageData } = await fetchBreadcrumbData();
+
+  // Also hide if backend API indicates current page breadcrumb is hidden
+  if (isCurrentPageBreadcrumbHidden(currentPageData)) {
+    block.style.display = 'none';
+
+    const socialIconsBlock = document.querySelector('.social-icons.block');
+    if (socialIconsBlock) {
+      socialIconsBlock.style.display = 'none';
+    }
+    return;
+  }
 
   const innerContainer = document.createElement('div');
   innerContainer.className = 'inner-container content';
@@ -221,13 +294,27 @@ export default async function decorate(block) {
     return;
   }
 
+  const isCurrentPageItem = (page) => {
+    if (!currentPageData) return false;
+    if (page.jcrUuid && currentPageData.jcrUuid && page.jcrUuid === currentPageData.jcrUuid) {
+      return true;
+    }
+    if (page.pagePath && currentPageData.pagePath && page.pagePath === currentPageData.pagePath) {
+      return true;
+    }
+    const currentUrl = pagePathToUrl(currentPageData.pagePath || window.location.pathname);
+    const pageUrl = pagePathToUrl(page.pagePath);
+    return Boolean(pageUrl && currentUrl && pageUrl === currentUrl);
+  };
+
   breadcrumbPages.forEach((page, index) => {
     const li = document.createElement('li');
     const isLast = index === breadcrumbPages.length - 1;
-    const textContent = isLast ? getCurrentPageLabel(page) : getParentPageLabel(page);
+    const isCurrent = isCurrentPageItem(page);
+    const textContent = isCurrent ? getCurrentPageLabel(page) : getParentPageLabel(page);
 
     if (!textContent) return;
-    if (isLast) {
+    if (isLast && isCurrent) {
       li.setAttribute('aria-current', 'page');
       li.textContent = textContent;
     } else {

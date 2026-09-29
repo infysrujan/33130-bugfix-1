@@ -90,7 +90,7 @@ function createCarouselCard(cardElement, doc) {
       ${eyebrowText ? `<div class="carousel-eyebrow">${eyebrowText}</div>` : ''}
       ${titleText ? `<h3 class="carousel-title">${titleText}</h3>` : ''}
       ${descriptionHTML ? `<div class="carousel-description">${descriptionHTML}</div>` : ''}
-      ${buttonLink ? `<span class="${buttonLink.className} carousel-cta">${buttonLink.textContent}</span>` : ''}
+      ${buttonLink ? `<span class="${buttonLink.className} carousel-cta button-m">${buttonLink.textContent}</span>` : ''}
     </div>
   `;
 

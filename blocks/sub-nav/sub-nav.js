@@ -1,4 +1,5 @@
 import { getMetadata } from '../../scripts/aem.js';
+import { getLang } from '../../scripts/scripts.js';
 import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import { getParentPageUrl } from '../breadcrumb/breadcrumb.js';
 
@@ -6,6 +7,24 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+// Native `scrollIntoView({ behavior: 'smooth' })` leaves duration/easing to the
+// browser, which does not scale the time with distance — jumps beyond a short
+// hop finish abruptly and read as "too fast". Animate the scroll ourselves
+// over a fixed duration with an ease-in-out curve instead.
+function smoothScrollTo(targetY, duration = 600) {
+  const startY = window.scrollY;
+  const diff = targetY - startY;
+  if (Math.abs(diff) < 1) return;
+  const start = performance.now();
+  const step = (now) => {
+    const p = Math.min((now - start) / duration, 1);
+    const eased = p < 0.5 ? 2 * p * p : 1 - ((-2 * p + 2) ** 2) / 2;
+    window.scrollTo(0, Math.round(startY + diff * eased));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
 }
 
 /**
@@ -118,18 +137,21 @@ export default function decorate(block) {
   const wrapper = document.createElement('div');
   wrapper.className = 'wrapper content';
 
-  const backButton = document.createElement('button');
-  backButton.type = 'button';
+  const backWrapper = document.createElement('span');
+  backWrapper.className = 'sub-nav-back-wrapper';
+
+  const defaultHref = `/${getLang()}`;
+  const backButton = document.createElement('a');
   backButton.className = 'sub-nav-back';
+  backButton.href = defaultHref;
   backButton.setAttribute('aria-label', 'Go back to previous page');
   backButton.innerHTML = '<span class="sub-nav-back-circle icon-dropdown"></span>';
-  backButton.addEventListener('click', async () => {
-    const parentUrl = await getParentPageUrl();
+  backWrapper.appendChild(backButton);
+
+  getParentPageUrl().then((parentUrl) => {
     if (parentUrl) {
-      window.location.href = parentUrl;
-      return;
+      backButton.href = parentUrl;
     }
-    window.history.back();
   });
 
   if (hasTabClass) {
@@ -158,9 +180,9 @@ export default function decorate(block) {
         tabList.appendChild(btn);
       });
       bindLocateUsContainersToTabs(tabButtons);
-      wrapper.append(backButton, tabList);
+      wrapper.append(backWrapper, tabList);
     } else {
-      wrapper.append(backButton);
+      wrapper.append(backWrapper);
     }
   } else if (hasDropdownClass) {
     const sections = collectSections();
@@ -187,7 +209,9 @@ export default function decorate(block) {
             if (window.matchMedia('(width > 64rem)').matches) {
               targetSection.style.scrollMarginTop = '5.25rem';
             }
-            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const offset = parseFloat(getComputedStyle(targetSection).scrollMarginTop) || 0;
+            const targetY = targetSection.getBoundingClientRect().top + window.scrollY - offset;
+            smoothScrollTo(targetY);
           }
 
           subNavSelect.querySelector('.global-dropdown-trigger').textContent = link.textContent;
@@ -196,13 +220,13 @@ export default function decorate(block) {
         });
       });
 
-      wrapper.append(backButton, subNavSelect);
+      wrapper.append(backWrapper, subNavSelect);
     } else {
-      wrapper.append(backButton);
+      wrapper.append(backWrapper);
     }
   } else {
     // only back button on the left, no dropdown on the right
-    wrapper.append(backButton);
+    wrapper.append(backWrapper);
   }
 
   block.textContent = '';

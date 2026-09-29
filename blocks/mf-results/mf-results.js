@@ -4,6 +4,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { openModal } from '../../scripts/modal.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { getLang } from '../../scripts/scripts.js';
+import { fundNameKey, loadMfSheetOrder, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -29,17 +30,6 @@ function norm(str) {
   return (str || '').toString().replace(/\u200B/g, '').toLowerCase().trim();
 }
 
-function normalizeRow(row) {
-  const out = {};
-  Object.entries(row).forEach(([k, v]) => {
-    const key = k.replace(/\u200B/g, '').trim();
-    out[key] = typeof v === 'string'
-      ? v.replace(/\u200B/g, '').replace(/\s+/g, ' ').trim()
-      : v;
-  });
-  return out;
-}
-
 // ── Row-reading helpers ────────────────────────────────────────────────────────
 
 function readText(row) {
@@ -62,25 +52,6 @@ function readUrl(row) {
 }
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
-
-/**
- * Fetch the MF filtering matrix sheet.
- * Config key: mf-suggestor-data (→ mfSuggestorData after toCamelCase)
- * Expected columns: Fund Name | Fund Risk Level | Fund Has Exchange Rate Risk
- */
-async function loadMatrix() {
-  try {
-    const configs = await fetchConfigs();
-    const lang = getLang();
-    const langKey = `mfSuggestorData${lang.charAt(0).toUpperCase() + lang.slice(1)}`;
-    const url = configs[langKey] || configs.mfSuggestorDataEn;
-    if (!url) return [];
-    const json = await fetchGet(url, { throwOnError: false });
-    return (json?.data || []).map(normalizeRow);
-  } catch {
-    return [];
-  }
-}
 
 /**
  * Fetch the MF fund card data from the GraphQL persisted query.
@@ -172,22 +143,40 @@ function matchesTaxBenefit(row, taxBenefit) {
 }
 
 /**
- * AND-logic: matrix row must pass all three filters.
+ * A row with every filter column left blank was never categorized for the
+ * survey at all — it's not that it matches every combination, it's that no
+ * one has said which combinations it belongs to yet.
+ */
+function isRowCategorized(row) {
+  return Boolean(
+    norm(row['Fund Risk Level'] || '')
+      || norm(row['Fund Has Exchange Rate Risk'] || '')
+      || norm(row['Is an RMF/SSF/Thai ESG/Thai ESGX Fund'] || ''),
+  );
+}
+
+/**
+ * AND-logic: matrix row must pass all three filters. A fully-blank row
+ * (see isRowCategorized) never matches, since each individual filter
+ * treats a blank cell as an auto-pass and would otherwise let an
+ * uncategorized fund match every survey answer combination.
  */
 function matchesRow(row, { riskLevel, fxRisk, taxBenefit }) {
+  if (!isRowCategorized(row)) return false;
   return matchesRiskLevel(row, riskLevel)
     && matchesFxRisk(row, fxRisk)
     && matchesTaxBenefit(row, taxBenefit);
 }
 
-/**
- * Extract the fund names from matrix rows matched by the filters.
- */
-function getMatchedFundNames(matrix, answers) {
-  return matrix
-    .filter((row) => matchesRow(row, answers))
-    .map((row) => norm(row['Fund Name'] || ''))
-    .filter(Boolean);
+// Matrix rows passing all 3 filters; kept as rows so results sort by the matched level.
+function getMatchedRows(matrix, answers) {
+  return matrix.filter((row) => matchesRow(row, answers));
+}
+
+// Fund names from the given matrix rows.
+function rowFundNames(rows) {
+  const nameKey = fundNameKey();
+  return rows.map((row) => norm(row[nameKey] || '')).filter(Boolean);
 }
 
 /**
@@ -243,7 +232,7 @@ function buildCardBlock(funds, doc, labels) {
     // Image
     if (imgSrc) {
       const imageWrapper = doc.createElement('div');
-      imageWrapper.className = 'cards-list-image cards-list-image-default';
+      imageWrapper.className = 'cards-list-image cards-list-image-full';
       const img = doc.createElement('img');
       img.src = imgSrc;
       img.alt = name;
@@ -443,7 +432,7 @@ export default async function decorate(block) {
   };
 
   // ── Fetch matrix + fund data in parallel ──────────────────────────────────
-  const [matrix, allFunds] = await Promise.all([loadMatrix(), loadFundsData()]);
+  const [matrix, allFunds] = await Promise.all([loadMfSheetOrder(), loadFundsData()]);
 
   // ── Compare state helpers ──────────────────────────────────────────────────
   function restoreCompareState() {
@@ -476,8 +465,13 @@ export default async function decorate(block) {
   if (!hasAnswers) {
     renderCards([]);
   } else {
-    const matchedNames = getMatchedFundNames(matrix, answers);
-    const filteredFunds = filterFundsByMatrix(allFunds, matchedNames);
+    // Use matched rows only for names and order, so a fund sorts by its matched level.
+    const matchedRows = getMatchedRows(matrix, answers);
+    const matchedNames = rowFundNames(matchedRows);
+    const filteredFunds = sortFundsBySheetOrder(
+      filterFundsByMatrix(allFunds, matchedNames),
+      matchedRows,
+    );
     renderCards(filteredFunds);
   }
 

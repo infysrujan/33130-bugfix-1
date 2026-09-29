@@ -33,7 +33,7 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
-  touch-action: pan-x;
+  touch-action: pan-x pan-y;
   scrollbar-width: none;
   padding: 0.625rem 0;
 }
@@ -51,8 +51,9 @@
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-radius: var(--bbl-radius-md);
   overflow: hidden;
-  flex: 0 0 16.875rem;
+  flex: 0 0 17.5rem;
   scroll-snap-align: center;
+  box-sizing: border-box;
 }
 
 /* ── Image area — .thumb-default.card .inner + .thumb ────────────────────── */
@@ -63,6 +64,7 @@
   height: calc(100vw * 0.12);
   overflow: hidden;
   padding: var(--bbl-space-250) var(--bbl-space-250) 0;
+  box-sizing: border-box;
 }
 
 .card-comparator-results .ccr-thumb {
@@ -122,6 +124,12 @@
   padding-top: 0.625rem;
 }
 
+/* Prepaid cards have no apply button, so nothing draws the line above SLOGAN — add it only when the apply-area is empty/unlined so credit cards (which already have that border) don't double up. */
+.card-comparator-results .ccr-caption:has(> .ccr-apply-area:empty:not(.ccr-apply-lined)) .compare-info dl:first-child {
+  border-top: 0.0625rem solid var(--bbl-color-grey-150);
+  padding-top: var(--bbl-space-300);
+}
+
 .card-comparator-results .ccr-label {
   font-size: var(--bbl-font-size-b1);
   font-family: var(--bbl-font-family-medium);
@@ -137,28 +145,8 @@
 }
 
 .card-comparator-results .ccr-learn-more {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  max-width: none;
   margin: 0 var(--bbl-space-250) var(--bbl-space-250);
-  min-height: 2.75rem;
-  padding: 0.3125rem 0;
-  box-sizing: border-box;
-  border-radius: 0.4375rem;
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-regular);
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-}
-
-.card-comparator-results .ccr-learn-more:hover {
-  color: var(--bbl-color-white);
-  border-color: var(--bbl-color-active-blue);
-  background: var(--bbl-color-active-blue);
 }
 
 /* ── Apply area ───────────────────────────────────────────────────────────── */
@@ -179,23 +167,8 @@
 }
 
 .card-comparator-results .ccr-apply-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: var(--bbl-space-100);
-  width: 100%;
-  min-height: 2.75rem;
-  padding: 0.3125rem var(--bbl-space-150);
-  box-sizing: border-box;
-  border-radius: var(--bbl-radius-md);
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-regular);
-  text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  min-width: 100%;
 }
 
 .card-comparator-results .ccr-apply-btn:hover {
@@ -218,11 +191,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--bbl-space-100);
-}
-
-.card-comparator-results .ccr-apply-mobile-btn {
-  font-size: var(--bbl-font-size-b2);
-  white-space: nowrap;
 }
 
 /* No results */
@@ -299,13 +267,15 @@
 
   .card-comparator-results .ccr-apply-desktop {
     display: flex;
-    background: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
   }
 
   .card-comparator-results .ccr-apply-desktop:hover {
     background: var(--bbl-color-blue-90);
     border-color: var(--bbl-color-blue-90);
+  }
+
+  .card-comparator-results .ccr-inner {
+    height: calc(100vw * 0.16);
   }
 }
 
@@ -315,6 +285,10 @@
   }
 
   .card-comparator-results .ccr-card {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+    flex: 0 0 calc((100% - 1.8 * var(--bbl-space-500)) / 3);
+  }
+
+  .card-comparator-results .ccr-inner {
+    height: calc(100vw * 0.12);
   }
 }

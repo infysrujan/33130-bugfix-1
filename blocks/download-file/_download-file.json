@@ -59,6 +59,82 @@
               "value": false
             }
           ]
+        },
+        {
+          "component": "boolean",
+          "name": "boxedCard",
+          "label": "Boxed Card",
+          "description": "Enable to display as a boxed card",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "component": "container",
+          "name": "boxedCardSettings",
+          "label": "Boxed Card Settings",
+          "valueType": "object",
+          "collapsible": true,
+          "condition": {
+            "===": [
+              {
+                "var": "boxedCard"
+              },
+              true
+            ]
+          },
+          "fields": [
+            {
+              "component": "text",
+              "name": "title",
+              "label": "Title"
+            },
+            {
+              "component": "select",
+              "name": "titleType",
+              "label": "Title Type",
+              "options": [
+                {
+                  "name": "h1",
+                  "value": "h1"
+                },
+                {
+                  "name": "h2",
+                  "value": "h2"
+                },
+                {
+                  "name": "h3",
+                  "value": "h3"
+                },
+                {
+                  "name": "h4",
+                  "value": "h4"
+                },
+                {
+                  "name": "h5",
+                  "value": "h5"
+                },
+                {
+                  "name": "h6",
+                  "value": "h6"
+                }
+              ]
+            },
+            {
+              "component": "richtext",
+              "name": "authorableDate",
+              "label": "Authorable date",
+              "valueType": "string",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "component": "boolean",
+          "name": "enableTermsConditionPopup",
+          "label": "Enable Terms & Conditions Popup",
+          "description": "If enabled, clicking the download button will show the terms & conditions popup before downloading",
+          "valueType": "boolean",
+          "value": false
         }
       ]
     }

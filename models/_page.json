@@ -69,8 +69,7 @@
         {
           "component": "boolean",
           "name": "breadcrumb",
-          "value": true,
-          "label": "Breadcrumb",
+          "label": "Hide from breadcrumb trail in child pages",
           "valueType": "boolean"
         },
         {
@@ -82,9 +81,15 @@
         {
           "component": "reference",
           "valueType": "string",
-          "name": "ogImage",
+          "name": "og:image",
           "label": "OG Image",
           "description": "Select the image asset to use for the Open Graph og:image meta tag."
+        },
+        {
+          "component": "boolean",
+          "name": "hideCurrentPageBreadcrumb",
+          "label": "Hide breadcrumb from current page",
+          "valueType": "boolean"
         }
       ]
     }

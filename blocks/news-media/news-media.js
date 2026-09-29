@@ -2,7 +2,7 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import {
-  buildCardHtml, buildPaginationHtml, bindPaginationClick, normalizeCategory,
+  buildCardHtml, buildPaginationHtml, bindPaginationClick,
 } from '../../scripts/utils/card-helpers.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
@@ -27,7 +27,7 @@ function filterAndPage(allCards, category, page, pageSize) {
   const filtered = category
     ? allCards.filter((c) => {
       const cats = Array.isArray(c.category) ? c.category : [c.category];
-      return cats.map(normalizeCategory).includes(normalizeCategory(category));
+      return cats.includes(category);
     })
     : allCards;
 
@@ -78,11 +78,11 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders, i
     const { cards } = filterAndPage(allCards, category, state.page, pageSize);
 
     gridEl.innerHTML = cards.length
-      ? cards.map((c) => {
+      ? cards.map((c, i) => {
         const ctaLink = c.ctaLink || '';
         const normalized = { ...c, ctaLink };
         const dateLine = formatDate(c.publishDate, locale);
-        return buildCardHtml(normalized, '', {}, { dateLine });
+        return buildCardHtml(normalized, '', {}, { dateLine, eager: i < 4 });
       }).join('')
       : `<p class="listing-card-empty">${placeholders.newsMediaNoResults || 'No results found.'}</p>`;
 

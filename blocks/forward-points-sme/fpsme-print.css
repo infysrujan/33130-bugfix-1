@@ -177,11 +177,17 @@
     height: 1.125rem;
   }
 
-  /* ── Forward tables side by side ── */
+  /* ── Forward tables side by side — grid syncs row heights across columns so a wrapped Thai subtitle doesn't push one table lower than the other ── */
   .forward-points-sme .fpsme-fwd-tables {
-    flex-direction: row !important;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, auto);
+    grid-auto-flow: column;
     gap: var(--bbl-space-150);
-    align-items: flex-start;
+  }
+
+  .forward-points-sme .fpsme-fwd-table-col {
+    display: contents;
   }
 
   /* ── Flex forward table (fpsme-rt) ── */
@@ -243,7 +249,7 @@
   }
 
   .forward-points-sme .fpsme-fwd-title {
-    margin-bottom: 0;
+    margin-bottom: 1rem;
     font-size: var(--bbl-font-size-b1);
     font-weight: bold;
     text-align: center;
@@ -256,10 +262,9 @@
   }
 
   .forward-points-sme .fpsme-fwd-subtitle {
-    margin-top: var(--bbl-space-150);
-    margin-bottom: var(--bbl-space-150);
-    font-size: 0.9375rem;
-    text-align: center;
+    margin: 0;
+    font-size: 0.8125rem;
+    text-align: left;
   }
 
   .forward-points-sme .fpsme-table-wrap {
@@ -268,7 +273,7 @@
   }
 
   .forward-points-sme .fpsme-unit {
-    margin-top: var(--bbl-space-150);
+    margin: 0;
     font-size: var(--bbl-font-size-b3);
     color: var(--bbl-color-black) !important;
     text-align: right;

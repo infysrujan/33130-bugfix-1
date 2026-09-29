@@ -2,12 +2,15 @@ const textIntersectionClass = 'tnc__text-intersect';
 const textDecorationClass = 'tnc-text-decoration';
 
 /**
- * Returns true when the scrollable element has been scrolled to (or very
- * close to) its bottom edge.
- * @param {HTMLElement} el
- * @returns {boolean}
- */
+* Returns true when the scrollable element has been scrolled to (or very
+* close to) its bottom edge. Returns false when the element has no rendered
+* height (e.g. inside a hidden wizard panel) so the checkbox is never
+* unlocked before the user can actually see and read the terms.
+* @param {HTMLElement} el
+* @returns {boolean}
+*/
 function isScrolledToBottom(el) {
+  if (el.clientHeight === 0 || el.scrollHeight === 0) return false;
   return el.scrollHeight - el.scrollTop - el.clientHeight < 8;
 }
 
@@ -33,7 +36,7 @@ class TermsAndConditions {
     if (helpText) {
       this.fieldDiv.append(helpText);
     }
-    if (!textWrapper) { // rendition does not have a plain-text-wrapper => link rendition of TnC
+    if (!textWrapper) {
       // eslint-disable-next-line no-console
       console.debug('No plain-text found in TnC field. Assuming Link based rendition and Skipping decoration.');
       this.fieldDiv.classList.add('link');
@@ -54,28 +57,26 @@ class TermsAndConditions {
       console.debug('TnC: Missing textWrapper or checkbox element');
       return;
     }
-
-    // Disable checkbox initially
     checkbox.setAttribute('disabled', 'true');
-
-    // Enable checkbox after user has scrolled to the bottom
     const onScroll = () => {
       if (isScrolledToBottom(textWrapper)) {
         checkbox.removeAttribute('disabled');
         textWrapper.removeEventListener('scroll', onScroll);
       }
     };
-
     textWrapper.addEventListener('scroll', onScroll);
-
-    // If the content is short enough that no scrolling is needed, unlock immediately
-    requestAnimationFrame(() => {
+    const ro = new ResizeObserver(() => {
+      if (textWrapper.clientHeight === 0) return;
+      ro.disconnect();
       if (isScrolledToBottom(textWrapper)) {
         checkbox.removeAttribute('disabled');
+        textWrapper.removeEventListener('scroll', onScroll);
       }
     });
+    ro.observe(textWrapper);
   }
 }
+
 export default async function decorate(tncDiv, fieldJson) {
   const tnc = new TermsAndConditions(tncDiv, fieldJson);
   return tnc.getfieldDiv();

@@ -79,15 +79,6 @@
   background: transparent;
 }
 
-.welcome-banner-overlay .button-m {
-  width: 100%;
-  max-width: 13.125rem;
-  box-sizing: border-box;
-  white-space: normal;
-  overflow-wrap: break-word;
-  flex-shrink: 0;
-}
-
 @media (width > 47.5625rem) {
   .welcome-banner-overlay .welcome-banner-dialog {
     max-width: 60rem;
@@ -110,12 +101,6 @@
     gap: var(--bbl-space-200);
     padding: var(--bbl-space-250) var(--bbl-space-200);
   }
-
-  .welcome-banner-overlay .button-m {
-    flex: 1;
-    width: auto;
-    max-width: 13.125rem;
-  }
 }
 
 @media (width > 64rem) {
@@ -130,10 +115,5 @@
   .welcome-banner-overlay .welcome-banner-ctas {
     gap: var(--bbl-space-075);
     padding: var(--bbl-space-300) var(--bbl-space-000);
-  }
-
-  .welcome-banner-overlay .welcome-banner-cta {
-    width: 15rem;
-    max-width: 15rem;
   }
 }

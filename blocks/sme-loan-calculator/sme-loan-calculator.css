@@ -89,8 +89,9 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   border: none;
   box-shadow: none;
   color: var(--bbl-color-sme-tab-inactive);
-  font-size: 0.7875rem;
-  line-height: 0.7875rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: 0.875rem;
+  line-height: 1.1875rem;
   font-weight: var(--bbl-font-weight-regular);
   padding: 0.625rem 0.25rem;
   cursor: pointer;
@@ -242,7 +243,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   font-size: 1rem;
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-150);
-  cursor: pointer;
+  cursor: default;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -269,11 +270,12 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 .sme-loan-calculator .sme-field-unit {
   font-size: 0.6875rem;
   color: var(--bbl-color-grey-150);
-  line-height: 1.4;
+  line-height: 0.8938rem;
   font-family: var(--bbl-font-family-primary);
   display: block;
   text-align: right;
   padding-bottom: 1.5625rem;
+  padding-top: 0.1875rem;
 }
 
 /* ── Calculate button ────────────────────────────────────── */
@@ -301,6 +303,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   background-color: var(--bbl-color-sme-section-bg);
   border-radius: 0 0 0.5rem 0.5rem;
   padding: 1.5625rem 1rem;
+  padding-inline: 1rem;
   text-align: center;
   padding-bottom: 3.125rem;
 }
@@ -482,7 +485,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   /* Slightly larger than mobile but small enough for all 4 tabs to fit on one line */
   .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav button[role="tab"] {
     font-size: 0.875rem;
-    line-height: 0.875rem;
+    line-height: 1.1875rem;
     padding: 1rem 0.5rem;
     white-space: normal;
     max-width: none;
@@ -497,13 +500,14 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 
   .sme-calc-result-section {
     padding: 1.875rem 0.625rem;
+    padding-inline: 3rem;
     border-radius: 0;
     padding-bottom: 3.125rem;
   }
 
   /* Fields remain stacked (column) at tablet — 3-column moves to desktop */
   .textbox-cal {
-    width: 5.5rem;
+    width: max-content;
     font-size: var(--bbl-font-size-15);
   }
 
@@ -533,13 +537,17 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
     padding-inline: 5.25rem;
   }
 
+  .sme-calc-result-section {
+    padding-inline: 5.25rem;
+  }
+
   .sme-calc-description {
     font-size: var(--bbl-font-size-b1-desktop);
   }
 
   .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav button[role="tab"] {
     font-size: 1rem;
-    line-height: 1rem;
+    line-height: 1.375rem;
     padding: 1.25rem 1rem;
   }
 

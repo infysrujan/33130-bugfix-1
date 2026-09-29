@@ -23,15 +23,15 @@
   font-weight: var(--bbl-text-breadcrumb-weight);
   font-family: var(--bbl-font-family-looped);
   color: var(--bbl-text-link);
-  padding-right: var(--bbl-space-075);
+  padding-right: 0.9375rem;
   position: relative;
 }
 
 .breadcrumb ol>li::before {
   content: "";
   display: inline-block;
-  width: 0.188rem;
-  height: 0.188rem;
+  width: 0.1875rem;
+  height: 0.1875rem;
   border-radius: 50%;
   background: var(--bbl-text-link);
   vertical-align: baseline;
@@ -49,12 +49,16 @@
   width: calc(50% - var(--bbl-space-200));
   position: absolute;
   left: var(--bbl-space-250);
-  bottom: calc(-1 * var(--bbl-space-150));
+  bottom: -0.625rem;
   background: var(--bbl-text-link);
 }
 
-.breadcrumb.is-homepage ol>li:last-child::after {
+.breadcrumb.is-homepage ol > li:last-child::after {
   background: none;
+}
+
+.breadcrumb ol > li:last-child:not(:only-child):hover::after {
+  background: var(--bbl-color-blue-90);
 }
 
 .breadcrumb+.social-icons-wrapper {
@@ -146,5 +150,23 @@ body.mobile-app-view .breadcrumb {
 @media (width > 64rem) {
   .breadcrumb {
     padding: 1.3125rem 0 1.1875rem;
+  }
+}
+
+@media (width <= 64rem) {
+  .breadcrumb ol>li,
+  .breadcrumb a {
+    font-size: 0.7rem;
+    line-height: 1.3;
+  }
+}
+
+@media (width <= 47.5rem) {
+  .breadcrumb ol {
+    margin-bottom: var(--bbl-space-250);
+  }
+
+  .breadcrumb ol>li {
+    padding-right: var(--bbl-space-075);
   }
 }

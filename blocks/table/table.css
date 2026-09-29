@@ -50,8 +50,8 @@
   border: 0.0625rem solid var(--bbl-color-black);
 }
 
-.table table td a {
-  color: inherit;
+.table table td a.button-m {
+  display: inline-flex;
 }
 
 .table td :is(p, ul) {
@@ -278,6 +278,11 @@
   border-bottom: none;
 }
 
+/* No Border Top — remove the top border from the first row only */
+.table table.no-border-top > :where(tbody) > tr:first-child > td {
+  border-top: none;
+}
+
 /* --------------------------------------------------------------------------
    VARIANT: BORDER BOTTOM TIGHT COLS — first two columns (specificity 0,3,4)
    -------------------------------------------------------------------------- */
@@ -370,6 +375,11 @@
   vertical-align: middle;
 }
 
+/* Cells Center Aligned (last column only) */
+.table table.cells-center-aligned-last-column > :where(tbody) > tr:not(.header-row) > td:last-child {
+  text-align: center;
+}
+
 /* --------------------------------------------------------------------------
    CURRENCY TABLE — cell padding (specificity 0,4,3)
    -------------------------------------------------------------------------- */
@@ -409,6 +419,23 @@
    -------------------------------------------------------------------------- */
 .table table table {
   margin: 0.5rem 0;
+}
+
+/* --------------------------------------------------------------------------
+   GROUP TABLES — adjacent tables sharing the "group-tables" variation are
+   wrapped (in JS) in a `.table-group-scroll` container so they scroll
+   horizontally together as one unit instead of each having its own
+   independent scrollbar.
+   -------------------------------------------------------------------------- */
+@media (width <= 64rem) {
+  .table-group-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-group-scroll .table, .accordion-item .table-group-scroll .table {
+    overflow: visible;
+  }
 }
 
 /* Scroll variant: minimum table width for horizontal overflow */
@@ -457,6 +484,10 @@ td .icon {
   .accordion-item .table {
     overflow: auto hidden;
   }
+  
+  .accordion-item .table table.download-1-mcol-2-dcol {
+    min-width: unset; 
+  }
 }
 
 /* ==========================================================================
@@ -498,5 +529,29 @@ td .icon {
 
   .table table {
     break-inside: avoid;
+  }
+}
+
+/* One-off for the e-Donation accordion download grid; do not replicate as a general table variant. */
+@media (width <= 47.5rem) {
+  .table table.download-1-mcol-2-dcol {
+    display: block;
+    width: 100%;
+  }
+  
+  .accordion-item .table table.download-1-mcol-2-dcol {
+    min-width: unset; 
+  }
+
+  .table table.download-1-mcol-2-dcol colgroup {
+    display: none;
+  }
+
+  .table table.download-1-mcol-2-dcol tbody,
+  .table table.download-1-mcol-2-dcol tr,
+  .table table.download-1-mcol-2-dcol td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
   }
 }

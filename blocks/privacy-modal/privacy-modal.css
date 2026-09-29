@@ -114,6 +114,10 @@
   text-indent: 0;
 }
 
+.download-file-modal .privacy-modal-title :is(h3) {
+  color: var(--bbl-color-grey-28);
+}
+
 .privacy-modal-scroll-hint {
   display: none;
 }
@@ -149,6 +153,10 @@
   margin-bottom: 0;
 }
 
+.privacy-modal-overlay.download-file-modal .privacy-modal-body p {
+  text-indent: 0;
+}
+
 .privacy-modal-body ul,
 .privacy-modal-body ol {
   margin: 0 0 1em 1.5em;
@@ -157,12 +165,6 @@
 
 .privacy-modal-body li {
   margin-bottom: 0.4em;
-}
-
-.privacy-modal-body strong,
-.privacy-modal-body b {
-  font-weight: 700;
-  font-family: var(--bbl-font-family-medium);
 }
 
 .privacy-modal-body a {
@@ -260,42 +262,7 @@
 
 .privacy-modal-cta {
   align-self: center;
-  height: 2.75rem;
-  min-width: 9.688rem;
-  padding: 0 var(--bbl-space-300);
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 2.75rem;
-  text-align: center;
-  white-space: nowrap;
-  border: none;
-  border-radius: 0.4375rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease, opacity 0.2s ease;
-}
-
-.privacy-modal-cta:disabled {
-  background-color: var(--bbl-color-grey-30);
-  color: var(--bbl-color-grey-70);
-  cursor: not-allowed;
-}
-
-.privacy-modal-cta:not(:disabled) {
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-}
-
-.privacy-modal-cta:not(:disabled):hover {
-  background-color: var(--bbl-color-blue-90);
-}
-
-.privacy-modal-cta:not(:disabled):active {
-  opacity: 0.9;
-}
-
-.privacy-modal-cta:not(:disabled):focus-visible {
-  outline: 0.125rem solid var(--bbl-color-active-blue);
-  outline-offset: 0.125rem;
+  width: unset;
 }
 
 .privacy-modal-body::-webkit-scrollbar {
@@ -348,6 +315,7 @@
   ol ol>li::marker {
     content: counters(item, ".");
     counter-increment: item;
+    font-weight: normal;
   }
 
   /* Level 3: "(1)" instead of continuing the dotted pattern */
@@ -371,6 +339,10 @@
     border-radius: var(--bbl-rounded-050);
   }
 
+  .download-file-modal .privacy-modal-dialog {
+    width: 46.25rem;
+  }
+
   .privacy-modal-overlay {
     padding:0 var(--bbl-space-600);
   }
@@ -389,12 +361,20 @@
     scrollbar-gutter: stable;
   }
 
+  .privacy-modal-overlay.download-file-modal .privacy-modal-body {
+    max-height: unset;
+  }
+
   .privacy-modal-checkbox-row {
     flex-direction: row;
     align-items: flex-start;
     text-align: left;
     gap: 0.625rem;
     padding: 0 5% 0 4.5%;
+  }
+
+  .download-file-modal .privacy-modal-checkbox-row {
+    justify-content: center;
   }
 
   .privacy-modal-checkbox-row input[type='checkbox'] {

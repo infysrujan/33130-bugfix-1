@@ -189,6 +189,10 @@
   padding-bottom: var(--bbl-space-250);
 }
 
+.pfs-tabs-wrapper .tab-panel.full-bleed-special {
+  padding-inline: 0;
+}
+
 .pfs-grid .listing-card-container {
   margin-left: 0;
   margin-right: 0;
@@ -197,6 +201,10 @@
 .pfs-grid .listing-card-img-wrap {
   height: auto;
   aspect-ratio: 4 / 3.23;
+}
+
+.pfs-grid .listing-card-tag:empty {
+  display: none;
 }
 
 .pfs-grid .listing-card-body {
@@ -214,6 +222,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
+  margin-inline: 0;
   padding-bottom: 1.875rem;
 }
 
@@ -460,10 +469,6 @@ main:has(.property-for-sale-container) > .section .default-content-wrapper img {
   .pfs-filter-row {
     flex-wrap: nowrap;
     align-items: center;
-  }
-
-  .pfs-grid {
-    margin-inline: -1.25rem;
   }
 
   .pfs-search-wrap {

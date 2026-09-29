@@ -9,7 +9,7 @@ import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 import { deleteCookie, getCookie, setCookie } from '../../scripts/utils/cookies.js';
 
-const COOKIE_DURATION_DAYS = 30;
+const COOKIE_DURATION_DAYS = 365;
 const COOKIE_CONSENT = 'ConsentAlert';
 const CONSENT_SAVED_EVENT = 'cookie:consent-saved';
 const LAST_TRIGGER_KEY = 'cookieModalTrigger';
@@ -43,8 +43,12 @@ const toCookieName = (text) => text.replace(/[^a-zA-Z0-9]/g, '');
 function resolveCookieName(labelText) {
   const lower = labelText.toLowerCase();
   if (COOKIE_NAME_MAP[lower]) return COOKIE_NAME_MAP[lower];
-  if (lower.includes('analytic') || lower.includes('analysis')) return 'AnalysisCookie';
-  if (lower.includes('advertis')) return 'AdvertisingCookie';
+  if (lower.includes('analytic') || lower.includes('analysis') || labelText.includes('วิเคราะห์')) {
+    return 'AnalysisCookie';
+  }
+  if (lower.includes('advertis') || labelText.includes('โฆษณา')) {
+    return 'AdvertisingCookie';
+  }
   return toCookieName(labelText);
 }
 
@@ -330,7 +334,7 @@ export default function decorate(block) {
 
   const footer = el('div', { className: 'cookie-modal-footer' });
   const saveBtn = el('button', {
-    className: 'cookie-modal-save-btn',
+    className: 'cookie-modal-save-btn button-m primary',
     text: saveLabel,
     attrs: { type: 'button' },
   });

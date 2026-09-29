@@ -562,6 +562,7 @@ function setupMobileMenuBehavior(headerNav, hamburger, mobileNavMenu, blocks) {
   };
 
   const openMobileMenu = () => {
+    window.scrollTo({ top: 0 });
     hamburger.setAttribute('aria-expanded', 'true');
     hamburger.setAttribute('aria-label', 'Close navigation');
     hamburger.classList.add('is-hidden');
@@ -700,44 +701,52 @@ function applyLayout(header, fragmentTemplate, desktop) {
  * re-applies layout when the viewport crosses the 1025px breakpoint.
  * @param {Element} block The header block element
  */
-export default async function decorate(block) {
-  let navPath = '';
-  if (document.querySelector('body.error-page')) {
-    const lang = getLang();
-    navPath = `/${lang}/nav`;
-  } else {
-    const navMeta = getMetadata('nav');
-    navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  }
-  const fragment = await loadFragment(navPath);
-  if (!fragment) return;
+export default function decorate(block) {
+  document.querySelector('header')?.classList.add('is-header-loading');
+  async function init() {
+    let navPath = '';
+    if (document.querySelector('body.error-page')) {
+      const lang = getLang();
+      navPath = ['EN', 'TH'].includes(lang.toUpperCase()) ? `/${lang}/nav` : '/en/nav';
+    } else {
+      const navMeta = getMetadata('nav');
+      navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+    }
+    const fragment = await loadFragment(navPath);
+    if (!fragment) {
+      document.querySelector('header')?.classList.remove('is-header-loading');
+      return;
+    }
 
-  // Keep a persistent template so we can re-build layout on resize/orientation change
-  const fragmentTemplate = fragment.cloneNode(true);
+    // Keep a persistent template so we can re-build layout on resize/orientation change
+    const fragmentTemplate = fragment.cloneNode(true);
 
-  block.textContent = '';
-  const header = document.createElement('div');
-  header.className = 'header-nav';
+    block.textContent = '';
+    const header = document.createElement('div');
+    header.className = 'header-nav';
 
-  applyLayout(header, fragmentTemplate, isDesktop.matches);
-
-  block.append(header);
-  document.dispatchEvent(new CustomEvent('header-decorated'));
-
-  const main = document.querySelector('main');
-  const headerSection = document.querySelector('header');
-  const firstMainChild = main?.firstElementChild;
-  const { body } = document;
-  if (
-    (!firstMainChild || (!firstMainChild.classList.contains('hero-container')
-          && !firstMainChild.classList.contains('carousel-dotted-container')))
-    && !body.classList.contains('bangkok-bankm-card')
-  ) {
-    headerSection.classList.add('is-not-overlapped');
-  }
-
-  isDesktop.addEventListener('change', () => {
     applyLayout(header, fragmentTemplate, isDesktop.matches);
+
+    block.append(header);
     document.dispatchEvent(new CustomEvent('header-decorated'));
-  });
+
+    const main = document.querySelector('main');
+    const headerSection = document.querySelector('header');
+    const firstMainChild = main?.firstElementChild;
+    const { body } = document;
+    if (
+      (!firstMainChild || (!firstMainChild.classList.contains('hero-container')
+        && !firstMainChild.classList.contains('carousel-dotted-container')))
+      && !body.classList.contains('bangkok-bankm-card')
+    ) {
+      headerSection.classList.add('is-not-overlapped');
+    }
+    headerSection.classList.remove('is-header-loading');
+
+    isDesktop.addEventListener('change', () => {
+      applyLayout(header, fragmentTemplate, isDesktop.matches);
+      document.dispatchEvent(new CustomEvent('header-decorated'));
+    });
+  }
+  init();
 }

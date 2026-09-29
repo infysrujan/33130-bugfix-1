@@ -9,12 +9,14 @@ import { handleSubmit } from './submit.js';
 import DocBasedFormToAF from './transform.js';
 import decorateCreditCardTractApplication from './form-custom/creditcard-track-application/creditcard-track-application.js';
 import decorateBondAllocationForm from './form-custom/bond-allocation/bond-allocation.js';
+import decorateBondConnectForm from './form-custom/bond-connect/bond-connect.js';
 import decorateSipForm from './form-custom/sip-form/sip-form.js';
 import decorateDebtSupportForm from './form-custom/debt-support/debt-support.js';
 import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
 import decorateReliefMeasures from './form-custom/relief-measures/relief-measures.js';
 import decorateCreditCardForm from './form-custom/credit-card-form/credit-card-form.js';
 import decorateContactUsForm from './form-custom/contact-us/contact-us.js';
+import decorateProtectionBtBelovedPlus from './form-custom/protection-bt-beloved-plus/protection-bt-beloved-plus.js';
 import {
   checkValidation,
   createButton,
@@ -381,12 +383,14 @@ async function createFormForAuthoring(formDef) {
   });
   decorateCreditCardTractApplication(form);
   decorateBondAllocationForm(form);
+  decorateBondConnectForm(form);
   decorateSipForm(form);
   decorateDebtSupportForm(form);
   decorateSmeLoanForm(form);
   decorateReliefMeasures(form);
   decorateCreditCardForm(form);
   decorateContactUsForm(form);
+  decorateProtectionBtBelovedPlus(form);
   return form;
 }
 
@@ -443,12 +447,14 @@ export async function createForm(formDef, data, source = 'aem') {
 
   decorateCreditCardTractApplication(form);
   decorateBondAllocationForm(form);
+  decorateBondConnectForm(form);
   decorateSipForm(form);
   decorateDebtSupportForm(form);
   decorateSmeLoanForm(form);
   decorateReliefMeasures(form);
   decorateCreditCardForm(form);
   decorateContactUsForm(form);
+  decorateProtectionBtBelovedPlus(form);
   return {
     form,
     captcha,
@@ -544,6 +550,7 @@ function addRequestContextToForm(formDef) {
         formDef.properties.queryParams[key?.toLowerCase()] = value;
       });
     } catch (e) {
+      // eslint-disable-next-line
       console.warn('Error reading URL parameters:', e);
     }
 
@@ -558,6 +565,7 @@ function addRequestContextToForm(formDef) {
         }
       });
     } catch (e) {
+      // eslint-disable-next-line
       console.warn('Error reading cookies:', e);
     }
   }
@@ -571,6 +579,7 @@ function loadFormCustomStyles(formDef) {
       const stylePath = style.startsWith('/') ? style : `/${style}`;
       loadCSS(`${base}${stylePath}`);
     } catch (error) {
+      // eslint-disable-next-line
       console.error('Failed to load form CSS:', error);
     }
   }

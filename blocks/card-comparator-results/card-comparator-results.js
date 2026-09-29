@@ -2,6 +2,10 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import {
+  plaintext, resolveApplyUrl, resolveCardPageUrl, resolveImageUrl, loadCardData, getCardViewData,
+  CREDIT_COMPARE_STORAGE_KEY, DEBIT_COMPARE_STORAGE_KEY, PREPAID_COMPARE_STORAGE_KEY,
+} from '../../scripts/utils/card-compare-fields.js';
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -11,20 +15,15 @@ function norm(str) {
     .trim();
 }
 
-// Extract plain text from a field that may be a string or a structured object
-function plaintext(field) {
-  if (!field) return '';
-  if (typeof field === 'string') return field;
-  return field.plaintext || field.html || '';
-}
-
-// Resolve a card's image URL whether stored as a plain string or a publish/author URL object
-function resolveImageUrl(card) {
-  const raw = card.image || '';
-  if (!raw) return '';
-  if (typeof raw === 'string') return raw;
-  // eslint-disable-next-line no-underscore-dangle
-  return raw._publishUrl || raw._authorUrl || '';
+// Escape HTML special chars, then turn newlines into <br> so multi-line
+// plaintext (e.g. fee breakdowns) renders as separate lines instead of
+// being collapsed into one line by the browser
+function nl2br(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\r?\n/g, '<br>');
 }
 
 // ── Icon loading ───────────────────────────────────────────────────────────────
@@ -95,22 +94,15 @@ async function loadSourcingOrder() {
   }
 }
 
-// Filter allCards to those matching selectedNames, sorted by sourcing priority (or selection order)
-function filterAndSortCards(allCards, selectedNames, sourcingMap) {
-  const normalizedNames = selectedNames.map(norm);
-
-  const matched = allCards.filter((card) => {
-    const cardName = norm(card.name || '');
-    return normalizedNames.some((n) => cardName === n);
-  });
+// Match by stable card id, not localized name, so the selection survives a TH/EN switch.
+function filterAndSortCards(allCards, selectedIDs, sourcingMap) {
+  const cardKey = (c) => c.cardId || c.id;
+  const matched = allCards.filter((card) => selectedIDs.includes(cardKey(card)));
 
   // No sourcing map available — preserve the user's selection order
   if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
-    return normalizedNames
-      .map((n) => matched.find((c) => {
-        const cardName = norm(c.name || '');
-        return cardName === n || cardName.includes(n);
-      }))
+    return selectedIDs
+      .map((id) => matched.find((c) => cardKey(c) === id))
       .filter(Boolean);
   }
 
@@ -121,25 +113,37 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
   });
 }
 
+// Normalizes a raw debit/prepaid card (loadCardData) into the same shape as a credit card.
+function toCompareCardShape(raw, lang) {
+  const v = getCardViewData(raw, lang);
+  return {
+    id: v.cardId,
+    cardId: v.cardId,
+    name: v.primaryName,
+    image: v.imageUrl,
+    slogan: v.slogan,
+    cardBenefits: v.cardBenefits,
+    fees: v.fees,
+    cardPageUrl: v.learnMoreHref ? { _publishUrl: v.learnMoreHref } : undefined,
+    webApplyEnabled: v.webApplyEnabled,
+    mobileApplyEnabled: v.mobileApplyEnabled,
+    webApplyUrl: v.webApplyUrl,
+    mobileApplyUrl: v.mobileApplyUrl,
+  };
+}
+
+// Fetches localized debit/prepaid cards for the stored selection (credit cards use loadAllCards).
+async function loadDebitPrepaidCards(storedCards, lang) {
+  const debitCards = (storedCards || []).filter((c) => c.cardCategory);
+  if (debitCards.length === 0) return [];
+  const pairs = new Map(debitCards.map((c) => [`${c.cardCategory}|${c.cardType || ''}`, c]));
+  const results = await Promise.all(
+    [...pairs.values()].map((c) => loadCardData(c.cardCategory, c.cardType || '')),
+  );
+  return results.flat().map((raw) => toCompareCardShape(raw, lang));
+}
+
 // ── DOM builders ───────────────────────────────────────────────────────────────
-
-// Resolve the learn-more URL from cardPageUrl (object with _publishUrl/_authorUrl)
-function resolveCardPageUrl(card) {
-  const raw = card.cardPageUrl;
-  if (raw && typeof raw === 'object') {
-    // eslint-disable-next-line no-underscore-dangle
-    return raw._publishUrl || raw._authorUrl || raw._path || '';
-  }
-  return '';
-}
-
-// Resolve a URL field that may be a plain string or a publish/author URL object
-function resolveApplyUrl(urlField) {
-  if (!urlField) return '';
-  if (typeof urlField === 'string') return urlField;
-  // eslint-disable-next-line no-underscore-dangle
-  return urlField._publishUrl || urlField._authorUrl || urlField._path || '';
-}
 
 // Build the apply area with desktop (single) and mobile (two-button) variants.
 // icons: { web: svgString, mweb: svgString } — inline SVG fetched from /icons/
@@ -189,13 +193,26 @@ function buildApplyArea(card, doc, labels, icons) {
   return area;
 }
 
+// The comparison field rows for one card, in display order (value is '' when empty).
+function getCardFields(card, labels) {
+  return [
+    { key: 'slogan', label: labels.slogan, value: plaintext(card.slogan) },
+    { key: 'privileges', label: labels.privileges, value: plaintext(card.privileges) },
+    { key: 'qualification', label: labels.qualification, value: plaintext(card.qualification) },
+    { key: 'rewardPoints', label: labels.rewardPoints, value: plaintext(card.rewardPointsCashback) },
+    { key: 'mileage', label: labels.mileage, value: plaintext(card.mileageRedemption) },
+    { key: 'cardBenefits', label: labels.cardBenefits, value: plaintext(card.cardBenefits) },
+    { key: 'fees', label: labels.fees, value: plaintext(card.fees) },
+  ];
+}
+
 // Build a full comparison card column matching the live site structure:
 //   .ccr-card > .ccr-inner > .ccr-thumb (bg-image)
 //              > .ccr-caption > h3 + .ccr-apply-area + .compare-info (dl/dt/dd)
 //              > .ccr-button-group > a.ccr-learn-more
-function buildCompareCard(card, doc, labels, icons) {
+function buildCompareCard(card, doc, labels, icons, activeKeys) {
   const name = card.name || '';
-  const imgSrc = resolveImageUrl(card);
+  const imgSrc = resolveImageUrl(card, 'image');
   let learnHref = resolveCardPageUrl(card);
   // Remove "/content/bangkokbank" from the start of learnHref, if present
   if (learnHref.startsWith('/content/bangkokbank')) {
@@ -239,16 +256,8 @@ function buildCompareCard(card, doc, labels, icons) {
   const compareInfo = doc.createElement('div');
   compareInfo.className = 'compare-info';
 
-  const fields = [
-    { key: 'slogan', label: labels.slogan, value: plaintext(card.slogan) },
-    { key: 'privileges', label: labels.privileges, value: plaintext(card.privileges) },
-    { key: 'qualification', label: labels.qualification, value: plaintext(card.qualification) },
-    { key: 'rewardPoints', label: labels.rewardPoints, value: plaintext(card.rewardPointsCashback) },
-    { key: 'mileage', label: labels.mileage, value: plaintext(card.mileageRedemption) },
-  ];
-
-  fields.forEach(({ key, label, value }) => {
-    if (!value) return;
+  getCardFields(card, labels).forEach(({ key, label, value }) => {
+    if (!activeKeys.has(key)) return;
     const dl = doc.createElement('dl');
     dl.dataset.field = key;
     const dt = doc.createElement('dt');
@@ -256,7 +265,7 @@ function buildCompareCard(card, doc, labels, icons) {
     dt.textContent = label;
     const dd = doc.createElement('dd');
     dd.className = 'ccr-value';
-    dd.textContent = value;
+    dd.innerHTML = nl2br(value);
     dl.appendChild(dt);
     dl.appendChild(dd);
     compareInfo.appendChild(dl);
@@ -268,7 +277,7 @@ function buildCompareCard(card, doc, labels, icons) {
   // ── Learn more link ──
   const learnLink = doc.createElement('a');
   learnLink.href = learnHref;
-  learnLink.className = 'ccr-learn-more';
+  learnLink.className = 'ccr-learn-more button-m secondary';
   learnLink.textContent = labels.learnMore;
   col.appendChild(learnLink);
   return col;
@@ -424,10 +433,34 @@ function initMobileCarousel(grid, doc) {
 
 // ── Cookie reader ──────────────────────────────────────────────────────────────
 
-// Read sessionStorage first; fall back to the cookie keyed by the ?compare-product-btn param
-function getCardsFromStorage() {
+// Determine which card flow this results page belongs to.
+// Priority: URL slug (most reliable) → explicit mode marker written by the comparator bar.
+function getResultPageMode() {
+  const path = window.location.pathname;
+  if (path.includes('debit-card-compare-result')) return 'debit';
+  if (path.includes('prepaid-card-compare-result')) return 'prepaid';
+  // Fallback: read the mode the comparator bar stamped when the user selected cards.
+  // This is set by credit-card-comparator.js and is always accurate for the current flow.
   try {
-    const stored = sessionStorage.getItem('ccs-compare-cards');
+    const storedMode = sessionStorage.getItem('bbl-compare-mode');
+    if (storedMode === 'prepaid' || storedMode === 'debit') return storedMode;
+  } catch { /* ignore */ }
+  return 'credit';
+}
+
+// Map mode → sessionStorage key
+function getStorageKeyForMode(mode) {
+  if (mode === 'prepaid') return PREPAID_COMPARE_STORAGE_KEY;
+  if (mode === 'debit') return DEBIT_COMPARE_STORAGE_KEY;
+  return CREDIT_COMPARE_STORAGE_KEY;
+}
+
+// Read sessionStorage using the correct key for this page's card flow
+function getCardsFromStorage() {
+  const mode = getResultPageMode();
+  const storageKey = getStorageKeyForMode(mode);
+  try {
+    const stored = sessionStorage.getItem(storageKey);
     if (stored) {
       const cards = JSON.parse(stored);
       if (Array.isArray(cards) && cards.length) return cards;
@@ -442,7 +475,7 @@ function getCardsFromStorage() {
   try {
     const value = decodeURIComponent(match.split('=').slice(1).join('='));
     const items = JSON.parse(value);
-    return items.map(({ id, title, photo }) => ({ name: title || id, image: photo }));
+    return items.map(({ id, title, photo }) => ({ id, name: title || id, image: photo }));
   } catch {
     return null;
   }
@@ -462,13 +495,19 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc, 
     return;
   }
 
-  const selectedNames = cards.map((c) => c.name);
-  const sorted = filterAndSortCards(allCards, selectedNames, sourcingMap);
+  const selectedIDs = cards.map((c) => c.id);
+  const sorted = filterAndSortCards(allCards, selectedIDs, sourcingMap);
 
   const displayCards = sorted.length > 0 ? sorted : cards;
 
+  // Fields any compared card has a value for, so every card renders the same aligned rows.
+  const activeKeys = new Set();
   displayCards.forEach((card) => {
-    container.appendChild(buildCompareCard(card, doc, labels, icons));
+    getCardFields(card, labels).forEach(({ key, value }) => { if (value) activeKeys.add(key); });
+  });
+
+  displayCards.forEach((card) => {
+    container.appendChild(buildCompareCard(card, doc, labels, icons, activeKeys));
   });
 }
 
@@ -515,7 +554,7 @@ function equalizeRowHeights(grid) {
   // Cards may omit dls for empty field values, so index-based matching would
   // silently compare the wrong fields across cards (e.g. card 1's Mileage dl
   // at index 3 paired with card 2's Reward Points dl also at index 3).
-  const fieldKeys = ['slogan', 'privileges', 'qualification', 'rewardPoints', 'mileage'];
+  const fieldKeys = ['slogan', 'privileges', 'qualification', 'rewardPoints', 'mileage', 'cardBenefits', 'fees'];
   fieldKeys.forEach((key) => {
     const dls = cards.map((c) => c.querySelector(`dl[data-field="${key}"]`)).filter(Boolean);
     if (dls.length < 2) return;
@@ -534,9 +573,21 @@ function equalizeRowHeights(grid) {
 
 export default async function decorate(block) {
   const doc = block.ownerDocument;
+  const lang = getLang();
   const ph = await fetchPlaceholders();
+
+  const descriptionRow = block.children[0];
+  if (descriptionRow) {
+    descriptionRow.classList.add('ccr-description');
+  }
+
+  // Authored "Learn More Button Text" field — overrides the placeholder default
+  const learnMoreTextRow = block.children[1];
+  const learnMoreText = learnMoreTextRow?.textContent?.trim();
+  learnMoreTextRow?.remove();
+
   const labels = {
-    learnMore: ph.cardLearnMore || 'Learn more',
+    learnMore: learnMoreText || ph.cardLearnMore || 'Learn more',
     applyNow: ph.cardApplyNow || 'Apply',
     applyViaWebsite: ph.cardApplyViaWebsite || 'Apply via Website',
     applyViaMobile: ph.cardApplyViaMobileBanking || 'Apply via Mobile Banking',
@@ -545,13 +596,10 @@ export default async function decorate(block) {
     qualification: ph.cardQualification || 'Qualification',
     rewardPoints: ph.cardRewardPoints || 'Reward Points/ Cash Back',
     mileage: ph.cardMileage || 'Mileage Redemption',
+    cardBenefits: ph.cardBenefits || 'Card Benefits',
+    fees: ph.cardFees || 'Fees',
     noResults: ph.cardNoResultsFound || 'No results found',
   };
-
-  const descriptionRow = block.children[0];
-  if (descriptionRow) {
-    descriptionRow.classList.add('ccr-description');
-  }
 
   const innerContainer = doc.createElement('div');
   innerContainer.className = 'inner-container';
@@ -598,13 +646,21 @@ export default async function decorate(block) {
     mo.observe(doc.body, { attributes: true, attributeFilter: ['class'] });
   };
 
-  const [allCards, sourcingMap, webIconSvg, mwebIconSvg] = await Promise.all([
-    loadAllCards(),
-    loadSourcingOrder(),
+  // On page load, restore selection from sessionStorage or cookie (survives page refresh)
+  const storedCards = getCardsFromStorage();
+  const mode = getResultPageMode();
+  const isDebitOrPrepaid = mode === 'debit' || mode === 'prepaid';
+
+  const [creditCards, sourcingMap, webIconSvg, mwebIconSvg, debitPrepaidCards] = await Promise.all([
+    isDebitOrPrepaid ? [] : loadAllCards(),
+    isDebitOrPrepaid ? null : loadSourcingOrder(),
     loadIconSvg('web'),
     loadIconSvg('mweb'),
+    isDebitOrPrepaid ? loadDebitPrepaidCards(storedCards, lang) : [],
   ]);
   const icons = { web: webIconSvg, mweb: mwebIconSvg };
+  // Combine both sources into one pool so matching stays a single, synchronous lookup.
+  const allCards = [...creditCards, ...debitPrepaidCards];
 
   const renderAndAlign = (cards) => {
     renderComparison(container, cards, allCards, sourcingMap, labels, doc, icons);
@@ -612,8 +668,6 @@ export default async function decorate(block) {
     doAlign();
   };
 
-  // On page load, restore selection from sessionStorage or cookie (survives page refresh)
-  const storedCards = getCardsFromStorage();
   if (storedCards) renderAndAlign(storedCards);
 
   // Inline mode: render when the comparator bar fires the compare event
