@@ -177,6 +177,15 @@
   padding-bottom: 1.25rem;
 }
 
+body:has(.fund-prices) .bbl-calendar-picker-popover {
+  z-index: 102;
+}
+
+body:has(.fund-prices):has(.main-nav-desktop.is-scrolled) .bbl-calendar-picker-popover,
+body:has(.fund-prices):has(.mobile-top-bar.is-scrolled) .bbl-calendar-picker-popover {
+  z-index: 99;
+}
+
 .bbl-calendar-picker-weekdays span {
   font-size: 0.875rem;
 }
