@@ -24,6 +24,10 @@
   min-width: 0;
 }
 
+.accordion-block .columns-2-cols > div div {
+  width: 50%;
+}
+
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) {
     min-width: 31.1875rem;
   flex-direction: row;
@@ -54,13 +58,10 @@
   gap: 0 var(--bbl-space-050);
 }
 
+
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col {
   width: 12.5rem;
   min-width: 8.75rem;
-}
-
-.accordion-block .columns-2-cols > div div {
-  width: 50%;
 }
 
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col,
