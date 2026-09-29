@@ -32,7 +32,7 @@ main .form form:not(.edit-mode) .fragment-wrapper.edit-mode{
 
 main .form form.edit-mode .fragment-wrapper.edit-mode {
     position: relative;
-    border: 2px dashed rgba(0, 0, 0, 0.2);
+    border: 2px dashed rgb(0 0 0 / 20%);
     border-radius: 4px;
     padding: 15px;
     max-height: 300px;
@@ -45,6 +45,10 @@ main .form form.edit-mode .fragment-wrapper.edit-mode > legend:first-of-type {
     width: auto;
     padding: 0 8px;
     margin-left: -8px;
+}
+
+main .form form.edit-mode .fragment-wrapper.edit-mode.fragment-expanded {
+    max-height: none;
 }
 
 /* Targets empty fragments (those with only a legend) in both normal and expanded states to center their content */
@@ -78,7 +82,7 @@ main .form form.edit-mode .fragment-wrapper.edit-mode:has(> :not(legend))::befor
     text-decoration: none;
     letter-spacing: 0.5px;
     background: white;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 12px rgb(0 0 0 / 15%);
     border-radius: 4px;
 }
 
@@ -90,9 +94,9 @@ main .form form.edit-mode .fragment-wrapper.edit-mode:has(> :not(legend))::after
     right: 0;
     height: 150px;
     background: linear-gradient(to bottom,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.7) 40%,
-    rgba(255, 255, 255, 0.9) 100%
+    rgb(255 255 255 / 0%) 0%,
+    rgb(255 255 255 / 70%) 40%,
+    rgb(255 255 255 / 90%) 100%
     );
     pointer-events: none;
 }
@@ -105,10 +109,6 @@ main .form form.edit-mode .fragment-wrapper.edit-mode.fragment-expanded:has(> :n
     display: none;
 }
 
-main .form form.edit-mode .fragment-wrapper.edit-mode.fragment-expanded {
-    max-height: none;
-}
-
 main .form form.edit-mode .fragment-wrapper.edit-mode .fragment-title {
     text-align: left;
     color: #4b4b4b;
@@ -119,8 +119,8 @@ form.edit-mode:not(:has(*)) {
     display: flex !important;
     justify-content: center;
     padding: 15px;
-    background: linear-gradient(180deg,rgba(0 0 0 / 5%),rgba(255 255 255 / 5%),rgba(0 0 0 / 5%)),
-    linear-gradient(90deg,rgba(0 0 0 / 5%),rgba(255 255 255 / 5%),rgba(0 0 0 / 5%));
+    background: linear-gradient(180deg,rgb(0 0 0 / 5%),rgb(255 255 255 / 5%),rgb(0 0 0 / 5%)),
+    linear-gradient(90deg,rgb(0 0 0 / 5%),rgb(255 255 255 / 5%),rgb(0 0 0 / 5%));
 }
 
 form.edit-mode:not(:has(*))::before {
@@ -147,18 +147,18 @@ main .form form.edit-mode .captcha-wrapper {
     font-size: 15px;
     text-align: left;
     color: #4b4b4b;
-    border-color: rgba(0 0 0 / 15%);
+    border-color: rgb(0 0 0 / 15%);
     border-radius: 4px;
-    background: linear-gradient(180deg,rgba(0 0 0 / 5%),rgba(255 255 255 / 5%),rgba(0 0 0 / 5%)),
-    linear-gradient(90deg,rgba(0 0 0 / 5%),rgba(255 255 255 / 5%),rgba(0 0 0 / 5%));
+    background: linear-gradient(180deg,rgb(0 0 0 / 5%),rgb(255 255 255 / 5%),rgb(0 0 0 / 5%)),
+    linear-gradient(90deg,rgb(0 0 0 / 5%),rgb(255 255 255 / 5%),rgb(0 0 0 / 5%));
 }
 
 .adobe-ue-edit .embed-adaptive-form-wrapper:not(:has(form, a)) > div {
     display: flex !important;
     justify-content: center;
     padding: 15px;
-    background: linear-gradient(180deg,rgba(0 0 0 / 5%),rgba(255 255 255 / 5%),rgba(0 0 0 / 5%)),
-    linear-gradient(90deg,rgba(0 0 0 / 5%),rgba(255 255 255 / 5%),rgba(0 0 0 / 5%));
+    background: linear-gradient(180deg,rgb(0 0 0 / 5%),rgb(255 255 255 / 5%),rgb(0 0 0 / 5%)),
+    linear-gradient(90deg,rgb(0 0 0 / 5%),rgb(255 255 255 / 5%),rgb(0 0 0 / 5%));
 }
 
 .adobe-ue-edit .embed-adaptive-form-wrapper:not(:has(form, a)) > div::before {
