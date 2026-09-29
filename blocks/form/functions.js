@@ -616,7 +616,9 @@ function scheduleApplyBranchDistrictGroupingAuto(data) {
       if (hasNewNodes) applyBranchGroupingToAllMatching(data);
     });
     observer.observe(document.body, {
-      childList: true, subtree: true, attributes: true,
+      childList: true,
+      subtree: true,
+      attributes: true,
       attributeFilter: ['hidden', 'style', 'class'],
     });
   }
