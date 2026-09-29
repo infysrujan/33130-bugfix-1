@@ -995,7 +995,15 @@ function getPlanErrorStatus() {
  * @returns {{ campaignName: string, campaignDetail: string }}
  */
 function fetchCcCampaignDetails(campaignId, language) {
-  if (!campaignId || !language) return { campaignName: '', campaignDetail: '' };
+  const DEFAULT_CAMPAIGN_NAME = 'CCWEBPIA04';
+  const DEFAULT_CAMPAIGN_DETAIL = 'สมัครผ่านหน้าเว็บไซต์ธนาคารกรุงเทพ บัตรทั่วไป';
+
+  if (!campaignId || !language) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
   const lang = String(language).toLowerCase() === 'en' ? 'en' : 'th';
   const url = `/${lang}/cc-campaign.json`;
@@ -1008,7 +1016,11 @@ function fetchCcCampaignDetails(campaignId, language) {
   if (xhr.status < 200 || xhr.status >= 300) {
     // eslint-disable-next-line no-console
     console.error('fetchCcCampaignDetails API error:', xhr.status, xhr.statusText);
-    return { campaignName: '', campaignDetail: '' };
+
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
   }
 
   let data;
@@ -1018,20 +1030,36 @@ function fetchCcCampaignDetails(campaignId, language) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('fetchCcCampaignDetails JSON parse error:', e);
-    return { campaignName: '', campaignDetail: '' };
+
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
   }
 
-  if (!Array.isArray(data)) return { campaignName: '', campaignDetail: '' };
+  if (!Array.isArray(data)) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
-  const campaign = data.find((item) => String(item.campaignId) === String(campaignId));
-  if (!campaign) return { campaignName: '', campaignDetail: '' };
+  const campaign = data.find(
+    (item) => String(item.campaignId) === String(campaignId),
+  );
+
+  if (!campaign) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
   return {
-    campaignName: campaign.campaignName ?? '',
-    campaignDetail: campaign.campaignDetail ?? '',
+    campaignName: campaign.campaignName?.trim() || DEFAULT_CAMPAIGN_NAME,
+    campaignDetail: campaign.campaignDetail?.trim() || DEFAULT_CAMPAIGN_DETAIL,
   };
 }
-
 function getidAndDob(id, dob) {
   const parts = dob.split(/[-/]/);
   // parts: [yyyy, mm, dd]  →  reorder to ddmmyyyy
