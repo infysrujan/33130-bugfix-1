@@ -339,7 +339,12 @@ export default async function buildMfFundCardsSlide(row, index) {
         return;
       }
 
-      window.mfsSelectedCards.push({ id: cardId, name: cardName, image: cardImage });
+      window.mfsSelectedCards.push({
+        id: cardId,
+        name: cardName,
+        image: cardImage,
+        orderSource: 'mfCardListingSort',
+      });
       restoreCompareState();
       doc.dispatchEvent(new CustomEvent('mf-compare-updated', {
         detail: { cards: window.mfsSelectedCards },

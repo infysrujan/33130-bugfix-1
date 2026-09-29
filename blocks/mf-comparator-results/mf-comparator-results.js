@@ -2,7 +2,11 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
-import { loadMfSheetOrder, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
+import {
+  loadCarouselListingOrder,
+  loadMfSheetOrder,
+  sortFundsBySheetOrder,
+} from '../../scripts/utils/mf-fund-sort.js';
 
 const TABLET_MIN = getComputedStyle(document.documentElement)
   .getPropertyValue('--bbl-breakpoint-tablet-min')
@@ -62,9 +66,7 @@ function getCardName(card) {
   return card.name || card.title || card.FundName || card.fundName || '';
 }
 
-// Sort by the canonical mf-suggestor sheet order (the same source every
-// other mutual-fund block uses), falling back to selection order only if
-// the sheet itself is unavailable.
+// Use the order source attached to selected cards, falling back to listing order.
 function filterAndSortCards(allCards, selectedIDs, selectedNames, matrix) {
   const normalizedNames = selectedNames.map(norm);
   const matched = allCards.filter((card) => selectedIDs.includes(card.ProductID));
@@ -377,7 +379,14 @@ function getCardsFromStorage() {
   try {
     const value = decodeURIComponent(match.split('=').slice(1).join('='));
     const items = JSON.parse(value);
-    return items.map(({ id, title, photo }) => ({ name: title || id, image: photo }));
+    return items.map(({
+      id, title, photo, orderSource,
+    }) => ({
+      id,
+      name: title || id,
+      image: photo,
+      orderSource,
+    }));
   } catch {
     return null;
   }
@@ -399,7 +408,9 @@ function renderComparison(container, cards, allCards, matrix, labels, doc) {
 
   const selectedNames = cards.map((c) => c.name);
   const selectedIDs = cards.map((c) => c.id);
-  const sorted = filterAndSortCards(allCards, selectedIDs, selectedNames, matrix);
+  const usesSuggestorOrder = cards.some((card) => card.orderSource === 'mfSuggestor');
+  const orderMatrix = usesSuggestorOrder ? matrix.mfSuggestor : matrix.mfCardListingSort;
+  const sorted = filterAndSortCards(allCards, selectedIDs, selectedNames, orderMatrix);
 
   const displayCards = sorted.length > 0
     ? sorted
@@ -476,10 +487,15 @@ export default async function decorate(block) {
   };
 
   // ── Load data ──────────────────────────────────────────────────────────────
-  const [allCards, matrix] = await Promise.all([loadAllCards(), loadMfSheetOrder()]);
+  const [allCards, mfSuggestor, mfCardListingSort] = await Promise.all([
+    loadAllCards(),
+    loadMfSheetOrder(),
+    loadCarouselListingOrder(),
+  ]);
+  const matrices = { mfSuggestor, mfCardListingSort };
 
   function renderAndAlign(cards) {
-    renderComparison(container, cards, allCards, matrix, labels, doc);
+    renderComparison(container, cards, allCards, matrices, labels, doc);
     buildDots();
     doAlign();
   }

@@ -13,10 +13,13 @@ function buildCookieName(cardId) {
 function saveComparatorCookie(selectedCards) {
   if (!selectedCards.length) return;
   const cookieName = buildCookieName(selectedCards[0].id || selectedCards[0].name);
-  const cookieValue = selectedCards.map(({ id, name, image }) => ({
+  const cookieValue = selectedCards.map(({
+    id, name, image, orderSource,
+  }) => ({
     id: id || name,
     title: name,
     photo: image,
+    orderSource,
   }));
   document.cookie = `${cookieName}=${encodeURIComponent(JSON.stringify(cookieValue))}; path=/; SameSite=Lax`;
 }
