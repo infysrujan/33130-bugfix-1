@@ -380,6 +380,8 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels) 
   const getRealItems = () => [
     ...blockEl.querySelectorAll('.cards-list-item:not(.ccs-hidden):not([data-ccs-clone])'),
   ];
+  const realItems = getRealItems();
+  let dots = [];
 
   const centerLeft = (item) => item.getBoundingClientRect().left
       - cardsList.getBoundingClientRect().left
@@ -390,26 +392,40 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels) 
     cardsList.scrollTo({ left: offset, behavior: 'smooth' });
   };
 
+  const closestItem = (items, centered) => {
+    const listRect = cardsList.getBoundingClientRect();
+    const target = centered ? listRect.left + cardsList.clientWidth / 2 : listRect.left;
+    return items.reduce((closest, item) => {
+      const rect = item.getBoundingClientRect();
+      const position = centered ? rect.left + rect.width / 2 : rect.left;
+      const distance = Math.abs(position - target);
+      return !closest || distance < closest.distance ? { item, distance } : closest;
+    }, null)?.item;
+  };
+
   const buildDots = () => {
-    dotsEl.innerHTML = '';
     const items = getRealItems();
-    if (items.length <= 1) return; // no dots needed for a single card
-    items.forEach((item, i) => {
+    dots = items.length > 1 ? items.map((item, i) => {
       const dot = doc.createElement('button');
       dot.type = 'button';
       dot.className = 'ccs-scroll-dot';
-      if (i === 0) dot.classList.add('is-active');
+      dot.classList.toggle('is-active', i === 0);
       dot.setAttribute('aria-label', `${labels.goToCard} ${i + 1}`);
       dot.addEventListener('click', () => scrollToItem(item));
-      dotsEl.appendChild(dot);
-    });
+      return dot;
+    }) : [];
+    dotsEl.replaceChildren(...dots);
   };
 
   buildDots();
 
   // Seamless loop — clones only on mobile so they don't pollute the desktop grid
-  const realItems = getRealItems();
-  if (realItems.length > 1 && window.matchMedia(MOBILE_BREAKPOINT).matches) {
+  const shouldLoop = realItems.length > 1 && window.matchMedia(MOBILE_BREAKPOINT).matches;
+  let wrapTimer = null;
+  let wrapIfClone = () => {};
+  let loopItems = [];
+
+  if (shouldLoop) {
     const makeClone = (index) => {
       const clone = realItems[index].cloneNode(true);
       clone.dataset.ccsClone = 'true';
@@ -424,13 +440,11 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels) 
     cardsList.append(makeClone(0));
     if (realItems.length > 2) cardsList.append(makeClone(1));
 
-    let centered = false;
     const centerFirst = () => {
-      if (centered || !cardsList.clientWidth) return centered;
+      if (!cardsList.clientWidth) return false;
       const first = realItems[0];
       cardsList.style.scrollSnapType = 'none';
       cardsList.scrollLeft = centerLeft(first) - (cardsList.clientWidth - first.offsetWidth) / 2;
-      centered = true;
       requestAnimationFrame(() => cardsList.style.removeProperty('scroll-snap-type'));
       return true;
     };
@@ -438,27 +452,16 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels) 
     // The block can be decorated while its section is hidden, so wait for a measurable track.
     requestAnimationFrame(() => requestAnimationFrame(() => {
       if (centerFirst()) return;
-      const resizeObserver = new ResizeObserver(() => {
-        if (centerFirst()) resizeObserver.disconnect();
-      });
+      const resizeObserver = new ResizeObserver(() => centerFirst() && resizeObserver.disconnect());
       resizeObserver.observe(cardsList);
     }));
 
-    const closestItem = (items) => {
-      const center = cardsList.getBoundingClientRect().left + cardsList.clientWidth / 2;
-      return items.reduce((closest, item) => {
-        const rect = item.getBoundingClientRect();
-        const distance = Math.abs(rect.left + rect.width / 2 - center);
-        return !closest || distance < closest.distance ? { item, distance } : closest;
-      }, null)?.item;
-    };
+    loopItems = [...cardsList.querySelectorAll('.cards-list-item:not(.ccs-hidden)')];
 
     // Recenter on the real card after a scroll settles on either boundary clone.
-    let wrapTimer = null;
-    const wrapIfClone = () => {
-      const snapped = closestItem([...cardsList.querySelectorAll('.cards-list-item')]);
-      if (!snapped?.dataset.ccsClone) return;
-      const real = realItems[Number(snapped.dataset.ccsCloneOf)];
+    wrapIfClone = () => {
+      const snapped = closestItem(loopItems, true);
+      const real = snapped?.dataset.ccsClone && realItems[Number(snapped.dataset.ccsCloneOf)];
       if (!real) return;
       cardsList.style.scrollSnapType = 'none';
       cardsList.scrollLeft += real.getBoundingClientRect().left
@@ -467,32 +470,20 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels) 
     };
 
     cardsList.addEventListener('scrollend', wrapIfClone);
-    cardsList.addEventListener('scroll', () => {
-      const dots = [...dotsEl.querySelectorAll('.ccs-scroll-dot')];
-      const items = [...cardsList.querySelectorAll('.cards-list-item')];
-      const snapped = closestItem(items);
-      const activeIndex = snapped?.dataset.ccsCloneOf !== undefined
-        ? Number(snapped.dataset.ccsCloneOf)
-        : realItems.indexOf(snapped);
-      dots.forEach((dot, index) => dot.classList.toggle('is-active', index === activeIndex));
-      clearTimeout(wrapTimer);
-      wrapTimer = setTimeout(wrapIfClone, 180);
-    }, { passive: true });
-  } else {
-    cardsList.addEventListener('scroll', () => {
-      const dots = [...dotsEl.querySelectorAll('.ccs-scroll-dot')];
-      const items = getRealItems();
-      if (!items.length || !dots.length) return;
-      const snapped = items.reduce((closest, item) => {
-        const distance = Math.abs(
-          item.getBoundingClientRect().left - cardsList.getBoundingClientRect().left,
-        );
-        return !closest || distance < closest.distance ? { item, distance } : closest;
-      }, null)?.item;
-      const activeIndex = items.indexOf(snapped);
-      dots.forEach((dot, index) => dot.classList.toggle('is-active', index === activeIndex));
-    }, { passive: true });
   }
+
+  cardsList.addEventListener('scroll', () => {
+    if (!dots.length) return;
+    const items = shouldLoop ? loopItems : getRealItems();
+    const snapped = closestItem(items, shouldLoop);
+    const activeIndex = Number(
+      snapped?.dataset.ccsCloneOf ?? (shouldLoop ? realItems : items).indexOf(snapped),
+    );
+    dots.forEach((dot, index) => dot.classList.toggle('is-active', index === activeIndex));
+    if (!shouldLoop) return;
+    clearTimeout(wrapTimer);
+    wrapTimer = setTimeout(wrapIfClone, 180);
+  }, { passive: true });
 
   return buildDots;
 }
