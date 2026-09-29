@@ -61,8 +61,7 @@ function isContactUsForm(form) {
   // and are reused by other form templates, so matching on them is unreliable.
   // The hidden "formCode" field is an authored, form-specific identifier
   // added for tracking/submission purposes — use that instead.
-  const formCode = form.querySelector('input[name="formCode"]')?.value;
-  return formCode?.trim().toLowerCase() === 'contactus';
+  return form.querySelector('.contact-us') !== null;
 }
 
 /**
