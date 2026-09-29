@@ -232,7 +232,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 0 var(--bbl-space-100);
+  padding: 0 0.625rem;
   color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-h4-mobile);
   font-weight: var(--form-label-font-weight);
