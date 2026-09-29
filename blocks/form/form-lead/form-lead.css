@@ -213,11 +213,13 @@ main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .pa
   background: var(--bbl-color-grey-150);
 }
 
-main .lead-forms .form form .field-thankyou-visible-panel h3::before {
+main .lead-forms .form form .panel-wrapper.field-thankyou-visible-panel h3::before {
   display: none;
 }
 
-main .lead-forms .form form .field-thankyou-visible-panel h3{
+main .lead-forms .form form .panel-wrapper.field-thankyou-visible-panel h3{
+  margin: 0;
+  padding-bottom: 1.875rem;
   font-size: var(--bbl-font-size-base);
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-medium);
