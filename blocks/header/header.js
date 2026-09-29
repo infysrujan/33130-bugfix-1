@@ -619,10 +619,12 @@ function buildMobileLayout(header, blocks) {
   const mobileTopBar = document.createElement('div');
   mobileTopBar.className = 'mobile-top-bar';
 
-  const hamburger = document.createElement('div');
+  const hamburger = document.createElement('button');
+  hamburger.type = 'button';
   hamburger.className = 'hamburger-icon';
   hamburger.setAttribute('aria-label', 'Open navigation');
   hamburger.setAttribute('aria-expanded', 'false');
+  hamburger.setAttribute('aria-controls', 'mobile-navigation');
   hamburger.innerHTML = `
     <span></span>
     <span></span>

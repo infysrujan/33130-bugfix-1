@@ -70,6 +70,11 @@ function buildFooterStructure(block) {
     const links = Array.from(sectionList.querySelectorAll('li'));
     links.forEach((link) => {
       const newLi = link.cloneNode(true);
+      const anchor = newLi.querySelector('a');
+      if (anchor && !anchor.textContent.trim() && !anchor.getAttribute('aria-label')) {
+        const fallbackLabel = anchor.getAttribute('href') || 'Footer link';
+        anchor.setAttribute('aria-label', fallbackLabel);
+      }
       linksList.appendChild(newLi);
     });
     linksContainer.appendChild(linksList);

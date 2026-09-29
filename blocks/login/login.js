@@ -55,6 +55,7 @@ function createLoginButton(buttonText) {
   loginButton.className = 'login-button button-s primary icon-login';
   loginButton.setAttribute('aria-expanded', 'false');
   loginButton.setAttribute('aria-haspopup', 'true');
+  loginButton.setAttribute('aria-label', buttonText || 'Log on');
   loginButton.setAttribute('type', 'button');
 
   const buttonTextSpan = document.createElement('span');
