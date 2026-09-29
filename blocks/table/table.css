@@ -533,6 +533,21 @@ td .icon {
 }
 
 /* One-off for the e-Donation accordion download grid; do not replicate as a general table variant. */
+@media (width > 47.5rem) {
+  .table table.download-1-mcol-2-dcol tr:not(.header-row) td, .table table.download-1-mcol-2-dcol tr.header-row td {
+    padding-block: 0;
+    padding-inline: 0;
+  }
+
+  .table table.download-1-mcol-2-dcol tr td:nth-child(odd) {
+    padding-right: 1.25rem;
+  }
+
+  .table table.download-1-mcol-2-dcol tr td:nth-child(even) {
+    padding-left: 1.25rem;
+  }
+}
+
 @media (width <= 47.5rem) {
   .table table.download-1-mcol-2-dcol {
     display: block;
@@ -554,26 +569,9 @@ td .icon {
     width: 100%;
     box-sizing: border-box;
   }
-}
 
-@media (width <= 64rem) {
-  .table table.download-1-mcol-2-dcol tr td {
-    padding-block: 0;
-  }
-}
-
-@media (width > 64rem) {
   .table table.download-1-mcol-2-dcol tr:not(.header-row) td, .table table.download-1-mcol-2-dcol tr.header-row td {
     padding-block: 0;
     padding-inline: 0;
   }
-
-  .table table.download-1-mcol-2-dcol tr td:nth-child(odd) {
-    padding-right: 20px;
-  }
-
-  .table table.download-1-mcol-2-dcol tr td:nth-child(even) {
-    padding-left: 20px;
-  }
 }
-
