@@ -108,7 +108,7 @@
    HEADER ROWS — marked via JS based on first-row rowspan (specificity 0,2,3)
    -------------------------------------------------------------------------- */
 .table table tr.header-row td {
-  padding: 0.3125rem 0.625rem;
+  padding: 0.625rem 0.75rem;
   text-align: left;
   vertical-align: top;
   background: transparent;
@@ -533,11 +533,6 @@ td .icon {
 }
 
 /* One-off for the e-Donation accordion download grid; do not replicate as a general table variant. */
-/* stylelint-disable-next-line no-descending-specificity */
-.table table.download-1-mcol-2-dcol tr td {
-  padding-block: 0;
-}
-
 @media (width <= 47.5rem) {
   .table table.download-1-mcol-2-dcol {
     display: block;
@@ -558,6 +553,12 @@ td .icon {
     display: block;
     width: 100%;
     box-sizing: border-box;
+  }
+}
+
+@media (width <= 64rem) {
+  .table table.download-1-mcol-2-dcol tr td {
+    padding-block: 0;
   }
 }
 
