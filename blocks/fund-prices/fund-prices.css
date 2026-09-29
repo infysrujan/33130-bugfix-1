@@ -73,7 +73,7 @@
 
 .fund-prices .fund-prices-table table tr.header-row td {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1-desktop);
+  font-size: var(--bbl-body-b1-size);
   color: var(--bbl-color-black);
   height: 2.875rem;
   vertical-align: middle;

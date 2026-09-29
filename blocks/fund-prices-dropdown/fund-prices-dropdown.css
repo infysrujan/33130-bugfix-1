@@ -237,7 +237,7 @@
 .fund-prices-dropdown .stat-table th {
   background: var(--bbl-color-grey-10);
   color: var(--bbl-color-black);
-  font-size: var(--bbl-font-size-b1-desktop);
+  font-size: var(--bbl-body-b1-size);
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
   text-align: left;
