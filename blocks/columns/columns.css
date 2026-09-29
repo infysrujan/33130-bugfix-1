@@ -59,6 +59,10 @@
   min-width: 8.75rem;
 }
 
+.accordion-block .columns-2-cols > div div {
+  width: 50%;
+}
+
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col,
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col + div {
   padding: 0.3125rem 0;
