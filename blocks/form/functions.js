@@ -1195,7 +1195,9 @@ function formatDateTime(date, hour, minute) {
     [day, month, year] = String(date).split('/');
   }
 
-  const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const mm = String(month).padStart(2, '0');
+  const dd = String(day).padStart(2, '0');
+  const formattedDate = `${year}-${mm}-${dd}`;
 
   return `${formattedDate} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
 }
