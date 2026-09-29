@@ -1230,5 +1230,12 @@ export default async function decorate(block) {
   if (!beforePrintBlock) {
     beforePrintBlock = block;
     window.addEventListener('beforeprint', onBeforePrint);
+    // Ctrl/Cmd+P takes the Print button path so it also waits for the logo.
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        printElement(block);
+      }
+    });
   }
 }
