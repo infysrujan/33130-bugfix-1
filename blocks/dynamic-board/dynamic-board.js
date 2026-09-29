@@ -565,7 +565,8 @@ function printElement(block) {
   const printTable = content.querySelector('.db-table');
   if (printTable) {
     const colgroup = document.createElement('colgroup');
-    [10, 30, 11, 9, 11, 9, 8, 6, 6].forEach((width) => {
+    // Proportions taken from the legacy bangkokbank.com print output.
+    [11, 24, 9, 9, 11, 8, 10, 8, 10].forEach((width) => {
       const col = document.createElement('col');
       col.style.width = `${width}%`;
       colgroup.append(col);
@@ -764,9 +765,9 @@ function printElement(block) {
       top: auto;
     }
 
-    .dynamic-board .db-table thead th,
-    .dynamic-board .db-table thead tr:first-child th,
-    .dynamic-board .db-table thead tr:last-child th {
+    /* ID prefix outranks the live sort-icon padding and rowspan height rules,
+       which otherwise squeeze header text to one letter per line. */
+    #dynamic-board-print-root .dynamic-board .db-table thead th {
       /* Plain white header per the client PDF (not the live blue tint) — set
          directly on each th since a thead/tr-level background can drop out
          of print even with print-color-adjust: exact set globally. */
@@ -780,8 +781,13 @@ function printElement(block) {
       white-space: normal;
       line-height: 1.15;
       padding: 0.2rem 0.3rem;
+      text-align: center;
       vertical-align: middle;
       border: 0.0625rem solid var(--bbl-color-grey-20);
+    }
+
+    #dynamic-board-print-root .dynamic-board .db-table thead .db-th-label::after {
+      content: none;
     }
 
     .dynamic-board .db-table tbody td {
