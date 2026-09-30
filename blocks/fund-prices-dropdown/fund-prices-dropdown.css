@@ -267,7 +267,7 @@
 .fund-prices-dropdown .stat-table th {
   background: var(--bbl-color-grey-10);
   color: var(--bbl-color-black);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
   text-align: left;
@@ -290,6 +290,7 @@
   color: var(--bbl-color-grey-90);
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
+  font-size: 0.875rem;
   height: 3.5rem;
   vertical-align: middle;
   white-space: normal;
@@ -728,6 +729,7 @@ body.fund-prices-search-in-header .fund-prices-dropdown .fdd-title {
 @media (width > 64rem) {
   .fund-prices-dropdown .stat-table th, .fund-prices-dropdown .stat-table td {
     padding: 0 var(--bbl-space-250);
+    font-size: 1rem;
   }
 
   .fund-prices-dropdown .chart-subtitle {
