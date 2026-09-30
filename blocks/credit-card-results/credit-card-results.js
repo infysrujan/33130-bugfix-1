@@ -575,7 +575,9 @@ export default async function decorate(block) {
   function restoreCompareState(container) {
     const selected = window.ccsSelectedCards || [];
     container.querySelectorAll('.ccs-compare-btn').forEach((btn) => {
-      const isSelected = selected.some((c) => c.name === btn.dataset.cardName);
+      const isSelected = selected.some(
+        (c) => (c.id && c.id === btn.dataset.cardId) || c.name === btn.dataset.cardName,
+      );
       btn.classList.toggle('is-comparing', isSelected);
       btn.classList.toggle('disabled', isSelected);
       btn.textContent = labels.compare;
