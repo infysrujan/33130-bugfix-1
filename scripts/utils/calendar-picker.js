@@ -216,7 +216,7 @@ function parseCalendarDatePartial(text, lang, referenceDate = null) {
 
 function positionPopover(trigger, popover, doc) {
   const rect = trigger.getBoundingClientRect();
-  const { bottom, left: rectLeft, top } = rect;
+  const { bottom, left: rectLeft } = rect;
   const margin = 8;
   popover.style.top = `${bottom + margin}px`;
   let left = rectLeft;
@@ -229,13 +229,6 @@ function positionPopover(trigger, popover, doc) {
     if (left + pw > vw - margin) {
       left = Math.max(margin, vw - margin - pw);
       popover.style.left = `${left}px`;
-    }
-    const vh = doc.defaultView.innerHeight;
-    const ph = popover.offsetHeight;
-    let popTop = bottom + margin;
-    if (popTop + ph > vh - margin && top - margin - ph > margin) {
-      popTop = top - margin - ph;
-      popover.style.top = `${popTop}px`;
     }
     popover.style.visibility = '';
   });

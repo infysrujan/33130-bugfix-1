@@ -116,6 +116,7 @@ function findAnchorAfterMarker(markerNode) {
 }
 
 async function transformDownloadMarkers(root) {
+  decorateNewTabLinks(root);
   const downloadBlocks = [];
   const candidates = [...root.querySelectorAll('*')];
 

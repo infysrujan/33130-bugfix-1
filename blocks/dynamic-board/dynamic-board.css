@@ -1082,12 +1082,15 @@
 
 /* ── Print ─────────────────────────────────────────────────── */
 
-/* Fallback for a direct Ctrl+P (bypassing the Print button's printElement()
-   popup in dynamic-board.js) — kept in sync with printCss's portrait sizing. */
+/* Safety net for when the JS print root isn't built (JS error, no beforeprint support). */
 
 @media print {
   .dynamic-board .db-controls-right,
-  .dynamic-board .db-filter-wrapper {
+  .dynamic-board .db-filter-wrapper,
+  .dynamic-board .db-go-btn,
+  .dynamic-board .db-row-cb,
+  .dynamic-board .db-td-dl,
+  .dynamic-board .db-time-chevron {
     display: none;
   }
 
@@ -1124,6 +1127,21 @@
     overflow-wrap: break-word;
     white-space: normal;
     padding: 0.1875rem;
+  }
+
+  /* Matches the sort-icon/rowspan rules' specificity so their padding and height don't squeeze headers. */
+  .dynamic-board .db-table thead th.db-th-sort,
+  .dynamic-board .db-table thead th.db-th-sort.db-th-sorted,
+  .dynamic-board .db-table thead th[rowspan='2'],
+  .dynamic-board .db-table thead tr:first-child th:nth-child(2) {
+    height: auto;
+    padding: 0.1875rem;
+    background-image: none;
+    text-align: center;
+  }
+
+  .dynamic-board .db-table thead .db-th-label::after {
+    content: none;
   }
 
   /* Resets the 12rem min-width floor so the colgroup's percentage width wins. */
