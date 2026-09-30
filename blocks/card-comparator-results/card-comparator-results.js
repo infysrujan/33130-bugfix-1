@@ -94,25 +94,22 @@ async function loadSourcingOrder() {
   }
 }
 
-// Preserve the exact selection order of the user's selected cards while enriching with full data.
-function filterAndSortCards(allCards, cards) {
-  if (!cards || cards.length === 0) return [];
-  if (!allCards || allCards.length === 0) return cards;
+// Match by stable card id, not localized name, so the selection survives a TH/EN switch.
+function filterAndSortCards(allCards, selectedIDs, sourcingMap) {
+  const cardKey = (c) => c.cardId || c.id;
+  const matched = allCards.filter((card) => selectedIDs.includes(cardKey(card)));
 
-  const cardKey = (c) => (c.cardId || c.id || '').toString().trim();
+  // No sourcing map available — preserve the user's selection order
+  if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
+    return selectedIDs
+      .map((id) => matched.find((c) => cardKey(c) === id))
+      .filter(Boolean);
+  }
 
-  return cards.map((c) => {
-    const key = cardKey(c);
-    const cName = norm(c.name || c.primaryName || '');
-
-    const matched = allCards.find((ac) => {
-      const acKey = cardKey(ac);
-      if (key && acKey && key === acKey) return true;
-      if (cName && norm(ac.name || ac.primaryName || '') === cName) return true;
-      return false;
-    });
-
-    return matched ? { ...c, ...matched } : c;
+  return matched.sort((a, b) => {
+    const sA = sourcingMap[norm(a.name || '')] ?? 9999;
+    const sB = sourcingMap[norm(b.name || '')] ?? 9999;
+    return sA - sB;
   });
 }
 
@@ -498,7 +495,10 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc, 
     return;
   }
 
-  const displayCards = filterAndSortCards(allCards, cards);
+  const selectedIDs = cards.map((c) => c.id);
+  const sorted = filterAndSortCards(allCards, selectedIDs, sourcingMap);
+
+  const displayCards = sorted.length > 0 ? sorted : cards;
 
   // Fields any compared card has a value for, so every card renders the same aligned rows.
   const activeKeys = new Set();
