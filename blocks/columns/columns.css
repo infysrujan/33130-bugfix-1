@@ -24,11 +24,6 @@
   min-width: 0;
 }
 
-.accordion-block .columns-2-cols > div div {
-  width: 50%;
-  flex: 1;
-}
-
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) {
   min-width: 31.1875rem;
   flex-direction: row;
@@ -118,6 +113,11 @@
 }
 
 @media (width > 47.5rem) {
+  .accordion-block .columns-2-cols > div div {
+    width: 50%;
+    flex: 1;
+  }
+
   .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) {
     min-width: auto;
   }
