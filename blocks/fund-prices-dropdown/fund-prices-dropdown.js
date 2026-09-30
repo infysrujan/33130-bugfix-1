@@ -501,9 +501,7 @@ export default async function decorate(block) {
       <div class="fdd-print-search">${labels.backLabel === 'Fund Prices' ? 'Search Fund' : labels.backLabel}</div>
     </div>
     <div class="fdd-header">
-      <div class="fdd-header-top">
-        <button class="fdd-back-btn" aria-label="Back to ${labels.backLabel}">&#8249; ${labels.backLabel}</button>
-      </div>
+      <div class="fdd-header-top"></div>
       <h2 class="fdd-title">${labels.title}</h2>
       <hr class="fdd-title-rule" />
     </div>
@@ -593,7 +591,6 @@ export default async function decorate(block) {
   block.classList.add('hidden');
   block.hidden = true;
 
-  const backBtn = block.querySelector('.fdd-back-btn');
   const fundLabel = block.querySelector('.fdd-fund-label');
   const printBtn = block.querySelector('.fund-prices-print-label');
   const periodSelectBtn = block.querySelector('.period-select-btn');
@@ -806,7 +803,7 @@ export default async function decorate(block) {
     printRoot.classList.remove('hidden');
     printRoot.classList.toggle('fdd-print-custom-range', currentPeriod === 'DR');
     printRoot.hidden = false;
-    printRoot.querySelectorAll('.fund-prices-print-label, .fdd-back-btn').forEach((el) => el.remove());
+    printRoot.querySelectorAll('.fund-prices-print-label').forEach((el) => el.remove());
     printRoot.querySelectorAll('.detail-chart-svg').forEach((svg) => {
       svg.style.width = '';
       svg.style.height = '';
@@ -832,9 +829,13 @@ export default async function decorate(block) {
     setTimeout(cleanupPrint, 1000);
   });
 
-  /* Back button */
-  backBtn?.addEventListener('click', () => {
-    block.dispatchEvent(new CustomEvent('fund-prices-dropdown:back', { bubbles: true }));
+  // Ctrl/Cmd+P uses the same print layout as the print button (only while this view is visible)
+  block.ownerDocument.addEventListener('keydown', (e) => {
+    if (e.defaultPrevented || !(e.ctrlKey || e.metaKey) || e.altKey) return;
+    if (e.code !== 'KeyP' && e.key?.toLowerCase() !== 'p') return;
+    if (!printBtn?.getClientRects().length) return;
+    e.preventDefault();
+    printBtn.click();
   });
 
   /* Show / hide events dispatched by fund-prices.js */
@@ -856,13 +857,11 @@ export default async function decorate(block) {
 
     block.classList.remove('hidden');
     block.hidden = false;
-    block.ownerDocument.body.classList.add('fund-prices-detail-active');
     validateAndRenderDetail();
   });
 
   block.addEventListener('fund-prices-dropdown:hide', () => {
     block.classList.add('hidden');
     block.hidden = true;
-    block.ownerDocument.body.classList.remove('fund-prices-detail-active');
   });
 }

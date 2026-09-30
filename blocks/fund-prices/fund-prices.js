@@ -254,7 +254,6 @@ function placeSearchBarAtTopOfMain(el, doc) {
   doc.querySelectorAll('.fund-prices-search-bar').forEach((stale) => {
     if (stale !== el) stale.remove();
   });
-  el.classList.add('is-in-header');
   doc.body.classList.add('fund-prices-search-in-header');
   main.insertBefore(el, main.firstChild);
   const pageTitleEl = doc.querySelector('main .default-content-wrapper h1, main .default-content-wrapper h2');
@@ -344,7 +343,7 @@ function printContent(containerEl, pageTitle, searchLabelText) {
     if (table && headerRow && fifRow) {
       const continuationTable = table.cloneNode(false);
       const continuationColumns = doc.createElement('colgroup');
-      [15, 39, 10, 10, 10, 16].forEach((width) => {
+      [15, 38, 11, 10, 10, 16].forEach((width) => {
         const column = doc.createElement('col');
         column.style.width = `${width}%`;
         continuationColumns.appendChild(column);
@@ -502,7 +501,6 @@ function buildFundSelectorBar(doc, funds, searchLabel, allFundsLabel, goLabel) {
     el: bar,
     getSelected: () => selectedFund,
     goBtn,
-    resetToAll: () => selectItem(allOption),
   };
 }
 
@@ -676,6 +674,15 @@ export default async function decorate(block) {
     printContent(section ?? root, pageTitle, searchLabel);
   });
 
+  // Ctrl/Cmd+P uses the same print layout as the print button (only while this view is visible)
+  doc.addEventListener('keydown', (e) => {
+    if (e.defaultPrevented || !(e.ctrlKey || e.metaKey) || e.altKey) return;
+    if (e.code !== 'KeyP' && e.key?.toLowerCase() !== 'p') return;
+    if (!printLabel.getClientRects().length) return;
+    e.preventDefault();
+    printLabel.click();
+  });
+
   /* ── Dynamically build and load fund-prices-dropdown block ── */
   const fddRawBlock = buildBlock('fund-prices-dropdown', []);
   root.appendChild(fddRawBlock);
@@ -691,7 +698,6 @@ export default async function decorate(block) {
     mainView.classList.remove('hidden');
     if (tableBlock) tableBlock.classList.remove('hidden');
     fundSelector.el.classList.remove('hidden');
-    doc.body.classList.remove('fund-prices-detail-active');
     fddBlock?.dispatchEvent(new CustomEvent('fund-prices-dropdown:hide'));
   }
 
@@ -699,7 +705,6 @@ export default async function decorate(block) {
     mainView.classList.add('hidden');
     if (tableBlock) tableBlock.classList.add('hidden');
     fundSelector.el.classList.remove('hidden');
-    doc.body.classList.add('fund-prices-detail-active');
     fddBlock?.dispatchEvent(new CustomEvent('fund-prices-dropdown:show', {
       detail: { fund, mdate: latestMdate },
     }));
@@ -714,12 +719,5 @@ export default async function decorate(block) {
       showMainView();
       if (tableBlock) refreshTableFromPrices(tableBlock, cachedFunds, currentDate, latestMdate);
     }
-  });
-
-  /* ── Back button from dropdown ── */
-  fddBlock?.addEventListener('fund-prices-dropdown:back', () => {
-    showMainView();
-    fundSelector.resetToAll();
-    if (tableBlock) refreshTableFromPrices(tableBlock, cachedFunds, currentDate, latestMdate);
   });
 }
