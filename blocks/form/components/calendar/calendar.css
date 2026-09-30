@@ -51,7 +51,6 @@
 
 .dpth-input:focus-visible,
 .dpth-input[aria-expanded="true"] {
-  outline: 0.125rem solid var(--bbl-color-active-blue, #0070d2);
   outline-offset: 0.125rem;
   border-color: var(--bbl-color-active-blue, #0070d2);
 }
@@ -75,7 +74,7 @@
 
 .dpth-popover {
   position: fixed;
-  z-index: 9999;
+  z-index: 99;
   min-width: 17.5rem;
   padding: 1rem;
   background: var(--bbl-color-white, #fff);
@@ -89,6 +88,13 @@
 .dpth-popover *::before,
 .dpth-popover *::after {
   box-sizing: border-box;
+}
+
+/* Today's date */
+/* stylelint-disable-next-line selector-class-pattern */
+.dpth-popover .dpth-day--today {
+  color: #039;
+  font-weight: 700;
 }
 
 /* ── Popover header (month + nav) ────────────────────────────────────────── */
@@ -139,6 +145,12 @@
   color: var(--bbl-color-blue-105, #00447c);
 }
 
+.dpth-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* ── Weekday row ─────────────────────────────────────────────────────────── */
 
 .dpth-weekdays {
@@ -180,11 +192,6 @@
   transition: background 0.1s ease, color 0.1s ease;
 }
 
-.dpth-day-empty {
-  visibility: hidden;
-  pointer-events: none;
-}
-
 .dpth-day:disabled {
   color: var(--bbl-color-grey-45, #aaa);
   background: transparent;
@@ -196,19 +203,28 @@
   outline-offset: 0.125rem;
 }
 
-.dpth-day:not(:disabled):hover {
-  background: var(--bbl-color-grey-10, #f5f5f5);
+/* stylelint-disable-next-line selector-class-pattern */
+.dpth-popover .dpth-day--empty {
+  visibility: hidden;
+  pointer-events: none;
 }
 
-.dpth-day-selected {
+/* Hover: any enabled day that isn't the selected one */
+/* stylelint-disable-next-line selector-class-pattern */
+.dpth-popover .dpth-day:not(:disabled, .dpth-day--selected):hover {
+  background: rgb(0 104 183);
+  color: var(--bbl-color-white, #fff);
+}
+
+/* Previously selected day keeps its color, including while hovered */
+/* stylelint-disable selector-class-pattern */
+.dpth-popover .dpth-day--selected,
+.dpth-popover .dpth-day--selected:not(:disabled):hover {
   background: var(--bbl-color-active-blue, #0070d2);
   color: var(--bbl-color-white, #fff);
   font-weight: 700;
 }
-
-.dpth-day-selected:not(:disabled):hover {
-  background: var(--bbl-color-blue-70, #0057a8);
-}
+/* stylelint-enable selector-class-pattern */
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 

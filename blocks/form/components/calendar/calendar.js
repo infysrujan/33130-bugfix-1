@@ -170,8 +170,8 @@ function getDisplayLang() {
 
 function positionPopover(trigger, popover) {
   const rect = trigger.getBoundingClientRect();
-  const margin = 8;
-  let top = rect.bottom + margin;
+  const edge = 8;
+  let top = rect.bottom;
   // eslint-disable-next-line prefer-destructuring
   let left = rect.left;
 
@@ -185,9 +185,9 @@ function positionPopover(trigger, popover) {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    if (left + pw > vw - margin) left = Math.max(margin, vw - margin - pw);
-    if (top + ph > vh - margin && rect.top - margin - ph > margin) {
-      top = rect.top - margin - ph;
+    if (left + pw > vw - edge) left = Math.max(edge, vw - edge - pw);
+    if (top + ph > vh - edge && rect.top - ph > edge) {
+      top = rect.top - ph;
     }
 
     popover.style.top = `${top}px`;
@@ -273,10 +273,6 @@ export default function decorate(block, fd = {}) {
   input.setAttribute('autocomplete', 'off');
   input.setAttribute('tabindex', '0');
 
-  const calIcon = document.createElement('span');
-  calIcon.className = 'dpth-icon icon-calendar';
-  calIcon.setAttribute('aria-hidden', 'true');
-
   const hiddenInput = document.createElement('input');
   hiddenInput.type = 'hidden';
   hiddenInput.name = fieldName;
@@ -285,7 +281,7 @@ export default function decorate(block, fd = {}) {
   // read (submit) and write (prefill / rules) round-trip correctly.
   if (fd?.id) hiddenInput.id = fd.id;
 
-  fieldEl.append(input, calIcon);
+  fieldEl.append(input);
   wrapper.append(labelEl, fieldEl, hiddenInput);
   block.append(wrapper);
 
@@ -356,6 +352,12 @@ export default function decorate(block, fd = {}) {
     grid.replaceChildren();
     monthTitle.textContent = formatMonthHeader(viewYear, viewMonth, lang);
 
+    // Disable month navigation that would land entirely outside [minDate, maxDate].
+    const nextMonthStart = startOfDay(new Date(viewYear, viewMonth + 1, 1));
+    const prevMonthEnd = startOfDay(new Date(viewYear, viewMonth, 0));
+    btnNext.disabled = !!(maxDate && nextMonthStart > maxDate);
+    btnPrev.disabled = !!(minDate && prevMonthEnd < minDate);
+
     const firstDayOfWeek = new Date(viewYear, viewMonth, 1).getDay();
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
 
@@ -377,6 +379,11 @@ export default function decorate(block, fd = {}) {
 
       const disabled = (minDate && cellDate < minDate) || (maxDate && cellDate > maxDate);
       btn.disabled = disabled;
+
+      if (sameDay(cellDate, startOfDay(new Date()))) {
+        btn.classList.add('dpth-day--today');
+        btn.setAttribute('aria-current', 'date');
+      }
 
       if (selected && sameDay(cellDate, selected)) {
         btn.classList.add('dpth-day--selected');
@@ -411,7 +418,7 @@ export default function decorate(block, fd = {}) {
     input.setAttribute('aria-expanded', 'true');
     popover.hidden = false;
     renderGrid();
-    positionPopover(fieldEl, popover);
+    positionPopover(input, popover);
   }
 
   function closePopover() {
@@ -423,10 +430,17 @@ export default function decorate(block, fd = {}) {
 
   /* ── Shift month ── */
   function shiftMonth(delta) {
-    const d = new Date(viewYear, viewMonth + delta, 1);
-    viewYear = d.getFullYear();
-    viewMonth = d.getMonth();
+    const target = new Date(viewYear, viewMonth + delta, 1);
+    const targetEnd = startOfDay(new Date(target.getFullYear(), target.getMonth() + 1, 0));
+    if (maxDate && target > maxDate) return;
+    if (minDate && targetEnd < minDate) return;
+    viewYear = target.getFullYear();
+    viewMonth = target.getMonth();
     renderGrid();
+
+    // A button that becomes disabled drops keyboard focus; hand it to the other arrow.
+    if (btnNext.disabled && delta > 0 && !btnPrev.disabled) btnPrev.focus();
+    if (btnPrev.disabled && delta < 0 && !btnNext.disabled) btnNext.focus();
   }
 
   /* ── Event wiring ── */
@@ -506,7 +520,7 @@ export default function decorate(block, fd = {}) {
     if (e.key === 'Escape' && isOpen) { e.stopPropagation(); closePopover(); input.focus(); }
   });
 
-  const onReposition = () => { if (isOpen) positionPopover(fieldEl, popover); };
+  const onReposition = () => { if (isOpen) positionPopover(input, popover); };
   window.addEventListener('resize', onReposition);
   window.addEventListener('scroll', onReposition, true);
 
