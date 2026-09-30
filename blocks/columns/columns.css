@@ -25,7 +25,7 @@
 }
 
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) {
-    min-width: 31.1875rem;
+  min-width: 31.1875rem;
   flex-direction: row;
   align-items: flex-start;
   gap: 1.875rem;
@@ -55,8 +55,9 @@
 }
 
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col {
-  width: 12.5rem;
+  max-width: 25.625rem;
   min-width: 8.75rem;
+  flex: 0 0 calc(41% - 1.875rem);
 }
 
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col,
@@ -70,8 +71,8 @@
 }
 
 .accordion-block .columns-2-cols:has(> div):has(.columns-img-col + div > p) {
-    overflow: auto hidden;
-    width: 100%;
+  overflow: auto hidden;
+  width: 100%;
 }
 
 .section.center-image .columns-3-cols > div:has(> div:nth-child(3) > p > picture) {
@@ -112,6 +113,11 @@
 }
 
 @media (width > 47.5rem) {
+  .accordion-block .columns-2-cols > div div {
+    width: 50%;
+    flex: 1;
+  }
+
   .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) {
     min-width: auto;
   }
@@ -123,6 +129,7 @@
 
   .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col {
     width: auto;
+    flex: 0 0 50%;
   }
 }
 
