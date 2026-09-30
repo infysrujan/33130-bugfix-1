@@ -2,10 +2,16 @@
  * Date of Birth (Thai) Component
  *
  * Renders three custom combobox dropdowns — day / month (Thai or English
- * names) / year (Christian Era) — matching the legacy "วัน / เดือน / ปี"
- * birth-date widget, and combines the selections into a single ISO
- * (yyyy-MM-dd) value written to a hidden input bound to the field model
- * (fieldType: "date-input", fd:viewType: "dob").
+ * names) / year (Buddhist Era when the page language is TH, Christian Era
+ * when EN) — matching the legacy "วัน / เดือน / ปี" birth-date widget, and
+ * combines the selections into a single ISO (yyyy-MM-dd) value written to a
+ * hidden input bound to the field model (fieldType: "date-input",
+ * fd:viewType: "dob").
+ *
+ * Year handling: internally the year option *value* is the Gregorian year
+ * (used for leap-year calculation). The option *label* and the submitted
+ * ISO value are shifted by +543 for TH (2011 -> 2554, e.g. "2554-05-14");
+ * EN stays Gregorian. Prefill values in TH are read as Buddhist Era.
  *
  * Each dropdown is a button + self-positioned listbox panel (same pattern as
  * calendar.js's popover) rather than a native <select>: native <select>
@@ -13,15 +19,19 @@
  * fill most of the viewport when there are many options and little room
  * below the field — nothing an author can control via CSS. Building our own
  * panel keeps it small, height-capped, and anchored under the field in
+ * every browser.
  *
  * Authoring data (stored in fd.properties):
  *   - minAge : number – youngest selectable age. Drives the newest year
- *              option (current year - minAge). Default 15.
+ *              option (current year - minAge). Blank/missing = 0.
  *   - maxAge : number – oldest selectable age. Drives how many year options
  *              are rendered ((maxAge - minAge) + 1 rows). Default 100.
  */
 
 /* eslint-env browser */
+
+// Difference between the Buddhist Era (พ.ศ.) and Christian Era (ค.ศ.) years.
+const BE_OFFSET = 543;
 
 const MONTHS_TH = [
   'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
@@ -68,6 +78,12 @@ function toText(v) {
 function toPositiveInt(v, fallback) {
   const n = Number.parseInt(v, 10);
   return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
+/** Non-negative integer; blank / invalid / negative falls back to `fallback` (0 allowed). */
+function toNonNegativeInt(v, fallback) {
+  const n = Number.parseInt(v, 10);
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
 
 function getDisplayLang() {
@@ -206,7 +222,7 @@ function createCombobox({
       item.setAttribute('role', 'option');
       item.setAttribute('tabindex', '-1');
       item.setAttribute('aria-selected', String(opt.value === value));
-      if (opt.value === value) item.classList.add('dobth-option-selected');
+      if (opt.value === value) item.classList.add('dobth-option--selected');
       item.textContent = opt.label;
       item.dataset.value = opt.value;
       listbox.append(item);
@@ -231,7 +247,7 @@ function createCombobox({
     listbox.hidden = false;
     closeOpenCombobox = close;
     positionListbox(trigger, listbox);
-    const selected = listbox.querySelector('.dobth-option-selected') || listbox.querySelector('.dobth-option');
+    const selected = listbox.querySelector('.dobth-option--selected') || listbox.querySelector('.dobth-option');
     selected?.focus();
   }
 
@@ -330,7 +346,7 @@ export default function decorate(block, fd = {}) {
   const baseId = `dobth-${instanceCount}`;
 
   const labelText = toText(fd.label?.value ?? getProp(fd, 'jcr:title'))
-    || (lang === 'th' ? 'ระบุวันเดือนปีเกิด (ค.ศ.)' : 'Date of birth (A.D.)');
+    || (lang === 'th' ? 'ระบุวันเดือนปีเกิด (พ.ศ.)' : 'Date of birth (A.D.)');
 
   const hideTitle = fd.label?.visible === false
     || getProp(fd, 'hideTitle') === true
@@ -339,8 +355,10 @@ export default function decorate(block, fd = {}) {
   const fieldName = toText(getProp(fd, 'name')) || 'dob';
   const isDisabled = fd.enabled === false || fd.readOnly === true;
 
-  const minAge = toPositiveInt(getProp(fd, 'minAge'), 15);
+  // minAge comes only from authored properties; blank/missing means 0.
+  const minAge = toNonNegativeInt(getProp(fd, 'minAge'), 0);
   const maxAge = toPositiveInt(getProp(fd, 'maxAge'), 100);
+  // Gregorian year of the newest selectable option (current year - minAge).
   const startYear = new Date().getFullYear() - minAge;
   const yearCount = Math.max(1, maxAge - minAge + 1);
 
@@ -372,15 +390,9 @@ export default function decorate(block, fd = {}) {
   // carry fd.id here so both read (submit) and write (prefill / rules) round-trip.
   if (fd?.id) hiddenInput.id = fd.id;
 
-  // Forward-declared so `commit()` and `onMonthOrYearChange()` below can
-  // reference them before the createCombobox(...) calls that assign them —
-  // avoids eslint(no-use-before-define) while keeping the exact same
-  // build/call order as before.
-  let dayCombo;
-  let monthCombo;
-  let yearCombo;
-
   /* ── Sync hidden value from the three combos ── */
+  /* eslint-disable no-use-before-define --
+     combos are created below; these handlers only run after they exist */
   function commit() {
     const d = dayCombo.getValue();
     const m = monthCombo.getValue();
@@ -394,7 +406,9 @@ export default function decorate(block, fd = {}) {
       hiddenInput.value = '';
       return;
     }
-    hiddenInput.value = `${y}-${m}-${String(d).padStart(2, '0')}`;
+    // y is the internal Gregorian year. Submit Buddhist Era for TH, Gregorian for EN.
+    const submitYear = lang === 'th' ? Number(y) + BE_OFFSET : Number(y);
+    hiddenInput.value = `${submitYear}-${m}-${String(d).padStart(2, '0')}`;
     hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
     hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
   }
@@ -406,10 +420,6 @@ export default function decorate(block, fd = {}) {
     dayCombo.setOptions(opts, { preserveValue });
   }
 
-  dayCombo = createCombobox({
-    id: `${baseId}-day`, ariaLabel: dayLabel, placeholder: dayLabel, disabled: isDisabled, onChange: commit,
-  });
-
   // Regenerate the day count when month/year narrow it (e.g. Feb 30 -> Feb 28/29),
   // clamping down without losing a still-valid selected day.
   function onMonthOrYearChange() {
@@ -418,12 +428,28 @@ export default function decorate(block, fd = {}) {
     populateDayOptions((m && y) ? daysInMonth(Number(y), Number(m) - 1) : 31);
     commit();
   }
+  /* eslint-enable no-use-before-define */
 
-  monthCombo = createCombobox({
-    id: `${baseId}-month`, ariaLabel: monthLabel, placeholder: monthLabel, disabled: isDisabled, onChange: onMonthOrYearChange,
+  const dayCombo = createCombobox({
+    id: `${baseId}-day`,
+    ariaLabel: dayLabel,
+    placeholder: dayLabel,
+    disabled: isDisabled,
+    onChange: commit,
   });
-  yearCombo = createCombobox({
-    id: `${baseId}-year`, ariaLabel: yearLabel, placeholder: yearLabel, disabled: isDisabled, onChange: onMonthOrYearChange,
+  const monthCombo = createCombobox({
+    id: `${baseId}-month`,
+    ariaLabel: monthLabel,
+    placeholder: monthLabel,
+    disabled: isDisabled,
+    onChange: onMonthOrYearChange,
+  });
+  const yearCombo = createCombobox({
+    id: `${baseId}-year`,
+    ariaLabel: yearLabel,
+    placeholder: yearLabel,
+    disabled: isDisabled,
+    onChange: onMonthOrYearChange,
   });
 
   monthCombo.setOptions((lang === 'th' ? MONTHS_TH : MONTHS_EN).map((name, idx) => ({
@@ -431,10 +457,13 @@ export default function decorate(block, fd = {}) {
     label: name,
   })), { preserveValue: false });
 
+  // Value = Gregorian year (drives ISO output, leap years, prefill).
+  // Label = Buddhist Era (year + 543) for TH, Christian Era for EN.
   const yearOpts = [];
   for (let i = 0; i < yearCount; i += 1) {
     const year = startYear - i;
-    yearOpts.push({ value: String(year), label: String(year) });
+    const displayYear = lang === 'th' ? year + BE_OFFSET : year;
+    yearOpts.push({ value: String(year), label: String(displayYear) });
   }
   yearCombo.setOptions(yearOpts, { preserveValue: false });
 
@@ -444,11 +473,17 @@ export default function decorate(block, fd = {}) {
   wrapper.append(labelEl, row, hiddenInput);
   block.append(wrapper);
 
-  /* ── Seed from a prefilled/default value (yyyy-MM-dd) ── */
+  /* ── Seed from a prefilled/default value (yyyy-MM-dd, Gregorian) ── */
   const initial = toText(getProp(fd, 'default') ?? fd.value);
   const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(initial);
   if (match) {
-    const [, y, m, d] = match;
+    const [, rawYear, m, d] = match;
+    // In TH the stored value is Buddhist Era; convert back to the internal
+    // Gregorian year. Years >= 2400 can only be BE, so a Gregorian default
+    // (e.g. from an author) is still accepted.
+    const y = (lang === 'th' && Number(rawYear) >= 2400)
+      ? String(Number(rawYear) - BE_OFFSET)
+      : rawYear;
     yearCombo.setValue(y);
     monthCombo.setValue(m);
     populateDayOptions(daysInMonth(Number(y), Number(m) - 1));

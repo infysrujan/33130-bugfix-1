@@ -45,7 +45,8 @@ function days(endDate, startDate) {
 }
 
 function isEmptyFieldValue(value) {
-  return value === null || value === undefined || (typeof value === 'string' && value.trim() === '');
+  return value === null || value === undefined
+    || (typeof value === 'string' && value.trim() === '');
 }
 
 /**
@@ -479,7 +480,8 @@ function fetchBranchesByProvince(province, lang = 'th') {
   }
 
   const branchesByProvinceUrl = getBaseUrl('branches-by-province');
-  const provinceBaseUrl = branchesByProvinceUrl.endsWith('/') ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
+  const provinceBaseUrl = branchesByProvinceUrl.endsWith('/')
+    ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
   const url = `${provinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
@@ -614,7 +616,10 @@ function scheduleApplyBranchDistrictGroupingAuto(data) {
       if (hasNewNodes) applyBranchGroupingToAllMatching(data);
     });
     observer.observe(document.body, {
-      childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'style', 'class'],
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['hidden', 'style', 'class'],
     });
   }
 }
@@ -631,7 +636,8 @@ if (typeof document !== 'undefined') {
   const lastValues = new Map();
 
   setInterval(() => {
-    const lang = (document.documentElement.lang || 'en').toLowerCase().startsWith('th') ? 'th' : 'en';
+    const lang = (document.documentElement.lang || 'en').toLowerCase().startsWith('th')
+      ? 'th' : 'en';
     document.querySelectorAll('select').forEach((sel) => {
       const key = sel.name || sel.id;
       const prev = lastValues.get(key);
@@ -759,7 +765,10 @@ function CcApplicationStatus(idAndDob) {
   } else {
     const parseDate = (dateStr) => {
       if (!dateStr || dateStr.length !== 8) return new Date(0);
-      return new Date(`${dateStr.substring(4, 8)}-${dateStr.substring(2, 4)}-${dateStr.substring(0, 2)}`);
+      const y = dateStr.substring(4, 8);
+      const mo = dateStr.substring(2, 4);
+      const d = dateStr.substring(0, 2);
+      return new Date(`${y}-${mo}-${d}`);
     };
     result = data.reduce((best, current) => (
       parseDate(current.TRANSAC_DECISION_DATE) > parseDate(best.TRANSAC_DECISION_DATE)
@@ -986,7 +995,15 @@ function getPlanErrorStatus() {
  * @returns {{ campaignName: string, campaignDetail: string }}
  */
 function fetchCcCampaignDetails(campaignId, language) {
-  if (!campaignId || !language) return { campaignName: '', campaignDetail: '' };
+  const DEFAULT_CAMPAIGN_NAME = 'CCWEBPIA04';
+  const DEFAULT_CAMPAIGN_DETAIL = 'สมัครผ่านหน้าเว็บไซต์ธนาคารกรุงเทพ บัตรทั่วไป';
+
+  if (!campaignId || !language) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
   const lang = String(language).toLowerCase() === 'en' ? 'en' : 'th';
   const url = `/${lang}/cc-campaign.json`;
@@ -999,7 +1016,11 @@ function fetchCcCampaignDetails(campaignId, language) {
   if (xhr.status < 200 || xhr.status >= 300) {
     // eslint-disable-next-line no-console
     console.error('fetchCcCampaignDetails API error:', xhr.status, xhr.statusText);
-    return { campaignName: '', campaignDetail: '' };
+
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
   }
 
   let data;
@@ -1009,20 +1030,36 @@ function fetchCcCampaignDetails(campaignId, language) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('fetchCcCampaignDetails JSON parse error:', e);
-    return { campaignName: '', campaignDetail: '' };
+
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
   }
 
-  if (!Array.isArray(data)) return { campaignName: '', campaignDetail: '' };
+  if (!Array.isArray(data)) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
-  const campaign = data.find((item) => String(item.campaignId) === String(campaignId));
-  if (!campaign) return { campaignName: '', campaignDetail: '' };
+  const campaign = data.find(
+    (item) => String(item.campaignId) === String(campaignId),
+  );
+
+  if (!campaign) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
   return {
-    campaignName: campaign.campaignName ?? '',
-    campaignDetail: campaign.campaignDetail ?? '',
+    campaignName: campaign.campaignName?.trim() || DEFAULT_CAMPAIGN_NAME,
+    campaignDetail: campaign.campaignDetail?.trim() || DEFAULT_CAMPAIGN_DETAIL,
   };
 }
-
 function getidAndDob(id, dob) {
   const parts = dob.split(/[-/]/);
   // parts: [yyyy, mm, dd]  →  reorder to ddmmyyyy
@@ -1166,19 +1203,22 @@ function getSelectedLabelFromDropdown(dropdown) {
 }
 
 /**
- * Formats date and time inputs into a single datetime string.
+ * Formats date, hour, and minute inputs into a single datetime string.
  * Accepts date in "yyyy-mm-dd" or "dd/mm/yyyy" format, and hour/minute as separate inputs.
- * Returns formatted string like "5 January 2024 14:30:00".
+ * Transforms the date portion to YYYY-MM-DD format.
+ * Returns formatted string like "2024-01-05 14:30:00".
  *
  * @name formatDateTime
  * @param {string} date - Date string in "yyyy-mm-dd" or "dd/mm/yyyy" format
  * @param {string|number} hour - Hour component (0-23)
  * @param {string|number} minute - Minute component (0-59)
- * @returns {string} Formatted datetime string or empty string if inputs are invalid
+ * @returns {string} Formatted datetime string (YYYY-MM-DD HH:mm:ss) or empty string if inputs
+ *   are invalid
  *
  * @example
- * formatDateTime("2024-01-05", "14", "30") // returns "5 January 2024 14:30:00"
- * formatDateTime("05/01/2024", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("2024-01-05", "14", "30") // returns "2024-01-05 14:30:00"
+ * formatDateTime("05/01/2024", "14", "30") // returns "2024-01-05 14:30:00"
+ * formatDateTime("invalid", "14", "30") // returns ""
  * formatDateTime("2024-01-05", "", "30") // returns ""
  */
 function formatDateTime(date, hour, minute) {
@@ -1192,12 +1232,12 @@ function formatDateTime(date, hour, minute) {
   } else {
     [day, month, year] = String(date).split('/');
   }
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
-  ];
 
-  return `${Number(day)} ${months[Number(month) - 1]} ${year} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
+  const mm = String(month).padStart(2, '0');
+  const dd = String(day).padStart(2, '0');
+  const formattedDate = `${year}-${mm}-${dd}`;
+
+  return `${formattedDate} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
 }
 
 /**
@@ -1341,7 +1381,9 @@ function restrictNumberOnlyInputs() {
     if (!isNumberOnly && !isEnglishOnly) {
       return;
     }
-    const insertingTypes = ['insertText', 'insertFromPaste', 'insertFromDrop', 'insertCompositionText'];
+    const insertingTypes = [
+      'insertText', 'insertFromPaste', 'insertFromDrop', 'insertCompositionText',
+    ];
     if (!insertingTypes.includes(event.inputType)) {
       return;
     }
@@ -1540,7 +1582,8 @@ function preserveFieldUnitLabels() {
   };
 
   const scan = () => {
-    document.querySelectorAll('.field-wrapper.preserve-unit-label[data-description]').forEach((wrapper) => {
+    const selector = '.field-wrapper.preserve-unit-label[data-description]';
+    document.querySelectorAll(selector).forEach((wrapper) => {
       initWrapper(wrapper);
 
       // Re-check on every scan: toggle the original description's
