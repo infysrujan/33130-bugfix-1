@@ -5,6 +5,8 @@
 
 /* Bond Allocation — scoped via .field-bond-allocation-review (Bond_Allocation_TH) */
 .bond-allocation-form main .section.form-container.custom-forms {
+  padding: 0 var(--bbl-space-200);
+
   .field-heading, .field-heading2 {
     position: relative;
 
@@ -140,7 +142,7 @@
     font-size: var(--bbl-font-size-h2-mobile);
     font-weight: var(--bbl-form-font-weight-bold);
     text-align: left;
-    padding: 0.9375rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
     min-height: 3rem;
     box-sizing: border-box;
     color: var(--bbl-color-grey-159);
@@ -158,8 +160,9 @@
     font-size: var(--bbl-font-size-h2-mobile);
     font-weight: var(--bbl-form-font-weight-bold);
     text-align: right;
-    padding: 0.625rem 0.5rem;
-    padding-top: 0.9375rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
+
+    /* padding-top: 0.9375rem; */
     min-height: 3rem;
     box-sizing: border-box;
     color: var(--bbl-color-grey-159);
@@ -181,7 +184,7 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-b1-desktop);
     font-weight: var(--bbl-form-font-weight-regular);
-    padding: 0.9375rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
     min-height: 2.75rem;
     box-sizing: border-box;
     border-radius: 0;
@@ -200,12 +203,13 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-b1-desktop);
     font-weight: var(--bbl-font-weight-regular);
-    padding: 0.9375rem 0.75rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
     min-height: 2.75rem;
     box-sizing: border-box;
     border-radius: 0;
     text-align: right;
-    padding-right: 1rem;
+
+    /* padding-right: 1rem; */
   }
 
   & .form form .field-bond-allocation-review .field-totalpurchaseamount > input,
@@ -213,9 +217,9 @@
     grid-column: 2;
   }
 
-  & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
+  /* & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
     padding-right: 1.875rem;
-  }
+  } */
 
   & .form form .field-bond-allocation-review .plain-text-wrapper p,
   & .form form .field-bond-allocation-notfound .plain-text-wrapper p {
