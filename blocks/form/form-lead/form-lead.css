@@ -1003,10 +1003,6 @@ main .section.form-container.lead-forms:has(.hlbp-form) {
     width: auto;
   }
 
-  main .lead-forms.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
-  font-size: 2.2rem;
-}
-
   main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
     font-size: var(--bbl-font-size-b1-desktop);
     line-height: var(--bbl-line-height-b3-desktop);
@@ -1017,6 +1013,10 @@ main .section.form-container.lead-forms:has(.hlbp-form) {
   main .form-container.lead-forms {
     padding-inline: 0;
     margin-inline: auto;
+  }
+
+  main .lead-forms.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    font-size: 2.2rem;
   }
 
   main .section.form-container.lead-forms .form .form-message.success-message {
