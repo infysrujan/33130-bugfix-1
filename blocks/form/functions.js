@@ -1284,41 +1284,82 @@ function getBranchDistrict(selectNameOrId) {
 }
 
 /**
- * Concatenates province, branch, and district into a single descriptive string.
+ * Concatenates province, branch, and Address3 into a single descriptive string.
  *
- * Pass the three values as plain separate strings — province from the province
- * dropdown's $value, branch from the branch dropdown's $value (unchanged),
- * and district from getBranchDistrict() or a hidden district field.
+ * Pass province and branch as plain strings. Address3 (sub-district / tambon)
+ * is read automatically from the branchesByProvinceCache that is populated
+ * when the province dropdown changes. If Address3 is absent from the payload
+ * for the selected branch the segment is silently omitted.
  *
- * Result: "<province> | <branch> | <district>"
+ * Result: "<province> | <branch> | <Address3>"
  * Any segment that is empty or whitespace-only is silently omitted.
  *
  * @name getConcatenatedBranchInfo
- * @param {string} province  - The selected province value
- * @param {string} branch    - The selected branch value (plain, as stored in $enum)
- * @param {string} district  - The district for that branch (from getBranchDistrict())
+ * @param {string} province    - The selected province value
+ * @param {string} branch      - The selected branch value (plain, as stored in $enum)
  * @param {string} [separator] - Separator between segments (default: " | ")
  * @returns {string} Concatenated string, or empty string when all inputs are empty.
  *
  * @example
- * getConcatenatedBranchInfo('Bangkok', '0001', 'Bang Rak')
- * // => "Bangkok | 0001 | Bang Rak"
+ * getConcatenatedBranchInfo('Krabi', 'Ao Luk Branch')
+ * // => "Krabi | Ao Luk Branch | Ao Luek"   (Address3 auto-resolved from cache)
  *
  * @example
- * getConcatenatedBranchInfo('Bangkok', '0001', '')
- * // => "Bangkok | 0001"
- *
- * @example
- * getConcatenatedBranchInfo('Bangkok', '0001', 'Bang Rak', ' - ')
- * // => "Bangkok - 0001 - Bang Rak"
+ * // Branch whose Address3 is absent from the API payload:
+ * getConcatenatedBranchInfo('Bangkok', 'Some Branch')
+ * // => "Bangkok | Some Branch"             (Address3 segment omitted gracefully)
  */
-function getConcatenatedBranchInfo(province, branch, district, separator = ' | ') {
-  const prov = String(province || '').trim();
-  const br = String(branch || '').trim();
-  const dist = String(district || '').trim();
+function getConcatenatedBranchInfo(province, branch, separator = ' | ') {
+  // The AEM Forms Rule Engine may pass field objects instead of plain strings.
+  // Extract .$value when that happens.
+  const resolveVal = (v) => {
+    if (v === null || v === undefined) return '';
+    if (typeof v === 'object') return String(v.$value ?? '');
+    return String(v);
+  };
 
-  // Order: Province | branch | district
-  return [prov, br, dist]
+  const prov = resolveVal(province).trim();
+  const br = resolveVal(branch).trim();
+
+  // Resolve Address3 from the in-memory cache first (Strategy 1),
+  // then fall back to a direct API fetch (Strategy 2) when the cache
+  // has not yet been populated (e.g. Rule Engine Web Worker context).
+  // If Address3 is absent from the branch payload, address3 stays '' and
+  // the segment is omitted from the output — no error is thrown.
+  let address3 = '';
+
+  if (br) {
+    // Strategy 1: search every cached dataset (province-keyed, lang-keyed).
+    branchesByProvinceCache.forEach((cachedData) => {
+      if (address3) return; // stop once found
+      const match = cachedData.find(
+        (item) => item.BranchName === br || String(item.BranchNo) === br,
+      );
+      // Use Address3 only when it is a non-empty string in the payload.
+      if (match && match.Address3 && String(match.Address3).trim() !== '') {
+        address3 = String(match.Address3).trim();
+      }
+    });
+
+    // Strategy 2: cache empty — fetch directly (sync XHR, works in workers too).
+    if (!address3 && prov) {
+      ['en', 'th'].some((lang) => {
+        const data = fetchBranchesByProvince(prov, lang);
+        if (!data.length) return false;
+        const match = data.find(
+          (item) => item.BranchName === br || String(item.BranchNo) === br,
+        );
+        if (match && match.Address3 && String(match.Address3).trim() !== '') {
+          address3 = String(match.Address3).trim();
+          return true;
+        }
+        return false;
+      });
+    }
+  }
+
+  // Build result: omit any segment that is empty/whitespace.
+  return [prov, br, address3]
     .filter((segment) => segment !== '')
     .join(separator);
 }
