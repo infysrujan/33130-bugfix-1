@@ -273,7 +273,7 @@
   text-align: left;
   height: 4.375rem;
   vertical-align: middle;
-  padding: 0 var(--bbl-space-250);
+  padding: 0 0.625rem;
   border-top: none;
   border-right: none;
   border-left: none;
@@ -726,6 +726,10 @@ body.fund-prices-search-in-header .fund-prices-dropdown .fdd-title {
 }
 
 @media (width > 64rem) {
+  .fund-prices-dropdown .stat-table th, .fund-prices-dropdown .stat-table td {
+    padding: 0 var(--bbl-space-250);
+  }
+
   .fund-prices-dropdown .chart-subtitle {
     max-width: none;
   }
