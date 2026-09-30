@@ -831,11 +831,12 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
   xhr.setRequestHeader('Accept', 'application/json');
   // Health uses "hospitalplan" key; Protection uses "prospectSA"
   const isHealth = String(prospectCategory).trim() === 'Health';
+  const sa = typeof prospectSA === 'string' ? Number(prospectSA.replace(/,/g, '')) || prospectSA : prospectSA;
   const body = {
     prospectAge,
     prospectGender,
     prospectCategory,
-    ...(isHealth ? { hospitalplan: String(planTerm) } : { prospectSA }),
+    ...(isHealth ? { hospitalplan: String(planTerm) } : { prospectSA: sa }),
   };
 
   try {
