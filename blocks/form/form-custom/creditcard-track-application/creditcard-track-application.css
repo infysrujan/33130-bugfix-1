@@ -1010,6 +1010,7 @@
   
     & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
       margin: 0;
+      width: calc(100% - 0.75rem);
     }
   
     @media (width > 64rem) {
@@ -1165,6 +1166,7 @@
         & > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
           max-height: 10.9375rem;
           margin: 0;
+          width: calc(100% - 0.938rem);
         }
       }
   
