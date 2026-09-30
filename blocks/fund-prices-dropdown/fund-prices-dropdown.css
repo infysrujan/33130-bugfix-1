@@ -542,11 +542,6 @@ body.fund-prices-search-in-header .fund-prices-dropdown .fdd-title {
     color: var(--bbl-color-grey-90);
   }
 
-  .fund-prices-dropdown .stat-table th.stat-th-nav,
-  .fund-prices-dropdown .stat-table td.stat-nav-val {
-    width: 18%;
-  }
-
   .fund-prices-dropdown .chart-wrap {
     padding: 1.875rem 1.25rem 0;
   }
