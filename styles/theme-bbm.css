@@ -40,6 +40,27 @@ body.bangkok-bankm-card .bbm-glow-card-container .title-card {
   color: var(--bbl-color-white);
 }
 
+/* Bangkok Bank M card barnd banner image */
+body.bangkok-bankm-card .section.full-bleed-bg.menu-banner-container
+> .menu-banner-wrapper + .default-content-wrapper:has(img) {
+  padding-inline: 0;
+  margin: 0;
+}
+
+body.bangkok-bankm-card .section.full-bleed-bg.menu-banner-container
+> .menu-banner-wrapper + .default-content-wrapper img {
+  width: 100%;
+  height: 13vw;
+  object-fit: cover;
+  margin: 0.625rem 0;
+}
+@media (width > 64rem) {
+    body.bangkok-bankm-card .section.full-bleed-bg.menu-banner-container
+    > .menu-banner-wrapper + .default-content-wrapper img {
+       height: unset;
+    }
+}
+
 @media (width > 47.5rem) {
   body.bangkok-bankm-promotion .menu-banner .sub-title-medium.line::after {
     background: var(--bbl-color-white);
