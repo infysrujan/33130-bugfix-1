@@ -1530,6 +1530,119 @@ function validateAge() {
 validateAge();
 
 /**
+* Generic live validation for form fields. Reads independent properties
+* (required, minlength, maxlength, pattern, min/max) from the input and the
+* matching error messages from the field wrapper's dataset, then shows the
+* result in the wrapper's `.field-description`.
+*
+* Listens on document (capture phase) for input/keyup/blur so it also works
+* for fields inserted into the DOM after load, and for paste/fast typing.
+*
+* @name validateFieldInputs
+* @returns {void}
+*/
+function validateFieldInputs() {
+  if (typeof document === 'undefined') return;
+  const DEFAULT_MESSAGES = {
+    required: 'This field is required.',
+    minLength: 'Value is too short.',
+    maxLength: 'Value is too long.',
+    pattern: 'Please enter a valid value.',
+    range: 'Value is out of range.',
+    custom: 'Please enter a valid value.',
+  };
+  // Optional per-field rules keyed by CSS class (on the input or an ancestor).
+  // Empty by default. Example entry:
+  // 'my-class': { validate: (value, input) => true, message: 'Custom message' },
+  const CUSTOM_RULES = {};
+  const getMessage = (wrapper, key) => wrapper.dataset[`${key}ErrorMessage`]
+    || DEFAULT_MESSAGES[key];
+  const getCustomRule = (input) => {
+    const cls = Object.keys(CUSTOM_RULES).find(
+      (name) => input.classList.contains(name) || input.closest(`.${name}`) !== null,
+    );
+    return cls ? CUSTOM_RULES[cls] : null;
+  };
+  /** Returns an error message, or '' when the value is valid. */
+  const getError = (input, wrapper) => {
+    const { value } = input;
+    const isEmpty = value.trim() === '' && !input.validity.badInput;
+    if (isEmpty) {
+      // Only complain about required once the user has interacted with the field
+      return input.required && input.dataset.touched
+        ? getMessage(wrapper, 'required')
+        : '';
+    }
+    // type="number" returns '' for junk input, so check badInput explicitly
+    if (input.validity.badInput) return getMessage(wrapper, 'range');
+    const min = parseInt(input.getAttribute('minlength'), 10);
+    const max = parseInt(input.getAttribute('maxlength'), 10);
+    if (!Number.isNaN(min) && value.length < min) return getMessage(wrapper, 'minLength');
+    if (!Number.isNaN(max) && value.length > max) return getMessage(wrapper, 'maxLength');
+    if (input.type === 'number') {
+      const num = Number(value);
+      const lo = input.min !== '' ? Number(input.min) : null;
+      const hi = input.max !== '' ? Number(input.max) : null;
+      if ((lo !== null && num < lo) || (hi !== null && num > hi)) {
+        return getMessage(wrapper, 'range');
+      }
+    }
+    const pattern = input.getAttribute('pattern');
+    if (pattern) {
+      try {
+        if (!new RegExp(pattern).test(value)) return getMessage(wrapper, 'pattern');
+      } catch (e) {
+        // Invalid regex configured by the author: don't block the user
+      }
+    }
+    const rule = getCustomRule(input);
+    if (rule && !rule.validate(value, input)) {
+      return rule.message || getMessage(wrapper, 'custom');
+    }
+    return '';
+  };
+  const runCheck = (input) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+    const message = getError(input, wrapper);
+    if (message) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = message;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  };
+  const SKIP_TYPES = ['checkbox', 'radio', 'button', 'submit', 'reset', 'file', 'hidden'];
+  const handler = (event) => {
+    const input = event.target;
+    const isField = input instanceof HTMLInputElement
+      || input instanceof HTMLTextAreaElement;
+    if (!isField || SKIP_TYPES.includes(input.type)) return;
+    // Mark as touched on typing or leaving, so "required" doesn't fire
+    // just because the user tabbed into the field (keyup of Tab).
+    if (event.type === 'input' || event.type === 'blur') {
+      input.dataset.touched = 'true';
+    }
+    runCheck(input);
+  };
+  ['input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+}
+validateFieldInputs();
+/**
  * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
  * so they remain visible even when the AEM Forms Rule Engine overwrites the
  * Only applies to fields marked with the `preserve-unit-label` CSS class.
