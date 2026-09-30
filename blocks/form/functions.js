@@ -1530,6 +1530,162 @@ function validateAge() {
 validateAge();
 
 /**
+ * Generic live validation for form fields. Reads independent properties
+ * (required, minlength, maxlength, pattern, min/max) from the control and the
+ * matching error messages from the field wrapper's dataset, then shows the
+ * result in the wrapper's `.field-description`.
+ *
+ * Supports input, textarea, select, checkbox, and custom widgets whose value
+ * lives in a hidden input (e.g. the Thai date-of-birth picker).
+ *
+ * @name validateFieldInputs
+ * @returns {void}
+ */
+function validateFieldInputs() {
+  if (typeof document === 'undefined') return;
+
+  const DEFAULT_MESSAGES = {
+    required: 'This field is required.',
+    minLength: 'Value is too short.',
+    maxLength: 'Value is too long.',
+    pattern: 'Please enter a valid value.',
+    range: 'Value is out of range.',
+    custom: 'Please enter a valid value.',
+  };
+
+  // Optional per-field rules keyed by CSS class (on the control or an ancestor).
+  const CUSTOM_RULES = {};
+
+  const SKIP_TYPES = ['radio', 'button', 'submit', 'reset', 'file'];
+  const CONTROL_SELECTOR = 'input, select, textarea';
+
+  const getMessage = (wrapper, key) => wrapper.dataset[`${key}ErrorMessage`]
+    || DEFAULT_MESSAGES[key];
+
+  const getCustomRule = (control) => {
+    const cls = Object.keys(CUSTOM_RULES).find(
+      (name) => control.classList.contains(name) || control.closest(`.${name}`) !== null,
+    );
+    return cls ? CUSTOM_RULES[cls] : null;
+  };
+
+  /**
+   * Resolves the value-holding control for an event target. If the target is
+   * a real control, use it. Otherwise (e.g. a div role="button" trigger),
+   * fall back to the control inside the same field wrapper, such as the
+   * hidden input used by the date picker.
+   */
+  const resolveControl = (target) => {
+    if (!(target instanceof Element)) return null;
+    let control = target.matches(CONTROL_SELECTOR)
+      ? target
+      : target.closest('.field-wrapper')?.querySelector(CONTROL_SELECTOR);
+    if (!control || SKIP_TYPES.includes(control.type)) control = null;
+    return control;
+  };
+
+  /** Returns an error message, or '' when the value is valid. */
+  const getError = (control, wrapper) => {
+    const touched = !!control.dataset.touched;
+
+    if (control.type === 'checkbox') {
+      return control.required && touched && !control.checked
+        ? getMessage(wrapper, 'required')
+        : '';
+    }
+
+    const { value } = control;
+    const isEmpty = value.trim() === '' && !control.validity.badInput;
+
+    if (isEmpty) {
+      // Only complain about required once the user has interacted with the field
+      return (control.required || wrapper.dataset.required === 'true') && touched
+        ? getMessage(wrapper, 'required')
+        : '';
+    }
+
+    // type="number" returns '' for junk input, so check badInput explicitly
+    if (control.validity.badInput) return getMessage(wrapper, 'range');
+
+    const min = parseInt(control.getAttribute('minlength'), 10);
+    const max = parseInt(control.getAttribute('maxlength'), 10);
+    if (!Number.isNaN(min) && value.length < min) return getMessage(wrapper, 'minLength');
+    if (!Number.isNaN(max) && value.length > max) return getMessage(wrapper, 'maxLength');
+
+    if (control.type === 'number') {
+      const num = Number(value);
+      const lo = control.min !== '' ? Number(control.min) : null;
+      const hi = control.max !== '' ? Number(control.max) : null;
+      if ((lo !== null && num < lo) || (hi !== null && num > hi)) {
+        return getMessage(wrapper, 'range');
+      }
+    }
+
+    const pattern = control.getAttribute('pattern');
+    if (pattern) {
+      try {
+        if (!new RegExp(pattern).test(value)) return getMessage(wrapper, 'pattern');
+      } catch (e) {
+        // Invalid regex configured by the author: don't block the user
+      }
+    }
+
+    const rule = getCustomRule(control);
+    if (rule && !rule.validate(value, control)) {
+      return rule.message || getMessage(wrapper, 'custom');
+    }
+    return '';
+  };
+
+  const runCheck = (control) => {
+    const wrapper = control.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+
+    const message = getError(control, wrapper);
+
+    if (message) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = message;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  };
+
+  const handler = (event) => {
+    const control = resolveControl(event.target);
+    if (!control) return;
+    const wrapper = control.closest('.field-wrapper');
+
+    if (event.type === 'blur') {
+      // Moving between parts of one widget (day -> month -> year) is not
+      // "leaving the field", so don't flag it yet.
+      if (wrapper && wrapper.contains(event.relatedTarget)) return;
+      control.dataset.touched = 'true';
+    } else if (event.type === 'input' || event.type === 'change') {
+      control.dataset.touched = 'true';
+    }
+    runCheck(control);
+  };
+
+  ['input', 'keyup', 'blur', 'change'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+}
+validateFieldInputs();
+/**
  * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
  * so they remain visible even when the AEM Forms Rule Engine overwrites the
  * Only applies to fields marked with the `preserve-unit-label` CSS class.
