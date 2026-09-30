@@ -1,3 +1,7 @@
+.debit-prepaid-container {
+  padding-inline: 0;
+}
+
 .section.central-aligned .debit-prepaid.block {
   max-width: none;
 }
@@ -226,7 +230,7 @@
     flex: 0 0 auto;
     width: max-content;
   }
-  
+
   .card-list.debit-prepaid-cards .dp-track-viewport {
     max-width: calc(3 * 17rem + 2 * 2.5rem);
     overflow: hidden;
