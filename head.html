@@ -5,17 +5,14 @@
 >
 <meta name="viewport" content="width=device-width, initial-scale=1,  minimal-ui, user-scalable=no"/>
 <link rel="preload" href="/fonts/icomoon.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="/styles/styles.css"/>
+<!-- <link rel="stylesheet" href="/styles/styles.css"/> -->
 <script nonce="aem">
   (() => {
-    // const globalStyles = document.createElement('link');
-    // globalStyles.rel = 'stylesheet';
-    // globalStyles.href = '/styles/styles.css';
-    // globalStyles.media = 'print';
-    // globalStyles.onload = () => {
-    //   globalStyles.media = 'all';
-    // };
-    // document.head.append(globalStyles);
+    const globalStyles = document.createElement('link');
+    globalStyles.rel = 'stylesheet';
+    globalStyles.href = '/styles/styles.css';
+    globalStyles.type = 'text/css';
+    document.head.append(globalStyles);
 
     let heroAssetsStarted = false;
     const preloadBlockAssets = (name) => {
