@@ -989,10 +989,10 @@ main .section.form-container.lead-forms:has(.hlbp-form) {
   .form form .plain-text-wrapper.field-text {
     padding-top: 0;
   }
+}
 
-  select optgroup {
-    background: var(--bbl-color-gray-300);
-  }
+select optgroup {
+  background: var(--bbl-color-gray-300);
 }
 
 @media (width > 47.5rem) {

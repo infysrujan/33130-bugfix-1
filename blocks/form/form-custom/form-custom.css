@@ -73,6 +73,10 @@ main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper
   }
 }
 
+body.sip-form main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *)::after{
+  content: none;
+}
+
 main .section.form-container.custom-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):not(:has(label:is([class*=' icon-'], [class^='icon-'])))::before {
   content: '';
 }
