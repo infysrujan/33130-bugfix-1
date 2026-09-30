@@ -536,9 +536,9 @@ function getBranchEnumNames(province, lang = 'th') {
 // Wraps a select's <option> elements into <optgroup> by district, with
 // districts sorted A-Z and branches within each district sorted A-Z.
 // Works for both EN selects (value = BranchName) and TH selects (value = BranchNo).
-// Each option value is encoded as "originalValue|districtName" so that the
-// district travels with the selection and can be read by getSelectedLabelValue /
-// getSelectedLabelName helpers, or the new getConcatenatedBranchInfo function.
+// The district (Address3) is stored in a data-district attribute on each option so it
+// can be read by getBranchDistrict() without changing the option's value attribute —
+// leaving it unchanged keeps AEM Forms enum validation working correctly.
 function applyBranchDistrictGroupingToSelect(selectEl, data) {
   // Build lookups by both BranchName and BranchNo so we handle EN and TH selects.
   const districtByBranchName = {};
@@ -552,16 +552,11 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   // Collator gives correct A-Z ordering for both Thai and English labels.
   const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
-  // Resolve base value: strip any previously encoded district suffix so
-  // re-runs after the Rule Engine resets options stay idempotent.
-  const baseValue = (raw) => (raw.includes('|') ? raw.split('|')[0] : raw);
-
   // (district, then option label) so everything ends up A-Z.
   const entries = Array.from(selectEl.querySelectorAll('option'))
     .map((opt) => {
-      const base = baseValue(opt.value);
-      const district = districtByBranchName[base] || districtByBranchNo[base] || '';
-      return { opt, base, district };
+      const district = districtByBranchName[opt.value] || districtByBranchNo[opt.value] || '';
+      return { opt, district };
     })
     .filter((entry) => entry.district !== '');
 
@@ -574,11 +569,11 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   let currentGroup = null;
   let currentDistrict = null;
 
-  entries.forEach(({ opt, base, district }) => {
-    // Encode district into the option value so it is carried on selection.
-    // Format: "branchValue|districtName"
+  entries.forEach(({ opt, district }) => {
+    // Store district in a data attribute — the value attribute is intentionally
+    // left unchanged so AEM Forms enum validation continues to pass.
     // eslint-disable-next-line no-param-reassign
-    opt.value = `${base}|${district}`;
+    opt.dataset.district = district;
 
     if (district !== currentDistrict) {
       currentGroup = document.createElement('optgroup');
@@ -597,8 +592,7 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
 // optgroups), the check fails and the select is re-grouped automatically.
 
 // Applies branch sorting/grouping to every matching unprocessed <select> in the DOM.
-// After grouping, each option value is encoded as "branchValue|districtName" so the
-// selected value always carries both the branch identifier and its district.
+// Option values are never modified — district is stored in data-district attributes.
 function applyBranchGroupingToAllMatching(data) {
   if (!data.length) return;
   const branchNames = new Set(data.map((item) => String(item.BranchName)));
@@ -606,11 +600,7 @@ function applyBranchGroupingToAllMatching(data) {
   Array.from(document.querySelectorAll('select')).forEach((sel) => {
     // Already grouped — optgroups still in place, nothing to do.
     if (sel.querySelector('optgroup')) return;
-    // Strip any previously encoded district suffix before matching so
-    // re-runs after the Rule Engine resets options work correctly.
-    const optVals = Array.from(sel.options)
-      .map((o) => (o.value.includes('|') ? o.value.split('|')[0] : o.value))
-      .filter((v) => v !== '');
+    const optVals = Array.from(sel.options).map((o) => o.value).filter((v) => v !== '');
     const isMatch = optVals.length > 0
       && (optVals.every((v) => branchNames.has(v)) || optVals.every((v) => branchNos.has(v)));
     if (isMatch) {
@@ -1270,61 +1260,65 @@ function updateTextCount(passportNumber) {
 }
 
 /**
- * Concatenates province, district, and branch into a single descriptive string.
+ * Reads the district (Address3) stored in the data-district attribute of the
+ * currently selected <option> in a branch dropdown.
+ * Call this from the form's change event after applyBranchDistrictGroupingToSelect
+ * has run, to retrieve the district without altering the field's submitted value.
  *
- * The branch dropdown value is expected to be encoded as "branchValue|districtName"
- * — the format written by applyBranchDistrictGroupingToSelect when an option is
- * selected after district grouping has been applied. The function extracts the
- * branch identifier and district from that encoded value and builds:
+ * @name getBranchDistrict
+ * @param {string} selectNameOrId - The name or id attribute of the branch <select> element
+ * @returns {string} The district of the selected branch, or '' if not found
  *
- *   "<province> | <district> | <branch>"
+ * @example
+ * // In a form rule (Set Value on a hidden district field):
+ * getBranchDistrict('branch')   // returns e.g. "Bang Rak"
+ */
+function getBranchDistrict(selectNameOrId) {
+  if (typeof document === 'undefined') return '';
+  const sel = document.querySelector(
+    `select[name="${selectNameOrId}"], select#${selectNameOrId}`,
+  );
+  if (!sel) return '';
+  const selectedOpt = sel.options[sel.selectedIndex];
+  return selectedOpt ? (selectedOpt.dataset.district || '') : '';
+}
+
+/**
+ * Concatenates province, branch, and district into a single descriptive string.
  *
- * If the branch value is not encoded (contains no "|"), the district segment is
- * omitted and the result is:
+ * Pass the three values as plain separate strings — province from the province
+ * dropdown's $value, branch from the branch dropdown's $value (unchanged),
+ * and district from getBranchDistrict() or a hidden district field.
  *
- *   "<province> | <branch>"
- *
+ * Result: "<province> | <branch> | <district>"
  * Any segment that is empty or whitespace-only is silently omitted.
  *
  * @name getConcatenatedBranchInfo
- * @param {string} province    - The selected province value (e.g. from provinceField.$value)
- * @param {string} branchValue - The selected branch dropdown value.
- *                               Plain: "0001"  |  Encoded: "0001|Bang Rak"
+ * @param {string} province  - The selected province value
+ * @param {string} branch    - The selected branch value (plain, as stored in $enum)
+ * @param {string} district  - The district for that branch (from getBranchDistrict())
  * @param {string} [separator] - Separator between segments (default: " | ")
  * @returns {string} Concatenated string, or empty string when all inputs are empty.
  *
  * @example
- * // Encoded value (after district grouping)
- * getConcatenatedBranchInfo('Bangkok', '0001|Bang Rak')
+ * getConcatenatedBranchInfo('Bangkok', '0001', 'Bang Rak')
  * // => "Bangkok | 0001 | Bang Rak"
  *
  * @example
- * // Plain value (no district encoding)
- * getConcatenatedBranchInfo('Bangkok', '0001')
+ * getConcatenatedBranchInfo('Bangkok', '0001', '')
  * // => "Bangkok | 0001"
  *
  * @example
- * // Custom separator
- * getConcatenatedBranchInfo('Bangkok', '0001|Bang Rak', ' - ')
+ * getConcatenatedBranchInfo('Bangkok', '0001', 'Bang Rak', ' - ')
  * // => "Bangkok - 0001 - Bang Rak"
  */
-function getConcatenatedBranchInfo(province, branchValue, separator = ' | ') {
+function getConcatenatedBranchInfo(province, branch, district, separator = ' | ') {
   const prov = String(province || '').trim();
-  const raw = String(branchValue || '').trim();
+  const br = String(branch || '').trim();
+  const dist = String(district || '').trim();
 
-  if (!prov && !raw) return '';
-
-  let branch = raw;
-  let district = '';
-
-  if (raw.includes('|')) {
-    const idx = raw.indexOf('|');
-    branch = raw.substring(0, idx).trim();
-    district = raw.substring(idx + 1).trim();
-  }
-
-  // Order: Province | branchValue | districtName
-  return [prov, branch, district]
+  // Order: Province | branch | district
+  return [prov, br, dist]
     .filter((segment) => segment !== '')
     .join(separator);
 }
@@ -1840,6 +1834,7 @@ export {
   updateTextCount,
   getSelectedLabelName,
   getSelectedLabelValue,
+  getBranchDistrict,
   getConcatenatedBranchInfo,
   validateMaxCheckbox,
   replaceother,
