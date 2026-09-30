@@ -822,6 +822,15 @@ export default async function decorate(block) {
     setTimeout(cleanupPrint, 1000);
   });
 
+  // Ctrl/Cmd+P uses the same print layout as the print button (only while this view is visible)
+  block.ownerDocument.addEventListener('keydown', (e) => {
+    if (e.defaultPrevented || !(e.ctrlKey || e.metaKey) || e.altKey) return;
+    if (e.code !== 'KeyP' && e.key?.toLowerCase() !== 'p') return;
+    if (!printBtn?.getClientRects().length) return;
+    e.preventDefault();
+    printBtn.click();
+  });
+
   /* Show / hide events dispatched by fund-prices.js */
   block.addEventListener('fund-prices-dropdown:show', (e) => {
     const { fund, mdate } = e.detail;

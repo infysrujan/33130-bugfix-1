@@ -674,6 +674,15 @@ export default async function decorate(block) {
     printContent(section ?? root, pageTitle, searchLabel);
   });
 
+  // Ctrl/Cmd+P uses the same print layout as the print button (only while this view is visible)
+  doc.addEventListener('keydown', (e) => {
+    if (e.defaultPrevented || !(e.ctrlKey || e.metaKey) || e.altKey) return;
+    if (e.code !== 'KeyP' && e.key?.toLowerCase() !== 'p') return;
+    if (!printLabel.getClientRects().length) return;
+    e.preventDefault();
+    printLabel.click();
+  });
+
   /* ── Dynamically build and load fund-prices-dropdown block ── */
   const fddRawBlock = buildBlock('fund-prices-dropdown', []);
   root.appendChild(fddRawBlock);
