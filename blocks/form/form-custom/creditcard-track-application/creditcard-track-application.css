@@ -1148,6 +1148,7 @@
           width: 100%;
           max-width: none;
           clear: none;
+          margin-bottom: 2.1875rem;
         }
   
         & > .field-wrapper.cc-panel-item-form-cover {
