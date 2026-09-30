@@ -300,9 +300,14 @@
   text-align: right;
 }
 
-.fund-prices-dropdown .stat-table th.stat-th-nav,
-.fund-prices-dropdown .stat-table td.stat-nav-val {
-  width: 23%;
+.fund-prices-dropdown .stat-table th:where(:first-child),
+.fund-prices-dropdown .stat-table td:where(:first-child) {
+  width: 65%;
+}
+
+.fund-prices-dropdown .stat-table th:where(:nth-child(2)),
+.fund-prices-dropdown .stat-table td:where(:nth-child(2)) {
+  width: 35%;
 }
 
 .fund-prices-dropdown .stat-table td.stat-nav-val {
