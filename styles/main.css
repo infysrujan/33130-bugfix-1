@@ -29,7 +29,6 @@
 }
 
 body {
-    display: none;
     margin: 0;
     background-color: var(--bbl-bg-primary);
     color: var(--bbl-color-grey-90);
