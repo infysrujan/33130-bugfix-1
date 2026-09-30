@@ -536,6 +536,9 @@ function getBranchEnumNames(province, lang = 'th') {
 // Wraps a select's <option> elements into <optgroup> by district, with
 // districts sorted A-Z and branches within each district sorted A-Z.
 // Works for both EN selects (value = BranchName) and TH selects (value = BranchNo).
+// The district (Address3) is stored in a data-district attribute on each option so it
+// can be read by getBranchDistrict() without changing the option's value attribute —
+// leaving it unchanged keeps AEM Forms enum validation working correctly.
 function applyBranchDistrictGroupingToSelect(selectEl, data) {
   // Build lookups by both BranchName and BranchNo so we handle EN and TH selects.
   const districtByBranchName = {};
@@ -551,10 +554,10 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
 
   // (district, then option label) so everything ends up A-Z.
   const entries = Array.from(selectEl.querySelectorAll('option'))
-    .map((opt) => ({
-      opt,
-      district: districtByBranchName[opt.value] || districtByBranchNo[opt.value] || '',
-    }))
+    .map((opt) => {
+      const district = districtByBranchName[opt.value] || districtByBranchNo[opt.value] || '';
+      return { opt, district };
+    })
     .filter((entry) => entry.district !== '');
 
   entries.sort((a, b) => {
@@ -567,6 +570,11 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   let currentDistrict = null;
 
   entries.forEach(({ opt, district }) => {
+    // Store district in a data attribute — the value attribute is intentionally
+    // left unchanged so AEM Forms enum validation continues to pass.
+    // eslint-disable-next-line no-param-reassign
+    opt.dataset.district = district;
+
     if (district !== currentDistrict) {
       currentGroup = document.createElement('optgroup');
       currentGroup.label = district;
@@ -584,6 +592,7 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
 // optgroups), the check fails and the select is re-grouped automatically.
 
 // Applies branch sorting/grouping to every matching unprocessed <select> in the DOM.
+// Option values are never modified — district is stored in data-district attributes.
 function applyBranchGroupingToAllMatching(data) {
   if (!data.length) return;
   const branchNames = new Set(data.map((item) => String(item.BranchName)));
@@ -1251,6 +1260,111 @@ function updateTextCount(passportNumber) {
 }
 
 /**
+ * Reads the district (Address3) stored in the data-district attribute of the
+ * currently selected <option> in a branch dropdown.
+ * Call this from the form's change event after applyBranchDistrictGroupingToSelect
+ * has run, to retrieve the district without altering the field's submitted value.
+ *
+ * @name getBranchDistrict
+ * @param {string} selectNameOrId - The name or id attribute of the branch <select> element
+ * @returns {string} The district of the selected branch, or '' if not found
+ *
+ * @example
+ * // In a form rule (Set Value on a hidden district field):
+ * getBranchDistrict('branch')   // returns e.g. "Bang Rak"
+ */
+function getBranchDistrict(selectNameOrId) {
+  if (typeof document === 'undefined') return '';
+  const sel = document.querySelector(
+    `select[name="${selectNameOrId}"], select#${selectNameOrId}`,
+  );
+  if (!sel) return '';
+  const selectedOpt = sel.options[sel.selectedIndex];
+  return selectedOpt ? (selectedOpt.dataset.district || '') : '';
+}
+
+/**
+ * Concatenates province, branch, and Address3 into a single descriptive string.
+ *
+ * Pass province and branch as plain strings. Address3 (sub-district / tambon)
+ * is read automatically from the branchesByProvinceCache that is populated
+ * when the province dropdown changes. If Address3 is absent from the payload
+ * for the selected branch the segment is silently omitted.
+ *
+ * Result: "<province> | <branch> | <Address3>"
+ * Any segment that is empty or whitespace-only is silently omitted.
+ *
+ * @name getConcatenatedBranchInfo
+ * @param {string} province    - The selected province value
+ * @param {string} branch      - The selected branch value (plain, as stored in $enum)
+ * @param {string} [separator] - Separator between segments (default: " | ")
+ * @returns {string} Concatenated string, or empty string when all inputs are empty.
+ *
+ * @example
+ * getConcatenatedBranchInfo('Krabi', 'Ao Luk Branch')
+ * // => "Krabi | Ao Luk Branch | Ao Luek"   (Address3 auto-resolved from cache)
+ *
+ * @example
+ * // Branch whose Address3 is absent from the API payload:
+ * getConcatenatedBranchInfo('Bangkok', 'Some Branch')
+ * // => "Bangkok | Some Branch"             (Address3 segment omitted gracefully)
+ */
+function getConcatenatedBranchInfo(province, branch, separator = ' | ') {
+  // The AEM Forms Rule Engine may pass field objects instead of plain strings.
+  // Extract .$value when that happens.
+  const resolveVal = (v) => {
+    if (v === null || v === undefined) return '';
+    if (typeof v === 'object') return String(v.$value ?? '');
+    return String(v);
+  };
+
+  const prov = resolveVal(province).trim();
+  const br = resolveVal(branch).trim();
+
+  // Resolve Address3 from the in-memory cache first (Strategy 1),
+  // then fall back to a direct API fetch (Strategy 2) when the cache
+  // has not yet been populated (e.g. Rule Engine Web Worker context).
+  // If Address3 is absent from the branch payload, address3 stays '' and
+  // the segment is omitted from the output — no error is thrown.
+  let address3 = '';
+
+  if (br) {
+    // Strategy 1: search every cached dataset (province-keyed, lang-keyed).
+    branchesByProvinceCache.forEach((cachedData) => {
+      if (address3) return; // stop once found
+      const match = cachedData.find(
+        (item) => item.BranchName === br || String(item.BranchNo) === br,
+      );
+      // Use Address3 only when it is a non-empty string in the payload.
+      if (match && match.Address3 && String(match.Address3).trim() !== '') {
+        address3 = String(match.Address3).trim();
+      }
+    });
+
+    // Strategy 2: cache empty — fetch directly (sync XHR, works in workers too).
+    if (!address3 && prov) {
+      ['en', 'th'].some((lang) => {
+        const data = fetchBranchesByProvince(prov, lang);
+        if (!data.length) return false;
+        const match = data.find(
+          (item) => item.BranchName === br || String(item.BranchNo) === br,
+        );
+        if (match && match.Address3 && String(match.Address3).trim() !== '') {
+          address3 = String(match.Address3).trim();
+          return true;
+        }
+        return false;
+      });
+    }
+  }
+
+  // Build result: omit any segment that is empty/whitespace.
+  return [prov, br, address3]
+    .filter((segment) => segment !== '')
+    .join(separator);
+}
+
+/**
  * Returns the label name of the selected option in a dropdown.
  * @param {string} dropdown - The dropdown value string
  * @returns {string} The label name of the selected option
@@ -1761,6 +1875,8 @@ export {
   updateTextCount,
   getSelectedLabelName,
   getSelectedLabelValue,
+  getBranchDistrict,
+  getConcatenatedBranchInfo,
   validateMaxCheckbox,
   replaceother,
   formatNumberWithCommas,
