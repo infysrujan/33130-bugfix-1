@@ -831,7 +831,13 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
   xhr.setRequestHeader('Accept', 'application/json');
   // Health uses "hospitalplan" key; Protection uses "prospectSA"
   const isHealth = String(prospectCategory).trim() === 'Health';
-  const sa = typeof prospectSA === 'string' ? Number(prospectSA.replace(/,/g, '')) || prospectSA : prospectSA;
+  let sa = typeof prospectSA === 'string' ? Number(prospectSA.replace(/,/g, '')) || prospectSA : prospectSA;
+  if ((!sa || sa === 0) && typeof document !== 'undefined') {
+    const saInput = document.querySelector('input[name="prospectSA"]');
+    if (saInput?.value) {
+      sa = Number(saInput.value.replace(/,/g, '')) || sa;
+    }
+  }
   const body = {
     prospectAge,
     prospectGender,
@@ -1167,6 +1173,14 @@ function formatAndValidateSumInsured() {
     if (input.value !== formatted) {
       setReactCompatibleValue(input, formatted);
       input.setSelectionRange(formatted.length, formatted.length);
+    }
+
+    const form = input.closest('form');
+    if (form) {
+      const sa1Input = form.querySelector('input[name="prospectSA1"]');
+      if (sa1Input && digits && sa1Input.value !== digits) {
+        setReactCompatibleValue(sa1Input, digits);
+      }
     }
 
     validate(input, digits);
