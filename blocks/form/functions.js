@@ -45,7 +45,8 @@ function days(endDate, startDate) {
 }
 
 function isEmptyFieldValue(value) {
-  return value === null || value === undefined || (typeof value === 'string' && value.trim() === '');
+  return value === null || value === undefined
+    || (typeof value === 'string' && value.trim() === '');
 }
 
 /**
@@ -479,7 +480,8 @@ function fetchBranchesByProvince(province, lang = 'th') {
   }
 
   const branchesByProvinceUrl = getBaseUrl('branches-by-province');
-  const provinceBaseUrl = branchesByProvinceUrl.endsWith('/') ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
+  const provinceBaseUrl = branchesByProvinceUrl.endsWith('/')
+    ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
   const url = `${provinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
@@ -534,6 +536,9 @@ function getBranchEnumNames(province, lang = 'th') {
 // Wraps a select's <option> elements into <optgroup> by district, with
 // districts sorted A-Z and branches within each district sorted A-Z.
 // Works for both EN selects (value = BranchName) and TH selects (value = BranchNo).
+// Each option value is encoded as "originalValue|districtName" so that the
+// district travels with the selection and can be read by getSelectedLabelValue /
+// getSelectedLabelName helpers, or the new getConcatenatedBranchInfo function.
 function applyBranchDistrictGroupingToSelect(selectEl, data) {
   // Build lookups by both BranchName and BranchNo so we handle EN and TH selects.
   const districtByBranchName = {};
@@ -547,12 +552,17 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   // Collator gives correct A-Z ordering for both Thai and English labels.
   const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
+  // Resolve base value: strip any previously encoded district suffix so
+  // re-runs after the Rule Engine resets options stay idempotent.
+  const baseValue = (raw) => (raw.includes('|') ? raw.split('|')[0] : raw);
+
   // (district, then option label) so everything ends up A-Z.
   const entries = Array.from(selectEl.querySelectorAll('option'))
-    .map((opt) => ({
-      opt,
-      district: districtByBranchName[opt.value] || districtByBranchNo[opt.value] || '',
-    }))
+    .map((opt) => {
+      const base = baseValue(opt.value);
+      const district = districtByBranchName[base] || districtByBranchNo[base] || '';
+      return { opt, base, district };
+    })
     .filter((entry) => entry.district !== '');
 
   entries.sort((a, b) => {
@@ -564,7 +574,12 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   let currentGroup = null;
   let currentDistrict = null;
 
-  entries.forEach(({ opt, district }) => {
+  entries.forEach(({ opt, base, district }) => {
+    // Encode district into the option value so it is carried on selection.
+    // Format: "branchValue|districtName"
+    // eslint-disable-next-line no-param-reassign
+    opt.value = `${base}|${district}`;
+
     if (district !== currentDistrict) {
       currentGroup = document.createElement('optgroup');
       currentGroup.label = district;
@@ -582,6 +597,8 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
 // optgroups), the check fails and the select is re-grouped automatically.
 
 // Applies branch sorting/grouping to every matching unprocessed <select> in the DOM.
+// After grouping, each option value is encoded as "branchValue|districtName" so the
+// selected value always carries both the branch identifier and its district.
 function applyBranchGroupingToAllMatching(data) {
   if (!data.length) return;
   const branchNames = new Set(data.map((item) => String(item.BranchName)));
@@ -589,7 +606,11 @@ function applyBranchGroupingToAllMatching(data) {
   Array.from(document.querySelectorAll('select')).forEach((sel) => {
     // Already grouped — optgroups still in place, nothing to do.
     if (sel.querySelector('optgroup')) return;
-    const optVals = Array.from(sel.options).map((o) => o.value).filter((v) => v !== '');
+    // Strip any previously encoded district suffix before matching so
+    // re-runs after the Rule Engine resets options work correctly.
+    const optVals = Array.from(sel.options)
+      .map((o) => (o.value.includes('|') ? o.value.split('|')[0] : o.value))
+      .filter((v) => v !== '');
     const isMatch = optVals.length > 0
       && (optVals.every((v) => branchNames.has(v)) || optVals.every((v) => branchNos.has(v)));
     if (isMatch) {
@@ -614,7 +635,10 @@ function scheduleApplyBranchDistrictGroupingAuto(data) {
       if (hasNewNodes) applyBranchGroupingToAllMatching(data);
     });
     observer.observe(document.body, {
-      childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'style', 'class'],
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['hidden', 'style', 'class'],
     });
   }
 }
@@ -631,7 +655,8 @@ if (typeof document !== 'undefined') {
   const lastValues = new Map();
 
   setInterval(() => {
-    const lang = (document.documentElement.lang || 'en').toLowerCase().startsWith('th') ? 'th' : 'en';
+    const lang = (document.documentElement.lang || 'en').toLowerCase().startsWith('th')
+      ? 'th' : 'en';
     document.querySelectorAll('select').forEach((sel) => {
       const key = sel.name || sel.id;
       const prev = lastValues.get(key);
@@ -759,7 +784,10 @@ function CcApplicationStatus(idAndDob) {
   } else {
     const parseDate = (dateStr) => {
       if (!dateStr || dateStr.length !== 8) return new Date(0);
-      return new Date(`${dateStr.substring(4, 8)}-${dateStr.substring(2, 4)}-${dateStr.substring(0, 2)}`);
+      const y = dateStr.substring(4, 8);
+      const mo = dateStr.substring(2, 4);
+      const d = dateStr.substring(0, 2);
+      return new Date(`${y}-${mo}-${d}`);
     };
     result = data.reduce((best, current) => (
       parseDate(current.TRANSAC_DECISION_DATE) > parseDate(best.TRANSAC_DECISION_DATE)
@@ -986,7 +1014,15 @@ function getPlanErrorStatus() {
  * @returns {{ campaignName: string, campaignDetail: string }}
  */
 function fetchCcCampaignDetails(campaignId, language) {
-  if (!campaignId || !language) return { campaignName: '', campaignDetail: '' };
+  const DEFAULT_CAMPAIGN_NAME = 'CCWEBPIA04';
+  const DEFAULT_CAMPAIGN_DETAIL = 'สมัครผ่านหน้าเว็บไซต์ธนาคารกรุงเทพ บัตรทั่วไป';
+
+  if (!campaignId || !language) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
   const lang = String(language).toLowerCase() === 'en' ? 'en' : 'th';
   const url = `/${lang}/cc-campaign.json`;
@@ -999,7 +1035,11 @@ function fetchCcCampaignDetails(campaignId, language) {
   if (xhr.status < 200 || xhr.status >= 300) {
     // eslint-disable-next-line no-console
     console.error('fetchCcCampaignDetails API error:', xhr.status, xhr.statusText);
-    return { campaignName: '', campaignDetail: '' };
+
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
   }
 
   let data;
@@ -1009,20 +1049,36 @@ function fetchCcCampaignDetails(campaignId, language) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('fetchCcCampaignDetails JSON parse error:', e);
-    return { campaignName: '', campaignDetail: '' };
+
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
   }
 
-  if (!Array.isArray(data)) return { campaignName: '', campaignDetail: '' };
+  if (!Array.isArray(data)) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
-  const campaign = data.find((item) => String(item.campaignId) === String(campaignId));
-  if (!campaign) return { campaignName: '', campaignDetail: '' };
+  const campaign = data.find(
+    (item) => String(item.campaignId) === String(campaignId),
+  );
+
+  if (!campaign) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
   return {
-    campaignName: campaign.campaignName ?? '',
-    campaignDetail: campaign.campaignDetail ?? '',
+    campaignName: campaign.campaignName?.trim() || DEFAULT_CAMPAIGN_NAME,
+    campaignDetail: campaign.campaignDetail?.trim() || DEFAULT_CAMPAIGN_DETAIL,
   };
 }
-
 function getidAndDob(id, dob) {
   const parts = dob.split(/[-/]/);
   // parts: [yyyy, mm, dd]  →  reorder to ddmmyyyy
@@ -1166,19 +1222,22 @@ function getSelectedLabelFromDropdown(dropdown) {
 }
 
 /**
- * Formats date and time inputs into a single datetime string.
+ * Formats date, hour, and minute inputs into a single datetime string.
  * Accepts date in "yyyy-mm-dd" or "dd/mm/yyyy" format, and hour/minute as separate inputs.
- * Returns formatted string like "5 January 2024 14:30:00".
+ * Transforms the date portion to YYYY-MM-DD format.
+ * Returns formatted string like "2024-01-05 14:30:00".
  *
  * @name formatDateTime
  * @param {string} date - Date string in "yyyy-mm-dd" or "dd/mm/yyyy" format
  * @param {string|number} hour - Hour component (0-23)
  * @param {string|number} minute - Minute component (0-59)
- * @returns {string} Formatted datetime string or empty string if inputs are invalid
+ * @returns {string} Formatted datetime string (YYYY-MM-DD HH:mm:ss) or empty string if inputs
+ *   are invalid
  *
  * @example
- * formatDateTime("2024-01-05", "14", "30") // returns "5 January 2024 14:30:00"
- * formatDateTime("05/01/2024", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("2024-01-05", "14", "30") // returns "2024-01-05 14:30:00"
+ * formatDateTime("05/01/2024", "14", "30") // returns "2024-01-05 14:30:00"
+ * formatDateTime("invalid", "14", "30") // returns ""
  * formatDateTime("2024-01-05", "", "30") // returns ""
  */
 function formatDateTime(date, hour, minute) {
@@ -1192,12 +1251,12 @@ function formatDateTime(date, hour, minute) {
   } else {
     [day, month, year] = String(date).split('/');
   }
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
-  ];
 
-  return `${Number(day)} ${months[Number(month) - 1]} ${year} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
+  const mm = String(month).padStart(2, '0');
+  const dd = String(day).padStart(2, '0');
+  const formattedDate = `${year}-${mm}-${dd}`;
+
+  return `${formattedDate} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
 }
 
 /**
@@ -1208,6 +1267,66 @@ function formatDateTime(date, hour, minute) {
 function updateTextCount(passportNumber) {
   const count = String(passportNumber?.$value || '').length;
   return `${count}/4`;
+}
+
+/**
+ * Concatenates province, district, and branch into a single descriptive string.
+ *
+ * The branch dropdown value is expected to be encoded as "branchValue|districtName"
+ * — the format written by applyBranchDistrictGroupingToSelect when an option is
+ * selected after district grouping has been applied. The function extracts the
+ * branch identifier and district from that encoded value and builds:
+ *
+ *   "<province> | <district> | <branch>"
+ *
+ * If the branch value is not encoded (contains no "|"), the district segment is
+ * omitted and the result is:
+ *
+ *   "<province> | <branch>"
+ *
+ * Any segment that is empty or whitespace-only is silently omitted.
+ *
+ * @name getConcatenatedBranchInfo
+ * @param {string} province    - The selected province value (e.g. from provinceField.$value)
+ * @param {string} branchValue - The selected branch dropdown value.
+ *                               Plain: "0001"  |  Encoded: "0001|Bang Rak"
+ * @param {string} [separator] - Separator between segments (default: " | ")
+ * @returns {string} Concatenated string, or empty string when all inputs are empty.
+ *
+ * @example
+ * // Encoded value (after district grouping)
+ * getConcatenatedBranchInfo('Bangkok', '0001|Bang Rak')
+ * // => "Bangkok | 0001 | Bang Rak"
+ *
+ * @example
+ * // Plain value (no district encoding)
+ * getConcatenatedBranchInfo('Bangkok', '0001')
+ * // => "Bangkok | 0001"
+ *
+ * @example
+ * // Custom separator
+ * getConcatenatedBranchInfo('Bangkok', '0001|Bang Rak', ' - ')
+ * // => "Bangkok - 0001 - Bang Rak"
+ */
+function getConcatenatedBranchInfo(province, branchValue, separator = ' | ') {
+  const prov = String(province || '').trim();
+  const raw = String(branchValue || '').trim();
+
+  if (!prov && !raw) return '';
+
+  let branch = raw;
+  let district = '';
+
+  if (raw.includes('|')) {
+    const idx = raw.indexOf('|');
+    branch = raw.substring(0, idx).trim();
+    district = raw.substring(idx + 1).trim();
+  }
+
+  // Order: Province | branchValue | districtName
+  return [prov, branch, district]
+    .filter((segment) => segment !== '')
+    .join(separator);
 }
 
 /**
@@ -1341,7 +1460,9 @@ function restrictNumberOnlyInputs() {
     if (!isNumberOnly && !isEnglishOnly) {
       return;
     }
-    const insertingTypes = ['insertText', 'insertFromPaste', 'insertFromDrop', 'insertCompositionText'];
+    const insertingTypes = [
+      'insertText', 'insertFromPaste', 'insertFromDrop', 'insertCompositionText',
+    ];
     if (!insertingTypes.includes(event.inputType)) {
       return;
     }
@@ -1488,6 +1609,162 @@ function validateAge() {
 validateAge();
 
 /**
+ * Generic live validation for form fields. Reads independent properties
+ * (required, minlength, maxlength, pattern, min/max) from the control and the
+ * matching error messages from the field wrapper's dataset, then shows the
+ * result in the wrapper's `.field-description`.
+ *
+ * Supports input, textarea, select, checkbox, and custom widgets whose value
+ * lives in a hidden input (e.g. the Thai date-of-birth picker).
+ *
+ * @name validateFieldInputs
+ * @returns {void}
+ */
+function validateFieldInputs() {
+  if (typeof document === 'undefined') return;
+
+  const DEFAULT_MESSAGES = {
+    required: 'This field is required.',
+    minLength: 'Value is too short.',
+    maxLength: 'Value is too long.',
+    pattern: 'Please enter a valid value.',
+    range: 'Value is out of range.',
+    custom: 'Please enter a valid value.',
+  };
+
+  // Optional per-field rules keyed by CSS class (on the control or an ancestor).
+  const CUSTOM_RULES = {};
+
+  const SKIP_TYPES = ['radio', 'button', 'submit', 'reset', 'file'];
+  const CONTROL_SELECTOR = 'input, select, textarea';
+
+  const getMessage = (wrapper, key) => wrapper.dataset[`${key}ErrorMessage`]
+    || DEFAULT_MESSAGES[key];
+
+  const getCustomRule = (control) => {
+    const cls = Object.keys(CUSTOM_RULES).find(
+      (name) => control.classList.contains(name) || control.closest(`.${name}`) !== null,
+    );
+    return cls ? CUSTOM_RULES[cls] : null;
+  };
+
+  /**
+   * Resolves the value-holding control for an event target. If the target is
+   * a real control, use it. Otherwise (e.g. a div role="button" trigger),
+   * fall back to the control inside the same field wrapper, such as the
+   * hidden input used by the date picker.
+   */
+  const resolveControl = (target) => {
+    if (!(target instanceof Element)) return null;
+    let control = target.matches(CONTROL_SELECTOR)
+      ? target
+      : target.closest('.field-wrapper')?.querySelector(CONTROL_SELECTOR);
+    if (!control || SKIP_TYPES.includes(control.type)) control = null;
+    return control;
+  };
+
+  /** Returns an error message, or '' when the value is valid. */
+  const getError = (control, wrapper) => {
+    const touched = !!control.dataset.touched;
+
+    if (control.type === 'checkbox') {
+      return control.required && touched && !control.checked
+        ? getMessage(wrapper, 'required')
+        : '';
+    }
+
+    const { value } = control;
+    const isEmpty = value.trim() === '' && !control.validity.badInput;
+
+    if (isEmpty) {
+      // Only complain about required once the user has interacted with the field
+      return (control.required || wrapper.dataset.required === 'true') && touched
+        ? getMessage(wrapper, 'required')
+        : '';
+    }
+
+    // type="number" returns '' for junk input, so check badInput explicitly
+    if (control.validity.badInput) return getMessage(wrapper, 'range');
+
+    const min = parseInt(control.getAttribute('minlength'), 10);
+    const max = parseInt(control.getAttribute('maxlength'), 10);
+    if (!Number.isNaN(min) && value.length < min) return getMessage(wrapper, 'minLength');
+    if (!Number.isNaN(max) && value.length > max) return getMessage(wrapper, 'maxLength');
+
+    if (control.type === 'number') {
+      const num = Number(value);
+      const lo = control.min !== '' ? Number(control.min) : null;
+      const hi = control.max !== '' ? Number(control.max) : null;
+      if ((lo !== null && num < lo) || (hi !== null && num > hi)) {
+        return getMessage(wrapper, 'range');
+      }
+    }
+
+    const pattern = control.getAttribute('pattern');
+    if (pattern) {
+      try {
+        if (!new RegExp(pattern).test(value)) return getMessage(wrapper, 'pattern');
+      } catch (e) {
+        // Invalid regex configured by the author: don't block the user
+      }
+    }
+
+    const rule = getCustomRule(control);
+    if (rule && !rule.validate(value, control)) {
+      return rule.message || getMessage(wrapper, 'custom');
+    }
+    return '';
+  };
+
+  const runCheck = (control) => {
+    const wrapper = control.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+
+    const message = getError(control, wrapper);
+
+    if (message) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = message;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  };
+
+  const handler = (event) => {
+    const control = resolveControl(event.target);
+    if (!control) return;
+    const wrapper = control.closest('.field-wrapper');
+
+    if (event.type === 'blur') {
+      // Moving between parts of one widget (day -> month -> year) is not
+      // "leaving the field", so don't flag it yet.
+      if (wrapper && wrapper.contains(event.relatedTarget)) return;
+      control.dataset.touched = 'true';
+    } else if (event.type === 'input' || event.type === 'change') {
+      control.dataset.touched = 'true';
+    }
+    runCheck(control);
+  };
+
+  ['input', 'keyup', 'blur', 'change'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+}
+validateFieldInputs();
+/**
  * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
  * so they remain visible even when the AEM Forms Rule Engine overwrites the
  * Only applies to fields marked with the `preserve-unit-label` CSS class.
@@ -1540,7 +1817,8 @@ function preserveFieldUnitLabels() {
   };
 
   const scan = () => {
-    document.querySelectorAll('.field-wrapper.preserve-unit-label[data-description]').forEach((wrapper) => {
+    const selector = '.field-wrapper.preserve-unit-label[data-description]';
+    document.querySelectorAll(selector).forEach((wrapper) => {
       initWrapper(wrapper);
 
       // Re-check on every scan: toggle the original description's
@@ -1718,6 +1996,7 @@ export {
   updateTextCount,
   getSelectedLabelName,
   getSelectedLabelValue,
+  getConcatenatedBranchInfo,
   validateMaxCheckbox,
   replaceother,
   formatNumberWithCommas,

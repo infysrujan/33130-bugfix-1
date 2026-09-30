@@ -1,5 +1,10 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { getSiteSearchResults, normalizeSearchTerm } from '../../scripts/utils/searchApi.js';
+import {
+  getSiteSearchResults,
+  normalizeSearchTerm,
+  decodeHtmlEntities,
+  escapeHtml,
+} from '../../scripts/utils/searchApi.js';
 
 const MIN_SEARCH_LENGTH = 3;
 
@@ -46,12 +51,6 @@ function clearLastResults() {
   sessionStorage.removeItem(getLastResultsKey());
 }
 
-function escapeHtml(value = '') {
-  const div = document.createElement('div');
-  div.textContent = value;
-  return div.innerHTML;
-}
-
 function isThaiText(term) {
   return /[\u0E00-\u0E7F]/.test(term);
 }
@@ -76,15 +75,21 @@ function getHighlightTokens(term) {
 }
 
 function highlightTerm(text = '', term = '') {
-  if (!term || !text) return escapeHtml(text);
-  const escaped = escapeHtml(text);
+  const cleanText = decodeHtmlEntities(text);
+  if (!term || !cleanText) return escapeHtml(cleanText);
 
   const tokens = getHighlightTokens(term);
+  if (!tokens.length) return escapeHtml(cleanText);
 
-  return tokens.reduce((result, token) => {
-    const escapedToken = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return result.replace(new RegExp(`(${escapedToken})`, 'gi'), '<b>$1</b>');
-  }, escaped);
+  const pattern = [...tokens]
+    .sort((a, b) => b.length - a.length)
+    .map((token) => token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+
+  return cleanText
+    .split(new RegExp(`(${pattern})`, 'gi'))
+    .map((part, index) => (index % 2 ? `<b>${escapeHtml(part)}</b>` : escapeHtml(part)))
+    .join('');
 }
 
 function getBlockConfig(rows) {
@@ -117,8 +122,8 @@ function getSearchConfig(rows, placeholders = {}) {
 
 function buildSearchPanel(item, term = '') {
   const image = item.OGImage || '';
-  const title = item.Title || item.OGTitle || '';
-  const description = item.Description || item.OGDescription || '';
+  const title = decodeHtmlEntities(item.Title || item.OGTitle || '');
+  const description = decodeHtmlEntities(item.Description || item.OGDescription || '');
   const url = item.URL || item.OGURL || '#';
 
   return `
@@ -168,7 +173,7 @@ function renderRecentSearches(container, recentTitle, onSearch) {
                       <div class="search-modal-panel-inner">
                         <div class="search-modal-panel-body">
                           <div class="search-modal-panel-caption">
-                            <h3 class="search-modal-panel-title">${escapeHtml(term)}</h3>
+                            <h3 class="search-modal-panel-title">${escapeHtml(decodeHtmlEntities(term))}</h3>
                           </div>
                         </div>
                       </div>

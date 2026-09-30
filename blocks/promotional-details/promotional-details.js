@@ -89,7 +89,7 @@ function readBlockData(block) {
   const titleHeading = rows[o + 1]?.querySelector('h1,h2,h3,h4,h5,h6');
 
   const len = rows.length;
-  const hasRldEnabledField = len >= o + 22;
+  const hasRldEnabledField = len >= o + (isBBM ? 21 : 22);
 
   const rldEnabled = hasRldEnabledField ? txt(len - 4) : '';
   const rldTextRaw = innerHtml(len - 3);

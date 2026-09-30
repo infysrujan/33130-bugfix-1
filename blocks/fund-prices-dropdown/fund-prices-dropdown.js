@@ -1,4 +1,5 @@
 import { attachCalendarPicker, formatCalendarDate, getCalendarLang } from '../../scripts/utils/calendar-picker.js';
+import { BE_OFFSET } from '../../scripts/utils/datelang.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
@@ -20,8 +21,14 @@ function pad2(n) {
   return String(n).padStart(2, '0');
 }
 
+// Thai pages match the live site: unpadded d/m with Buddhist-era year, e.g. 1/9/2569
+function formatDisplayDate(day, month, year) {
+  if (getCalendarLang() === 'th') return `${day}/${month}/${year + BE_OFFSET}`;
+  return `${pad2(day)}/${pad2(month)}/${year}`;
+}
+
 function formatDMY(date) {
-  return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
+  return formatDisplayDate(date.getDate(), date.getMonth() + 1, date.getFullYear());
 }
 
 function formatPrintDate(date = new Date()) {
@@ -91,7 +98,7 @@ function fmtHeaderNav(v) {
 function fmtHistDate(ymd) {
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(ymd);
   if (!m) return ymd;
-  return `${m[3]}/${m[2]}/${m[1]}`;
+  return formatDisplayDate(Number(m[3]), Number(m[2]), Number(m[1]));
 }
 
 function renderStatTables(stats, highTbody, lowTbody, rowLabels, noDataLabel) {
