@@ -493,9 +493,14 @@ function wireFilterEvents(
 }
 
 // ─── print ────────────────────────────────────────────────────────────────────
-// Prints an isolated document (like blocks/bcap/bcap.js), since the live
-// page's fixed header/nav and max-width layout would shrink the table.
-function printElement(block) {
+// Prints in place via an @media print rule that hides the live page and shows a
+// cloned print root — iOS Safari can't print an isolated iframe/popup document.
+
+// Set by the Print button so its own beforeprint doesn't rebuild the root it just made.
+let printRootFromButton = false;
+let beforePrintBlock = null;
+
+function buildPrintRoot(block) {
   // Captures real computed styles from the LIVE elements before cloning, so
   // printCss matches the live board instead of guessing rem values.
   const liveDateInput = block.querySelector('.db-date-display');
@@ -565,7 +570,8 @@ function printElement(block) {
   const printTable = content.querySelector('.db-table');
   if (printTable) {
     const colgroup = document.createElement('colgroup');
-    [10, 30, 11, 9, 11, 9, 8, 6, 6].forEach((width) => {
+    // Sized so the widest price (e.g. 1,016.27252) fits at 194mm without spilling.
+    [9, 27, 11, 8, 11, 8, 9, 8, 9].forEach((width) => {
       const col = document.createElement('col');
       col.style.width = `${width}%`;
       colgroup.append(col);
@@ -602,41 +608,41 @@ function printElement(block) {
     ?.textContent?.trim() || document.querySelector('h1')?.textContent?.trim() || 'Print';
   const printTimestamp = formatPrintTimestamp();
 
-  const printWindow = window.open('', '', 'height=500,width=800');
-
   const printCss = `
     @page {
       size: A4 portrait;
       margin: 8mm;
     }
 
-    /* Forces background-color/-image to print even with Chrome's
-       "Background graphics" toggle off (e.g. the underline below). */
-    html, body, * {
+    #dynamic-board-print-root {
+      position: absolute;
+      top: 0;
+      left: -1000rem;
+    }
+
+    @media print {
+    body > *:not(#dynamic-board-print-root) {
+      display: none;
+    }
+
+    #dynamic-board-print-root {
+      position: static;
+      left: auto;
+      /* A4 width minus @page margins, so phones lay out like desktop and shrink to fit. */
+      width: 194mm;
+      box-sizing: border-box;
+    }
+
+    #dynamic-board-print-root,
+    #dynamic-board-print-root * {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
 
-    .header,
-    .header-wrapper,
-    .main-nav-desktop,
-    .brand-logo,
-    .brand-logo-container {
-      display: block;
-      visibility: visible;
-      position: static;
-    }
-
-    .brand-logo.block {
-      background-color: transparent;
-    }
-
-    .header-wrapper,
-    .header,
-    .header-content,
-    .main-nav-desktop {
-      background: transparent;
-      min-height: 0;
+    /* Stops mobile browsers enlarging text, which squeezes the columns. */
+    #dynamic-board-print-root {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     .brand-logo-container {
@@ -657,8 +663,6 @@ function printElement(block) {
       filter: brightness(0);
     }
 
-    /* Rendered in-document since the isolated print window reports itself
-       as about:blank, so Chrome's native print header can't be used. */
     .dynamic-board-print-masthead {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -749,6 +753,7 @@ function printElement(block) {
       font-size: 0.625rem;
       line-height: 1.2;
       color: var(--bbl-color-grey-90);
+      break-inside: auto;
     }
 
     /* Every cell stays on one line; Name (below) is the sole exception. */
@@ -774,9 +779,9 @@ function printElement(block) {
       top: auto;
     }
 
-    .dynamic-board .db-table thead th,
-    .dynamic-board .db-table thead tr:first-child th,
-    .dynamic-board .db-table thead tr:last-child th {
+    /* ID prefix outranks the live sort-icon padding and rowspan height rules,
+       which otherwise squeeze header text to one letter per line. */
+    #dynamic-board-print-root .dynamic-board .db-table thead th {
       /* Plain white header per the client PDF (not the live blue tint) — set
          directly on each th since a thead/tr-level background can drop out
          of print even with print-color-adjust: exact set globally. */
@@ -788,10 +793,22 @@ function printElement(block) {
       height: auto;
       /* Headers may wrap onto 2 lines; tight line-height keeps the row compact. */
       white-space: normal;
+      /* The CSS print fallback's overflow-wrap: break-word splits words like "Indicativ-e". */
+      overflow-wrap: normal;
+      word-break: normal;
       line-height: 1.15;
       padding: 0.2rem 0.3rem;
+      text-align: center;
       vertical-align: middle;
       border: 0.0625rem solid var(--bbl-color-grey-20);
+    }
+
+    #dynamic-board-print-root .dynamic-board .db-table thead th[data-sort]:not([data-sort="BOND_SYMBOL"], [data-sort="NAME_ENG"]) {
+      text-align: right;
+    }
+
+    #dynamic-board-print-root .dynamic-board .db-table thead .db-th-label::after {
+      content: none;
     }
 
     .dynamic-board .db-table tbody td {
@@ -852,126 +869,101 @@ function printElement(block) {
       font-weight: 900;
     }
 
-    @media print {
-      .dynamic-board .db-table thead {
-        display: table-header-group;
-      }
+    .dynamic-board .db-table-wrap {
+      width: 100%;
+      margin: 0;
+      overflow: visible;
+    }
 
-      .dynamic-board .db-table tbody {
-        display: table-row-group;
-      }
+    .dynamic-board .db-table thead {
+      display: table-header-group;
+    }
 
-      .dynamic-board .db-table-wrap #db-tbody-sel,
-      .dynamic-board .db-table-wrap #db-tbody-all {
-        display: table-row-group;
-        max-height: none;
-        overflow-y: visible;
-      }
+    .dynamic-board .db-table-wrap #db-tbody-sel,
+    .dynamic-board .db-table-wrap #db-tbody-all {
+      display: table-row-group;
+      max-height: none;
+      overflow: visible;
+    }
 
-      .dynamic-board .db-table-wrap #db-tbody-sel tr,
-      .dynamic-board .db-table-wrap #db-tbody-all tr {
-        display: table-row;
-        width: auto;
-      }
+    .dynamic-board .db-table-wrap #db-tbody-sel tr,
+    .dynamic-board .db-table-wrap #db-tbody-all tr {
+      display: table-row;
+      width: auto;
+    }
 
-      .dynamic-board .db-table {
-        break-inside: auto;
-      }
-
-      .dynamic-board .db-table tbody tr {
-        break-inside: avoid;
-      }
+    .dynamic-board .db-table tbody tr {
+      break-inside: avoid;
+    }
     }
   `;
 
-  const printHtml = `
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="utf-8"/>
-      <title>${escapeHtml(pageTitle)}</title>
-      <link rel="stylesheet" href="/styles/styles.css">
-      <link rel="stylesheet" href="/styles/fonts.css">
-      <link rel="stylesheet" href="/blocks/header/header.css">
-      <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
-      <link rel="stylesheet" href="/blocks/dynamic-board/dynamic-board.css">
-      <style>${printCss}</style>
-    </head>
-    <body class="appear">
-      <div class="dynamic-board-print-masthead">
-        <div>${escapeHtml(printTimestamp)}</div>
-        <div class="dynamic-board-print-masthead__title">${escapeHtml(pageTitle)}</div>
-        <div></div>
-      </div>
-      <header class="header-wrapper">
-        <div class="header block" data-block-status="loaded">
-          <div class="header-content">
-            <div class="main-nav-desktop">
-              <div class="brand-logo block" data-block-status="loaded">
-                <div class="brand-logo-container${fallbackLogoClass}">
-                  ${brandLogo}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-      <main>
-        <div class="${[...sectionClasses].join(' ')}">
-          ${content.innerHTML.trim()}
-        </div>
-      </main>
-    </body>
-  </html>
+  document.getElementById('dynamic-board-print-root')?.remove();
+  document.getElementById('dynamic-board-print-style')?.remove();
+
+  const printStyle = document.createElement('style');
+  printStyle.id = 'dynamic-board-print-style';
+  printStyle.textContent = printCss;
+
+  const printRoot = document.createElement('div');
+  printRoot.id = 'dynamic-board-print-root';
+  printRoot.innerHTML = `
+    <div class="dynamic-board-print-masthead">
+      <div>${escapeHtml(printTimestamp)}</div>
+      <div class="dynamic-board-print-masthead__title">${escapeHtml(pageTitle)}</div>
+      <div></div>
+    </div>
+    <div class="brand-logo-container${fallbackLogoClass}">${brandLogo}</div>
+    <div class="${[...sectionClasses].join(' ')}">
+      ${content.innerHTML.trim()}
+    </div>
   `;
-  printWindow.document.write(printHtml);
-  printWindow.document.close();
 
-  // Replace the about:blank popup location with the real (same-origin) URL,
-  // since that's what Chrome's print header/footer would otherwise show.
-  try {
-    printWindow.history.replaceState(null, '', window.location.href);
-  } catch {
-    // ignore — footer just falls back to about:blank
-  }
+  document.head.append(printStyle);
+  document.body.append(printRoot);
 
-  // Wait for the popup's stylesheets/fonts before printing, capped by a
-  // generous timeout so a stuck resource can't hang the print forever.
-  const waitForStylesheets = () => Promise.all(
-    [...printWindow.document.querySelectorAll('link[rel="stylesheet"]')].map((link) => new Promise((resolve) => {
-      if (link.sheet) { resolve(); return; }
-      link.addEventListener('load', resolve, { once: true });
-      link.addEventListener('error', () => {
-        // eslint-disable-next-line no-console
-        console.warn('dynamic-board print: stylesheet failed to load:', link.href);
-        resolve();
-      }, { once: true });
-    })),
-  );
-  const waitForFonts = () => printWindow.document.fonts?.ready ?? Promise.resolve();
-  const waitForImages = () => Promise.all(
-    [...printWindow.document.images].map((image) => new Promise((resolve) => {
-      if (image.complete) { resolve(); return; }
-      image.addEventListener('load', resolve, { once: true });
-      image.addEventListener('error', resolve, { once: true });
-    })),
-  );
-  const timeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
+  const cleanup = () => {
+    printRoot.remove();
+    printStyle.remove();
+  };
 
-  Promise.race([
-    Promise.all([waitForStylesheets(), waitForFonts(), waitForImages()]),
-    timeout(8000),
-  ]).then(() => {
-    printWindow.focus();
-    // Double rAF: gives the browser a frame to apply the just-resolved
-    // styles/fonts before the layout-dependent print pass runs.
+  // Android Chrome fires afterprint before the preview renders; clean up on return.
+  window.addEventListener('afterprint', () => {
+    document.addEventListener('pointerdown', cleanup, { once: true });
+    document.addEventListener('keydown', cleanup, { once: true });
+  }, { once: true });
+
+  return printRoot;
+}
+
+function printElement(block) {
+  printRootFromButton = true;
+  const printRoot = buildPrintRoot(block);
+
+  const logoImg = printRoot.querySelector('.brand-logo-container img');
+  const logoReady = (!logoImg || logoImg.complete)
+    ? Promise.resolve()
+    : new Promise((resolve) => {
+      logoImg.addEventListener('load', resolve, { once: true });
+      logoImg.addEventListener('error', resolve, { once: true });
+    });
+
+  logoReady.then(() => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        printWindow.print();
-        printWindow.close();
+        window.print();
       });
     });
   });
+}
+
+// Ctrl+P, browser menu and mobile Share → Print get the same layout as the Print button.
+function onBeforePrint() {
+  if (printRootFromButton) {
+    printRootFromButton = false;
+    return;
+  }
+  if (beforePrintBlock?.isConnected) buildPrintRoot(beforePrintBlock);
 }
 
 // ─── main decorate ────────────────────────────────────────────────────────────
@@ -1249,4 +1241,17 @@ export default async function decorate(block) {
 
   // ── print ──
   printBtn.addEventListener('click', () => printElement(block));
+
+  // Only the first board on the page is printed by the browser's own print.
+  if (!beforePrintBlock) {
+    beforePrintBlock = block;
+    window.addEventListener('beforeprint', onBeforePrint);
+    // Ctrl/Cmd+P takes the Print button path so it also waits for the logo.
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        printElement(block);
+      }
+    });
+  }
 }

@@ -24,6 +24,10 @@ button.login-button.button-s {
   background-color: transparent;
 }
 
+.login.block .login-wrapper .login-button.button-s.primary:hover {
+  background-color: var(--bbl-color-blue-90);
+}
+
 .login .icon-login::before {
   font-size: 1.25rem;
   font-weight: 700;

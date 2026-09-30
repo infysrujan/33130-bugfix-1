@@ -155,6 +155,11 @@ main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
   font-weight: var(--bbl-font-weight-regular);
 }
 
+main .lead-forms#form-title-width > .default-content-wrapper h2 {
+  max-width: 46.25rem;
+  margin-inline: auto;
+}
+
 main .lead-forms.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
   margin: var(--bbl-space-500) 0 var(--bbl-form-margin-30);
   padding-bottom: var(--bbl-form-padding-35);
@@ -208,6 +213,19 @@ main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .pa
   background: var(--bbl-color-grey-150);
 }
 
+main .lead-forms .form form .panel-wrapper.field-thankyou-visible-panel h3::before {
+  display: none;
+}
+
+main .lead-forms .form form .panel-wrapper.field-thankyou-visible-panel h3{
+  margin: 0;
+  padding-bottom: 1.875rem;
+  font-size: var(--bbl-font-size-base);
+  font-weight: var(--bbl-font-weight-regular);
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-color-grey-90);
+}
+
 main .lead-forms .form form .field-title {
   margin: 0;
   padding: 0;
@@ -229,7 +247,7 @@ main .lead-forms .form form .plain-text-wrapper p:last-child {
   margin-bottom: 0;
 }
 
-main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-textt, .field-or, .field-textw, .field-text1) p {
+main .lead-forms .form form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-or, .field-textw, .field-text1) p {
   text-align: left;
 }
 
@@ -425,9 +443,10 @@ main .section.form-container.lead-forms .form form .field-invalid :is(.field-val
   text-align: left;
   display: block;
   clear: both;
+  line-height: var(--bbl-body-b3-line-height);
   padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) var(--bbl-form-padding-10);
   color: var(--bbl-color-orange-130);
-  font-size: var(--bbl-form-font-size-15);
+  font-size: var(--bbl-body-b3-size);
   font-weight: var(--bbl-font-weight-regular);
 }
 
@@ -966,6 +985,16 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   width: 100%;
 }
 
+main .section.form-container.lead-forms:has(.hlbp-form) {
+  .form form .plain-text-wrapper.field-text {
+    padding-top: 0;
+  }
+
+  select optgroup {
+    background: var(--bbl-color-gray-300);
+  }
+}
+
 @media (width > 47.5rem) {
   main .form-container.lead-forms {
     padding-inline: var(--bbl-space-250);
@@ -1042,20 +1071,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     text-align: left;
   }
  
-  main .section.form-container.lead-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *)::after {
-    content: "\e912";
-    font-family: icomoon, sans-serif;
-    font-size: var(--bbl-font-size-h3-mobile);
-    color: var(--bbl-color-grey-90);
-    position: absolute;
-    top: 8px;
-    right: var(--bbl-space-300);
-    height: var(--bbl-form-date-icon-height, 2.75rem);
-    display: flex;
-    align-items: center;
-    pointer-events: none;
-  }
- 
+
   main .section.form-container.lead-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *):has(label[data-visible="false"])::after {
     top: 0.625rem;
   }
