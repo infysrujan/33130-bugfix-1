@@ -8,16 +8,12 @@
   padding: 0 var(--bbl-space-200);
 
   .field-heading, .field-heading2 {
-    position: relative;
-
     &::after {
       content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
+      display: block;
       width: var(--bbl-space-1000);
       height: 0.0625rem;
+      margin-inline: auto;
       padding: 1.25rem 0 1.875rem;
       background-color: var(--bbl-color-grey-150);
       background-clip: content-box;
