@@ -12970,7 +12970,7 @@
         "label": "Table 1 Type",
         "description": "Select the table type to get relative api data",
         "valueType": "string",
-        "value": "rateCardGetFxBanner",
+        "value": "",
         "options": [
           {
             "name": "No Table Data",
@@ -13080,7 +13080,7 @@
         "label": "Table 2 Type",
         "description": "Select the table type to get relative api data",
         "valueType": "string",
-        "value": "rateCardGetFxBanner",
+        "value": "",
         "options": [
           {
             "name": "No Table Data",
