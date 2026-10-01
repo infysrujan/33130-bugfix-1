@@ -8,8 +8,8 @@ main .lead-forms .form form .field-infotext {
   margin-top: var(--bbl-form-margin-10);
 }
 
-/* Mobile: stack all fields full width */
-main .section.form-container.lead-forms .form form > fieldset.panel-wrapper.field-wrapper:has(> .field-preferredcontacttime) :is(.text-wrapper, .number-wrapper, .telephone-wrapper).field-wrapper.col-6 {
+/* Mobile first: col-6 stacks full width. Two columns start at 64rem. */
+main .section.form-container.lead-forms .form form fieldset.panel-wrapper.field-wrapper > .field-wrapper.col-6 {
   grid-column: span 12;
   width: 100%;
   max-width: 100%;
@@ -36,29 +36,32 @@ main .lead-forms .form form :is(.field-wrapper:has(select), .drop-down-wrapper) 
   line-height: 1;
 }
 
-@media (width > 64rem) {
-  /* Desktop: override form-global 1fr panel grid — equal 6+6 columns for name/surname */
-  main .section.form-container.lead-forms .form form > fieldset.panel-wrapper.field-wrapper.col-12:has(> .field-preferredcontacttime) {
+@media (width >= 64rem) {
+  /* form-lead.css sets this panel to one column. Override it here only. */
+  main .section.form-container.lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .col-6) {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: none;
     gap: 0 var(--bbl-form-gap-3);
   }
 
-  main .section.form-container.lead-forms .form form > fieldset.panel-wrapper.field-wrapper.col-12:has(> .field-preferredcontacttime) :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
+  main .section.form-container.lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .col-6) > .field-wrapper.col-12,
+  main .section.form-container.lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .col-6) > .field-wrapper.col-11 {
     grid-column: span 12;
     width: 100%;
     max-width: 100%;
   }
 
-  main .section.form-container.lead-forms .form form > fieldset.panel-wrapper.field-wrapper.col-12:has(> .field-preferredcontacttime) :is(.text-wrapper, .number-wrapper, .telephone-wrapper).field-wrapper.col-6 {
+  main .section.form-container.lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .col-6) > .field-wrapper.col-6 {
     grid-column: span 6;
     width: 100%;
     max-width: 100%;
     min-width: 0;
   }
 
-  main .section.form-container.lead-forms .form form > fieldset.panel-wrapper.field-wrapper.col-12:has(> .field-preferredcontacttime) :is(.text-wrapper, .number-wrapper, .telephone-wrapper).field-wrapper.col-6 :is(input, select) {
+  main .section.form-container.lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .col-6) > .field-wrapper.col-6 :is(input, select) {
     width: 100%;
+    max-width: 100%;
     box-sizing: border-box;
   }
 
