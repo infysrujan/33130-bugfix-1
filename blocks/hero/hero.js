@@ -1,6 +1,7 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import { trackLinkClick } from '../../scripts/analytics.js';
+import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
 const MOBILE_MQ = `(width <= ${
   getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-mobile-max').trim()
@@ -603,12 +604,29 @@ export default function decorate(block) {
       } else {
         const pictureDesktop = imageCellDesktop?.querySelector('picture');
         const pictureMobile = imageCellMobile?.querySelector('picture');
-        const heroPicture = (isMobile ? pictureMobile : pictureDesktop)
-          || pictureDesktop
-          || pictureMobile;
-
+        const heroPicture = createSmartImage(
+          pictureDesktop,
+          pictureMobile,
+          imageAlt,
+          i === defaultIndex,
+        );
         if (heroPicture) {
+          const webpSrc = (picture, wide) => {
+            const match = [...(picture?.querySelectorAll('source[type="image/webp"]') || [])]
+              .find((source) => (wide ? source.hasAttribute('media') : !source.hasAttribute('media')));
+            return (match?.getAttribute('srcset') || '').split(',')[0].trim().split(/\s+/)[0];
+          };
+          const desktopSrc = webpSrc(pictureDesktop, true);
+          const mobileSrc = webpSrc(pictureMobile, false);
+          const [desktopSource, mobileSource] = heroPicture.querySelectorAll('source');
           const img = heroPicture.querySelector('img');
+          if (img && desktopSrc && mobileSrc && desktopSource && mobileSource) {
+            desktopSource.setAttribute('srcset', desktopSrc);
+            mobileSource.setAttribute('srcset', mobileSrc);
+            desktopSource.setAttribute('type', 'image/webp');
+            mobileSource.setAttribute('type', 'image/webp');
+            img.src = window.matchMedia('(max-width: 760px)').matches ? mobileSrc : desktopSrc;
+          }
           if (img) {
             img.className = 'hero-banner-img';
             const alt = imageAlt?.textContent?.trim();
