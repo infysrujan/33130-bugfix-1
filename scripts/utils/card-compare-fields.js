@@ -1,7 +1,7 @@
 import { getLang } from '../scripts.js';
 import { fetchConfigs } from '../config.js';
 import { fetchGet } from './fetchApi.js';
-import { normStr, loadSheetOrder } from './sheet-utils.js';
+import { normStr, loadSheetOrder } from './sort-utils.js';
 
 // Returns the correct card-name column key for the current locale.
 function cardNameKey() {
@@ -43,7 +43,6 @@ export function sortCardsBySheetOrder(cards, matrix, cardType) {
 }
 
 const CARDS_API_CONFIG_KEY = 'debitPrepaidCardSelectorSuggesterData';
-const DEFAULT_CARDS_API_URL = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-cards-by-language-category-and-type;language=en;';
 
 // Three independent sessionStorage keys — one per card flow
 export const CREDIT_COMPARE_STORAGE_KEY = 'ccs-compare-cards';
@@ -144,7 +143,8 @@ export function getCardViewData(card, lang) {
 export async function loadCardData(cardCategory, cardType) {
   try {
     const configs = await fetchConfigs();
-    const baseUrl = configs[CARDS_API_CONFIG_KEY] || DEFAULT_CARDS_API_URL;
+    const baseUrl = configs[CARDS_API_CONFIG_KEY];
+    if (!baseUrl) return [];
     const lang = getLang();
     const isPrepaid = cardCategory === 'prepaid-cards';
     const typeParam = isPrepaid ? '' : `cardType=${cardType};`;

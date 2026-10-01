@@ -1,5 +1,5 @@
 import { getLang } from '../scripts.js';
-import { normStr, loadSheetOrder } from './sheet-utils.js';
+import { normStr, loadSheetOrder } from './sort-utils.js';
 
 // Local alias keeps existing internal usages unchanged.
 const norm = normStr;
