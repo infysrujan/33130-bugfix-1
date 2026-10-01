@@ -85,6 +85,13 @@
         "description": "Select the image asset to use for the Open Graph og:image meta tag."
       },
       {
+        "component": "text",
+        "valueType": "string",
+        "name": "og:title",
+        "label": "OG Title",
+        "description": "Add the title to use for the Open Graph og:title meta tag."
+      },
+      {
         "component": "boolean",
         "name": "hideCurrentPageBreadcrumb",
         "label": "Hide breadcrumb from current page",
