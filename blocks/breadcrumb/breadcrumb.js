@@ -242,24 +242,9 @@ function getParentPageLabel(page) {
  * @param {Element} block The breadcrumb block element
  */
 export default async function decorate(block) {
-  const hideCurrentPageBreadcrumb = isCurrentPageBreadcrumbHidden();
-
-  // Hide breadcrumb block if current page has breadcrumb hidden
-  if (hideCurrentPageBreadcrumb) {
-    block.style.display = 'none';
-
-    // Also hide social-icons block if it exists
-    const socialIconsBlock = document.querySelector('.social-icons.block');
-    if (socialIconsBlock) {
-      socialIconsBlock.style.display = 'none';
-    }
-    return;
-  }
-
   const { breadcrumbPages, currentPageData } = await fetchBreadcrumbData();
 
-  // Also hide if backend API indicates current page breadcrumb is hidden
-  if (isCurrentPageBreadcrumbHidden(currentPageData)) {
+  if (!breadcrumbPages.length && currentPageData?.pageDepth !== 3) {
     block.style.display = 'none';
 
     const socialIconsBlock = document.querySelector('.social-icons.block');
@@ -326,6 +311,15 @@ export default async function decorate(block) {
 
     ol.appendChild(li);
   });
+
+  if (!ol.children.length) {
+    block.style.display = 'none';
+    const socialIconsBlock = document.querySelector('.social-icons.block');
+    if (socialIconsBlock) {
+      socialIconsBlock.style.display = 'none';
+    }
+    return;
+  }
 
   await loadSocialIcons(block);
 }
