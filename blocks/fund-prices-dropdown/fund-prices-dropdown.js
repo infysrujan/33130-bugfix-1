@@ -3,6 +3,7 @@ import { BE_OFFSET } from '../../scripts/utils/datelang.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { fetchNavEnabledDaysForMonth } from '../fund-prices/fund-prices.js';
 
 export const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
@@ -68,6 +69,20 @@ function isWeekendOrAfterYesterday(date) {
   const now = new Date();
   const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
   return date > yesterday;
+}
+
+async function firstNavDayOfMonth(end) {
+  try {
+    const days = await fetchNavEnabledDaysForMonth({
+      year: end.getFullYear(),
+      month: end.getMonth(),
+    });
+    const first = days.filter((d) => d <= end.getDate()).sort((a, b) => a - b)[0];
+    if (first) return new Date(end.getFullYear(), end.getMonth(), first);
+  } catch (e) {
+    // fall back to the 1st of the month
+  }
+  return new Date(end.getFullYear(), end.getMonth(), 1);
 }
 
 async function fetchFundDetailStats(fundId, fromDate, toDate) {
@@ -699,16 +714,22 @@ export default async function decorate(block) {
   }
 
   /* Calendar pickers for date range */
+  const latestNavDate = () => (latestMdate ? parseLocalDateFromYmd(latestMdate) : null)
+    ?? new Date();
   const drFromPicker = attachCalendarPicker({
     input: drFromInput,
     value: drFrom,
     isDateDisabled: isWeekendOrAfterYesterday,
+    fetchEnabledDays: fetchNavEnabledDaysForMonth,
+    maxDate: latestNavDate,
     onChange: (d) => { drFrom = d; validateAndRenderDetail(); },
   });
   const drToPicker = attachCalendarPicker({
     input: drToInput,
     value: drTo,
     isDateDisabled: isWeekendOrAfterYesterday,
+    fetchEnabledDays: fetchNavEnabledDaysForMonth,
+    maxDate: latestNavDate,
     onChange: (d) => { drTo = d; validateAndRenderDetail(); },
   });
 
@@ -738,7 +759,7 @@ export default async function decorate(block) {
   });
   block.ownerDocument.addEventListener('click', () => periodDropList.classList.remove('open'));
 
-  periodDropList.addEventListener('click', (e) => {
+  periodDropList.addEventListener('click', async (e) => {
     const li = e.target.closest('li');
     if (!li) return;
     const { period } = li.dataset;
@@ -750,7 +771,8 @@ export default async function decorate(block) {
     periodSelectBtn.classList.toggle('active', period === 'DR');
     if (period === 'DR') {
       const end = latestMdate ? (parseLocalDateFromYmd(latestMdate) ?? new Date()) : new Date();
-      const start = new Date(end.getFullYear(), end.getMonth(), 1);
+      const start = await firstNavDayOfMonth(end);
+      if (currentPeriod !== 'DR') return;
       drFrom = start;
       drTo = end;
       // Update through the pickers so their internal selection stays in sync with
