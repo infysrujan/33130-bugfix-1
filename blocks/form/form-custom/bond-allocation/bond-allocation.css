@@ -8,17 +8,15 @@
   padding: 0 var(--bbl-space-200);
 
   .field-heading, .field-heading2 {
-    position: relative;
-
-    & ::after{
+    &::after {
       content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 3.125rem;
-      height: 0.125rem;
-      background-color: var(--bbl-color-grey-85);
+      display: block;
+      width: var(--bbl-space-1000);
+      height: 0.0625rem;
+      margin-inline: auto;
+      padding: 1.25rem 0 1.875rem;
+      background-color: var(--bbl-color-grey-150);
+      background-clip: content-box;
     }
 
     h2{
@@ -29,7 +27,12 @@
     }
   }
 
-
+  /* Desktop: 30px top, 30px bottom */
+  @media (width >= 64rem) {
+    .field-heading::after, .field-heading2::after {
+      padding-block: 1.875rem;
+    }
+  }
 
   .field-subheading {
     margin-bottom: 0.937rem;
@@ -335,7 +338,7 @@
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
-    }
+  }
 
   /* Stack buttons only on phones; tablets/desktop keep the side-by-side base layout */
   @media (width < 47.5rem) {
@@ -367,14 +370,9 @@
   & .form form .field-subheading.plain-text-wrapper p:last-child p {
     text-align: center;
   }
-
-  & .form form .field-loadingtext + fieldset.panel-wrapper.field-button-panel.field-wrapper {
-    justify-content: space-between;
-    padding: 0 1.375rem;
     
     @media (width > 47.5rem) {
       justify-content: center;
       padding: 0;
     }
   }
-}
