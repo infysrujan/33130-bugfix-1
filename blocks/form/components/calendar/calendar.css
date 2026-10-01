@@ -135,6 +135,13 @@
   outline-offset: 0.125rem;
 }
 
+.dpth-nav span{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-1px);
+}
+
 .dpth-month-title {
   flex: 1 1 auto;
   margin: 0;
