@@ -11,6 +11,11 @@
   flex-direction: column;
   gap: 0.5rem;
   width: 100%;
+  margin-bottom: 0.875rem;
+}
+
+body.sip-form main .dobth-wrapper {
+  margin-bottom: 0;
 }
 
 .dobth-label {
@@ -48,7 +53,7 @@
   height: 44px;
   line-height: 44px;
   padding: 0 0.875rem;
-  border: 0.0625rem solid var(--bbl-color-grey-30, #ccc);
+  border: 0.0625rem solid var(--form-input-border-color, #818a91);
   border-radius: 0.5rem;
   background-color: var(--bbl-color-white, #fff);
   font-family: var(--bbl-font-family-primary, inherit);
@@ -97,11 +102,11 @@
 .dobth-combo-trigger:focus-visible,
 .dobth-combo-trigger[aria-expanded="true"] {
   outline: none;
-  border-color: var(--bbl-color-active-blue, #0048b7);
+  border-color: var(--bbl-color-blue-90, #0048B7);
 }
 
 .dobth-combo-trigger:hover:not([aria-disabled="true"]) {
-  border-color: var(--bbl-color-active-blue, #0048b7);
+  border-color: var(--bbl-color-blue-90, #0048B7);
 }
 
 .dobth-combo-trigger[aria-disabled="true"],
@@ -116,7 +121,6 @@
 
 .field-dob-th.field-invalid .dobth-combo-trigger {
   border-color: var(--bbl-color-error, #d93025);
-  box-shadow: 0 0 0 0.1875rem rgb(217 48 37 / 15%);
 }
 
 /* ── Listbox panel ───────────────────────────────────────────────────────── */
@@ -127,7 +131,7 @@
 
 .dobth-listbox {
   position: fixed;
-  z-index: 9999;
+  z-index: 99;
   max-height: 220px;
   padding-bottom: 1px;
   overflow: hidden auto;
