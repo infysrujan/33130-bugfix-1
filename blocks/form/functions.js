@@ -536,9 +536,9 @@ function getBranchEnumNames(province, lang = 'th') {
 // Wraps a select's <option> elements into <optgroup> by district, with
 // districts sorted A-Z and branches within each district sorted A-Z.
 // Works for both EN selects (value = BranchName) and TH selects (value = BranchNo).
-// Each option value is encoded as "originalValue|districtName" so that the
-// district travels with the selection and can be read by getSelectedLabelValue /
-// getSelectedLabelName helpers, or the new getConcatenatedBranchInfo function.
+// The district (Address3) is stored in a data-district attribute on each option so it
+// can be read by getBranchDistrict() without changing the option's value attribute —
+// leaving it unchanged keeps AEM Forms enum validation working correctly.
 function applyBranchDistrictGroupingToSelect(selectEl, data) {
   // Build lookups by both BranchName and BranchNo so we handle EN and TH selects.
   const districtByBranchName = {};
@@ -552,16 +552,11 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   // Collator gives correct A-Z ordering for both Thai and English labels.
   const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
-  // Resolve base value: strip any previously encoded district suffix so
-  // re-runs after the Rule Engine resets options stay idempotent.
-  const baseValue = (raw) => (raw.includes('|') ? raw.split('|')[0] : raw);
-
   // (district, then option label) so everything ends up A-Z.
   const entries = Array.from(selectEl.querySelectorAll('option'))
     .map((opt) => {
-      const base = baseValue(opt.value);
-      const district = districtByBranchName[base] || districtByBranchNo[base] || '';
-      return { opt, base, district };
+      const district = districtByBranchName[opt.value] || districtByBranchNo[opt.value] || '';
+      return { opt, district };
     })
     .filter((entry) => entry.district !== '');
 
@@ -574,11 +569,11 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   let currentGroup = null;
   let currentDistrict = null;
 
-  entries.forEach(({ opt, base, district }) => {
-    // Encode district into the option value so it is carried on selection.
-    // Format: "branchValue|districtName"
+  entries.forEach(({ opt, district }) => {
+    // Store district in a data attribute — the value attribute is intentionally
+    // left unchanged so AEM Forms enum validation continues to pass.
     // eslint-disable-next-line no-param-reassign
-    opt.value = `${base}|${district}`;
+    opt.dataset.district = district;
 
     if (district !== currentDistrict) {
       currentGroup = document.createElement('optgroup');
@@ -597,8 +592,7 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
 // optgroups), the check fails and the select is re-grouped automatically.
 
 // Applies branch sorting/grouping to every matching unprocessed <select> in the DOM.
-// After grouping, each option value is encoded as "branchValue|districtName" so the
-// selected value always carries both the branch identifier and its district.
+// Option values are never modified — district is stored in data-district attributes.
 function applyBranchGroupingToAllMatching(data) {
   if (!data.length) return;
   const branchNames = new Set(data.map((item) => String(item.BranchName)));
@@ -606,11 +600,7 @@ function applyBranchGroupingToAllMatching(data) {
   Array.from(document.querySelectorAll('select')).forEach((sel) => {
     // Already grouped — optgroups still in place, nothing to do.
     if (sel.querySelector('optgroup')) return;
-    // Strip any previously encoded district suffix before matching so
-    // re-runs after the Rule Engine resets options work correctly.
-    const optVals = Array.from(sel.options)
-      .map((o) => (o.value.includes('|') ? o.value.split('|')[0] : o.value))
-      .filter((v) => v !== '');
+    const optVals = Array.from(sel.options).map((o) => o.value).filter((v) => v !== '');
     const isMatch = optVals.length > 0
       && (optVals.every((v) => branchNames.has(v)) || optVals.every((v) => branchNos.has(v)));
     if (isMatch) {
@@ -1270,61 +1260,106 @@ function updateTextCount(passportNumber) {
 }
 
 /**
- * Concatenates province, district, and branch into a single descriptive string.
+ * Reads the district (Address3) stored in the data-district attribute of the
+ * currently selected <option> in a branch dropdown.
+ * Call this from the form's change event after applyBranchDistrictGroupingToSelect
+ * has run, to retrieve the district without altering the field's submitted value.
  *
- * The branch dropdown value is expected to be encoded as "branchValue|districtName"
- * — the format written by applyBranchDistrictGroupingToSelect when an option is
- * selected after district grouping has been applied. The function extracts the
- * branch identifier and district from that encoded value and builds:
+ * @name getBranchDistrict
+ * @param {string} selectNameOrId - The name or id attribute of the branch <select> element
+ * @returns {string} The district of the selected branch, or '' if not found
  *
- *   "<province> | <district> | <branch>"
+ * @example
+ * // In a form rule (Set Value on a hidden district field):
+ * getBranchDistrict('branch')   // returns e.g. "Bang Rak"
+ */
+function getBranchDistrict(selectNameOrId) {
+  if (typeof document === 'undefined') return '';
+  const sel = document.querySelector(
+    `select[name="${selectNameOrId}"], select#${selectNameOrId}`,
+  );
+  if (!sel) return '';
+  const selectedOpt = sel.options[sel.selectedIndex];
+  return selectedOpt ? (selectedOpt.dataset.district || '') : '';
+}
+
+/**
+ * Concatenates province, branch, and Address3 into a single descriptive string.
  *
- * If the branch value is not encoded (contains no "|"), the district segment is
- * omitted and the result is:
+ * Pass province and branch as plain strings. Address3 (sub-district / tambon)
+ * is read automatically from the branchesByProvinceCache that is populated
+ * when the province dropdown changes. If Address3 is absent from the payload
+ * for the selected branch the segment is silently omitted.
  *
- *   "<province> | <branch>"
- *
+ * Result: "<province> | <branch> | <Address3>"
  * Any segment that is empty or whitespace-only is silently omitted.
  *
  * @name getConcatenatedBranchInfo
- * @param {string} province    - The selected province value (e.g. from provinceField.$value)
- * @param {string} branchValue - The selected branch dropdown value.
- *                               Plain: "0001"  |  Encoded: "0001|Bang Rak"
+ * @param {string} province    - The selected province value
+ * @param {string} branch      - The selected branch value (plain, as stored in $enum)
  * @param {string} [separator] - Separator between segments (default: " | ")
  * @returns {string} Concatenated string, or empty string when all inputs are empty.
  *
  * @example
- * // Encoded value (after district grouping)
- * getConcatenatedBranchInfo('Bangkok', '0001|Bang Rak')
- * // => "Bangkok | 0001 | Bang Rak"
+ * getConcatenatedBranchInfo('Krabi', 'Ao Luk Branch')
+ * // => "Krabi | Ao Luk Branch | Ao Luek"   (Address3 auto-resolved from cache)
  *
  * @example
- * // Plain value (no district encoding)
- * getConcatenatedBranchInfo('Bangkok', '0001')
- * // => "Bangkok | 0001"
- *
- * @example
- * // Custom separator
- * getConcatenatedBranchInfo('Bangkok', '0001|Bang Rak', ' - ')
- * // => "Bangkok - 0001 - Bang Rak"
+ * // Branch whose Address3 is absent from the API payload:
+ * getConcatenatedBranchInfo('Bangkok', 'Some Branch')
+ * // => "Bangkok | Some Branch"             (Address3 segment omitted gracefully)
  */
-function getConcatenatedBranchInfo(province, branchValue, separator = ' | ') {
-  const prov = String(province || '').trim();
-  const raw = String(branchValue || '').trim();
+function getConcatenatedBranchInfo(province, branch, separator = ' | ') {
+  // The AEM Forms Rule Engine may pass field objects instead of plain strings.
+  // Extract .$value when that happens.
+  const resolveVal = (v) => {
+    if (v === null || v === undefined) return '';
+    if (typeof v === 'object') return String(v.$value ?? '');
+    return String(v);
+  };
 
-  if (!prov && !raw) return '';
+  const prov = resolveVal(province).trim();
+  const br = resolveVal(branch).trim();
 
-  let branch = raw;
-  let district = '';
+  // Resolve Address3 from the in-memory cache first (Strategy 1),
+  // then fall back to a direct API fetch (Strategy 2) when the cache
+  // has not yet been populated (e.g. Rule Engine Web Worker context).
+  // If Address3 is absent from the branch payload, address3 stays '' and
+  // the segment is omitted from the output — no error is thrown.
+  let address3 = '';
 
-  if (raw.includes('|')) {
-    const idx = raw.indexOf('|');
-    branch = raw.substring(0, idx).trim();
-    district = raw.substring(idx + 1).trim();
+  if (br) {
+    // Strategy 1: search every cached dataset (province-keyed, lang-keyed).
+    branchesByProvinceCache.forEach((cachedData) => {
+      if (address3) return; // stop once found
+      const match = cachedData.find(
+        (item) => item.BranchName === br || String(item.BranchNo) === br,
+      );
+      // Use Address3 only when it is a non-empty string in the payload.
+      if (match && match.Address3 && String(match.Address3).trim() !== '') {
+        address3 = String(match.Address3).trim();
+      }
+    });
+
+    // Strategy 2: cache empty — fetch directly (sync XHR, works in workers too).
+    if (!address3 && prov) {
+      ['en', 'th'].some((lang) => {
+        const data = fetchBranchesByProvince(prov, lang);
+        if (!data.length) return false;
+        const match = data.find(
+          (item) => item.BranchName === br || String(item.BranchNo) === br,
+        );
+        if (match && match.Address3 && String(match.Address3).trim() !== '') {
+          address3 = String(match.Address3).trim();
+          return true;
+        }
+        return false;
+      });
+    }
   }
 
-  // Order: Province | branchValue | districtName
-  return [prov, branch, district]
+  // Build result: omit any segment that is empty/whitespace.
+  return [prov, br, address3]
     .filter((segment) => segment !== '')
     .join(separator);
 }
@@ -1609,162 +1644,6 @@ function validateAge() {
 validateAge();
 
 /**
- * Generic live validation for form fields. Reads independent properties
- * (required, minlength, maxlength, pattern, min/max) from the control and the
- * matching error messages from the field wrapper's dataset, then shows the
- * result in the wrapper's `.field-description`.
- *
- * Supports input, textarea, select, checkbox, and custom widgets whose value
- * lives in a hidden input (e.g. the Thai date-of-birth picker).
- *
- * @name validateFieldInputs
- * @returns {void}
- */
-function validateFieldInputs() {
-  if (typeof document === 'undefined') return;
-
-  const DEFAULT_MESSAGES = {
-    required: 'This field is required.',
-    minLength: 'Value is too short.',
-    maxLength: 'Value is too long.',
-    pattern: 'Please enter a valid value.',
-    range: 'Value is out of range.',
-    custom: 'Please enter a valid value.',
-  };
-
-  // Optional per-field rules keyed by CSS class (on the control or an ancestor).
-  const CUSTOM_RULES = {};
-
-  const SKIP_TYPES = ['radio', 'button', 'submit', 'reset', 'file'];
-  const CONTROL_SELECTOR = 'input, select, textarea';
-
-  const getMessage = (wrapper, key) => wrapper.dataset[`${key}ErrorMessage`]
-    || DEFAULT_MESSAGES[key];
-
-  const getCustomRule = (control) => {
-    const cls = Object.keys(CUSTOM_RULES).find(
-      (name) => control.classList.contains(name) || control.closest(`.${name}`) !== null,
-    );
-    return cls ? CUSTOM_RULES[cls] : null;
-  };
-
-  /**
-   * Resolves the value-holding control for an event target. If the target is
-   * a real control, use it. Otherwise (e.g. a div role="button" trigger),
-   * fall back to the control inside the same field wrapper, such as the
-   * hidden input used by the date picker.
-   */
-  const resolveControl = (target) => {
-    if (!(target instanceof Element)) return null;
-    let control = target.matches(CONTROL_SELECTOR)
-      ? target
-      : target.closest('.field-wrapper')?.querySelector(CONTROL_SELECTOR);
-    if (!control || SKIP_TYPES.includes(control.type)) control = null;
-    return control;
-  };
-
-  /** Returns an error message, or '' when the value is valid. */
-  const getError = (control, wrapper) => {
-    const touched = !!control.dataset.touched;
-
-    if (control.type === 'checkbox') {
-      return control.required && touched && !control.checked
-        ? getMessage(wrapper, 'required')
-        : '';
-    }
-
-    const { value } = control;
-    const isEmpty = value.trim() === '' && !control.validity.badInput;
-
-    if (isEmpty) {
-      // Only complain about required once the user has interacted with the field
-      return (control.required || wrapper.dataset.required === 'true') && touched
-        ? getMessage(wrapper, 'required')
-        : '';
-    }
-
-    // type="number" returns '' for junk input, so check badInput explicitly
-    if (control.validity.badInput) return getMessage(wrapper, 'range');
-
-    const min = parseInt(control.getAttribute('minlength'), 10);
-    const max = parseInt(control.getAttribute('maxlength'), 10);
-    if (!Number.isNaN(min) && value.length < min) return getMessage(wrapper, 'minLength');
-    if (!Number.isNaN(max) && value.length > max) return getMessage(wrapper, 'maxLength');
-
-    if (control.type === 'number') {
-      const num = Number(value);
-      const lo = control.min !== '' ? Number(control.min) : null;
-      const hi = control.max !== '' ? Number(control.max) : null;
-      if ((lo !== null && num < lo) || (hi !== null && num > hi)) {
-        return getMessage(wrapper, 'range');
-      }
-    }
-
-    const pattern = control.getAttribute('pattern');
-    if (pattern) {
-      try {
-        if (!new RegExp(pattern).test(value)) return getMessage(wrapper, 'pattern');
-      } catch (e) {
-        // Invalid regex configured by the author: don't block the user
-      }
-    }
-
-    const rule = getCustomRule(control);
-    if (rule && !rule.validate(value, control)) {
-      return rule.message || getMessage(wrapper, 'custom');
-    }
-    return '';
-  };
-
-  const runCheck = (control) => {
-    const wrapper = control.closest('.field-wrapper');
-    if (!wrapper) return;
-
-    let description = wrapper.querySelector('.field-description');
-    if (!description) {
-      description = document.createElement('div');
-      description.className = 'field-description';
-      description.setAttribute('aria-live', 'polite');
-      wrapper.appendChild(description);
-    }
-
-    const message = getError(control, wrapper);
-
-    if (message) {
-      wrapper.classList.add('field-invalid');
-      description.textContent = message;
-    } else {
-      wrapper.classList.remove('field-invalid');
-      if (wrapper.dataset.description) {
-        description.innerHTML = wrapper.dataset.description;
-      } else {
-        description.textContent = '';
-      }
-    }
-  };
-
-  const handler = (event) => {
-    const control = resolveControl(event.target);
-    if (!control) return;
-    const wrapper = control.closest('.field-wrapper');
-
-    if (event.type === 'blur') {
-      // Moving between parts of one widget (day -> month -> year) is not
-      // "leaving the field", so don't flag it yet.
-      if (wrapper && wrapper.contains(event.relatedTarget)) return;
-      control.dataset.touched = 'true';
-    } else if (event.type === 'input' || event.type === 'change') {
-      control.dataset.touched = 'true';
-    }
-    runCheck(control);
-  };
-
-  ['input', 'keyup', 'blur', 'change'].forEach((type) => {
-    document.addEventListener(type, handler, true);
-  });
-}
-validateFieldInputs();
-/**
  * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
  * so they remain visible even when the AEM Forms Rule Engine overwrites the
  * Only applies to fields marked with the `preserve-unit-label` CSS class.
@@ -1996,6 +1875,7 @@ export {
   updateTextCount,
   getSelectedLabelName,
   getSelectedLabelValue,
+  getBranchDistrict,
   getConcatenatedBranchInfo,
   validateMaxCheckbox,
   replaceother,

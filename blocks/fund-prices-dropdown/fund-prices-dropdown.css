@@ -267,13 +267,13 @@
 .fund-prices-dropdown .stat-table th {
   background: var(--bbl-color-grey-10);
   color: var(--bbl-color-black);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
   text-align: left;
   height: 4.375rem;
   vertical-align: middle;
-  padding: 0 var(--bbl-space-250);
+  padding: 0 0.625rem;
   border-top: none;
   border-right: none;
   border-left: none;
@@ -290,6 +290,7 @@
   color: var(--bbl-color-grey-90);
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
+  font-size: 0.875rem;
   height: 3.5rem;
   vertical-align: middle;
   white-space: normal;
@@ -300,9 +301,14 @@
   text-align: right;
 }
 
-.fund-prices-dropdown .stat-table th.stat-th-nav,
-.fund-prices-dropdown .stat-table td.stat-nav-val {
-  width: 23%;
+.fund-prices-dropdown .stat-table th:where(:first-child),
+.fund-prices-dropdown .stat-table td:where(:first-child) {
+  width: 65%;
+}
+
+.fund-prices-dropdown .stat-table th:where(:nth-child(2)),
+.fund-prices-dropdown .stat-table td:where(:nth-child(2)) {
+  width: 35%;
 }
 
 .fund-prices-dropdown .stat-table td.stat-nav-val {
@@ -542,11 +548,6 @@ body.fund-prices-search-in-header .fund-prices-dropdown .fdd-title {
     color: var(--bbl-color-grey-90);
   }
 
-  .fund-prices-dropdown .stat-table th.stat-th-nav,
-  .fund-prices-dropdown .stat-table td.stat-nav-val {
-    width: 18%;
-  }
-
   .fund-prices-dropdown .chart-wrap {
     padding: 1.875rem 1.25rem 0;
   }
@@ -726,6 +727,11 @@ body.fund-prices-search-in-header .fund-prices-dropdown .fdd-title {
 }
 
 @media (width > 64rem) {
+  .fund-prices-dropdown .stat-table th, .fund-prices-dropdown .stat-table td {
+    padding: 0 var(--bbl-space-250);
+    font-size: 1rem;
+  }
+
   .fund-prices-dropdown .chart-subtitle {
     max-width: none;
   }

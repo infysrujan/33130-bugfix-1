@@ -422,15 +422,20 @@
         vertical-align: middle;
       }
   
-      & .cc-panel-item-form-cover img,
-      & .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image) img {
-        display: block;
-        width: 100%;
-        height: auto;
-        aspect-ratio: 440 / 275;
-        object-fit: cover;
-        vertical-align: middle;
-        border-radius: 0.25rem;
+      & .cc-panel-item-form-cover img, 
+      & .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image) img { 
+        display: block; 
+        width: 100%; 
+        height:  17.5rem; 
+        vertical-align: middle; 
+        border-radius: 0.25rem; 
+      }
+
+      @media (width > 47.5rem) {
+        & .cc-panel-item-form-cover img,
+        & .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image) img {
+          height: 18.75rem;
+        }
       }
   
       & .cc-panel-item-timeline-bg .image-wrapper img {
@@ -1017,6 +1022,11 @@
       padding-inline: 0;
   
       --cc-timeline-form-width: min(var(--cc-timeline-panel-width), min(100vw, var(--cc-form-max-width)));
+
+      & .form form .cc-panel-item-form-cover img,
+      & .form form .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image) img {
+        height: 17.1875rem;
+      }
   
       & .form label,
       & .form fieldset.checkbox-group-wrapper legend,
@@ -1139,6 +1149,7 @@
           width: 100%;
           max-width: none;
           clear: none;
+          margin-bottom: 2.1875rem;
         }
   
         & > .field-wrapper.cc-panel-item-form-cover {
