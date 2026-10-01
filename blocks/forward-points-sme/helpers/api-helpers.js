@@ -151,11 +151,7 @@ export async function getUpdatesInDay(url) {
   }
 }
 
-export async function getFxRates(url) {
+export function getFxRates(url) {
   if (!url) return [];
-  try {
-    return await fetchGet(url);
-  } catch (e) {
-    return [];
-  }
+  return fetchGet(url).catch(() => []);
 }

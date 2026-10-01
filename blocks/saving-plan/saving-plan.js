@@ -29,7 +29,7 @@ async function loadInflationRate(rateListUrl) {
 }
 
 async function loadIcons() {
-  const names = ['goal', 'goal-amount', 'goal-period', 'balance', 'annual-return', 'annual-increase', 'step-up', 'step-up-adjusted'];
+  const names = ['goal', 'goal-amount', 'goal-period', 'balance', 'annual-return', 'annual-increase', 'step-up', 'step-up-adjusted', 'chevron-down', 'check', 'legend-dot-result', 'legend-dot-newplan'];
   await Promise.all(names.map(async (name) => {
     try {
       const resp = await fetch(`${ICON_BASE}/${name}.svg`);
@@ -381,7 +381,7 @@ function buildDropdownField({
     .map((opt) => `
       <li class="saving-plan-dropdown-option${opt.key === selected?.key ? ' is-selected' : ''}"
           role="option" data-value="${opt.key}" tabindex="-1">
-        <span class="saving-plan-dropdown-option-check icon-check" aria-hidden="true"></span>
+        <span class="saving-plan-dropdown-option-check" aria-hidden="true">${getIcon('check')}</span>
         <span class="saving-plan-dropdown-option-label">${opt.label}</span>
       </li>
     `)
@@ -390,7 +390,7 @@ function buildDropdownField({
     <div class="saving-plan-field saving-plan-field-dropdown" data-field="${name}" data-value="${selected?.key || ''}">
       <button type="button" class="saving-plan-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
         <span class="saving-plan-dropdown-current">${selected?.label || label}</span>
-        <span class="saving-plan-field-chevron" aria-hidden="true"></span>
+        <span class="saving-plan-field-chevron" aria-hidden="true">${getIcon('chevron-down')}</span>
       </button>
       <ul class="saving-plan-dropdown-panel" role="listbox" tabindex="-1">
         ${optionsMarkup}
@@ -472,8 +472,8 @@ function buildShellMarkup(data) {
   })}
           </div>
           <div class="saving-plan-form-actions">
-            <button type="button" class="saving-plan-form-btn saving-plan-form-btn-secondary" data-action="clear" disabled>${labels.buttons.clear}</button>
-            <button type="button" class="saving-plan-form-btn saving-plan-form-btn-primary" data-action="calculate" disabled>${labels.buttons.calculate}</button>
+            <button type="button" class="button-m secondary" data-action="clear" disabled>${labels.buttons.clear}</button>
+            <button type="button" class="button-m primary" data-action="calculate" disabled>${labels.buttons.calculate}</button>
           </div>
         </div>
  
@@ -636,7 +636,7 @@ function renderResult(state, data, calculation) {
   const annualReturn = inputs.annualReturn || data.defaults?.annualReturn || 0;
   const futureText = fillTemplate(data.labels.result.futureValueTemplate, {
     amount: `<strong>${escapeHtml(formatNumber(calculation.FutureValue))}</strong>`,
-    years: `<strong>${escapeHtml(String(goalPeriod))}</strong>`,
+    years: escapeHtml(String(goalPeriod)),
   });
   setHTML(root, '[data-result="future"]', futureText);
   setText(root, '[data-result="monthly"]', formatNumber(calculation.SavingMonth));
@@ -736,11 +736,11 @@ function renderNewPlanPlaceholder(state, data, inputs) {
   };
   setSliderValueText('goalAmount', formatNumber(inputs.goalAmount));
   setSliderValueText('annualReturn', formatDecimal(inputs.annualReturn));
-  setSliderValueText('annualIncrease', formatDecimalSmart(inputs.annualIncrease));
+  setSliderValueText('annualIncrease', formatDecimal(inputs.annualIncrease));
   root.querySelector('.saving-plan-newplan-card')?.classList.add('is-placeholder');
   const futureText = fillTemplate(data.labels.newPlan.futureValueTemplate, {
     amount: '<strong>0</strong>',
-    years: `<strong>${escapeHtml(String(inputs.goalPeriod))}</strong>`,
+    years: escapeHtml(String(inputs.goalPeriod)),
   });
   const futureEl = root.querySelector('[data-newplan="future"]');
   if (futureEl) { futureEl.innerHTML = futureText; futureEl.removeAttribute('hidden'); }
@@ -775,7 +775,7 @@ async function renderNewPlan(state, data, tweakInputs) {
   );
   const futureText = fillTemplate(data.labels.newPlan.futureValueTemplate, {
     amount: `<strong>${escapeHtml(formatNumber(calculation.FutureValue))}</strong>`,
-    years: `<strong>${escapeHtml(String(baseInputs.goalPeriod))}</strong>`,
+    years: escapeHtml(String(baseInputs.goalPeriod)),
   });
   root.querySelector('.saving-plan-newplan-card')?.classList.remove('is-placeholder');
   const futureEl = root.querySelector('[data-newplan="future"]');

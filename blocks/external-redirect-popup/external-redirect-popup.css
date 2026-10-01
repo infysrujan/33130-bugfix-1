@@ -38,7 +38,6 @@
   backdrop-filter: blur(1.25rem);
   border: 0.0625rem solid var(--bbl-color-white);
   overflow: visible;
-  line-height: 130%;
 }
 
 /* ── Close button ── */
@@ -87,11 +86,6 @@
   opacity: 0.85;
 }
 
-/* ── Card body (image + text) ── */
-.external-redirect-popup-body {
-  line-height: 130%;
-}
-
 /* Icon */
 .external-redirect-popup-body img {
   display: block;
@@ -124,8 +118,6 @@
 .external-redirect-popup-description p {
   margin-block: 0.625rem 0;
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b3-mobile);
-  line-height: 1.4063rem;
   color: var(--bbl-color-truthful-blue);
   font-weight: var(--bbl-font-weight-regular);
 }
@@ -262,10 +254,5 @@
 
   .external-redirect-popup-btn-cancel {
     margin-top: 1.875rem;
-  }
-
-  .external-redirect-popup-description p {
-    font-size: var(--bbl-font-size-b1);
-    line-height: 1.5rem;
   }
 }

@@ -57,59 +57,29 @@ async function loadAllCards() {
   }
 }
 
-function normalizeRow(row) {
-  const out = {};
-  Object.entries(row).forEach(([k, v]) => {
-    const key = k.replace(/\u200B/g, '').trim();
-    out[key] = typeof v === 'string' ? v.replace(/\u200B/g, '').trim() : v;
-  });
-  return out;
-}
-
-/** Build name→sourcing-priority map from the MF filtering matrix sheet */
-async function loadSourcingOrder() {
-  try {
-    const configs = await fetchConfigs();
-    const url = configs.mfFilteringMatrixUrl;
-    if (!url) return null;
-    const json = await fetchGet(url, { throwOnError: false });
-    if (!json) return null;
-    const lang = getLang();
-    const nameKey = lang === 'th' ? 'Fund Name (TH)' : 'Fund Name';
-    const map = {};
-    (json.data || []).map(normalizeRow).forEach((row, i) => {
-      const key = norm(row[nameKey] || row['Fund Name'] || '');
-      // Use the row index as sourcing order if no explicit sourcing column
-      if (key) map[key] = parseInt(row.Sourcing || row.Order || i, 10);
-    });
-    return map;
-  } catch {
-    return null;
-  }
-}
-
 function getCardName(card) {
   return card.name || card.title || card.FundName || card.fundName || '';
 }
 
-function filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap) {
-  const normalizedNames = selectedNames.map(norm);
-  const matched = allCards.filter((card) => selectedIDs.includes(card.ProductID));
+// Preserve the exact selection order of the user's selected cards while enriching with full data.
+function filterAndSortCards(allCards, cards) {
+  if (!cards || cards.length === 0) return [];
+  if (!allCards || allCards.length === 0) return cards;
 
-  if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
-    return normalizedNames
-      .map((n) => matched.find((c) => {
-        const cardName = norm(getCardName(c));
-        const found = cardName === n;
-        return found;
-      }))
-      .filter(Boolean);
-  }
+  const cardKey = (c) => (c.ProductID || c.id || c.cardId || '').toString().trim();
 
-  return matched.sort((a, b) => {
-    const sA = sourcingMap[norm(getCardName(a))] ?? 9999;
-    const sB = sourcingMap[norm(getCardName(b))] ?? 9999;
-    return sA - sB;
+  return cards.map((c) => {
+    const key = cardKey(c);
+    const cName = norm(getCardName(c));
+
+    const matched = allCards.find((ac) => {
+      const acKey = cardKey(ac);
+      if (key && acKey && key === acKey) return true;
+      if (cName && norm(getCardName(ac)) === cName) return true;
+      return false;
+    });
+
+    return matched ? { ...c, ...matched } : c;
   });
 }
 
@@ -243,7 +213,7 @@ function buildCompareCard(card, doc, labels) {
   // Read more link
   const readMoreLink = doc.createElement('a');
   readMoreLink.href = readMoreHref || '#';
-  readMoreLink.className = 'mfcr-read-more';
+  readMoreLink.className = 'mfcr-read-more button-m secondary';
   readMoreLink.textContent = labels.readMore;
   col.appendChild(readMoreLink);
 
@@ -257,20 +227,72 @@ function initMobileCarousel(grid, doc) {
   dotsEl.className = 'mfcr-scroll-dots';
   grid.parentElement?.appendChild(dotsEl);
 
-  const getItems = () => [...grid.querySelectorAll('.mfcr-card')];
+  const getItems = () => [...grid.querySelectorAll('.mfcr-card:not(.mfcr-card-clone)')];
 
-  const scrollToItem = (item) => {
-    const offset = item.getBoundingClientRect().left
+  let realItems = [];
+
+  const scrollToItem = (item, instant = false) => {
+    const itemOffset = item.getBoundingClientRect().left
       - grid.getBoundingClientRect().left
       + grid.scrollLeft;
-    grid.scrollTo({ left: offset, behavior: 'smooth' });
+    const left = itemOffset - (grid.clientWidth - item.clientWidth) / 2;
+    if (instant) {
+      grid.scrollLeft = left;
+    } else {
+      grid.scrollTo({ left, behavior: 'smooth' });
+    }
+  };
+
+  const findNearest = () => {
+    const allItems = [...grid.querySelectorAll('.mfcr-card')];
+    const containerCenter = grid.getBoundingClientRect().left + grid.clientWidth / 2;
+    let nearest = null;
+    let minDistance = Infinity;
+    allItems.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      const dist = Math.abs((rect.left + rect.width / 2) - containerCenter);
+      if (dist < minDistance) { minDistance = dist; nearest = item; }
+    });
+    return nearest;
+  };
+
+  const cloneSet = (source) => source.map((item, i) => {
+    const clone = item.cloneNode(true);
+    clone.classList.add('mfcr-card-clone');
+    clone.setAttribute('aria-hidden', 'true');
+    clone.querySelectorAll('a, button').forEach((el) => { el.tabIndex = -1; });
+    clone.dataset.realIndex = i;
+    return clone;
+  });
+
+  const setupLoopClones = () => {
+    grid.querySelectorAll('.mfcr-card-clone').forEach((el) => el.remove());
+    realItems = getItems();
+    if (realItems.length < 2) return;
+
+    cloneSet(realItems).forEach((clone) => grid.insertBefore(clone, realItems[0]));
+    cloneSet(realItems).forEach((clone) => grid.appendChild(clone));
+  };
+
+  const centerWhenReady = (item) => {
+    const attempt = () => {
+      if (grid.clientWidth > 0) {
+        scrollToItem(item, true);
+      } else {
+        requestAnimationFrame(attempt);
+      }
+    };
+    requestAnimationFrame(attempt);
   };
 
   const buildDots = () => {
     dotsEl.innerHTML = '';
-    const items = getItems();
-    if (items.length <= 1) return;
-    items.forEach((item, i) => {
+    setupLoopClones();
+    if (realItems.length <= 1) return;
+
+    centerWhenReady(realItems[0]);
+
+    realItems.forEach((item, i) => {
       const dot = doc.createElement('button');
       dot.type = 'button';
       dot.className = `mfcr-scroll-dot${i === 0 ? ' is-active' : ''}`;
@@ -280,18 +302,25 @@ function initMobileCarousel(grid, doc) {
     });
   };
 
+  let scrollEndTimer;
   grid.addEventListener('scroll', () => {
     const dots = [...dotsEl.querySelectorAll('.mfcr-scroll-dot')];
-    const items = getItems();
-    if (!items.length || !dots.length) return;
-    const containerLeft = grid.getBoundingClientRect().left;
-    let activeIndex = 0;
-    let minDistance = Infinity;
-    items.forEach((item, i) => {
-      const dist = Math.abs(item.getBoundingClientRect().left - containerLeft);
-      if (dist < minDistance) { minDistance = dist; activeIndex = i; }
-    });
+    if (!realItems.length || !dots.length) return;
+
+    const nearest = findNearest();
+    const activeIndex = nearest?.dataset.realIndex !== undefined
+      ? Number(nearest.dataset.realIndex)
+      : realItems.indexOf(nearest);
     dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+
+    clearTimeout(scrollEndTimer);
+    scrollEndTimer = setTimeout(() => {
+      const settled = findNearest();
+      if (settled?.classList.contains('mfcr-card-clone') && settled.dataset.realIndex !== undefined) {
+        const target = realItems[Number(settled.dataset.realIndex)];
+        if (target) scrollToItem(target, true);
+      }
+    }, 120);
   }, { passive: true });
 
   return buildDots;
@@ -302,7 +331,7 @@ function initMobileCarousel(grid, doc) {
 function equalizeRowHeights(grid) {
   if (!window.matchMedia(`(width > ${TABLET_MIN})`).matches) return;
 
-  const cards = [...grid.querySelectorAll('.mfcr-card')];
+  const cards = [...grid.querySelectorAll('.mfcr-card:not(.mfcr-card-clone)')];
   if (cards.length < 2) return;
   if (grid.getBoundingClientRect().width === 0) return;
 
@@ -361,7 +390,7 @@ function getCardsFromStorage() {
 
 // ── Render ─────────────────────────────────────────────────────────────────────
 
-function renderComparison(container, cards, allCards, sourcingMap, labels, doc) {
+function renderComparison(container, cards, allCards, labels, doc) {
   container.innerHTML = '';
 
   if (!cards || cards.length === 0) {
@@ -373,13 +402,7 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
     return;
   }
 
-  const selectedNames = cards.map((c) => c.name);
-  const selectedIDs = cards.map((c) => c.id);
-  const sorted = filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap);
-
-  const displayCards = sorted.length > 0
-    ? sorted
-    : cards.map(({ name, image }) => ({ name, image }));
+  const displayCards = filterAndSortCards(allCards, cards);
 
   container.classList.toggle('single-card', displayCards.length === 1);
   container.classList.toggle('two-cards', displayCards.length === 2);
@@ -452,10 +475,10 @@ export default async function decorate(block) {
   };
 
   // ── Load data ──────────────────────────────────────────────────────────────
-  const [allCards, sourcingMap] = await Promise.all([loadAllCards(), loadSourcingOrder()]);
+  const allCards = await loadAllCards();
 
   function renderAndAlign(cards) {
-    renderComparison(container, cards, allCards, sourcingMap, labels, doc);
+    renderComparison(container, cards, allCards, labels, doc);
     buildDots();
     doAlign();
   }

@@ -13,6 +13,10 @@ import { handleMobileAppView } from '../../scripts/utils/card-helpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 
+function getPicture(cell) {
+  return cell?.querySelector('picture') || null;
+}
+
 function isRegisterEnabled(value) {
   const normalized = String(value || '').trim().toUpperCase();
   return normalized === 'Y' || normalized === 'D';
@@ -56,10 +60,14 @@ function readBlockData(block) {
 
   if (firstRow.children.length >= 2) {
     const config = readBlockConfig(block);
+    const imageRow = [...block.querySelectorAll(':scope > div')].find((row) => {
+      const key = row.children[0]?.textContent?.trim().toLowerCase().replace(/[^a-z0-9]/g, '') || '';
+      return key === 'detailimageurl';
+    });
     return {
       id: config.promoid || '',
       title: config.title || '',
-      detailImageUrl: config.detailimageurl || '',
+      detailImage: getPicture(imageRow?.children[1]),
       detailDescription: config.detaildescription || '',
       promotionStartDate: config.promotionstartdate || '',
       promotionEndDate: config.promotionenddate || '',
@@ -73,7 +81,6 @@ function readBlockData(block) {
   const rows = [...block.querySelectorAll(':scope > div')];
   const txt = (i) => rows[i]?.children[0]?.textContent?.trim() || '';
   const innerHtml = (i) => rows[i]?.children[0]?.innerHTML?.trim() || '';
-  const imgSrc = (i) => rows[i]?.querySelector('img')?.src || '';
   const PROMO_TYPES = ['credit-card', 'bangkok-bank-m'];
   const promoType = txt(0).toLowerCase();
   const o = PROMO_TYPES.includes(promoType) ? 1 : 0;
@@ -82,7 +89,7 @@ function readBlockData(block) {
   const titleHeading = rows[o + 1]?.querySelector('h1,h2,h3,h4,h5,h6');
 
   const len = rows.length;
-  const hasRldEnabledField = len >= o + 22;
+  const hasRldEnabledField = len >= o + (isBBM ? 21 : 22);
 
   const rldEnabled = hasRldEnabledField ? txt(len - 4) : '';
   const rldTextRaw = innerHtml(len - 3);
@@ -93,7 +100,7 @@ function readBlockData(block) {
   return {
     id: txt(o),
     title: titleHeading?.innerHTML?.trim() || txt(o + 1),
-    detailImageUrl: imgSrc(o + 3),
+    detailImage: getPicture(rows[o + 3]),
     detailDescription: innerHtml(o + 5),
     promotionStartDate: txt(o + 11),
     promotionEndDate: txt(o + 12),
@@ -117,9 +124,12 @@ function buildRegisterCtaHtml(label, url) {
     </div>`;
 }
 
-function bindImageModal(container, imageUrl, altText) {
+function bindImageModal(container) {
   const imageLink = container.querySelector('.promo-detail-image-link');
-  imageLink?.addEventListener('click', (e) => {
+  const picture = imageLink?.querySelector('picture');
+  if (!imageLink || !picture) return;
+
+  imageLink.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -161,11 +171,7 @@ function bindImageModal(container, imageUrl, altText) {
 
     const modalContent = doc.createElement('div');
     modalContent.className = 'promo-detail-image-modal-content';
-
-    const modalImage = doc.createElement('img');
-    modalImage.src = imageUrl;
-    modalImage.alt = altText;
-    modalContent.appendChild(modalImage);
+    modalContent.appendChild(picture.cloneNode(true));
 
     body.replaceChildren(modalContent);
     doc.body.appendChild(wrapper);
@@ -180,12 +186,7 @@ function renderDetails(container, data, locale, viewFull, registerCtaUrl) {
   const title = data?.title
     ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
-  const imageUrl = data?.detailImageUrl || '';
-
-  const cleanTitle = data?.title ? data.title.replace(/<[^>]*>/g, '').trim() : '';
-  const imageHtml = imageUrl
-    ? `<img src="${imageUrl}" alt="${cleanTitle}" loading="lazy">`
-    : '';
+  const picture = data?.detailImage;
   const description = data?.detailDescription || '';
   const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
@@ -193,12 +194,10 @@ function renderDetails(container, data, locale, viewFull, registerCtaUrl) {
   const ctaLabel = getRegisterCtaLabel(isRegister, data);
   const ctaUrl = getRegisterCtaUrl(isRegister, registerCtaUrl, data);
 
-  const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
-  const imageColHtml = imageHtml ? `
+  const rowClass = picture ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
+  const imageColHtml = picture ? `
           <div class="promo-detail-image">
-            <a class="promo-detail-image-link" href="#" title="${viewFull}">
-              ${imageHtml}
-            </a>
+            <a class="promo-detail-image-link" href="#" title="${viewFull}"></a>
           </div>` : '';
 
   container.innerHTML = `
@@ -223,7 +222,10 @@ function renderDetails(container, data, locale, viewFull, registerCtaUrl) {
   }
   contentEl?.insertAdjacentHTML('beforeend', buildRegisterCtaHtml(ctaLabel, ctaUrl));
 
-  if (imageUrl) bindImageModal(container, imageUrl, cleanTitle);
+  if (picture) {
+    container.querySelector('.promo-detail-image-link')?.append(picture);
+    bindImageModal(container);
+  }
 }
 
 export default async function decorate(block) {

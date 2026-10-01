@@ -336,6 +336,10 @@
 
 /* Columns per view by breakpoint (mobile shows fewer, desktop more). */
 @media (width > 47.5rem) {
+  .tabs.icon-tab-carousel .tabs-nav-next {
+    right: -0.875rem;
+  }
+
   .tabs.icon-tab-carousel .tabs-nav {
     --tabs-per-view: 5;
   }
@@ -507,7 +511,7 @@
   .tabs.media-tab .tabs-nav button {
     padding: 0;
     text-align: left;
-    margin: 0 1.1rem;
+    margin: 0 var(--bbl-space-100);
     min-height: var(--bbl-space-200);
     height: unset;
     max-height: max-content;
@@ -582,6 +586,11 @@
 
   .tabs-nav-wrapper .tabs-nav li {
     padding: 0 0.9375rem;
+  }
+
+  .tabs.simple-tab .tabs-nav button,
+  .tabs.media-tab .tabs-nav button {
+    margin: 0 0.9375rem;
   }
 
   .tabs.tiled-tab .tabs-nav li {

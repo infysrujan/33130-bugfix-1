@@ -61,14 +61,6 @@ function closeFiltersOnOutsideClick(container) {
   });
 }
 
-function resolveGps(item) {
-  if (item.GPS_LATITUDE && item.GPS_LONGTITUDE) {
-    return { lat: item.GPS_LATITUDE, lng: item.GPS_LONGTITUDE };
-  }
-  const [lat, lng] = (item.GPS_DATA || '').split(',').map((s) => s.trim());
-  return lat && lng ? { lat, lng } : null;
-}
-
 function buildOptions(items) {
   return items
     .map((item) => `<li class="pfs-option" data-value="${item.value}" role="option">${item.label}</li>`)
@@ -127,15 +119,35 @@ function buildFilterHtml(p, propertyTypes, priceRanges) {
     </div>`;
 }
 
-function buildPropCardHtml(item, detailPath, p, category, pfsData) {
+function isFlagYes(value) {
+  return String(value ?? '').trim().toUpperCase() === 'Y';
+}
+
+// All Properties only. Promotion outranks the other flags. An expired promotion
+// shows no tag, even when highlight, new, or invest is also set.
+function resolveAllPropertiesTag(item, categoryLabel) {
+  if (isFlagYes(item.PROMOTION)) {
+    return isPromotionOverDate(item) ? '' : (categoryLabel.promotion || '');
+  }
+  if (isFlagYes(item.FLAG_HIGHLIGHT)) return categoryLabel.highlight || '';
+  if (isFlagYes(item.FLAG_NEW)) return categoryLabel.new || '';
+  if (isFlagYes(item.FLAG_INVEST)) return categoryLabel.investment || '';
+  return '';
+}
+
+function buildPropCardHtml(item, detailPath, p, category, pfsData, eager = false) {
   const photo = item.PHOTO_FILE_1;
   const currency = p.propertyForSaleCurrency || 'บาท';
   const price = Number(item.PR_PRICE) > 0
     ? `${formatPrice(item.PR_PRICE)} ${currency}`
     : (p.propertyForSaleContactStaff || 'ติดต่อเจ้าหน้าที่');
-  const specialPrice = !isPromotionOverDate(item) ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}` : '';
+  const promotionActive = isFlagYes(item.PROMOTION) && !isPromotionOverDate(item);
+  const showSpecialPrice = category === 'all' ? promotionActive : !isPromotionOverDate(item);
+  const specialPrice = showSpecialPrice ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}` : '';
   const location = [item.LOCATION_AMPHUR, item.LOCATION_PROVINCE].filter(Boolean).join(', ');
-  const tag = pfsData.categoryLabel[category] || item.MAIN_ASSET || '';
+  const tag = category === 'all'
+    ? resolveAllPropertiesTag(item, pfsData.categoryLabel)
+    : (pfsData.categoryLabel[category] || item.MAIN_ASSET || '');
 
   const descParts = [
     item.MAIN_ASSET ? `<p class="pfs-card-id">${item.MAIN_ASSET}</p>` : '',
@@ -144,9 +156,8 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData) {
     specialPrice ? `<p class="pfs-card-price pfs-card-special-price">${specialPrice}</p>` : '',
   ].filter(Boolean).join('');
 
-  const gps = resolveGps(item);
-  const mapUrl = gps && pfsData.mapBaseUrl
-    ? `${pfsData.mapBaseUrl}N ${gps.lat} E ${gps.lng}`
+  const mapUrl = item.GPS_DATA && pfsData.mapBaseUrl
+    ? `${pfsData.mapBaseUrl}${item.GPS_DATA}`
     : '';
 
   const card = {
@@ -162,11 +173,10 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData) {
     ? `<a href="${mapUrl}" class="listing-card-cta button-m secondary pfs-map-btn">${p.propertyForSaleMapLocation || 'ตำแหน่งที่ตั้ง'}</a>`
     : '';
 
-  return buildCardHtml(card, tag, p, { footerExtra });
+  return buildCardHtml(card, tag, p, { footerExtra, eager });
 }
 
-const FETCH_TIMEOUT_MS = 10000;
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes time
 const apiCache = new Map();
 
 function enforceHttps(url) {
@@ -186,11 +196,10 @@ function setCache(key, data) {
 
 function validateSearchParams(params, validCategories) {
   return {
-    page: Math.max(0, parseInt(params.page, 10) || 0),
     regionId: params.regionId ? String(params.regionId).replace(/\D/g, '') : 0,
     province: params.province ? String(params.province).trim() : null,
     district: params.district ? String(params.district).trim() : null,
-    assetTypeId: Math.max(0, parseInt(params.assetTypeId, 10) || 0),
+    assetTypeId: params.assetTypeId ? String(params.assetTypeId).trim() : null,
     priceRangeKey: Math.max(0, parseInt(params.priceRangeKey, 10) || 0),
     keyword: params.keyword ? String(params.keyword).trim().slice(0, 100) : null,
     category: validCategories.includes(params.category) ? params.category : 'all',
@@ -204,19 +213,22 @@ async function fetchJson(rawUrl, { useCache = true } = {}) {
     if (cached) return cached;
   }
   try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
     const data = await fetchGet(url, {
       headers: { Accept: 'application/json' },
-      signal: ctrl.signal,
       throwOnError: false,
     });
-    clearTimeout(timer);
     if (useCache && data) setCache(url, data);
     return data;
   } catch {
     return null;
   }
+}
+
+function toPropertyTypeValue(key, value) {
+  const trimmedKey = String(key).trim();
+  const trimmedValue = String(value || '').trim();
+  if (trimmedValue) return trimmedValue;
+  return trimmedKey === '0' ? 'all' : '';
 }
 
 async function loadPfsData(configUrl) {
@@ -227,29 +239,37 @@ async function loadPfsData(configUrl) {
   return {
     tabIndexCategory: categories.map((r) => r.Key),
     categoryLabel: Object.fromEntries(categories.map((r) => [r.Key, r.Label])),
-    propertyTypes: types.map((r) => ({ label: r.Label, value: r.Key.trim() })),
+    propertyTypes: types.map((r) => ({
+      label: r.Label,
+      value: toPropertyTypeValue(r.Key, r.Value),
+    })),
     priceRanges: ranges.map((r) => ({ label: r.Label, key: r.Key.trim() })),
   };
 }
 
-function buildSearchUrl(apiBase, params, validCategories) {
+function buildSearchUrl(apiBase, searchUrlTemplate, params, validCategories) {
   const v = validateSearchParams(params, validCategories);
-  const province = v.province ? encodeURIComponent(v.province) : 0;
-  const district = v.district ? encodeURIComponent(v.district) : 0;
-  const segments = [
-    v.page,
-    v.regionId,
-    province,
-    district,
-    v.keyword ? v.keyword.split(',').map((s) => encodeURIComponent(s.trim())).join(',') : 0,
-    v.priceRangeKey,
-    v.category,
-  ];
-  return `${enforceHttps(apiBase)}/SearchProperty/${segments.join('/')}`;
+  const tokens = {
+    searchKey: v.keyword ? v.keyword.split(',').map((s) => encodeURIComponent(s.trim())).join(',') : 0,
+    propertyType: v.assetTypeId && v.assetTypeId !== '0'
+      ? encodeURIComponent(v.assetTypeId)
+      : 'all',
+    region: v.regionId,
+    province: v.province ? encodeURIComponent(v.province) : 'all',
+    district: v.district ? encodeURIComponent(v.district) : 'all',
+    priceRange: v.priceRangeKey || 'all',
+    category: v.category,
+  };
+  const path = Object.entries(tokens).reduce(
+    (acc, [key, value]) => acc.replace(`{{${key}}}`, value),
+    searchUrlTemplate.replace(/^\//, ''),
+  );
+  return enforceHttps(`${apiBase}/${path}`);
 }
 
-async function searchProperties(apiBase, params, validCategories) {
-  const url = buildSearchUrl(apiBase, params, validCategories);
+async function searchProperties(apiBase, searchUrlTemplate, params, validCategories) {
+  if (!apiBase || !searchUrlTemplate) return { items: [], total: 0 };
+  const url = buildSearchUrl(apiBase, searchUrlTemplate, params, validCategories);
   const json = await fetchJson(url, { useCache: !params.keyword });
   if (!json) return { items: [], total: 0 };
   const items = Array.isArray(json) ? json : (json.data ?? []);
@@ -258,8 +278,8 @@ async function searchProperties(apiBase, params, validCategories) {
 
 function setupPanel(panel, state, config) {
   const {
-    category, apiBase, detailPath, placeholders, onLoadStart, onLoadEnd, isDefault, pfsData,
-    pageSize,
+    category, apiBase, searchUrlTemplate, detailPath, placeholders, onLoadStart, onLoadEnd,
+    isDefault, pfsData, pageSize,
   } = config;
   const gridEl = document.createElement('div');
   gridEl.className = 'pfs-grid listing-card-grid';
@@ -279,7 +299,14 @@ function setupPanel(panel, state, config) {
     const pageItems = allItems.slice(start, start + pageSize);
 
     gridEl.innerHTML = pageItems.length
-      ? pageItems.map((item) => buildPropCardHtml(item, detailPath, placeholders, category, pfsData)).join('')
+      ? pageItems.map((item, i) => buildPropCardHtml(
+        item,
+        detailPath,
+        placeholders,
+        category,
+        pfsData,
+        i < 4,
+      )).join('')
       : `<p class="listing-card-empty">${placeholders.propertyForSaleNotFound || 'ขออภัย ไม่พบข้อมูลตามที่ท่านระบุ'}</p>`;
 
     const newTab = (placeholders.propertyForSaleDetailsNewTab || 'true') === 'true';
@@ -304,21 +331,18 @@ function setupPanel(panel, state, config) {
       : 0;
 
     try {
-      const typeLabel = state.type && state.type !== '0'
-        ? (pfsData.propertyTypes.find((t) => t.value === state.type)?.label || '')
-        : '';
       const searchParams = {
-        page: 0,
         regionId: state.regionId,
         province: state.province,
         district: state.district,
-        assetTypeId: 0,
+        assetTypeId: state.type,
         priceRangeKey,
-        keyword: typeLabel || state.keyword,
+        keyword: state.keyword,
       };
 
       const { items } = await searchProperties(
         apiBase,
+        searchUrlTemplate,
         { ...searchParams, category },
         pfsData.tabIndexCategory,
       );
@@ -376,6 +400,7 @@ export default async function decorate(block) {
 
   const pageSize = parseInt(placeholders.propertyForSalePageSize, 10) || 12;
   const apiBase = (configs?.propertyForSaleBaseUrl || '').replace(/\/$/, '');
+  const searchUrlTemplate = configs?.propertyForSaleSearchUrl || '';
   const detailPath = configs?.propertyForSaleDetailPage || '';
   const pfsConfigUrl = configs?.propertyForSaleConfigUrl || '';
   const mapBaseUrl = configs?.propertyForSaleMapUrl || '';
@@ -443,6 +468,7 @@ export default async function decorate(block) {
     return setupPanel(panel, state, {
       category,
       apiBase,
+      searchUrlTemplate,
       detailPath,
       placeholders,
       onLoadStart: showOverlay,

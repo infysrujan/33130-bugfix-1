@@ -13,8 +13,8 @@
   --bbl-color-truthful-blue: #002850;      /* Primary dark blue */
   --bbl-color-active-blue: #0064FF;        /* Primary bright blue */
    --bbl-color-truthful-dark-blue: #233a58; /* Primary dark blue variant */
-  --bbl-color-white: #FFFFFF;
-  --bbl-color-black: #000000;
+  --bbl-color-white: #FFF;
+  --bbl-color-black: #000;
 
   /* =========================================================================
      GREY SCALE (Neutrals)
@@ -26,7 +26,7 @@
   --bbl-color-grey-20: #E3E3E5;
   --bbl-color-grey-30: #DBDBDB;
   --bbl-color-grey-40: #C8C8CC;
-  --bbl-color-grey-45: #BBBBBB;
+  --bbl-color-grey-45: #BBB;
   --bbl-color-grey-50: #A9A9AA;
   --bbl-color-grey-60: #939399;
   --bbl-color-grey-70: #78787D;
@@ -40,13 +40,13 @@
   --bbl-color-grey-130: #2B2B2B;
   --bbl-color-grey-140: #3F3F3F;
   --bbl-color-grey-150: #9E9E9E;
-  --bbl-color-grey-160: #778899;
+  --bbl-color-grey-160: #789;
   --bbl-color-gray-121: #171717;
   --bbl-color-gray-122: #e8e8e8;
   --bbl-color-gray-142: #606060;
   --bbl-color-gray-143: #6b6b6b;
   --bbl-color-gray-144: #F9F9F9;
-  --bbl-color-gray-145: #DDDDDD;
+  --bbl-color-gray-145: #DDD;
   --bbl-color-gray-146: #DEDEDE;
   --bbl-color-gray-600: #6a6a6a;
   --bbl-color-gray-300: #d6d6d6;
@@ -58,7 +58,7 @@
   --bbl-color-grey-25: #919dab;
   --bbl-color-grey-26: #d9d9d9;
   --bbl-color-grey-27: #d3d3d3;
-  --bbl-color-grey-28: #333333;
+  --bbl-color-grey-28: #333;
   --bbl-color-grey-78: #787878;
   --bbl-color-grey-152: #dcdcdc;
   --bbl-color-grey-153: #696969;
@@ -91,10 +91,11 @@
   --bbl-color-blue-80: #0068B7;
   --bbl-color-blue-90: #0048B7;
   --bbl-color-blue-100: #003382;
-  --bbl-color-blue-105: #003399;
+  --bbl-color-blue-105: #039;
   --bbl-color-blue-108: #002D5B;
   --bbl-color-blue-113: #022D53;
   --bbl-color-blue-115: #4B70B7;
+
   /* Truthful Blue is at position ~110 */
   --bbl-color-blue-120: #031D37;
   --bbl-color-blue-130: #002087;
@@ -205,7 +206,7 @@
   --bbl-color-system-green-light: #B2FF9C;
 
   /* Error */
-  --bbl-color-system-red: #FF0000;
+  --bbl-color-system-red: #F00;
   --bbl-color-system-red-light: #FFC5BD;
 
   /* Warning */
@@ -217,32 +218,32 @@
      ========================================================================= */
 
   /* Black Transparencies */
-  --bbl-color-black-alpha-5: rgba(0, 0, 0, 0.05);
-  --bbl-color-black-alpha-10: rgba(0, 0, 0, 0.10);
-  --bbl-color-black-alpha-12: rgba(0, 0, 0, 0.12);
-  --bbl-color-black-alpha-14: rgba(0, 0, 0, 0.14);
-  --bbl-color-black-alpha-20: rgba(0, 0, 0, 0.20);
-  --bbl-color-black-alpha-30: rgba(0, 0, 0, 0.30);
+  --bbl-color-black-alpha-5: rgb(0 0 0 / 5%);
+  --bbl-color-black-alpha-10: rgb(0 0 0 / 10%);
+  --bbl-color-black-alpha-12: rgb(0 0 0 / 12%);
+  --bbl-color-black-alpha-14: rgb(0 0 0 / 14%);
+  --bbl-color-black-alpha-20: rgb(0 0 0 / 20%);
+  --bbl-color-black-alpha-30: rgb(0 0 0 / 30%);
   --bbl-color-black-alpha-33: rgb(0 0 0 / 33%);
-  --bbl-color-black-alpha-40: rgba(0, 0, 0, 0.40);
-  --bbl-color-black-alpha-60: rgba(0, 0, 0, 0.60);
-  --bbl-color-black-alpha-75: rgba(0, 0, 0, 0.75);
-  --bbl-color-black-alpha-80: rgba(0, 0, 0, 0.80);
-  --bbl-color-black-alpha-17: rgba(0, 100, 255, 0.17);
+  --bbl-color-black-alpha-40: rgb(0 0 0 / 40%);
+  --bbl-color-black-alpha-60: rgb(0 0 0 / 60%);
+  --bbl-color-black-alpha-75: rgb(0 0 0 / 75%);
+  --bbl-color-black-alpha-80: rgb(0 0 0 / 80%);
+  --bbl-color-black-alpha-17: rgb(0 100 255 / 17%);
   --bbl-color-blue-105-alpha-17: rgb(0 51 153 / 17%);
 
   /* White Transparencies */
-  --bbl-color-white-alpha-5: rgba(255, 255, 255, 0.05);
-  --bbl-color-white-alpha-10: rgba(255, 255, 255, 0.10);
-  --bbl-color-white-alpha-20: rgba(255, 255, 255, 0.20);
-  --bbl-color-white-alpha-30: rgba(255, 255, 255, 0.30);
-  --bbl-color-white-alpha-35: rgba(255, 255, 255, 0.35);
-  --bbl-color-white-alpha-40: rgba(255, 255, 255, 0.40);
-  --bbl-color-white-alpha-60: rgba(255, 255, 255, 0.60);
-  --bbl-color-white-alpha-50: rgba(255, 255, 255, 0.5);
-  --bbl-color-white-alpha-80: rgba(255, 255, 255, 0.80);
-  --bbl-color-white-alpha-158-70: rgba(158, 158, 158, 0.7);
-  --bbl-color-white-alpha-125 : rgba(221, 221, 221, 0.5);
+  --bbl-color-white-alpha-5: rgb(255 255 255 / 5%);
+  --bbl-color-white-alpha-10: rgb(255 255 255 / 10%);
+  --bbl-color-white-alpha-20: rgb(255 255 255 / 20%);
+  --bbl-color-white-alpha-30: rgb(255 255 255 / 30%);
+  --bbl-color-white-alpha-35: rgb(255 255 255 / 35%);
+  --bbl-color-white-alpha-40: rgb(255 255 255 / 40%);
+  --bbl-color-white-alpha-60: rgb(255 255 255 / 60%);
+  --bbl-color-white-alpha-50: rgb(255 255 255 / 50%);
+  --bbl-color-white-alpha-80: rgb(255 255 255 / 80%);
+  --bbl-color-white-alpha-158-70: rgb(158 158 158 / 70%);
+  --bbl-color-white-alpha-125 : rgb(221 221 221 / 50%);
 
   /* =========================================================================
      SEMANTIC ALIASES (For Easier Use)

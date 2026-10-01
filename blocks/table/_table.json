@@ -160,6 +160,10 @@
                   "value": "cells-right-aligned-except-first"
                 },
                 {
+                  "name": "Cells Center Aligned Last Column",
+                  "value": "cells-center-aligned-last-column"
+                },
+                {
                   "name": "Cells Middle Aligned",
                   "value": "cells-middle-aligned"
                 },
@@ -212,6 +216,10 @@
                 {
                   "name": "Scroll",
                   "value": "scroll"
+                },
+                {
+                  "name": "Download 1 col mob 2 col desk",
+                  "value": "download-1-mcol-2-dcol"
                 }
               ]
             }
@@ -283,6 +291,16 @@
               }
             }
           }
+        },
+        {
+          "component": "richtext",
+          "name": "cellCss",
+          "label": "Cell CSS",
+          "valueType": "string",
+          "value": "",
+          "required": false,
+          "description": "Optional CSS to control alignment/background of specific cells, targeting this table using its Id field, e.g. #my-table-id td:nth-child(2) { text-align: center; background: #eee; } Wrapping the rules in <style> tags is optional.",
+          "filter": "cell-css-rte"
         }
       ]
     }
@@ -355,6 +373,22 @@
         }
       },
       "components": []
+    },
+    {
+      "id": "cell-css-rte",
+      "components": [
+        "richtext"
+      ],
+      "rte": {
+        "toolbar": {
+          "blocks": [
+            "code_block"
+          ],
+          "sections": [
+            "blocks"
+          ]
+        }
+      }
     }
   ]
 }

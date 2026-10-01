@@ -103,11 +103,6 @@
   margin: 0;
 }
 
-.story-card .text-default a {
-  color: inherit;
-  text-decoration: none;
-}
-
 .story-card .button-container {
   display: inline-block;
   margin: 0.3125rem 0.9375rem 0.3125rem 0;
@@ -119,11 +114,6 @@
 
 .story-card .story-card-social-icons a:hover {
   text-decoration: none;
-}
-
-.story-card-content .button-container .button-m {
-  min-width:  8.4375rem;
-  box-sizing: border-box;
 }
 
 /* ========================================================================
@@ -193,10 +183,6 @@
   .story-card .text-default {
     font-size: 1rem;
     line-height: 1.375rem;
-  }
-
-  .story-card-content .button-container .button-m {
-    min-width: 9.688rem;
   }
 
   :lang(th){

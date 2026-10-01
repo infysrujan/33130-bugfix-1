@@ -297,10 +297,6 @@ body.mobile-app-view main > div:first-child {
     font-size: var(--bbl-font-size-b2);
   }
 
-  .promo-selector-pagination {
-    margin-inline: 0.625rem;
-  }
-
   .promo-selector-filters {
     display: flex;
     align-items: center;
@@ -324,15 +320,22 @@ body.mobile-app-view main > div:first-child {
   }
 
   .promo-selector-filter-action {
-    padding-inline: var(--bbl-space-250);
     width: 50%;
     box-sizing: border-box;
+  }
+
+  .promo-selector-filter-action.btn-search {
+    padding-inline: var(--bbl-space-250) 0.625rem;
+  }
+
+  .promo-selector-filter-action.btn-reset {
+    padding-inline: 0.625rem var(--bbl-space-250);
   }
 
   .promo-selector-filter-actions .button-m {
     width: 100%;
     box-sizing: border-box;
-    min-width: 8.75rem;
+    min-width: 100%;
   }
 }
 
@@ -349,10 +352,6 @@ body.mobile-app-view main > div:first-child {
   .promo-selector-empty {
     font-size: var(--bbl-font-size-b1);
     line-height: 1rem;
-  }
-
-  .promo-selector-pagination {
-    margin-inline: 0.625rem;
   }
 
   .promo-selector-filters {

@@ -1,6 +1,8 @@
 import { fetchConfigs } from '../../scripts/config.js';
+import { getLang } from '../../scripts/scripts.js';
 import { normalizeRates } from '../forex-rates/helpers/api-helpers.js';
 import { parseApiDate } from '../../scripts/utils/date-helpers.js';
+import { BE_OFFSET } from '../../scripts/utils/datelang.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 async function fetchFxRatesConfig(url) {
@@ -147,7 +149,9 @@ export default async function decorate(block) {
     if (dateObj) {
       const d = String(dateObj.day).padStart(2, '0');
       const m = String(dateObj.month).padStart(2, '0');
-      timestamp = `${authoring.updateDateLabel} ${d}/${m}/${dateObj.year}, ${timeStr}`.trim();
+      const isThai = String(getLang() || '').toLowerCase().trim().startsWith('th');
+      const year = isThai ? Number(dateObj.year) + BE_OFFSET : dateObj.year;
+      timestamp = `${authoring.updateDateLabel} ${d}/${m}/${year}, ${timeStr}`.trim();
     }
 
     renderBlock(block, sorted, timestamp, authoring);

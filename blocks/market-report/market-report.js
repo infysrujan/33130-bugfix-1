@@ -1,5 +1,13 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { getLang } from '../../scripts/scripts.js';
+import { convertToThaiDate } from '../../scripts/utils/datelang.js';
+
+function getPageLang() {
+  const first = window.location.pathname.split('/').filter(Boolean)[0];
+  if (first === 'th' || first === 'en') return first;
+  return getLang();
+}
 
 const ALL_MAPPED_CODES = new Set([
   'RR',
@@ -184,17 +192,26 @@ function createInterestRateRow(texts) {
 
 /**
  * @param {HTMLTableElement} table
- * @param {Array<{ LoanNameEn?: string, LoanName?: string, LoanRates?: string }>} rows
+ * @param {Array<{
+ *   LoanNameEn?: string,
+ *   LoanNameTh?: string,
+ *   LoanName?: string,
+ *   LoanRates?: string,
+ * }>} rows
  */
 function populateLoanRateTableFromApi(table, rows) {
   if (!table || !Array.isArray(rows)) return;
   const tbody = getTableBodyForDataRows(table);
   const existingRows = [...tbody.querySelectorAll('tr')];
   const colCount = columnCountForInterestTable(table, tbody);
+  const isThai = getPageLang() === 'th';
 
   rows.forEach((item, i) => {
+    const loanName = isThai
+      ? (item.LoanNameTh || item.LoanNameEn || item.LoanName || '')
+      : (item.LoanNameEn || item.LoanNameTh || item.LoanName || '');
     const texts = padToColumnCount(
-      [item.LoanNameEn ?? item.LoanName ?? '', item.LoanRates ?? ''],
+      [loanName, item.LoanRates ?? ''],
       colCount,
     );
     if (i < existingRows.length) {
@@ -207,17 +224,26 @@ function populateLoanRateTableFromApi(table, rows) {
 
 /**
  * @param {HTMLTableElement} table
- * @param {Array<{ DepositNameEn?: string, DepositName?: string, DepositRates?: string }>} rows
+ * @param {Array<{
+ *   DepositNameEn?: string,
+ *   DepositNameTh?: string,
+ *   DepositName?: string,
+ *   DepositRates?: string,
+ * }>} rows
  */
 function populateDepositRateTableFromApi(table, rows) {
   if (!table || !Array.isArray(rows)) return;
   const tbody = getTableBodyForDataRows(table);
   const existingRows = [...tbody.querySelectorAll('tr')];
   const colCount = columnCountForInterestTable(table, tbody);
+  const isThai = getPageLang() === 'th';
 
   rows.forEach((item, i) => {
+    const depositName = isThai
+      ? (item.DepositNameTh || item.DepositNameEn || item.DepositName || '')
+      : (item.DepositNameEn || item.DepositNameTh || item.DepositName || '');
     const texts = padToColumnCount(
-      [item.DepositNameEn ?? item.DepositName ?? '', item.DepositRates ?? ''],
+      [depositName, item.DepositRates ?? ''],
       colCount,
     );
     if (i < existingRows.length) {
@@ -533,17 +559,21 @@ const MONTH_NAMES = [
 ];
 
 /**
- * Convert API date `DD/MM/YYYY` to display form `D Month YYYY`.
+ * Convert API date `DD/MM/YYYY` to display form `D Month YYYY` (or Thai equivalent).
  * @param {string | null | undefined} mktdate
+ * @param {string} lang
  * @returns {string}
  */
-function formatMarketReportDate(mktdate) {
+function formatMarketReportDate(mktdate, lang) {
   if (!mktdate) return '';
   const parts = mktdate.split('/');
   if (parts.length !== 3) return mktdate;
   const [day, month, year] = parts;
   const monthIndex = parseInt(month, 10) - 1;
   if (monthIndex < 0 || monthIndex > 11) return mktdate;
+  if (lang === 'th') {
+    return convertToThaiDate(new Date(Number(year), monthIndex, Number(day)));
+  }
   return `${parseInt(day, 10)} ${MONTH_NAMES[monthIndex]} ${year}`;
 }
 
@@ -972,7 +1002,7 @@ export default async function decorate(block) {
   showMarketReportLoader(panel);
   try {
     const { model, loanRows, depositRows } = await fetchMarketReportData();
-    const formattedDate = formatMarketReportDate(model.mktdate);
+    const formattedDate = formatMarketReportDate(model.mktdate, getPageLang());
 
     populatePanelTables(panel, model, loanRows, depositRows);
 

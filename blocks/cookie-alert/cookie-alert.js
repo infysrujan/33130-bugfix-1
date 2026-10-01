@@ -9,7 +9,6 @@
 
 import { loadFragment } from '../fragment/fragment.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { fetchConfigs } from '../../scripts/config.js';
 import { getCookie, setCookie } from '../../scripts/utils/cookies.js';
 
 const COOKIE_DURATION_DAYS = 365;
@@ -98,108 +97,116 @@ async function ensureCookieModal(fragmentPath) {
   return true;
 }
 
-export default async function decorate(block) {
-  /* Skip in Universal Editor — the section must not be removed while authoring. */
-  if (window.self !== window.top) return;
+export default function decorate(block) {
+  function init() {
+    /* Skip in Universal Editor — the section must not be removed while authoring. */
+    if (window.self !== window.top) return;
 
-  if (getCookie(COOKIE_CONSENT) === 'ALERT') {
-    block.closest('.section')?.remove();
-    return;
-  }
-
-  const exclusionUrls = parseExclusionUrls(block);
-  if (exclusionUrls.length && isCurrentUrlExcluded(exclusionUrls)) {
-    block.closest('.section')?.remove();
-    return;
-  }
-
-  const configs = await fetchConfigs();
-
-  // Create banner structure while preserving block attributes
-  const banner = document.createElement('div');
-  banner.className = 'cookie-alert-banner';
-  banner.setAttribute('role', 'region');
-  banner.setAttribute('aria-label', 'Cookie consent');
-  banner.setAttribute('aria-live', 'polite');
-
-  // Move instrumentation from block to banner
-  moveInstrumentation(block, banner);
-
-  const inner = document.createElement('div');
-  inner.className = 'cookie-alert-inner';
-
-  const textEl = document.createElement('div');
-  textEl.className = 'cookie-alert-text';
-
-  const btnsEl = document.createElement('div');
-  btnsEl.className = 'cookie-alert-buttons';
-
-  // Process each row in the block
-  [...block.children].forEach((row) => {
-    if (isExclusionUrlsRow(row)) return;
-
-    const content = row.firstElementChild || row;
-
-    // Check if it's a button container or not
-    if (row.querySelector('.button-container') || row.querySelector('a')) {
-      const anchor = row.querySelector('a');
-      if (anchor) {
-        const href = anchor.getAttribute('href')?.toLowerCase() || '';
-        const title = anchor.getAttribute('title')?.toLowerCase() || '';
-
-        // Convert anchors to buttons based on content
-        if (href.includes('policy') || title.includes('policy')) {
-          // Keep policy links as links
-          anchor.className = 'cookie-alert-policy-link';
-          textEl.append(anchor);
-        } else if (href.includes('cookie-modal') || title.includes('setting')) {
-          // Settings button
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'cookie-alert-btn button-m secondary cookie-alert-btn-secondary';
-          btn.textContent = anchor.textContent?.trim();
-          btn.setAttribute('aria-haspopup', 'dialog');
-          copyAnchorAttributes(anchor, btn);
-          moveInstrumentation(anchor, btn);
-
-          const fragmentPath = href || configs.cookieAlertCookieModalPath;
-          btn.addEventListener('click', async () => {
-            const loaded = await ensureCookieModal(fragmentPath);
-            if (loaded && typeof window.showCookieModal === 'function') {
-              window.showCookieModal(btn);
-            }
-          });
-
-          btnsEl.append(btn);
-        } else if (href.includes('#accept-all')) {
-          // Accept button
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'cookie-alert-btn button-m primary cookie-alert-btn-primary';
-          btn.textContent = anchor.textContent?.trim();
-          copyAnchorAttributes(anchor, btn);
-          moveInstrumentation(anchor, btn);
-
-          btn.addEventListener('click', () => acceptAll(banner));
-          btnsEl.append(btn);
-        }
-      }
-    } else {
-      // Regular content (description text)
-      textEl.append(content);
+    if (getCookie(COOKIE_CONSENT) === 'ALERT') {
+      block.closest('.section')?.remove();
+      return;
     }
-  });
 
-  inner.append(textEl, btnsEl);
-  banner.append(inner);
+    const exclusionUrls = parseExclusionUrls(block);
+    if (exclusionUrls.length && isCurrentUrlExcluded(exclusionUrls)) {
+      block.closest('.section')?.remove();
+      return;
+    }
 
-  // Append directly to body so position:fixed always works relative to the
-  // viewport, regardless of any CSS transforms on ancestor section/main elements.
-  const section = block.closest('.section');
-  document.body.appendChild(banner);
-  section?.remove();
+    let cookieAlertCookieModalPath = '';
+    import('../../scripts/config.js').then(({ fetchConfigs }) => {
+      fetchConfigs().then(({ cookieAlertCookieModalPath: modalPath }) => {
+        cookieAlertCookieModalPath = modalPath;
+      });
+    });
 
-  document.addEventListener(CONSENT_SAVED_EVENT, () => {
-    banner.remove();
-  }, { once: true });
+    // Create banner structure while preserving block attributes
+    const banner = document.createElement('div');
+    banner.className = 'cookie-alert-banner';
+    banner.setAttribute('role', 'region');
+    banner.setAttribute('aria-label', 'Cookie consent');
+    banner.setAttribute('aria-live', 'polite');
+
+    // Move instrumentation from block to banner
+    moveInstrumentation(block, banner);
+
+    const inner = document.createElement('div');
+    inner.className = 'cookie-alert-inner';
+
+    const textEl = document.createElement('div');
+    textEl.className = 'cookie-alert-text';
+
+    const btnsEl = document.createElement('div');
+    btnsEl.className = 'cookie-alert-buttons';
+
+    // Process each row in the block
+    [...block.children].forEach((row) => {
+      if (isExclusionUrlsRow(row)) return;
+
+      const content = row.firstElementChild || row;
+
+      // Check if it's a button container or not
+      if (row.querySelector('.button-container') || row.querySelector('a')) {
+        const anchor = row.querySelector('a');
+        if (anchor) {
+          const href = anchor.getAttribute('href')?.toLowerCase() || '';
+          const title = anchor.getAttribute('title')?.toLowerCase() || '';
+
+          // Convert anchors to buttons based on content
+          if (href.includes('policy') || title.includes('policy')) {
+            // Keep policy links as links
+            anchor.className = 'cookie-alert-policy-link';
+            textEl.append(anchor);
+          } else if (href.includes('cookie-modal') || title.includes('setting')) {
+            // Settings button
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'cookie-alert-btn button-m secondary cookie-alert-btn-secondary';
+            btn.textContent = anchor.textContent?.trim();
+            btn.setAttribute('aria-haspopup', 'dialog');
+            copyAnchorAttributes(anchor, btn);
+            moveInstrumentation(anchor, btn);
+
+            btn.addEventListener('click', async () => {
+              const loaded = await ensureCookieModal(href || cookieAlertCookieModalPath);
+              if (loaded && typeof window.showCookieModal === 'function') {
+                window.showCookieModal(btn);
+              }
+            });
+
+            btnsEl.append(btn);
+          } else if (href.includes('#accept-all')) {
+            // Accept button
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'cookie-alert-btn button-m primary cookie-alert-btn-primary';
+            btn.textContent = anchor.textContent?.trim();
+            copyAnchorAttributes(anchor, btn);
+            moveInstrumentation(anchor, btn);
+
+            btn.addEventListener('click', () => acceptAll(banner));
+            btnsEl.append(btn);
+          }
+        }
+      } else {
+        // Regular content (description text)
+        textEl.append(content);
+      }
+    });
+
+    inner.append(textEl, btnsEl);
+    banner.append(inner);
+
+    // Append directly to body so position:fixed always works relative to the
+    // viewport, regardless of any CSS transforms on ancestor section/main elements.
+    const section = block.closest('.section');
+    document.body.appendChild(banner);
+    section?.remove();
+
+    document.addEventListener(CONSENT_SAVED_EVENT, () => {
+      banner.remove();
+    }, { once: true });
+  }
+
+  init();
 }

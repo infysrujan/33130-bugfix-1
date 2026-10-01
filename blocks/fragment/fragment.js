@@ -7,6 +7,7 @@
 // eslint-disable-next-line import/no-cycle
 import {
   decorateMain,
+  decorateLoadedRte,
   removePictureOptimizationParams,
 } from '../../scripts/scripts.js';
 
@@ -41,22 +42,27 @@ export async function loadFragment(path) {
 
       decorateMain(main);
       await loadSections(main);
+      await decorateLoadedRte(main);
       return main;
     }
   }
   return null;
 }
 
-export default async function decorate(block) {
-  const link = block.querySelector('a');
-  const path = link ? link.getAttribute('href') : block.textContent.trim();
-  const fragment = await loadFragment(path);
-  if (fragment) {
-    const fragmentSection = fragment.querySelector(':scope .section');
-    if (fragmentSection) {
-      block.classList.add(...fragmentSection.classList);
-      block.classList.remove('section');
-      block.replaceChildren(...fragmentSection.childNodes);
+export default function decorate(block) {
+  async function init() {
+    const link = block.querySelector('a');
+    const path = link ? link.getAttribute('href') : block.textContent.trim();
+    const fragment = await loadFragment(path);
+    if (fragment) {
+      const fragmentSection = fragment.querySelector(':scope .section');
+      if (fragmentSection) {
+        block.classList.add(...fragmentSection.classList);
+        block.classList.remove('section');
+        block.replaceChildren(...fragmentSection.childNodes);
+      }
     }
   }
+
+  init();
 }

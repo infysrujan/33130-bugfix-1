@@ -44,13 +44,37 @@ function days(endDate, startDate) {
   return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 }
 
+function isEmptyFieldValue(value) {
+  return value === null || value === undefined
+    || (typeof value === 'string' && value.trim() === '');
+}
+
 /**
- * Removes top-level fields whose key contains "_exclude" from a payload object.
+ * Replaces empty/unfilled field values in a payload object with a default placeholder,
+ * so every field that is part of the outbound payload always carries a value.
  * @param {object} obj - The payload object
- * @returns {object} - A new object without the excluded fields
+ * @param {string} [defaultValue] - Placeholder used for empty fields
+ * @returns {object} - A new object with empty values replaced
+ */
+function applyDefaultValues(obj, defaultValue = '-') {
+  return Object.fromEntries(
+    Object.entries(obj).map(
+      ([key, value]) => [key, isEmptyFieldValue(value) ? defaultValue : value],
+    ),
+  );
+}
+
+/**
+ * Removes top-level fields whose key contains "_exclude" from a payload object, then fills
+ * any remaining empty/unfilled field with a default placeholder value.
+ * @param {object} obj - The payload object
+ * @returns {object} - A new object without the excluded fields, with empty fields defaulted
  */
 function filterExcludeFields(obj) {
-  return Object.fromEntries(Object.entries(obj).filter(([key]) => !key.includes('_exclude')));
+  const withoutExcluded = Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !key.includes('_exclude')),
+  );
+  return applyDefaultValues(withoutExcluded);
 }
 
 /**
@@ -442,10 +466,22 @@ function getProvinceEnumNamesTh() {
  *   }
  * }
  */
+// Caches branch results per province+lang so repeated lookups for the same
+// selection (e.g. the rule engine's own change handler and the district
+// grouping watcher below both resolving the same province) reuse the
+// response instead of firing another blocking XHR.
+const branchesByProvinceCache = new Map();
+
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
+  const cacheKey = `${lang}::${province}`;
+  if (branchesByProvinceCache.has(cacheKey)) {
+    return branchesByProvinceCache.get(cacheKey);
+  }
+
   const branchesByProvinceUrl = getBaseUrl('branches-by-province');
-  const provinceBaseUrl = branchesByProvinceUrl.endsWith('/') ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
+  const provinceBaseUrl = branchesByProvinceUrl.endsWith('/')
+    ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
   const url = `${provinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
@@ -462,7 +498,9 @@ function fetchBranchesByProvince(province, lang = 'th') {
   }
 
   const data = JSON.parse(xhr.responseText);
-  return Array.isArray(data) ? data : [];
+  const result = Array.isArray(data) ? data : [];
+  branchesByProvinceCache.set(cacheKey, result);
+  return result;
 }
 
 /**
@@ -497,10 +535,18 @@ function getBranchEnumNames(province, lang = 'th') {
 
 // Wraps a select's <option> elements into <optgroup> by district, with
 // districts sorted A-Z and branches within each district sorted A-Z.
+// Works for both EN selects (value = BranchName) and TH selects (value = BranchNo).
+// The district (Address3) is stored in a data-district attribute on each option so it
+// can be read by getBranchDistrict() without changing the option's value attribute —
+// leaving it unchanged keeps AEM Forms enum validation working correctly.
 function applyBranchDistrictGroupingToSelect(selectEl, data) {
+  // Build lookups by both BranchName and BranchNo so we handle EN and TH selects.
   const districtByBranchName = {};
+  const districtByBranchNo = {};
   data.forEach((item) => {
-    districtByBranchName[item.BranchName] = item.Address3 ? String(item.Address3).trim() : '';
+    const district = item.Address3 ? String(item.Address3).trim() : '';
+    if (item.BranchName) districtByBranchName[item.BranchName] = district;
+    if (item.BranchNo) districtByBranchNo[String(item.BranchNo)] = district;
   });
 
   // Collator gives correct A-Z ordering for both Thai and English labels.
@@ -508,10 +554,10 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
 
   // (district, then option label) so everything ends up A-Z.
   const entries = Array.from(selectEl.querySelectorAll('option'))
-    .map((opt) => ({
-      opt,
-      district: districtByBranchName[opt.value] || '',
-    }))
+    .map((opt) => {
+      const district = districtByBranchName[opt.value] || districtByBranchNo[opt.value] || '';
+      return { opt, district };
+    })
     .filter((entry) => entry.district !== '');
 
   entries.sort((a, b) => {
@@ -524,6 +570,11 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   let currentDistrict = null;
 
   entries.forEach(({ opt, district }) => {
+    // Store district in a data attribute — the value attribute is intentionally
+    // left unchanged so AEM Forms enum validation continues to pass.
+    // eslint-disable-next-line no-param-reassign
+    opt.dataset.district = district;
+
     if (district !== currentDistrict) {
       currentGroup = document.createElement('optgroup');
       currentGroup.label = district;
@@ -535,36 +586,67 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   });
 }
 
-// Polls briefly for a <select> whose options match this branch dataset,
-// then groups it.
-function scheduleApplyBranchDistrictGroupingAuto(data) {
+// Tracks selects that have already been grouped so we don't process them twice.
+// Uses a live DOM check: if the select already has <optgroup> children, it is
+// considered grouped. When the form rule engine resets options (stripping
+// optgroups), the check fails and the select is re-grouped automatically.
+
+// Applies branch sorting/grouping to every matching unprocessed <select> in the DOM.
+// Option values are never modified — district is stored in data-district attributes.
+function applyBranchGroupingToAllMatching(data) {
   if (!data.length) return;
   const branchNames = new Set(data.map((item) => String(item.BranchName)));
-
-  let attempts = 0;
-  const tryApply = () => {
-    attempts += 1;
-    const target = Array.from(document.querySelectorAll('select')).find((sel) => {
-      const optVals = Array.from(sel.options).map((o) => o.value).filter((v) => v !== '');
-      return optVals.length > 0 && optVals.every((v) => branchNames.has(v));
-    });
-
-    if (target) {
-      applyBranchDistrictGroupingToSelect(target, data);
-    } else if (attempts < 20) {
-      setTimeout(tryApply, 100);
+  const branchNos = new Set(data.map((item) => String(item.BranchNo)));
+  Array.from(document.querySelectorAll('select')).forEach((sel) => {
+    // Already grouped — optgroups still in place, nothing to do.
+    if (sel.querySelector('optgroup')) return;
+    const optVals = Array.from(sel.options).map((o) => o.value).filter((v) => v !== '');
+    const isMatch = optVals.length > 0
+      && (optVals.every((v) => branchNames.has(v)) || optVals.every((v) => branchNos.has(v)));
+    if (isMatch) {
+      applyBranchDistrictGroupingToSelect(sel, data);
     }
-  };
-  setTimeout(tryApply, 0);
+  });
+}
+
+// Polls briefly on load, then installs a MutationObserver so any branch
+// <select> that appears later (e.g. conditionally shown by a radio button)
+// is also sorted and grouped.
+function scheduleApplyBranchDistrictGroupingAuto(data) {
+  if (!data.length) return;
+
+  // Initial pass — run shortly after data is available.
+  setTimeout(() => applyBranchGroupingToAllMatching(data), 0);
+
+  // Watch for new/modified selects added to the DOM later.
+  if (typeof MutationObserver !== 'undefined') {
+    const observer = new MutationObserver((mutations) => {
+      const hasNewNodes = mutations.some((m) => m.addedNodes.length > 0 || m.type === 'attributes');
+      if (hasNewNodes) applyBranchGroupingToAllMatching(data);
+    });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['hidden', 'style', 'class'],
+    });
+  }
 }
 
 // The Rule Engine worker can't touch the DOM, and this form's custom
 // dropdown widget may not dispatch real 'change' events — so instead of
 // listening for events, poll each <select>'s value directly for changes.
+// Only the page's own language is fetched here: the rule engine's change
+// handler already fetches that language to populate enum/enumNames, and
+// unconditionally also fetching the other language previously fired on
+// every province change (e.g. an English province name against the
+// Thai-language endpoint), which reliably returns an empty result.
 if (typeof document !== 'undefined') {
   const lastValues = new Map();
 
   setInterval(() => {
+    const lang = (document.documentElement.lang || 'en').toLowerCase().startsWith('th')
+      ? 'th' : 'en';
     document.querySelectorAll('select').forEach((sel) => {
       const key = sel.name || sel.id;
       const prev = lastValues.get(key);
@@ -572,10 +654,10 @@ if (typeof document !== 'undefined') {
 
       if (current && current !== prev) {
         lastValues.set(key, current);
-        ['en', 'th'].forEach((lang) => {
-          const data = fetchBranchesByProvince(current, lang);
-          if (data.length) scheduleApplyBranchDistrictGroupingAuto(data);
-        });
+        const data = fetchBranchesByProvince(current, lang);
+        if (data.length) {
+          scheduleApplyBranchDistrictGroupingAuto(data);
+        }
       }
     });
   }, 300);
@@ -692,7 +774,10 @@ function CcApplicationStatus(idAndDob) {
   } else {
     const parseDate = (dateStr) => {
       if (!dateStr || dateStr.length !== 8) return new Date(0);
-      return new Date(`${dateStr.substring(4, 8)}-${dateStr.substring(2, 4)}-${dateStr.substring(0, 2)}`);
+      const y = dateStr.substring(4, 8);
+      const mo = dateStr.substring(2, 4);
+      const d = dateStr.substring(0, 2);
+      return new Date(`${y}-${mo}-${d}`);
     };
     result = data.reduce((best, current) => (
       parseDate(current.TRANSAC_DECISION_DATE) > parseDate(best.TRANSAC_DECISION_DATE)
@@ -919,7 +1004,15 @@ function getPlanErrorStatus() {
  * @returns {{ campaignName: string, campaignDetail: string }}
  */
 function fetchCcCampaignDetails(campaignId, language) {
-  if (!campaignId || !language) return { campaignName: '', campaignDetail: '' };
+  const DEFAULT_CAMPAIGN_NAME = 'CCWEBPIA04';
+  const DEFAULT_CAMPAIGN_DETAIL = 'สมัครผ่านหน้าเว็บไซต์ธนาคารกรุงเทพ บัตรทั่วไป';
+
+  if (!campaignId || !language) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
   const lang = String(language).toLowerCase() === 'en' ? 'en' : 'th';
   const url = `/${lang}/cc-campaign.json`;
@@ -932,7 +1025,11 @@ function fetchCcCampaignDetails(campaignId, language) {
   if (xhr.status < 200 || xhr.status >= 300) {
     // eslint-disable-next-line no-console
     console.error('fetchCcCampaignDetails API error:', xhr.status, xhr.statusText);
-    return { campaignName: '', campaignDetail: '' };
+
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
   }
 
   let data;
@@ -942,26 +1039,158 @@ function fetchCcCampaignDetails(campaignId, language) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('fetchCcCampaignDetails JSON parse error:', e);
-    return { campaignName: '', campaignDetail: '' };
+
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
   }
 
-  if (!Array.isArray(data)) return { campaignName: '', campaignDetail: '' };
+  if (!Array.isArray(data)) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
-  const campaign = data.find((item) => String(item.campaignId) === String(campaignId));
-  if (!campaign) return { campaignName: '', campaignDetail: '' };
+  const campaign = data.find(
+    (item) => String(item.campaignId) === String(campaignId),
+  );
+
+  if (!campaign) {
+    return {
+      campaignName: DEFAULT_CAMPAIGN_NAME,
+      campaignDetail: DEFAULT_CAMPAIGN_DETAIL,
+    };
+  }
 
   return {
-    campaignName: campaign.campaignName ?? '',
-    campaignDetail: campaign.campaignDetail ?? '',
+    campaignName: campaign.campaignName?.trim() || DEFAULT_CAMPAIGN_NAME,
+    campaignDetail: campaign.campaignDetail?.trim() || DEFAULT_CAMPAIGN_DETAIL,
   };
 }
-
 function getidAndDob(id, dob) {
   const parts = dob.split(/[-/]/);
   // parts: [yyyy, mm, dd]  →  reorder to ddmmyyyy
   const ddmmyyyy = `${parts[2]}${parts[1]}${parts[0]}`;
   return `${id}${ddmmyyyy}`;
 }
+
+function convertThaiToEnglishDate(thaiDateString) {
+  if (!thaiDateString) return null;
+
+  const s = String(thaiDateString).trim();
+  if (!s) return null;
+
+  let year;
+  let month; // 0-11 for JS Date
+  let day;
+
+  const m = s.match(/^(\d{3,4})[-/](\d{1,2})[-/](\d{1,2})/);
+  if (m) {
+    year = parseInt(m[1], 10);
+    month = parseInt(m[2], 10) - 1;
+    day = parseInt(m[3], 10);
+  } else {
+    const parsed = new Date(s);
+    if (Number.isNaN(parsed.getTime())) return null;
+    year = parsed.getFullYear();
+    month = parsed.getMonth();
+    day = parsed.getDate();
+  }
+
+  if (year >= 2400) year -= 543;
+
+  const d = new Date(year, month, day);
+  const valid = d.getFullYear() === year && d.getMonth() === month && d.getDate() === day;
+  if (!valid) return null;
+
+  // Format as yyyy-mm-dd from LOCAL parts (not toISOString — that shifts to UTC)
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+/**
+ * Formats sum-insured field with commas live as the user types,
+ * caps at 7 digits, validates 300,000–9,999,999 range.
+ *
+ * @name formatAndValidateSumInsured
+ * @returns {void}
+ */
+function formatAndValidateSumInsured() {
+  if (typeof document === 'undefined') return;
+  if (window.sumInsuredListenerAttached) return;
+  window.sumInsuredListenerAttached = true;
+  const CLASS_NAME = 'sum-insured';
+  const MAX_DIGITS = 7;
+  const MIN = 300000;
+  const MAX = 9999999;
+  const MESSAGE = 'ทุนประกันภัยต้องอยู่ระหว่าง 300,000 ถึง 9,999,999 บาท';
+
+  const isTarget = (el) => el.classList?.contains(CLASS_NAME) || el.closest(`.${CLASS_NAME}`);
+  const digitsOnly = (v) => v.replace(/\D/g, '');
+  const withCommas = (d) => d.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // the native setter, grabbed from the prototype — this bypasses
+  // any framework's own overridden 'value' setter/tracker
+  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype,
+    'value',
+  ).set;
+
+  const setReactCompatibleValue = (input, value) => {
+    nativeInputValueSetter.call(input, value);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+
+  const validate = (input, digits) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let desc = wrapper.querySelector('.field-description');
+    if (!desc) {
+      desc = document.createElement('div');
+      desc.className = 'field-description';
+      desc.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(desc);
+    }
+
+    const num = Number(digits);
+    const isInvalid = digits !== '' && (num < MIN || num > MAX);
+    wrapper.classList.toggle('field-invalid', isInvalid);
+    desc.textContent = isInvalid ? MESSAGE : (wrapper.dataset.description || '');
+  };
+
+  const applyFormat = (input) => {
+    if (input.type !== 'text') {
+      input.type = 'text';
+      input.setAttribute('inputmode', 'numeric');
+    }
+
+    const digits = digitsOnly(input.value).slice(0, MAX_DIGITS);
+    const formatted = withCommas(digits);
+
+    if (input.value !== formatted) {
+      setReactCompatibleValue(input, formatted);
+      input.setSelectionRange(formatted.length, formatted.length);
+    }
+
+    validate(input, digits);
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !isTarget(input)) return;
+    applyFormat(input);
+  };
+
+  ['input', 'keyup', 'blur', 'change'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+}
+formatAndValidateSumInsured();
 
 function replaceOtherAndJoin(selectedValues, otherText) {
   if (!selectedValues) {
@@ -983,19 +1212,21 @@ function getSelectedLabelFromDropdown(dropdown) {
 }
 
 /**
- * Formats date and time inputs into a single datetime string.
+ * Formats date, hour, and minute inputs into a single datetime string.
  * Accepts date in "yyyy-mm-dd" or "dd/mm/yyyy" format, and hour/minute as separate inputs.
- * Returns formatted string like "5 January 2024 14:30:00".
+ * Transforms the date portion to YYYY-MM-DD format.
+ * Returns formatted string like "2024-01-05 14:30:00".
  *
  * @name formatDateTime
  * @param {string} date - Date string in "yyyy-mm-dd" or "dd/mm/yyyy" format
  * @param {string|number} hour - Hour component (0-23)
  * @param {string|number} minute - Minute component (0-59)
- * @returns {string} Formatted datetime string or empty string if inputs are invalid
+ * @returns {string} Formatted datetime string (YYYY-MM-DD HH:mm:ss) or empty string if inputs
+ *   are invalid
  *
  * @example
- * formatDateTime("2024-01-05", "14", "30") // returns "5 January 2024 14:30:00"
- * formatDateTime("05/01/2024", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("2024-01-05", "14", "30") // returns "2024-01-05 14:30:00"
+ * formatDateTime("05/01/2024", "14", "30") // returns "2024-01-05 14:30:00"
  * formatDateTime("invalid", "14", "30") // returns ""
  * formatDateTime("2024-01-05", "", "30") // returns ""
  */
@@ -1010,12 +1241,12 @@ function formatDateTime(date, hour, minute) {
   } else {
     [day, month, year] = String(date).split('/');
   }
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
-  ];
 
-  return `${Number(day)} ${months[Number(month) - 1]} ${year} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
+  const mm = String(month).padStart(2, '0');
+  const dd = String(day).padStart(2, '0');
+  const formattedDate = `${year}-${mm}-${dd}`;
+
+  return `${formattedDate} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
 }
 
 /**
@@ -1026,6 +1257,111 @@ function formatDateTime(date, hour, minute) {
 function updateTextCount(passportNumber) {
   const count = String(passportNumber?.$value || '').length;
   return `${count}/4`;
+}
+
+/**
+ * Reads the district (Address3) stored in the data-district attribute of the
+ * currently selected <option> in a branch dropdown.
+ * Call this from the form's change event after applyBranchDistrictGroupingToSelect
+ * has run, to retrieve the district without altering the field's submitted value.
+ *
+ * @name getBranchDistrict
+ * @param {string} selectNameOrId - The name or id attribute of the branch <select> element
+ * @returns {string} The district of the selected branch, or '' if not found
+ *
+ * @example
+ * // In a form rule (Set Value on a hidden district field):
+ * getBranchDistrict('branch')   // returns e.g. "Bang Rak"
+ */
+function getBranchDistrict(selectNameOrId) {
+  if (typeof document === 'undefined') return '';
+  const sel = document.querySelector(
+    `select[name="${selectNameOrId}"], select#${selectNameOrId}`,
+  );
+  if (!sel) return '';
+  const selectedOpt = sel.options[sel.selectedIndex];
+  return selectedOpt ? (selectedOpt.dataset.district || '') : '';
+}
+
+/**
+ * Concatenates province, branch, and Address3 into a single descriptive string.
+ *
+ * Pass province and branch as plain strings. Address3 (sub-district / tambon)
+ * is read automatically from the branchesByProvinceCache that is populated
+ * when the province dropdown changes. If Address3 is absent from the payload
+ * for the selected branch the segment is silently omitted.
+ *
+ * Result: "<province> | <branch> | <Address3>"
+ * Any segment that is empty or whitespace-only is silently omitted.
+ *
+ * @name getConcatenatedBranchInfo
+ * @param {string} province    - The selected province value
+ * @param {string} branch      - The selected branch value (plain, as stored in $enum)
+ * @param {string} [separator] - Separator between segments (default: " | ")
+ * @returns {string} Concatenated string, or empty string when all inputs are empty.
+ *
+ * @example
+ * getConcatenatedBranchInfo('Krabi', 'Ao Luk Branch')
+ * // => "Krabi | Ao Luk Branch | Ao Luek"   (Address3 auto-resolved from cache)
+ *
+ * @example
+ * // Branch whose Address3 is absent from the API payload:
+ * getConcatenatedBranchInfo('Bangkok', 'Some Branch')
+ * // => "Bangkok | Some Branch"             (Address3 segment omitted gracefully)
+ */
+function getConcatenatedBranchInfo(province, branch, separator = ' | ') {
+  // The AEM Forms Rule Engine may pass field objects instead of plain strings.
+  // Extract .$value when that happens.
+  const resolveVal = (v) => {
+    if (v === null || v === undefined) return '';
+    if (typeof v === 'object') return String(v.$value ?? '');
+    return String(v);
+  };
+
+  const prov = resolveVal(province).trim();
+  const br = resolveVal(branch).trim();
+
+  // Resolve Address3 from the in-memory cache first (Strategy 1),
+  // then fall back to a direct API fetch (Strategy 2) when the cache
+  // has not yet been populated (e.g. Rule Engine Web Worker context).
+  // If Address3 is absent from the branch payload, address3 stays '' and
+  // the segment is omitted from the output — no error is thrown.
+  let address3 = '';
+
+  if (br) {
+    // Strategy 1: search every cached dataset (province-keyed, lang-keyed).
+    branchesByProvinceCache.forEach((cachedData) => {
+      if (address3) return; // stop once found
+      const match = cachedData.find(
+        (item) => item.BranchName === br || String(item.BranchNo) === br,
+      );
+      // Use Address3 only when it is a non-empty string in the payload.
+      if (match && match.Address3 && String(match.Address3).trim() !== '') {
+        address3 = String(match.Address3).trim();
+      }
+    });
+
+    // Strategy 2: cache empty — fetch directly (sync XHR, works in workers too).
+    if (!address3 && prov) {
+      ['en', 'th'].some((lang) => {
+        const data = fetchBranchesByProvince(prov, lang);
+        if (!data.length) return false;
+        const match = data.find(
+          (item) => item.BranchName === br || String(item.BranchNo) === br,
+        );
+        if (match && match.Address3 && String(match.Address3).trim() !== '') {
+          address3 = String(match.Address3).trim();
+          return true;
+        }
+        return false;
+      });
+    }
+  }
+
+  // Build result: omit any segment that is empty/whitespace.
+  return [prov, br, address3]
+    .filter((segment) => segment !== '')
+    .join(separator);
 }
 
 /**
@@ -1159,7 +1495,9 @@ function restrictNumberOnlyInputs() {
     if (!isNumberOnly && !isEnglishOnly) {
       return;
     }
-    const insertingTypes = ['insertText', 'insertFromPaste', 'insertFromDrop', 'insertCompositionText'];
+    const insertingTypes = [
+      'insertText', 'insertFromPaste', 'insertFromDrop', 'insertCompositionText',
+    ];
     if (!insertingTypes.includes(event.inputType)) {
       return;
     }
@@ -1180,6 +1518,223 @@ function restrictNumberOnlyInputs() {
 restrictNumberOnlyInputs();
 
 /**
+ * Generic live validation for form fields. Reads independent properties
+ * (required, minlength, maxlength, pattern, min/max) from the control and the
+ * matching error messages from the field wrapper's dataset, then shows the
+ * result in the wrapper's `.field-description`.
+ *
+ * Supports input, textarea, select, checkbox, and custom widgets whose value
+ * lives in a hidden input (e.g. the Thai date-of-birth picker).
+ *
+ * @name validateFieldInputs
+ * @returns {void}
+ */
+function validateFieldInputs() {
+  if (typeof document === 'undefined') return;
+
+  const DEFAULT_MESSAGES = {
+    required: 'This field is required.',
+    minLength: 'Value is too short.',
+    maxLength: 'Value is too long.',
+    pattern: 'Please enter a valid value.',
+    range: 'Value is out of range.',
+    custom: 'Please enter a valid value.',
+  };
+
+  // Optional per-field rules keyed by CSS class (on the control or an ancestor).
+  const CUSTOM_RULES = {};
+
+  const SKIP_TYPES = ['radio', 'button', 'submit', 'reset', 'file'];
+  const CONTROL_SELECTOR = 'input, select, textarea';
+
+  const getMessage = (wrapper, key) => wrapper.dataset[`${key}ErrorMessage`]
+    || DEFAULT_MESSAGES[key];
+
+  const getCustomRule = (control) => {
+    const cls = Object.keys(CUSTOM_RULES).find(
+      (name) => control.classList.contains(name) || control.closest(`.${name}`) !== null,
+    );
+    return cls ? CUSTOM_RULES[cls] : null;
+  };
+
+  /**
+   * Resolves the value-holding control for an event target. If the target is
+   * a real control, use it. Otherwise (e.g. a div role="button" trigger),
+   * fall back to the control inside the same field wrapper, such as the
+   * hidden input used by the date picker.
+   */
+  const resolveControl = (target) => {
+    if (!(target instanceof Element)) return null;
+    let control = target.matches(CONTROL_SELECTOR)
+      ? target
+      : target.closest('.field-wrapper')?.querySelector(CONTROL_SELECTOR);
+    if (!control || SKIP_TYPES.includes(control.type)) control = null;
+    return control;
+  };
+
+  /** Returns an error message, or '' when the value is valid. */
+  const getError = (control, wrapper) => {
+    const touched = !!control.dataset.touched;
+
+    if (control.type === 'checkbox') {
+      return control.required && touched && !control.checked
+        ? getMessage(wrapper, 'required')
+        : '';
+    }
+
+    const { value } = control;
+    const isEmpty = value.trim() === '' && !control.validity.badInput;
+
+    if (isEmpty) {
+      // Only complain about required once the user has interacted with the field
+      return (control.required || wrapper.dataset.required === 'true') && touched
+        ? getMessage(wrapper, 'required')
+        : '';
+    }
+
+    // type="number" returns '' for junk input, so check badInput explicitly
+    if (control.validity.badInput) return getMessage(wrapper, 'range');
+
+    const min = parseInt(control.getAttribute('minlength'), 10);
+    const max = parseInt(control.getAttribute('maxlength'), 10);
+    if (!Number.isNaN(min) && value.length < min) return getMessage(wrapper, 'minLength');
+    if (!Number.isNaN(max) && value.length > max) return getMessage(wrapper, 'maxLength');
+    if (control.type === 'number') {
+      const num = Number(value);
+      const lo = control.min !== '' ? Number(control.min) : null;
+      const hi = control.max !== '' ? Number(control.max) : null;
+      if ((lo !== null && num < lo) || (hi !== null && num > hi)) {
+        return getMessage(wrapper, 'range');
+      }
+    }
+
+    const pattern = control.getAttribute('pattern');
+    if (pattern) {
+      try {
+        if (!new RegExp(pattern).test(value)) return getMessage(wrapper, 'pattern');
+      } catch (e) {
+        // Invalid regex configured by the author: don't block the user
+      }
+    }
+
+    const rule = getCustomRule(control);
+    if (rule && !rule.validate(value, control)) {
+      return rule.message || getMessage(wrapper, 'custom');
+    }
+    return '';
+  };
+
+  const runCheck = (control) => {
+    const wrapper = control.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+
+    const message = getError(control, wrapper);
+
+    if (message) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = message;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  };
+
+  const handler = (event) => {
+    const control = resolveControl(event.target);
+    if (!control) return;
+    const wrapper = control.closest('.field-wrapper');
+
+    if (event.type === 'blur') {
+      // Moving between parts of one widget (day -> month -> year) is not
+      // "leaving the field", so don't flag it yet.
+      if (wrapper && wrapper.contains(event.relatedTarget)) return;
+      control.dataset.touched = 'true';
+    } else if (event.type === 'input' || event.type === 'change') {
+      control.dataset.touched = 'true';
+    }
+    runCheck(control);
+  };
+
+  ['input', 'keyup', 'blur', 'change'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+}
+validateFieldInputs();
+
+/**
+ * Validates that a numeric-range field's value stays within 11–75, live,
+ * on typing (input/keyup) and on blur, targeting fields marked with the
+ * `age-range` CSS class on the input or its ancestors. Listening on
+ * multiple events guards against edge cases where a single event type
+ * doesn't fire reliably (e.g. paste, fast typing, or first interaction
+ * right after the field is dynamically inserted into the DOM).
+ *
+ * @name validateAgeRangeInputs
+ * @returns {void}
+ */
+function validateAgeRangeInputs() {
+  if (typeof document === 'undefined') return;
+
+  const MIN = 11;
+  const MAX = 75;
+  const MESSAGE = 'อายุต้องอยู่ระหว่าง 11-75 ปี';
+
+  const runCheck = (input) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+
+    const num = Number(input.value);
+    const isInvalid = input.value !== '' && (Number.isNaN(num) || num < MIN || num > MAX);
+
+    if (isInvalid) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = MESSAGE;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    const isAgeRange = input.classList.contains('age-range')
+      || input.closest('.age-range') !== null;
+    if (!isAgeRange) return;
+    runCheck(input);
+  };
+
+  ['input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+}
+validateAgeRangeInputs();
+
+/**
  * Formats a number with comma separators
  * @name formatNumberWithCommas
  * @param {string} value - The numeric value to format
@@ -1188,24 +1743,65 @@ restrictNumberOnlyInputs();
 function formatNumberWithCommas(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
-
 /**
- * Formats a number with comma separators, capping the actual digit count
- * would count the added commas and wrongly flag the value as too long).
- * @name formatCappedNumberWithCommas
- * @param {string} value - The numeric value to format
- * @param {number} [maxDigits=12] - Maximum allowed actual digits
- * @return {string}
+ * Validates that a numeric-range field's value stays within 1–75
+ *
+ * @name validateAgeInputRange
+ * @returns {void}
  */
-function formatCappedNumberWithCommas(value, maxDigits = 12) {
-  const digitsOnly = value.toString().replace(/\D/g, '').slice(0, Number(maxDigits));
-  return digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+function validateAge() {
+  if (typeof document === 'undefined') return;
+
+  const MIN = 1;
+  const MAX = 75;
+  const MESSAGE = 'อายุต้องอยู่ระหว่าง 1-75 ปี';
+
+  const runCheck = (input) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let description = wrapper.querySelector('.field-description');
+    if (!description) {
+      description = document.createElement('div');
+      description.className = 'field-description';
+      description.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(description);
+    }
+
+    const num = Number(input.value);
+    const isInvalid = input.value !== '' && (Number.isNaN(num) || num < MIN || num > MAX);
+
+    if (isInvalid) {
+      wrapper.classList.add('field-invalid');
+      description.textContent = MESSAGE;
+    } else {
+      wrapper.classList.remove('field-invalid');
+      if (wrapper.dataset.description) {
+        description.innerHTML = wrapper.dataset.description;
+      } else {
+        description.textContent = '';
+      }
+    }
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    const isAgeLimit = input.classList.contains('age-limit')
+      || input.closest('.age-limit') !== null;
+    if (!isAgeLimit) return;
+    runCheck(input);
+  };
+
+  ['input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
 }
+validateAge();
 
 /**
  * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
  * so they remain visible even when the AEM Forms Rule Engine overwrites the
- * field's description container with a validation error message.
  * Only applies to fields marked with the `preserve-unit-label` CSS class.
  *
  * @name preserveFieldUnitLabels
@@ -1256,7 +1852,8 @@ function preserveFieldUnitLabels() {
   };
 
   const scan = () => {
-    document.querySelectorAll('.field-wrapper.preserve-unit-label[data-description]').forEach((wrapper) => {
+    const selector = '.field-wrapper.preserve-unit-label[data-description]';
+    document.querySelectorAll(selector).forEach((wrapper) => {
       initWrapper(wrapper);
 
       // Re-check on every scan: toggle the original description's
@@ -1278,6 +1875,104 @@ function preserveFieldUnitLabels() {
   observer.observe(document.body, { childList: true, subtree: true });
 }
 preserveFieldUnitLabels();
+
+/**
+ * Restricts a numeric field's value to digits only, capped at either 12
+ * or 10 digits depending on the CSS class applied, and formats the value
+ * with thousand-separator commas once the field loses focus. Targets
+ * fields marked with the `number-max-12` or `number-max-10` CSS class on
+ *
+ * @name formatCommaInputs
+ * @returns {void}
+ */
+function formatCommaInputs() {
+  if (typeof document === 'undefined') return;
+
+  const CLASS_LIMITS = {
+    'number-max-12': 12,
+    'number-max-10': 10,
+  };
+
+  const getMaxDigits = (input) => {
+    let result = null;
+    Object.keys(CLASS_LIMITS).forEach((className) => {
+      if (result !== null) return;
+      if (input.classList.contains(className) || input.closest(`.${className}`) !== null) {
+        result = CLASS_LIMITS[className];
+      }
+    });
+    return result;
+  };
+
+  const stripCommas = (value) => value.replace(/,/g, '');
+
+  const stripNonDigits = (value) => value.replace(/\D/g, '');
+
+  const addCommas = (digits) => digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  const runSanitize = (input, maxDigits) => {
+    let digits = stripNonDigits(input.value);
+    if (digits.length > maxDigits) {
+      digits = digits.slice(0, maxDigits);
+    }
+    input.value = digits;
+  };
+
+  const runFormat = (input, maxDigits) => {
+    const digits = stripNonDigits(input.value).slice(0, maxDigits);
+    input.value = addCommas(digits);
+  };
+
+  const runUnformat = (input) => {
+    input.value = stripCommas(input.value);
+  };
+
+  const handler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const maxDigits = getMaxDigits(input);
+    if (maxDigits === null) return;
+
+    switch (event.type) {
+      case 'focus':
+        runUnformat(input);
+        break;
+      case 'input':
+      case 'keyup':
+        runSanitize(input, maxDigits);
+        break;
+      case 'blur':
+        runFormat(input, maxDigits);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const keydownHandler = (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const maxDigits = getMaxDigits(input);
+    if (maxDigits === null) return;
+
+    const controlKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+    if (controlKeys.includes(event.key)) return;
+
+    const isDigit = /^\d$/.test(event.key);
+    const currentDigits = stripNonDigits(input.value).length;
+    if (!isDigit || currentDigits >= maxDigits) {
+      event.preventDefault();
+    }
+  };
+
+  ['focus', 'input', 'keyup', 'blur'].forEach((type) => {
+    document.addEventListener(type, handler, true);
+  });
+  document.addEventListener('keydown', keydownHandler, true);
+}
+formatCommaInputs();
 
 /**
  * Restricts `gpa-only` inputs to digits and one decimal point, max 4 chars.
@@ -1314,11 +2009,13 @@ export {
   addCsrfToken,
   addCustomHeader,
   filterExcludeFields,
+  applyDefaultValues,
   generatePayloadHash,
   fetchBranchesByProvince,
   getBranchEnum,
   getBranchEnumNames,
   getidAndDob,
+  convertThaiToEnglishDate,
   replaceOtherAndJoin,
   getSelectedLabelFromDropdown,
   CcApplicationStatus,
@@ -1334,8 +2031,9 @@ export {
   updateTextCount,
   getSelectedLabelName,
   getSelectedLabelValue,
+  getBranchDistrict,
+  getConcatenatedBranchInfo,
   validateMaxCheckbox,
   replaceother,
   formatNumberWithCommas,
-  formatCappedNumberWithCommas,
 };
