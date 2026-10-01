@@ -970,7 +970,7 @@
     @media (width < 64rem) {
       & :is(
         h3,
-        .form form .field-title h2,
+        .form form .field-title,
         .form form .field-title .page-header,
         .form form .field-title .label-header,
         .field-title,
@@ -1205,11 +1205,19 @@
   }
   
   main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
-    padding-block-start: 3rem;
+    padding-block-start: 0;
+    padding-right: 8%;
+    padding-left: 8%;
   }
   
+  @media (width > 47.5rem) {
+    main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
+      padding-block-start: 1.25rem;
+    }
+  }
+
   @media (width > 64rem) {
     main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
-      padding-block-start: 2.5rem;
+      padding-block-start: 1.5rem;
     }
   }
