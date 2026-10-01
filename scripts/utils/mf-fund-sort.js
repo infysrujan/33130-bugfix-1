@@ -1,27 +1,8 @@
-import { fetchConfigs } from '../config.js';
-import { fetchGet } from './fetchApi.js';
 import { getLang } from '../scripts.js';
+import { normStr, loadSheetOrder } from './sheet-utils.js';
 
-// Strips invisible chars and normalizes whitespace/case for comparison.
-function norm(str) {
-  return (str || '')
-    .toString()
-    .replace(/[\u200B-\u200D\uFEFF]/g, '')
-    .replace(/\s+/g, ' ')
-    .toLowerCase()
-    .trim();
-}
-
-function normalizeRow(row) {
-  const out = {};
-  Object.entries(row).forEach(([k, v]) => {
-    const key = k.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim();
-    out[key] = typeof v === 'string'
-      ? v.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim()
-      : v;
-  });
-  return out;
-}
+// Local alias keeps existing internal usages unchanged.
+const norm = normStr;
 
 /**
  * Column holding the fund name in the combined EN/TH mf-suggestor filtering
@@ -29,18 +10,6 @@ function normalizeRow(row) {
  */
 export function fundNameKey() {
   return getLang() === 'th' ? 'Fund Name (TH)' : 'Fund Name (EN)';
-}
-
-async function loadSheetOrder(configKey) {
-  try {
-    const configs = await fetchConfigs();
-    const url = configs[configKey];
-    if (!url) return [];
-    const json = await fetchGet(url, { throwOnError: false });
-    return (json?.data || []).map(normalizeRow);
-  } catch {
-    return [];
-  }
 }
 
 // Canonical order for the mf-suggestor Y/N questionnaire results page only.
