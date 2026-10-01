@@ -11,8 +11,8 @@
     position: relative;
 
     /* Mobile / Tablet: 20px top, 30px bottom */
-    padding-top: var(--bbl-space-250);
-    padding-bottom: var(--bbl-space-375);
+    padding-top: 1.25rem;   
+    padding-bottom: 1.875rem; 
 
     &::after {
       content: '';
@@ -21,8 +21,8 @@
       left: 50%;
       transform: translateX(-50%);
       width: var(--bbl-space-1000);
-      height: var(--bbl-space-025);
-      background-color: #9e9e9e;
+      height: 0.0625rem;
+      background-color: var(--bbl-color-grey-150);
     }
 
     h2{
@@ -36,8 +36,8 @@
   /* Desktop: 30px top, 30px bottom */
   @media (width >= 64rem) {
     .field-heading, .field-heading2 {
-      padding-top: var(--bbl-space-375);
-      padding-bottom: var(--bbl-space-375);
+      padding-top: 1.875rem;
+      padding-bottom: 1.875rem;
     }
   }
 
