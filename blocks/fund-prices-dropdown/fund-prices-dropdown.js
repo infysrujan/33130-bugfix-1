@@ -714,12 +714,14 @@ export default async function decorate(block) {
   }
 
   /* Calendar pickers for date range */
+  const latestNavDate = () => (latestMdate ? parseLocalDateFromYmd(latestMdate) : null)
+    ?? new Date();
   const drFromPicker = attachCalendarPicker({
     input: drFromInput,
     value: drFrom,
     isDateDisabled: isWeekendOrAfterYesterday,
     fetchEnabledDays: fetchNavEnabledDaysForMonth,
-    maxDate: new Date(),
+    maxDate: latestNavDate,
     onChange: (d) => { drFrom = d; validateAndRenderDetail(); },
   });
   const drToPicker = attachCalendarPicker({
@@ -727,7 +729,7 @@ export default async function decorate(block) {
     value: drTo,
     isDateDisabled: isWeekendOrAfterYesterday,
     fetchEnabledDays: fetchNavEnabledDaysForMonth,
-    maxDate: new Date(),
+    maxDate: latestNavDate,
     onChange: (d) => { drTo = d; validateAndRenderDetail(); },
   });
 

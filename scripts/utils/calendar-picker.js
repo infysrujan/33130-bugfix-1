@@ -252,7 +252,8 @@ function positionPopover(trigger, popover, doc) {
  *   array are selectable for the visible month (`month` is 0-based). Called when the popover
  *   opens and whenever prev/next month is used. While loading, all days are disabled.
  * @property {() => void} [onPopoverOpen] - Fires when the calendar popover opens.
- * @property {Date} [maxDate] - Next-month arrow cannot go past this date's month.
+ * @property {Date | (() => Date | null)} [maxDate] - Next-month arrow cannot go past this
+ *   date's month.
  * @property {() => void} [onPopoverClose] - Fires when the calendar popover closes.
  * @property {HTMLElement} [openTrigger] - Extra click target that opens the calendar (e.g.
  *   `.calendar-input.icon-calendar` wrapper). When omitted, the input's parent is used when it
@@ -660,7 +661,8 @@ export function attachCalendarPicker(options) {
 
   function shiftMonth(delta) {
     const d = new Date(viewYear, viewMonth + delta, 1);
-    if (maxDate && d > new Date(maxDate.getFullYear(), maxDate.getMonth(), 1)) return;
+    const max = typeof maxDate === 'function' ? maxDate() : maxDate;
+    if (max && d > new Date(max.getFullYear(), max.getMonth(), 1)) return;
     viewYear = d.getFullYear();
     viewMonth = d.getMonth();
     applyMonthAndFetchEnabledDays();
