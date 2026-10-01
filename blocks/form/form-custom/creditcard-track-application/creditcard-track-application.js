@@ -9,6 +9,8 @@
 const CC_PANEL_ITEM = 'cc-panel-item';
 const CC_APP_PREFIX = 'cc-app-';
 const PANEL_SELECTOR = 'fieldset.panel-wrapper.field-wrapper';
+const MAIN_FORM_SELECTOR = `${PANEL_SELECTOR}.cc-app-main-form`;
+const PRIMARY_ACTION_SELECTOR = '.cc-panel-item-form-actions .cc-panel-item-panel-action-primary button';
 
 const TIMELINE_STATUS_ROLES = [
   'timeline-step',
@@ -198,6 +200,65 @@ function scrollToTopWhenResultPanelRevealed(form) {
 }
 
 /**
+ * @param {HTMLElement} wrapper
+ * @returns {boolean}
+ */
+function isRequiredFieldInvalid(wrapper) {
+  if (wrapper.dataset.visible === 'false') return false;
+
+  const controls = [...wrapper.querySelectorAll('input, select, textarea')];
+  const checkableControls = controls.filter(({ type }) => type === 'checkbox' || type === 'radio');
+  if (checkableControls.length > 0) {
+    return !checkableControls.some(({ checked }) => checked);
+  }
+
+  const valueControl = controls.find(({ type }) => type === 'hidden')
+    || controls.find(({ disabled }) => !disabled);
+  if (!valueControl || !String(valueControl.value).trim()) return true;
+
+  return valueControl.willValidate && !valueControl.validity.valid;
+}
+
+/**
+ * @param {HTMLFormElement} form
+ */
+function disablePrimaryActionWhenInvalid(form) {
+  const mainPanel = form.querySelector(MAIN_FORM_SELECTOR);
+  const submitButton = mainPanel?.querySelector(PRIMARY_ACTION_SELECTOR);
+  if (!submitButton || submitButton.dataset.invalidStateBound === 'true') return;
+
+  submitButton.dataset.invalidStateBound = 'true';
+  submitButton.disabled = true;
+
+  const updateDisabledState = () => {
+    const hasInvalidRequiredField = [...mainPanel.querySelectorAll(
+      '.field-wrapper[data-required="true"]',
+    )].some(isRequiredFieldInvalid);
+    submitButton.disabled = hasInvalidRequiredField
+      || mainPanel.querySelector('.field-invalid') !== null;
+  };
+
+  const observer = new MutationObserver(updateDisabledState);
+  observer.observe(mainPanel, {
+    attributes: true,
+    attributeFilter: ['class'],
+    childList: true,
+    subtree: true,
+  });
+
+  mainPanel.addEventListener('input', updateDisabledState);
+  mainPanel.addEventListener('change', updateDisabledState);
+
+  form.addEventListener('submit', (event) => {
+    updateDisabledState();
+    if (!submitButton.disabled) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }, true);
+}
+
+/**
  * @param {HTMLFormElement} form
  */
 export default function decorateCreditCardTractApplication(form) {
@@ -205,4 +266,5 @@ export default function decorateCreditCardTractApplication(form) {
 
   form.querySelectorAll(PANEL_SELECTOR).forEach(decoratePanel);
   scrollToTopWhenResultPanelRevealed(form);
+  disablePrimaryActionWhenInvalid(form);
 }
