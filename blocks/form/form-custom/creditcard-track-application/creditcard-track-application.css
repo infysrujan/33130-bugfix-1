@@ -1192,7 +1192,7 @@
   }
   
   main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
-    padding-block-start: 0;
+    padding-block-start: 0.4375rem;
   }
   
   @media (width > 64rem) {
