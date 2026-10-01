@@ -1193,6 +1193,8 @@
   
   main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
     padding-block-start: 0.4375rem;
+    padding-right: 8%;
+    padding-left: 8%;
   }
   
   @media (width > 64rem) {
