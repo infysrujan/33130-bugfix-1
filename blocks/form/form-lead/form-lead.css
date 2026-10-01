@@ -259,6 +259,10 @@ main .lead-forms .form form .plain-text-wrapper.field-wrapper.tnc-text-decoratio
   font-family: var(--bbl-font-family-primary);
 }
 
+main .lead-forms:has(.gulf-form) .form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-or, .field-textw, .field-text1) p {
+  text-align: center;
+}
+
 main .lead-forms .form form .plain-text-wrapper :is(.custom-wffm-form) {
   font-size: inherit;
 }
