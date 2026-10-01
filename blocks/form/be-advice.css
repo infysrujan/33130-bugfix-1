@@ -1,18 +1,6 @@
 /* B-Advice lead form — scoped via unique field markers */
 
 
-main .section.form-container .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) {
-  grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
-}
-
-main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1):where(:not(.custom-fieldset-approval, .custom-fieldset-approval *)) {
-  grid-column: inherit;
-}
-
-main .lead-forms .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
-  grid-column: inherit;
-}
- 
 main .lead-forms .form form > .plain-text-wrapper p {
   text-align: left;
 }
@@ -53,8 +41,18 @@ main .lead-forms .form form :is(.field-wrapper:has(select), .drop-down-wrapper) 
   /* Desktop: override form-global 1fr panel grid — equal 6+6 columns for name/surname */
   main .section.form-container .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) {
     gap: 0 var(--bbl-form-gap-3);
+    grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
   }
   
+  main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1):where(:not(.custom-fieldset-approval, .custom-fieldset-approval *)) {
+    grid-column: inherit;
+  }
+  
+  main .lead-forms .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
+    grid-column: inherit;
+  }
+   
+
   main .section.form-container.lead-forms .form form > fieldset.panel-wrapper.field-wrapper.col-12:has(> .field-preferredcontacttime) {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
