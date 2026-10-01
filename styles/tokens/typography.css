@@ -19,10 +19,10 @@
      FONT FAMILIES
      ========================================================================= */
 
-  --bbl-font-family-primary: 'BBL Sans', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
-  --bbl-font-family-looped: 'BBL Sans Looped', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
-  --bbl-font-family-medium: 'BBL Sans Medium', 'BangkokBank-Medium', Tahoma, Helvetica, Arial, sans-serif;
-  --bbl-font-family-md-number: 'BBLSans-Medium-Numers', 'BangkokBank-Medium', Tahoma, Helvetica, Arial, sans-serif;
+  --bbl-font-family-primary: 'BBL Sans', 'BangkokBank-Regular', tahoma, helvetica, arial, sans-serif;
+  --bbl-font-family-looped: 'BBL Sans Looped', 'BangkokBank-Regular', tahoma, helvetica, arial, sans-serif;
+  --bbl-font-family-medium: 'BBL Sans Medium', 'BangkokBank-Medium', tahoma, helvetica, arial, sans-serif;
+  --bbl-font-family-md-number: 'BBLSans-Medium-Numers', 'BangkokBank-Medium', tahoma, helvetica, arial, sans-serif;
 
   /* =========================================================================
      FONT WEIGHTS
@@ -78,7 +78,7 @@
   --bbl-line-height-h3-desktop: 2rem;     /* 32px */
   --bbl-line-height-h4-desktop: 1.375rem; /* 22px */
   --bbl-line-height-b1-desktop: 1.375rem; /* 22px */
-  --bbl-line-height-b2-desktop: 1.1875rem; /* 18px–19px, based on the client’s feedback.*/
+  --bbl-line-height-b2-desktop: 1.1875rem; /* 18px–19px, based on the client’s feedback. */
   --bbl-line-height-b3-desktop: 1rem;     /* 16px */
   --bbl-line-height-button: 1.3125rem;    /* 21px */
 
@@ -157,15 +157,12 @@
   --bbl-text-hero-title-size: var(--bbl-heading-d1-size);
   --bbl-text-hero-title-line-height: var(--bbl-heading-d1-line-height);
   --bbl-text-hero-title-weight: var(--bbl-heading-d1-weight);
-
   --bbl-text-banner-title-size: var(--bbl-heading-h1-size);
   --bbl-text-banner-title-line-height: var(--bbl-heading-h1-line-height);
   --bbl-text-banner-title-weight: var(--bbl-heading-h1-weight);
-
   --bbl-text-hero-description-size: var(--bbl-heading-h3-reg-size);
   --bbl-text-hero-description-line-height: var(--bbl-heading-h3-reg-line-height);
   --bbl-text-hero-description-weight: var(--bbl-heading-h3-reg-weight);
-
   --bbl-text-banner-description-size: var(--bbl-heading-h3-reg-size);
   --bbl-text-banner-description-line-height: var(--bbl-heading-h3-reg-line-height);
   --bbl-text-banner-description-weight: var(--bbl-heading-h3-reg-weight);
@@ -177,11 +174,9 @@
   --bbl-text-article-card-title-size: var(--bbl-heading-h2-size);
   --bbl-text-article-card-title-line-height: var(--bbl-heading-h2-line-height);
   --bbl-text-article-card-title-weight: var(--bbl-heading-h2-weight);
-
   --bbl-text-section-title-size: var(--bbl-heading-h2-size);
   --bbl-text-section-title-line-height: var(--bbl-heading-h2-line-height);
   --bbl-text-section-title-weight: var(--bbl-heading-h2-weight);
-
   --bbl-text-thumbnail-card-title-size: var(--bbl-heading-h3-size);
   --bbl-text-thumbnail-card-title-line-height: var(--bbl-heading-h3-line-height);
   --bbl-text-thumbnail-card-title-weight: var(--bbl-heading-h3-weight);
@@ -190,19 +185,15 @@
   --bbl-text-sub-title-size: var(--bbl-heading-h4-size);
   --bbl-text-sub-title-line-height: var(--bbl-heading-h4-line-height);
   --bbl-text-sub-title-weight: var(--bbl-heading-h4-weight);
-
   --bbl-text-accordion-size: var(--bbl-heading-h4-size);
   --bbl-text-accordion-line-height: var(--bbl-heading-h4-line-height);
   --bbl-text-accordion-weight: var(--bbl-heading-h4-weight);
-
   --bbl-text-tab-header-size: var(--bbl-heading-h4-size);
   --bbl-text-tab-header-line-height: var(--bbl-heading-h4-line-height);
   --bbl-text-tab-header-weight: var(--bbl-heading-h4-weight);
-
   --bbl-text-nav-link-size: var(--bbl-heading-h4-size);
   --bbl-text-nav-link-line-height: var(--bbl-heading-h4-line-height);
   --bbl-text-nav-link-weight: var(--bbl-heading-h4-weight);
-
   --bbl-text-footer-head-size: var(--bbl-heading-h4-size);
   --bbl-text-footer-head-line-height: var(--bbl-heading-h4-line-height);
   --bbl-text-footer-head-weight: var(--bbl-heading-h4-weight);
@@ -211,27 +202,21 @@
   --bbl-text-default-size: var(--bbl-body-b1-size);
   --bbl-text-default-line-height: var(--bbl-body-b1-line-height);
   --bbl-text-default-weight: var(--bbl-body-b1-weight);
-
   --bbl-text-link-primary-size: var(--bbl-body-b1-medium-size);
   --bbl-text-link-primary-line-height: var(--bbl-body-b1-medium-line-height);
   --bbl-text-link-primary-weight: var(--bbl-body-b1-medium-weight);
-
   --bbl-text-label-tag-size: var(--bbl-body-b2-size);
   --bbl-text-label-tag-line-height: var(--bbl-body-b2-line-height);
   --bbl-text-label-tag-weight: var(--bbl-body-b2-weight-medium);
-
   --bbl-text-footer-size: var(--bbl-body-b2-size);
   --bbl-text-footer-line-height: var(--bbl-body-b2-line-height);
   --bbl-text-footer-weight: var(--bbl-body-b2-weight);
-
   --bbl-text-breadcrumb-size: var(--bbl-body-b3-size);
   --bbl-text-breadcrumb-line-height: var(--bbl-body-b3-line-height);
   --bbl-text-breadcrumb-weight: var(--bbl-body-b3-weight-medium);
-
   --bbl-text-small-size: var(--bbl-body-b3-size);
   --bbl-text-small-line-height: var(--bbl-body-b3-line-height);
   --bbl-text-small-weight: var(--bbl-body-b3-weight-medium);
-
   --bbl-text-top-links-size: var(--bbl-body-b3-size);
   --bbl-text-top-links-line-height: var(--bbl-body-b3-line-height);
   --bbl-text-top-links-weight: var(--bbl-body-b3-weight-medium);
