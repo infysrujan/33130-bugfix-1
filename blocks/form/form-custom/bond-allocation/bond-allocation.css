@@ -10,10 +10,6 @@
   .field-heading, .field-heading2 {
     position: relative;
 
-    /* Mobile / Tablet: 20px top, 30px bottom */
-    padding-top: 1.25rem;   
-    padding-bottom: 1.875rem; 
-
     &::after {
       content: '';
       position: absolute;
@@ -22,7 +18,9 @@
       transform: translateX(-50%);
       width: var(--bbl-space-1000);
       height: 0.0625rem;
+      padding: 1.25rem 0 1.875rem;
       background-color: var(--bbl-color-grey-150);
+      background-clip: content-box;
     }
 
     h2{
@@ -35,9 +33,8 @@
 
   /* Desktop: 30px top, 30px bottom */
   @media (width >= 64rem) {
-    .field-heading, .field-heading2 {
-      padding-top: 1.875rem;
-      padding-bottom: 1.875rem;
+    .field-heading::after, .field-heading2::after {
+      padding-block: 1.875rem;
     }
   }
 
