@@ -642,6 +642,7 @@ export default async function decorate(block) {
     input: dateInput,
     value: calendarDate,
     fetchEnabledDays: fetchNavEnabledDaysForMonth,
+    maxDate: new Date(),
     onChange: (selectedDate) => {
       if (isDateOlderThanFundHistoryLimit(selectedDate)) {
         errorMessage.classList.remove('hidden');
