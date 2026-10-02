@@ -1151,19 +1151,19 @@ function formatAndValidateSumInsured() {
     input.setCustomValidity(isInvalid ? SUM_INSURED_MESSAGE : '');
   };
 
-  const applyFormat = (input) => {
+  const applyValue = (input, formatValue) => {
     if (input.type !== 'text') {
       input.type = 'text';
       input.setAttribute('inputmode', 'numeric');
     }
 
     const digits = digitsOnly(input.value).slice(0, MAX_DIGITS);
-    const formatted = withCommas(digits);
+    const nextValue = formatValue ? withCommas(digits) : digits;
 
-    if (input.value !== formatted) {
-      input.value = formatted;
+    if (input.value !== nextValue) {
+      input.value = nextValue;
       if (document.activeElement === input) {
-        input.setSelectionRange(formatted.length, formatted.length);
+        input.setSelectionRange(nextValue.length, nextValue.length);
       }
     }
 
@@ -1173,10 +1173,10 @@ function formatAndValidateSumInsured() {
   const handler = (event) => {
     const input = event.target;
     if (!(input instanceof HTMLInputElement) || !isTarget(input)) return;
-    applyFormat(input);
+    applyValue(input, event.type === 'blur');
   };
 
-  ['input', 'keyup', 'blur', 'change'].forEach((type) => {
+  ['input', 'keyup', 'blur'].forEach((type) => {
     document.addEventListener(type, handler, true);
   });
 }
