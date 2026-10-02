@@ -1117,8 +1117,9 @@ const SUM_INSURED_MAX = 9999999;
 const SUM_INSURED_MESSAGE = 'ทุนประกันภัยต้องอยู่ระหว่าง 300,000 ถึง 9,999,999 บาท';
 const CUSTOM_RULES = {
   'sum-insured': {
+    normalize: (value) => value.replace(/\D/g, ''),
     validate: (value) => {
-      const amount = Number(value.replace(/\D/g, ''));
+      const amount = Number(value);
       return amount >= SUM_INSURED_MIN && amount <= SUM_INSURED_MAX;
     },
     message: SUM_INSURED_MESSAGE,
@@ -1569,7 +1570,9 @@ function validateFieldInputs() {
     }
 
     const { value } = control;
-    const isEmpty = value.trim() === '' && !control.validity.badInput;
+    const rule = getCustomRule(control);
+    const validationValue = rule?.normalize ? rule.normalize(value) : value;
+    const isEmpty = validationValue.trim() === '' && !control.validity.badInput;
 
     if (isEmpty) {
       // Only complain about required once the user has interacted with the field
@@ -1583,10 +1586,14 @@ function validateFieldInputs() {
 
     const min = parseInt(control.getAttribute('minlength'), 10);
     const max = parseInt(control.getAttribute('maxlength'), 10);
-    if (!Number.isNaN(min) && value.length < min) return getMessage(wrapper, 'minLength');
-    if (!Number.isNaN(max) && value.length > max) return getMessage(wrapper, 'maxLength');
+    if (!Number.isNaN(min) && validationValue.length < min) {
+      return getMessage(wrapper, 'minLength');
+    }
+    if (!Number.isNaN(max) && validationValue.length > max) {
+      return getMessage(wrapper, 'maxLength');
+    }
     if (control.type === 'number') {
-      const num = Number(value);
+      const num = Number(validationValue);
       const lo = control.min !== '' ? Number(control.min) : null;
       const hi = control.max !== '' ? Number(control.max) : null;
       if ((lo !== null && num < lo) || (hi !== null && num > hi)) {
@@ -1597,14 +1604,13 @@ function validateFieldInputs() {
     const pattern = control.getAttribute('pattern');
     if (pattern) {
       try {
-        if (!new RegExp(pattern).test(value)) return getMessage(wrapper, 'pattern');
+        if (!new RegExp(pattern).test(validationValue)) return getMessage(wrapper, 'pattern');
       } catch (e) {
         // Invalid regex configured by the author: don't block the user
       }
     }
 
-    const rule = getCustomRule(control);
-    if (rule && !rule.validate(value, control)) {
+    if (rule && !rule.validate(validationValue, control)) {
       return rule.message || getMessage(wrapper, 'custom');
     }
     return '';
