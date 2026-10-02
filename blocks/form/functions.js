@@ -1112,6 +1112,19 @@ function convertThaiToEnglishDate(thaiDateString) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
+const SUM_INSURED_MIN = 300000;
+const SUM_INSURED_MAX = 9999999;
+const SUM_INSURED_MESSAGE = 'ทุนประกันภัยต้องอยู่ระหว่าง 300,000 ถึง 9,999,999 บาท';
+const CUSTOM_RULES = {
+  'sum-insured': {
+    validate: (value) => {
+      const amount = Number(value.replace(/\D/g, ''));
+      return amount >= SUM_INSURED_MIN && amount <= SUM_INSURED_MAX;
+    },
+    message: SUM_INSURED_MESSAGE,
+  },
+};
+
 /**
  * Formats sum-insured field with commas live as the user types,
  * caps at 7 digits, validates 300,000–9,999,999 range.
@@ -1125,42 +1138,16 @@ function formatAndValidateSumInsured() {
   window.sumInsuredListenerAttached = true;
   const CLASS_NAME = 'sum-insured';
   const MAX_DIGITS = 7;
-  const MIN = 300000;
-  const MAX = 9999999;
-  const MESSAGE = 'ทุนประกันภัยต้องอยู่ระหว่าง 300,000 ถึง 9,999,999 บาท';
 
   const isTarget = (el) => el.classList?.contains(CLASS_NAME) || el.closest(`.${CLASS_NAME}`);
   const digitsOnly = (v) => v.replace(/\D/g, '');
   const withCommas = (d) => d.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-  // the native setter, grabbed from the prototype — this bypasses
-  // any framework's own overridden 'value' setter/tracker
-  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-    window.HTMLInputElement.prototype,
-    'value',
-  ).set;
-
-  const setReactCompatibleValue = (input, value) => {
-    nativeInputValueSetter.call(input, value);
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-  };
-
   const validate = (input, digits) => {
-    const wrapper = input.closest('.field-wrapper');
-    if (!wrapper) return;
-
-    let desc = wrapper.querySelector('.field-description');
-    if (!desc) {
-      desc = document.createElement('div');
-      desc.className = 'field-description';
-      desc.setAttribute('aria-live', 'polite');
-      wrapper.appendChild(desc);
-    }
-
     const num = Number(digits);
-    const isInvalid = digits !== '' && (num < MIN || num > MAX);
-    wrapper.classList.toggle('field-invalid', isInvalid);
-    desc.textContent = isInvalid ? MESSAGE : (wrapper.dataset.description || '');
+    const isInvalid = digits !== '' && (num < SUM_INSURED_MIN || num > SUM_INSURED_MAX);
+    input.dataset.preserveCustomValidity = String(isInvalid);
+    input.setCustomValidity(isInvalid ? SUM_INSURED_MESSAGE : '');
   };
 
   const applyFormat = (input) => {
@@ -1173,8 +1160,10 @@ function formatAndValidateSumInsured() {
     const formatted = withCommas(digits);
 
     if (input.value !== formatted) {
-      setReactCompatibleValue(input, formatted);
-      input.setSelectionRange(formatted.length, formatted.length);
+      input.value = formatted;
+      if (document.activeElement === input) {
+        input.setSelectionRange(formatted.length, formatted.length);
+      }
     }
 
     validate(input, digits);
@@ -1540,9 +1529,6 @@ function validateFieldInputs() {
     range: 'Value is out of range.',
     custom: 'Please enter a valid value.',
   };
-
-  // Optional per-field rules keyed by CSS class (on the control or an ancestor).
-  const CUSTOM_RULES = {};
 
   const SKIP_TYPES = ['radio', 'button', 'submit', 'reset', 'file'];
   const CONTROL_SELECTOR = 'input, select, textarea';
