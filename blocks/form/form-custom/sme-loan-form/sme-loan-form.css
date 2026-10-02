@@ -406,6 +406,21 @@
     scrollbar-width: thin;
   }
 
+  @media (width <= 47.5rem) {
+    & .form form fieldset.panel-wrapper.field-wrapper.custom-fieldset-approval.custom-fieldset-approval {
+      display: block;
+      min-width: 0;
+      margin-block-start: var(--bbl-space-200);
+
+      & > fieldset.panel-wrapper {
+        display: block;
+        min-width: 0;
+        padding: 0;
+        border: 0;
+      }
+    }
+  }
+
   & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .plain-text-wrapper.tnc-text-decoration,
   & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) fieldset.panel-wrapper .plain-text-wrapper.tnc-text-decoration {
     max-height: 15.437rem;
