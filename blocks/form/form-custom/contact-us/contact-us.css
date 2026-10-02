@@ -269,6 +269,7 @@
     /* Date/Time dropdown arrows: extra right padding clearance */
     & fieldset.panel-wrapper:has(.date-wrapper) > .drop-down-wrapper select {
         padding-right: 1.875rem;
+        margin-bottom: 0;
     }
 
     & fieldset.panel-wrapper:has(.date-wrapper) > .drop-down-wrapper {
@@ -426,6 +427,7 @@
         & fieldset.panel-wrapper:has(.date-wrapper) > legend.field-label:not([data-visible="false"]),
         & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > legend.field-label {
             font-size: var(--bbl-form-font-size-16);
+            padding-top: 0;
         }
 
         /* Select chevron: 9.43 x 6, matching production's bold icon (Chevron-down.svg is a hairline stroke that vanishes at this size) */
