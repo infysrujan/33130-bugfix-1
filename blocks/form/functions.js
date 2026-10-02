@@ -1112,20 +1112,6 @@ function convertThaiToEnglishDate(thaiDateString) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-const SUM_INSURED_MIN = 300000;
-const SUM_INSURED_MAX = 9999999;
-const SUM_INSURED_MESSAGE = 'ทุนประกันภัยต้องอยู่ระหว่าง 300,000 ถึง 9,999,999 บาท';
-const CUSTOM_RULES = {
-  'sum-insured': {
-    normalize: (value) => value.replace(/\D/g, ''),
-    validate: (value) => {
-      const amount = Number(value);
-      return amount >= SUM_INSURED_MIN && amount <= SUM_INSURED_MAX;
-    },
-    message: SUM_INSURED_MESSAGE,
-  },
-};
-
 /**
  * Formats sum-insured field with commas live as the user types,
  * caps at 7 digits, validates 300,000–9,999,999 range.
@@ -1139,16 +1125,30 @@ function formatAndValidateSumInsured() {
   window.sumInsuredListenerAttached = true;
   const CLASS_NAME = 'sum-insured';
   const MAX_DIGITS = 7;
+  const MIN = 300000;
+  const MAX = 9999999;
+  const MESSAGE = 'ทุนประกันภัยต้องอยู่ระหว่าง 300,000 ถึง 9,999,999 บาท';
 
   const isTarget = (el) => el.classList?.contains(CLASS_NAME) || el.closest(`.${CLASS_NAME}`);
   const digitsOnly = (v) => v.replace(/\D/g, '');
   const withCommas = (d) => d.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   const validate = (input, digits) => {
+    const wrapper = input.closest('.field-wrapper');
+    if (!wrapper) return;
+
+    let desc = wrapper.querySelector('.field-description');
+    if (!desc) {
+      desc = document.createElement('div');
+      desc.className = 'field-description';
+      desc.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(desc);
+    }
+
     const num = Number(digits);
-    const isInvalid = digits !== '' && (num < SUM_INSURED_MIN || num > SUM_INSURED_MAX);
-    input.dataset.preserveCustomValidity = String(isInvalid);
-    input.setCustomValidity(isInvalid ? SUM_INSURED_MESSAGE : '');
+    const isInvalid = digits !== '' && (num < MIN || num > MAX);
+    wrapper.classList.toggle('field-invalid', isInvalid);
+    desc.textContent = isInvalid ? MESSAGE : (wrapper.dataset.description || '');
   };
 
   const applyValue = (input, formatValue) => {
@@ -1531,6 +1531,9 @@ function validateFieldInputs() {
     custom: 'Please enter a valid value.',
   };
 
+  // Optional per-field rules keyed by CSS class (on the control or an ancestor).
+  const CUSTOM_RULES = {};
+
   const SKIP_TYPES = ['radio', 'button', 'submit', 'reset', 'file'];
   const CONTROL_SELECTOR = 'input, select, textarea';
 
@@ -1570,9 +1573,7 @@ function validateFieldInputs() {
     }
 
     const { value } = control;
-    const rule = getCustomRule(control);
-    const validationValue = rule?.normalize ? rule.normalize(value) : value;
-    const isEmpty = validationValue.trim() === '' && !control.validity.badInput;
+    const isEmpty = value.trim() === '' && !control.validity.badInput;
 
     if (isEmpty) {
       // Only complain about required once the user has interacted with the field
@@ -1586,14 +1587,10 @@ function validateFieldInputs() {
 
     const min = parseInt(control.getAttribute('minlength'), 10);
     const max = parseInt(control.getAttribute('maxlength'), 10);
-    if (!Number.isNaN(min) && validationValue.length < min) {
-      return getMessage(wrapper, 'minLength');
-    }
-    if (!Number.isNaN(max) && validationValue.length > max) {
-      return getMessage(wrapper, 'maxLength');
-    }
+    if (!Number.isNaN(min) && value.length < min) return getMessage(wrapper, 'minLength');
+    if (!Number.isNaN(max) && value.length > max) return getMessage(wrapper, 'maxLength');
     if (control.type === 'number') {
-      const num = Number(validationValue);
+      const num = Number(value);
       const lo = control.min !== '' ? Number(control.min) : null;
       const hi = control.max !== '' ? Number(control.max) : null;
       if ((lo !== null && num < lo) || (hi !== null && num > hi)) {
@@ -1604,13 +1601,14 @@ function validateFieldInputs() {
     const pattern = control.getAttribute('pattern');
     if (pattern) {
       try {
-        if (!new RegExp(pattern).test(validationValue)) return getMessage(wrapper, 'pattern');
+        if (!new RegExp(pattern).test(value)) return getMessage(wrapper, 'pattern');
       } catch (e) {
         // Invalid regex configured by the author: don't block the user
       }
     }
 
-    if (rule && !rule.validate(validationValue, control)) {
+    const rule = getCustomRule(control);
+    if (rule && !rule.validate(value, control)) {
       return rule.message || getMessage(wrapper, 'custom');
     }
     return '';
