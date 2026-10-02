@@ -1,5 +1,7 @@
 /* eslint-env browser */
 
+import { subscribe } from '../../rules/index.js';
+
 /* ── Locale data ─────────────────────────────────────────────────────────── */
 
 const BE_OFFSET = 543;
@@ -202,7 +204,8 @@ let instanceCount = 0;
 
 /* ── Main decorate ───────────────────────────────────────────────────────── */
 
-export default function decorate(block, fd = {}) {
+export default function decorate(...args) {
+  const [block, fd = {}, , formId = null] = args;
   // Legacy document-authored fallback: only meaningful when the block still has
   // key/value <div> rows. In an AEM Forms render authored values arrive via `fd`.
   const config = parseBlockConfig(block);
@@ -534,6 +537,33 @@ export default function decorate(block, fd = {}) {
   }
 
   /* ── Public API ── */
+  function syncFromModel(value) {
+    selected = parseConfigDate(toText(value));
+    if (selected) {
+      viewYear = selected.getFullYear();
+      viewMonth = selected.getMonth();
+      input.value = formatDisplayDate(selected, lang);
+      hiddenInput.value = toLocalISO(selected, lang === 'th');
+    } else {
+      input.value = '';
+      hiddenInput.value = '';
+    }
+    if (isOpen) renderGrid();
+  }
+
+  if (formId) {
+    subscribe(block, formId, (_el, model, eventType, payload) => {
+      if (eventType === 'register') {
+        if (model?.value !== undefined && model?.value !== null && model.value !== '') {
+          syncFromModel(model.value);
+        }
+        return;
+      }
+      const valueChange = payload?.changes?.find((change) => change.propertyName === 'value');
+      if (valueChange) syncFromModel(valueChange.currentValue);
+    }, { listenChanges: true });
+  }
+
   return {
     open: openPopover,
     close: closePopover,

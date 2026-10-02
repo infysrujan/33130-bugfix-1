@@ -3,6 +3,9 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import {
   loadCardData, getCardViewData,
+  loadDebitCardListingOrder,
+  loadPrepaidCardListingOrder,
+  sortCardsBySheetOrder,
 } from '../../scripts/utils/card-compare-fields.js';
 
 const MAX_COMPARE = 3;
@@ -439,12 +442,16 @@ export default async function decorate(block) {
   const doc = block.ownerDocument;
   const lang = getLang();
 
-  const [, , ph, cards] = await Promise.all([
+  const isPrepaid = cardCategory === 'prepaid-cards';
+  const [, , ph, rawCards, sortMatrix] = await Promise.all([
     loadCSS(`${window.hlx.codeBasePath}/blocks/card-list/card-list.css`),
     waitForOwnCss(`${window.hlx.codeBasePath}/blocks/debit-prepaid/debit-prepaid.css`),
     fetchPlaceholders(),
     loadCardData(cardCategory, cardType),
+    isPrepaid ? loadPrepaidCardListingOrder() : loadDebitCardListingOrder(),
   ]);
+
+  const cards = sortCardsBySheetOrder(rawCards, sortMatrix, isPrepaid ? '' : cardType);
 
   const isTH = lang === 'th';
   const labels = {
