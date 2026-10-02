@@ -259,6 +259,10 @@ main .lead-forms .form form .plain-text-wrapper.field-wrapper.tnc-text-decoratio
   font-family: var(--bbl-font-family-primary);
 }
 
+main .lead-forms:has(.gulf-form) .form .plain-text-wrapper.field-wrapper:is(.field-infotext, .field-or, .field-textw, .field-text1) p {
+  text-align: center;
+}
+
 main .lead-forms .form form .plain-text-wrapper :is(.custom-wffm-form) {
   font-size: inherit;
 }
@@ -326,8 +330,10 @@ main .section.form-container.lead-forms .form form select {
   appearance: none;
   color: var(--bbl-color-grey-90);
   margin-bottom: var(--bbl-form-margin-14);
-  background: var(--bbl-color-white) url('../../../icons/dropdown.svg') no-repeat right var(--bbl-space-150) center /25px;
   font-family: var(--bbl-font-family-medium);
+  background: url('../../../icons/dropdown.svg') no-repeat right var(--bbl-color-white);
+  background-size: 1.5625rem 1.5625rem;
+  background-position: 98% 50% ;
 }
 
 main .lead-forms .form form .drop-down-wrapper.field-title select,
@@ -337,6 +343,14 @@ main .lead-forms .form form .drop-down-wrapper.field-prefix-dropdown select {
 
 main .lead-forms .form form .drop-down-wrapper.field-bblprovincedropdown > .field-label {
   margin-top: 0;
+}
+
+main .lead-forms .form form :is(.text-wrapper > label.field-label, .drop-down-wrapper > label.field-label) {
+  padding: 0 var(--bbl-form-padding-10);
+  text-align: left;
+  font-size: var(--bbl-form-font-size-17);
+  line-height: 1.38rem;
+  font-weight: var(--bbl-form-font-weight-bold);
 }
 
 main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
@@ -404,6 +418,10 @@ main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .tele
 main .lead-forms .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].drop-down-wrapper, [class*='icon-'].date-wrapper).field-wrapper :is(input, select) {
   padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
   margin-bottom: var(--bbl-form-margin-14);
+}
+
+main .lead-forms .form :is([class*='icon-'].drop-down-wrapper).field-wrapper :is(select) {
+  padding: 0 1.875rem 0 var(--bbl-space-500);
 }
 
 main .lead-forms .form select option {
@@ -880,7 +898,7 @@ main .section.form-container.lead-forms .form form .radio-group-wrapper.radio-ta
   padding: 0 var(--bbl-form-padding-10);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-form-font-size-17);
-  line-height: var(--bbl-form-line-height-17);
+  line-height: var(--bbl-form-line-height-22);
   font-weight: var(--bbl-form-font-weight-bold);
   cursor: default;
   text-align: left;
@@ -989,10 +1007,10 @@ main .section.form-container.lead-forms:has(.hlbp-form) {
   .form form .plain-text-wrapper.field-text {
     padding-top: 0;
   }
+}
 
-  select optgroup {
-    background: var(--bbl-color-gray-300);
-  }
+select optgroup {
+  background: var(--bbl-color-gray-300);
 }
 
 @media (width > 47.5rem) {

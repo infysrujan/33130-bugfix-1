@@ -319,7 +319,10 @@ export default async function buildMfFundCardsSlide(row, index) {
     const selected = window.mfsSelectedCards || [];
     slides.forEach((s) => {
       s.querySelectorAll('.mfr-compare-btn').forEach((btn) => {
-        btn.classList.toggle('is-comparing', selected.some((c) => c.name === btn.dataset.cardName));
+        const isSelected = selected.some(
+          (c) => (c.id && c.id === btn.dataset.cardId) || c.name === btn.dataset.cardName,
+        );
+        btn.classList.toggle('is-comparing', isSelected);
       });
     });
   }

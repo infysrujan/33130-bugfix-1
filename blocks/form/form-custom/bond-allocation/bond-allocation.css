@@ -5,18 +5,18 @@
 
 /* Bond Allocation — scoped via .field-bond-allocation-review (Bond_Allocation_TH) */
 .bond-allocation-form main .section.form-container.custom-forms {
-  .field-heading, .field-heading2 {
-    position: relative;
+  padding: 0 var(--bbl-space-200);
 
-    & ::after{
+  .field-heading, .field-heading2 {
+    &::after {
       content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 3.125rem;
-      height: 0.125rem;
-      background-color: var(--bbl-color-grey-85);
+      display: block;
+      width: var(--bbl-space-1000);
+      height: 0.0625rem;
+      margin-inline: auto;
+      padding: 1.25rem 0 1.875rem;
+      background-color: var(--bbl-color-grey-150);
+      background-clip: content-box;
     }
 
     h2{
@@ -27,7 +27,12 @@
     }
   }
 
-
+  /* Desktop: 30px top, 30px bottom */
+  @media (width >= 64rem) {
+    .field-heading::after, .field-heading2::after {
+      padding-block: 1.875rem;
+    }
+  }
 
   .field-subheading {
     margin-bottom: 0.937rem;
@@ -140,7 +145,7 @@
     font-size: var(--bbl-font-size-h2-mobile);
     font-weight: var(--bbl-form-font-weight-bold);
     text-align: left;
-    padding: 0.9375rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
     min-height: 3rem;
     box-sizing: border-box;
     color: var(--bbl-color-grey-159);
@@ -158,8 +163,9 @@
     font-size: var(--bbl-font-size-h2-mobile);
     font-weight: var(--bbl-form-font-weight-bold);
     text-align: right;
-    padding: 0.625rem 0.5rem;
-    padding-top: 0.9375rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
+
+    /* padding-top: 0.9375rem; */
     min-height: 3rem;
     box-sizing: border-box;
     color: var(--bbl-color-grey-159);
@@ -181,7 +187,7 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-b1-desktop);
     font-weight: var(--bbl-form-font-weight-regular);
-    padding: 0.9375rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
     min-height: 2.75rem;
     box-sizing: border-box;
     border-radius: 0;
@@ -200,12 +206,13 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-b1-desktop);
     font-weight: var(--bbl-font-weight-regular);
-    padding: 0.9375rem 0.75rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
     min-height: 2.75rem;
     box-sizing: border-box;
     border-radius: 0;
     text-align: right;
-    padding-right: 1rem;
+
+    /* padding-right: 1rem; */
   }
 
   & .form form .field-bond-allocation-review .field-totalpurchaseamount > input,
@@ -213,9 +220,9 @@
     grid-column: 2;
   }
 
-  & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
+  /* & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
     padding-right: 1.875rem;
-  }
+  } */
 
   & .form form .field-bond-allocation-review .plain-text-wrapper p,
   & .form form .field-bond-allocation-notfound .plain-text-wrapper p {
@@ -331,7 +338,7 @@
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
-    }
+  }
 
   /* Stack buttons only on phones; tablets/desktop keep the side-by-side base layout */
   @media (width < 47.5rem) {
@@ -363,14 +370,9 @@
   & .form form .field-subheading.plain-text-wrapper p:last-child p {
     text-align: center;
   }
-
-  & .form form .field-loadingtext + fieldset.panel-wrapper.field-button-panel.field-wrapper {
-    justify-content: space-between;
-    padding: 0 1.375rem;
     
     @media (width > 47.5rem) {
       justify-content: center;
       padding: 0;
     }
   }
-}

@@ -550,6 +550,33 @@ main .wizard-forms .form .field-health-bt-saverform .field-description {
   text-align: left;
 }
 
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper.field-insurance-table[name="insurance-table"] > .plain-text-wrapper.field-wrapper.col-1 p {
+  color: var(--bbl-color-black, #000);
+}
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper.field-insurance-table[name="insurance-table"] > .field-wrapper.col-11 .field-label {
+  font-size: var(--bbl-font-size-base);
+  color: var(--bbl-color-black);
+  flex: 1 1 auto;
+  white-space: normal;
+}
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper.field-insurance-table[name="insurance-table"] > .field-wrapper.col-11 input {
+  flex: 0 0 auto;
+  field-sizing: content;
+  font-size: var(--bbl-wizard-font-size-summary-input-mobile);
+  color: var(--bbl-color-black, #000);
+  font-weight: var(--bbl-font-weight-regular);
+  margin-left: var(--bbl-wizard-margin-input-left);
+  width: auto;
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: right;
+}
+
 @media (width > 47.5rem) {
   main .form-container.wizard-forms {
     padding-inline: var(--bbl-space-600);
@@ -696,5 +723,41 @@ main .wizard-forms .form .field-health-bt-saverform .field-description {
     font-size: var(--bbl-wizard-font-size-summary-value-desktop);
     line-height: var(--bbl-wizard-line-height-base-desktop);
   }
+}
+
+/* ===== insuranceResults row override ===== */
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper.field-insurance-table[name="insurance-table"] {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: baseline;
+  gap: 4px;                 /* gap between amount and unit */
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper.field-insurance-table[name="insurance-table"] > .field-wrapper.col-11 {
+  display: flex;
+  flex: 1 1 auto;
+  flex-flow: row nowrap;
+  align-items: baseline;
+  justify-content: space-between;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  border: 0;
+}
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper.field-insurance-table[name="insurance-table"] > .plain-text-wrapper.field-wrapper.col-1 {
+  flex: 0 0 auto;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
  

@@ -43,33 +43,40 @@
   
   /* --- Sharp Corners --- */
   --bbl-radius-none: var(--bbl-rounded-000);
+
   /* Used when explicitly specifying that a design element shouldn't have 
      rounded corners. */
   
   /* --- Small Rounded --- */
   --bbl-radius-sm: var(--bbl-rounded-050);
+
   /* Used for small tags. */
   
   /* --- Medium Rounded --- */
   --bbl-radius-md: var(--bbl-rounded-100);
+
   /* Used for data visualisation elements, tags, logos and toast components. */
 
   /* --- 12px Rounded --- */
   --bbl-radius-12: var(--bbl-rounded-150);
+
   /* Used when design calls for 12px rounding (between 8px and 16px). */
   
   /* --- Default Rounded --- */
   --bbl-radius-default: var(--bbl-rounded-200);
   --bbl-radius-lg: var(--bbl-rounded-200);
+
   /* Used in cards, popovers, notifications, headers, navigation bars and 
      side drawers. */
   
   /* --- Extra Large Rounded --- */
   --bbl-radius-xl: var(--bbl-rounded-400);
+
   /* Used in modals and sheets. */
   
   /* --- Fully Rounded / Pill --- */
   --bbl-radius-full: var(--bbl-rounded-full);
+
   /* Used in toggles, extended FABs and buttons. Creates pill-shaped elements. */
 
   /* =========================================================================

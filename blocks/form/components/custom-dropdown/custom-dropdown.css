@@ -1,0 +1,167 @@
+/* ==========================================================================
+   Custom Dropdown – div-based replacement for the default <select> field.
+   ========================================================================== */
+
+main .form select.custom-dropdown-native-select {
+  position: absolute;
+  width: 0.0625rem;
+  height: 0.0625rem;
+  padding: 0;
+  margin: -0.0625rem;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+main .form .custom-dropdown {
+  position: relative;
+  width: 100%;
+  margin-bottom: var(--bbl-space-100);
+}
+
+main .form button.custom-dropdown-trigger[type='button'] {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bbl-space-100);
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  height: 2.625rem;
+  background-color: var(--form-input-background-color);
+  border: var(--form-input-border-size) solid var(--bbl-color-grey-23);
+  border-radius: var(--bbl-radius-select);
+  color: var(--bbl-color-grey-85);
+  font-size: var(--form-input-font-size);
+  font-family: inherit;
+  font-weight: var(--bbl-font-weight-regular);
+  padding: 0 1.875rem 0 var(--bbl-space-250);
+  cursor: pointer;
+  text-align: left;
+}
+
+main .form .custom-dropdown-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+main .form button.custom-dropdown-trigger[type='button'].is-placeholder .custom-dropdown-label {
+  color: var(--bbl-color-grey-50);
+}
+
+main .form .custom-dropdown-arrow {
+  flex: none;
+  width: 0.625rem;
+  height: 0.375rem;
+  background-image: url("../../../../icons/icon_chevron_down.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 0.625rem 0.375rem;
+}
+
+main .form button.custom-dropdown-trigger[type='button']:focus,
+main .form button.custom-dropdown-trigger[type='button'].is-open {
+  background-color: var(--form-input-background-color);
+  outline: none;
+  border-color: var(--bbl-color-active-blue);
+}
+
+main .form button.custom-dropdown-trigger[type='button']:disabled,
+main .form .field-wrapper.field-disabled button.custom-dropdown-trigger[type='button'] {
+  background-color: var(--form-input-disable-color);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+main .form button.custom-dropdown-trigger[type='button']:hover:not(:disabled) {
+  background-color: var(--form-input-background-color);
+  border-color: var(--bbl-color-active-blue);
+}
+
+main .form .field-wrapper.field-invalid button.custom-dropdown-trigger[type='button'] {
+  border-color: var(--form-error-color);
+}
+
+main .form .custom-dropdown-listbox {
+  position: absolute;
+  z-index: 20;
+  inset-inline: 0;
+  top: calc(100% + var(--bbl-space-050));
+  max-height: 13.75rem;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0 0 0.0625rem;
+  list-style: none;
+  background-color: var(--form-input-background-color);
+  border: var(--form-input-border-size) solid var(--bbl-color-gray-122);
+  border-radius: var(--bbl-radius-select);
+  box-shadow: 0 0.25rem 0.75rem var(--bbl-color-black-alpha-14);
+}
+
+main .form .custom-dropdown-listbox[hidden] {
+  display: none;
+}
+
+main .form .custom-dropdown-option {
+  padding: 0.625rem 1.875rem;
+  font-size: var(--form-input-font-size);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
+  cursor: pointer;
+}
+
+main .form .custom-dropdown-option.is-placeholder {
+  color: var(--bbl-color-grey-50);
+  cursor: default;
+}
+
+main .form .custom-dropdown-option:hover:not(.is-placeholder),
+main .form .custom-dropdown-option.is-active:not(.is-placeholder) {
+  color: var(--bbl-color-blue-90);
+}
+
+main .form .custom-dropdown-group-label {
+  padding: 0.375rem 1.875rem 0.375rem 0.375rem;
+  font-size: var(--form-input-font-size);
+  font-weight: 700;
+  color: var(--bbl-color-grey-85);
+  background-color: var(--bbl-color-grey-10);
+}
+
+main .form .custom-dropdown-group-options {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (width >= 760px) {
+  main .form button.custom-dropdown-trigger[type='button'],
+  main .form .custom-dropdown-option,
+  main .form .custom-dropdown-group-label {
+    font-size: 0.9375rem;
+  }
+}
+
+@media (width >= 1025px) {
+  main .form button.custom-dropdown-trigger[type='button'],
+  main .form .custom-dropdown-option,
+  main .form .custom-dropdown-group-label {
+    font-size: 1rem;
+  }
+}
+
+@media (forced-colors: active) {
+  main .form button.custom-dropdown-trigger[type='button'] {
+    forced-color-adjust: auto;
+    border: 0.0625rem solid ButtonText;
+  }
+
+  main .form .custom-dropdown-option.is-active {
+    forced-color-adjust: auto;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}

@@ -42,6 +42,7 @@
 }
 
 .credit-card-form main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper:not(.field-review-panel *)::after{
+  content: none;
   top: 0;
 }
 
