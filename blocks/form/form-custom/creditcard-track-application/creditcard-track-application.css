@@ -119,10 +119,12 @@
   
     & .cc-panel-item-form-input.date-wrapper.field-wrapper::after {
       top: 0;
+      content: '';
     }
   
     & .cc-panel-item-form-input.date-wrapper.field-wrapper:has(label:not([data-visible="false"])):not(.field-review-panel *)::after {
       top: 1.625rem;
+      content: '';
     }
   
     & :is(.form select, .drop-down-wrapper.field-wrapper select) {
