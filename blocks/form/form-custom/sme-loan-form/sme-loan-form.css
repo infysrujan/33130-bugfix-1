@@ -402,8 +402,6 @@
     border-radius: var(--bbl-radius-none);
     font-size: var(--form-font-size-xs);
     overflow: auto;
-    scrollbar-color: var(--bbl-color-blue-90) var(--bbl-color-grey-10);
-    scrollbar-width: thin;
   }
 
   & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .plain-text-wrapper.tnc-text-decoration,
