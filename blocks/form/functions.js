@@ -1113,7 +1113,7 @@ function convertThaiToEnglishDate(thaiDateString) {
 }
 
 /**
- * Formats sum-insured field with commas live as the user types,
+ * Formats the sum-insured field with commas on blur,
  * caps at 7 digits, validates 300,000–9,999,999 range.
  *
  * @name formatAndValidateSumInsured
@@ -1179,6 +1179,24 @@ function formatAndValidateSumInsured() {
   ['input', 'keyup', 'blur'].forEach((type) => {
     document.addEventListener(type, handler, true);
   });
+
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest('button');
+    const form = button?.closest('form');
+    const input = form?.querySelector(`.${CLASS_NAME} input`);
+    if (!button || !input || input.getClientRects().length === 0) return;
+
+    const digits = digitsOnly(input.value).slice(0, MAX_DIGITS);
+    const amount = Number(digits);
+    const isInvalid = digits === '' || amount < MIN || amount > MAX;
+    if (!isInvalid) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    validate(input, digits);
+    input.focus();
+  }, true);
 }
 formatAndValidateSumInsured();
 
