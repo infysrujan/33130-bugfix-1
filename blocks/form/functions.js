@@ -1189,7 +1189,7 @@ function formatAndValidateSumInsured() {
 
     const digits = digitsOnly(input.value).slice(0, MAX_DIGITS);
     const amount = Number(digits);
-    const isInvalid = digits === '' || amount < MIN || amount > MAX;
+    const isInvalid = digits !== '' && (amount < MIN || amount > MAX);
     if (!isInvalid) return;
 
     event.preventDefault();
