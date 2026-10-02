@@ -380,6 +380,10 @@
     & .drop-down-wrapper select optgroup option {
         background-color: var(--bbl-color-white);
     }
+
+    & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > legend.field-label {
+      padding-top: 0;
+    }
 }
 
 /* Tablet & Desktop */
