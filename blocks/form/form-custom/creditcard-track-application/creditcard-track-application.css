@@ -934,13 +934,6 @@
         line-height: 1.625rem;
       }
   
-      & :is(
-        .form form .field-title h2,
-        .form form .field-title .page-header
-      ) {
-        margin-bottom: 2.1875rem;
-      }
-  
       & .form :is(
         fieldset.panel-wrapper:is(.field-submitbuttonpanel, .field-submitbuttonpanel2) .button,
         :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) .button
