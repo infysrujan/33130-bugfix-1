@@ -1160,6 +1160,11 @@ function formatAndValidateSumInsured() {
     const digits = digitsOnly(input.value).slice(0, MAX_DIGITS);
     const nextValue = formatValue ? withCommas(digits) : digits;
 
+    if (formatValue) {
+      input.value = digits;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
     if (input.value !== nextValue) {
       input.value = nextValue;
       if (document.activeElement === input) {
