@@ -1113,7 +1113,7 @@ function convertThaiToEnglishDate(thaiDateString) {
 }
 
 /**
- * Formats sum-insured field with commas live as the user types,
+ * Formats the sum-insured field with commas on blur,
  * caps at 7 digits, validates 300,000–9,999,999 range.
  *
  * @name formatAndValidateSumInsured
@@ -1133,18 +1133,6 @@ function formatAndValidateSumInsured() {
   const digitsOnly = (v) => v.replace(/\D/g, '');
   const withCommas = (d) => d.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-  // the native setter, grabbed from the prototype — this bypasses
-  // any framework's own overridden 'value' setter/tracker
-  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-    window.HTMLInputElement.prototype,
-    'value',
-  ).set;
-
-  const setReactCompatibleValue = (input, value) => {
-    nativeInputValueSetter.call(input, value);
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-  };
-
   const validate = (input, digits) => {
     const wrapper = input.closest('.field-wrapper');
     if (!wrapper) return;
@@ -1163,18 +1151,20 @@ function formatAndValidateSumInsured() {
     desc.textContent = isInvalid ? MESSAGE : (wrapper.dataset.description || '');
   };
 
-  const applyFormat = (input) => {
+  const applyValue = (input, formatValue) => {
     if (input.type !== 'text') {
       input.type = 'text';
       input.setAttribute('inputmode', 'numeric');
     }
 
     const digits = digitsOnly(input.value).slice(0, MAX_DIGITS);
-    const formatted = withCommas(digits);
+    const nextValue = formatValue ? withCommas(digits) : digits;
 
-    if (input.value !== formatted) {
-      setReactCompatibleValue(input, formatted);
-      input.setSelectionRange(formatted.length, formatted.length);
+    if (input.value !== nextValue) {
+      input.value = nextValue;
+      if (document.activeElement === input) {
+        input.setSelectionRange(nextValue.length, nextValue.length);
+      }
     }
 
     validate(input, digits);
@@ -1183,12 +1173,30 @@ function formatAndValidateSumInsured() {
   const handler = (event) => {
     const input = event.target;
     if (!(input instanceof HTMLInputElement) || !isTarget(input)) return;
-    applyFormat(input);
+    applyValue(input, event.type === 'blur');
   };
 
-  ['input', 'keyup', 'blur', 'change'].forEach((type) => {
+  ['input', 'keyup', 'blur'].forEach((type) => {
     document.addEventListener(type, handler, true);
   });
+
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest('button');
+    const form = button?.closest('form');
+    const input = form?.querySelector(`.${CLASS_NAME} input`);
+    if (!button || !input || input.getClientRects().length === 0) return;
+
+    const digits = digitsOnly(input.value).slice(0, MAX_DIGITS);
+    const amount = Number(digits);
+    const isInvalid = digits !== '' && (amount < MIN || amount > MAX);
+    if (!isInvalid) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    validate(input, digits);
+    input.focus();
+  }, true);
 }
 formatAndValidateSumInsured();
 
