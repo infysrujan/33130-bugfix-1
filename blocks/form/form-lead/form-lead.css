@@ -349,7 +349,7 @@ main .lead-forms .form form :is(.text-wrapper > label.field-label, .drop-down-wr
   padding: 0 var(--bbl-form-padding-10);
   text-align: left;
   font-size: var(--bbl-form-font-size-17);
-  line-height: var(--bbl-form-line-height-17);
+  line-height: 1.38rem;
   font-weight: var(--bbl-form-font-weight-bold);
 }
 
