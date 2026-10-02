@@ -1627,16 +1627,14 @@ function validateFieldInputs() {
   const runCheck = (control) => {
     const wrapper = control.closest('.field-wrapper');
     if (!wrapper) return;
-
-    let description = wrapper.querySelector('.field-description');
-    if (!description) {
+    const message = getError(control, wrapper);
+    let description = wrapper.querySelector(':scope > .field-description');
+    if (!description && (message || wrapper.dataset.description)) {
       description = document.createElement('div');
       description.className = 'field-description';
       description.setAttribute('aria-live', 'polite');
       wrapper.appendChild(description);
     }
-
-    const message = getError(control, wrapper);
 
     if (message) {
       wrapper.classList.add('field-invalid');
@@ -1646,7 +1644,7 @@ function validateFieldInputs() {
       if (wrapper.dataset.description) {
         description.innerHTML = wrapper.dataset.description;
       } else {
-        description.textContent = '';
+        description?.remove();
       }
     }
   };
