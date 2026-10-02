@@ -514,4 +514,31 @@
     }
   }
 }
- 
+
+@media (width <= 47.5rem) {
+  .sme-loan-form main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper.field-loan-details-main {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    align-items: stretch;
+    min-width: 0;
+    min-height: 0;
+    height: auto;
+    box-sizing: border-box;
+  }
+
+  .sme-loan-form main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper.custom-fieldset-approval.custom-fieldset-approval {
+    display: block;
+    min-width: 0;
+    box-sizing: border-box;
+    margin-top: var(--bbl-space-200);
+  }
+
+  .sme-loan-form main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper.custom-fieldset-approval.custom-fieldset-approval > fieldset.panel-wrapper {
+    display: block;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 0;
+    border: 0;
+  }
+}
