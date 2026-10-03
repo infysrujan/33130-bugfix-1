@@ -25,7 +25,7 @@ main .section.form-container .form .tnc-text-decoration::-webkit-scrollbar-butto
 
 /* Validation states and focus/hover border colors */
 main .section.form-container .form form .field-wrapper.field-invalid :is(input:not([type='radio'], [type='checkbox']), select, textarea) {
-  border-color: var(--bbl-color-red-130);
+  border-color: var(--bbl-color-red-100);
 }
 
 main .section.form-container .form form .field-invalid :is(.field-validation-error, .field-description) {
