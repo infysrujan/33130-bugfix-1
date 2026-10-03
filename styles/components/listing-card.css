@@ -266,7 +266,10 @@
   }
 
   .listing-card-tag {
-    height: 1.875rem;
+    height:auto;
+    min-height: 1.875rem;
+    white-space:normal;
+    text-align: center;
     padding: var(--bbl-space-050) var(--bbl-space-100);
   }
 
