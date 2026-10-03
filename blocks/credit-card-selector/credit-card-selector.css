@@ -457,6 +457,7 @@
 
   .credit-card-selector .filter-group-header {
     margin-block : 0;
+    padding-bottom: 7px;
   }
 
    .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
