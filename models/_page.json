@@ -97,6 +97,12 @@
           "name": "hideCurrentPageBreadcrumb",
           "label": "Hide breadcrumb from current page",
           "valueType": "boolean"
+        },
+        {
+          "component": "boolean",
+          "name": "hideCurrentPageInBreadcrumb",
+          "label": "Hide this breadcrumb only on the current page",
+          "valueType": "boolean"
         }
       ]
     }
