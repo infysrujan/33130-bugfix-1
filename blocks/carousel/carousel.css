@@ -76,7 +76,6 @@
     display: block;
     border-radius: 0.4375rem;
     overflow: hidden;
-    box-sizing: border-box;
     border: 0.0625rem solid var(--bbl-color-black-alpha-10);
     scroll-snap-align: start;
     background-color: var(--bbl-color-white);
@@ -412,6 +411,12 @@
 
     .carousel-cta.button-m {
         display: inline-flex;
+    }
+
+    .carousel-track .carousel-item { 
+        box-sizing: border-box;
+        height: 30.625rem;
+        max-height: unset;
     }
 
     .carousel-track .carousel-item:not(.active) {
