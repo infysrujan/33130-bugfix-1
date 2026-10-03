@@ -28,11 +28,11 @@
     }
   }
 
-  /* Desktop: 30px top, 30px bottom */
+  /* Desktop: 30px top, 30px bottom (mobile/tablet: 20px top, 30px bottom from base) */
   @media (width >= 64rem) {
     .field-heading::after, .field-heading2::after {
-      padding-top: 0.9375rem;
-      margin-bottom: 0.9375rem;
+      padding-top: 1.875rem;
+      margin-bottom: 1.875rem;
     }
   }
 
