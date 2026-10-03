@@ -209,6 +209,11 @@ export async function getParentPageUrl() {
  */
 async function loadSocialIcons(block) {
   try {
+    const existingBlock = block.parentElement?.querySelector('.social-icons.block');
+    if (existingBlock) {
+      existingBlock.style.display = '';
+      return;
+    }
     const { loadFragment } = await import('../fragment/fragment.js');
     const fragment = await loadFragment(`/${getLang()}/fragments/social-icons`);
     if (fragment) {
@@ -217,8 +222,9 @@ async function loadSocialIcons(block) {
         current.children.length > (best?.children.length ?? -1) ? current : best
       ), null);
       if (socialIconsBlock) {
+        socialIconsBlock.style.display = '';
         const socialWrapper = socialIconsBlock.parentElement;
-        if (socialWrapper) {
+        if (socialWrapper && !block.parentElement?.querySelector('.social-icons-wrapper')) {
           block.parentElement.appendChild(socialWrapper);
         }
       }
@@ -253,17 +259,13 @@ function getParentPageLabel(page) {
  * @param {Element} block The breadcrumb block element
  */
 export default async function decorate(block) {
+  loadSocialIcons(block);
+
   const hideCurrentPageBreadcrumb = isCurrentPageBreadcrumbHidden();
 
   // Hide breadcrumb block if current page has breadcrumb hidden
   if (hideCurrentPageBreadcrumb) {
     block.style.display = 'none';
-
-    // Also hide social-icons block if it exists
-    const socialIconsBlock = document.querySelector('.social-icons.block');
-    if (socialIconsBlock) {
-      socialIconsBlock.style.display = 'none';
-    }
     return;
   }
 
@@ -272,21 +274,11 @@ export default async function decorate(block) {
   // Also hide if backend API indicates current page breadcrumb is hidden
   if (isCurrentPageBreadcrumbHidden(currentPageData)) {
     block.style.display = 'none';
-
-    const socialIconsBlock = document.querySelector('.social-icons.block');
-    if (socialIconsBlock) {
-      socialIconsBlock.style.display = 'none';
-    }
     return;
   }
 
   if (!breadcrumbPages.length && currentPageData?.pageDepth !== 3) {
     block.style.display = 'none';
-
-    const socialIconsBlock = document.querySelector('.social-icons.block');
-    if (socialIconsBlock) {
-      socialIconsBlock.style.display = 'none';
-    }
     return;
   }
 
@@ -305,10 +297,6 @@ export default async function decorate(block) {
   if (currentPageData?.pageDepth === 3) {
     if (isCurrentPageHiddenInBreadcrumb(currentPageData)) {
       block.style.display = 'none';
-      const socialIconsBlock = document.querySelector('.social-icons.block');
-      if (socialIconsBlock) {
-        socialIconsBlock.style.display = 'none';
-      }
       return;
     }
 
@@ -319,8 +307,6 @@ export default async function decorate(block) {
     li.textContent = homepageTitle;
     li.setAttribute('aria-current', 'page');
     ol.appendChild(li);
-
-    await loadSocialIcons(block);
     return;
   }
 
@@ -359,12 +345,5 @@ export default async function decorate(block) {
 
   if (!ol.children.length) {
     block.style.display = 'none';
-    const socialIconsBlock = document.querySelector('.social-icons.block');
-    if (socialIconsBlock) {
-      socialIconsBlock.style.display = 'none';
-    }
-    return;
   }
-
-  await loadSocialIcons(block);
 }
