@@ -1,6 +1,6 @@
 import parseAuthoring, { parseTableHeading, parseMaturityTypes } from './helpers/authoring-helpers.js';
 import {
-  formatMaturityDate, formatRemainTerm, remainTermToMonths,
+  formatMaturityDate, formatRemainTerm,
   formatMonthYear, formatMonthYearDisplay,
 } from './helpers/date-helpers.js';
 import { parseCsvConfigList, buildIntlMonthLabels } from '../../scripts/utils/date-helpers.js';
@@ -60,20 +60,24 @@ function buildDownloadHref(downloadUrl, symbol) {
 }
 
 // ─── sort helper ──────────────────────────────────────────────────────────────
+function compareValues(a, b, asc = true) {
+  // Match the live board's direct JavaScript relational comparison.
+  let result = 0;
+  if (a > b) result = 1;
+  else if (a < b) result = -1;
+  return asc ? result : -result;
+}
+
 function sortValue(rate, key, isThai) {
-  if (key === 'REMAIN_TERM') return remainTermToMonths(rate.REMAIN_TERM || '00.00.00');
-  if (key === 'MATURITY_DATE') return new Date(rate.MATURITY_DATE).getTime();
-  if (key === 'BOND_SYMBOL') return (rate.BOND_SYMBOL || '').toLowerCase();
-  // The Name column's sortKey is always 'NAME_ENG', but the cell itself renders
-  // NAME_THAI on the Thai locale (see renderRow) — sort by whichever field is
-  // actually on screen, or the sort order and the displayed text disagree.
-  if (key === 'NAME_ENG') return (rate[isThai ? 'NAME_THAI' : 'NAME_ENG'] || '').toLowerCase();
-  // Legacy sorts '-' before '+' (opposite of plain order); remap to match.
-  if (key === 'ISSUE_RATING' || key === 'ISSUER_RATING') {
-    return (rate[key] || '').toLowerCase().replace(/-/g, 'n').replace(/\+/g, 'p');
+  // Coerce displayed numeric fields to preserve sorting without legacy *_FLOAT aliases.
+  if (['BID_PRICE', 'BID_YIELD', 'OFFER_PRICE', 'OFFER_YIELD', 'CURRENT_COUPON'].includes(key)) {
+    const value = rate[key];
+    if (value === null || value === undefined || value === '') return value;
+    const number = Number(value);
+    return Number.isNaN(number) ? value : number;
   }
-  const n = parseFloat(rate[key]);
-  return Number.isNaN(n) ? Infinity : n;
+  // The Name column sorts by the localized name field in the live board.
+  return key === 'NAME_ENG' ? rate[isThai ? 'NAME_THAI' : 'NAME_ENG'] : rate[key];
 }
 
 // ─── state ────────────────────────────────────────────────────────────────────
@@ -85,7 +89,7 @@ function defaultFilterDates() {
   };
 }
 
-function createState(defaultSortKey = 'REMAIN_TERM') {
+function createState(defaultSortKey = '') {
   const now = new Date();
   const curMonth = now.getMonth() + 1;
   const curYear = now.getFullYear();
@@ -96,7 +100,7 @@ function createState(defaultSortKey = 'REMAIN_TERM') {
     timeDropdownOpen: false,
     rates: [],
     selectedIds: [],
-    sortKey: defaultSortKey,
+    sortKey: defaultSortKey || '',
     sortAsc: true,
     sortUserSet: false,
     filterOpen: false,
@@ -198,17 +202,13 @@ function renderTable(tbodySel, tbodyAll, state) {
     .map((id) => state.rates.find((r) => String(r.AutoID) === id))
     .filter(Boolean);
   const unsel = state.rates.filter((r) => !state.selectedIds.includes(String(r.AutoID)));
-  unsel.sort((a, b) => {
-    const av = sortValue(a, state.sortKey, state.isThai);
-    const bv = sortValue(b, state.sortKey, state.isThai);
-    if (typeof av === 'string' && typeof bv === 'string') {
-      const cmp = av.localeCompare(bv, state.isThai ? 'th' : undefined);
-      return state.sortAsc ? cmp : -cmp;
-    }
-    if (av < bv) return state.sortAsc ? -1 : 1;
-    if (av > bv) return state.sortAsc ? 1 : -1;
-    return 0;
-  });
+  if (state.sortKey) {
+    unsel.sort((a, b) => {
+      const av = sortValue(a, state.sortKey, state.isThai);
+      const bv = sortValue(b, state.sortKey, state.isThai);
+      return compareValues(av, bv, state.sortAsc);
+    });
+  }
   tbodySel.innerHTML = selRates.map((r) => renderRow(r, true, state)).join('');
   tbodyAll.innerHTML = unsel.map((r) => renderRow(r, false, state)).join('');
 }
@@ -970,7 +970,7 @@ function onBeforePrint() {
 export default async function decorate(block) {
   const authoring = parseAuthoring(block);
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
-  const state = createState(configs?.dynamicBoardDefaultSortKey);
+  const state = createState();
   const language = getLang();
   state.monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
   state.buddhistYearOffset = language === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
@@ -1225,7 +1225,7 @@ export default async function decorate(block) {
     state.filterMaturity = null;
     Object.assign(state, defaultFilterDates());
     state.filterDatesUserSet = false;
-    state.sortKey = configs?.dynamicBoardDefaultSortKey;
+    state.sortKey = '';
     state.sortAsc = true;
     state.sortUserSet = false;
     updateFilterBtn(filterBtn, state);
