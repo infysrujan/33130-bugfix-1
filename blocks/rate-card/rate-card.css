@@ -286,7 +286,6 @@
    ========================================================================== */
 @media (width > 47.5rem) {
   .rate-card .currency-info {
-    padding: 1.5rem;
     border-radius: 0.4375rem;
     min-height: auto;
   }
