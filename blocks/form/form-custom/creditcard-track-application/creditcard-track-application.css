@@ -934,13 +934,6 @@
         line-height: 1.625rem;
       }
   
-      & :is(
-        .form form .field-title h2,
-        .form form .field-title .page-header
-      ) {
-        margin-bottom: 2.1875rem;
-      }
-  
       & .form :is(
         fieldset.panel-wrapper:is(.field-submitbuttonpanel, .field-submitbuttonpanel2) .button,
         :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) .button
@@ -1017,7 +1010,13 @@
   
     & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
       margin: 0;
+      padding: 0 0.625rem 0 0;
       width: calc(100% - 0.75rem);
+    }
+
+    /* Remove global first-paragraph padding inside the T&C text for the CC form */
+    & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form > .custom-fieldset-approval.cc-panel-item-form-consent .tnc-text-decoration.tnc-text-decoration > p > p:first-child {
+      padding-right: 0;
     }
   
     @media (width > 64rem) {
