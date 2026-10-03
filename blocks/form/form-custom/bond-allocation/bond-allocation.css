@@ -8,15 +8,16 @@
   padding: 0 var(--bbl-space-200);
 
   .field-heading, .field-heading2 {
+    /* Grey bar under the title: drawn as a border (not a clipped background)
+       so it renders the same before and after submission */
     &::after {
       content: '';
       display: block;
       width: var(--bbl-space-1000);
-      height: 0.0625rem;
-      margin-inline: auto;
-      padding: 1.25rem 0 1.875rem;
-      background-color: var(--bbl-color-grey-150);
-      background-clip: content-box;
+      height: 0;
+      margin: 0 auto 1.875rem;
+      padding: 1.25rem 0 0;
+      border-bottom: 0.0625rem solid var(--bbl-color-grey-150);
     }
 
     h2{
@@ -30,7 +31,8 @@
   /* Desktop: 30px top, 30px bottom */
   @media (width >= 64rem) {
     .field-heading::after, .field-heading2::after {
-      padding-block: 1.875rem;
+      padding-top: 0.9375rem;
+      margin-bottom: 0.9375rem;
     }
   }
 
@@ -258,6 +260,15 @@
   }
 
 
+
+  /* review-panel.css styles the first text block of .form-review-2col as a flex
+     "success" row; reset it so the heading + grey bar stack like before submission */
+  & .form form .field-bond-allocation-review .field-heading2.plain-text-wrapper {
+    display: block;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+  }
 
   & .form form .field-bond-allocation-review .field-heading2.plain-text-wrapper p {
     margin-left: auto;
