@@ -23,6 +23,17 @@ function isCurrentPageBreadcrumbHidden(page) {
     || getMetadata('hideCurrentPageBreadcrumb') === 'true';
 }
 
+function isCurrentPageHiddenInBreadcrumb(page) {
+  return isEnabled(page?.hideCurrentPageInBreadcrumb)
+    || isEnabled(page?.hidecurrentpageinbreadcrumb)
+    || isEnabled(page?.hideBreadcrumbOnlyOnCurrentPage)
+    || isEnabled(page?.hidebreadcrumbonlyoncurrentpage)
+    || getMetadata('hidecurrentpageinbreadcrumb') === 'true'
+    || getMetadata('hideCurrentPageInBreadcrumb') === 'true'
+    || getMetadata('hidebreadcrumbonlyoncurrentpage') === 'true'
+    || getMetadata('hideBreadcrumbOnlyOnCurrentPage') === 'true';
+}
+
 function isHiddenFromChildTrails(page) {
   // Authored page metadata uses `breadcrumb`; the page-info API returns
   // the equivalent property as `hidebreadcrumb`.
@@ -43,7 +54,7 @@ export function pagePathToUrl(pagePath) {
 
 /**
  * Checks whether a page object indicates it should be hidden
- * from the breadcrumb trail in child pages.
+ * from the breadcrumb trail.
  * @param {Object} page Page object from API
  * @param {boolean} isCurrentPage Whether this is the current page
  * @returns {boolean}
@@ -51,8 +62,8 @@ export function pagePathToUrl(pagePath) {
 function isPageHiddenFromBreadcrumb(page, isCurrentPage = false) {
   if (!page) return false;
 
-  // hideCurrentPageBreadcrumb only controls the current page.
-  if (isCurrentPage && isCurrentPageBreadcrumbHidden(page)) {
+  // hideCurrentPageInBreadcrumb only controls the current page.
+  if (isCurrentPage && isCurrentPageHiddenInBreadcrumb(page)) {
     return true;
   }
 
@@ -242,7 +253,32 @@ function getParentPageLabel(page) {
  * @param {Element} block The breadcrumb block element
  */
 export default async function decorate(block) {
+  const hideCurrentPageBreadcrumb = isCurrentPageBreadcrumbHidden();
+
+  // Hide breadcrumb block if current page has breadcrumb hidden
+  if (hideCurrentPageBreadcrumb) {
+    block.style.display = 'none';
+
+    // Also hide social-icons block if it exists
+    const socialIconsBlock = document.querySelector('.social-icons.block');
+    if (socialIconsBlock) {
+      socialIconsBlock.style.display = 'none';
+    }
+    return;
+  }
+
   const { breadcrumbPages, currentPageData } = await fetchBreadcrumbData();
+
+  // Also hide if backend API indicates current page breadcrumb is hidden
+  if (isCurrentPageBreadcrumbHidden(currentPageData)) {
+    block.style.display = 'none';
+
+    const socialIconsBlock = document.querySelector('.social-icons.block');
+    if (socialIconsBlock) {
+      socialIconsBlock.style.display = 'none';
+    }
+    return;
+  }
 
   if (!breadcrumbPages.length && currentPageData?.pageDepth !== 3) {
     block.style.display = 'none';
@@ -267,6 +303,15 @@ export default async function decorate(block) {
 
   // Homepage check using API pageDepth
   if (currentPageData?.pageDepth === 3) {
+    if (isCurrentPageHiddenInBreadcrumb(currentPageData)) {
+      block.style.display = 'none';
+      const socialIconsBlock = document.querySelector('.social-icons.block');
+      if (socialIconsBlock) {
+        socialIconsBlock.style.display = 'none';
+      }
+      return;
+    }
+
     block.classList.add('is-homepage');
 
     const li = document.createElement('li');
