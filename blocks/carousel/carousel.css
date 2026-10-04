@@ -413,6 +413,12 @@
         display: inline-flex;
     }
 
+    .carousel-track .carousel-item { 
+        box-sizing: border-box;
+        height: 30.625rem;
+        max-height: unset;
+    }
+
     .carousel-track .carousel-item:not(.active) {
         position: relative;
         width: calc((100vw - 10.5rem) * 0.321);

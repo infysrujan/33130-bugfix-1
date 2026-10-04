@@ -116,6 +116,10 @@
       max-width: 100%;
       box-sizing: border-box;
     }
+
+    & .dobth-wrapper {
+      margin: 0;
+    }
   
     & .cc-panel-item-form-input.date-wrapper.field-wrapper::after {
       top: 0;
@@ -216,6 +220,14 @@
     & .form form .field-invalid :is(input, select, textarea) {
       border-color: var(--bbl-color-orange-130);
     }
+
+    & .form form .field-invalid :is(.field-validation-error, .field-description) {
+      padding: 0.3125rem 0.3125rem 0.3125rem 0.8125rem;
+    }
+
+    & .form form :is(.radio-group-wrapper, .checkbox-group-wrapper).horizontal .field-description {
+      margin-top: 0;
+    }
   
     & .form form :is(p, .repeat-wrapper, .field-wrapper) {
       margin: 0;
@@ -245,6 +257,10 @@
       width: 100%;
     }
   
+    & .form form fieldset.panel-wrapper .button-wrapper {
+      margin: 5.625rem 0;
+    }
+
     /* Button panel — preserve flex layout inside CC form */
     & .form form fieldset.panel-wrapper.field-button-panel {
       display: flex;
@@ -264,7 +280,7 @@
         clear: none;
       }
     }
-  
+
     & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper {
       margin: 1.875rem 0 2.1875rem;
   
@@ -546,7 +562,35 @@
           & > .cc-panel-item-form-input-half:first-of-type {
             margin-right: 0;
           }
-  
+
+          /* Name + Surname validation messages: show only one, aligned under Name.
+             --field-gap matches the space between the two fields (wider on desktop). */
+          --field-gap: 0.75rem;
+
+          & .cc-panel-item-form-input-half {
+            /* Last half field (Surname) */
+            &:not(:has(~ .cc-panel-item-form-input-half)) {
+              position: relative;
+
+              &:has(.field-description) {
+                margin-bottom: 2.1875rem;
+              }
+
+              /* Only Surname has an error → show it at the left edge, under Name */
+              & .field-description {
+                position: absolute;
+                top: 98%;
+                left: calc(-100% - 0.875rem);
+                text-align: left;
+              }
+            }
+
+            /* Name has a message → hide Surname's so only one shows */
+            &:has(.field-description) + .cc-panel-item-form-input-half .field-description {
+              display: none;
+            }
+          }
+
           & > .cc-panel-item-form-radio.radio-group-wrapper.horizontal {
             flex-flow: column nowrap;
             align-items: flex-start;
@@ -890,6 +934,13 @@
       }
     }
   
+    /* Message form: red border on half-width inputs when a validation message is shown */
+    & .form form fieldset.panel-wrapper.field-wrapper.cc-app-message-form:has(.cc-panel-item-form-input-half .field-description) {
+      & .cc-panel-item-form-input-half input {
+        border-color: var(--bbl-color-red-130);
+      }
+    }
+
     & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .field-disclaimer .plain-text-wrapper p {
       color: var(--bbl-color-grey-90);
       text-align: left;
@@ -932,13 +983,6 @@
       ) {
         font-size: 1.5rem;
         line-height: 1.625rem;
-      }
-  
-      & :is(
-        .form form .field-title h2,
-        .form form .field-title .page-header
-      ) {
-        margin-bottom: 2.1875rem;
       }
   
       & .form :is(
@@ -1017,7 +1061,13 @@
   
     & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
       margin: 0;
+      padding: 0 0.625rem 0 0;
       width: calc(100% - 0.75rem);
+    }
+
+    /* Remove global first-paragraph padding inside the T&C text for the CC form */
+    & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form > .custom-fieldset-approval.cc-panel-item-form-consent .tnc-text-decoration.tnc-text-decoration > p > p:first-child {
+      padding-right: 0;
     }
   
     @media (width > 64rem) {
@@ -1191,7 +1241,10 @@
         & > .cc-panel-item-form-input-half:first-of-type {
           margin-right: var(--bbl-space-150);
         }
-  
+
+        /* Name + Surname gap: 0.75rem column gap + 0.75rem margin-right above */
+        --field-gap: 1.5rem;
+
         & > .cc-panel-item-form-radio.radio-group-wrapper.horizontal {
           flex-flow: row wrap;
           gap: var(--bbl-space-200);

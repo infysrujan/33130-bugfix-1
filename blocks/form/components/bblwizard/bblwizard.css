@@ -175,7 +175,7 @@ main .section.form-container.wizard-forms .form form .field-invalid :is(.field-v
   margin: 0 0 0 var(--bbl-margin-block-14px);
   font-size: var(--bbl-font-size-b2-mobile);
   line-height: var(--bbl-wizard-line-height-error);
-  color: var(--bbl-color-error-red, #f00);
+  color: var(--bbl-color-red-100);
   align-self: flex-start;
 }
 
