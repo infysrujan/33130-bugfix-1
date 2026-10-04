@@ -4,14 +4,7 @@
     position: relative;
 
     & ::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 3.125rem;
-      height: 0.125rem;
-      background-color: var(--bbl-color-grey-85);
+      content: none;
     }
 
     h2 {
@@ -35,8 +28,9 @@
     }
   }
 
-  & .form form .field-bondholdernumber {
-    margin-bottom: 10px;
+  & .form form .field-mainformpanel > .field-bondholdernumber {
+    /* Include the panel grid gap in the 15px spacing before Citizen ID. */
+    margin-bottom: calc(15px - var(--form-field-vert-gap));
   }
 
   & .form form .field-bondholdernumber p {
@@ -159,6 +153,10 @@
     text-align: right;
   }
 
+  & .form form .bond-connect-result-table .bond-connect-channel-nowrap {
+    white-space: nowrap;
+  }
+
   & .form form .bond-connect-result-table .is-strong {
     font-family: var(--bbl-font-family-medium);
     font-weight: var(--bbl-form-font-weight-bold);
@@ -200,11 +198,19 @@
     font-weight: var(--bbl-form-font-weight-bold);
   }
 
+  & .form form .bond-connect-result-table .bond-connect-grand-total-row .bond-connect-grand-total-label {
+    color: var(--bbl-color-black);
+  }
+
   & .form form .bond-connect-result-table .bond-connect-spacer-row td {
     height: 25px;
     padding-top: 2px;
     padding-bottom: 3px;
     border: none;
+  }
+
+  & .form form .bond-connect-result-table tbody > tr:last-child > td {
+    border-bottom: none;
   }
 
   & .form form .field-bond-allocation-review fieldset.field-button-panel .button-wrapper .button.primary:not(:disabled) {

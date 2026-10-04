@@ -35,6 +35,28 @@ const LABEL_FIELDS = {
   grandTotal: ['hdConnectGrandTotal', 'ConnectGrandTotal', 'connectGrandTotal'],
 };
 
+const ALLOCATION_MESSAGES = {
+  1: {
+    th: 'รายการจองซื้อพันธบัตรฯของท่าน ได้รับการจัดสรรจากตลาดหลักทรัพย์ฯ เต็มจำนวน',
+    en: 'Your subscription for government bonds has been fully allocated'
+      + ' by the Stock Exchange of Thailand.',
+  },
+  2: {
+    th: 'รายการจองซื้อพันธบัตรฯของท่าน ได้รับการจัดสรรจากตลาดหลักทรัพย์ฯ บางส่วน'
+      + ' โดยยอดที่ไม่ได้รับการจัดสรร ธนาคารจะคืนเงินเข้าบัญชีเงินฝากของท่านต่อไป',
+    en: 'Your subscription for government bonds has been partially allocated'
+      + ' by the Stock Exchange of Thailand. The unallocated funds will be refunded'
+      + ' to your deposit account by the Bank.',
+  },
+  3: {
+    th: 'รายการจองซื้อพันธบัตรฯของท่าน ไม่ได้รับการจัดสรรจากตลาดหลักทรัพย์ฯ'
+      + ' ธนาคารจะคืนเงินเข้าบัญชีเงินฝากของท่านต่อไป',
+    en: 'Your subscription for government bonds has not been allocated'
+      + ' by the Stock Exchange of Thailand. The Bank will refund the full amount'
+      + ' to your deposit account.',
+  },
+};
+
 const serviceResponseRenderers = new Set();
 let serviceResponseCaptureBound = false;
 
@@ -92,7 +114,9 @@ function getLabels(form) {
       ? 'ช่องทาง'
       : getInputValue(form, LABEL_FIELDS.channel, 'Channel'),
     total: isThai ? 'รวม' : getInputValue(form, LABEL_FIELDS.total, 'Total'),
-    grandTotal: getInputValue(form, LABEL_FIELDS.grandTotal, 'Total Summary'),
+    grandTotal: isThai
+      ? 'รวมทั้งหมด'
+      : getInputValue(form, LABEL_FIELDS.grandTotal, 'Total Summary'),
   };
 }
 
@@ -192,13 +216,18 @@ function createTableHtml(result, form) {
       <tr class="bond-connect-heading-row">
         <th>${escapeHtml(labels.symbol)}</th>
         <th>${escapeHtml(labels.referenceNo)}</th>
-        <th class="is-numeric">${escapeHtml(labels.reserve)}${getLocale() === 'en' ? '<br>(baht)' : ''}</th>
+        <th class="is-numeric">${escapeHtml(labels.reserve)}${getLocale() === 'en' ? '<br>(Baht)' : ''}</th>
         <th class="is-numeric">${escapeHtml(labels.allocate)}</th>
         <th>${escapeHtml(labels.channel)}</th>
       </tr>
     `;
 
     group.items.forEach((row) => {
+      const channel = getChannel(row);
+      const channelHtml = channel.trim() === 'โมบายแบงก์กิ้ง'
+        ? `<span class="bond-connect-channel-nowrap">${escapeHtml(channel)}</span>`
+        : escapeHtml(channel);
+
       html += `
         <tr>
           <td>${escapeHtml(row.Symbol)}</td>
@@ -209,7 +238,7 @@ function createTableHtml(result, form) {
           <td class="is-numeric is-strong">
             ${escapeHtml(row.AllocatedAmountFmt ?? formatAmount(parseAmount(row.AllocatedAmount)))}
           </td>
-          <td>${escapeHtml(getChannel(row))}</td>
+          <td>${channelHtml}</td>
         </tr>
       `;
     });
@@ -233,7 +262,7 @@ function createTableHtml(result, form) {
     html += `
       <tr class="bond-connect-grand-total-row">
         <td></td>
-        <td>${escapeHtml(labels.grandTotal)}</td>
+        <td class="bond-connect-grand-total-label">${escapeHtml(labels.grandTotal)}</td>
         <td class="is-numeric">${escapeHtml(grandTotalPurchase)}</td>
         <td class="is-numeric">${escapeHtml(grandTotalAllocated)}</td>
         <td></td>
@@ -326,6 +355,24 @@ function renderResultSubHeader(form, result) {
     ? `เลขบัตรประจำตัวประชาชน XXXXXXXXX${citizenId}`
     : `Citizen ID No. XXXXXXXXX${citizenId}`;
   subHeader.append(text);
+}
+
+function renderAllocationMessage(form, result) {
+  const status = Number(result?.Bonds?.[0]?.AllocationStatus);
+  const message = ALLOCATION_MESSAGES[status]?.[getLocale()];
+  if (!message) return;
+
+  const candidates = form.querySelectorAll(
+    '.field-bond-allocation-review .field-successpanel > .plain-text-wrapper',
+  );
+  const target = [...candidates].find((element) => (
+    /^(รายการจองซื้อ|Your subscription)/i.test(element.textContent.trim())
+  ));
+  if (!target) return;
+
+  const text = document.createElement('p');
+  text.textContent = message;
+  target.replaceChildren(text);
 }
 
 function isLocalhost() {
@@ -469,6 +516,7 @@ async function fetchBondConnectDetail(form) {
 
 function showResult(form, result) {
   renderResultSubHeader(form, result);
+  renderAllocationMessage(form, result);
   const hasData = renderBondConnectTable(form, result);
   setPanelVisible(form, '.field-mainformpanel', false);
   setPanelVisible(form, '.field-bond-allocation-review', hasData);
