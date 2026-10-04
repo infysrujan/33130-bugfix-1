@@ -1,9 +1,6 @@
-/* Source rows hidden after decoration */
 .mf-results .mfr-source-row {
   display: none;
 }
-
-/* ── Page wrapper ─────────────────────────────────────────────────────────── */
 
 .mfr-wrapper {
   max-width: var(--bbl-layout-content-max-width-desktop, 77.5rem);
@@ -11,8 +8,6 @@
   background: var(--bbl-color-white);
   box-sizing: border-box;
 }
-
-/* ── Disclaimer ───────────────────────────────────────────────────────────── */
 
 .mfr-disclaimer {
   padding: 1.875rem 0;
@@ -34,8 +29,6 @@
   line-height: 1.63;
   letter-spacing: -0.006rem;
 }
-
-/* ── Fund card fields — scoped to card-list.mf-results ───────────────────── */
 
 .card-list.mf-results .mfr-card-field {
   border-top: 0.0625rem solid var(--bbl-color-grey-150);
@@ -67,39 +60,67 @@
   list-style: none;
 }
 
-/* ── Card list container ──────────────────────────────────────────────────── */
-
 .mfr-card-list-container {
   margin-bottom: var(--bbl-space-1000);
 }
 
-/* ── Mobile: hide scrollbar (cards stacked, but guard for safety) ────────── */
-
 .mfr-card-list-container .cards-list.scrollable {
   scrollbar-width: none;
+  scroll-snap-type: x mandatory;
 }
 
 .mfr-card-list-container .cards-list.scrollable::-webkit-scrollbar {
   display: none;
 }
 
-/* ── Mobile: stack cards vertically (no horizontal scroll) ───────────────── */
-
 .card-list.mf-results .cards-list.scrollable {
-  flex-direction: column;
-  overflow: visible;
-  scroll-snap-type: none;
-  gap: var(--bbl-space-250) 0;
-  padding: 0;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  overflow: auto hidden;
+  gap: 0 var(--bbl-space-250);
+  padding: 0.625rem 0;
 }
 
 .card-list.mf-results .cards-list.scrollable .cards-list-item {
-  flex: none;
-  width: 100%;
-  scroll-snap-align: none;
+  flex: 0 0 17.5rem;
+  scroll-snap-align: center;
 }
 
-/* ── No results ───────────────────────────────────────────────────────────── */
+.mfr-scroll-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--bbl-space-100);
+  width: auto;
+  height: auto;
+  flex-wrap: wrap;
+}
+
+.mfr-scroll-dot {
+  appearance: none;
+  width: var(--bbl-space-100);
+  height: var(--bbl-space-100);
+  min-width: var(--bbl-space-100);
+  min-height: var(--bbl-space-100);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+  transition: all 180ms ease;
+}
+
+.mfr-scroll-dot.is-active {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
 
 .mfr-no-results {
   text-align: center;
@@ -108,26 +129,10 @@
   margin:0;
 }
 
-/* ==========================================================================
-   card-list mf-results variation
-   Mirrors the credit-card scoped overrides so cards render identically.
-   ========================================================================== */
-
-/* ── Image area (image layout = "default") ───────────────────────────────── */
-
 .card-list.mf-results .cards-list-image {
   overflow: hidden;
 }
 
-.card-list.mf-results .cards-list-image img {
-  width: 100%;
-  height: 100%;
-  min-width: unset;
-  object-fit: cover;
-  display: block;
-}
-
-/* ── Logo in button area ─────────────────────────────────────────────────── */
 
 .card-list.mf-results .cards-list-logo img.mfr-logo {
   height: 2.5rem;
@@ -138,14 +143,10 @@
   margin-bottom: 1.4375rem;
 }
 
-/* ── Card content area padding (matches live .caption padding: 20px) ─────── */
-
 .card-list.mf-results .cards-list-content {
   padding: 1.25rem;
   flex-grow: 1;
 }
-
-/* ── Card title h3 (matches live .title-3.line) ─────────────────────────── */
 
 .card-list.mf-results .cards-list-title h3 {
   font-size: 1.5rem;
@@ -160,8 +161,6 @@
   font-family: var(--bbl-font-family-medium);
 }
 
-/* Underline decoration (matches live .line::before) */
-
 .card-list.mf-results .cards-list-title h3::before {
   content: "";
   position: absolute;
@@ -171,8 +170,6 @@
   height: 0.0625rem;
   background: var(--bbl-color-grey-60);
 }
-
-/* ── Description (matches live .desc) ───────────────────────────────────── */
 
 .card-list.mf-results .cards-list-description p {
   font-size: 1rem;
@@ -187,8 +184,6 @@
   font-family: var(--bbl-font-family-primary);
 }
 
-/* ── Button area — padding matches live .button-group ───────────────────── */
-
 .card-list.mf-results .cards-list-inner .cards-list-button {
   display: flex;
   flex-direction: column;
@@ -199,8 +194,6 @@
 .card-list.mf-results .cards-list-button a::after {
   display: none;
 }
-
-/* ── Compare button — outline, below Read More (matches live btn-default) ── */
 
 .card-list.mf-results .mfr-compare-btn {
   margin-top: 0.625rem;
@@ -214,8 +207,6 @@
   cursor: default;
   pointer-events: none;
 }
-
-/* ── Footer CTAs ──────────────────────────────────────────────────────────── */
 
 .mfr-footer {
   text-align: center;
@@ -231,11 +222,24 @@
 
 .mfr-cta + .mfr-cta {
   margin-left: 0.225rem;
+  width: auto;
 }
 
-/* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
+.card-list.mf-results .cards-list.single-card {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.card-list.mf-results .cards-list.single-card .cards-list-item {
+  margin: 0 auto var(--bbl-space-250) auto;
+}
 
 @media (width > 47.5rem) {
+  .mfr-scroll-dots {
+    display: none;
+  }
+
   .mf-results-container .default-content-wrapper p {
   padding-bottom: 1.875rem;
   }
@@ -246,6 +250,10 @@
     scroll-snap-type: none;
     gap: 0 var(--bbl-space-250);
     padding: 0;
+    justify-content: flex-start;
+  }
+
+  .card-list.mf-results .cards-list.scrollable.few-cards {
     justify-content: center;
   }
 
@@ -253,8 +261,8 @@
     flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
     margin-bottom: var(--bbl-space-250);
     scroll-snap-align: none;
-    width: auto;
-    max-width: 17.1875rem;
+    width: calc((100% - 2 * var(--bbl-space-250)) / 3);
+    max-width: none;
   }
 
   .mfr-footer {
@@ -268,8 +276,6 @@
 
 }
 
-/* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
-
 @media (width > 64rem) {
   .card-list.mf-results .cards-list.scrollable {
     gap: 0 var(--bbl-space-500);
@@ -277,33 +283,11 @@
 
   .card-list.mf-results .cards-list.scrollable .cards-list-item {
     flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+    width: calc((100% - 2 * var(--bbl-space-500)) / 3);
     margin-bottom: var(--bbl-space-500);
-    max-width: 17.1875rem;
+    max-width: none;
   }
-}
 
-/* ── Single Card alignment overrides ─────────────────────────────────────── */
-
-.card-list.mf-results .cards-list.single-card {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.card-list.mf-results .cards-list.single-card .cards-list-item {
-  flex: 0 0 100%;
-  width: 100%;
-  max-width: 16.875rem;
-  margin: 0 auto var(--bbl-space-250) auto;
-}
-
-@media (width > 47.5rem) {
-  .card-list.mf-results .cards-list.scrollable.single-card .cards-list-item {
-    margin-bottom: var(--bbl-space-250);
-  }
-}
-
-@media (width > 64rem) {
   .card-list.mf-results .cards-list.scrollable.single-card .cards-list-item {
     margin-bottom: var(--bbl-space-500);
   }

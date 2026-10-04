@@ -322,6 +322,10 @@ function redirectToLocale() {
 }
 
 function decorateOgTitle() {
+  const ogTitle = getMetadata('og:title');
+  // EDS defaults og:title to the page title, so a different value was authored
+  if (ogTitle && ogTitle !== document.title) return;
+
   const shortTitle = getMetadata('short-title');
   const title = shortTitle || document.title;
   if (!title) return;

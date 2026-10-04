@@ -495,7 +495,12 @@ function wireFilterEvents(
 // ─── print ────────────────────────────────────────────────────────────────────
 // Prints in place via an @media print rule that hides the live page and shows a
 // cloned print root — iOS Safari can't print an isolated iframe/popup document.
-function printElement(block) {
+
+// Set by the Print button so its own beforeprint doesn't rebuild the root it just made.
+let printRootFromButton = false;
+let beforePrintBlock = null;
+
+function buildPrintRoot(block) {
   // Captures real computed styles from the LIVE elements before cloning, so
   // printCss matches the live board instead of guessing rem values.
   const liveDateInput = block.querySelector('.db-date-display');
@@ -565,7 +570,8 @@ function printElement(block) {
   const printTable = content.querySelector('.db-table');
   if (printTable) {
     const colgroup = document.createElement('colgroup');
-    [10, 30, 11, 9, 11, 9, 8, 6, 6].forEach((width) => {
+    // Sized so the widest price (e.g. 1,016.27252) fits at 194mm without spilling.
+    [9, 27, 11, 8, 11, 8, 9, 8, 9].forEach((width) => {
       const col = document.createElement('col');
       col.style.width = `${width}%`;
       colgroup.append(col);
@@ -622,12 +628,21 @@ function printElement(block) {
     #dynamic-board-print-root {
       position: static;
       left: auto;
+      /* A4 width minus @page margins, so phones lay out like desktop and shrink to fit. */
+      width: 194mm;
+      box-sizing: border-box;
     }
 
     #dynamic-board-print-root,
     #dynamic-board-print-root * {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
+    }
+
+    /* Stops mobile browsers enlarging text, which squeezes the columns. */
+    #dynamic-board-print-root {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     .brand-logo-container {
@@ -764,9 +779,9 @@ function printElement(block) {
       top: auto;
     }
 
-    .dynamic-board .db-table thead th,
-    .dynamic-board .db-table thead tr:first-child th,
-    .dynamic-board .db-table thead tr:last-child th {
+    /* ID prefix outranks the live sort-icon padding and rowspan height rules,
+       which otherwise squeeze header text to one letter per line. */
+    #dynamic-board-print-root .dynamic-board .db-table thead th {
       /* Plain white header per the client PDF (not the live blue tint) — set
          directly on each th since a thead/tr-level background can drop out
          of print even with print-color-adjust: exact set globally. */
@@ -778,10 +793,22 @@ function printElement(block) {
       height: auto;
       /* Headers may wrap onto 2 lines; tight line-height keeps the row compact. */
       white-space: normal;
+      /* The CSS print fallback's overflow-wrap: break-word splits words like "Indicativ-e". */
+      overflow-wrap: normal;
+      word-break: normal;
       line-height: 1.15;
       padding: 0.2rem 0.3rem;
+      text-align: center;
       vertical-align: middle;
       border: 0.0625rem solid var(--bbl-color-grey-20);
+    }
+
+    #dynamic-board-print-root .dynamic-board .db-table thead th[data-sort]:not([data-sort="BOND_SYMBOL"], [data-sort="NAME_ENG"]) {
+      text-align: right;
+    }
+
+    #dynamic-board-print-root .dynamic-board .db-table thead .db-th-label::after {
+      content: none;
     }
 
     .dynamic-board .db-table tbody td {
@@ -900,6 +927,19 @@ function printElement(block) {
     printStyle.remove();
   };
 
+  // Android Chrome fires afterprint before the preview renders; clean up on return.
+  window.addEventListener('afterprint', () => {
+    document.addEventListener('pointerdown', cleanup, { once: true });
+    document.addEventListener('keydown', cleanup, { once: true });
+  }, { once: true });
+
+  return printRoot;
+}
+
+function printElement(block) {
+  printRootFromButton = true;
+  const printRoot = buildPrintRoot(block);
+
   const logoImg = printRoot.querySelector('.brand-logo-container img');
   const logoReady = (!logoImg || logoImg.complete)
     ? Promise.resolve()
@@ -911,11 +951,19 @@ function printElement(block) {
   logoReady.then(() => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        window.addEventListener('afterprint', cleanup, { once: true });
         window.print();
       });
     });
   });
+}
+
+// Ctrl+P, browser menu and mobile Share → Print get the same layout as the Print button.
+function onBeforePrint() {
+  if (printRootFromButton) {
+    printRootFromButton = false;
+    return;
+  }
+  if (beforePrintBlock?.isConnected) buildPrintRoot(beforePrintBlock);
 }
 
 // ─── main decorate ────────────────────────────────────────────────────────────
@@ -1193,4 +1241,17 @@ export default async function decorate(block) {
 
   // ── print ──
   printBtn.addEventListener('click', () => printElement(block));
+
+  // Only the first board on the page is printed by the browser's own print.
+  if (!beforePrintBlock) {
+    beforePrintBlock = block;
+    window.addEventListener('beforeprint', onBeforePrint);
+    // Ctrl/Cmd+P takes the Print button path so it also waits for the logo.
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        printElement(block);
+      }
+    });
+  }
 }

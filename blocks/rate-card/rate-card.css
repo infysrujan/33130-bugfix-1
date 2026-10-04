@@ -24,7 +24,7 @@
 /* Article wrapper — the visible card */
 .rate-card .currency-info {
   max-width: 100%;
-  padding: 1.5rem;
+  padding: var(--bbl-space-300);
   border-radius: 0.4375rem;
   background: var(--bbl-color-grey-10);
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
@@ -286,7 +286,6 @@
    ========================================================================== */
 @media (width > 47.5rem) {
   .rate-card .currency-info {
-    padding: 1.5rem;
     border-radius: 0.4375rem;
     min-height: auto;
   }
@@ -300,7 +299,6 @@
     flex-direction: row;
     align-items: center;
     margin-top: 1.5rem;
-    padding-bottom: 1.5625rem;
   }
 }
 

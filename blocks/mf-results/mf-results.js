@@ -23,6 +23,9 @@ function clearSurveyAnswers() {
 }
 
 const MAX_COMPARE = 3;
+const TABLET_MIN = getComputedStyle(document.documentElement)
+  .getPropertyValue('--bbl-breakpoint-tablet-min').trim();
+const MOBILE_BREAKPOINT = `(width < ${TABLET_MIN})`;
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -207,6 +210,7 @@ function buildCardBlock(funds, doc, labels) {
 
   const list = doc.createElement('div');
   list.className = `cards-list scrollable center cards-3${funds.length === 1 ? ' single-card' : ''}`;
+  if (funds.length < 3) list.classList.add('few-cards');
 
   funds.forEach((fund) => {
     const name = fund.FundName || '';
@@ -321,6 +325,118 @@ function addCompareButtons(blockEl, doc, labels) {
   });
 }
 
+function initMobileCarousel(cardsList, container, doc, goToFundLabel) {
+  const dotsEl = doc.createElement('div');
+  dotsEl.className = 'mfr-scroll-dots';
+  container.appendChild(dotsEl);
+
+  const realItems = [...cardsList.querySelectorAll('.cards-list-item')];
+  const centeredOffset = (item) => item.getBoundingClientRect().left
+    - cardsList.getBoundingClientRect().left
+    + cardsList.scrollLeft
+    - (cardsList.clientWidth - item.offsetWidth) / 2;
+  const dots = realItems.length > 1 ? realItems.map((item, index) => {
+    const dot = doc.createElement('button');
+    dot.type = 'button';
+    dot.className = 'mfr-scroll-dot';
+    dot.classList.toggle('is-active', index === 0);
+    dot.setAttribute('aria-label', `${goToFundLabel} ${index + 1}`);
+    dot.addEventListener('click', () => cardsList.scrollTo({
+      left: centeredOffset(item),
+      behavior: 'smooth',
+    }));
+    return dot;
+  }) : [];
+  dotsEl.append(...dots);
+
+  const breakpoint = window.matchMedia(MOBILE_BREAKPOINT);
+  let looping = false;
+  let loopItems = realItems;
+  let wrapTimer;
+
+  const closestItem = (items) => {
+    const center = cardsList.getBoundingClientRect().left + cardsList.clientWidth / 2;
+    let closest;
+    let minimumDistance = Infinity;
+    items.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      const distance = Math.abs(rect.left + rect.width / 2 - center);
+      if (distance < minimumDistance) {
+        closest = item;
+        minimumDistance = distance;
+      }
+    });
+    return closest;
+  };
+
+  const centerFirst = () => {
+    if (!looping || !cardsList.clientWidth) return false;
+    cardsList.style.scrollSnapType = 'none';
+    cardsList.scrollLeft = centeredOffset(realItems[0]);
+    requestAnimationFrame(() => cardsList.style.removeProperty('scroll-snap-type'));
+    return true;
+  };
+
+  const centerWhenVisible = () => requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (!looping || centerFirst()) return;
+    const observer = new ResizeObserver(() => {
+      if (!looping || centerFirst()) observer.disconnect();
+    });
+    observer.observe(cardsList);
+  }));
+
+  const syncLoop = () => {
+    cardsList.querySelectorAll('[data-mfr-clone]').forEach((clone) => clone.remove());
+    cardsList.scrollLeft = 0;
+    looping = breakpoint.matches && realItems.length > 1;
+    loopItems = realItems;
+    dots.forEach((dot, index) => dot.classList.toggle('is-active', index === 0));
+    if (!looping) return;
+
+    const makeClone = (index) => {
+      const clone = realItems[index].cloneNode(true);
+      clone.dataset.mfrClone = 'true';
+      clone.dataset.mfrCloneOf = String(index);
+      clone.setAttribute('aria-hidden', 'true');
+      return clone;
+    };
+
+    cardsList.prepend(makeClone(realItems.length - 1));
+    if (realItems.length > 2) cardsList.prepend(makeClone(realItems.length - 2));
+    cardsList.append(makeClone(0));
+    if (realItems.length > 2) cardsList.append(makeClone(1));
+    loopItems = [...cardsList.querySelectorAll('.cards-list-item')];
+    centerWhenVisible();
+  };
+
+  const wrapIfClone = () => {
+    const snapped = closestItem(loopItems);
+    const real = snapped?.dataset.mfrClone && realItems[Number(snapped.dataset.mfrCloneOf)];
+    if (!real) return;
+    cardsList.style.scrollSnapType = 'none';
+    cardsList.scrollLeft += real.getBoundingClientRect().left
+      - snapped.getBoundingClientRect().left;
+    requestAnimationFrame(() => cardsList.style.removeProperty('scroll-snap-type'));
+  };
+
+  cardsList.addEventListener('scrollend', wrapIfClone);
+  cardsList.addEventListener('scroll', () => {
+    if (dots.length) {
+      const snapped = closestItem(loopItems);
+      const index = Number(
+        snapped?.dataset.mfrCloneOf ?? realItems.indexOf(snapped),
+      );
+      dots.forEach((dot, dotIndex) => dot.classList.toggle('is-active', dotIndex === index));
+    }
+    if (!looping) return;
+    clearTimeout(wrapTimer);
+    wrapTimer = setTimeout(wrapIfClone, 180);
+  }, { passive: true });
+
+  syncLoop();
+  breakpoint.addEventListener('change', syncLoop);
+}
+
 // ── Main export ────────────────────────────────────────────────────────────────
 
 /**
@@ -356,6 +472,7 @@ export default async function decorate(block) {
     readMore: ph.mfReadMoreText || 'Read more',
     compare: ph.mfCompareText || 'Compare',
     noResults: ph.mfNoResultsText || 'No results found',
+    goToFund: ph.mfGoToFund || (getLang() === 'th' ? 'ไปยังกองทุน' : 'Go to fund'),
   };
 
   // ── Build page structure ───────────────────────────────────────────────────
@@ -438,7 +555,10 @@ export default async function decorate(block) {
   function restoreCompareState() {
     const selected = window.mfsSelectedCards || [];
     cardListContainer.querySelectorAll('.mfr-compare-btn').forEach((btn) => {
-      btn.classList.toggle('is-comparing', selected.some((c) => c.name === btn.dataset.cardName));
+      const isSelected = selected.some(
+        (c) => (c.id && c.id === btn.dataset.cardId) || c.name === btn.dataset.cardName,
+      );
+      btn.classList.toggle('is-comparing', isSelected);
     });
   }
 
@@ -458,6 +578,8 @@ export default async function decorate(block) {
     cardListContainer.appendChild(blockEl);
     addCompareButtons(blockEl, doc, labels);
     restoreCompareState();
+    const cardsList = blockEl.querySelector('.cards-list');
+    initMobileCarousel(cardsList, cardListContainer, doc, labels.goToFund);
   }
 
   // ── Apply filter and render ────────────────────────────────────────────────

@@ -216,7 +216,7 @@ function parseCalendarDatePartial(text, lang, referenceDate = null) {
 
 function positionPopover(trigger, popover, doc) {
   const rect = trigger.getBoundingClientRect();
-  const { bottom, left: rectLeft, top } = rect;
+  const { bottom, left: rectLeft } = rect;
   const margin = 8;
   popover.style.top = `${bottom + margin}px`;
   let left = rectLeft;
@@ -229,13 +229,6 @@ function positionPopover(trigger, popover, doc) {
     if (left + pw > vw - margin) {
       left = Math.max(margin, vw - margin - pw);
       popover.style.left = `${left}px`;
-    }
-    const vh = doc.defaultView.innerHeight;
-    const ph = popover.offsetHeight;
-    let popTop = bottom + margin;
-    if (popTop + ph > vh - margin && top - margin - ph > margin) {
-      popTop = top - margin - ph;
-      popover.style.top = `${popTop}px`;
     }
     popover.style.visibility = '';
   });
@@ -259,6 +252,8 @@ function positionPopover(trigger, popover, doc) {
  *   array are selectable for the visible month (`month` is 0-based). Called when the popover
  *   opens and whenever prev/next month is used. While loading, all days are disabled.
  * @property {() => void} [onPopoverOpen] - Fires when the calendar popover opens.
+ * @property {Date | (() => Date | null)} [maxDate] - Next-month arrow cannot go past this
+ *   date's month.
  * @property {() => void} [onPopoverClose] - Fires when the calendar popover closes.
  * @property {HTMLElement} [openTrigger] - Extra click target that opens the calendar (e.g.
  *   `.calendar-input.icon-calendar` wrapper). When omitted, the input's parent is used when it
@@ -282,6 +277,7 @@ export function attachCalendarPicker(options) {
     allowManualEntry: allowManualEntryOption = true,
     readOnly: readOnlyOption,
     fetchEnabledDays,
+    maxDate,
     onPopoverOpen,
     onPopoverClose,
     openTrigger: openTriggerOption,
@@ -665,6 +661,8 @@ export function attachCalendarPicker(options) {
 
   function shiftMonth(delta) {
     const d = new Date(viewYear, viewMonth + delta, 1);
+    const max = typeof maxDate === 'function' ? maxDate() : maxDate;
+    if (max && d > new Date(max.getFullYear(), max.getMonth(), 1)) return;
     viewYear = d.getFullYear();
     viewMonth = d.getMonth();
     applyMonthAndFetchEnabledDays();

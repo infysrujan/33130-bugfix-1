@@ -14,6 +14,10 @@
   margin-bottom: 0.875rem;
 }
 
+body.sip-form main .dobth-wrapper {
+  margin-bottom: 0;
+}
+
 .dobth-label {
   font-family: var(--bbl-font-family-primary, inherit);
   font-size: var(--bbl-body-b1-size, 1rem);
@@ -98,11 +102,11 @@
 .dobth-combo-trigger:focus-visible,
 .dobth-combo-trigger[aria-expanded="true"] {
   outline: none;
-  border-color: var(--bbl-color-active-blue, #0048b7);
+  border-color: var(--bbl-color-blue-90, #0048B7);
 }
 
 .dobth-combo-trigger:hover:not([aria-disabled="true"]) {
-  border-color: var(--bbl-color-active-blue, #0048b7);
+  border-color: var(--bbl-color-blue-90, #0048B7);
 }
 
 .dobth-combo-trigger[aria-disabled="true"],

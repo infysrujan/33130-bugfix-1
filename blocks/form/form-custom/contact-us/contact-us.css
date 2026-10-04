@@ -269,6 +269,7 @@
     /* Date/Time dropdown arrows: extra right padding clearance */
     & fieldset.panel-wrapper:has(.date-wrapper) > .drop-down-wrapper select {
         padding-right: 1.875rem;
+        margin-bottom: 0;
     }
 
     & fieldset.panel-wrapper:has(.date-wrapper) > .drop-down-wrapper {
@@ -346,6 +347,17 @@
         padding: 0 0 0 1.75rem;
     }
 
+    /* Terms & conditions text: keep a gutter beside the scrollbar */
+    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
+        padding: 0 0.625rem 0 0;
+        width: calc(100% - 0.75rem);
+    }
+
+    /* Remove global first-paragraph right padding inside the T&C text */
+    & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p:first-child {
+        padding-right: 0;
+    }
+
     /* Placeholder text */
     & input::placeholder {
         font-family: var(--bbl-font-family-primary);
@@ -378,6 +390,10 @@
     /* Chromium paints the optgroup background onto its options too; reset them */
     & .drop-down-wrapper select optgroup option {
         background-color: var(--bbl-color-white);
+    }
+
+    & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > legend.field-label {
+      padding-top: 0;
     }
 }
 
@@ -426,6 +442,11 @@
         & fieldset.panel-wrapper:has(.date-wrapper) > legend.field-label:not([data-visible="false"]),
         & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > legend.field-label {
             font-size: var(--bbl-form-font-size-16);
+            padding-top: 0;
+        }
+
+        & :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
+            width: calc(100% - 0.938rem);
         }
 
         /* Select chevron: 9.43 x 6, matching production's bold icon (Chevron-down.svg is a hairline stroke that vanishes at this size) */

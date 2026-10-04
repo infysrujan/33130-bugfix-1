@@ -49,10 +49,22 @@
   width: 100%;
 }
 
+.relief-measures-form main .form form .panel-wrapper :has( > .button-wrapper) {
+  gap: 4%;
+}
+
+.relief-measures-form main .section.form-container .form .col-6.submit-wrapper .button {
+  margin-right: 0;
+}
+
 @media (width > 47.5rem) {
   .relief-measures-form main .section.form-container.custom-forms .form form .field-thankyou-visible-panel.field-wrapper {
     margin-top: 5rem;
     padding-inline: 3rem;
+  }
+
+  .relief-measures-form main .section.form-container .form .col-6.submit-wrapper .button {
+    margin-right: var(--bbl-space-200);
   }
 }
 
