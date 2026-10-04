@@ -59,7 +59,7 @@ async function loadAllCards() {
 }
 
 function getCardName(card) {
-  return card.name || card.title || card.FundName || card.fundName || '';
+  return card.FundName || card.fundName || card.name || card.title || '';
 }
 
 // Sort by the canonical mf-suggestor sheet order (the same source every
@@ -87,7 +87,7 @@ function filterAndSortCards(allCards, selectedIDs, selectedNames, matrix) {
  *                        > a.mfcr-read-more
  */
 function buildCompareCard(card, doc, labels) {
-  const name = card.name || card.title || card.FundName || card.fundName || '';
+  const name = card.FundName || card.fundName || card.name || card.title || '';
   const imgSrc = resolveImageUrl(card);
   let readMoreHref = resolveCardPageUrl(card);
   // Remove "/content/bangkokbank" from the start of readMoreHref, if present
