@@ -76,19 +76,14 @@ function resolveSelectedCards(cards, allCards, matrix) {
     const pId = cardKey(selectedCard);
     const targetName = norm(getCardName(selectedCard) || pId);
 
-    // 1. Match by Product ID (stable identifier across languages)
-    if (pId) {
-      const byId = allCards.find((c) => cardKey(c) && cardKey(c) === pId);
-      if (byId) return byId;
-    }
-
-    // 2. Direct match in allCards by FundName (same language)
+    // Match the localized name first. Product IDs can identify a different
+    // localized fund record, so use them only after name-based resolution.
     if (targetName) {
       const byName = allCards.find((c) => norm(getCardName(c)) === targetName);
       if (byName) return byName;
     }
 
-    // 3. Cross-language match via sheet matrix (e.g. EN <-> TH)
+    // Cross-language match via sheet matrix (e.g. EN <-> TH)
     if (matrix && matrix.length > 0 && targetName) {
       const row = matrix.find((r) => norm(r['Fund Name (EN)'] || '') === targetName
         || norm(r['Fund Name (TH)'] || '') === targetName);
@@ -105,6 +100,11 @@ function resolveSelectedCards(cards, allCards, matrix) {
           name: localizedTitle,
         };
       }
+    }
+
+    if (pId) {
+      const byId = allCards.find((c) => cardKey(c) && cardKey(c) === pId);
+      if (byId) return byId;
     }
 
     return selectedCard;
