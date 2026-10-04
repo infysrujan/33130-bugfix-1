@@ -54,6 +54,12 @@ body.bangkok-bankm-card .section.full-bleed-bg.menu-banner-container
   object-fit: cover;
   margin: 0.625rem 0;
 }
+
+body.bangkok-bankm-card .carousel-container a.button-tertiary {
+  white-space: nowrap;
+  margin-left: 22px;
+}
+
 @media (width > 64rem) {
     body.bangkok-bankm-card .section.full-bleed-bg.menu-banner-container
     > .menu-banner-wrapper + .default-content-wrapper img {
@@ -64,5 +70,10 @@ body.bangkok-bankm-card .section.full-bleed-bg.menu-banner-container
 @media (width > 47.5rem) {
   body.bangkok-bankm-promotion .menu-banner .sub-title-medium.line::after {
     background: var(--bbl-color-white);
+  }
+
+  body.bangkok-bankm-card .carousel-container a.button-tertiary {
+    white-space: normal;
+    margin-left: 0;
   }
 }
