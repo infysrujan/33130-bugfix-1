@@ -11,7 +11,7 @@ const TABLET_MIN = getComputedStyle(document.documentElement)
 
 function norm(str) {
   return (str || '').toString()
-    .replace(/\u200B/g, '')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
     .replace(/\s+/g, ' ')
     .toLowerCase()
     .trim();
@@ -58,7 +58,7 @@ async function loadAllCards() {
 }
 
 function getCardName(card) {
-  return card.name || card.title || card.FundName || card.fundName || '';
+  return card.FundName || card.fundName || card.name || card.title || '';
 }
 
 // Preserve the exact selection order of the user's selected cards while enriching with full data.
@@ -79,7 +79,7 @@ function filterAndSortCards(allCards, cards) {
       return false;
     });
 
-    return matched ? { ...c, ...matched } : c;
+    return matched ? { ...c, ...matched, name: getCardName(matched) } : c;
   });
 }
 
@@ -92,7 +92,7 @@ function filterAndSortCards(allCards, cards) {
  *                        > a.mfcr-read-more
  */
 function buildCompareCard(card, doc, labels) {
-  const name = card.name || card.title || card.FundName || card.fundName || '';
+  const name = card.FundName || card.fundName || card.name || card.title || '';
   const imgSrc = resolveImageUrl(card);
   let readMoreHref = resolveCardPageUrl(card);
   // Remove "/content/bangkokbank" from the start of readMoreHref, if present
@@ -382,7 +382,11 @@ function getCardsFromStorage() {
   try {
     const value = decodeURIComponent(match.split('=').slice(1).join('='));
     const items = JSON.parse(value);
-    return items.map(({ id, title, photo }) => ({ name: title || id, image: photo }));
+    return items.map(({ id, title, photo }) => ({
+      id: id || title,
+      name: title || id,
+      image: photo,
+    }));
   } catch {
     return null;
   }
