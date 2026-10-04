@@ -436,16 +436,6 @@ function renderComparison(container, cards, allCards, matrix, labels, doc) {
 
   const displayCards = resolveSelectedCards(cards, allCards, matrix);
 
-  // Sync sessionStorage with localized cards so other components / refreshes stay in sync
-  try {
-    const updatedStorage = displayCards.map((c) => ({
-      id: cardKey(c) || getCardName(c),
-      name: getCardName(c),
-      image: resolveImageUrl(c) || c.image || '',
-    }));
-    sessionStorage.setItem('mfs-compare-cards', JSON.stringify(updatedStorage));
-  } catch { /* ignore */ }
-
   container.classList.toggle('single-card', displayCards.length === 1);
   container.classList.toggle('two-cards', displayCards.length === 2);
 
