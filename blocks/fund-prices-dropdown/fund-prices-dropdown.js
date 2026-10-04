@@ -1,7 +1,9 @@
 import { attachCalendarPicker, formatCalendarDate, getCalendarLang } from '../../scripts/utils/calendar-picker.js';
+import { BE_OFFSET } from '../../scripts/utils/datelang.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { fetchNavEnabledDaysForMonth } from '../fund-prices/fund-prices.js';
 
 export const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
@@ -20,8 +22,14 @@ function pad2(n) {
   return String(n).padStart(2, '0');
 }
 
+// Thai pages match the live site: unpadded d/m with Buddhist-era year, e.g. 1/9/2569
+function formatDisplayDate(day, month, year) {
+  if (getCalendarLang() === 'th') return `${day}/${month}/${year + BE_OFFSET}`;
+  return `${pad2(day)}/${pad2(month)}/${year}`;
+}
+
 function formatDMY(date) {
-  return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
+  return formatDisplayDate(date.getDate(), date.getMonth() + 1, date.getFullYear());
 }
 
 function formatPrintDate(date = new Date()) {
@@ -63,6 +71,20 @@ function isWeekendOrAfterYesterday(date) {
   return date > yesterday;
 }
 
+async function firstNavDayOfMonth(end) {
+  try {
+    const days = await fetchNavEnabledDaysForMonth({
+      year: end.getFullYear(),
+      month: end.getMonth(),
+    });
+    const first = days.filter((d) => d <= end.getDate()).sort((a, b) => a - b)[0];
+    if (first) return new Date(end.getFullYear(), end.getMonth(), first);
+  } catch (e) {
+    // fall back to the 1st of the month
+  }
+  return new Date(end.getFullYear(), end.getMonth(), 1);
+}
+
 async function fetchFundDetailStats(fundId, fromDate, toDate) {
   const configs = await fetchConfigs();
   const apiBase = configs.fundPricesApiUrl || '';
@@ -91,7 +113,7 @@ function fmtHeaderNav(v) {
 function fmtHistDate(ymd) {
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(ymd);
   if (!m) return ymd;
-  return `${m[3]}/${m[2]}/${m[1]}`;
+  return formatDisplayDate(Number(m[3]), Number(m[2]), Number(m[1]));
 }
 
 function renderStatTables(stats, highTbody, lowTbody, rowLabels, noDataLabel) {
@@ -692,16 +714,22 @@ export default async function decorate(block) {
   }
 
   /* Calendar pickers for date range */
+  const latestNavDate = () => (latestMdate ? parseLocalDateFromYmd(latestMdate) : null)
+    ?? new Date();
   const drFromPicker = attachCalendarPicker({
     input: drFromInput,
     value: drFrom,
     isDateDisabled: isWeekendOrAfterYesterday,
+    fetchEnabledDays: fetchNavEnabledDaysForMonth,
+    maxDate: latestNavDate,
     onChange: (d) => { drFrom = d; validateAndRenderDetail(); },
   });
   const drToPicker = attachCalendarPicker({
     input: drToInput,
     value: drTo,
     isDateDisabled: isWeekendOrAfterYesterday,
+    fetchEnabledDays: fetchNavEnabledDaysForMonth,
+    maxDate: latestNavDate,
     onChange: (d) => { drTo = d; validateAndRenderDetail(); },
   });
 
@@ -731,7 +759,7 @@ export default async function decorate(block) {
   });
   block.ownerDocument.addEventListener('click', () => periodDropList.classList.remove('open'));
 
-  periodDropList.addEventListener('click', (e) => {
+  periodDropList.addEventListener('click', async (e) => {
     const li = e.target.closest('li');
     if (!li) return;
     const { period } = li.dataset;
@@ -743,7 +771,8 @@ export default async function decorate(block) {
     periodSelectBtn.classList.toggle('active', period === 'DR');
     if (period === 'DR') {
       const end = latestMdate ? (parseLocalDateFromYmd(latestMdate) ?? new Date()) : new Date();
-      const start = new Date(end.getFullYear(), end.getMonth(), 1);
+      const start = await firstNavDayOfMonth(end);
+      if (currentPeriod !== 'DR') return;
       drFrom = start;
       drTo = end;
       // Update through the pickers so their internal selection stays in sync with

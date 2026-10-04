@@ -116,13 +116,19 @@
       max-width: 100%;
       box-sizing: border-box;
     }
+
+    & .dobth-wrapper {
+      margin: 0;
+    }
   
     & .cc-panel-item-form-input.date-wrapper.field-wrapper::after {
       top: 0;
+      content: '';
     }
   
     & .cc-panel-item-form-input.date-wrapper.field-wrapper:has(label:not([data-visible="false"])):not(.field-review-panel *)::after {
       top: 1.625rem;
+      content: '';
     }
   
     & :is(.form select, .drop-down-wrapper.field-wrapper select) {
@@ -214,6 +220,14 @@
     & .form form .field-invalid :is(input, select, textarea) {
       border-color: var(--bbl-color-orange-130);
     }
+
+    & .form form .field-invalid :is(.field-validation-error, .field-description) {
+      padding: 0.3125rem 0.3125rem 0.3125rem 0.8125rem;
+    }
+
+    & .form form :is(.radio-group-wrapper, .checkbox-group-wrapper).horizontal .field-description {
+      margin-top: 0;
+    }
   
     & .form form :is(p, .repeat-wrapper, .field-wrapper) {
       margin: 0;
@@ -243,6 +257,10 @@
       width: 100%;
     }
   
+    & .form form fieldset.panel-wrapper .button-wrapper {
+      margin: 5.625rem 0;
+    }
+
     /* Button panel — preserve flex layout inside CC form */
     & .form form fieldset.panel-wrapper.field-button-panel {
       display: flex;
@@ -262,7 +280,7 @@
         clear: none;
       }
     }
-  
+
     & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper {
       margin: 1.875rem 0 2.1875rem;
   
@@ -422,15 +440,20 @@
         vertical-align: middle;
       }
   
-      & .cc-panel-item-form-cover img,
-      & .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image) img {
-        display: block;
-        width: 100%;
-        height: auto;
-        aspect-ratio: 440 / 275;
-        object-fit: cover;
-        vertical-align: middle;
-        border-radius: 0.25rem;
+      & .cc-panel-item-form-cover img, 
+      & .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image) img { 
+        display: block; 
+        width: 100%; 
+        height:  17.5rem; 
+        vertical-align: middle; 
+        border-radius: 0.25rem; 
+      }
+
+      @media (width > 47.5rem) {
+        & .cc-panel-item-form-cover img,
+        & .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image) img {
+          height: 18.75rem;
+        }
       }
   
       & .cc-panel-item-timeline-bg .image-wrapper img {
@@ -539,7 +562,35 @@
           & > .cc-panel-item-form-input-half:first-of-type {
             margin-right: 0;
           }
-  
+
+          /* Name + Surname validation messages: show only one, aligned under Name.
+             --field-gap matches the space between the two fields (wider on desktop). */
+          --field-gap: 0.75rem;
+
+          & .cc-panel-item-form-input-half {
+            /* Last half field (Surname) */
+            &:not(:has(~ .cc-panel-item-form-input-half)) {
+              position: relative;
+
+              &:has(.field-description) {
+                margin-bottom: 2.1875rem;
+              }
+
+              /* Only Surname has an error → show it at the left edge, under Name */
+              & .field-description {
+                position: absolute;
+                top: 98%;
+                left: calc(-100% - 0.875rem);
+                text-align: left;
+              }
+            }
+
+            /* Name has a message → hide Surname's so only one shows */
+            &:has(.field-description) + .cc-panel-item-form-input-half .field-description {
+              display: none;
+            }
+          }
+
           & > .cc-panel-item-form-radio.radio-group-wrapper.horizontal {
             flex-flow: column nowrap;
             align-items: flex-start;
@@ -883,6 +934,13 @@
       }
     }
   
+    /* Message form: red border on half-width inputs when a validation message is shown */
+    & .form form fieldset.panel-wrapper.field-wrapper.cc-app-message-form:has(.cc-panel-item-form-input-half .field-description) {
+      & .cc-panel-item-form-input-half input {
+        border-color: var(--bbl-color-red-130);
+      }
+    }
+
     & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .field-disclaimer .plain-text-wrapper p {
       color: var(--bbl-color-grey-90);
       text-align: left;
@@ -927,13 +985,6 @@
         line-height: 1.625rem;
       }
   
-      & :is(
-        .form form .field-title h2,
-        .form form .field-title .page-header
-      ) {
-        margin-bottom: 2.1875rem;
-      }
-  
       & .form :is(
         fieldset.panel-wrapper:is(.field-submitbuttonpanel, .field-submitbuttonpanel2) .button,
         :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) .button
@@ -965,7 +1016,7 @@
     @media (width < 64rem) {
       & :is(
         h3,
-        .form form .field-title h2,
+        .form form .field-title,
         .form form .field-title .page-header,
         .form form .field-title .label-header,
         .field-title,
@@ -1010,12 +1061,24 @@
   
     & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
       margin: 0;
+      padding: 0 0.625rem 0 0;
+      width: calc(100% - 0.75rem);
+    }
+
+    /* Remove global first-paragraph padding inside the T&C text for the CC form */
+    & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form > .custom-fieldset-approval.cc-panel-item-form-consent .tnc-text-decoration.tnc-text-decoration > p > p:first-child {
+      padding-right: 0;
     }
   
     @media (width > 64rem) {
       padding-inline: 0;
   
       --cc-timeline-form-width: min(var(--cc-timeline-panel-width), min(100vw, var(--cc-form-max-width)));
+
+      & .form form .cc-panel-item-form-cover img,
+      & .form form .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image) img {
+        height: 17.1875rem;
+      }
   
       & .form label,
       & .form fieldset.checkbox-group-wrapper legend,
@@ -1138,6 +1201,7 @@
           width: 100%;
           max-width: none;
           clear: none;
+          margin-bottom: 2.1875rem;
         }
   
         & > .field-wrapper.cc-panel-item-form-cover {
@@ -1165,6 +1229,7 @@
         & > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
           max-height: 10.9375rem;
           margin: 0;
+          width: calc(100% - 0.938rem);
         }
       }
   
@@ -1176,7 +1241,10 @@
         & > .cc-panel-item-form-input-half:first-of-type {
           margin-right: var(--bbl-space-150);
         }
-  
+
+        /* Name + Surname gap: 0.75rem column gap + 0.75rem margin-right above */
+        --field-gap: 1.5rem;
+
         & > .cc-panel-item-form-radio.radio-group-wrapper.horizontal {
           flex-flow: row wrap;
           gap: var(--bbl-space-200);
@@ -1192,11 +1260,19 @@
   }
   
   main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
-    padding-block-start: 3rem;
+    padding-block-start: 0;
+    padding-right: 8%;
+    padding-left: 8%;
   }
   
+  @media (width > 47.5rem) {
+    main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
+      padding-block-start: 1.25rem;
+    }
+  }
+
   @media (width > 64rem) {
     main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
-      padding-block-start: 2.5rem;
+      padding-block-start: 1.5rem;
     }
   }

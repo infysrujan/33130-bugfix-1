@@ -2,7 +2,6 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
-import { loadMfSheetOrder, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
 
 const TABLET_MIN = getComputedStyle(document.documentElement)
   .getPropertyValue('--bbl-breakpoint-tablet-min')
@@ -62,20 +61,26 @@ function getCardName(card) {
   return card.name || card.title || card.FundName || card.fundName || '';
 }
 
-// Sort by the canonical mf-suggestor sheet order (the same source every
-// other mutual-fund block uses), falling back to selection order only if
-// the sheet itself is unavailable.
-function filterAndSortCards(allCards, selectedIDs, selectedNames, matrix) {
-  const normalizedNames = selectedNames.map(norm);
-  const matched = allCards.filter((card) => selectedIDs.includes(card.ProductID));
+// Preserve the exact selection order of the user's selected cards while enriching with full data.
+function filterAndSortCards(allCards, cards) {
+  if (!cards || cards.length === 0) return [];
+  if (!allCards || allCards.length === 0) return cards;
 
-  if (!matrix || matrix.length === 0) {
-    return normalizedNames
-      .map((n) => matched.find((c) => norm(getCardName(c)) === n))
-      .filter(Boolean);
-  }
+  const cardKey = (c) => (c.ProductID || c.id || c.cardId || '').toString().trim();
 
-  return sortFundsBySheetOrder(matched, matrix);
+  return cards.map((c) => {
+    const key = cardKey(c);
+    const cName = norm(getCardName(c));
+
+    const matched = allCards.find((ac) => {
+      const acKey = cardKey(ac);
+      if (key && acKey && key === acKey) return true;
+      if (cName && norm(getCardName(ac)) === cName) return true;
+      return false;
+    });
+
+    return matched ? { ...c, ...matched } : c;
+  });
 }
 
 // ── DOM builders ───────────────────────────────────────────────────────────────
@@ -385,7 +390,7 @@ function getCardsFromStorage() {
 
 // ── Render ─────────────────────────────────────────────────────────────────────
 
-function renderComparison(container, cards, allCards, matrix, labels, doc) {
+function renderComparison(container, cards, allCards, labels, doc) {
   container.innerHTML = '';
 
   if (!cards || cards.length === 0) {
@@ -397,13 +402,7 @@ function renderComparison(container, cards, allCards, matrix, labels, doc) {
     return;
   }
 
-  const selectedNames = cards.map((c) => c.name);
-  const selectedIDs = cards.map((c) => c.id);
-  const sorted = filterAndSortCards(allCards, selectedIDs, selectedNames, matrix);
-
-  const displayCards = sorted.length > 0
-    ? sorted
-    : cards.map(({ name, image }) => ({ name, image }));
+  const displayCards = filterAndSortCards(allCards, cards);
 
   container.classList.toggle('single-card', displayCards.length === 1);
   container.classList.toggle('two-cards', displayCards.length === 2);
@@ -476,10 +475,10 @@ export default async function decorate(block) {
   };
 
   // ── Load data ──────────────────────────────────────────────────────────────
-  const [allCards, matrix] = await Promise.all([loadAllCards(), loadMfSheetOrder()]);
+  const allCards = await loadAllCards();
 
   function renderAndAlign(cards) {
-    renderComparison(container, cards, allCards, matrix, labels, doc);
+    renderComparison(container, cards, allCards, labels, doc);
     buildDots();
     doAlign();
   }

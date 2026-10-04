@@ -94,22 +94,25 @@ async function loadSourcingOrder() {
   }
 }
 
-// Match by stable card id, not localized name, so the selection survives a TH/EN switch.
-function filterAndSortCards(allCards, selectedIDs, sourcingMap) {
-  const cardKey = (c) => c.cardId || c.id;
-  const matched = allCards.filter((card) => selectedIDs.includes(cardKey(card)));
+// Preserve the exact selection order of the user's selected cards while enriching with full data.
+function filterAndSortCards(allCards, cards) {
+  if (!cards || cards.length === 0) return [];
+  if (!allCards || allCards.length === 0) return cards;
 
-  // No sourcing map available — preserve the user's selection order
-  if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
-    return selectedIDs
-      .map((id) => matched.find((c) => cardKey(c) === id))
-      .filter(Boolean);
-  }
+  const cardKey = (c) => (c.cardId || c.id || '').toString().trim();
 
-  return matched.sort((a, b) => {
-    const sA = sourcingMap[norm(a.name || '')] ?? 9999;
-    const sB = sourcingMap[norm(b.name || '')] ?? 9999;
-    return sA - sB;
+  return cards.map((c) => {
+    const key = cardKey(c);
+    const cName = norm(c.name || c.primaryName || '');
+
+    const matched = allCards.find((ac) => {
+      const acKey = cardKey(ac);
+      if (key && acKey && key === acKey) return true;
+      if (cName && norm(ac.name || ac.primaryName || '') === cName) return true;
+      return false;
+    });
+
+    return matched ? { ...c, ...matched } : c;
   });
 }
 
@@ -164,7 +167,7 @@ function buildApplyArea(card, doc, labels, icons) {
   // preferring the website URL when both are enabled
   const desktopBtn = doc.createElement('a');
   desktopBtn.href = (hasWebApply ? webUrl : mobileUrl) || '#';
-  desktopBtn.className = 'ccr-apply-btn ccr-apply-desktop';
+  desktopBtn.className = 'ccr-apply-btn button-m primary ccr-apply-desktop';
   desktopBtn.textContent = labels.applyNow;
   area.appendChild(desktopBtn);
 
@@ -175,7 +178,7 @@ function buildApplyArea(card, doc, labels, icons) {
   if (hasWebApply) {
     const webBtn = doc.createElement('a');
     webBtn.href = webUrl || '#';
-    webBtn.className = 'ccr-apply-btn ccr-apply-mobile-btn';
+    webBtn.className = 'ccr-apply-btn button-m secondary ccr-apply-mobile-btn';
     webBtn.innerHTML = `${icons.web}<span>${labels.applyViaWebsite}</span>`;
     mobileGroup.appendChild(webBtn);
   }
@@ -183,7 +186,7 @@ function buildApplyArea(card, doc, labels, icons) {
   if (hasMobileApply) {
     const mwebBtn = doc.createElement('a');
     mwebBtn.href = mobileUrl || '#';
-    mwebBtn.className = 'ccr-apply-btn ccr-apply-mobile-btn';
+    mwebBtn.className = 'ccr-apply-btn button-m secondary ccr-apply-mobile-btn';
     mwebBtn.innerHTML = `${icons.mweb}<span>${labels.applyViaMobile}</span>`;
     mobileGroup.appendChild(mwebBtn);
   }
@@ -495,10 +498,7 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc, 
     return;
   }
 
-  const selectedIDs = cards.map((c) => c.id);
-  const sorted = filterAndSortCards(allCards, selectedIDs, sourcingMap);
-
-  const displayCards = sorted.length > 0 ? sorted : cards;
+  const displayCards = filterAndSortCards(allCards, cards);
 
   // Fields any compared card has a value for, so every card renders the same aligned rows.
   const activeKeys = new Set();

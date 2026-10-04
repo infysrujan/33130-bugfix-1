@@ -1,9 +1,48 @@
 import { getLang } from '../scripts.js';
 import { fetchConfigs } from '../config.js';
 import { fetchGet } from './fetchApi.js';
+import { normStr, loadSheetOrder } from './sort-utils.js';
+
+// Returns the correct card-name column key for the current locale.
+function cardNameKey() {
+  return getLang() === 'th' ? 'Card Name (TH)' : 'Card Name (EN)';
+}
+
+// Order for debit card listing pages (config key: debit-card-listing-sort).
+export function loadDebitCardListingOrder() {
+  return loadSheetOrder('debitCardListingSort');
+}
+
+// Order for prepaid card listing pages (config key: prepaid-card-listing-sort).
+export function loadPrepaidCardListingOrder() {
+  return loadSheetOrder('prepaidCardListingSort');
+}
+
+// Sorts cards by the authored row order in the config sheet.
+// Debit: only rows matching cardType are used. Prepaid: all rows.
+// Cards not in the sheet are appended at the end.
+export function sortCardsBySheetOrder(cards, matrix, cardType) {
+  if (!matrix || !matrix.length) return cards;
+
+  const nameKey = cardNameKey(); // 'Card Name (EN)' or 'Card Name (TH)'
+  const typeSlug = normStr(cardType || '');
+
+  // Build name → row-index map, filtered by cardType for debit.
+  const orderMap = {};
+  matrix.forEach((row, index) => {
+    if (typeSlug && normStr(row['Card Type'] || '') !== typeSlug) return;
+    const name = normStr(row[nameKey] || '');
+    if (name && !(name in orderMap)) orderMap[name] = index;
+  });
+
+  return [...cards].sort((a, b) => {
+    const orderA = orderMap[normStr(a.name || '')] ?? Number.MAX_SAFE_INTEGER;
+    const orderB = orderMap[normStr(b.name || '')] ?? Number.MAX_SAFE_INTEGER;
+    return orderA - orderB;
+  });
+}
 
 const CARDS_API_CONFIG_KEY = 'debitPrepaidCardSelectorSuggesterData';
-const DEFAULT_CARDS_API_URL = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-cards-by-language-category-and-type;language=en;';
 
 // Three independent sessionStorage keys — one per card flow
 export const CREDIT_COMPARE_STORAGE_KEY = 'ccs-compare-cards';
@@ -104,7 +143,8 @@ export function getCardViewData(card, lang) {
 export async function loadCardData(cardCategory, cardType) {
   try {
     const configs = await fetchConfigs();
-    const baseUrl = configs[CARDS_API_CONFIG_KEY] || DEFAULT_CARDS_API_URL;
+    const baseUrl = configs[CARDS_API_CONFIG_KEY];
+    if (!baseUrl) return [];
     const lang = getLang();
     const isPrepaid = cardCategory === 'prepaid-cards';
     const typeParam = isPrepaid ? '' : `cardType=${cardType};`;

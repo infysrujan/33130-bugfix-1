@@ -5,18 +5,19 @@
 
 /* Bond Allocation — scoped via .field-bond-allocation-review (Bond_Allocation_TH) */
 .bond-allocation-form main .section.form-container.custom-forms {
-  .field-heading, .field-heading2 {
-    position: relative;
+  padding: 0 var(--bbl-space-200);
 
-    & ::after{
+  .field-heading, .field-heading2 {
+    /* Grey bar under the title: drawn as a border (not a clipped background)
+       so it renders the same before and after submission */
+    &::after {
       content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 3.125rem;
-      height: 0.125rem;
-      background-color: var(--bbl-color-grey-85);
+      display: block;
+      width: var(--bbl-space-1000);
+      height: 0;
+      margin: 0 auto 1.875rem;
+      padding: 1.25rem 0 0;
+      border-bottom: 0.0625rem solid var(--bbl-color-grey-150);
     }
 
     h2{
@@ -27,7 +28,13 @@
     }
   }
 
-
+  /* Desktop: 30px top, 30px bottom (mobile/tablet: 20px top, 30px bottom from base) */
+  @media (width >= 64rem) {
+    .field-heading::after, .field-heading2::after {
+      padding-top: 1.875rem;
+      margin-bottom: 1.875rem;
+    }
+  }
 
   .field-subheading {
     margin-bottom: 0.937rem;
@@ -140,7 +147,7 @@
     font-size: var(--bbl-font-size-h2-mobile);
     font-weight: var(--bbl-form-font-weight-bold);
     text-align: left;
-    padding: 0.9375rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
     min-height: 3rem;
     box-sizing: border-box;
     color: var(--bbl-color-grey-159);
@@ -158,8 +165,9 @@
     font-size: var(--bbl-font-size-h2-mobile);
     font-weight: var(--bbl-form-font-weight-bold);
     text-align: right;
-    padding: 0.625rem 0.5rem;
-    padding-top: 0.9375rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
+
+    /* padding-top: 0.9375rem; */
     min-height: 3rem;
     box-sizing: border-box;
     color: var(--bbl-color-grey-159);
@@ -181,7 +189,7 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-b1-desktop);
     font-weight: var(--bbl-form-font-weight-regular);
-    padding: 0.9375rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
     min-height: 2.75rem;
     box-sizing: border-box;
     border-radius: 0;
@@ -200,12 +208,13 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-b1-desktop);
     font-weight: var(--bbl-font-weight-regular);
-    padding: 0.9375rem 0.75rem;
+    padding: 0.9375rem var(--bbl-space-200) 0.625rem var(--bbl-space-200);
     min-height: 2.75rem;
     box-sizing: border-box;
     border-radius: 0;
     text-align: right;
-    padding-right: 1rem;
+
+    /* padding-right: 1rem; */
   }
 
   & .form form .field-bond-allocation-review .field-totalpurchaseamount > input,
@@ -213,9 +222,9 @@
     grid-column: 2;
   }
 
-  & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
+  /* & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
     padding-right: 1.875rem;
-  }
+  } */
 
   & .form form .field-bond-allocation-review .plain-text-wrapper p,
   & .form form .field-bond-allocation-notfound .plain-text-wrapper p {
@@ -251,6 +260,15 @@
   }
 
 
+
+  /* review-panel.css styles the first text block of .form-review-2col as a flex
+     "success" row; reset it so the heading + grey bar stack like before submission */
+  & .form form .field-bond-allocation-review .field-heading2.plain-text-wrapper {
+    display: block;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+  }
 
   & .form form .field-bond-allocation-review .field-heading2.plain-text-wrapper p {
     margin-left: auto;
@@ -331,7 +349,7 @@
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
-    }
+  }
 
   /* Stack buttons only on phones; tablets/desktop keep the side-by-side base layout */
   @media (width < 47.5rem) {
@@ -363,14 +381,9 @@
   & .form form .field-subheading.plain-text-wrapper p:last-child p {
     text-align: center;
   }
-
-  & .form form .field-loadingtext + fieldset.panel-wrapper.field-button-panel.field-wrapper {
-    justify-content: space-between;
-    padding: 0 1.375rem;
     
     @media (width > 47.5rem) {
       justify-content: center;
       padding: 0;
     }
   }
-}
