@@ -2,7 +2,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
-import { loadMfSheetOrder, sortFundsBySheetOrder } from '../../scripts/utils/mf-fund-sort.js';
+import { loadMfSheetOrder, fundNameKey } from '../../scripts/utils/mf-fund-sort.js';
 
 const TABLET_MIN = getComputedStyle(document.documentElement)
   .getPropertyValue('--bbl-breakpoint-tablet-min')
@@ -12,7 +12,7 @@ const TABLET_MIN = getComputedStyle(document.documentElement)
 
 function norm(str) {
   return (str || '').toString()
-    .replace(/\u200B/g, '')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
     .replace(/\s+/g, ' ')
     .toLowerCase()
     .trim();
@@ -62,20 +62,53 @@ function getCardName(card) {
   return card.FundName || card.fundName || card.name || card.title || '';
 }
 
-// Sort by the canonical mf-suggestor sheet order (the same source every
-// other mutual-fund block uses), falling back to selection order only if
-// the sheet itself is unavailable.
-function filterAndSortCards(allCards, selectedIDs, selectedNames, matrix) {
-  const normalizedNames = selectedNames.map(norm);
-  const matched = allCards.filter((card) => selectedIDs.includes(card.ProductID));
+function cardKey(c) {
+  return (c.ProductID || c.productId || c.cardId || c.id || '').toString().trim();
+}
 
-  if (!matrix || matrix.length === 0) {
-    return normalizedNames
-      .map((n) => matched.find((c) => norm(getCardName(c)) === n))
-      .filter(Boolean);
-  }
+// Map over the user's selected cards to preserve exact selection order, prevent
+// irrelevant cards from appearing, and resolve localized data/titles across languages.
+function resolveSelectedCards(cards, allCards, matrix) {
+  if (!cards || !cards.length) return [];
+  const langKey = fundNameKey();
 
-  return sortFundsBySheetOrder(matched, matrix);
+  return cards.map((selectedCard) => {
+    const pId = cardKey(selectedCard);
+    const targetName = norm(getCardName(selectedCard) || pId);
+
+    // 1. Match by Product ID (stable identifier across languages)
+    if (pId) {
+      const byId = allCards.find((c) => cardKey(c) && cardKey(c) === pId);
+      if (byId) return byId;
+    }
+
+    // 2. Direct match in allCards by FundName (same language)
+    if (targetName) {
+      const byName = allCards.find((c) => norm(getCardName(c)) === targetName);
+      if (byName) return byName;
+    }
+
+    // 3. Cross-language match via sheet matrix (e.g. EN <-> TH)
+    if (matrix && matrix.length > 0 && targetName) {
+      const row = matrix.find((r) => norm(r['Fund Name (EN)'] || '') === targetName
+        || norm(r['Fund Name (TH)'] || '') === targetName);
+      if (row) {
+        const localizedTarget = norm(row[langKey] || '');
+        if (localizedTarget) {
+          const byMatrix = allCards.find((c) => norm(getCardName(c)) === localizedTarget);
+          if (byMatrix) return byMatrix;
+        }
+        const localizedTitle = row[langKey] || getCardName(selectedCard);
+        return {
+          ...selectedCard,
+          FundName: localizedTitle,
+          name: localizedTitle,
+        };
+      }
+    }
+
+    return selectedCard;
+  });
 }
 
 // ── DOM builders ───────────────────────────────────────────────────────────────
@@ -377,7 +410,11 @@ function getCardsFromStorage() {
   try {
     const value = decodeURIComponent(match.split('=').slice(1).join('='));
     const items = JSON.parse(value);
-    return items.map(({ id, title, photo }) => ({ name: title || id, image: photo }));
+    return items.map(({ id, title, photo }) => ({
+      id: id || title,
+      name: title || id,
+      image: photo,
+    }));
   } catch {
     return null;
   }
@@ -397,13 +434,17 @@ function renderComparison(container, cards, allCards, matrix, labels, doc) {
     return;
   }
 
-  const selectedNames = cards.map((c) => c.name);
-  const selectedIDs = cards.map((c) => c.id);
-  const sorted = filterAndSortCards(allCards, selectedIDs, selectedNames, matrix);
+  const displayCards = resolveSelectedCards(cards, allCards, matrix);
 
-  const displayCards = sorted.length > 0
-    ? sorted
-    : cards.map(({ name, image }) => ({ name, image }));
+  // Sync sessionStorage with localized cards so other components / refreshes stay in sync
+  try {
+    const updatedStorage = displayCards.map((c) => ({
+      id: cardKey(c) || getCardName(c),
+      name: getCardName(c),
+      image: resolveImageUrl(c) || c.image || '',
+    }));
+    sessionStorage.setItem('mfs-compare-cards', JSON.stringify(updatedStorage));
+  } catch { /* ignore */ }
 
   container.classList.toggle('single-card', displayCards.length === 1);
   container.classList.toggle('two-cards', displayCards.length === 2);
