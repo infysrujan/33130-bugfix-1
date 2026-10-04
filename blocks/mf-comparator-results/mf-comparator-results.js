@@ -2,6 +2,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { loadMfSheetOrder, fundNameKey } from '../../scripts/utils/mf-fund-sort.js';
 
 const TABLET_MIN = getComputedStyle(document.documentElement)
   .getPropertyValue('--bbl-breakpoint-tablet-min')
@@ -11,7 +12,7 @@ const TABLET_MIN = getComputedStyle(document.documentElement)
 
 function norm(str) {
   return (str || '').toString()
-    .replace(/\u200B/g, '')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
     .replace(/\s+/g, ' ')
     .toLowerCase()
     .trim();
@@ -58,28 +59,55 @@ async function loadAllCards() {
 }
 
 function getCardName(card) {
-  return card.name || card.title || card.FundName || card.fundName || '';
+  return card.FundName || card.fundName || card.name || card.title || '';
 }
 
-// Preserve the exact selection order of the user's selected cards while enriching with full data.
-function filterAndSortCards(allCards, cards) {
-  if (!cards || cards.length === 0) return [];
-  if (!allCards || allCards.length === 0) return cards;
+function cardKey(c) {
+  return (c.ProductID || c.productId || c.cardId || c.id || '').toString().trim();
+}
 
-  const cardKey = (c) => (c.ProductID || c.id || c.cardId || '').toString().trim();
+// Map over the user's selected cards to preserve exact selection order, prevent
+// irrelevant cards from appearing, and resolve localized data/titles across languages.
+function resolveSelectedCards(cards, allCards, matrix) {
+  if (!cards || !cards.length) return [];
+  const langKey = fundNameKey();
 
-  return cards.map((c) => {
-    const key = cardKey(c);
-    const cName = norm(getCardName(c));
+  return cards.map((selectedCard) => {
+    const pId = cardKey(selectedCard);
+    const targetName = norm(getCardName(selectedCard) || pId);
 
-    const matched = allCards.find((ac) => {
-      const acKey = cardKey(ac);
-      if (key && acKey && key === acKey) return true;
-      if (cName && norm(getCardName(ac)) === cName) return true;
-      return false;
-    });
+    // Match the localized name first. Product IDs can identify a different
+    // localized fund record, so use them only after name-based resolution.
+    if (targetName) {
+      const byName = allCards.find((c) => norm(getCardName(c)) === targetName);
+      if (byName) return byName;
+    }
 
-    return matched ? { ...c, ...matched } : c;
+    // Cross-language match via sheet matrix (e.g. EN <-> TH)
+    if (matrix && matrix.length > 0 && targetName) {
+      const row = matrix.find((r) => norm(r['Fund Name (EN)'] || '') === targetName
+        || norm(r['Fund Name (TH)'] || '') === targetName);
+      if (row) {
+        const localizedTarget = norm(row[langKey] || '');
+        if (localizedTarget) {
+          const byMatrix = allCards.find((c) => norm(getCardName(c)) === localizedTarget);
+          if (byMatrix) return byMatrix;
+        }
+        const localizedTitle = row[langKey] || getCardName(selectedCard);
+        return {
+          ...selectedCard,
+          FundName: localizedTitle,
+          name: localizedTitle,
+        };
+      }
+    }
+
+    if (pId) {
+      const byId = allCards.find((c) => cardKey(c) && cardKey(c) === pId);
+      if (byId) return byId;
+    }
+
+    return selectedCard;
   });
 }
 
@@ -92,7 +120,7 @@ function filterAndSortCards(allCards, cards) {
  *                        > a.mfcr-read-more
  */
 function buildCompareCard(card, doc, labels) {
-  const name = card.name || card.title || card.FundName || card.fundName || '';
+  const name = card.FundName || card.fundName || card.name || card.title || '';
   const imgSrc = resolveImageUrl(card);
   let readMoreHref = resolveCardPageUrl(card);
   // Remove "/content/bangkokbank" from the start of readMoreHref, if present
@@ -382,7 +410,11 @@ function getCardsFromStorage() {
   try {
     const value = decodeURIComponent(match.split('=').slice(1).join('='));
     const items = JSON.parse(value);
-    return items.map(({ id, title, photo }) => ({ name: title || id, image: photo }));
+    return items.map(({ id, title, photo }) => ({
+      id: id || title,
+      name: title || id,
+      image: photo,
+    }));
   } catch {
     return null;
   }
@@ -390,7 +422,7 @@ function getCardsFromStorage() {
 
 // ── Render ─────────────────────────────────────────────────────────────────────
 
-function renderComparison(container, cards, allCards, labels, doc) {
+function renderComparison(container, cards, allCards, matrix, labels, doc) {
   container.innerHTML = '';
 
   if (!cards || cards.length === 0) {
@@ -402,7 +434,7 @@ function renderComparison(container, cards, allCards, labels, doc) {
     return;
   }
 
-  const displayCards = filterAndSortCards(allCards, cards);
+  const displayCards = resolveSelectedCards(cards, allCards, matrix);
 
   container.classList.toggle('single-card', displayCards.length === 1);
   container.classList.toggle('two-cards', displayCards.length === 2);
@@ -475,10 +507,10 @@ export default async function decorate(block) {
   };
 
   // ── Load data ──────────────────────────────────────────────────────────────
-  const allCards = await loadAllCards();
+  const [allCards, matrix] = await Promise.all([loadAllCards(), loadMfSheetOrder()]);
 
   function renderAndAlign(cards) {
-    renderComparison(container, cards, allCards, labels, doc);
+    renderComparison(container, cards, allCards, matrix, labels, doc);
     buildDots();
     doAlign();
   }
