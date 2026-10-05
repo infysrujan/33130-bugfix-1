@@ -58,7 +58,7 @@ async function loadAllCards() {
 }
 
 function getCardName(card) {
-  return card.name || card.title || card.FundName || card.fundName || '';
+  return card.FundName || card.fundName || card.title || card.name || '';
 }
 
 // Preserve the exact selection order of the user's selected cards while enriching with full data.
@@ -79,7 +79,7 @@ function filterAndSortCards(allCards, cards) {
       return false;
     });
 
-    return matched ? { ...c, ...matched } : c;
+    return matched ? { ...c, ...matched, name: getCardName(matched) } : c;
   });
 }
 
@@ -92,7 +92,7 @@ function filterAndSortCards(allCards, cards) {
  *                        > a.mfcr-read-more
  */
 function buildCompareCard(card, doc, labels) {
-  const name = card.name || card.title || card.FundName || card.fundName || '';
+  const name = getCardName(card);
   const imgSrc = resolveImageUrl(card);
   let readMoreHref = resolveCardPageUrl(card);
   // Remove "/content/bangkokbank" from the start of readMoreHref, if present
