@@ -56,6 +56,7 @@
        since both panels are reused under multiple tabs with no shared name/class. */
     & fieldset.panel-wrapper:has(.date-wrapper) > legend.field-label:not([data-visible="false"]),
     & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > legend.field-label {
+        padding-top: 0;
         background-color: transparent;
         text-decoration: none;
         font-weight: var(--bbl-font-weight-regular);
@@ -390,10 +391,6 @@
     /* Chromium paints the optgroup background onto its options too; reset them */
     & .drop-down-wrapper select optgroup option {
         background-color: var(--bbl-color-white);
-    }
-
-    & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > legend.field-label {
-      padding-top: 0;
     }
 }
 
